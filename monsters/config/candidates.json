@@ -310,21 +310,6 @@
       "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws."
     },
     {
-      "id": "thorn_knot",
-      "name": "Briarknot",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 88,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "prompt": "Rolled knot of dead bramble and grey winter grass wound into a dense round body bristling with black thorn hooks, an abandoned bird nest packed into a hollow at the front with three cold speckled eggs still in it, short whipping runners for limbs",
-      "lore": "The nest was left before the bramble grew around it. It keeps the eggs warm out of habit and there is nothing inside them.",
-      "items": []
-    },
-    {
       "id": "shore_urchin",
       "name": "Urchling",
       "tier": "cute",
@@ -6280,6 +6265,29 @@
       "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
       "items": [],
       "graduated_at": "2026-09-23T21:40:10+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "thorn_knot",
+      "name": "Briarknot",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 88,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "prompt": "Rolled knot of dead bramble and grey winter grass wound into a dense round body bristling with black thorn hooks, an abandoned bird nest packed into a hollow at the front with three cold speckled eggs still in it, short whipping runners for limbs",
+      "lore": "The nest was left before the bramble grew around it. It keeps the eggs warm out of habit and there is nothing inside them.",
+      "items": [],
+      "graduated_at": "2026-09-23T21:44:18+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

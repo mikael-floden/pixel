@@ -1,0 +1,651 @@
+{
+  "id": "thorn_knot",
+  "name": "Briarknot",
+  "lore": "The nest was left before the bramble grew around it. It keeps the eggs warm out of habit and there is nothing inside them.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "74f081d3-45c4-48b9-a209-257e65eca21f",
+    "url": "https://www.pixellab.ai/create-character/74f081d3-45c4-48b9-a209-257e65eca21f",
+    "prompt": "Rolled knot of dead bramble and grey winter grass wound into a dense round body bristling with black thorn hooks, an abandoned bird nest packed into a hollow at the front with three cold speckled eggs still in it, short whipping runners for limbs, grim menacing expression, dark fantasy, no cartoon grin, no drop shadow on the ground.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 88,
+    "height": 88
+  },
+  "native_size": {
+    "width": 88,
+    "height": 88
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "thorn_knot/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "thorn_knot/rotations/south.webp",
+    "west": "thorn_knot/rotations/west.webp",
+    "east": "thorn_knot/rotations/east.webp",
+    "north": "thorn_knot/rotations/north.webp",
+    "south-east": "thorn_knot/rotations/south-east.webp",
+    "north-east": "thorn_knot/rotations/north-east.webp",
+    "north-west": "thorn_knot/rotations/north-west.webp",
+    "south-west": "thorn_knot/rotations/south-west.webp"
+  },
+  "animations": {
+    "die": {
+      "group_id": "f00ef5a5-ae5a-4450-afba-55b3f422b629",
+      "source_name": "custom-Death - Faints, collapses to t",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "thorn_knot/animations/die__east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/die/east/00.webp",
+            "thorn_knot/animations/die/east/01.webp",
+            "thorn_knot/animations/die/east/02.webp",
+            "thorn_knot/animations/die/east/03.webp",
+            "thorn_knot/animations/die/east/04.webp",
+            "thorn_knot/animations/die/east/05.webp",
+            "thorn_knot/animations/die/east/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:43:52 GMT",
+          "src_frames": 7,
+          "sub": "38202a37-fbc3-45a3-8ca6-e8dbb2428265"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "thorn_knot/animations/die__north.webp",
+          "frame_paths": [
+            "thorn_knot/animations/die/north/00.webp",
+            "thorn_knot/animations/die/north/01.webp",
+            "thorn_knot/animations/die/north/02.webp",
+            "thorn_knot/animations/die/north/03.webp",
+            "thorn_knot/animations/die/north/04.webp",
+            "thorn_knot/animations/die/north/05.webp",
+            "thorn_knot/animations/die/north/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:43:53 GMT",
+          "src_frames": 7,
+          "sub": "3c0065ef-be7a-4a53-a4b0-f149d7d52b46"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "thorn_knot/animations/die__north-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/die/north-east/00.webp",
+            "thorn_knot/animations/die/north-east/01.webp",
+            "thorn_knot/animations/die/north-east/02.webp",
+            "thorn_knot/animations/die/north-east/03.webp",
+            "thorn_knot/animations/die/north-east/04.webp",
+            "thorn_knot/animations/die/north-east/05.webp",
+            "thorn_knot/animations/die/north-east/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:43:54 GMT",
+          "src_frames": 7,
+          "sub": "d99d4935-9ec3-4e39-8f86-ae5d5b638a89"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "thorn_knot/animations/die__south.webp",
+          "frame_paths": [
+            "thorn_knot/animations/die/south/00.webp",
+            "thorn_knot/animations/die/south/01.webp",
+            "thorn_knot/animations/die/south/02.webp",
+            "thorn_knot/animations/die/south/03.webp",
+            "thorn_knot/animations/die/south/04.webp",
+            "thorn_knot/animations/die/south/05.webp",
+            "thorn_knot/animations/die/south/06.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 20:32:17 GMT",
+          "src_frames": 7,
+          "sub": "314dc0aa-b4fe-41fe-9c2d-385cea122fa4"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "thorn_knot/animations/die__south-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/die/south-east/00.webp",
+            "thorn_knot/animations/die/south-east/01.webp",
+            "thorn_knot/animations/die/south-east/02.webp",
+            "thorn_knot/animations/die/south-east/03.webp",
+            "thorn_knot/animations/die/south-east/04.webp",
+            "thorn_knot/animations/die/south-east/05.webp",
+            "thorn_knot/animations/die/south-east/06.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 20:32:17 GMT",
+          "src_frames": 7,
+          "sub": "b1ba93bd-f9bd-4dd7-bca0-be4c712086cd"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "thorn_knot/animations/die__south-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/die/south-west/00.webp",
+            "thorn_knot/animations/die/south-west/01.webp",
+            "thorn_knot/animations/die/south-west/02.webp",
+            "thorn_knot/animations/die/south-west/03.webp",
+            "thorn_knot/animations/die/south-west/04.webp",
+            "thorn_knot/animations/die/south-west/05.webp",
+            "thorn_knot/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "thorn_knot/animations/die__west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/die/west/00.webp",
+            "thorn_knot/animations/die/west/01.webp",
+            "thorn_knot/animations/die/west/02.webp",
+            "thorn_knot/animations/die/west/03.webp",
+            "thorn_knot/animations/die/west/04.webp",
+            "thorn_knot/animations/die/west/05.webp",
+            "thorn_knot/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "thorn_knot/animations/die__north-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/die/north-west/00.webp",
+            "thorn_knot/animations/die/north-west/01.webp",
+            "thorn_knot/animations/die/north-west/02.webp",
+            "thorn_knot/animations/die/north-west/03.webp",
+            "thorn_knot/animations/die/north-west/04.webp",
+            "thorn_knot/animations/die/north-west/05.webp",
+            "thorn_knot/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "4972d2b1-1da9-4895-998c-4eee15db1e50",
+      "source_name": "custom-Strike - Quickly lunges forward and strikes once + custom-Strike - Quickly lunges forward and strikes once, ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/attack__east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/attack/east/00.webp",
+            "thorn_knot/animations/attack/east/01.webp",
+            "thorn_knot/animations/attack/east/02.webp",
+            "thorn_knot/animations/attack/east/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:43:57 GMT",
+          "src_frames": 4,
+          "sub": "bfa51df8-29a0-4632-80d1-d8fac4d5c2f6"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/attack__north-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/attack/north-east/00.webp",
+            "thorn_knot/animations/attack/north-east/01.webp",
+            "thorn_knot/animations/attack/north-east/02.webp",
+            "thorn_knot/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:44:03 GMT",
+          "src_frames": 4,
+          "sub": "2c84ffe9-7657-4d3f-ac05-737c417b49a0"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/attack__south.webp",
+          "frame_paths": [
+            "thorn_knot/animations/attack/south/00.webp",
+            "thorn_knot/animations/attack/south/01.webp",
+            "thorn_knot/animations/attack/south/02.webp",
+            "thorn_knot/animations/attack/south/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:44:10 GMT",
+          "src_frames": 4,
+          "sub": "4a91603b-6c0d-407f-ac31-713641cfa4e6"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/attack__west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/attack/west/00.webp",
+            "thorn_knot/animations/attack/west/01.webp",
+            "thorn_knot/animations/attack/west/02.webp",
+            "thorn_knot/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/attack__north-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/attack/north-west/00.webp",
+            "thorn_knot/animations/attack/north-west/01.webp",
+            "thorn_knot/animations/attack/north-west/02.webp",
+            "thorn_knot/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/attack__north.webp",
+          "frame_paths": [
+            "thorn_knot/animations/attack/north/00.webp",
+            "thorn_knot/animations/attack/north/01.webp",
+            "thorn_knot/animations/attack/north/02.webp",
+            "thorn_knot/animations/attack/north/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:44:10 GMT",
+          "src_frames": 4,
+          "sub": "d033afa0-565d-4ccc-8c3d-a45a9bfcb63b"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/attack__south-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/attack/south-east/00.webp",
+            "thorn_knot/animations/attack/south-east/01.webp",
+            "thorn_knot/animations/attack/south-east/02.webp",
+            "thorn_knot/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:44:11 GMT",
+          "src_frames": 4,
+          "sub": "ccf1ae88-e327-4990-a4d8-6360dbe8e9e3"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/attack__south-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/attack/south-west/00.webp",
+            "thorn_knot/animations/attack/south-west/01.webp",
+            "thorn_knot/animations/attack/south-west/02.webp",
+            "thorn_knot/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "07d36984-a838-4023-85a3-5793a554c2bf",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "south": {
+          "frames": 6,
+          "strip": "thorn_knot/animations/walk__south.webp",
+          "frame_paths": [
+            "thorn_knot/animations/walk/south/00.webp",
+            "thorn_knot/animations/walk/south/01.webp",
+            "thorn_knot/animations/walk/south/02.webp",
+            "thorn_knot/animations/walk/south/03.webp",
+            "thorn_knot/animations/walk/south/04.webp",
+            "thorn_knot/animations/walk/south/05.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:44:13 GMT",
+          "src_frames": 6,
+          "sub": "5e3184fe-4dbd-41d6-981d-5aa46487989c"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/walk__south-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/walk/south-east/00.webp",
+            "thorn_knot/animations/walk/south-east/01.webp",
+            "thorn_knot/animations/walk/south-east/02.webp",
+            "thorn_knot/animations/walk/south-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/walk/south-east"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/walk__east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/walk/east/00.webp",
+            "thorn_knot/animations/walk/east/01.webp",
+            "thorn_knot/animations/walk/east/02.webp",
+            "thorn_knot/animations/walk/east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/walk/east"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/walk__north-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/walk/north-east/00.webp",
+            "thorn_knot/animations/walk/north-east/01.webp",
+            "thorn_knot/animations/walk/north-east/02.webp",
+            "thorn_knot/animations/walk/north-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/walk/north-east"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "thorn_knot/animations/walk__north.webp",
+          "frame_paths": [
+            "thorn_knot/animations/walk/north/00.webp",
+            "thorn_knot/animations/walk/north/01.webp",
+            "thorn_knot/animations/walk/north/02.webp",
+            "thorn_knot/animations/walk/north/03.webp",
+            "thorn_knot/animations/walk/north/04.webp",
+            "thorn_knot/animations/walk/north/05.webp"
+          ],
+          "src_frames": 6,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/walk__north-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/walk/north-west/00.webp",
+            "thorn_knot/animations/walk/north-west/01.webp",
+            "thorn_knot/animations/walk/north-west/02.webp",
+            "thorn_knot/animations/walk/north-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/walk/north-west"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/walk__west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/walk/west/00.webp",
+            "thorn_knot/animations/walk/west/01.webp",
+            "thorn_knot/animations/walk/west/02.webp",
+            "thorn_knot/animations/walk/west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/walk/west"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "thorn_knot/animations/walk__south-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/walk/south-west/00.webp",
+            "thorn_knot/animations/walk/south-west/01.webp",
+            "thorn_knot/animations/walk/south-west/02.webp",
+            "thorn_knot/animations/walk/south-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/walk/south-west"
+        }
+      }
+    },
+    "idle": {
+      "group_id": null,
+      "source_name": "candidates/thorn_knot (idle)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/idle__south.webp",
+          "frame_paths": [
+            "thorn_knot/animations/idle/south/00.webp",
+            "thorn_knot/animations/idle/south/01.webp",
+            "thorn_knot/animations/idle/south/02.webp",
+            "thorn_knot/animations/idle/south/03.webp",
+            "thorn_knot/animations/idle/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/idle/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/idle__south-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/idle/south-east/00.webp",
+            "thorn_knot/animations/idle/south-east/01.webp",
+            "thorn_knot/animations/idle/south-east/02.webp",
+            "thorn_knot/animations/idle/south-east/03.webp",
+            "thorn_knot/animations/idle/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/idle/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/idle__east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/idle/east/00.webp",
+            "thorn_knot/animations/idle/east/01.webp",
+            "thorn_knot/animations/idle/east/02.webp",
+            "thorn_knot/animations/idle/east/03.webp",
+            "thorn_knot/animations/idle/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/idle/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/idle__north-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/idle/north-east/00.webp",
+            "thorn_knot/animations/idle/north-east/01.webp",
+            "thorn_knot/animations/idle/north-east/02.webp",
+            "thorn_knot/animations/idle/north-east/03.webp",
+            "thorn_knot/animations/idle/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/idle/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/idle__north.webp",
+          "frame_paths": [
+            "thorn_knot/animations/idle/north/00.webp",
+            "thorn_knot/animations/idle/north/01.webp",
+            "thorn_knot/animations/idle/north/02.webp",
+            "thorn_knot/animations/idle/north/03.webp",
+            "thorn_knot/animations/idle/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/idle/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/idle__north-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/idle/north-west/00.webp",
+            "thorn_knot/animations/idle/north-west/01.webp",
+            "thorn_knot/animations/idle/north-west/02.webp",
+            "thorn_knot/animations/idle/north-west/03.webp",
+            "thorn_knot/animations/idle/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/idle/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/idle__west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/idle/west/00.webp",
+            "thorn_knot/animations/idle/west/01.webp",
+            "thorn_knot/animations/idle/west/02.webp",
+            "thorn_knot/animations/idle/west/03.webp",
+            "thorn_knot/animations/idle/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/idle/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/idle__south-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/idle/south-west/00.webp",
+            "thorn_knot/animations/idle/south-west/01.webp",
+            "thorn_knot/animations/idle/south-west/02.webp",
+            "thorn_knot/animations/idle/south-west/03.webp",
+            "thorn_knot/animations/idle/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/idle/south-west"
+        }
+      }
+    },
+    "angry": {
+      "group_id": null,
+      "source_name": "candidates/thorn_knot (angry)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/angry__south.webp",
+          "frame_paths": [
+            "thorn_knot/animations/angry/south/00.webp",
+            "thorn_knot/animations/angry/south/01.webp",
+            "thorn_knot/animations/angry/south/02.webp",
+            "thorn_knot/animations/angry/south/03.webp",
+            "thorn_knot/animations/angry/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/angry/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/angry__south-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/angry/south-east/00.webp",
+            "thorn_knot/animations/angry/south-east/01.webp",
+            "thorn_knot/animations/angry/south-east/02.webp",
+            "thorn_knot/animations/angry/south-east/03.webp",
+            "thorn_knot/animations/angry/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/angry/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/angry__east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/angry/east/00.webp",
+            "thorn_knot/animations/angry/east/01.webp",
+            "thorn_knot/animations/angry/east/02.webp",
+            "thorn_knot/animations/angry/east/03.webp",
+            "thorn_knot/animations/angry/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/angry/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/angry__north-east.webp",
+          "frame_paths": [
+            "thorn_knot/animations/angry/north-east/00.webp",
+            "thorn_knot/animations/angry/north-east/01.webp",
+            "thorn_knot/animations/angry/north-east/02.webp",
+            "thorn_knot/animations/angry/north-east/03.webp",
+            "thorn_knot/animations/angry/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/angry/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/angry__north.webp",
+          "frame_paths": [
+            "thorn_knot/animations/angry/north/00.webp",
+            "thorn_knot/animations/angry/north/01.webp",
+            "thorn_knot/animations/angry/north/02.webp",
+            "thorn_knot/animations/angry/north/03.webp",
+            "thorn_knot/animations/angry/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/angry/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/angry__north-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/angry/north-west/00.webp",
+            "thorn_knot/animations/angry/north-west/01.webp",
+            "thorn_knot/animations/angry/north-west/02.webp",
+            "thorn_knot/animations/angry/north-west/03.webp",
+            "thorn_knot/animations/angry/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/angry/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/angry__west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/angry/west/00.webp",
+            "thorn_knot/animations/angry/west/01.webp",
+            "thorn_knot/animations/angry/west/02.webp",
+            "thorn_knot/animations/angry/west/03.webp",
+            "thorn_knot/animations/angry/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/angry/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "thorn_knot/animations/angry__south-west.webp",
+          "frame_paths": [
+            "thorn_knot/animations/angry/south-west/00.webp",
+            "thorn_knot/animations/angry/south-west/01.webp",
+            "thorn_knot/animations/angry/south-west/02.webp",
+            "thorn_knot/animations/angry/south-west/03.webp",
+            "thorn_knot/animations/angry/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/thorn_knot/animations/angry/south-west"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-walk loop, full walk cycle in ",
+      "key": "walk",
+      "direction": "south",
+      "takes": [
+        "8478e9b3-ea92-438f-8dbb-2cea01e48fa0",
+        "5e3184fe-4dbd-41d6-981d-5aa46487989c"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

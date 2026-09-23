@@ -277,6 +277,19 @@
       "lore": "A snow-packed blob with a frozen grin. It spits ice spikes, and melts to slush when its winter finally ends."
     },
     {
+      "id": "thorn_knot",
+      "kind": "character",
+      "pixellab_id": "74f081d3-45c4-48b9-a209-257e65eca21f",
+      "name": "Briarknot",
+      "lore": "The nest was left before the bramble grew around it. It keeps the eggs warm out of habit and there is nothing inside them.",
+      "renames": {
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Strike - Quickly lunges forward and strikes once": "attack",
+        "custom-Strike - Quickly lunges forward and strikes once, ": "attack",
+        "custom-Death - Faints, collapses to t": "die"
+      }
+    },
+    {
       "id": "burr_kin",
       "kind": "character",
       "pixellab_id": "3b26b088-c6ca-4d2f-84b3-103db8dbc418",

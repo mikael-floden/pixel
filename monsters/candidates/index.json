@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-23T21:40:11+00:00",
+  "generated_at": "2026-09-23T21:44:19+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 140,
+  "count": 139,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -840,9 +840,10 @@
         "takes": {
           "idle": "idle",
           "walk": "walk",
+          "attack": "attack",
           "die": "die"
         },
-        "blocking": "not fully approved: angry, attack"
+        "blocking": "not fully approved: angry"
       }
     },
     {
@@ -1780,9 +1781,10 @@
         "state": "waiting",
         "takes": {
           "idle": "idle",
-          "angry": "angry"
+          "angry": "angry",
+          "attack": "attack"
         },
-        "blocking": "not fully approved: walk, attack, die"
+        "blocking": "not fully approved: walk, die"
       }
     },
     {
@@ -1918,9 +1920,10 @@
         "takes": {
           "idle": "idle",
           "angry": "angry",
+          "attack": "attack",
           "die": "die"
         },
-        "blocking": "not fully approved: walk, attack"
+        "blocking": "not fully approved: walk"
       }
     },
     {
@@ -2594,146 +2597,6 @@
         "state": "waiting",
         "takes": {},
         "blocking": "design not approved"
-      }
-    },
-    {
-      "id": "thorn_knot",
-      "name": "Briarknot",
-      "tier": "mid",
-      "lore": "The nest was left before the bramble grew around it. It keeps the eggs warm out of habit and there is nothing inside them.",
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "size": [
-        88,
-        88
-      ],
-      "template_id": "bear",
-      "scale": "standard",
-      "pixellab_id": "74f081d3-45c4-48b9-a209-257e65eca21f",
-      "version": 1,
-      "sheet": "thorn_knot/sheet.webp",
-      "rotations": {
-        "south": "thorn_knot/rotations/south.webp",
-        "south-east": "thorn_knot/rotations/south-east.webp",
-        "east": "thorn_knot/rotations/east.webp",
-        "north-east": "thorn_knot/rotations/north-east.webp",
-        "north": "thorn_knot/rotations/north.webp",
-        "north-west": "thorn_knot/rotations/north-west.webp",
-        "west": "thorn_knot/rotations/west.webp",
-        "south-west": "thorn_knot/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.756,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.756,
-            "bbox": [
-              4,
-              3,
-              84,
-              85
-            ],
-            "fill": 0.847,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.884,
-            "bbox": [
-              12,
-              1,
-              78,
-              87
-            ],
-            "fill": 0.733,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.843,
-            "bbox": [
-              13,
-              1,
-              69,
-              85
-            ],
-            "fill": 0.607,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.845,
-            "bbox": [
-              12,
-              2,
-              73,
-              82
-            ],
-            "fill": 0.63,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.81,
-            "bbox": [
-              6,
-              5,
-              83,
-              81
-            ],
-            "fill": 0.756,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.848,
-            "bbox": [
-              16,
-              2,
-              77,
-              82
-            ],
-            "fill": 0.63,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.838,
-            "bbox": [
-              19,
-              1,
-              75,
-              85
-            ],
-            "fill": 0.607,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.878,
-            "bbox": [
-              10,
-              1,
-              80,
-              87
-            ],
-            "fill": 0.777,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-18T11:52:09+00:00",
-      "verdict": "approved",
-      "graduation": {
-        "state": "ready",
-        "takes": {
-          "idle": "idle",
-          "walk": "walk",
-          "angry": "angry",
-          "attack": "attack",
-          "die": "die"
-        },
-        "blocking": null
       }
     },
     {
