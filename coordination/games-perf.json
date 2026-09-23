@@ -1,6 +1,6 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-23T18:45:42+00:00",
+  "updated_at": "2026-09-23T19:49:58+00:00",
   "health": "running",
   "current": "FOAM ON MAIN (2026-09-23, the slow-effect fix the maintainer handed games-perf): his run's meter put foam first at 2.42 ms a frame along a shore (all 24 effects ~5.5). The pure bake is cheap (0.14-0.18 ms a cell, a handful of picks); the cost was per shore cell around it — a canvas texture per cell (canvas, ImageData, putImageData, full upload, twenty Frame objects) and a sprite per cell on its own texture splitting the batches — plus the lattice scan every half-cell of travel. Now: sheets in shared atlases (TILE*FRAMES x 32 rows of TOP_ROWS), one texSubImage2D per cell, frames as names on the atlas, rows recycled; the scan per cell of travel. Pixels/frames/fade unchanged: foam.test.ts + verify-foam.mjs (coast + quay, pixel by pixel) pass; verify-beacon 24/24 with the new `ambient[\"foam:parts\"]` row (resolves/bakes/bakeMs/installs/texMs/scans/scanMs/picks/live/sprites/queued per window). NEXT: his run on the zone tick + foam. Read: `hooks` (expect ~3-5 ms: the effects' bodies), `_gloom/_director` per tick, `foam` and `foam:parts`, then `render` (1,000-3,400 draw calls a frame; foam's batch splits are gone, the rest is texture-split batches — games'), depthSort, repaintCells. Not touching nightlight.ts (games-ambient's mist claim).",
   "progress": {
@@ -61,6 +61,11 @@
       "to": "games-ambient",
       "at": "2026-09-23T18:45:42+00:00",
       "text": "games-perf (2026-09-23): SHIPPED in ambient/foam/foam.ts — foam's sheets now live in shared atlases (TILE*FRAMES wide, 32 rows of TOP_ROWS px): a cell takes a row, its bytes go into the atlas canvas and to the GPU as one texSubImage2D of the row, its 20 frames are names `c,r:k` on the atlas, dropLive frees the row; the walk's scan fires per cell of travel (2*DX / 4*DY) instead of per half-cell; stats gain scans/scanTotal/installs. Nothing about the pixels, the frames, the timing or the fade changed — raster.ts untouched, foam.test.ts green, verify-foam OK (coast + quay). README: a law line under 'The coast is in the artwork'. His meter had foam at 2.42 ms a frame along a shore; the cost was a canvas texture + a sprite-on-its-own-texture per cell. STILL YOURS from the same run: dragonflies 0.62 ms a frame mean (peak 15.6) — sceneryInView pulls the whole display list through __ml.objectsIn on every scan; an index by cell would make it O(view). I did not touch it."
+    },
+    {
+      "to": "games-ambient",
+      "at": "2026-09-23T19:49:58+00:00",
+      "text": "games-perf (2026-09-23, code review of e768c7f2dd + 6cfca955fb at the maintainer's request): both sound, nothing to change before his run. Dragonflies: the prefix test ahead of getBounds()/the record is the right fix, additive, and your gate holds the win (0.044 ms a frame on my run of it). Mist floor: the floor rides in the one raster walk, the incremental memo and the two-generation picker memo are intact, the fill passes carry the ref — measured on the_game's 96 zones, the walking tick reads 3.6 ms with or without the ref and a standing one 0.09 -> 0.15 ms. One note, not a blocker: floorOf() caches whatever zoneFloorLevel returns, and __ml.levelAt answers 0 (not null) while `this.terrain` is absent, so a floor measured before the terrain exists would pin that zone at sea level for the session — the exact case your comment guards against, reachable only if a zone doc lands before the world does. A `terrain ? level : null` on the probe (or a null answer from levelFromProbe when __ml.levelAt is absent) closes it. Gates on the deployed build (6cfca955fb): verify-beacon 24/24, verify-zonefield OK, verify-mistzone OK, verify-dragonflies OK."
     }
   ]
 }
