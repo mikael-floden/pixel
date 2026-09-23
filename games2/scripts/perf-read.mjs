@@ -129,6 +129,39 @@ if (worst.length) {
     console.log(`  ${f(w.total, 0).padStart(5)} | ${String(w.at ?? "-").padStart(13)} | ${w.z ?? "-"} | ${w.t !== undefined ? (w.t / 1000).toFixed(1) : "-"} | ${Object.entries(w.sec ?? {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${k} ${v}`).join(", ")} | ${w.mode ?? "-"} | ${w.tex ?? "-"} | ${w.dl ?? "-"}/${w.occ ?? "-"} | ${w.lag ?? "-"} | ${gap} | ${gl} | ${loaf}`);
   }
 }
+/* WHEN, NOT ONLY HOW LONG (2026-09-23, his ask): each worst frame's TIMELINE —
+ * every region that ran in or ahead of it, on the real-time clock (`wall` +
+ * the mark's start; `pt0` + `counts.clock0` gives the same) — with the WAIT
+ * from the end of the latest region before it to its start. A wait is time
+ * nothing timed was running: the "how long did we wait before this code
+ * started vs the old code ended" he asked for. Then each section's peak of
+ * the window with its clock, and the ambient rows' peaks. */
+const clock = (epochMs) => { const d = new Date(epochMs); return `${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}:${String(d.getUTCSeconds()).padStart(2, "0")}.${String(d.getUTCMilliseconds()).padStart(3, "0")}`; };
+const withTl = worst.filter((w) => Array.isArray(w.tl) && w.tl.length).slice(0, 3);
+for (const w of withTl) {
+  console.log(`\ntimeline of the ${f(w.total, 0)} ms frame at ${w.at} (frame start ${typeof w.wall === "number" ? clock(w.wall) + " UTC" : "?"}, pt0 ${w.pt0}): start | end | ms | wait since the last end | region`);
+  let end = -Infinity;
+  const marks = [...w.tl].sort((a, b) => a[1] - b[1] || a[2] - b[2]);
+  let waited = 0;
+  for (const [n, a, b] of marks) {
+    const wait = end === -Infinity ? 0 : Math.max(0, +(a - end).toFixed(1));
+    waited += wait;
+    const line = `  ${typeof w.wall === "number" ? clock(w.wall + a) : f(a, 1).padStart(8)} | ${f(b, 1).padStart(7)} | ${f(b - a, 1).padStart(6)} | ${(wait ? f(wait, 1) : "").padStart(6)} | ${n}`;
+    console.log(line);
+    if (b > end) end = b;
+  }
+  console.log(`  waited in total ${f(waited, 1)} ms of ${f(w.total, 0)}${w.tlDropped ? ` (${w.tlDropped} marks dropped at the cap)` : ""}${w.loaf?.t0 !== undefined ? `; the browser's long frame ran ${f(w.loaf.t0 - w.pt0, 1)} .. ${f(w.loaf.t1 - w.pt0, 1)} (pre ${w.loaf.pre}, raf ${w.loaf.raf}, dom ${w.loaf.dom})` : ""}`);
+}
+// EACH SECTION'S WORST OCCURRENCE per window, with its clock: the frame it
+// happened in can be found in the timelines above by `pt0`.
+const peaks = [];
+for (const r of rows) { const c0 = r.counts?.clock0; for (const [k, v] of Object.entries(r.sectionsPeak ?? {})) peaks.push({ k, ms: v.ms, t0: v.t0, t1: v.t1, at: typeof c0 === "number" ? clock(c0 + v.t0) : `pt ${v.t0}` }); }
+peaks.sort((a, b) => b.ms - a.ms);
+if (peaks.length) console.log(`\nsection peaks (worst single occurrence, when it started, UTC): ${peaks.slice(0, 10).map((p) => `${p.k} ${f(p.ms, 1)} ms @ ${p.at}`).join("; ")}`);
+const ambPeaks = [];
+for (const r of rows) { const c0 = r.counts?.clock0; for (const [k, v] of Object.entries(r.ambient ?? {})) if (typeof v.peak === "number" && typeof v.t0 === "number" && v.t0 > 0) ambPeaks.push({ k, ms: v.peak, at: typeof c0 === "number" ? clock(c0 + v.t0) : `pt ${v.t0}` }); }
+ambPeaks.sort((a, b) => b.ms - a.ms);
+if (ambPeaks.length) console.log(`ambient peaks (worst single update, when it started, UTC): ${ambPeaks.slice(0, 8).map((p) => `${p.k} ${f(p.ms, 1)} ms @ ${p.at}`).join("; ")}`);
 // THE AMBIENT EFFECTS' OWN METER, averaged over the printed windows that carry
 // it: mean ms a frame per effect (their `hooks` section is the sum), the peak
 // frame, and the mode the HUD had. An effect that is on and not here cost
@@ -140,6 +173,6 @@ for (const r of rows) for (const [k, v] of Object.entries(r.ambient ?? {})) {
   const c = (amb[k] ??= { ms: 0, n: 0, peak: 0 }); c.ms += v.ms ?? 0; c.n++; c.peak = Math.max(c.peak, v.peak ?? 0);
 }
 const ae = Object.entries(amb).sort((a, b) => b[1].ms / b[1].n - a[1].ms / a[1].n).slice(0, 8);
-if (ae.length) console.log(`\nambient (ms/frame per effect, peak; a `_` row is the mount's own part, per tick for _env/_gloom/_director): ${ae.map(([k, v]) => `${k} ${(v.ms / v.n).toFixed(2)} (${v.peak.toFixed(1)})`).join("; ")}${ambMode.size ? `  — mode ${[...ambMode].join(", ")}` : ""}`);
+if (ae.length) console.log(`\nambient (ms/frame per effect, peak; a \`_\` row is the mount's own part, per tick for _env/_gloom/_director): ${ae.map(([k, v]) => `${k} ${(v.ms / v.n).toFixed(2)} (${v.peak.toFixed(1)})`).join("; ")}${ambMode.size ? `  — mode ${[...ambMode].join(", ")}` : ""}`);
 const gpuRe = rows.map((r) => r.gpu?.reason).filter(Boolean);
 if (gpuRe.length) console.log("gpu timer: " + [...new Set(gpuRe)].join(", "));

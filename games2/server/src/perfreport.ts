@@ -82,6 +82,10 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* 64, not 40: 36 sections arrive since `preUpdate`/`hooks` (2026-09-19),
      * and `flat` keeps the first N in silence — the headroom is the point. */
     sections: flat(body.sections, 64, 100000),
+    /* EACH SECTION'S WORST OCCURRENCE THIS WINDOW, with its start and end on
+     * performance.now() (2026-09-23, his ask: "how long, and the real-time
+     * clock when it started/completed"; `counts.clock0` converts). */
+    sectionsPeak: nested(body.sectionsPeak, 64, 4),
     // Heap growth by section, KB per frame (client perfAlloc) — who allocates.
     allocBy: flat(body.allocBy ?? {}, 12, 100000),
     /* 48, not 40: `flat` keeps the FIRST N entries and silently drops the rest,
@@ -89,7 +93,9 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * counter at the end". 34 arrive today; the headroom is the point. */
     /* 96, not 64: 58 keys arrived on 2026-09-12 and the GPU counters, the gap
      * ledger and the rAF lag add fourteen — the cap-one-short trap, again. */
-    counts: flat(body.counts, 96, 1e9),
+    /* 128, not 96 (2026-09-23): the gap ledger's peaks and starts and the
+     * three clocks (`clock0`, `winT0`, `winT1`) ride beside the 80-odd keys. */
+    counts: flat(body.counts, 128, 1e13), // 1e13: `clock0` is an epoch in ms
     /* THE WINDOW'S CONTEXT (2026-09-11): which page load (`runId`) and which
      * window of it, seconds since load, zone and hops with the last hop's
      * join/state/bound ms, what the player was doing (moving/running share,
@@ -166,7 +172,7 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* 48 x 16, not 24 x 6: 24 effects plus the `_` mode row already lost one
      * to the cap, and the mount's own parts (`_env`, `_gloom`, `_director`,
      * `_frame`) and the field's counters (`_zone`) ride here now. */
-    ambient: nested(body.ambient, 48, 16),
+    ambient: nested(body.ambient, 48, 24),
     // The compose worker (client/src/composeclient.ts), state and miss reasons included.
     compose: mixed(body.compose, 16),
     // THE ZONE CROSSINGS of this window (WorldScene's `zone` block): hops and
@@ -227,7 +233,7 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * named here, which has now silently eaten `lights`, `zoomMean`/`jumps`,
      * and this. Add the field here in the same commit that emits it. */
     worst: Array.isArray(body.worst)
-      ? (body.worst as unknown[]).slice(0, 24).map((w) => str(JSON.stringify(w), 2400))
+      ? (body.worst as unknown[]).slice(0, 24).map((w) => str(JSON.stringify(w), 8000))
       : null,
     /* WHAT A GROUND PAINT ACTUALLY DID — cells resolved, blits issued,
      * boundaries composed and the ms they took. THE FOURTH FIELD THIS
@@ -259,7 +265,7 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * `loafBy` names the invokers over 5 ms ("WebSocket.onmessage",
      * "Worker.onmessage", "TimerHandler:setTimeout", "FrameRequestCallback")
      * with count and ms — a record of records, so `nested`. */
-    loaf: mixed(body.loaf, 12),
+    loaf: mixed(body.loaf, 14),
     loafBy: nested(body.loafBy, 12, 4),
     /* The long-frame census BY GROUP (ground, occ, light, sim, render, gl,
      * busy, idle, other), idle and busy in the argmax — the one that turns

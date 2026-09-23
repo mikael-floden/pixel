@@ -204,7 +204,9 @@ export function foamFeature(): AmbientFeature {
   let sprites = 0; // live sprites, kept as a count so the frame never walks the map to ask
   let drawnG = -1;
   let drawnOn = false;
-  const stats = { resolves: 0, bakes: 0, bakeMs: 0, texMs: 0, texPeak: 0, installs: 0, scanMs: 0, scanPeak: 0, scans: 0, scanTotal: 0, picks: 0, coast: 0, crest: 0, dropped: 0 };
+  // The peaks carry WHEN (performance.now() at the start; the beacon's
+  // `counts.clock0` makes it a clock reading) as well as how long.
+  const stats = { resolves: 0, bakes: 0, bakeMs: 0, bakePeak: 0, bakePeakT0: 0, texMs: 0, texPeak: 0, texPeakT0: 0, installs: 0, scanMs: 0, scanPeak: 0, scanPeakT0: 0, scans: 0, scanTotal: 0, picks: 0, coast: 0, crest: 0, dropped: 0 };
   const sheetLRU: string[] = [];
   const atlases: Atlas[] = [];
   /** One row's bytes, reused: a fresh ImageData per install was 148 KB of
@@ -483,7 +485,12 @@ export function foamFeature(): AmbientFeature {
       out = bakeCell({ sx: x.sx, sy: x.sy, water, top, edges, visible: visibleAt(x), waterRGB: rgb });
     }
     stats.bakes++;
-    stats.bakeMs += performance.now() - t0;
+    const bm = performance.now() - t0;
+    stats.bakeMs += bm;
+    if (bm > stats.bakePeak) {
+      stats.bakePeak = bm;
+      stats.bakePeakT0 = t0;
+    }
     return out;
   };
 
@@ -529,7 +536,10 @@ export function foamFeature(): AmbientFeature {
       }
       const tm = performance.now() - t1;
       stats.texMs += tm;
-      if (tm > stats.texPeak) stats.texPeak = tm;
+      if (tm > stats.texPeak) {
+        stats.texPeak = tm;
+        stats.texPeakT0 = t1;
+      }
     }
   };
 
@@ -663,7 +673,10 @@ export function foamFeature(): AmbientFeature {
     stats.scanMs = performance.now() - t0;
     stats.scans++;
     stats.scanTotal += stats.scanMs;
-    if (stats.scanMs > stats.scanPeak) stats.scanPeak = stats.scanMs;
+    if (stats.scanMs > stats.scanPeak) {
+      stats.scanPeak = stats.scanMs;
+      stats.scanPeakT0 = t0;
+    }
   };
 
   /** Walk the queue nearest-first under a time budget: resolve, decide, bake,

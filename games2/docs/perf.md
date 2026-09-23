@@ -1072,6 +1072,32 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   as their sections and again inside `gapIdle` (hooks 831.9 inside gapIdle
   833.7 on one frame; every "idle" census was the ambient mount). Fixed
   2026-09-23; a run before that date reads `gapIdle` as `hooks + idle`.
+  WHEN, NOT ONLY HOW LONG (Beacon 3, 2026-09-23, his ask: "add two
+  datapoints at every metric: how long it took, and the real-time clock in
+  ms when it started/completed — so we know how long we waited before this
+  code started vs the old code ended"): every timed region reports its
+  bounds to the frame's timeline (`client/src/perftimeline.ts`) — the
+  sections (`pe`/`pAdd` pass inclusive bounds; self time still goes to the
+  accumulator), the gap ledger's handlers (`gap:net`, `gap:compose`, ...),
+  the ambient mount's bills (`amb:mist`, `amb:_env`, through
+  `window.__mlPerfMark`), `gapBusy`/`gapIdle` themselves. A worst record
+  carries it as `tl` = [name, start, end] relative to `pt0` (the frame's
+  start on performance.now()), with `wall` = the frame's start in epoch ms;
+  `perf-read.mjs` prints each timeline on the real-time clock with the WAIT
+  from the latest end before a region to its start — the time nothing timed
+  was running. Per window: `sectionsPeak` (each section's worst occurrence
+  with its `t0`/`t1`), the ambient rows' `t0`/`t1` (their peak's bounds),
+  `foam:parts` peaks with their starts, `counts.gap<Name>PeakMs/PeakT0`,
+  `loaf.worstMs/worstT0`, the record's `loaf.t0/t1`; and the clocks:
+  `counts.clock0` (epoch minus performance.now() — add it to any timestamp
+  in the report for the real-time clock) and `counts.winT0/winT1`. Caps:
+  worst record 8000 chars, counts 128 keys at 1e13, ambient rows 24
+  fields, `sectionsPeak` 64x4. A mark is one boolean when the recorder is
+  off; a frame makes ~70 and is capped at 256 (`tlDropped` counts the
+  rest); a record keeps the frame's skeleton (`preUpdate`, `hooks`,
+  `render`, `depthSort`, `gapBusy`, `gapIdle` — the waits between them are
+  the question) and the longest of the rest over 0.05 ms, 80 in all (a
+  headless frame's 256 marks made an 8.5 KB record and the cap cut it).
   `longGroup` is the census read by GROUP (`sectionGroup`: ground, occ,
   light, sim, render, gl, engine, hooks, busy, idle, other) with idle and
   busy IN the argmax — beside `longWhy` (wait | task | gc, 2026-09-13), which

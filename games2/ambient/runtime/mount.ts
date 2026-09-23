@@ -133,13 +133,23 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       }
     };
     let lastTick = 0;
-    const cost = new Map<string, { sum: number; n: number; peak: number }>();
-    const bill = (name: string, ms: number) => {
-      const c = cost.get(name) ?? { sum: 0, n: 0, peak: 0 };
+    const cost = new Map<string, { sum: number; n: number; peak: number; t0: number; t1: number }>();
+    /* A bill carries WHEN as well as how long (games-perf, his ask 2026-09-23):
+     * the peak keeps its own start and end, and every bill is a mark on the
+     * beacon's frame timeline (`window.__mlPerfMark`, absent = no beacon). */
+    const mark = (window as unknown as { __mlPerfMark?: (name: string, t0: number, t1: number) => void }).__mlPerfMark;
+    const bill = (name: string, ms: number, t0: number) => {
+      const c = cost.get(name) ?? { sum: 0, n: 0, peak: 0, t0: 0, t1: 0 };
       c.sum += ms;
       c.n++;
-      if (ms > c.peak) c.peak = ms;
+      if (ms > c.peak) {
+        c.peak = ms;
+        c.t0 = t0;
+        c.t1 = t0 + ms;
+      }
       cost.set(name, c);
+      const m = mark ?? (window as unknown as { __mlPerfMark?: (name: string, t0: number, t1: number) => void }).__mlPerfMark;
+      if (m) m(name, t0, t0 + ms);
     };
     /* THE TICK'S TWO HALVES NEVER SHARE A FRAME (games-perf 2026-09-23, his
      * run: the mount's UPDATE listener was 8.5-17.9 ms a frame and the
@@ -172,8 +182,8 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         const t2 = performance.now();
         // The mount's own parts ride the cost meter as `_` rows — mean per
         // OCCURRENCE (a tick here), so `cost()` answers where the tick goes.
-        bill("_env", t1 - t0);
-        bill("_gloom", t2 - t1);
+        bill("_env", t1 - t0, t0);
+        bill("_gloom", t2 - t1, t1);
         directorDue = true;
       } else if (directorDue) {
         directorDue = false;
@@ -181,7 +191,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         safe(() => director.tick(ctx.env, ctx));
         // The HudBar rebuilds on re-joins; keep the demo button alive/fresh.
         safe(() => demoButton.ensure());
-        bill("_director", performance.now() - t0);
+        bill("_director", performance.now() - t0, t0);
       }
       ctx.view = cam.worldView;
       ctx.zoom = cam.zoom;
@@ -192,7 +202,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       ctx.env.indoor = readIndoor();
       ctx.outdoor = outdoor.step(dt, ctx.env.indoor);
       safe(() => zoneLines.step(ctx.view, ctx.zoom));
-      bill("_frame", performance.now() - tf); // the per-frame remainder: the indoor read, the gain, the overlay
+      bill("_frame", performance.now() - tf, tf); // the per-frame remainder: the indoor read, the gain, the overlay
       if (!inited) {
         inited = true;
         for (const f of features) safe(() => f.init(ctx));
@@ -206,7 +216,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       for (const f of features) {
         const t0 = performance.now();
         safe(() => f.update(ctx, dt));
-        bill(f.name, performance.now() - t0);
+        bill(f.name, performance.now() - t0, t0);
       }
     };
     scene.events.on(Phaser.Scenes.Events.UPDATE, onUpdate);
@@ -257,9 +267,9 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       /** Per-feature update cost since the last reset: mean and worst ms of a
        * frame. `cost(true)` reads and resets, which is how an A/B is taken. */
       cost: (reset = false) => {
-        const out: Record<string, { ms: number; peak: number; frames: number }> = {};
+        const out: Record<string, { ms: number; peak: number; frames: number; t0: number; t1: number }> = {};
         for (const [k, c] of cost)
-          out[k] = { ms: +(c.sum / Math.max(1, c.n)).toFixed(4), peak: +c.peak.toFixed(3), frames: c.n };
+          out[k] = { ms: +(c.sum / Math.max(1, c.n)).toFixed(4), peak: +c.peak.toFixed(3), frames: c.n, t0: +c.t0.toFixed(1), t1: +c.t1.toFixed(1) };
         if (reset) cost.clear();
         return out;
       },

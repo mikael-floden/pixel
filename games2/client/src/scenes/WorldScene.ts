@@ -150,6 +150,7 @@ import { installGpuTimer, gpuTimerTake } from "../gputimer";
 import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary, sectionGroup } from "../perfextra";
 import { installLoaf, loafTake, loafAt } from "../perfloaf";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
+import { tlArm, tlMark, tlTake, tlCompact, clock0, type Mark } from "../perftimeline";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -2214,7 +2215,9 @@ export class WorldScene extends Phaser.Scene {
   private perfBeaconFrom: { x: number; y: number } | null = null;
   private perfHideHooked = false;
   private perfStack: { t0: number; child: number; m0: number; childMem: number }[] = [];
-  private perfAcc: Record<string, { n: number; ms: number; max: number }> = {};
+  private perfAcc: Record<string, { n: number; ms: number; max: number; t0: number; t1: number }> = {};
+  /** performance.now() when the current beacon window opened (`counts.winT0`). */
+  private perfWinT0 = 0;
   /* HEAP GROWTH BY SECTION — who allocates. His beacon reads 25-53 MB/s of
    * heap growth and 33-68 collections a second, and the collector's time is
    * exactly the `gapBusy` nobody could name (1.8-2.4 ms a frame steady, 45-63
@@ -2350,6 +2353,13 @@ export class WorldScene extends Phaser.Scene {
       gap: gapFrameTake(),
       _t0: now - total,
       _t1: now,
+      /* WHEN THE FRAME BEGAN, on both clocks: `pt0` is performance.now() (the
+       * clock every timestamp in this report uses), `wall` the epoch ms. The
+       * frame's timeline rides raw as `_tl` and is compacted for the records
+       * the report keeps (`tl`: [name, start, end] relative to `pt0`). */
+      pt0: +(now - total).toFixed(1),
+      wall: Math.round(Date.now() - total),
+      _tl: tlTake(),
       burst: this.hitchBurst,
       q: this.groundSliceQ.length,
       dl: this.children.length,
@@ -2567,6 +2577,15 @@ export class WorldScene extends Phaser.Scene {
       if (this.perfStillPosted >= PERF_STILL_MAX) return;
       this.perfStillPosted++;
     }
+    /* EACH SECTION'S WORST OCCURRENCE THIS WINDOW, WITH WHEN IT RAN — read
+     * before the snapshot resets the accumulator; and the window's own bounds
+     * on performance.now(), which with `clock0` place every timestamp in this
+     * report on the real-time clock. */
+    const sectionsPeak: Record<string, { ms: number; t0: number; t1: number }> = {};
+    for (const [k, a] of Object.entries(this.perfAcc)) if (a.max > 0) sectionsPeak[k] = { ms: +a.max.toFixed(1), t0: +a.t0.toFixed(1), t1: +a.t1.toFixed(1) };
+    const winT0 = this.perfWinT0;
+    const winT1 = performance.now();
+    this.perfWinT0 = winT1;
     let snap: Record<string, unknown> | null = null;
     try {
       snap = (window as unknown as { __ml?: { perf?: () => Record<string, unknown> } }).__ml?.perf?.() ?? null;
@@ -2720,6 +2739,7 @@ export class WorldScene extends Phaser.Scene {
       beacon: null as Record<string, unknown> | null, // stamped by perfPost: what became of the posts before this one
       frames: { ...(snap.frames as Record<string, number>), ...hist, rafHz: rafHz(frameList) },
       sections: perFrame,
+      sectionsPeak,
       // HEAP GROWTH BY SECTION, KB PER FRAME (the dozen largest) — the
       // allocators behind `heap.grewMbPerSec` and the collector's `gapBusy`.
       allocBy: Object.fromEntries(
@@ -2782,6 +2802,12 @@ export class WorldScene extends Phaser.Scene {
       input: { avail: this.perfInputAvail, ...inputSummary(this.perfInputEntries) },
       gpu: gpuTimerTake(),
       counts: {
+        /* THE CLOCKS (2026-09-23): `clock0` = epoch ms minus performance.now(),
+         * so any timestamp in this report + clock0 is the real-time clock;
+         * `winT0`/`winT1` bound the window on performance.now(). */
+        clock0: clock0(),
+        winT0: +winT0.toFixed(1),
+        winT1: +winT1.toFixed(1),
         ...(snap.counts as Record<string, number>),
         litOccMean,
         monActMean,
@@ -3110,6 +3136,16 @@ export class WorldScene extends Phaser.Scene {
             if (t0 !== undefined && t1 !== undefined) {
               const l = loafAt(t0, t1);
               if (l) o.loaf = l;
+            }
+            /* THE TIMELINE, compacted here for the 24 records that leave:
+             * every region that ran in or ahead of the frame as [name, start,
+             * end] relative to `pt0`, sorted by start — the wait between one
+             * region's end and the next one's start is what he asked to see. */
+            const raw = o._tl as { marks: Mark[]; dropped: number } | undefined;
+            delete o._tl;
+            if (raw && t0 !== undefined) {
+              o.tl = tlCompact(raw.marks, t0);
+              if (raw.dropped) o.tlDropped = raw.dropped;
             }
             return o;
           });
@@ -3459,7 +3495,8 @@ export class WorldScene extends Phaser.Scene {
     if (!this.perfOn) return;
     const f = this.perfStack.pop();
     if (f === undefined) return;
-    const d = performance.now() - f.t0;
+    const t1 = performance.now();
+    const d = t1 - f.t0;
     // SECTIONS ARE SELF TIME, SO THEY SUM TO THE FRAME. `rebuildScenery` is
     // called from inside `rebuildOccluders`, so an inclusive timer billed the
     // same milliseconds twice and `other` — the frame minus every section, the
@@ -3472,7 +3509,7 @@ export class WorldScene extends Phaser.Scene {
     // are unaffected: the stack is empty there.)
     const parent = this.perfStack[this.perfStack.length - 1];
     if (parent) parent.child += d;
-    this.pAdd(key, d - f.child);
+    this.pAdd(key, d - f.child, t1, f.t0);
     if (this.perfMem) {
       const grew = this.perfMem.usedJSHeapSize - f.m0;
       if (parent) parent.childMem += grew;
@@ -3483,12 +3520,24 @@ export class WorldScene extends Phaser.Scene {
    *  span that is NOT a stack pair — the renderer, which starts and ends on
    *  game events rather than inside `update` — reports through the same path
    *  and lands in the same `sections` table. */
-  private pAdd(key: string, d: number): void {
-    const a = (this.perfAcc[key] ??= { n: 0, ms: 0, max: 0 });
+  /* WHEN AS WELL AS HOW LONG (maintainer 2026-09-23): a span's bounds go to
+   * the frame's timeline (perftimeline.ts; the worst records carry it as
+   * `tl`) and the window's peak keeps its own start and end
+   * (`sectionsPeak`). `t1` defaults to now, `t0` to `t1 - d`; a stack pair
+   * passes its inclusive bounds while `d` stays its self time. */
+  private pAdd(key: string, d: number, t1 = performance.now(), t0 = t1 - d): void {
+    const a = (this.perfAcc[key] ??= { n: 0, ms: 0, max: 0, t0: 0, t1: 0 });
     a.n++;
     a.ms += d;
-    if (d > a.max) a.max = d;
-    if (this.hitchOn) this.hitchSec[key] = (this.hitchSec[key] ?? 0) + d;
+    if (d > a.max) {
+      a.max = d;
+      a.t0 = t0;
+      a.t1 = t1;
+    }
+    if (this.hitchOn) {
+      this.hitchSec[key] = (this.hitchSec[key] ?? 0) + d;
+      tlMark(key, t0, t1);
+    }
   }
 
   /* THE RENDERER, WHICH IS MOST OF THE FRAME AND WAS NONE OF THE REPORT.
@@ -3517,6 +3566,9 @@ export class WorldScene extends Phaser.Scene {
     installGlFrameProbe(this.renderer, { ps: () => this.ps(), pe: (k) => this.pe(k) });
     installLoaf(() => this.perfOn); // the browser's own split of every long frame (perfloaf.ts)
     gapArm(() => this.perfOn); // our between-frames handlers bill themselves (gapledger.ts)
+    tlArm(() => this.hitchOn); // every timed region's start and end, per frame (perftimeline.ts)
+    // The ambient mount's bills mark the same timeline, prefixed (`amb:mist`, `amb:_env`).
+    (window as unknown as { __mlPerfMark?: (name: string, t0: number, t1: number) => void }).__mlPerfMark = (name, t0, t1) => tlMark(`amb:${name}`, t0, t1);
     installGpuTimer(
       this.game.renderer as unknown as { gl?: WebGLRenderingContext },
       this.game.events,
@@ -3572,7 +3624,8 @@ export class WorldScene extends Phaser.Scene {
       const t0 = performance.now();
       if (!this.perfStepAt) this.perfStepAt = t0;
       const r = emit(event, ...args);
-      this.pAdd(event === PRE ? "preUpdate" : "hooks", performance.now() - t0);
+      const t1 = performance.now();
+      this.pAdd(event === PRE ? "preUpdate" : "hooks", t1 - t0, t1, t0);
       return r;
     };
   }
@@ -3651,7 +3704,7 @@ export class WorldScene extends Phaser.Scene {
    *  Absent when the ambient runtime is not mounted. */
   private perfAmbientTake(): Record<string, Record<string, number | string>> | undefined {
     type Probe = {
-      cost?: (reset?: boolean) => Record<string, { ms: number; peak: number; frames: number }>;
+      cost?: (reset?: boolean) => Record<string, { ms: number; peak: number; frames: number; t0?: number; t1?: number }>;
       director?: () => { active?: string | null };
       zone?: () => Record<string, number | boolean>;
       debug?: (name: string) => unknown;
@@ -3661,7 +3714,8 @@ export class WorldScene extends Phaser.Scene {
     const out: Record<string, Record<string, number | string>> = {};
     try {
       const cost = amb.cost?.(true) ?? {};
-      for (const [k, v] of Object.entries(cost)) if (v.frames) out[k] = { ms: v.ms, peak: v.peak, frames: v.frames };
+      // `t0`/`t1`: the peak occurrence's bounds on performance.now().
+      for (const [k, v] of Object.entries(cost)) if (v.frames) out[k] = { ms: v.ms, peak: v.peak, frames: v.frames, t0: v.t0 ?? 0, t1: v.t1 ?? 0 };
       out._ = { mode: this.perfAmbientMode(), active: String(amb.director?.()?.active ?? "") };
       /* THE ZONE FIELD'S OWN COUNTERS (zonefield.ts `debug()`), the window's
        * deltas: picks (the ground picker on a memo miss), resolves (a cell
@@ -3678,7 +3732,8 @@ export class WorldScene extends Phaser.Scene {
         const prev = this.perfFoamPrev;
         const d = (k: string) => (typeof foam[k] === "number" ? (foam[k] as number) - (prev[k] ?? 0) : 0);
         const n = (k: string) => (typeof foam[k] === "number" ? (foam[k] as number) : 0);
-        out["foam:parts"] = { resolves: d("resolves"), bakes: d("bakes"), bakeMs: +d("bakeMs").toFixed(1), installs: d("installs"), texMs: +d("texMs").toFixed(1), scans: d("scans"), scanMs: +d("scanTotal").toFixed(1), picks: d("picks"), live: n("live"), sprites: n("sprites"), queued: n("queued") };
+        // The peaks are the session's (foam keeps no window), each with its start.
+        out["foam:parts"] = { resolves: d("resolves"), bakes: d("bakes"), bakeMs: +d("bakeMs").toFixed(1), installs: d("installs"), texMs: +d("texMs").toFixed(1), scans: d("scans"), scanMs: +d("scanTotal").toFixed(1), picks: d("picks"), live: n("live"), sprites: n("sprites"), queued: n("queued"), bakePeak: +n("bakePeak").toFixed(2), bakePeakT0: +n("bakePeakT0").toFixed(1), texPeak: +n("texPeak").toFixed(2), texPeakT0: +n("texPeakT0").toFixed(1), scanPeak: +n("scanPeak").toFixed(2), scanPeakT0: +n("scanPeakT0").toFixed(1) };
         for (const k of ["resolves", "bakes", "bakeMs", "installs", "texMs", "scans", "scanTotal", "picks"]) prev[k] = n(k);
       }
       const z = amb.zone?.();
@@ -3734,7 +3789,8 @@ export class WorldScene extends Phaser.Scene {
        * (0.57-1.71 ms/frame on his phone). Subtract exactly what the sort
        * accumulated inside this bracket. */
       const sortMs = (this.perfAcc["depthSort"]?.ms ?? 0) - sort0;
-      this.pAdd("render", performance.now() - t0 - sortMs);
+      const t1 = performance.now();
+      this.pAdd("render", t1 - t0 - sortMs, t1, t0);
       if (this.perfMem) this.aAdd("render", this.perfMem.usedJSHeapSize - m0);
       t0 = 0;
       this.perfDrawCount = this.perfFlushes;
@@ -3862,7 +3918,8 @@ export class WorldScene extends Phaser.Scene {
       if (!this.perfOn) return orig();
       const t = performance.now();
       orig();
-      this.pAdd("depthSort", performance.now() - t);
+      const t1 = performance.now();
+      this.pAdd("depthSort", t1 - t, t1, t);
     };
   }
 
@@ -13627,8 +13684,8 @@ export class WorldScene extends Phaser.Scene {
       if (this.perfPostAt) {
         const msg = this.perfMsgAt || stepAt; // never fired: treat the whole gap as busy
         const cut = Math.min(msg, stepAt);
-        this.pAdd("gapBusy", Math.max(0, cut - this.perfPostAt));
-        this.pAdd("gapIdle", Math.max(0, stepAt - Math.max(cut, this.perfPostAt)));
+        this.pAdd("gapBusy", Math.max(0, cut - this.perfPostAt), cut, this.perfPostAt);
+        this.pAdd("gapIdle", Math.max(0, stepAt - Math.max(cut, this.perfPostAt)), stepAt, Math.max(cut, this.perfPostAt));
         this.hitchIdle0 = Math.min(stepAt, Math.max(cut, this.perfPostAt)); // what closeHitchFrame calls idle, on the clock
         this.perfPostAt = 0;
       }

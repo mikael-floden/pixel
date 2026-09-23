@@ -101,7 +101,12 @@ const MUST = {
   // The ambient block (2026-09-23): the mode row, the mount's own parts and the
   // zone field's counters — 30 rows against a cap that used to be 24.
   ambient: ["_", "_env", "_gloom", "_director", "_frame", "_zone", "foam:parts"],
+  // WHEN as well as how long (2026-09-23, his ask): each section's peak with
+  // its bounds, and the clocks that place every timestamp on the real-time clock.
+  sectionsPeak: ["render", "hooks"],
 };
+MUST.counts.push("clock0", "winT0", "winT1");
+MUST.loaf.push("worstMs", "worstT0");
 let ok = 0;
 for (const [block, keys] of Object.entries(MUST)) {
   const sent = captured[block];
@@ -132,6 +137,32 @@ else {
   if (parsed) for (const k of ["total", "sec", "mode", "at", "z", "t", "dl", "occ", "gl", "lag"]) if (parsed[k] === undefined) fail(`worst[0].${k} did not reach the file`);
   // The GPU counters ride inside `gl` (glframe.ts): draws and the fill estimate.
   if (parsed?.gl) for (const k of ["dc", "vt", "fill"]) if (parsed.gl[k] === undefined) fail(`worst[0].gl.${k} did not reach the file`);
+  // THE TIMELINE AND THE CLOCKS (2026-09-23): the frame's start on both clocks
+  // and every region that ran in it as [name, start, end], relative to that start.
+  if (parsed) {
+    for (const k of ["pt0", "wall"]) if (typeof parsed[k] !== "number") fail(`worst[0].${k} (the frame's start on the ${k === "wall" ? "real-time" : "performance"} clock) did not reach the file`);
+    if (!Array.isArray(parsed.tl) || !parsed.tl.length) fail(`worst[0].tl (the frame's timeline) is missing or empty: ${JSON.stringify(parsed.tl)}`);
+    else {
+      const bad = parsed.tl.find((m) => !Array.isArray(m) || m.length !== 3 || typeof m[0] !== "string" || typeof m[1] !== "number" || typeof m[2] !== "number");
+      if (bad) fail(`worst[0].tl has a malformed mark: ${JSON.stringify(bad)}`);
+    }
+    if (parsed.loaf && typeof parsed.loaf.t0 !== "number") fail("worst[0].loaf lost its bounds (t0/t1)");
+  }
+  // ACROSS THE 24 RECORDS the marking paths must all show: the step's
+  // listener brackets, the render, a gap-ledger handler and an ambient bill
+  // (the mount's marks through __mlPerfMark). Not on worst[0] alone — in this
+  // harness that is the boot frame, closed before the mount and the step
+  // wrapper exist.
+  const names = new Set();
+  for (const w of rep.worst ?? []) { try { for (const m of JSON.parse(w).tl ?? []) names.add(m[0]); } catch { /* reported above */ } }
+  for (const k of ["preUpdate", "hooks", "render", "depthSort"]) if (!names.has(k)) fail(`no worst record's timeline names \`${k}\`: ${[...names].join(", ")}`);
+  if (![...names].some((n) => n.startsWith("gap:"))) fail(`no worst record's timeline carries a gap-ledger mark (gap:net, gap:compose, ...): ${[...names].join(", ")}`);
+  if (![...names].some((n) => n.startsWith("amb:"))) fail(`no worst record's timeline carries an ambient mark (the mount's bills through __mlPerfMark): ${[...names].join(", ")}`);
+  // The ambient rows carry their peak's bounds.
+  const amb = rep.ambient ?? {};
+  const row = Object.entries(amb).find(([k, v]) => !k.startsWith("_") && k !== "foam:parts" && v && typeof v.peak === "number");
+  if (row && typeof row[1].t0 !== "number") fail(`ambient.${row[0]} has no peak start t0: ${JSON.stringify(row[1])}`);
+  if (amb["foam:parts"] && typeof amb["foam:parts"].scanPeakT0 !== "number") fail(`ambient["foam:parts"] lost its peak fields: ${JSON.stringify(amb["foam:parts"])}`);
   // The longest record must survive the cap whole, not only the first.
   for (const w of rep.worst ?? []) { try { JSON.parse(w); } catch { fail(`a worst record is truncated JSON (${w.length} chars) — raise the cap`); break; } }
 }

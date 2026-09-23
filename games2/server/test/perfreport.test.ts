@@ -419,3 +419,49 @@ test("the ambient block holds every effect, the mode row, the mount's own parts 
   assert.equal(r.ambient._zone.resolves, 9100);
   assert.equal(r.ambient._zone.ruled, 1, "nine counters: the inner cap must hold them all");
 });
+
+/* WHEN AS WELL AS HOW LONG (2026-09-23, his ask): the section peaks with their
+ * bounds, the clocks in counts, the LoAF window's worst with its start, the
+ * ambient rows' peak bounds and foam's six peak fields, and a worst record
+ * that carries a full timeline — none may be cut by a cap. */
+test("each section's peak with its start and end reaches the file, and the counts' clocks", () => {
+  const sectionsPeak: Record<string, { ms: number; t0: number; t1: number }> = {};
+  for (let i = 0; i < 60; i++) sectionsPeak[`s${i}`] = { ms: 1.5, t0: 100000 + i, t1: 100001.5 + i };
+  sectionsPeak.hooks = { ms: 648.6, t0: 1234567.8, t1: 1235216.4 };
+  const counts: Record<string, number> = {};
+  for (let i = 0; i < 110; i++) counts[`k${i}`] = i;
+  counts.clock0 = 1790193547327;
+  counts.winT0 = 900000.1;
+  counts.winT1 = 930000.4;
+  counts.gapNetPeakMs = 68.2;
+  counts.gapNetPeakT0 = 912345.6;
+  const r = perfReport({ sectionsPeak, counts }, AT) as Record<string, any>;
+  assert.equal(Object.keys(r.sectionsPeak).length, 61);
+  assert.deepEqual(r.sectionsPeak.hooks, { ms: 648.6, t0: 1234567.8, t1: 1235216.4 });
+  assert.equal(r.counts.clock0, 1790193547327, "an epoch in ms is over the old 1e9 value cap and must pass");
+  assert.equal(r.counts.winT1, 930000.4);
+  assert.equal(r.counts.gapNetPeakT0, 912345.6);
+  assert.ok(Object.keys(r.counts).length >= 115);
+});
+
+test("the LoAF window's worst frame and its start, the ambient peaks' bounds and foam's peak fields reach the file", () => {
+  const loaf = { state: "on", n: 20, ms: 3161, pre: 1615.2, raf: 1535.3, dom: 10.7, block: 900, forced: 2.5, worstMs: 786.9, worstT0: 1234500.5 };
+  const ambient: Record<string, Record<string, number | string>> = {
+    mist: { ms: 0.4, peak: 12.5, frames: 1800, t0: 1234000.1, t1: 1234012.6 },
+    "foam:parts": { resolves: 10, bakes: 10, bakeMs: 3, installs: 10, texMs: 1.2, scans: 60, scanMs: 200, picks: 300, live: 40, sprites: 40, queued: 0, bakePeak: 0.9, bakePeakT0: 1234001, texPeak: 2.1, texPeakT0: 1234002, scanPeak: 4.4, scanPeakT0: 1234003 },
+  };
+  const r = perfReport({ loaf, ambient }, AT) as Record<string, any>;
+  assert.equal(r.loaf.worstT0, 1234500.5);
+  assert.equal(r.ambient.mist.t1, 1234012.6);
+  assert.equal(r.ambient["foam:parts"].scanPeakT0, 1234003, "17 fields: the inner cap must hold them all");
+});
+
+test("a worst record carrying a 120-region timeline arrives whole", () => {
+  const tl = Array.from({ length: 120 }, (_, i) => [`section${i % 12}`, +(i * 0.7).toFixed(1), +(i * 0.7 + 0.5).toFixed(1)]);
+  const rec = { total: 786.9, sec: { hooks: 648.6 }, mode: "scroll", at: "222.5,198.1", z: 2.75, t: 12000, dl: 3000, occ: 400, gl: { dc: 700, vt: 4200, fill: 3.1 }, lag: 2.1, pt0: 1234567.8, wall: 1790193547327, tl, loaf: { t0: 1234560.1, t1: 1235350.2, pre: 3.1, raf: 780.2, dom: 3.6, by: [["FrameRequestCallback", 779]] } };
+  const r = perfReport({ worst: [rec] }, AT) as Record<string, any>;
+  const back = JSON.parse(r.worst[0]);
+  assert.equal(back.tl.length, 120);
+  assert.equal(back.wall, 1790193547327);
+  assert.equal(back.loaf.t1, 1235350.2);
+});

@@ -116,7 +116,7 @@ export function loafSplit(e: LoafRaw): LoafSplit {
 
 let state: "off" | "on" | "unsupported" | "error" = "off";
 let installed = false;
-const win = { n: 0, ms: 0, pre: 0, raf: 0, dom: 0, block: 0, forced: 0 };
+const win = { n: 0, ms: 0, pre: 0, raf: 0, dom: 0, block: 0, forced: 0, worstMs: 0, worstT0: 0 };
 const winBy: Record<string, { n: number; ms: number }> = {};
 const ring: LoafSplit[] = [];
 
@@ -128,6 +128,10 @@ function record(s: LoafSplit): void {
   win.dom += s.dom;
   win.block += s.block;
   win.forced += s.forced;
+  if (s.ms > win.worstMs) {
+    win.worstMs = s.ms;
+    win.worstT0 = s.t0;
+  }
   for (const [k, ms] of s.by) {
     const b = (winBy[k] ??= { n: 0, ms: 0 });
     b.n++;
@@ -160,27 +164,30 @@ export function installLoaf(armed: () => boolean): void {
   }
 }
 
-/** The window's totals and the invokers, longest first; resets the window. */
+/** The window's totals, its longest frame with WHEN it started (performance
+ *  .now(); `counts.clock0` makes it a clock reading) and the invokers,
+ *  longest first; resets the window. */
 export function loafTake(): {
-  loaf: { state: string; n: number; ms: number; pre: number; raf: number; dom: number; block: number; forced: number };
+  loaf: { state: string; n: number; ms: number; pre: number; raf: number; dom: number; block: number; forced: number; worstMs: number; worstT0: number };
   loafBy: Record<string, { n: number; ms: number }>;
 } {
   const r1 = (v: number) => +v.toFixed(1);
-  const loaf = { state, n: win.n, ms: r1(win.ms), pre: r1(win.pre), raf: r1(win.raf), dom: r1(win.dom), block: r1(win.block), forced: r1(win.forced) };
+  const loaf = { state, n: win.n, ms: r1(win.ms), pre: r1(win.pre), raf: r1(win.raf), dom: r1(win.dom), block: r1(win.block), forced: r1(win.forced), worstMs: r1(win.worstMs), worstT0: r1(win.worstT0) };
   const loafBy = Object.fromEntries(
     Object.entries(winBy)
       .sort((a, b) => b[1].ms - a[1].ms)
       .slice(0, 10)
       .map(([k, v]) => [k, { n: v.n, ms: r1(v.ms) }]),
   );
-  win.n = win.ms = win.pre = win.raf = win.dom = win.block = win.forced = 0;
+  win.n = win.ms = win.pre = win.raf = win.dom = win.block = win.forced = win.worstMs = win.worstT0 = 0;
   for (const k in winBy) delete winBy[k];
   return { loaf, loafBy };
 }
 
 /** The recorded long frame that overlaps [t0, t1] most (performance.now()
- *  clock, the same the entries use), compact — or null when none does. */
-export function loafAt(t0: number, t1: number): { pre: number; raf: number; dom: number; by: [string, number][] } | null {
+ *  clock, the same the entries use), compact, with its own bounds — or null
+ *  when none does. */
+export function loafAt(t0: number, t1: number): { t0: number; t1: number; pre: number; raf: number; dom: number; by: [string, number][] } | null {
   let best: LoafSplit | null = null;
   let bestOv = 0;
   for (const s of ring) {
@@ -190,7 +197,7 @@ export function loafAt(t0: number, t1: number): { pre: number; raf: number; dom:
       best = s;
     }
   }
-  return best ? { pre: best.pre, raf: best.raf, dom: best.dom, by: best.by.slice(0, 3) } : null;
+  return best ? { t0: +best.t0.toFixed(1), t1: +best.t1.toFixed(1), pre: best.pre, raf: best.raf, dom: best.dom, by: best.by.slice(0, 3) } : null;
 }
 
 /** The observer's state, for a probe. */

@@ -385,7 +385,10 @@ them; folder isolation beats DRY here).
   tick), `_director` (the per-episode coverage, per tick — on the frame AFTER
   the tick, never the same one) and `_frame` (the indoor read, the outdoor
   gain, the overlay's step, per frame). The beacon carries them, and the
-  field's counters, as the `ambient` block. (games-perf 2026-09-23: his run
+  field's counters, as the `ambient` block; each row's `t0`/`t1` are the
+  bounds of its peak on performance.now(), and every bill is a mark on the
+  beacon's frame timeline through `window.__mlPerfMark` (absent = no
+  beacon), so a worst frame's `tl` names the effects inside `hooks`. (games-perf 2026-09-23: his run
   put the scene's UPDATE listener at 8.5-17.9 ms a frame, the dominant
   section of 1,705 long frames, while this meter held ~5.5 of it — the tick
   was the unmetered rest. THE FIELD'S RULES SINCE THEN: a cell asks only the
