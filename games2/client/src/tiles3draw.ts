@@ -2132,8 +2132,8 @@ export class Tiles3Textures {
   /** A deck's slab: its courses, then THE SURFACE IT WEARS.
    *
    *  The courses are plain x-over-x art and compose nothing. The surface is the
-   *  maintainer's base tile set — `deckCell` resolves ONE set and ONE member for
-   *  the whole slab — pasted TOP FACE ONLY over the cap at the slab's own level,
+   *  maintainer's base tile set — `deckCell` resolves ONE set for the whole slab
+   *  and a member per cell — pasted TOP FACE ONLY over the cap at the slab's own level,
    *  which is render3's `top_face_only(plate_img(..., anchor=danch))` at
    *  `col_y(x, y, dl)` to the row.
    *

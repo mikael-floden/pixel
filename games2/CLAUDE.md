@@ -88,10 +88,10 @@ push, no PRs unless asked.
 - Every field art goes through `plate()`; a conformed plate fills every
   silhouette texel, holes inside a column included.
 - A liquid diamond wears `sheets.libTop`, not a formula.
-- A BUILT slab (roof, bridge) wears ONE surface, anchored at the deck's first
-  cell; a CAVE LID is ground and picks per cell, matching the terrain beside
-  it. Both are drawn (ground pass AND occluder copy); `thickness` is the
-  contract (0 = top only); `side` is the body; the doorway crops the cap.
+- A BUILT slab (roof, bridge) wears ONE set (the deck's first cell's) and a
+  member PER CELL; a CAVE LID asks at its own cell, matching the terrain
+  beside it. Both are drawn (ground pass AND occluder copy); `thickness` is
+  the contract (0 = top only); `side` is the body; the doorway crops the cap.
 - A wall face wears its region's least-seamed measured set, never one tile
   (`wallregion.ts`; `wallsets.json` regenerates from today's approved walls).
 - The fade has three dials and a switch; THE DEFAULTS ARE HIS (reach 4,

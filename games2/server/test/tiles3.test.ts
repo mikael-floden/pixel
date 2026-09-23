@@ -982,88 +982,90 @@ test("the entire 394x394 world resolves with no fallback and no missing art", { 
 });
 
 // ============================================================================
-// A BUILT SLAB IS ONE SURFACE; A CAVE LID IS GROUND
+// A BUILT SLAB IS ONE SET AND A MEMBER PER CELL; A CAVE LID IS GROUND
 // ============================================================================
 //
 // render3.py — "a roof, a bridge and a cave lid are GROUND too: the slab top
 // wears the maintainer's base tile set like any other surface." For a ROOF or a
-// BRIDGE that is ONE set and ONE member for the whole of it, anchored at the
-// deck's own first cell: the room map must not reach a roof, and a 24-cell
-// region border must not cut one either (a house 15 cells wide straddles one).
-// The maintainer's rule, reported through the maps2 agent with his wording: the
-// whole house including wall tops is ONE roof; the rooms are something you
-// discover when you walk in.
+// BRIDGE that is ONE SET for the whole of it, asked at the deck's own first
+// cell — the room map must not reach a roof, and a 24-cell region border must
+// not cut one either (a house 15 cells wide straddles one) — and a MEMBER PER
+// CELL, so the roof varies like the ground while the wall ring and the rooms,
+// all deck cells, draw from the one pool. The maintainer's rule, 2026-09-05
+// through the maps2 agent: the whole house including wall tops is ONE roof; the
+// rooms are something you discover when you walk in. And 2026-09-23, on the
+// one-member roof that had been the answer to it: "You don't have to render one
+// single tile to achieve me not being able to see the rooms from the outside."
 //
 // A CAVE LID IS THE OTHER HALF OF THE SAME SENTENCE. It is the ground you walk
-// on, so it asks at its OWN cell and comes out as the set and member the ground
-// pass picks there — you find a cave at its mouth, never from the dirt under
-// your feet. Anchored, the_game's one mud cave is SEVEN decks, and the lid read
-// as seven flat one-member patches against mud that varies cell to cell
-// (maintainer 2026-09-11, standing on it: "I can see there is a cave under me
-// because the dark_mud ground looks different and doesn't seem to use the 'base
-// tile set' the mud around it uses").
+// on, so it asks for its set at its OWN cell too and comes out as the set and
+// member the ground pass picks there — you find a cave at its mouth, never from
+// the dirt under your feet. Anchored, the_game's one mud cave is SEVEN decks,
+// and the lid read as seven flat one-member patches against mud that varies
+// cell to cell (maintainer 2026-09-11, standing on it: "I can see there is a
+// cave under me because the dark_mud ground looks different and doesn't seem to
+// use the 'base tile set' the mud around it uses").
 //
-// THE CONTROL IS FREE AND EXACT: a ONE-CELL deck's anchor is that cell, so
-// resolving each cell as its own synthetic deck reproduces the per-cell answer
-// byte for byte — `plateAt` never reads the deck's cell set (only `cap`/`lo` do,
-// through `frontCovered`), so `surface` is faithful. That arm is what keeps the
-// roof assertion honest: it must find the patchwork the anchor removes, or the
-// assertion could pass on a world with nothing to get wrong.
-test("a built slab is ONE surface; a cave lid is the ground's own pick", { skip: !!MISSING.length }, () => {
+// THE CONTROLS ARE FREE AND EXACT. `plateAt(dg, <anchor's region>, x, y)` IS
+// the rule, so every deck cell is checked against it. What the anchor overrides
+// is the pick at each cell's OWN region (what a field cell gets), so the set arm
+// must find a slab whose own-region picks disagree, or it could pass on a world
+// with nothing to get wrong; and the variety arm must find slabs wearing more
+// than one member, or the per-cell rule could regress to one tile repeated and
+// nothing would say so.
+test("a built slab is ONE set and a member per cell; a cave lid is the ground's own pick", { skip: !!MISSING.length }, () => {
   const { t, pitch } = build();
   const view: World3View = viewFromDoc(doc);
   const frame = isoFrame({ x0: 0, y0: 0, x1: view.width, y1: view.height }, view.maxLevel, pitch);
-  const art = (dk: any, di: number, x: number, y: number) =>
-    `${t.deckCell(view, frame, dk, di, x, y).surface?.path}`;
   const built = (dk: any) => dk.kind !== "cave";
+  // render3's `danch`: min by (x + y), tie on x.
+  const anchorOf = (dk: any) =>
+    dk.cells.reduce((b: any, c: any) => (c.x + c.y < b.x + b.y || (c.x + c.y === b.x + b.y && c.x < b.x) ? c : b));
 
-  const spread: string[] = [];
-  let perCellSpread = 0;
+  const offRule: string[] = [];
+  const twoSets: string[] = [];
   let builtSlabs = 0;
+  let varied = 0; // slabs wearing more than one member
+  let straddling = 0; // slabs whose cells' OWN regions would pick more than one set
+  let cellsReset = 0; // deck cells whose own-region pick differs from the slab's
   view.decks.forEach((dk: any, di: number) => {
     if (!built(dk)) return;
     builtSlabs++;
-    const mine = new Set<string>();
+    const dg = dk.ground || "grey_stone";
+    const a = anchorOf(dk);
+    const region = regionAt(dg, a.x, a.y);
     const sets = new Set<number>();
     const members = new Set<number>();
-    const control = new Set<string>();
+    const ownSets = new Set<number>();
     for (const c of dk.cells) {
       const d = t.deckCell(view, frame, dk, di, c.x, c.y);
-      mine.add(`${d.surface?.path}`);
       sets.add(d.surfaceSet);
       members.add(d.surfaceMember);
-      control.add(art({ ...dk, cells: [c] }, di, c.x, c.y));
+      // THE RULE, cell for cell: the anchor's region, this cell's member.
+      const want = t.plateAt(dg, region, c.x, c.y);
+      if (d.surfaceSet !== want.set.id || d.surfaceMember !== want.memberIndex || d.surface?.path !== want.art.path)
+        offRule.push(
+          `deck ${di} (${dg}) at ${c.x},${c.y}: ${d.surfaceSet}/${d.surfaceMember} ${d.surface?.path} ` +
+            `vs rule ${want.set.id}/${want.memberIndex} ${want.art.path}`,
+        );
+      // THE CONTROL: what this cell's OWN region would have picked.
+      const own = t.plateAt(dg, regionAt(dg, c.x, c.y), c.x, c.y);
+      ownSets.add(own.set.id);
+      if (own.set.id !== d.surfaceSet || own.memberIndex !== d.surfaceMember) cellsReset++;
     }
-    if (mine.size > 1 || sets.size > 1 || members.size > 1)
-      spread.push(
-        `deck ${di} (${dk.kind ?? "-"}, ${dk.ground}, ${dk.cells.length} cells): ` +
-          `${sets.size} sets, ${members.size} members, ${mine.size} arts`,
-      );
-    if (control.size > 1) perCellSpread++;
+    if (sets.size > 1) twoSets.push(`deck ${di} (${dk.kind}, ${dg}, ${dk.cells.length} cells): sets ${[...sets].join(",")}`);
+    if (members.size > 1) varied++;
+    if (ownSets.size > 1) straddling++;
   });
-  assert.deepEqual(spread, [], "a built slab wearing more than one surface");
+  assert.deepEqual(offRule.slice(0, 8), [], `${offRule.length} deck cells off the rule`);
+  assert.deepEqual(twoSets, [], "a built slab wearing more than one set");
 
-  // NON-VACUOUS: the per-cell rule really does shatter this world's roofs
-  // (measured 22 of 28 decks on the_game, the 180-cell inn across 8 arts).
-  assert.ok(
-    perCellSpread >= 8,
-    `the control found only ${perCellSpread} patchwork roofs — the gate cannot see the bug it exists for`,
-  );
-
-  // AND A BUILT SLAB IS ANCHORED AT ITS OWN FIRST CELL — render3's min by
-  // (x + y), tie x.
-  for (let di = 0; di < view.decks.length; di++) {
-    const dk: any = view.decks[di];
-    if (!built(dk)) continue;
-    const a = dk.cells.reduce((b: any, c: any) =>
-      c.x + c.y < b.x + b.y || (c.x + c.y === b.x + b.y && c.x < b.x) ? c : b,
-    );
-    assert.equal(
-      art(dk, di, dk.cells[0].x, dk.cells[0].y),
-      art({ ...dk, cells: [a] }, di, a.x, a.y),
-      `deck ${di} is not anchored at its own first cell (${a.x},${a.y})`,
-    );
-  }
+  // NON-VACUOUS, both ways. The anchor really overrides something...
+  assert.ok(straddling >= 1, "no built slab straddles a region border — the set arm cannot see the bug it exists for");
+  assert.ok(cellsReset >= 1, "no deck cell's own-region pick differs from the slab's — the anchor changed nothing");
+  // ...and the member really varies: one tile repeated over a whole roof is the
+  // look this rule replaced (2026-09-23), so most slabs must wear several.
+  assert.ok(varied >= 8, `only ${varied} of ${builtSlabs} built slabs wear more than one member — the roofs are flat again`);
 
   // THE LID IS THE GROUND PASS, CELL FOR CELL. `plateFor` is the exact call
   // `surface()` makes for a field cell, so this asserts the thing he can see:
@@ -1101,8 +1103,8 @@ test("a built slab is ONE surface; a cave lid is the ground's own pick", { skip:
   );
 
   console.log(
-    `tiles3 decks: ${builtSlabs} built slabs, each ONE set and ONE member ` +
-      `(${perCellSpread} were patchwork under the per-cell rule); ` +
+    `tiles3 decks: ${builtSlabs} built slabs, each ONE set (${straddling} straddle a region border, ` +
+      `${cellsReset} cells re-set by the anchor), ${varied} wearing more than one member; ` +
       `${lidCells} cave-lid cells wearing ${lidMembers.size} of the ground's own picks`,
   );
 });

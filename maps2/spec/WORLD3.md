@@ -156,12 +156,15 @@ walls included, painted onto its roof and readable from outside (maintainer
 2026-09-05, drawing it on a render of mine: *"It's as if you define the rooms
 both for the roof and indoor. A player see the entire house including walls
 tops as the house roof and expect the entire house to have the same
-tiling"*). A surface that is one thing to the player asks ONE question: a deck
-anchors at its own up-screen-most cell, so a roof is one set and one member
-from eave to eave, whatever is under it — which also stops a 24-cell region
-border from cutting a roof in two (a 15-cell-wide house straddles one).
-`render3.plate_img(..., anchor=)`; **games2 consumes `rooms` for the same
-purpose and needs the same rule** — raised on their board.
+tiling"*). A surface that is one thing to the player asks ONE question for its
+SET: a deck's set is picked at its own up-screen-most cell, so a roof is one set
+from eave to eave whatever is under it — which also stops a 24-cell region
+border from cutting a roof in two (a 15-cell-wide house straddles one) — and
+its MEMBER per cell with `anchor=(x, y)`, so the room map is never consulted
+and the roof varies like the ground (maintainer 2026-09-23: one tile repeated
+over the whole roof was never the goal, only that the rooms stay invisible).
+`render3.plate_img(region, ..., anchor=(x, y))`; games2's `deckCell` draws the
+same split and the parity fixture holds the two to it.
 
 ### terrain — a step has to be visible, and the player must never see the fix
 

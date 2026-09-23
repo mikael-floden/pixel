@@ -105,20 +105,6 @@ assert _top_only_drops, (
     "maps2 has fixed the mirror, so DELETE this patch and generate against render3 itself")
 R3._member_rejected = _contract_member_rejected
 
-# ...AND THE DETAIL RATE IS HIS DIAL, WHICH IS 1 IN 100. render3 still carries
-# the old "once in a while" fallback of 1/56 for a ground the wiki publishes no
-# rate for (and it publishes none today: there is no live/tuning/tile_details.
-# json). The maintainer set 100 and the game took it on 2026-09-13 (5a18dae08,
-# "Two dials take his numbers: hidden outline 20%, ground details 1 in 100"), so
-# render3 sprinkles nearly twice as many: 49 details against the game's 25 in
-# the_bay alone. Same treatment as the rejection rule above — generate against
-# his number, assert the patch still matters, delete it when maps2 catches up.
-GAME_DETAIL_FREQ = 1 / 100      # games2/client/src/tiles3.ts DETAIL_FREQ
-assert R3.DETAIL_FREQ != GAME_DETAIL_FREQ, (
-    "render3.DETAIL_FREQ is the game's dial now — DELETE this patch")
-R3.DETAIL_FREQ = GAME_DETAIL_FREQ
-
-
 # ...AND THE SURVIVORS OF A WALL SET ARE STILL A SET (maintainer 2026-09-13,
 # fog off, five walls: "the insanely good looking wall that used different
 # tiles has stopped working. Now it's the same everywhere"). The tiles agent's
@@ -246,7 +232,7 @@ FORMAT = {
              "v = the draw that picks from the rating-weighted pool, t = "
              "paths[] index",
         "d": "the detail: i = index into invariants.detail_pools[g], t = "
-             "paths[] index. Rolled at DETAIL_FREQ 1/56 on every surface that "
+             "paths[] index. Rolled at render3's DETAIL_FREQ on every surface that "
              "is not a fade or a boundary.",
         "b": "index into this window's boundaries[] — the composed Wang tile "
              "IS this cell's surface, drawn INSTEAD of the plate",
@@ -397,10 +383,12 @@ def storey_ident(ground, x=None, y=None, z=None):
     return TILE_IX[key]
 
 
-def plate_ident(ground, region, x, y):
+def plate_ident(ground, region, x, y, anchor=None):
     """plate_img()'s own cache key IS the resolution — reverse-look it up by
-    object identity rather than replaying the key8/conform rules here."""
-    img = R3.plate_img(ground, region, x, y)
+    object identity rather than replaying the key8/conform rules here.
+    `anchor` goes through untouched: a deck passes (x, y) so the room map is
+    never consulted, exactly as render3's deck pass does."""
+    img = R3.plate_img(ground, region, x, y, anchor=anchor)
     ck = next(k for k, v in R3._tile_cache.items() if v is img)
     if ck in PLATE_IX:
         return PLATE_IX[ck], img
@@ -763,9 +751,9 @@ def build_window(doc, w):
                 return R3.composed_boundary(sa, sb, idx, ia, ib, x, y)
         return surface_rec(gr, x, y, zl, rec)
 
-    # 2) decks. MIRROR of render3's 2b): a built slab's own anchor picks ONE
-    # set and ONE member for the whole of it, a cave lid asks per cell like the
-    # ground it is; `lo = dl - thickness` (0 = the cap
+    # 2) decks. MIRROR of render3's 2b): a built slab's own anchor picks its
+    # ONE set and each cell its member, a cave lid asks for both at its own
+    # cell like the ground it is; `lo = dl - thickness` (0 = the cap
     # only); the body is the deck's `side` when it names one (roof-over-side
     # is the THIN look), else a cave lid's rock, else same-over-same; the cap
     # is x-over-y whenever the body differs from the top OR the front is open,
@@ -835,19 +823,20 @@ def build_window(doc, w):
                     "sx": bx_of(x, y), "st": st}
             # A roof, a bridge and a cave lid are GROUND too: the slab top wears
             # the maintainer's base tile set, top face only. A BUILT slab takes
-            # ONE set and ONE member for the whole of it at the deck's own
-            # anchor; a CAVE LID asks at its own cell, so it comes out as the
-            # same set and member the ground pass picks there.
+            # ONE set at the deck's own anchor and a MEMBER PER CELL, with
+            # anchor=(x, y) so the room map is never consulted; a CAVE LID asks
+            # for its set at its own cell too, so it comes out as the same set
+            # and member the ground pass picks there.
             sanch = (x, y) if dk.get("kind") == "cave" else danch
             rid = f"{dg}@{sanch[0] // 24},{sanch[1] // 24}"
             if rid not in rid_ix:
                 rid_ix[rid] = len(rids)
                 rids.append(rid)
             chosen = pick_set(dg, rid)
-            mi, _m = pick_member_ix(chosen, sanch[0], sanch[1])
-            sim = R3.plate_img(dg, rid, x, y, anchor=sanch)
+            mi, _m = pick_member_ix(chosen, x, y)
+            sim = R3.plate_img(dg, rid, x, y, anchor=(x, y))
             ck = next(k for k, v in R3._tile_cache.items() if v is sim)
-            pix, _im = plate_ident(dg, rid, sanch[0], sanch[1])
+            pix, _im = plate_ident(dg, rid, x, y, anchor=(x, y))
             drec["srf_set"], drec["srf_mi"], drec["srf_p"] = chosen["id"], mi, pix
             drec["srf_anchor"] = list(sanch)
             t = R3.top_face_only(sim)

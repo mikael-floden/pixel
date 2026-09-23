@@ -3282,6 +3282,7 @@ export class Tiles3 {
    *  neighbours are both deck is covered, so it needs no face and no thickness. */
   /** THE DECK'S OWN ANCHOR — its up-screen-most cell, min by (x + y) with x as
    *  the tie-break, which is render3's `min(cells, key=(c[0] + c[1], c[0]))`.
+   *  It picks the slab's ONE SET (the region asked at); members are per cell.
    *  A pure function of the deck's own cells, so the streaming per-cell path and
    *  `resolveWindow` cannot disagree about it; cached per deck object because
    *  `deckCell` runs once per deck cell per window. */
@@ -3379,49 +3380,48 @@ export class Tiles3 {
         ...(f === dl && capH !== cap.h ? { h: capH } : {}),
       });
     const mid = this.storeyTile(body, x, y, lo < dl ? lo : dl);
-    /* A BUILT SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE ROOF
-     * OR BRIDGE, anchored at its own first cell, exactly as render3 does it
-     * (a cave lid is the exception, see below) (render3.py
-     * :1387 "a roof, a bridge and a cave lid are GROUND too ... ONE set and ONE
-     * member for the WHOLE slab, anchored at the deck's own first cell").
+    /* A BUILT SLAB IS ONE SET AND A MEMBER PER CELL — the roof varies like the
+     * ground around it and still reads as ONE roof from outside. The SET is
+     * asked at the deck's own first cell (`deckAnchor`), so a 24-cell region
+     * border cannot cut a roof in two (the_game's houses are up to 15 cells
+     * wide and straddle one); the MEMBER is asked at the cell, through
+     * `plateAt` and never `plateFor`, so the room map cannot reach it — a roof
+     * whose ground is a ROOM FLOOR would otherwise take each cell's own room
+     * anchor and print the floor plan, inner walls included, on the rooftop.
+     * The wall ring and the room cells are all deck cells drawing from the one
+     * pool, so the rooms stay something you discover when you walk in
+     * (maintainer 2026-09-05: "the entire house including walls tops as the
+     * house roof ... the same tiling/base type set"; 2026-09-23, on the
+     * one-member roof this replaced: "You don't have to render one single tile
+     * to achieve me not being able to see the rooms from the outside").
+     * render3.py's deck pass draws the same split (`anchor=(x, y)` with the
+     * anchor's region).
      *
-     * This was `plateFor(dg, x, y)` — per cell — so a slab picked its member
-     * from each cell's own coordinates and its SET from each cell's own region.
-     * Two consequences, both visible from outside the building: a 24-cell region
-     * border cuts a roof in two (the_game's houses are up to 15 cells wide and
-     * straddle one), and a roof whose ground is the ROOM FLOOR takes each cell's
-     * own room anchor, painting the floor plan — inner walls included — onto the
-     * roof. The maintainer's rule, via the maps2 agent who found it: the whole
-     * house including wall tops is ONE roof; the rooms are something you
-     * discover when you walk in.
-     *
-     * (the_game's 11 roof decks are `brown_paving_stone`, so the room map does
-     * not reach THEM — it is the per-cell member and the region border that show
-     * there. One bridge deck is `parquet_floor` and would take the room path.
-     * The anchor fixes both, which is why it is the anchor and not a special
-     * case for rooms.) */
-    /* A CAVE LID IS NOT A BUILT SLAB — IT IS THE GROUND YOU WALK ON, and it
-     * asks at its OWN cell, which is the same set and the same member the
-     * ground pass picks there. The cave is something you find at the mouth,
-     * never from the dirt under your feet: anchored, the_game's one mud cave is
-     * SEVEN decks, so the lid read as seven flat one-member patches against mud
-     * that varies cell to cell (maintainer 2026-09-11, standing on it: "I can
-     * see there is a cave under me because the dark_mud ground looks different
-     * and doesn't seem to use the 'base tile set' the mud around it uses").
-     * STILL `plateAt`, NOT `plateFor`: the room map must not reach a slab from
-     * either direction — the room under a lid is the cave itself, and its floor
-     * plan belongs underground. */
-    const [dax, day] = dk.kind === "cave" ? [x, y] : this.deckAnchor(dk);
-    const p = this.plateAt(dg, regionAt(dg, dax, day), x, y, dax, day);
+     * REJECTED: one member for the whole slab (2026-09-05 to 09-23). It hid the
+     * rooms and the region cut, and it also flattened every roof to one tile
+     * repeated — the look the maintainer had already refused on the cave lid. */
+    /* A CAVE LID IS NOT A BUILT SLAB — IT IS THE GROUND YOU WALK ON, so its
+     * SET comes from its OWN cell's region too, which makes it the same set and
+     * the same member the ground pass picks there. The cave is something you
+     * find at the mouth, never from the dirt under your feet: anchored,
+     * the_game's one mud cave is SEVEN decks, so the lid read as seven flat
+     * one-member patches against mud that varies cell to cell (maintainer
+     * 2026-09-11, standing on it: "I can see there is a cave under me because
+     * the dark_mud ground looks different and doesn't seem to use the 'base
+     * tile set' the mud around it uses"). STILL `plateAt`, NOT `plateFor`: the
+     * room under a lid is the cave itself, and its floor plan belongs
+     * underground. */
+    const [sax, say] = dk.kind === "cave" ? [x, y] : this.deckAnchor(dk);
+    const p = this.plateAt(dg, regionAt(dg, sax, say), x, y);
     /* THE SLAB'S TRANSITION (Tiles3Data.deckBoundary): a corner lattice of the
      * slab's OWN level. A cell carrying a deck at this level votes that deck's
      * ground, base ground within a storey votes its own (the lid meeting the
      * rock it is cut into), anything else votes the slab's — the same
      * `boundaryAt` the ground uses, so the masks, the seam, the three-ground
      * fold and the nature-wall foot are all the ground's. The slab's own half
-     * is whatever `p` above resolved — the roof's one anchored member, or a
-     * lid's own-cell pick — so the transition tile and the slab around it are
-     * always the same picture. */
+     * is whatever `p` above resolved — this cell's own member of the slab's
+     * one set — so the transition tile and the slab around it are always the
+     * same picture. */
     let boundary: Tiles3Boundary | undefined;
     if (this.data.deckBoundary) {
       const W = view.width;

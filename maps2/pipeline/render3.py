@@ -474,9 +474,12 @@ def plate_img(ground, region, x, y, anchor=None):
     # through this function with the cell's own coordinates, so every roof
     # cell over a room took THAT ROOM's anchor and every wall cell took its
     # own - which paints the plan of the house onto its roof, inner walls
-    # included. A caller that owns a whole surface passes its `anchor` and
-    # gets ONE set and ONE member for all of it; the deck pass does, so a roof
-    # is one tiling from eave to eave whatever is under it.
+    # included. A caller that owns a whole surface passes the surface's own
+    # `region` and `anchor=(x, y)`: the set is the surface's, the member the
+    # cell's, and the room map is never consulted. The deck pass does, so a
+    # roof is ONE set from eave to eave whatever is under it and varies cell
+    # to cell like the ground (maintainer 2026-09-23: one tile repeated is not
+    # the goal).
     if anchor is None:
         ra = ROOM_ANCHOR.get((x, y))
         anchor = ra[0] if ra and ra[1] == ground else None
@@ -1445,7 +1448,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                        key=lambda c: (c[0] + c[1], c[1]))
         cellset = {(c[0], c[1]) for c in cells}
         # THE SLAB'S OWN ANCHOR: its up-screen-most cell, deterministic in the
-        # deck's own cell list, so the whole surface asks one question.
+        # deck's own cell list, so the whole surface asks for ONE set.
         danch = min(cells, key=lambda c: (c[0] + c[1], c[0])) if cells else (0, 0)
         for (x, y) in cells:
             if x0 <= x < x1 and y0 <= y < y1:
@@ -1545,25 +1548,27 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # a roof, a bridge and a cave lid are GROUND too: the slab top
             # wears the maintainer's base tile set like any other surface.
-            # A BUILT slab is ONE set and ONE member for the whole of it,
-            # anchored at the deck's own first cell. See plate_img: the room
-            # map must not reach a roof, and a 24-cell region border must not
-            # cut one either (a house 15 cells wide straddles one).
-            # A CAVE LID IS THE EXCEPTION - it is the ground you walk on, so it
-            # asks at its OWN cell and comes out as the same set and member the
-            # ground pass picks there. Anchored, the_game's one mud cave is
-            # seven decks and the lid read as seven flat one-member patches
-            # against mud that varies cell to cell (maintainer 2026-09-11,
-            # standing on it: "I can see there is a cave under me because the
-            # dark_mud ground looks different and doesn't seem to use the
-            # 'base tile set' the mud around it uses"). The `anchor=` argument
-            # still goes in, so the room map never reaches a slab either way -
-            # the room under a lid is the cave, and its floor plan belongs
-            # underground.
+            # A BUILT slab is ONE set and a MEMBER PER CELL. The set is asked at
+            # the deck's own first cell, so a 24-cell region border cannot cut a
+            # roof in two (a house 15 cells wide straddles one), and anchor=(x, y)
+            # - never None - keeps the room map out of it (see plate_img); the
+            # member is the cell's own, so the roof varies like the ground and the
+            # wall ring and the rooms draw from one pool (maintainer 2026-09-23:
+            # "You don't have to render one single tile to achieve me not being
+            # able to see the rooms from the outside"). REJECTED, 2026-09-05..23:
+            # one member for the whole slab - it flattened every roof to one tile
+            # repeated, the look he had already refused on the cave lid.
+            # A CAVE LID asks for its SET at its own cell too - it is the ground
+            # you walk on and comes out as the same set and member the ground pass
+            # picks there. Anchored, the_game's one mud cave is seven decks and the
+            # lid read as seven flat one-member patches against mud that varies
+            # cell to cell (maintainer 2026-09-11, standing on it: "I can see
+            # there is a cave under me because the dark_mud ground looks different
+            # and doesn't seem to use the 'base tile set' the mud around it uses").
             sanch = (x, y) if dk.get("kind") == "cave" else danch
             img.alpha_composite(
                 top_face_only(plate_img(dg, f"{dg}@{sanch[0] // 24},{sanch[1] // 24}",
-                                        x, y, anchor=sanch)),
+                                        x, y, anchor=(x, y))),
                 (bx, col_y(x, y, dl)))
 
 

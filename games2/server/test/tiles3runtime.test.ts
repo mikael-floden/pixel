@@ -278,7 +278,7 @@ test("a deck slab composes transitions at its own level, with its own anchored m
   assert.equal(edge.boundary!.topOnly, true, "top face only — the slab's own courses are its wall");
   assert.equal(edge.boundary!.sy, edge.surfaceY, "pasted where the surface is");
   assert.equal(edge.boundary!.sx, edge.sx);
-  // The slab's own half is the ONE member the whole slab wears.
+  // The slab's own half is the member THIS cell wears of the slab's one set.
   const own = edge.boundary!.a === "black_rock" ? [edge.boundary!.setA, edge.boundary!.memberA] : [edge.boundary!.setB, edge.boundary!.memberB];
   assert.deepEqual(own, [edge.surfaceSet, edge.surfaceMember], "the transition's slab half is the slab's member");
   // A cell inside the slab, away from any seam, stays pure; the grass 6 levels
