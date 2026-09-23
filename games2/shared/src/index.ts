@@ -4878,7 +4878,14 @@ export function walkHeading(
             const lw = screenToWorldVector(lh.ax, lh.ay);
             const side = ux * lw.y - uy * lw.x < -1e-9 ? -1 : 1;
             const retreat = wall && !wall.prop ? escapeRetreatCells(grid, x, y, ux, uy, opts.fromElev) : ESCAPE_RETREAT_CELLS;
-            const esc = playerOwns ? null : startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, side, !(wall && !wall.prop), retreat);
+            // The leaned side first; with nothing there, the other side's fan
+            // (a stick pushed dead straight leans nowhere, and the way round
+            // may lie on either hand).
+            const propMode = !(wall && !wall.prop);
+            const esc = playerOwns
+              ? null
+              : startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, side, propMode, retreat) ??
+                startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, -side, propMode, retreat);
             /* A DOOR IN REACH IS A ROUTE TOO, AND THE SHORTER WALK WINS. Sliding
              * sideways to a doorway makes no progress along the ask, so this
              * window fired while the door-finder (rule 1) was already steering
@@ -5111,6 +5118,17 @@ function planRoundTheStick(
   if (l < 1e-6) return null;
   const ux = v.x / l;
   const uy = v.y / l;
+  // THE ESCAPE'S PROOF NAMES THE STEP, LIKE THE TAP'S (maintainer 2026-09-23,
+  // 331.6,236.6 held screen-left into the woodpile at the spawn house's door:
+  // "The player doesn't navigate around the obstacle"). The woodpile is a
+  // thin hitbox that closes no cell, so every route's first leg ran west
+  // straight through it, the walked proof stood on that leg, and the retry
+  // took out the cell the body stood IN — its own — which changes no route:
+  // the same first step planned again, the same stand, null for every goal.
+  // The tap's proof already avoids the STEP (from-cell to to-cell, findPath's
+  // `avoidSteps`, his fence of 2026-09-20); the escape now runs the same
+  // proof, so the second plan leaves the body's cell another way.
+  const avoidSteps = new Set<number>();
   for (const [rot0, dist] of goals) {
     if (escape && Math.abs(rot0) >= Math.PI / 2 - 1e-9) continue;
     const rot = rot0 * (side < 0 ? -1 : 1); // the fan's mirror: the leaned-to side first
@@ -5125,7 +5143,7 @@ function planRoundTheStick(
      * player asked to travel, whatever goal it is aimed at. */
     const cx = escape ? x + ux * dist * CELL_WU : gx;
     const cy = escape ? y + uy * dist * CELL_WU : gy;
-    for (let attempt = 0; attempt < (escape && avoid ? 2 : 1); attempt++) {
+    for (let attempt = 0; attempt < (escape && avoid ? ESCAPE_PROVE_TRIES : 1); attempt++) {
       const trip = startTrip(
         grid, x, y, gx, gy,
         false, nowMs, fromElev, undefined, maxNodes, undefined, avoid,
@@ -5144,6 +5162,7 @@ function planRoundTheStick(
         escape
           ? { ux, uy, min: ESCAPE_MIN_PROGRESS_CELLS, max: dist + 0.5, lateral: corridorCells, back: retreat + 1 }
           : undefined,
+        avoidSteps,
       );
       if (!trip || !withinCorridor(trip, x, y, cx, cy, corridorCells)) break;
       if (escape) {
@@ -5152,13 +5171,17 @@ function planRoundTheStick(
           (underRoof && !roofExitAhead(grid, trip, x, y, ux, uy, fromElev))
         )
           break;
-        if (avoid) {
-          const stood = routeStallCell(grid, trip, x, y, nowMs, fromElev);
-          if (stood >= 0) {
-            avoid.add(stood);
-            continue; // the same goal once more, round the cell the body stood at
-          }
-        }
+        // The same goal once more, round the step and the cell the walk
+        // stood at (proveRoute names both, as for a tap).
+        if (avoid && !proveRoute(grid, trip, x, y, nowMs, fromElev, avoid, avoidSteps)) continue;
+        // A ROUTE THAT GOES TOO FAR BACK IS THIS GOAL'S ANSWER, NOT THE FAN'S
+        // (maintainer 2026-09-23, the cart at 325.8,241.6 held screen-left):
+        // the leaned-side goal's route went two tiles back, the planner
+        // returned it as its one answer, walkHeading refused it, and the
+        // straight goals — whose route round the cart went one tile back —
+        // were never asked. The retreat rule is judged here, per goal, so the
+        // fan goes on to the next.
+        if (routeRetreat(trip, x, y, ux, uy) > retreat) break;
       }
       return trip;
     }
@@ -5166,6 +5189,9 @@ function planRoundTheStick(
   return null;
 }
 
+/** Re-plans an escape's proof may spend before the goal is given up: the
+ *  first names the step the walk stood on, the second the way round it. */
+const ESCAPE_PROVE_TRIES = 3;
 /** How long an escape route is walked before it is taken: 60 frames of a
  *  phone's 33 ms, 2 s at a walk — 140 wu, four cells, past the first waypoint
  *  and its turn. Longer proves more of the route at a cost paid on every

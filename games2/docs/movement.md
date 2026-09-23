@@ -213,7 +213,16 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   second) — names the STEP it was taking (its cell into the waypoint's: a
   rail on the boundary closes no cell) and the CELL its leading edge stood
   in when that is another cell; the planner keeps out of both (`avoid`,
-  `avoidSteps`) and plans once more. THE FOLLOWER'S STALL IS THE SAME RULE
+  `avoidSteps`) and plans once more. THE ESCAPE'S PROOF IS THE SAME PROOF
+  (2026-09-23): `planRoundTheStick` runs `proveRoute` with both sets,
+  `ESCAPE_PROVE_TRIES` 3 — it named only the CELL before, the body's own,
+  which changes no route, and the woodpile at the spawn house's door (a
+  rail-thin hitbox that closes no cell) stood him for good ("The player
+  doesn't navigate around the obstacle"); and the retreat rule is judged PER
+  GOAL inside the fan, then the other side's fan, so the cart's leaned-side
+  route two tiles back no longer ends the search with the straight goal's
+  one-tile route unasked (navtap's woodpile-and-cart arm: held left 8 s, the
+  body rounds both and is nine cells on). THE FOLLOWER'S STALL IS THE SAME RULE
   (`stepAutopilot`): 1.5 s without progress or the dither names the step
   and the cell, the trip carries the sets, and the re-plan is walked before
   it is taken too, `ROUTE_REPLANS` 3 in all (one re-plan of the same route

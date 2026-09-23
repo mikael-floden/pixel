@@ -432,3 +432,22 @@ test("on the_game: holding the stick up from 218.9,250.7 climbs the mountain ins
   assert.ok(res.maxLevel >= 20, `15 s of holding up reaches the high ground (got level ${res.maxLevel}, ended ${res.x.toFixed(1)},${res.y.toFixed(1)} L${res.elev})`);
   assert.ok(res.worstStall < 4000, `never stands in a notch for long (worst ${(res.worstStall / 1000).toFixed(1)} s)`);
 });
+
+// THE ESCAPE'S PROOF NAMES THE STEP, AND THE FAN JUDGES RETREAT PER GOAL
+// (maintainer 2026-09-23, 331.6,236.6 at the spawn house's door held
+// screen-left: "The player doesn't navigate around the obstacle"). The
+// woodpile is a thin hitbox that closes no cell: every route's first leg ran
+// through it, the proof stood, and the retry took out the body's own cell —
+// null for every goal, 8 s standing. Then the cart at 325.8,241.6: the
+// leaned-side route went two tiles back and was the planner's one answer, so
+// the straight goal's one-tile route was never asked. Held left for 8 s the
+// body now rounds both and is nine cells on.
+test("on the_game: held screen-left at the spawn house door, the body rounds the woodpile and the cart", { skip: MISSING.length ? `not checked out: ${MISSING.join(", ")}` : false }, async (t) => {
+  const { g, ww, wh, scenery } = await realGrid();
+  if (!placed(scenery, "woodpiles/woodpile_008", 331.38, 236.43) || !placed(scenery, "carts/cart_004", 325.85, 243.34))
+    return t.skip("the scenery at the spawn house door has been re-placed");
+  const res = holdStick(g, ww, wh, 331.6, 236.6, 0, -1, 0, 8);
+  // Measured before: stood at 331.6,236.65 for the whole run. After: 316,252.
+  assert.ok(res.x < 322, `eight seconds of holding left get well past both pieces (ended ${res.x.toFixed(1)},${res.y.toFixed(1)})`);
+  assert.ok(res.worstStall < 2500, `never stands for long (worst ${(res.worstStall / 1000).toFixed(1)} s)`);
+});
