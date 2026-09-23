@@ -8049,6 +8049,16 @@ class Grow:
                 break
         self.placed += [("road cells widened", total)]
 
+    def road_width(self):
+        """A ROAD IS AS WIDE ON SCREEN WHICHEVER WAY IT RUNS (maintainer
+        2026-09-23; roadwidth.py holds the rule and runs it on the world that
+        ships). widen_roads is a floor in CELLS; this is the width in PIXELS,
+        measured across the road's direction on screen."""
+        import roadwidth
+        added, stuck = roadwidth.equalise(self.doc, log=lambda *a: None)
+        self.placed += [("road cells equalised on screen", len(added)),
+                        ("road cells thin with nothing to take", len(stuck))]
+
     # -- ramps ----------------------------------------------------------------
     def ramps(self):
         """RAMPS: the authored way up (maintainer 2026-08-30, "slope for
@@ -8287,7 +8297,7 @@ class Grow:
                      self.build_no_place, self.interiors, self.village, self.windows,
                      self.chimneys,
                      self.roads, self.nature, self.cave_dress, self.dress_islets,
-                     self.retype, self.widen_roads, self.ramps,
+                     self.retype, self.widen_roads, self.road_width, self.ramps,
                      self.ramp_paths, self.regroom, self.reach_audit,
                      self.snap_hitboxes, self.police_footprints,
                      self.lights, self.npcs,

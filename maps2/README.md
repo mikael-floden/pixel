@@ -504,6 +504,13 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   from a pool (slime, lava, ice and lava, mud and slime, rock, ice, mud),
   dug in the build after `dungeons` and, with `--apply <world_dir>`, into
   the shipped world in place (`spec/WORLD3.md` → the north caves).
+- `roadwidth.py` — **a road is as wide on screen whichever way it runs**
+  (maintainer 2026-09-23): three cells across is 77 px along an axis, 56 px
+  on a screen-horizontal staircase and 128 px on a vertical one, so width is
+  measured in pixels across the road's direction on screen and every thin
+  stretch is dilated to its road's own width (`spec/WORLD3.md` → the roads).
+  `--check` (widths by direction, exit 1 on a thin stretch), `--apply
+  <world_dir>`; the build runs it after `widen_roads`.
 - `cavewalls.py` — **a cave's ring is named with the cave's side** (games
   agent 2026-09-23, grass on the walls of Pit VI): the cave half of
   `cliff_faces` on the world that ships — the exposed faces and the near and
