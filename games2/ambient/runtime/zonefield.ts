@@ -1,4 +1,5 @@
 import { type AmbientZone, type AmbientZoneDoc, CELL_WU, resolveAmbientAt, unpackZoneTable, zoneHolds } from "@nangijala/shared";
+import { packRef, pickOwner, zoneFloorLevel } from "./zonefloor";
 
 /* THE ZONE FIELD — "is effect X on HERE", for any point an effect draws at,
  * with a soft edge (maintainer 2026-09-20: "It should not suddenly start to
@@ -100,21 +101,46 @@ export class ZoneField {
    *  them (measured his run: ~96 zones, two polygon passes per cell miss, and
    *  the tick that walks the raster's leading edge was 15-55 ms). */
   private boxes: { z: AmbientZone; x0: number; y0: number; x1: number; y1: number }[] = [];
+  private byId = new Map<string, AmbientZone>();
   /** The last raster before its fill passes: the mask is anchored to the world
    *  in whole sample steps, so the next tick's rect is this one shifted by
    *  whole samples — the overlap is copied and only the new edge is looked
    *  up (a still camera looks nothing up; a walking one ~40 samples a tick,
    *  not 2,560). */
-  private rasterMemo: { name: string; cols: number; rows: number; stepX: number; stepY: number; x: number; y: number; version: number; raw: Uint8Array; known: Uint8Array } | null = null;
+  private rasterMemo: { name: string; cols: number; rows: number; stepX: number; stepY: number; x: number; y: number; version: number; raw: Uint8Array; known: Uint8Array; ref: Uint8Array | null } | null = null;
   private readonly feather: number;
   stats = { picks: 0, resolves: 0, refreshes: 0, pruned: 0 };
+
+  /** Each zone's floor level (zonefloor.ts), computed on first use and kept
+   *  until the doc itself changes — a polygon and the terrain under it are
+   *  constants, and a reference that moved would make the density breathe. */
+  private floors = new Map<string, number>();
 
   constructor(
     private readonly source: () => ZoneSource | null,
     private readonly pick: (isoX: number, isoY: number) => ZonePick | null,
     feather = FEATHER_CELLS,
+    /** Terrain level at a WORLD point (the game's `__ml.levelAt`), looked up
+     *  per call. Absent = every floor reads 0, which is exactly the old
+     *  sea-level behaviour. */
+    private readonly levelAt: ((wx: number, wy: number) => number | null) | null = null,
   ) {
     this.feather = Math.max(0, Math.floor(feather));
+  }
+
+  /** The zone's floor level, memoised. 0 with no level probe. */
+  floorOf(zone: { id: string } & Parameters<typeof zoneFloorLevel>[0]): number {
+    const hit = this.floors.get(zone.id);
+    if (hit !== undefined) return hit;
+    if (!this.levelAt) return 0;
+    let v: number | null = null;
+    try { v = zoneFloorLevel(zone, this.levelAt, CELL_WU); } catch { v = null; }
+    // AN UNMEASURED FLOOR IS NOT CACHED. It is asked again on the next raster;
+    // caching a 0 the probe could not answer would pin the zone at sea level
+    // for the session and look exactly like the bug this replaced.
+    if (v === null) return 0;
+    this.floors.set(zone.id, v);
+    return v;
   }
 
   /** Re-read the source. Returns true when the answer changed (a new table,
@@ -143,7 +169,11 @@ export class ZoneField {
       this.cells.clear();
       this.blur.clear();
     }
-    if (doc !== this.doc) this.boxes = doc ? doc.zones.map((z) => zoneBox(z)) : [];
+    if (doc !== this.doc) {
+      this.boxes = doc ? doc.zones.map((z) => zoneBox(z)) : [];
+      this.byId = new Map((doc?.zones ?? []).map((z) => [z.id, z]));
+      this.floors.clear();
+    }
     this.doc = doc;
     this.packed = packed;
     this.table = next;
@@ -203,6 +233,20 @@ export class ZoneField {
     const rec = { set, zones };
     this.cells.set(key, rec);
     return rec;
+  }
+
+  /** THE GROUND THIS EFFECT POOLS ON at a cell: the floor of the zone that
+   *  owns `name` here (runtime/zonefloor.ts), 0 where none does. It reads the
+   *  holders out of the PER-CELL MEMO the field already resolved, so it costs
+   *  no box test and no polygon test — only the owner rule over the one to
+   *  three zones that cover the cell. */
+  floorAt(name: string, col: number, row: number, lvl: number): number {
+    const rec = this.cell(col, row, lvl);
+    if (!rec.zones.length) return 0;
+    const held: AmbientZone[] = [];
+    for (const id of rec.zones) { const z = this.byId.get(id); if (z) held.push(z); }
+    const owner = pickOwner(held, name);
+    return owner ? this.floorOf(owner) : 0;
   }
 
   on(name: string, col: number, row: number, lvl: number): boolean {
@@ -318,8 +362,14 @@ export class ZoneField {
    *  the boundaries), reading it bilinearly between samples, so the raster is
    *  coarse — half a cell per sample is more than the three-cell ramp needs.
    *  All 255 where zones do not rule. */
-  raster(name: string, rect: { x: number; y: number; width: number; height: number }, cols: number, rows: number): Uint8Array {
+  raster(name: string, rect: { x: number; y: number; width: number; height: number }, cols: number, rows: number, refOut?: Uint8Array): Uint8Array {
     const out = new Uint8Array(cols * rows);
+    /* `refOut`, when given, is filled in THE SAME WALK with the floor level
+     * each sample pools on (runtime/zonefloor.ts, packed at REF_SCALE). A
+     * second pass of its own would repeat every cellAt and every owner test
+     * this one already does — the cost the overlap memo below exists to
+     * remove — so the floor rides along with the mask instead. */
+    if (refOut) refOut.fill(0);
     if (!this.ruled) { out.fill(255); return out; }
     /* A SAMPLE THE PICKER CANNOT PLACE IS UNKNOWN, NOT ZERO. weightAt answers
      * 0 where no cell lies under the drawn point — right for a particle
@@ -362,14 +412,20 @@ export class ZoneField {
             const sk = sj * cols + si;
             out[k] = m!.raw[sk];
             known[k] = m!.known[sk];
+            if (refOut) refOut[k] = m!.ref ? m!.ref[sk] : 0;
             continue;
           }
         }
         const x = rect.x + rect.width * ((i + 0.5) / cols);
         const y = rect.y + rect.height * ((j + 0.5) / rows);
-        if (this.cellAt(x, y)) { out[k] = Math.round(255 * this.weightAt(name, x, y)); known[k] = 1; }
+        const p = this.cellAt(x, y);
+        if (p) {
+          out[k] = Math.round(255 * this.weightAt(name, x, y));
+          known[k] = 1;
+          if (refOut) refOut[k] = packRef(this.floorAt(name, p.col, p.row, p.lvl));
+        }
       }
-    this.rasterMemo = { name, cols, rows, stepX, stepY, x: rect.x, y: rect.y, version: this.version, raw: out.slice(), known: known.slice() };
+    this.rasterMemo = { name, cols, rows, stepX, stepY, x: rect.x, y: rect.y, version: this.version, raw: out.slice(), known: known.slice(), ref: refOut ? refOut.slice() : null };
     for (let pass = 0; pass < 4; pass++) {
       let filled = 0;
       const was = known.slice();
@@ -382,7 +438,23 @@ export class ZoneField {
           if (i < cols - 1 && was[k + 1]) { sum += out[k + 1]; n++; }
           if (j > 0 && was[k - cols]) { sum += out[k - cols]; n++; }
           if (j < rows - 1 && was[k + cols]) { sum += out[k + cols]; n++; }
-          if (n) { out[k] = Math.round(sum / n); known[k] = 1; filled++; }
+          if (n) {
+            out[k] = Math.round(sum / n);
+            /* THE FLOOR IS FILLED FROM ITS NEIGHBOURS TOO. An unknown sample
+             * left at 0 is a hole at SEA LEVEL punched through the middle of a
+             * raised zone — the fog would drop out over exactly the cliff
+             * faces and ridge-sky the mask's own fill exists to close. */
+            if (refOut) {
+              let rs = 0, rn = 0;
+              if (i > 0 && was[k - 1]) { rs += refOut[k - 1]; rn++; }
+              if (i < cols - 1 && was[k + 1]) { rs += refOut[k + 1]; rn++; }
+              if (j > 0 && was[k - cols]) { rs += refOut[k - cols]; rn++; }
+              if (j < rows - 1 && was[k + cols]) { rs += refOut[k + cols]; rn++; }
+              if (rn) refOut[k] = Math.round(rs / rn);
+            }
+            known[k] = 1;
+            filled++;
+          }
         }
       if (!filled) break;
     }
@@ -445,6 +517,24 @@ export function pickFromProbe(): (isoX: number, isoY: number) => ZonePick | null
     const col = Math.floor(cx);
     const row = Math.floor(cy);
     return { col, row, lvl: Math.round(p.lvl), fx: cx - col, fy: cy - row };
+  };
+}
+
+/** The terrain-level probe as a `levelAt`: `__ml.levelAt` reads the world's
+ *  own level grid at a WORLD point — a plain array read, no picker, so a
+ *  zone's floor can be measured over its whole polygon and not just the part
+ *  on screen. Null when the probe is missing (every floor then reads 0, which
+ *  is the sea-level behaviour the mist had before zones existed). */
+export function levelFromProbe(): (wx: number, wy: number) => number | null {
+  /* LOOKED UP PER CALL, like pickFromProbe. The mount runs before WorldScene
+   * publishes __ml, so resolving the probe once at construction captured
+   * `undefined` and every zone floored at 0 forever — the whole feature was
+   * silently the old sea-level behaviour, and the only sign was refMax 0 in
+   * the mask probe. A missing probe answers 0, which IS sea level. */
+  return (wx, wy) => {
+    const ml = (globalThis as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
+    const f = ml?.levelAt as undefined | ((x: number, y: number) => number);
+    return f ? f(wx, wy) : 0;
   };
 }
 

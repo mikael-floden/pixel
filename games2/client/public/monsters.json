@@ -20083,6 +20083,7 @@
           "south-west": 6,
           "west": 6,
           "north-west": 6,
+          "north": 6,
           "north-east": 6,
           "east": 6,
           "south-east": 6
@@ -20147,6 +20148,7 @@
           "south-west": "/assets/monsters/cave_troll_boss/animations/walk__south-west.webp",
           "west": "/assets/monsters/cave_troll_boss/animations/walk__west.webp",
           "north-west": "/assets/monsters/cave_troll_boss/animations/walk__north-west.webp",
+          "north": "/assets/monsters/cave_troll_boss/animations/walk__north.webp",
           "north-east": "/assets/monsters/cave_troll_boss/animations/walk__north-east.webp",
           "east": "/assets/monsters/cave_troll_boss/animations/walk__east.webp",
           "south-east": "/assets/monsters/cave_troll_boss/animations/walk__south-east.webp"
@@ -20346,6 +20348,10 @@
             "w": 240,
             "h": 240
           },
+          "north": {
+            "w": 240,
+            "h": 240
+          },
           "north-east": {
             "w": 240,
             "h": 240
@@ -20452,6 +20458,29 @@
             0,
             0,
             0,
+            0,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.9228,
+          "cx": 0.4967,
+          "contact": 0,
+          "sink": 4,
+          "up": 6,
+          "shift": [
+            0.4967,
+            0.4967,
+            0.4967,
+            0.4967,
+            0.4967,
+            0.4967
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            7,
             0,
             0
           ]
@@ -20701,11 +20730,11 @@
         }
       },
       "artBottom": 0.945,
-      "footW": 53,
-      "bodyW": 137,
-      "shadowW": 108,
-      "shadowH": 42,
-      "radius": 49,
+      "footW": 116,
+      "bodyW": 167,
+      "shadowW": 112,
+      "shadowH": 43,
+      "radius": 50,
       "hoverPx": 0
     },
     {
@@ -31147,11 +31176,13 @@
         },
         "walk": {
           "south": 6,
+          "south-west": 6,
           "west": 6,
           "north-west": 6,
           "north": 6,
           "north-east": 6,
-          "east": 6
+          "east": 6,
+          "south-east": 6
         }
       },
       "strips": {
@@ -31211,11 +31242,13 @@
         },
         "walk": {
           "south": "/assets/monsters/crag_troll/animations/walk__south.webp",
+          "south-west": "/assets/monsters/crag_troll/animations/walk__south-west.webp",
           "west": "/assets/monsters/crag_troll/animations/walk__west.webp",
           "north-west": "/assets/monsters/crag_troll/animations/walk__north-west.webp",
           "north": "/assets/monsters/crag_troll/animations/walk__north.webp",
           "north-east": "/assets/monsters/crag_troll/animations/walk__north-east.webp",
-          "east": "/assets/monsters/crag_troll/animations/walk__east.webp"
+          "east": "/assets/monsters/crag_troll/animations/walk__east.webp",
+          "south-east": "/assets/monsters/crag_troll/animations/walk__south-east.webp"
         }
       },
       "stripDims": {
@@ -31404,6 +31437,10 @@
             "w": 232,
             "h": 232
           },
+          "south-west": {
+            "w": 232,
+            "h": 232
+          },
           "west": {
             "w": 232,
             "h": 232
@@ -31421,6 +31458,10 @@
             "h": 232
           },
           "east": {
+            "w": 232,
+            "h": 232
+          },
+          "south-east": {
             "w": 232,
             "h": 232
           }
@@ -31451,6 +31492,29 @@
             4,
             5,
             3
+          ]
+        },
+        "south-west": {
+          "f": 0.9399,
+          "cx": 0.4933,
+          "contact": 5,
+          "sink": 4,
+          "up": 11,
+          "shift": [
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933
+          ],
+          "air": [
+            0,
+            7,
+            8,
+            0,
+            0,
+            0
           ]
         },
         "west": {
@@ -31565,6 +31629,29 @@
             1,
             0,
             1,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.9399,
+          "cx": 0.5024,
+          "contact": 5,
+          "sink": 4,
+          "up": 11,
+          "shift": [
+            0.5024,
+            0.5024,
+            0.5024,
+            0.5024,
+            0.5024,
+            0.5024
+          ],
+          "air": [
+            0,
+            7,
+            8,
+            0,
+            0,
             0
           ]
         }
@@ -31745,8 +31832,8 @@
       },
       "artBottom": 0.9418,
       "footW": 53,
-      "bodyW": 146,
-      "shadowW": 89,
+      "bodyW": 162,
+      "shadowW": 88,
       "shadowH": 34,
       "radius": 40,
       "hoverPx": 0
@@ -32490,8 +32577,12 @@
           "south-east": 5
         },
         "attack": {
+          "south": 16,
           "south-west": 16,
           "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
           "east": 16,
           "south-east": 16
         },
@@ -32548,8 +32639,12 @@
           "south-east": "/assets/monsters/pebble_crab/animations/idle__south-east.webp"
         },
         "attack": {
+          "south": "/assets/monsters/pebble_crab/animations/attack__south.webp",
           "south-west": "/assets/monsters/pebble_crab/animations/attack__south-west.webp",
           "west": "/assets/monsters/pebble_crab/animations/attack__west.webp",
+          "north-west": "/assets/monsters/pebble_crab/animations/attack__north-west.webp",
+          "north": "/assets/monsters/pebble_crab/animations/attack__north.webp",
+          "north-east": "/assets/monsters/pebble_crab/animations/attack__north-east.webp",
           "east": "/assets/monsters/pebble_crab/animations/attack__east.webp",
           "south-east": "/assets/monsters/pebble_crab/animations/attack__south-east.webp"
         },
@@ -32654,11 +32749,27 @@
           }
         },
         "attack": {
+          "south": {
+            "w": 46,
+            "h": 40
+          },
           "south-west": {
             "w": 46,
             "h": 40
           },
           "west": {
+            "w": 46,
+            "h": 40
+          },
+          "north-west": {
+            "w": 46,
+            "h": 40
+          },
+          "north": {
+            "w": 46,
+            "h": 40
+          },
+          "north-east": {
             "w": 46,
             "h": 40
           },

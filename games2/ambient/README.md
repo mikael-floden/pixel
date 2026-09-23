@@ -552,14 +552,44 @@ per effect — his process).
   across; and plain bilinear is only C0, so the fade kinked along the texel
   grid. A forced mist covers the view (no mask). Null where zones do not rule:
   the room's set grades as it always did.
+- **THE FOG POOLS ON THE ZONE'S OWN GROUND, NOT ON SEA LEVEL**
+  (`runtime/zonefloor.ts`; maintainer 2026-09-23, standing at 305.7,140.5 level
+  2 in a 90%-mist marsh: "According to the map the mist should be here, but I
+  can't see it..."). MIST_FRAG hugs the ground with
+  `pool = 1 - (z - floor - 0.4) * 0.5`, and that floor was 0 — so the falloff
+  measured altitude above the SEA and deleted mist from exactly the places
+  mist belongs. Measured over the world's five 90-share mist zones, mean
+  `pool`: the tarn (median level 32) **0.000**, the southern lake (12)
+  **0.000**, the meadow (4) 0.010, his marsh (2) 0.196, the heath (0) 0.763.
+  Four of five painted nothing; a tarn is a MOUNTAIN lake. The floor is now
+  each zone's own MEDIAN ground level — not the minimum, which one stray low
+  cell inside a zone would drag back to the sea — computed once per zone from
+  the world's level grid (`__ml.levelAt`, strided to `FLOOR_SAMPLE_CAP`) and
+  cached by id, because a reference that moved with the camera would make the
+  density breathe as he walks. It rides in the mask texture's **free G
+  channel** (`packRef`, `REF_SCALE` 4, world tops out at 46 levels), so the
+  pass gets it in the four fetches `maskField` already does — no second
+  texture, no second sampler. A forced row (the Settings switch) floors on the
+  player's own level instead, so testing an effect works wherever he stands;
+  no mask bound = floor 0 = the old falloff exactly. TWO TRAPS PAID FOR HERE:
+  a probe resolved ONCE at construction captures `undefined` (the mount runs
+  before `__ml` is published) and every zone silently floors at 0 forever —
+  look it up per call, as `pickFromProbe` does; and an UNMEASURED floor is
+  never cached, or one early miss pins the zone at sea level for the session.
 - TWO TWINS, AND THEY MEAN DIFFERENT THINGS: `__ml.mistAt` is the RAW density
   (the bank the effect would paint if the world were all its zone, no mask);
   `__ml.mistDrawAt` is what the pass PAINTS (the band, then the fade). Every
-  "is it misting here" test reads the second. TRAP: the banks pool on ground
-  at level <= ~2 and nowhere else (MIST_FRAG's `pool`), so a mist zone on a
-  summit, a level-4 meadow or a level-12 lake shows nothing however the mask
-  reads — of the five 90-share mist zones only the south-eastern green
-  (level 0) can show it; the gate stands there. Gate `verify-mistzone.mjs`:
+  "is it misting here" test reads the second. **AND A TWIN CANNOT SEE THE
+  SHADER**: a mutant that pinned MIST_FRAG's floor back to sea level passed
+  every counter arm of `verify-misthigh`, because the arms read the twin and
+  the twin still had the floor. Any gate over a shader needs a FRAME arm —
+  a clear envelope, then the effect up (`verify-misthigh` does exactly this,
+  and that arm is the one the mutant fails). Gate `verify-misthigh.mjs`:
+  every 50+-share mist zone in the world, each judged on ITS OWN floor ground
+  (a tarn sits in a bowl whose rises the fog is supposed to thin on, so "as
+  thick as the heath" would fail the fix for being correct) — the floor
+  reaches the pass, the deep bands paint, and the screen moves.
+  Gate `verify-mistzone.mjs`:
   outside the zone with mist on, the scalar is up, nothing is PAINTED over any
   outside cell, a bank is painted deep inside, the fade is whole inside (>=
   0.85 — what the eye can see now that it scales alpha; it was 0.95 when a

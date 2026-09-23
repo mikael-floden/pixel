@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { REF_SCALE } from "../../ambient/runtime/zonefloor";
 import { surfaceFor, CHARACTER_BODY_PX } from "@nangijala/shared";
 import type { SceneryFootprints } from "@nangijala/shared";
 import { World, MAP_GEOMETRY, geometryFor } from "./maps";
@@ -2220,6 +2221,11 @@ export interface MistMask {
   cols: number;
   rows: number;
   data: Uint8Array;
+  /** THE ZONE'S OWN FLOOR per texel, packed level*REF_SCALE (ambient's
+   *  runtime/zonefloor.ts). Rides in the mask texture's free G channel — no
+   *  second texture, no second sampler, and the shader's four mask fetches
+   *  already carry it. Absent or 0 = sea level = the old behaviour exactly. */
+  ref?: Uint8Array;
 }
 const DEPTHFOG_KEY = "depthfog-field";
 
@@ -2263,7 +2269,8 @@ uniform sampler2D uHeight;
 uniform sampler2D uMask;  // ambient's zone mask for the mist (a coarse raster of the field)
 uniform vec4 uMaskRect;   // world x, y, w, h the mask covers
 uniform vec2 uMaskN;      // its size in texels
-uniform float uMaskOn;    // 1 = the density is multiplied by the mask; 0 = no mask bound (identical to before)
+uniform float uMaskOn;    // 1 = the mask is read; 0 = no mask bound (identical to before)
+uniform float uRefScale;  // bytes per level in the mask's G channel (zonefloor.ts REF_SCALE)
 
 /* READING THE MASK, AND WHY IT IS DONE BY HAND (maintainer 2026-09-20: "the
  * mist on this image looks so blocky and ugly"). Two things made the zone
@@ -2280,17 +2287,22 @@ uniform float uMaskOn;    // 1 = the density is multiplied by the mask; 0 = no m
  * The raster it reads is anchored to the WORLD, not to the camera (mount.ts),
  * so walking does not slide the samples under the fade. The JS twin (maskAt)
  * does exactly this arithmetic. */
-float maskField(vec2 w) {
+vec2 maskField(vec2 w) {
   vec2 t = clamp((w - uMaskRect.xy) / uMaskRect.zw * uMaskN - 0.5, vec2(0.0), uMaskN - 1.0);
   vec2 i = floor(t);
   vec2 f = t - i;
   f = f * f * (3.0 - 2.0 * f);
   vec2 uv0 = (i + 0.5) / uMaskN;
   vec2 uv1 = (min(i + 1.0, uMaskN - 1.0) + 0.5) / uMaskN;
-  float a = texture2D(uMask, vec2(uv0.x, uv0.y)).r;
-  float b = texture2D(uMask, vec2(uv1.x, uv0.y)).r;
-  float c = texture2D(uMask, vec2(uv0.x, uv1.y)).r;
-  float e = texture2D(uMask, vec2(uv1.x, uv1.y)).r;
+  /* TWO FIELDS, ONE SET OF FETCHES: .r is the zone mask, .g the zone's own
+   * FLOOR LEVEL packed at uRefScale (ambient's runtime/zonefloor.ts). The
+   * floor is interpolated the same C1 way as the mask — a step in it at a
+   * level boundary would be a hard density edge, which is the artifact this
+   * whole interpolation exists to avoid. */
+  vec2 a = texture2D(uMask, vec2(uv0.x, uv0.y)).rg;
+  vec2 b = texture2D(uMask, vec2(uv1.x, uv0.y)).rg;
+  vec2 c = texture2D(uMask, vec2(uv0.x, uv1.y)).rg;
+  vec2 e = texture2D(uMask, vec2(uv1.x, uv1.y)).rg;
   return mix(mix(a, b, f.x), mix(c, e, f.x), f.y);
 }
 
@@ -2397,8 +2409,19 @@ void main() {
   float banks = smoothstep(0.30, 0.60, mNoise(p1) * 0.6 + mNoise(p1 * 2.1 + 13.0) * 0.4);
   vec2 p2 = w * 0.0074 + uAnimTime * vec2(-0.030, 0.048);
   float roil = 0.55 + 0.45 * mNoise(p2);
-  // Hug the ground: full in the low (lakes/open fields), gone by ~2.5 levels.
-  float pool = clamp(1.0 - (z - 0.4) * 0.5, 0.0, 1.0);
+  /* HUG THE GROUND — THE ZONE'S OWN GROUND, not sea level. pool is full in
+   * the low and gone about 2.5 levels above the floor it measures from, and
+   * that floor used to be 0. Measured over the world's five 90%-mist zones
+   * (2026-09-23): a mountain tarn at level 32 and a lake at median 12 painted
+   * NOTHING, his marsh at median 2 painted a fifth, and only the sea-level
+   * heath worked — four of five silently deleted, because maps2 put mist where
+   * mist belongs and mist belongs uphill too. The mask's G channel carries the
+   * floor of the zone that owns the mist here (runtime/zonefloor.ts), so the
+   * fog pools on the ground it is standing on and still thins over the rises
+   * inside its own zone. No mask bound = floor 0 = exactly the old falloff. */
+  vec2 mk = uMaskOn > 0.5 ? maskField(w) : vec2(1.0, 0.0);
+  float floorLvl = mk.y * 255.0 / uRefScale;
+  float pool = clamp(1.0 - (z - floorLvl - 0.4) * 0.5, 0.0, 1.0);
   /* POSTERIZE THE BANK'S OWN SHAPE; EVERYTHING THAT DIMS IT MULTIPLIES THE
    * ALPHA AFTERWARDS. This is one law with three multipliers — the ground hug
    * (pool), the eased cover (uMist) and the zone's fade (maskField) — and each
@@ -2428,7 +2451,7 @@ void main() {
    */
   float a = floor(clamp(banks * roil * 1.55, 0.0, 1.0) * 5.0 + 0.001) / 5.0 * 0.74;
   a *= pool * uMist;
-  if (uMaskOn > 0.5) a *= maskField(w);
+  if (uMaskOn > 0.5) a *= mk.x;
   if (a <= 0.001) { gl_FragColor = vec4(0.0); return; }
   float ambLum = (uAmbient.r + uAmbient.g + uAmbient.b) / 3.0;
   vec3 col = vec3(0.72, 0.78, 0.76) * clamp(0.22 + 0.95 * ambLum, 0.0, 1.0);
@@ -3092,6 +3115,7 @@ export class NightLights {
       uMaskRect: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
       uMaskN: { type: "2f", value: { x: 1, y: 1 } },
       uMaskOn: { type: "1f", value: 0 },
+      uRefScale: { type: "1f", value: REF_SCALE },
     });
     // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
     this.depthFogBase = new Phaser.Display.BaseShader("depthfog-field", DEPTHFOG_FRAG, undefined, {
@@ -4177,6 +4201,7 @@ export class NightLights {
    *  it covers, its raster (the twin reads it) and its texture. */
   private mistMask: { x: number; y: number; w: number; h: number } | null = null;
   private mistMaskData: Uint8Array | null = null;
+  private mistMaskRef: Uint8Array | null = null;
   private mistMaskTex?: Phaser.Textures.CanvasTexture;
   private mistMaskCols = 0;
   private mistMaskRows = 0;
@@ -5707,10 +5732,14 @@ export class NightLights {
     const tex = this.mistMaskTex;
     const img = tex.context.createImageData(m.cols, m.rows);
     const px = img.data;
+    // R = the zone mask, G = the zone's floor level (packed): two fields, one
+    // texture, one set of fetches. B is left equal to R so anything eyeballing
+    // the texture still reads as the mask.
+    const ref = m.ref && m.ref.length >= m.cols * m.rows ? m.ref : null;
     for (let i = 0, n = m.cols * m.rows; i < n; i++) {
       const v = m.data[i];
       px[i * 4] = v;
-      px[i * 4 + 1] = v;
+      px[i * 4 + 1] = ref ? ref[i] : 0;
       px[i * 4 + 2] = v;
       px[i * 4 + 3] = 255;
     }
@@ -5718,6 +5747,7 @@ export class NightLights {
     tex.refresh();
     this.mistMask = { x: m.x, y: m.y, w: m.w, h: m.h };
     this.mistMaskData = m.data;
+    this.mistMaskRef = ref;
   }
 
   /** The mist mask at a world point — the EXACT twin of the shader's
@@ -5725,9 +5755,19 @@ export class NightLights {
    *  through smoothstep, clamped at the edges. 1 without a mask. Change both
    *  together. */
   maskAt(wx: number, wy: number): number {
+    return this.maskFieldAt(wx, wy).mask;
+  }
+
+  /** BOTH mask channels at a world point — the twin of the shader's vec2
+   *  `maskField`: `mask` from R, `floor` the zone's own ground level decoded
+   *  from G. Interpolated identically, so a point reads the same floor on the
+   *  CPU as the pass paints with. `{1, 0}` with no mask = the whole world is
+   *  its zone, at sea level: the behaviour before zones existed. */
+  maskFieldAt(wx: number, wy: number): { mask: number; floor: number } {
     const mk = this.mistMask;
     const d = this.mistMaskData;
-    if (!mk || !d) return 1;
+    if (!mk || !d) return { mask: 1, floor: 0 };
+    const ref = this.mistMaskRef;
     const c = this.mistMaskCols;
     const r = this.mistMaskRows;
     const fx = Math.min(c - 1, Math.max(0, ((wx - mk.x) / mk.w) * c - 0.5));
@@ -5740,8 +5780,11 @@ export class NightLights {
     const sy = fy - y0;
     const tx = sx * sx * (3 - 2 * sx);
     const ty = sy * sy * (3 - 2 * sy);
-    const at = (x: number, y: number) => d[y * c + x] / 255;
-    return (at(x0, y0) * (1 - tx) + at(x1, y0) * tx) * (1 - ty) + (at(x0, y1) * (1 - tx) + at(x1, y1) * tx) * ty;
+    const bil = (src: Uint8Array) => {
+      const at = (x: number, y: number) => src[y * c + x] / 255;
+      return (at(x0, y0) * (1 - tx) + at(x1, y0) * tx) * (1 - ty) + (at(x0, y1) * (1 - tx) + at(x1, y1) * tx) * ty;
+    };
+    return { mask: bil(d), floor: ref ? (bil(ref) * 255) / REF_SCALE : 0 };
   }
 
   /** EXACT JS twin of the shader's mist DENSITY at a WORLD point (probes +
@@ -5757,7 +5800,7 @@ export class NightLights {
    * `shape` and the `dim` that scales it (pool x mist) — so mistDrawAt can
    * apply them in the shader's own order without recomputing the noise or
    * dividing them back out (a division is not bit-exact; the twin must be). */
-  mistAt(wx: number, wy: number, mist = this.curMist, parts?: { shape: number; dim: number }): number {
+  mistAt(wx: number, wy: number, mist = this.curMist, parts?: { shape: number; dim: number; mask: number }): number {
     if (mist <= 0.001 || !this.tArr) return 0;
     // ground-plane inverse projection (level-0 cell; probes sample flats)
     const u = (wx - this.iso.ox) / this.geo.dx - 1;
@@ -5793,10 +5836,11 @@ export class NightLights {
     const banks = sstep(0.30, 0.60, noise(p1x, p1y) * 0.6 + noise(p1x * 2.1 + 13, p1y * 2.1 + 13) * 0.4);
     const p2x = wx * 0.0074 - t * 0.03, p2y = wy * 0.0074 + t * 0.048;
     const roil = 0.55 + 0.45 * noise(p2x, p2y);
-    const pool = Math.min(1, Math.max(0, 1 - (z - 0.4) * 0.5));
+    const mk = this.maskFieldAt(wx, wy);
+    const pool = Math.min(1, Math.max(0, 1 - (z - mk.floor - 0.4) * 0.5));
     const shape = Math.min(1, banks * roil * 1.55);
     const dim = pool * mist;
-    if (parts) { parts.shape = shape; parts.dim = dim; }
+    if (parts) { parts.shape = shape; parts.dim = dim; parts.mask = mk.mask; }
     return shape * dim;
   }
 
@@ -5807,10 +5851,10 @@ export class NightLights {
    *  floor() would quantise itself instead of fading the picture — the whole
    *  story is in the GLSL comment. This is the honest "is it misting here". */
   mistDrawAt(wx: number, wy: number, mist = this.curMist): number {
-    const parts = { shape: 0, dim: 0 };
+    const parts = { shape: 0, dim: 0, mask: 1 };
     // 0 covers the shader's own early outs too: no mist, no surface, off-world
     if (this.mistAt(wx, wy, mist, parts) <= 0) return 0;
-    const a = (Math.floor(parts.shape * 5 + 0.001) / 5) * 0.74 * parts.dim * this.maskAt(wx, wy);
+    const a = (Math.floor(parts.shape * 5 + 0.001) / 5) * 0.74 * parts.dim * parts.mask;
     return a <= 0.001 ? 0 : a;
   }
 

@@ -7,7 +7,8 @@ import { Demo } from "./demo";
 import { DemoButton } from "./hudbutton";
 import { birdDensity, setBirdDensity } from "./density";
 import { OUTDOOR_FADE_MS, OutdoorGain, readIndoor } from "./outdoor";
-import { ZoneField, pickFromProbe, sourceFromProbe } from "./zonefield";
+import { ZoneField, levelFromProbe, pickFromProbe, sourceFromProbe } from "./zonefield";
+import { packRef, REF_SCALE } from "./zonefloor";
 import { ZoneLines } from "./zonelines";
 import { CLOUD_OF, MIST_EFFECT, forcedGloom, setGloomField } from "../weather/gloom";
 
@@ -42,7 +43,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       return;
     }
     /* THE ZONE FIELD, built before the ctx it is a member of — see zonefield.ts. */
-    const zone = new ZoneField(sourceFromProbe(), pickFromProbe());
+    const zone = new ZoneField(sourceFromProbe(), pickFromProbe(), undefined, levelFromProbe());
     const ctx: AmbientCtx = {
       scene,
       env: defaultEnv(),
@@ -72,6 +73,10 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       return { x: ctx.view.x + me.sx / me.zoom, y: ctx.view.y + me.sy / me.zoom };
     };
     const mistMask = (m: unknown) => (ml()?.mistMask as undefined | ((m: unknown) => unknown))?.(m);
+    // held, not rebuilt: the forced path runs at the env tick's cadence
+    const forcedMask = new Uint8Array(MASK_COLS * MASK_ROWS);
+    const forcedRef = new Uint8Array(MASK_COLS * MASK_ROWS);
+    const maskRef = new Uint8Array(MASK_COLS * MASK_ROWS);
     /* THE MASK'S RECT, ANCHORED TO THE WORLD AND NOT TO THE CAMERA. The
      * samples are half a cell apart and the field under them is a STEP
      * function (a cell is in the zone or it is not, blurred over 3x3 — so it
@@ -100,9 +105,24 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       for (const n of Object.keys(CLOUD_OF)) at[n] = zone.weightAt(n, feet.x, feet.y);
       const cov = zone.coverage(MIST_EFFECT, ctx.view);
       setGloomField({ at, mistInView: cov.max });
-      if (forcedGloom().includes(MIST_EFFECT)) { mistMask(null); return; }
+      if (forcedGloom().includes(MIST_EFFECT)) {
+        /* A FORCED ROW IS A TEST OF THE EFFECT ITSELF, so it covers the whole
+         * view — and its ground is THE GROUND I AM STANDING ON. It used to
+         * publish no mask at all, which also meant no floor, so switching Mist
+         * on in Settings anywhere above sea level showed the same nothing the
+         * zones did. A full mask multiplies the alpha by 1 exactly as no mask
+         * did; the only thing that changes is that the fog now pools on my
+         * own level. */
+        const rect = maskRect();
+        forcedMask.fill(255);
+        forcedRef.fill(packRef(zone.cellAt(feet.x, feet.y)?.lvl ?? 0));
+        mistMask({ x: rect.x, y: rect.y, w: rect.width, h: rect.height, cols: MASK_COLS, rows: MASK_ROWS, data: forcedMask, ref: forcedRef });
+        return;
+      }
       const rect = maskRect();
-      mistMask({ x: rect.x, y: rect.y, w: rect.width, h: rect.height, cols: MASK_COLS, rows: MASK_ROWS, data: zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS) });
+      // the floor rides along in the mask's own walk (runtime/zonefloor.ts)
+      const data = zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS, maskRef);
+      mistMask({ x: rect.x, y: rect.y, w: rect.width, h: rect.height, cols: MASK_COLS, rows: MASK_ROWS, data, ref: maskRef });
     };
     const safe = (fn: () => void) => {
       try {
@@ -219,10 +239,17 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       mistMask: () => {
         if (!zone.ruled) return null;
         const rect = maskRect();
-        const data = zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS);
+        // ONE walk, like the live path: a second raster call would overwrite
+        // the overlap memo the tick depends on, from a probe.
+        const forced = forcedGloom().includes(MIST_EFFECT);
+        const probeRef = new Uint8Array(MASK_COLS * MASK_ROWS);
+        const data = zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS, probeRef);
+        if (forced) probeRef.fill(packRef(((f) => zone.cellAt(f.x, f.y))(myFeet())?.lvl ?? 0));
+        let refMax = 0;
+        for (const v of probeRef) if (v > refMax) refMax = v;
         let on = 0;
         for (const v of data) if (v > 0) on++;
-        return { ...rect, cols: MASK_COLS, rows: MASK_ROWS, on, forced: forcedGloom().includes(MIST_EFFECT) };
+        return { ...rect, cols: MASK_COLS, rows: MASK_ROWS, on, refMax: +(refMax / REF_SCALE).toFixed(2), forced };
       },
       /** Settings/dev "ambient zones": read with no argument, set with a
        *  boolean, "toggle" flips. */
