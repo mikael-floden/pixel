@@ -1,14 +1,13 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-23T18:16:06+00:00",
-  "health": "idle",
-  "current": "idle — THORN_KNOT DONE, no files held. His 2026-09-23T17:51–17:54Z save: 26 new facet verdicts, 20 approvals (never cleared, law 2) and 6 non-approvals, all six taken and all six cleared. attack is 8/8 again and walk south is re-rolled. Files released: monsters/candidates/thorn_knot/**, monsters/candidates/index.json, live/feedback/monsters.json. NOT MINE and left open: monsters/minotaur#walk#south (note-only, older save), monsters/ember_kit#angry#south + #attack#north-east + #attack#north-west, and his naga/minotaur saves that landed while I worked — each is its own sweep's unit.",
+  "updated_at": "2026-09-23T18:26:00+00:00",
+  "health": "running",
+  "current": "CLAIMED — sand_scorpling, his 2026-09-23T18:10–18:11Z save (24 new facet verdicts, 12 approvals + 12 open redos). Taking the 12 non-approvals: monsters/sand_scorpling#attack#<all eight> and #die#{north-east,north-west,south-east,south-west}. Mirrors fold in (west/south-west/north-west mirror east/south-east/north-east), so the GENERATED set is attack south,south-east,east,north-east,north + die north-east,south-east — 7 directions. FILES: monsters/candidates/sand_scorpling/animations/**, monsters/candidates/sand_scorpling/candidate.json, monsters/config/candidates.json (sand_scorpling design only), monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json. All 12 redo stamps re-hashed against the strips on disk: 12/12 match, so every verdict judges the art that is there. Unclaimed elsewhere: coordination/monsters.json idle 2026-09-18 (no files); coordination/monsters-assistant.json idle 2026-09-22T20:54 (holding no files); the thorn_knot sitting on this board released at 18:16Z and named no sand_scorpling file. NOT taking the other open verdicts that sitting listed (minotaur#walk#south, ember_kit) — each is its own sweep's unit.",
   "progress": {
-    "unit": "thorn_knot — 6 redo verdicts acted on and cleared",
-    "verdicts_taken": 6,
-    "verdicts_cleared": 6,
-    "generated": "attack east, south-east (x2), north — PRO; walk south — v3 6 frames; west/south-west mirrors follow"
+    "unit": "sand_scorpling attack x5 generated (+3 mirrors) and die x2 generated (+2 mirrors)",
+    "verdicts_taken": 12,
+    "verdicts_cleared": 0
   },
   "budget_remaining": "PixelLab USD $12.07 (was $12.45 — this unit cost $0.38: four PRO attack directions at ~$0.09 measured here, one v3 walk at ~$0.013)",
   "notes": [
