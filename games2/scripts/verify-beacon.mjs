@@ -100,7 +100,7 @@ const MUST = {
   loaf: ["state", "n", "pre", "raf", "dom"], loafBy: [], longGroup: [],
   // The ambient block (2026-09-23): the mode row, the mount's own parts and the
   // zone field's counters — 30 rows against a cap that used to be 24.
-  ambient: ["_", "_env", "_gloom", "_director", "_frame", "_zone"],
+  ambient: ["_", "_env", "_gloom", "_director", "_frame", "_zone", "foam:parts"],
 };
 let ok = 0;
 for (const [block, keys] of Object.entries(MUST)) {

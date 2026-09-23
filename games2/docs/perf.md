@@ -1093,7 +1093,13 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `_gloom`, `_director`, `_frame`) and the field's counters (`_zone`), so
   the next run says what a tick costs. Measured offline on the_game's 96
   zones (desktop; his phone is 3-5x slower): a walking tick 18.4 -> 2.5
-  ms, a standing one 5.3 -> 0.09 ms, a cold cell 173 -> 34 µs. Rejected: `performance.memory` per frame as a GC signal
+  ms, a standing one 5.3 -> 0.09 ms, a cold cell 173 -> 34 µs. THE EFFECTS
+  THEMSELVES (the maintainer handed games-perf the slow effect the same
+  evening, "it should still look nice"): foam, the costliest at 2.4 ms a
+  frame along a shore, made a canvas texture per shore cell and a sprite
+  per cell on its own texture; its sheets live in shared atlases now, one
+  texSubImage2D per cell (`ambient/README.md`), and `ambient["foam:parts"]`
+  carries its scans, bakes, installs and picks per window. Rejected: `performance.memory` per frame as a GC signal
   (bucketised and refreshed every 20 minutes without a flag); the WebGL1
   timer query (his driver withholds it — `gpu.reason`). GATE:
   `verify-beacon.mjs` opens its page with service workers BLOCKED — the

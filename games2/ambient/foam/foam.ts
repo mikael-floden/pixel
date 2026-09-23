@@ -93,6 +93,17 @@ const WORK_MS = 2.2; // per frame, the whole resolve + bake pipeline
 const LEVEL_SAMPLES = 6; // picker samples per axis to learn which storeys are in view
 const CACHE_CELLS = 2400; // resolved cell records kept (a few screens' worth)
 const SHEET_KEEP = 160; // baked sheets kept alive past the view
+/* ONE TEXTURE FOR MANY CELLS (games-perf 2026-09-23). A sheet used to be its
+ * own canvas texture: a canvas, an ImageData, a putImageData, a full upload
+ * and twenty Frame objects PER CELL, and then a sprite per cell on its own
+ * texture — which splits the renderer's batches at every foam sprite in
+ * painter order. His run billed foam 2.4 ms a frame along a shore. Sheets now
+ * live in shared atlases (TILE*FRAMES wide, ATLAS_ROWS slots of TOP_ROWS px):
+ * a cell takes a row, its bytes go into the canvas (the CPU copy a context
+ * restore re-uploads) and up to the GPU as one texSubImage2D of that row. */
+const ATLAS_W = TILE * FRAMES;
+const ATLAS_ROWS = 32;
+const ROW_H = TOP_ROWS;
 
 /** Foam is for WATER. Lava is a liquid to the game and gets the wall's crest
  *  too, but nothing white breaks on it. */
@@ -137,10 +148,21 @@ interface CellRec {
   foot?: { ul?: boolean; ur?: boolean; uu?: boolean };
 }
 
+interface Atlas {
+  key: string;
+  tex: Phaser.Textures.CanvasTexture;
+  free: number[];
+}
+
 interface Live {
   rec: CellRec;
   bake: Bake | null;
+  /** The cell's key in the sheet LRU while it holds an atlas row. */
   key: string | null;
+  atlas: Atlas | null;
+  row: number;
+  /** The cell's twenty frame names on its atlas, in animation order. */
+  frames: string[] | null;
   sprite: Phaser.GameObjects.Image | null;
   /** Out of view, sheet kept for the walk back. The DRAW LOOP MUST SKIP THESE:
    *  it sets every live sprite visible, so without the flag it undid the
@@ -182,8 +204,41 @@ export function foamFeature(): AmbientFeature {
   let sprites = 0; // live sprites, kept as a count so the frame never walks the map to ask
   let drawnG = -1;
   let drawnOn = false;
-  const stats = { resolves: 0, bakes: 0, bakeMs: 0, texMs: 0, texPeak: 0, scanMs: 0, scanPeak: 0, picks: 0, coast: 0, crest: 0, dropped: 0 };
+  const stats = { resolves: 0, bakes: 0, bakeMs: 0, texMs: 0, texPeak: 0, installs: 0, scanMs: 0, scanPeak: 0, scans: 0, scanTotal: 0, picks: 0, coast: 0, crest: 0, dropped: 0 };
   const sheetLRU: string[] = [];
+  const atlases: Atlas[] = [];
+  /** A free row on some atlas, opening a new atlas when every row is taken. */
+  const takeSlot = (): { atlas: Atlas; row: number } | null => {
+    for (const a of atlases) if (a.free.length) return { atlas: a, row: a.free.pop()! };
+    if (!scene) return null;
+    const key = `amb-foam-atlas-${atlases.length}`;
+    const tex = scene.textures.createCanvas(key, ATLAS_W, ATLAS_ROWS * ROW_H);
+    if (!tex) return null;
+    tex.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    const a: Atlas = { key, tex, free: [] };
+    for (let r = ATLAS_ROWS - 1; r >= 0; r--) a.free.push(r);
+    atlases.push(a);
+    return { atlas: a, row: a.free.pop()! };
+  };
+  /** One row of an atlas to the GPU — a texSubImage2D of that row where the
+   *  renderer is WebGL and the texture exists, else the whole canvas. The
+   *  canvas already holds the bytes, so a lost context restores them. */
+  const uploadRow = (a: Atlas, y0: number, row: ImageData): void => {
+    const r = scene?.game.renderer as (Phaser.Renderer.WebGL.WebGLRenderer & { gl?: WebGLRenderingContext }) | undefined;
+    const gl = r && r.type === Phaser.WEBGL ? r.gl : undefined;
+    const wrapper = (a.tex.source[0] as unknown as { glTexture?: { webGLTexture?: WebGLTexture | null } | null }).glTexture;
+    if (!gl || !wrapper?.webGLTexture || gl.isContextLost()) {
+      a.tex.refresh();
+      return;
+    }
+    gl.activeTexture(gl.TEXTURE0);
+    const prev = gl.getParameter(gl.TEXTURE_BINDING_2D) as WebGLTexture | null;
+    gl.bindTexture(gl.TEXTURE_2D, wrapper.webGLTexture);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true); // the canvas source's own convention; foam pixels are opaque or clear
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, y0, gl.RGBA, gl.UNSIGNED_BYTE, row);
+    gl.bindTexture(gl.TEXTURE_2D, prev);
+  };
 
   const idx = (c: number, r: number) => (world ? r * world.w + c : r * 4096 + c);
 
@@ -431,23 +486,34 @@ export function foamFeature(): AmbientFeature {
 
   /** Install a baked cell: its sheet, its sprite, its place in the LRU. */
   const install = (x: CellRec, out: Bake | null): void => {
-    const l: Live = { rec: x, bake: out, key: null, sprite: null, warm: false };
+    const l: Live = { rec: x, bake: out, key: null, atlas: null, row: -1, frames: null, sprite: null, warm: false };
     live.set(idx(x.c, x.r), l);
-    if (out && scene) {
+    if (out && scene && out.h <= ROW_H && out.w * out.frames <= ATLAS_W) {
       const t1 = performance.now();
-      const key = `amb-foam:${x.c},${x.r}`;
-      const tex = scene.textures.createCanvas(key, out.w * out.frames, out.h);
-      if (tex) {
-        const ctx2 = tex.getContext();
-        const id = ctx2.createImageData(out.w * out.frames, out.h);
-        id.data.set(out.data);
-        ctx2.putImageData(id, 0, 0);
-        tex.setFilter(Phaser.Textures.FilterMode.NEAREST);
-        for (let k = 0; k < out.frames; k++) tex.add(k, 0, k * out.w, 0, out.w, out.h);
-        tex.refresh();
+      const slot = takeSlot();
+      if (slot) {
+        const { atlas, row } = slot;
+        const y0 = row * ROW_H;
+        // The whole row, the sheet at its left and the rest clear: a reused
+        // row must not show the last tenant's pixels past the new sheet.
+        const sw = out.w * out.frames;
+        const bytes = new ImageData(ATLAS_W, ROW_H);
+        for (let y = 0; y < out.h; y++) bytes.data.set(out.data.subarray(y * sw * 4, (y + 1) * sw * 4), y * ATLAS_W * 4);
+        atlas.tex.context.putImageData(bytes, 0, y0);
+        uploadRow(atlas, y0, bytes);
+        const key = `${x.c},${x.r}`;
+        const frames: string[] = [];
+        for (let k = 0; k < out.frames; k++) {
+          const name = `${key}:${k}`;
+          atlas.tex.add(name, 0, k * out.w, y0, out.w, out.h);
+          frames.push(name);
+        }
         l.key = key;
+        l.atlas = atlas;
+        l.row = row;
+        l.frames = frames;
         l.sprite = scene.add
-          .image(x.sx + out.bx, x.sy + out.by, key, 0)
+          .image(x.sx + out.bx, x.sy + out.by, atlas.key, frames[0])
           .setOrigin(0, 0)
           .setDepth(DEPTH)
           .setScale(1)
@@ -455,6 +521,7 @@ export function foamFeature(): AmbientFeature {
           .setVisible(false);
         sheetLRU.push(key);
         sprites++;
+        stats.installs++;
       }
       const tm = performance.now() - t1;
       stats.texMs += tm;
@@ -466,12 +533,18 @@ export function foamFeature(): AmbientFeature {
     if (l.sprite) sprites--;
     l.sprite?.destroy();
     l.sprite = null;
-    if (l.key && scene) {
-      scene.textures.remove(l.key);
+    if (l.atlas && l.frames) {
+      for (const name of l.frames) l.atlas.tex.remove(name);
+      l.atlas.free.push(l.row); // the row's pixels stay until the next tenant overwrites the whole row
+    }
+    if (l.key) {
       const at = sheetLRU.indexOf(l.key);
       if (at >= 0) sheetLRU.splice(at, 1);
     }
     l.key = null;
+    l.atlas = null;
+    l.row = -1;
+    l.frames = null;
     l.bake = null;
   };
 
@@ -584,6 +657,8 @@ export function foamFeature(): AmbientFeature {
       if (sheetLRU[0] === key) sheetLRU.shift();
     }
     stats.scanMs = performance.now() - t0;
+    stats.scans++;
+    stats.scanTotal += stats.scanMs;
     if (stats.scanMs > stats.scanPeak) stats.scanPeak = stats.scanMs;
   };
 
@@ -638,7 +713,10 @@ export function foamFeature(): AmbientFeature {
       const view = ctx.view;
       // scan on a throttle, or sooner when the camera has moved a cell
       scanAge += dt;
-      const moved = Math.abs(view.x - lastViewX) > DX || Math.abs(view.y - lastViewY) > 2 * DY;
+      /* A SCAN PER CELL OF TRAVEL, not per half-cell: the walk re-queues
+       * only what entered the padded view, and at his walking pace a
+       * half-cell trigger ran the lattice walk eight times a second. */
+      const moved = Math.abs(view.x - lastViewX) > 2 * DX || Math.abs(view.y - lastViewY) > 4 * DY;
       const outdoorNow = ctx.outdoor > 0.01 || forced;
       if ((scanAge >= SCAN_MS || moved) && !suppressed && outdoorNow) {
         scanAge = 0;
@@ -667,7 +745,7 @@ export function foamFeature(): AmbientFeature {
           if (s.visible) s.setVisible(false);
           continue;
         }
-        if (stepped) s.setFrame(k);
+        if (stepped && l.frames) s.setFrame(l.frames[k]);
         s.setAlpha(g).setVisible(true);
       }
     },
@@ -711,6 +789,8 @@ export function foamFeature(): AmbientFeature {
     dispose() {
       for (const l of live.values()) dropLive(l);
       live.clear();
+      for (const a of atlases) scene?.textures.remove(a.key);
+      atlases.length = 0;
       queue = [];
       queueAt = 0;
       cells.clear();

@@ -3654,6 +3654,7 @@ export class WorldScene extends Phaser.Scene {
       cost?: (reset?: boolean) => Record<string, { ms: number; peak: number; frames: number }>;
       director?: () => { active?: string | null };
       zone?: () => Record<string, number | boolean>;
+      debug?: (name: string) => unknown;
     };
     const amb = (window as unknown as { __mlAmbient?: Probe }).__mlAmbient;
     if (!amb) return undefined;
@@ -3667,6 +3668,19 @@ export class WorldScene extends Phaser.Scene {
        * against its zones), refreshes and pruned memos, plus the memos held.
        * A tick's cost is these misses; the `_gloom`/`_director` rows above
        * are their ms. */
+      /* FOAM'S OWN PARTS (ambient/foam/foam.ts `debug()`), the window's
+       * deltas: cells resolved and baked with the bake ms, installs with
+       * their ms (the atlas row upload), scans with their ms, the picker
+       * calls — and what it holds now. The costliest effect of his run, and
+       * this says which of its parts. */
+      const foam = amb.debug?.("foam") as Record<string, unknown> | null | undefined;
+      if (foam && typeof foam.bakes === "number") {
+        const prev = this.perfFoamPrev;
+        const d = (k: string) => (typeof foam[k] === "number" ? (foam[k] as number) - (prev[k] ?? 0) : 0);
+        const n = (k: string) => (typeof foam[k] === "number" ? (foam[k] as number) : 0);
+        out["foam:parts"] = { resolves: d("resolves"), bakes: d("bakes"), bakeMs: +d("bakeMs").toFixed(1), installs: d("installs"), texMs: +d("texMs").toFixed(1), scans: d("scans"), scanMs: +d("scanTotal").toFixed(1), picks: d("picks"), live: n("live"), sprites: n("sprites"), queued: n("queued") };
+        for (const k of ["resolves", "bakes", "bakeMs", "installs", "texMs", "scans", "scanTotal", "picks"]) prev[k] = n(k);
+      }
       const z = amb.zone?.();
       if (z && typeof z.picks === "number") {
         const prev = this.perfZonePrev;
@@ -3681,6 +3695,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private perfZonePrev: Record<string, number> = {};
+  private perfFoamPrev: Record<string, number> = {};
 
   /** The HUD's ambient mode as it stores it (hud.ts `AMB_MODE_KEY`, read only
    *  here): `zone` (the server's roll), `forced:N` (his N effects), `none`. */

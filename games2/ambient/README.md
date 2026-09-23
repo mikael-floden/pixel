@@ -260,6 +260,17 @@ them; folder isolation beats DRY here).
   (`tiles/patterns/masks.webp`, fetched by the feature itself) says which
   pixels of the tile are water. Every earlier feature kept a measured
   DISTANCE from the water cells because it could not see that seam.
+  **A FOAM SHEET LIVES IN A SHARED ATLAS, NOT IN ITS OWN TEXTURE** (games-perf
+  2026-09-23: his run billed foam 2.4 ms a frame along a shore — a canvas, an
+  ImageData, a full upload and twenty Frame objects per cell, and a sprite
+  per cell on its own texture splitting the renderer's batches). Atlases are
+  TILE*FRAMES px wide with 32 rows of TOP_ROWS px; a cell takes a row, its
+  bytes go into the canvas (the CPU copy a context restore re-uploads) and to
+  the GPU as one texSubImage2D of that row; its twenty frames are names on
+  the atlas (`c,r:k`) and the sprite steps through them. The walk's scan
+  fires per CELL of travel, not per half-cell. `verify-foam.mjs` judges the
+  pixels; `stats` carries scans/scanTotal/installs, and the beacon's
+  `ambient["foam:parts"]` row is their window deltas.
 - **THE LIGHT KINDS, AND WHICH EFFECT READS WHICH.** The scenery domain
   classified all 500 lit pieces by eye, and the two fire effects ask different
   questions of that data. `embers/` reads the published `light.embers` boolean
