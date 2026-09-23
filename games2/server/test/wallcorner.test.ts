@@ -55,7 +55,15 @@ function house(): TerrainGrid {
       return { t: "grass", l: ring && !door ? 6 : 0 };
     }),
   );
-  return buildTerrainGrid(W, H, rows, [], []);
+  // ...UNDER ITS ROOF, as the real one is: the_game's roof deck names the
+  // whole footprint, ring included, at the ring's own level. That is what
+  // makes these walls a BUILDING's to the escape (escapeRetreatCells: one
+  // tile back into a roofed wall, ESCAPE_RETREAT_OPEN_CELLS into a bare
+  // mountain — maintainer 2026-09-23). A bare ring here would read as a
+  // mountain and the escape would run him out of the corner.
+  const cells: { col: number; row: number }[] = [];
+  for (let r = 7; r <= 13; r++) for (let c = 7; c <= 14; c++) cells.push({ col: c, row: r });
+  return buildTerrainGrid(W, H, rows, [], [{ level: 6, thickness: 0, mat: "grass", cells }]);
 }
 
 /** THE BIG HOUSE (his 310,234): a ring wall cols 3..18 x rows 7..13, the door at

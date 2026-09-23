@@ -1488,6 +1488,12 @@ export interface TerrainGrid {
    * (maintainer 2026-08-09: "I don't want players to run slower over bridges.
    * The ground type decides the speed as normal"). See surfaceAtWorldElev. */
   deckType: string[];
+  /** Every cell ANY deck names, whatever its level — a house's roof laps its
+   *  own wall ring at the ring's own level, which `deck` (the overpass
+   *  surface) rightly drops, and this keeps: it is what says a wall is a
+   *  building's (escapeRetreatCells). Optional: a hand-built grid without it
+   *  reads as bare terrain. */
+  roofed?: boolean[];
 }
 
 export function buildTerrainGrid(
@@ -1516,10 +1522,12 @@ export function buildTerrainGrid(
   // base terrain (roof lapping its own walls, deck on a hilltop) it's one
   // surface, not an overpass — keep only the higher of the two as the deck so
   // "under" makes sense (the base is still the lower walkable surface).
+  const roofed: boolean[] = new Array(width * height).fill(false);
   for (const d of decks) {
     for (const cc of d.cells) {
       if (cc.col < 0 || cc.row < 0 || cc.col >= width || cc.row >= height) continue;
       const i = cc.row * width + cc.col;
+      roofed[i] = true;
       if (d.level > level[i] && d.level > deck[i]) {
         deck[i] = d.level;
         // Slab underside. thickness 0 (a bare top slab) leaves deckBot == level,
@@ -1540,7 +1548,7 @@ export function buildTerrainGrid(
       blocked[p.row * width + p.col] = true; // a prop fills its cell: no body fits
     }
   }
-  return { width, height, level, type, blocked, propBlocked, deck, deckBot, deckType };
+  return { width, height, level, type, blocked, propBlocked, deck, deckBot, deckType, roofed };
 }
 
 /** Is the BASE surface of cell `i` reachable for a mover at `elev`? A deck's
@@ -4869,7 +4877,8 @@ export function walkHeading(
             const lh = opts.heading ?? { ax, ay };
             const lw = screenToWorldVector(lh.ax, lh.ay);
             const side = ux * lw.y - uy * lw.x < -1e-9 ? -1 : 1;
-            const esc = playerOwns ? null : startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, side, !(wall && !wall.prop));
+            const retreat = wall && !wall.prop ? escapeRetreatCells(grid, x, y, ux, uy, opts.fromElev) : ESCAPE_RETREAT_CELLS;
+            const esc = playerOwns ? null : startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, side, !(wall && !wall.prop), retreat);
             /* A DOOR IN REACH IS A ROUTE TOO, AND THE SHORTER WALK WINS. Sliding
              * sideways to a doorway makes no progress along the ask, so this
              * window fired while the door-finder (rule 1) was already steering
@@ -4893,7 +4902,7 @@ export function walkHeading(
              * into" (maintainer 2026-09-13). The dungeon pocket's exit is one tile
              * aside; the spawn house's door is two tiles along the wall, and a route
              * to it ran the player out of the house he was running into. */
-            if (esc && routeRetreat(esc, x, y, ux, uy) <= ESCAPE_RETREAT_CELLS) {
+            if (esc && routeRetreat(esc, x, y, ux, uy) <= retreat) {
               const d = stepAutopilot(grid, esc, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
               if (!d.done) {
                 hold.ax = 0;
@@ -5017,6 +5026,10 @@ export function startEscapeRoute(
    *  table out through the door and round the outside to a goal beyond the
    *  wall. */
   prop = false,
+  /** How many tiles back the search may look before it is on: the one tile
+   *  of ESCAPE_RETREAT_CELLS at a roofed wall, ESCAPE_RETREAT_OPEN_CELLS at a
+   *  bare one (escapeRetreatCells). */
+  retreat = ESCAPE_RETREAT_CELLS,
 ): AutopilotTrip | null {
   const trip = planRoundTheStick(
     grid, x, y, ax, ay, nowMs, fromElev,
@@ -5024,6 +5037,7 @@ export function startEscapeRoute(
     prop ? ESCAPE_PROP_CORRIDOR_CELLS : ESCAPE_CORRIDOR_CELLS, true, side,
     new Set<number>(), // the cells the walk stands at, found per plan (routeStallCell)
     prop,
+    retreat,
   );
   if (trip) trip.committed = true;
   return trip;
@@ -5090,6 +5104,7 @@ function planRoundTheStick(
    *  out of it, which he knows (2026-09-13: "the nav try to navigate me out
    *  of the house"). */
   underRoof = false,
+  retreat = ESCAPE_RETREAT_CELLS,
 ): AutopilotTrip | null {
   const v = screenToWorldVector(ax, ay);
   const l = Math.hypot(v.x, v.y);
@@ -5127,7 +5142,7 @@ function planRoundTheStick(
         // reachable, ten cells south and up a ramp, and that journey was
         // thrown away (withinCorridor) with the way on unplanned.
         escape
-          ? { ux, uy, min: ESCAPE_MIN_PROGRESS_CELLS, max: dist + 0.5, lateral: corridorCells, back: ESCAPE_RETREAT_CELLS + 1 }
+          ? { ux, uy, min: ESCAPE_MIN_PROGRESS_CELLS, max: dist + 0.5, lateral: corridorCells, back: retreat + 1 }
           : undefined,
       );
       if (!trip || !withinCorridor(trip, x, y, cx, cy, corridorCells)) break;
@@ -5402,6 +5417,43 @@ function routeStall(
  *  one tile aside of the tile being run into, never a door two tiles back
  *  (maintainer 2026-09-13; see walkHeading rule 0). */
 export const ESCAPE_RETREAT_CELLS = 1;
+/** ...INTO A BUILDING. A house's wall stands under its roof deck; a
+ *  mountain's does not. The iso ground runs a screen-horizontal wall as a
+ *  staircase of Ʌ notches, and every sideways tile along it is a tile "back"
+ *  on one world axis of an up-screen push: from 214.5,247.4 on the_game's
+ *  mountain (level 9, held up) the escape found the 17-point way to the
+ *  summit and threw it away for a retreat of 3, and the body stood 19 s; on
+ *  the plateau above, the way on is sideways on the level. Pressed into a
+ *  BARE wall the escape may go this many tiles back before it is on
+ *  (maintainer 2026-09-23: "inside a house walking into a corner feels like
+ *  a player decision. When outdoors and trying to run up a mountain that has
+ *  to contain a lot of Ʌ I feel the player should navigate up the mountain
+ *  more flawlessly"). Pressed into a ROOFED wall it keeps the one tile: the
+ *  spawn house's outside corner held down still runs into the corner and
+ *  stays (2026-09-13). Judged by the WALL, not by the body: that corner is
+ *  outdoors too. */
+export const ESCAPE_RETREAT_OPEN_CELLS = 4;
+/** The escape's retreat allowance for the wall the body is pressed into: one
+ *  tile when a cell ahead along the ask that stands above the body is named
+ *  by a deck (`roofed`: a building's wall ring under its roof, at the roof's
+ *  own level), ESCAPE_RETREAT_OPEN_CELLS when every such cell is bare
+ *  terrain (a mountain; a cave's ring, which its lid does not name). */
+export function escapeRetreatCells(grid: TerrainGrid, x: number, y: number, ux: number, uy: number, elev: number | undefined): number {
+  const c = Math.floor(x / CELL_WU);
+  const r = Math.floor(y / CELL_WU);
+  const e = elev ?? (c >= 0 && r >= 0 && c < grid.width && r < grid.height ? grid.level[r * grid.width + c] : 0);
+  const sx = Math.abs(ux) > 1e-6 ? Math.sign(ux) : 0;
+  const sy = Math.abs(uy) > 1e-6 ? Math.sign(uy) : 0;
+  for (const [dc, dr] of [[sx, 0], [0, sy], [sx, sy]] as const) {
+    if (dc === 0 && dr === 0) continue;
+    const cc = c + dc;
+    const rr = r + dr;
+    if (cc < 0 || rr < 0 || cc >= grid.width || rr >= grid.height) continue;
+    const i = rr * grid.width + cc;
+    if (grid.level[i] > e + WALK_CLIMB + 1e-9 && (grid.roofed?.[i] || grid.deck[i] >= 0)) return ESCAPE_RETREAT_CELLS;
+  }
+  return ESCAPE_RETREAT_OPEN_CELLS;
+}
 
 /** THE NAV SLIDE ANGLE — his Settings dial (maintainer 2026-09-18, running
  *  bottom-right into the hearth house's east wall at 334.6,232.3: "the nav

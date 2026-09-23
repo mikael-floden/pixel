@@ -358,3 +358,77 @@ test("an unreachable spot on a lid never best-efforts to the floor under it; the
   const both = startBestTrip(g, from.x, from.y, true, 0, 0, [{ x: cx(4), y: cx(4), goalLevel: 20 }, { x: cx(4), y: cx(4), goalLevel: 0 }]);
   assert.ok(both && Math.floor(both.target.y / CELL_WU) === 4, "with the floor offered as a reading, it wins as before");
 });
+
+// ============================================================================
+// THE ESCAPE MAY GO SEVERAL TILES BACK INTO A BARE WALL, ONE INTO A ROOFED
+// ONE (maintainer 2026-09-23, holding the stick up the mountain at
+// 218.9,250.7: "the player get stuck over and over again in a Ʌ ... inside a
+// house walking into a corner feels like a player decision. When outdoors and
+// trying to run up a mountain that has to contain a lot of Ʌ I feel the player
+// should navigate up the mountain more flawlessly"). The iso ground runs a
+// screen-horizontal wall as a staircase of notches, and every sideways tile
+// along it is a tile back on one world axis of an up-screen push; the way up
+// from level 9 needs three, and the one-tile rule threw the found route away.
+// A house's wall stands under its roof deck, a mountain's does not — judged by
+// the wall, not the body: the spawn house's OUTSIDE corner (wallcorner.test.ts,
+// held DOWN) keeps its one tile and the body still runs into it and stays.
+import {
+  walkHeading, hopIntoWall, ESCAPE_RETREAT_CELLS, ESCAPE_RETREAT_OPEN_CELLS, escapeRetreatCells,
+  JUMP_CLIMB, JUMP_MS, JUMP_COOLDOWN_MS, JUMP_SPEED_FACTOR,
+  NAV_HELP_MS_DEFAULT, NAV_SLIDE_DEG_DEFAULT, WALL_ASSIST_DEG_DEFAULT, type HopMemo,
+} from "@nangijala/shared";
+
+test("the escape's retreat allowance: one tile into a roofed wall, more into a bare one", () => {
+  const rows = Array.from({ length: 8 }, (_, r) => Array.from({ length: 8 }, (_, c) => ({ t: "grass", l: r === 2 ? 6 : 0 }))); // a wall row at level 6
+  const roofed = buildTerrainGrid(8, 8, rows, [], [{ level: 6, thickness: 0, mat: "grass", cells: [{ col: 3, row: 2 }, { col: 4, row: 2 }] }]);
+  const bare = buildTerrainGrid(8, 8, rows, [], []);
+  // The body at (4,3) pressing screen-up (world -x,-y): the cells ahead are (3,3), (4,2), (3,2).
+  assert.equal(escapeRetreatCells(roofed, 4.5 * CELL_WU, 3.5 * CELL_WU, -0.7, -0.7, 0), ESCAPE_RETREAT_CELLS, "the house's wall under its roof: one tile");
+  assert.equal(escapeRetreatCells(bare, 4.5 * CELL_WU, 3.5 * CELL_WU, -0.7, -0.7, 0), ESCAPE_RETREAT_OPEN_CELLS, "the mountain's bare wall: the open allowance");
+  assert.equal(escapeRetreatCells(roofed, 4.5 * CELL_WU, 3.5 * CELL_WU, -0.7, -0.7, 6), ESCAPE_RETREAT_OPEN_CELLS, "standing level with it, nothing ahead is a wall");
+  assert.ok(ESCAPE_RETREAT_OPEN_CELLS >= 3, "the mountain's way up needs three");
+});
+
+/** Hold a screen input for `secs` on the real tick — the hold brain, the
+ *  auto-jump, the movement step and the elevation resolve, as the client
+ *  runs them — and report where the feet end up and the longest stand. */
+function holdStick(g: TerrainGrid, ww: number, wh: number, cx: number, cy: number, elev0: number, ax: number, ay: number, secs: number) {
+  let x = cx * CELL_WU, y = cy * CELL_WU, elev = elev0;
+  let trip: AutopilotTrip | null = null;
+  const memo: SlideMemo = { ax: 0, ay: 0 };
+  const hop: HopMemo = { hop: null };
+  let jumpUntil = -1, jumpReadyAt = -1, maxLevel = elev;
+  let sx = x, sy = y, st = 0, worstStall = 0;
+  const dt = 1 / 60;
+  for (let t = 0; t < secs * 1000; t += 1000 * dt) {
+    const r = walkHeading(g, x, y, ax, ay, memo, {
+      nowMs: t, trip, fromElev: elev, worldW: ww, worldH: wh, heading: { ax, ay },
+      wallAssistDeg: WALL_ASSIST_DEG_DEFAULT, navSlideDeg: NAV_SLIDE_DEG_DEFAULT, stuckMs: NAV_HELP_MS_DEFAULT, speedFrac: 1,
+    });
+    trip = r.trip;
+    const canJump = t >= jumpUntil && t >= jumpReadyAt;
+    const h = hopIntoWall(g, x, y, r.ax, r.ay, elev, t, canJump, hop, true);
+    if (h.jump) { jumpUntil = t + JUMP_MS; jumpReadyAt = jumpUntil + JUMP_COOLDOWN_MS; }
+    const jumping = t < jumpUntil;
+    const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+    const u = unstickFromSolids(g, x, y, 80 * dt, undefined, elev); x = u.x; y = u.y;
+    const m = stepMovement(x, y, h.ax, h.ay, true, dt, makeBlockedElev(g, ctx, () => elev), jumping ? JUMP_SPEED_FACTOR : 1, true, ww, wh, makeSideBlocked(g, ctx, () => elev), { screenSlide: trip === null });
+    x = m.x; y = m.y;
+    elev = resolveElevAt(g, elev, x, y, ctx);
+    maxLevel = Math.max(maxLevel, elev);
+    if (Math.hypot(x - sx, y - sy) > CELL_WU * 0.5) { sx = x; sy = y; st = t; }
+    else worstStall = Math.max(worstStall, t - st);
+  }
+  return { x: x / CELL_WU, y: y / CELL_WU, elev, maxLevel, worstStall };
+}
+
+test("on the_game: holding the stick up from 218.9,250.7 climbs the mountain instead of standing in its notches", { skip: MISSING.length ? `not checked out: ${MISSING.join(", ")}` : false }, async (t) => {
+  const { g, ww, wh } = await realGrid();
+  const c = Math.floor(218.9), r = Math.floor(250.7);
+  if (g.level[r * g.width + c] !== 4 || g.level[(r - 3) * g.width + c - 4] !== 9) return t.skip("the mountain at 214-219,247-251 has been re-authored");
+  const res = holdStick(g, ww, wh, 218.9, 250.7, 4, 0, -1, 15);
+  // Measured with the one-tile rule: stood at 214.5,247.4 on level 9 for the
+  // whole run. With the open-terrain allowance: level 32 in 15 s, two escapes.
+  assert.ok(res.maxLevel >= 20, `15 s of holding up reaches the high ground (got level ${res.maxLevel}, ended ${res.x.toFixed(1)},${res.y.toFixed(1)} L${res.elev})`);
+  assert.ok(res.worstStall < 4000, `never stands in a notch for long (worst ${(res.worstStall / 1000).toFixed(1)} s)`);
+});

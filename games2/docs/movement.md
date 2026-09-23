@@ -240,12 +240,31 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   the world's levels, so re-authoring cannot move it) and the open-ground
   case that must never escalate. Probe: `scripts/holdtrace.ts` (COL ROW AX
   AY) traces `walkHeading` at any spot of the real world, tick by tick.
-  **AND ONE TILE BACK, NO FURTHER** (maintainer 2026-09-13: "a backwards
-  navigation can only happen when ... the corner is just around the tile you
-  currently is running into ... the corner was 2 tiles away from the opening
-  and not 1"): the escape is the only rule that moves against the stick, and
-  `routeRetreat` counts its route's backwards reach in WHOLE TILES per world
-  axis from the body's cell (`ESCAPE_RETREAT_CELLS` 1) — the pocket's exit
+  **AND ONE TILE BACK INTO A BUILDING'S WALL, FOUR INTO A BARE ONE**
+  (maintainer 2026-09-13: "a backwards navigation can only happen when ... the
+  corner is just around the tile you currently is running into ... the corner
+  was 2 tiles away from the opening and not 1"; 2026-09-23, held up the
+  mountain at 218.9,250.7 and stood in every notch: "inside a house walking
+  into a corner feels like a player decision. When outdoors and trying to run
+  up a mountain that has to contain a lot of Ʌ I feel the player should
+  navigate up the mountain more flawlessly"): the escape is the only rule
+  that moves against the stick, and `routeRetreat` counts its route's
+  backwards reach in WHOLE TILES per world axis from the body's cell —
+  `escapeRetreatCells`: `ESCAPE_RETREAT_CELLS` 1 when a cell ahead along the
+  ask that stands above the body is named by a deck (`TerrainGrid.roofed`: a
+  house's ring under its roof, at the roof's own level, which `deck` rightly
+  drops as no overpass), `ESCAPE_RETREAT_OPEN_CELLS` 4 when every such cell
+  is bare terrain (a mountain; a cave's ring, which its lid does not name),
+  because the iso ground runs a screen-horizontal wall as a staircase of
+  notches and every sideways tile along it is a tile back on one axis of an
+  up-screen push (the way up from level 9 needs three; the one-tile rule
+  threw the found 17-point route to the summit away and the body stood 19 s;
+  measured on the real tick, navtap's climb arm: level 4 to 32 in 15 s, worst
+  stand under 2 s). Judged by the WALL, not the body: the spawn house's
+  outside corner is outdoors too and keeps its one tile (wallcorner.test.ts,
+  whose house now carries the roof deck the real one has). REJECTED: "the
+  body under a roof" (that corner is outdoors) and "the route must climb"
+  (the plateau's next notch is on the level) — the pocket's exit
   one tile aside passes, the spawn house's door two tiles along the wall does
   not. Tiles, not a distance: findPath nudges its points off the walls, so
   the pocket measured 1.07 cells against the door's 1.48. Counted over the
