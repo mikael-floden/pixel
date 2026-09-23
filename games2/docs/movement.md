@@ -1196,6 +1196,16 @@ clip, no tint.
 
 ## The relocation veil (WorldScene.beginRelocation, `relocatehold.ts`)
 
+  A HIDDEN CAVE IS NEVER A CANDIDATE: when the hidden reading is a cave floor
+  under a cave-lid deck and that cell is not in my own indoor mask, it is
+  dropped and the visible spot runs alone on findPath's best effort (maintainer
+  2026-09-23, running up the mountain over the dungeon and landing inside it:
+  "I don't want the nav system to walk into a cave unless it's extremely
+  obvious ... better to run as close as possible to the place on top"). A house
+  keeps both readings — you can see its door — and a cave you stand in makes
+  its floor the visible reading through the cut-away, so neither is touched.
+  `nearestGroundTo` is not offered in its place (screen-space nearest can be
+  that same floor).
 - **A RESPAWN GOES THROUGH THE LOADING SCREEN, NEVER AN INSTANT SNAP**
   (maintainer 2026-09-19: "the player spawns so fast at the new location so
   the graphics has not finished preparing the new ground and

@@ -16369,14 +16369,40 @@ export class WorldScene extends Phaser.Scene {
     const cands: Array<{ x: number; y: number; goalLevel?: number }> = [{ x, y, goalLevel }];
     // (1) the other surface drawn at the SAME PIXEL — a different cell, since
     //     screen y subtracts level*lh. Usually the room under a roof.
-    const under = pick && goalLevel !== undefined ? this.pickGround(pick.wx, pick.wy, goalLevel) : null;
+    let under = pick && goalLevel !== undefined ? this.pickGround(pick.wx, pick.wy, goalLevel) : null;
+    // A HIDDEN CAVE IS NEVER WHAT A TAP MEANT (maintainer 2026-09-23, running
+    // up the mountain over the dungeon: "I don't want the nav system to walk
+    // into a cave unless it's extremely obvious the player wanted to run into
+    // the cave ... Some players don't even know there is a hidden cave here").
+    // The hidden reading under a mountain pixel is the cave FLOOR under its
+    // lid, and rule 1 (arriving beats giving up short) handed it the walk the
+    // moment the visible spot was a step out of reach. A house is different
+    // (its roof reading is the room you can see the door of), and so is a cave
+    // you are standing in (the cut-away makes its floor the VISIBLE reading),
+    // so the drop is exactly: a cave-lid deck over the hidden cell, and that
+    // cell not in my own indoor mask. With the hidden reading gone the visible
+    // candidate runs alone and findPath's best effort is the answer — as close
+    // to the spot on top as she can get, never under it. `nearestGroundTo` is
+    // not offered in its place: it measures in screen space and can land on
+    // the same hidden floor.
+    let hiddenCave = false;
+    if (under) {
+      const ui = Math.floor(under.y / CELL_WU) * (this.world?.width ?? 0) + Math.floor(under.x / CELL_WU);
+      const dk = this.deckIndex.get(ui);
+      if (dk && dk.deck.kind === "cave" && under.lvl < dk.deck.level && !this.indoorMask?.has(ui)) {
+        under = null;
+        hiddenCave = true;
+      }
+    }
     if (under) cands.push({ x: under.x, y: under.y, goalLevel: under.lvl });
     // ...and when that reading is a WALL or empty sky, the answer is NOT "the
     // floor of the cell you clicked": that draws `level * lh` = 96px below the
     // marker, which is the walker standing with her head at it. Take the
     // nearest walkable spot to the MARKER instead, measured in screen space —
     // "as close as she can get" is a statement about the pixel, not the cell.
-    else if (pick) {
+    // (Not when the hidden reading was a cave floor dropped above: `under`
+    // was found, and the pixel's answer is the visible spot's best effort.)
+    else if (pick && !hiddenCave) {
       const near = this.nearestGroundTo(pick.wx, pick.wy);
       if (near) cands.push({ x: near.x, y: near.y, goalLevel: near.lvl });
     }
