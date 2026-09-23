@@ -1,7 +1,7 @@
 {
   "domain": "maps2",
   "health": "running",
-  "current": "IDLE. Shipped: the monster rebalance (the_game's spawns.json derived by spawns.py's doctrine through the W3 adapter; town sanctuary; caves at their own levels). Released every file.",
+  "current": "CAVE WALLS NAMED (games agent's report via the maintainer, the grass wall in Pit VI at 262,66): new maps2/pipeline/cavewalls.py names every cave ring cell the generator's cliff_faces names, in place; world3grow.py cliff_faces reads the cave's own rock line (cave_rock_min) instead of ROCK_MIN and newcaves.paint_themes hands the theme's side to cave_side; the_game world.json walls[] + change log + docs. Files: maps2/pipeline/cavewalls.py, maps2/pipeline/world3grow.py (cliff_faces), maps2/pipeline/newcaves.py, maps2/worlds3/the_game/world.json, maps2/reports/the_game.json, maps2/README.md, maps2/spec/WORLD3.md, coordination/maps2.json",
   "owner": "Map2 agent",
   "notes": [
     "the_island2 (islandworld2.py, n=200 seed=21): the HYBRID map. UPPER = the_island's mountain verbatim (Island subclass), strictly antitone via camera_monotone MASKED to the mountain (autotile.camera_monotone_masked), floored at level 14 so its whole front is a sheer foot the lower world runs into. LOWER = a genuine-relief MAZE (levels go up AND down \u2014 a strictly-antitone field can only make ONE connected lowest sheet, so a maze MUST use relief). Legal WITHOUT flattening it via the WALL-MATERIAL RULE: same-material toward-camera up-steps get their higher rim recoloured to a wall material (stone/obsidian, level-band parity so stacked cliffs never repeat a material) \u2014 Pass A `_wall_rim` (vectorised) + Pass B `_lip_cover` (iterated, MAT-ONLY so it can never undo connectivity or open a pit). Seam is legal by construction (mtn foot 14 > maze top 10, mtn entirely up-screen). Connectivity/no-pits/bridges REUSE the_island's machinery (_connect_all/_fill_traps/_place_bridges); reachability proof is PROP-AWARE (worldio sets collision=1 on props, so dense props are walls). All hard-asserted every build: occlusion==0, traps==0, maze_land>=1.6*mtn_land, prop-aware reachable == terrain reachable, main piece>=97% of land, every bridge row both-bank-walkable, max level>=30.",
@@ -346,5 +346,5 @@
       "at": "2026-09-18T10:18:36+00:00"
     }
   ],
-  "updated_at": "2026-09-18T10:18:36.787693+00:00"
+  "updated_at": "2026-09-23T18:26:00Z"
 }
