@@ -543,6 +543,15 @@ file goes onto the already-running server, and browsers fetch it from there** â€
 no image, no restart, nobody disconnected. Anything else (the server's own
 program, the art) lives INSIDE the container and needs a new container.
 
+**Docs, markdown and tests never stop either lane** (root and `games2/` `*.md`,
+`games2/docs/**`, `games2/spec/*.md`, `games2/*/test/**`). Nothing the running
+game serves or executes reads them, so the push's code goes out on the lane
+and the container, which still builds for the push, carries them into the
+image. (Maintainer 2026-09-23, after a doc beside a fix sent it down the
+5-minute container: "a doc file that is not even part of the game".) The set
+stops at server, `shared/`, scripts, the dist root and workflows, and
+`check-deploy-filter.mjs` asserts both edges in both lanes.
+
 ## PUBLISH FIRST, VERIFY AFTER, ROLL BACK ON RED
 
 The gate used to run in front of the publish, which was right while nothing

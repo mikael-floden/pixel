@@ -213,6 +213,7 @@ fails CLOSED: a carried blob that is missing refuses the publish rather than
 drop live art.
 - `fast-publish.yml` carries **browser code**: `games2/client/src/**` and
   `games2/client/index.html`. Sparse checkout, measured **33 s** push-to-live.
+  Docs, markdown and tests in the same push never stop either lane.
 - `art-publish.yml` carries **ART** — the nine domains the game renders
   (`characters2 tiles maps2 scenery sounds music monsters items lore`) plus the
   two tracked generated catalogs — by reproducing the image's curated art root

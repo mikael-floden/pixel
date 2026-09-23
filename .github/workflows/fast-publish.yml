@@ -129,7 +129,17 @@ jobs:
           fi
           CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || git diff --name-only HEAD~1..HEAD)
           echo "$CHANGED" | sed 's/^/  /'
-          OUTSIDE=$(echo "$CHANGED" | grep -vE '^games2/client/(src/|index\.html$)' | grep -vE '^(coordination/|live/)' || true)
+          # DOCS, MARKDOWN AND TESTS NEVER STOP A LANE (maintainer 2026-09-23:
+          # "Why does the fast lane not work if you change a doc file that is
+          # not even part of the game?! That in itself is a huge bug!"). Nothing
+          # the running game serves or executes reads them, so publishing the
+          # push's browser code without them changes nothing a player sees; the
+          # container still builds for the push and carries them into the image.
+          # Anchored at both ends like every other line here.
+          OUTSIDE=$(echo "$CHANGED" \
+            | grep -vE '^games2/client/(src/|index\.html$)' \
+            | grep -vE '^([^/]+\.md|games2/[^/]+\.md|games2/docs/.+|games2/spec/[^/]+\.md|games2/[^/]+/test/.+)$' \
+            | grep -vE '^(coordination/|live/)' || true)
           if [ -n "$OUTSIDE" ]; then
             echo "publish=false" >> "$GITHUB_OUTPUT"
             echo "NOT publishing: this push also changes files the fast lane cannot carry:"

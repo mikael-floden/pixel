@@ -99,11 +99,34 @@ const ART = ["characters2", "tiles", "maps2", "scenery", "sounds", "music", "mon
     check(!admits(f, p), `the art lane REFUSES ${p}`);
 }
 
-// -------------------------------- the CLIENT lane's own filter, unchanged
+// -------------------------------- the CLIENT lane's own filter
 {
   const f = filterOf("fast-publish.yml", "OUTSIDE");
   for (const d of ART) check(!admits(f, `${d}/some/art.webp`), `the client lane stands down for ${d}/ (the art lane carries it)`);
   check(admits(f, "games2/client/src/main.ts"), "the client lane admits browser code");
+}
+
+// ---------------- DOCS, MARKDOWN AND TESTS NEVER STOP EITHER LANE (2026-09-23)
+// A doc beside a fix sent it down the 5-minute container instead of the 30 s
+// lane ("a doc file that is not even part of the game"). The inert set is
+// asserted in BOTH lanes, and so is its edge: it must not grow into server
+// code, scripts, the dist root or a workflow, and every path is anchored.
+const INERT = [
+  "games2/docs/tiles3-rendering.md", "games2/docs/img/roof.png", "games2/CLAUDE.md", "games2/INDOOR.md",
+  "games2/spec/ZONES.md", "CLAUDE.md", "README.md",
+  "games2/server/test/tiles3.test.ts", "games2/server/test/fixtures/tiles3-parity.json", "games2/composer/test/a.test.mjs",
+];
+const NOT_INERT = [
+  "games2/server/src/index.ts", "games2/shared/src/surfaces.ts", "games2/scripts/tiles3-fixture.py",
+  "games2/scripts/README.md", "games2/client/public/notes.md", "games2/client/public/sw.js",
+  "games2/spec/light-budget-baseline.json", "games2/Dockerfile", ".github/workflows/fast-publish.yml",
+  // anchoring traps
+  "games2/docsx/a.ts", "games2/server/testx/a.ts", "games2/server/src/test/a.ts", "games2/CLAUDE.mdx", "CLAUDE.md.bak",
+];
+for (const [file, lane] of [["fast-publish.yml", "client"], ["art-publish.yml", "art"]]) {
+  const f = filterOf(file, "OUTSIDE");
+  for (const p of INERT) check(admits(f, p), `the ${lane} lane does not stand down for ${p}`);
+  for (const p of NOT_INERT) check(!admits(f, p), `the ${lane} lane still stands down for ${p}`);
 }
 
 console.log(bad ? `\ncheck-deploy-filter: ${bad} FAILURE(S)` : "\ncheck-deploy-filter: every filter behaves as the lanes require");
