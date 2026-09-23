@@ -1625,17 +1625,17 @@
       "directions": {
         "south": {
           "status": "warn",
-          "step_mean": 0.069,
-          "step_max": 0.3297,
-          "drift": 2.23,
+          "step_mean": 0.0988,
+          "step_max": 0.2594,
+          "drift": 1.98,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.75,
+          "travel": 0.95,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2534,
-          "reach": 0.277,
+          "flash": 0.003,
+          "peak": 0.3401,
+          "reach": 0.273,
           "turn": 0,
           "end_area": 1.0,
           "end_iou": null,
@@ -1644,13 +1644,12 @@
             32
           ],
           "reasons": [
-            "motion 0.069 outside the calm band 0.08–0.9 — eyeball it",
-            "shallow strike: reach 0.28 — eyeball it"
+            "shallow strike: reach 0.27 — eyeball it"
           ],
-          "sub": "e878ad62-eb0c-4671-bffb-5d13a63d63e8",
-          "group": "e8336166-e3b0-43c1-bef7-1e44ac17adf0",
+          "sub": "334cc94f-fe17-490f-810a-58e9e8d071f8",
+          "group": "2eb69811-d6e5-429a-b329-c3868ca969a8",
           "takes": 1,
-          "version": 1,
+          "version": 4,
           "mirrored": false,
           "mode": "pro",
           "action": "Tail Sting - Whips the curled tail up over its head and drives the stinger straight down in front of it",
@@ -1660,7 +1659,7 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-23T18:40:55+00:00"
+          "generated_at": "2026-09-23T22:08:57+00:00"
         },
         "south-east": {
           "status": "warn",
