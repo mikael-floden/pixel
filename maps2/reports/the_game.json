@@ -1329,6 +1329,57 @@
     }
    ],
    "artifact": "https://claude.ai/artifact/NhZSfPZPhfSGati1miv9AG"
+  },
+  {
+   "date": "2026-09-23",
+   "commit": "324d2a0628f → b3fafc15896",
+   "before": "f9465a50814",
+   "title": "A road is as wide on screen whichever way it runs: 304 road cells added",
+   "changes": [
+    {
+     "name": "The road at 247,240: the horizontal stretch catches up",
+     "what": "Both stretches here were three cells thick, and three cells is not one width on screen: a cell is a 64x28 diamond, so three rows along a cell axis stand 77 px across while three anti-diagonals of a screen-horizontal staircase stand 56 px, and the solid core the tile blend leaves is 51 px against 28. Width is now measured in pixels across the road's direction on screen, and every stretch thinner than its own road is widened on its thin side. The horizontal road here went from three anti-diagonals to five, 84 px, level with the angled road beside it. Nothing is ever thinned.",
+     "cell": [
+      247,
+      240
+     ],
+     "window": [
+      232,
+      226,
+      272,
+      252
+     ]
+    },
+    {
+     "name": "A mud road: the same rule on the field",
+     "what": "The roads across the mud fields could only widen onto mud, which the old widening never took (it took grass alone), so they were the thinnest on the map. A widened road now takes any natural top beside it - grass, mud, snow, ice, bare rock - never paving, sand, water, a floor, a ramp or a cell a piece stands in.",
+     "cell": [
+      280,
+      248
+     ],
+     "window": [
+      264,
+      236,
+      298,
+      262
+     ]
+    },
+    {
+     "name": "The west road, and what is NOT a road",
+     "what": "The same rule at the west end of the network. The first push of this rule had also blown an eight-cell sand patch on the massif shoulder into a plaza, because a patch has no direction and every side of it read as thin; the second commit of this push limits the rule to a STRETCH - a cell whose fitted direction is strongly one-way, in a road of 24 cells or more - and re-runs it from the world before: 304 cells added instead of 529, the patch untouched. 83 thin cells across the map are hemmed in by paving and houses and stay as they are; the build runs the rule after its own cell-count widening, so a rebuild never ships a thin road again.",
+     "cell": [
+      120,
+      184
+     ],
+     "window": [
+      104,
+      172,
+      138,
+      198
+     ]
+    }
+   ],
+   "artifact": "https://claude.ai/artifact/D1vyND41DCvE6UmKe6YCZw"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
