@@ -49,15 +49,21 @@ const fail = (m) => { console.error("FAIL:", m); failed = true; };
 const REEDS = { c: 223, r: 97 };
 /** Plain grass with no reed, cattail or lily within 40 cells. */
 const DRY = { c: 312, r: 156 };
-const COST_MS = 0.25;
-/* A single frame may not cost more than this. `objectsIn` walks EVERY object
- * on screen and filters afterwards, so the box it is given does not change its
- * price — one scan is a fixed ~3 ms and the only lever is how often it runs.
- * Unthrottled that was 9.8 ms and constant; it now needs the camera to have
- * moved, water to be in view at all, and at most one heartbeat every ten
- * seconds while it already holds its pieces. 4 ms is a quarter of a 60 fps
- * frame, spent at most that often, and only at a marsh. */
-const PEAK_MS = 4.0;
+const COST_MS = 0.1;
+/* THE SCAN NOW ASKS FOR ITS OWN PIECES. It used to be true that "the box does
+ * not change the price" — objectsIn walked every visible image, paid a
+ * getBounds() and an eleven-field record for each, and let pairPieces throw
+ * ~95% away — so frequency was the only lever and these caps were sized for a
+ * ~3 ms scan. sceneryInView hands it the "s3:" prefix now and the test runs
+ * before the transform and the allocation. Measured at the densest reed bed:
+ * 2.605 ms and 967 objects returned -> 0.120 ms and 16, and on dry ground
+ * 0.840 -> 0.035. The feature's own meter over the reeds went 0.62 ms a frame
+ * (games-perf, his run) -> 0.038, peak 15.6 -> 0.2. The caps came down with
+ * it, or the win is not held by anything. */
+const PEAK_MS = 0.8;
+/** The filtered probe must still return every waterline IMAGE the unfiltered
+ *  one does — a filter that is fast because it drops pieces is not a fix. */
+const WATERLINE_RE = /^s3:(reed_beds|cattail_clumps|water_lily_clumps)\//;
 
 const browser = await chromium.launch({ executablePath: chromePath(), args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 480, height: 320 } });
@@ -156,6 +162,24 @@ if (!d0.count) fail("reeds in view and not one dragonfly");
   });
   const d = await dbg();
   console.log(`pairing: ${seen.images} waterline IMAGES -> ${seen.pieces.length} pieces; the effect reports ${d.pieces}`);
+  /* THE PROBE FILTER: cheaper AND lossless. Both halves are asserted, because
+   * each without the other is a bug — a filter that drops waterline images
+   * would make the scan fast by making the feature blind. */
+  const pf = await page.evaluate(() => {
+    const v = window.__ml.camView(), pad = 128;
+    const box = [v.x - pad, v.y - pad, v.x + v.w + pad, v.y + v.h + pad];
+    const N = 12;
+    const t = (f) => { const s = performance.now(); let z; for (let i = 0; i < N; i++) z = f(); return { ms: +((performance.now() - s) / N).toFixed(3), r: z }; };
+    const un = t(() => window.__ml.objectsIn(...box));
+    const fl = t(() => window.__ml.objectsIn(...box, "s3:"));
+    const keys = (a) => a.map((o) => `${o.key}|${o.frame}|${o.x},${o.y},${o.w},${o.h}`);
+    return { unMs: un.ms, unN: un.r.length, flMs: fl.ms, flN: fl.r.length, unWater: keys(un.r.filter((o) => /^s3:(reed_beds|cattail_clumps|water_lily_clumps)\//.test(String(o.key)))), flWater: keys(fl.r.filter((o) => /^s3:(reed_beds|cattail_clumps|water_lily_clumps)\//.test(String(o.key)))) };
+  });
+  console.log(`probe: unfiltered ${pf.unMs} ms / ${pf.unN} objects, filtered ${pf.flMs} ms / ${pf.flN}; waterline images ${pf.unWater.length} vs ${pf.flWater.length}`);
+  const missing = pf.unWater.filter((k) => !pf.flWater.includes(k));
+  if (missing.length) fail(`the filtered probe dropped ${missing.length} waterline image(s): ${missing.slice(0, 3).join(" ")}`);
+  if (!pf.unWater.length) fail("no waterline images in view at the reeds — the probe arm proved nothing");
+  if (!(pf.flMs * 3 < pf.unMs)) fail(`the filter saved nothing: ${pf.flMs} ms filtered vs ${pf.unMs} ms unfiltered`);
   if (d.pieces !== seen.pieces.length)
     fail(`the effect counts ${d.pieces} pieces where the display list holds ${seen.pieces.length} — the base/lit pair is not paired`);
   if (seen.images > 0 && seen.pieces.length >= seen.images)
@@ -305,6 +329,7 @@ await solo();
   const d = await dbg();
   console.log(`cost: ${c.ms.toFixed(3)} ms/frame over the reeds (peak ${c.peak}) over ${c.frames} frames, ${d.scans} scenery scans`);
   if (c.frames > 0 && c.ms > COST_MS) fail(`dragonflies cost ${c.ms.toFixed(3)} ms/frame, cap ${COST_MS}`);
+
   if (c.frames > 0 && c.peak > PEAK_MS) fail(`a single frame cost ${c.peak} ms — the scenery scan is hitching, cap ${PEAK_MS}`);
 }
 

@@ -100,6 +100,11 @@ export const ABOVE_LIT = 900_001.3;
  *  reported ONCE with the depth of its lit copy. Returns [] when the probe is
  *  missing, so a feature simply finds nothing rather than throwing on a build
  *  that does not publish it. */
+/** Every scenery texture the game publishes is keyed "s3:<category>/…" — the
+ *  one prefix `pairPieces` keeps, handed to the probe so it can skip the rest
+ *  before paying for them. */
+export const SCENERY_KEY_PREFIX = "s3:";
+
 export function sceneryInView(
   view: Phaser.Geom.Rectangle | { x: number; y: number; width: number; height: number },
   categories: ReadonlySet<string>,
@@ -110,13 +115,18 @@ export function sceneryInView(
    * `window` in this file put a red on the server project. In a browser the
    * two are the same object. */
   const ml = (globalThis as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
-  const f = ml?.objectsIn as undefined | ((x0: number, y0: number, x1: number, y1: number) => RawObject[]);
+  const f = ml?.objectsIn as undefined | ((x0: number, y0: number, x1: number, y1: number, keyPrefix?: string) => RawObject[]);
   if (!f) return [];
   const w = "width" in view ? view.width : (view as Phaser.Geom.Rectangle).width;
   const h = "height" in view ? view.height : (view as Phaser.Geom.Rectangle).height;
   let raw: RawObject[];
   try {
-    raw = f(view.x - pad, view.y - pad, view.x + w + pad, view.y + h + pad) ?? [];
+    /* ASK FOR THE PIECES, NOT FOR THE SCREEN. pairPieces keeps only textures
+     * whose key starts "s3:", so handing the probe that prefix moves the test
+     * ahead of its getBounds() and its record-building instead of behind
+     * them. An older build whose probe ignores the extra argument still
+     * answers the whole list and pairPieces filters it as it always did. */
+    raw = f(view.x - pad, view.y - pad, view.x + w + pad, view.y + h + pad, SCENERY_KEY_PREFIX) ?? [];
   } catch {
     return [];
   }

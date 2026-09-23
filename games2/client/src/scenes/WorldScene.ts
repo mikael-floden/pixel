@@ -7949,11 +7949,22 @@ export class WorldScene extends Phaser.Scene {
         return { on: this.hitchOn, frames: this.hitchN, avgMs: +(this.hitchSum / Math.max(1, this.hitchN)).toFixed(1), worst };
       },
       /** DIAGNOSTIC: every visible image/sprite whose box meets a world rect. */
-      objectsIn: (x0: number, y0: number, x1: number, y1: number) => {
+      /* `keyPrefix` is OPTIONAL and ADDITIVE — with it left out this answers
+       * exactly what it always did. It exists because this probe is a QA
+       * instrument that one ambient feature has to call for real: the
+       * dragonflies' scenery scan (ambient/runtime/scenery.ts) wants the
+       * "s3:" pieces and nothing else, and without the filter every visible
+       * image on screen pays for a getBounds() and an eleven-field record
+       * with two string slices and three toFixed — then the caller throws
+       * ~80% of them away. Measured at the densest reed bed: 317 objects
+       * returned, 57 of them s3:. The test is a string compare and it goes
+       * BEFORE the transform and the allocation, which is the whole point. */
+      objectsIn: (x0: number, y0: number, x1: number, y1: number, keyPrefix?: string) => {
         const out: Record<string, unknown>[] = [];
         for (const o of this.children.list) {
           const im = o as unknown as Phaser.GameObjects.Image;
           if (!(o instanceof Phaser.GameObjects.Image || o instanceof Phaser.GameObjects.Sprite) || !im.visible) continue;
+          if (keyPrefix !== undefined && !im.texture.key.startsWith(keyPrefix)) continue;
           const b = im.getBounds();
           if (b.right < x0 || b.left > x1 || b.bottom < y0 || b.top > y1) continue;
           out.push({ key: im.texture.key.slice(0, 44), frame: String(im.frame.name).slice(0, 24), depth: +im.depth.toFixed(3), alpha: +im.alpha.toFixed(2), tint: im.isTinted ? im.tintTopLeft.toString(16) : "-", fill: im.tintFill, x: Math.round(b.left), y: Math.round(b.top), w: Math.round(b.width), h: Math.round(b.height), scroll: im.scrollFactorX });
