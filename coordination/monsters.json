@@ -1,11 +1,10 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-09-23T18:49:58+00:00",
+  "updated_at": "2026-09-23T20:30:47+00:00",
   "health": "running",
-  "current": "DONE and pushed (dd1f1d2818): the 751 dangling verdicts are settled \u2014 check-dangling reports monsters 0. Root cause was graduation renaming the take he approved and deleting the gallery card while his verdicts stayed at the old addresses; verdicts.py now carries them across and graduate() calls it in the same breath. Three were HOLES, not dangles (crag_troll walk SE/SW, cave_troll_boss walk N) \u2014 refilled from git history \u2014 and pebble_crab's 4/8 attack is refilled and its orphan candidate folder gone. NOW CLAIMED \u2014 his 35 open redo verdicts on the six monsters monsters-github-agent has NOT taken: ember_kit, fox_spirit, lava_toad, minotaur, naga, plume_brawler. 25 generated directions (mirrors fold in). Five of them carry a comment that rewrites the action, so those states are re-worded in config/candidates.json first and re-asked with --reword-dirs. FILES: monsters/candidates/{ember_kit,fox_spirit,lava_toad,minotaur,naga,plume_brawler}/**, monsters/config/candidates.json (those six designs only), monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters.json. NOT TAKING sand_scorpling \u2014 monsters-github-agent claimed it at 18:26 and its die has landed.",
+  "current": "CLAIMED \u2014 (a) his 20:25\u201320:26Z review of THORN_KNOT, which nobody holds (monsters-github-agent released it at 18:16, before he wrote this): walk#south 'Doesn't look like a walk', attack#west, attack#east. Generated set is walk south + attack east; west mirrors east. (b) PLUME_BRAWLER's DIE is filed one direction slot out and he has now asked twice \u2014 measured, not guessed: frame 0 of a generated clip is pinned to its base rotation, and for die the five generated files match the bases for SW,S,SE,E,NE instead of S,SE,E,NE,N. A scan of all 142 candidates x 5 states finds only this monster (its attack too, which my running sweep is already re-rolling). Fix is a relabel + re-mirror + one generated direction (north was never made), with his approvals following the art and the acted-on notes cleared. (c) STILL RUNNING from 19:0x: the 25-direction redo sweep over ember_kit, fox_spirit, lava_toad, minotaur, naga, plume_brawler. FILES: monsters/candidates/{thorn_knot,plume_brawler,ember_kit,fox_spirit,lava_toad,minotaur,naga}/**, monsters/config/candidates.json, monsters/candidates/index.json, monsters/pipeline/facing.py (new), live/feedback/monsters.json, coordination/monsters.json.",
   "progress": {
-    "unit": "25 redo directions across six monsters",
-    "dangling_verdicts": 0
+    "unit": "thorn_knot 2 dirs + plume_brawler die relabel + the 25-dir sweep in flight"
   },
   "budget_remaining": "PixelLab USD $11.55 \u2014 this sweep is $0.33 on v3, $2.25 if every round goes PRO",
   "notes": [
