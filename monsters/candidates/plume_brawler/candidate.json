@@ -1912,45 +1912,6 @@
           "generated_at": "2026-09-22T20:42:06+00:00",
           "manual": true,
           "relabelled_from": "south"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.273,
-          "step_max": 0.5835,
-          "drift": 22.19,
-          "loop": 0.8865,
-          "loop_ratio": 3.25,
-          "travel": 3.62,
-          "pin": 0.273,
-          "pad": 22,
-          "flash": 0.002,
-          "peak": null,
-          "reach": null,
-          "turn": null,
-          "end_area": 1.021,
-          "end_iou": 0.255,
-          "canvas": [
-            148,
-            148
-          ],
-          "reasons": [
-            "frame 0 is not the base rotation (IoU 0.27)",
-            "canvas grown by 22 px a side to hold the motion"
-          ],
-          "sub": "9a33e450-2baf-4f54-a3d3-56829cf6bf3a",
-          "group": "c25cee35-8d44-48e1-8d23-8e1d9f36a7fb",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "mode": "v3",
-          "action": "Death - Faints, collapses to the ground and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-23T20:50:59+00:00"
         }
       },
       "action": "Death - Faints, collapses to the ground and fades away",
