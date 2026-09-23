@@ -2399,24 +2399,35 @@ void main() {
   float roil = 0.55 + 0.45 * mNoise(p2);
   // Hug the ground: full in the low (lakes/open fields), gone by ~2.5 levels.
   float pool = clamp(1.0 - (z - 0.4) * 0.5, 0.0, 1.0);
-  float d = clamp(banks * roil * 1.55, 0.0, 1.0) * pool * uMist;
-  // Posterized bands = stylized pixel-art fog layers, capped so the ground
-  // still ghosts through the thickest bank.
-  float a = floor(d * 5.0 + 0.001) / 5.0 * 0.74;
-  // THE ZONE BOUNDARY (ambient's mask) IS A FADE ON THE ALPHA, AND IT IS
-  // APPLIED HERE — AFTER THE POSTERIZE — ON PURPOSE (maintainer 2026-09-21:
-  // "Why didn't you just fade in the effect with transparency at the boundary
-  // so we get a good looking fade and keep my favourite effect to look the
-  // same?"). For a day it multiplied the DENSITY one line above, which does
-  // not fade fog: it MOVES THE BAND LINES. Every dip in the mask walks the
-  // density across a posterize step, so the zone was redrawing the bank's
-  // shape instead of dimming it — hard curved edges that jumped a whole band
-  // as the mask slid, worst on level-2 ground where pool is 0.2 and the
-  // WHOLE effect lives inside band 1, on or off ("smoke pop in and out of
-  // existence ... especially since this boundary also is at a level
-  // boundary"). On the alpha the posterized pattern is bit-identical to the
-  // effect before zones existed and the zone only fades it out.
-  // Twin: mistDrawAt() -> maskAt(). With the mask off this line is a no-op.
+  /* POSTERIZE THE BANK'S OWN SHAPE; EVERYTHING THAT DIMS IT MULTIPLIES THE
+   * ALPHA AFTERWARDS. This is one law with three multipliers — the ground hug
+   * (pool), the eased cover (uMist) and the zone's fade (maskField) — and each
+   * one cost a report before it moved here.
+   *
+   * A scalar in front of a floor() does not dim a picture, it QUANTISES the
+   * scalar: it walks the density across the band edges, so the fog redraws its
+   * own shape instead of fading. The mask was the visible half of that
+   * (maintainer 2026-09-21: "Why didn't you just fade in the effect with
+   * transparency at the boundary so we get a good looking fade and keep my
+   * favourite effect to look the same?") and moved out first; pool and uMist
+   * are the two that were left behind.
+   *
+   * POOL IS THE ONE THAT ERASED HIS MIST. maps2 put a 90%-mist marsh on
+   * LEVEL-2 ground (marsh-the-eastern-marsh), where pool is 0.2 — so the
+   * density could never leave band 1, and the whole effect was one bit: the
+   * faintest band where banks*roil*1.55 saturates, nothing everywhere else.
+   * Measured at his stand 305,140 with the mask at 1.0: 42% of the view
+   * painted 0.148 and 58% painted zero, a stipple that drifts on and off with
+   * the noise ("According to the map the mist should be here, but I can't see
+   * it", 2026-09-23; "flicker in and out of existence", 2026-09-21).
+   * Posterizing the shape keeps all five bands at every height and pool only
+   * thins them, which is what "hugs the ground" was always supposed to mean.
+   *
+   * Bit-identical on the level-0 ground he approved the effect on, where pool
+   * and uMist are both exactly 1. Twin: mistDrawAt() -> mistShapeAt()/maskAt().
+   */
+  float a = floor(clamp(banks * roil * 1.55, 0.0, 1.0) * 5.0 + 0.001) / 5.0 * 0.74;
+  a *= pool * uMist;
   if (uMaskOn > 0.5) a *= maskField(w);
   if (a <= 0.001) { gl_FragColor = vec4(0.0); return; }
   float ambLum = (uAmbient.r + uAmbient.g + uAmbient.b) / 3.0;
@@ -5733,11 +5744,20 @@ export class NightLights {
     return (at(x0, y0) * (1 - tx) + at(x1, y0) * tx) * (1 - ty) + (at(x0, y1) * (1 - tx) + at(x1, y1) * tx) * ty;
   }
 
-  /** EXACT JS twin of the shader's mist density at a WORLD point (probes +
-   * QA) — change together with MIST_FRAG. Returns 0..1 BEFORE the posterize
-   * and WITHOUT the zone mask: this is the bank the effect would paint if
-   * the whole world were its zone. What is actually DRAWN is mistDrawAt(). */
-  mistAt(wx: number, wy: number, mist = this.curMist): number {
+  /** EXACT JS twin of the shader's mist DENSITY at a WORLD point (probes +
+   * QA) — change together with MIST_FRAG. Returns 0..1: the bank's shape
+   * times the ground hug and the eased cover, WITHOUT the zone mask — the
+   * fog the effect would have if the whole world were its zone.
+   *
+   * THE SHADER NO LONGER POSTERIZES THIS NUMBER (see the GLSL comment): it
+   * posterizes the shape alone and multiplies pool/uMist onto the alpha. This
+   * stays the honest "how much fog is there", which is what the gates read to
+   * say the banks exist over there; what is actually PAINTED is mistDrawAt().
+   * `parts` hands back the two factors this is the product of — the bank's
+   * `shape` and the `dim` that scales it (pool x mist) — so mistDrawAt can
+   * apply them in the shader's own order without recomputing the noise or
+   * dividing them back out (a division is not bit-exact; the twin must be). */
+  mistAt(wx: number, wy: number, mist = this.curMist, parts?: { shape: number; dim: number }): number {
     if (mist <= 0.001 || !this.tArr) return 0;
     // ground-plane inverse projection (level-0 cell; probes sample flats)
     const u = (wx - this.iso.ox) / this.geo.dx - 1;
@@ -5774,17 +5794,24 @@ export class NightLights {
     const p2x = wx * 0.0074 - t * 0.03, p2y = wy * 0.0074 + t * 0.048;
     const roil = 0.55 + 0.45 * noise(p2x, p2y);
     const pool = Math.min(1, Math.max(0, 1 - (z - 0.4) * 0.5));
-    return Math.min(1, banks * roil * 1.55) * pool * mist;
+    const shape = Math.min(1, banks * roil * 1.55);
+    const dim = pool * mist;
+    if (parts) { parts.shape = shape; parts.dim = dim; }
+    return shape * dim;
   }
 
-  /** WHAT THE PASS ACTUALLY PAINTS at a world point, 0..1 — the posterized
-   *  band, then the zone's fade. The twin of MIST_FRAG's last three lines,
-   *  in their order: the mask multiplies the ALPHA, never the density (see
-   *  the GLSL comment there). This is the honest "is it misting here". */
+  /** WHAT THE PASS ACTUALLY PAINTS at a world point, 0..1 — the twin of
+   *  MIST_FRAG's last three lines IN THEIR ORDER: the bank's own shape is
+   *  posterized, and then everything that dims it (the ground hug, the eased
+   *  cover, the zone's fade) multiplies the ALPHA. A scalar in front of the
+   *  floor() would quantise itself instead of fading the picture — the whole
+   *  story is in the GLSL comment. This is the honest "is it misting here". */
   mistDrawAt(wx: number, wy: number, mist = this.curMist): number {
-    const d = this.mistAt(wx, wy, mist);
-    const a = (Math.floor(d * 5 + 0.001) / 5) * 0.74;
-    return a <= 0.001 ? 0 : a * this.maskAt(wx, wy);
+    const parts = { shape: 0, dim: 0 };
+    // 0 covers the shader's own early outs too: no mist, no surface, off-world
+    if (this.mistAt(wx, wy, mist, parts) <= 0) return 0;
+    const a = (Math.floor(parts.shape * 5 + 0.001) / 5) * 0.74 * parts.dim * this.maskAt(wx, wy);
+    return a <= 0.001 ? 0 : a;
   }
 
   /** CPU DEPTH-FOG for a POINT already at grid (col,row) + level z — the
