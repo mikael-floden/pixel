@@ -507,35 +507,32 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "warn",
-          "step_mean": 0.0887,
-          "step_max": 0.1136,
-          "drift": 2.04,
-          "loop": 0.1861,
-          "loop_ratio": 2.1,
-          "travel": 0.31,
-          "pin": 0.89,
+          "status": "pass",
+          "step_mean": 0.1421,
+          "step_max": 0.1951,
+          "drift": 3.67,
+          "loop": 0.0644,
+          "loop_ratio": 0.45,
+          "travel": 0.3,
+          "pin": 0.904,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.993,
+          "end_area": 0.996,
           "end_iou": null,
           "canvas": [
             88,
             88
           ],
-          "reasons": [
-            "motion 0.089 outside the calm band 0.1–0.4 — eyeball it",
-            "last→first hand-off 2.1× a step — eyeball the loop"
-          ],
-          "sub": null,
-          "group": null,
+          "reasons": [],
+          "sub": "e3a72719-51d7-481d-a96a-d7891a832157",
+          "group": "59904661-abc1-439b-9a33-f31587e8458f",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "mode": "text-v3",
+          "mode": "v3",
           "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
           "intensity": 0,
           "rolls": 1,
@@ -543,7 +540,7 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-22T19:12:10+00:00",
+          "generated_at": "2026-09-23T18:15:06+00:00",
           "manual": true
         },
         "south-east": {

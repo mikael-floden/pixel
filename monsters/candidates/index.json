@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-23T18:12:44+00:00",
+  "generated_at": "2026-09-23T18:15:07+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -156,9 +156,12 @@
       "graduation": {
         "state": "waiting",
         "takes": {
-          "idle": "idle"
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry",
+          "die": "die"
         },
-        "blocking": "not fully approved: walk, angry, attack, die"
+        "blocking": "not fully approved: attack"
       }
     },
     {
@@ -425,9 +428,11 @@
       "graduation": {
         "state": "waiting",
         "takes": {
-          "idle": "idle"
+          "idle": "idle",
+          "angry": "angry",
+          "die": "die"
         },
-        "blocking": "not fully approved: walk, angry, attack, die"
+        "blocking": "not fully approved: walk, attack"
       }
     },
     {
@@ -2184,9 +2189,10 @@
         "state": "waiting",
         "takes": {
           "idle": "idle",
-          "walk": "walk"
+          "walk": "walk",
+          "angry": "angry"
         },
-        "blocking": "not fully approved: angry, attack, die"
+        "blocking": "not fully approved: attack, die"
       }
     },
     {
