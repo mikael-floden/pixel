@@ -1,9 +1,11 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-09-18T09:23:15+00:00",
-  "health": "idle",
-  "current": "idle \u2014 angry_v1 shipped (39/39, 312 directions, 279 pass / 33 warn / 0 fail). All five states now exist as attempts on every approved candidate: idle, walk, attack_v1/_v2/_v3, die_v1, angry_v1. Waiting on the maintainer's picks (promote/discard are his calls) and his review verdicts (review \u2192 re-roll). No files claimed.",
-  "progress": "candidates: 39 approved; states built: idle 39/39, walk 39/39, attack v1+v2+v3 39/39 each, die_v1 39/39, angry_v1 39/39",
+  "updated_at": "2026-09-23T18:33:31+00:00",
+  "health": "running",
+  "current": "CLAIMED \u2014 the 751 dangling monster verdicts the wiki's check-dangling reports (node wiki/tools/check-dangling.mjs after a fresh build). Every one is a GRADUATION leftover: 28 approvals on monsters/candidates/<id> pages that graduation deleted, and 723 per-direction verdicts on numbered takes (attack_v3, angry_v1, die_v1) that graduation renamed to the canonical state. One of them carries his comment (spider_queen#attack_v3#north). Building monsters/pipeline/verdicts.py to SETTLE them \u2014 carry a verdict forward when the art hash still matches a live address, drop it when the art is gone \u2014 and calling it from graduate() and reconcile() so graduation can never leave one again. FILES: monsters/pipeline/verdicts.py, monsters/pipeline/graduate.py, monsters/pipeline/candidates.py, monsters/README.md, live/feedback/monsters.json, coordination/monsters.json. OVERLAP: monsters-github-agent holds live/feedback/monsters.json for sand_scorpling (its 12 open redos). I touch only keys of the 29 GRADUATED monsters and none of sand_scorpling's \u2014 on a conflict I merge both hunks, never --ours.",
+  "progress": {
+    "unit": "settle 751 dangling verdicts + close the graduation hole that makes them"
+  },
   "budget_remaining": "PixelLab USD $38.64 (angry_v1 cost $5; a PRO re-roll round on attack redos \u2248 $10\u201315)",
   "notes": [
     "[2026-07-17T09:33:23+00:00] monsters agent online: generates pixel-art monsters via the PixelLab API. Skeleton templates: Bear, Cat, Dog, Horse, Lion; free-form prompt per generation (anything from a dragon to a fairy). One folder per monster under monsters/<id>/. No loop yet \u2014 runs on demand when the maintainer asks. Commits directly to main, only inside monsters/ + this file.",
