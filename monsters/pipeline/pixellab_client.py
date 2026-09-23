@@ -115,6 +115,16 @@ class PixelLabClient:
                 slow = r.status_code == 429 and "concurrent background jobs" in r.text
                 time.sleep(min(60 * (attempt + 1), 300) if slow else min(2 ** attempt, 30))
                 continue
+            # A 422 WHOSE WHOLE BODY IS "Generation failed" IS THEIRS, NOT OURS,
+            # and it is transient: the same payload that 422'd was accepted on
+            # the next try, seconds later (2026-09-23, his magma toad — one blip
+            # abandoned three directions of a redo sweep and left his redo notes
+            # standing). A real payload rejection names the field it rejects, so
+            # retry only the anonymous one, and only a few times.
+            if r.status_code == 422 and "Generation failed" in r.text and attempt < 3:
+                last = PixelLabError(f"{method} {path} -> 422: {r.text[:200]}")
+                time.sleep(min(2 ** attempt, 15))
+                continue
             if r.status_code >= 400:
                 raise PixelLabError(f"{method} {path} -> {r.status_code}: {r.text[:300]}")
             return r.json()
