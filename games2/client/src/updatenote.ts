@@ -67,6 +67,9 @@ interface ReleaseCommit {
 
 interface ReleaseDoc {
   head: string;
+  /** The repository the wiki built this from (`repo` in the file) — the one
+   *  place the compare below is allowed to learn a URL from. */
+  repo: string;
   commits: ReleaseCommit[];
 }
 
@@ -111,7 +114,7 @@ async function loadNotes(): Promise<ReleaseDoc | null> {
   try {
     const res = await fetch(gameUrl(NOTES_URL), { cache: "no-store" });
     if (!res.ok) return null;
-    const doc = (await res.json()) as { head?: unknown; commits?: unknown };
+    const doc = (await res.json()) as { head?: unknown; repo?: unknown; commits?: unknown };
     if (!Array.isArray(doc.commits)) return null;
     const commits = (doc.commits as Record<string, unknown>[])
       .filter((c) => c && typeof c.sha === "string" && typeof c.subject === "string")
@@ -124,7 +127,7 @@ async function loadNotes(): Promise<ReleaseDoc | null> {
         dirs: Array.isArray(c.dirs) ? (c.dirs as unknown[]).filter((d): d is string => typeof d === "string") : [],
         files: typeof c.files === "number" ? c.files : 0,
       }));
-    return { head: typeof doc.head === "string" ? doc.head : "", commits };
+    return { head: typeof doc.head === "string" ? doc.head : "", repo: typeof doc.repo === "string" ? doc.repo : "", commits };
   } catch {
     return null;
   }
@@ -136,6 +139,79 @@ async function loadNotes(): Promise<ReleaseDoc | null> {
 function sameSha(a: string, b: string): boolean {
   const n = Math.min(a.length, b.length);
   return n >= 7 && a.slice(0, n) === b.slice(0, n);
+}
+
+/* A LANE PUBLISH IS AHEAD OF THE NOTES FILE (maintainer 2026-09-23: "I still
+ * get 'New version out' dialogs that are empty!"). The notes are built INSIDE
+ * THE IMAGE from git history and end at the image's own sha — and the fast and
+ * art lanes ship generations on top of that image with no build, so /version
+ * moves past the file's head while the file stands still. A client built from
+ * that image then asks for "everything after 08f154fef" of a list whose newest
+ * entry IS 08f154fef: nothing listed, correctly and uselessly (his screenshot:
+ * served fb1eb5fbc, a monsters push, over image 08f154fef). The commits exist
+ * and are public, and the repository's own compare endpoint answers exactly
+ * `mine...new` (CORS `*`; anonymous, 60 calls an hour per address — one call
+ * per dialog OPEN, never per toast). What that answer lacks is the wiki's
+ * attribution (the board file a commit touched), so the chip is read off the
+ * subject's own `token:` prefix when that names a board or a domain, and is
+ * "Repo" otherwise — a fact we have, never a guess. GitHub lists a range
+ * oldest first; the notes list newest first, so it is reversed. If GitHub does
+ * not answer, the old sentence stands and says why. */
+interface GhCommit {
+  sha: string;
+  commit: { message?: string; author?: { name?: string; date?: string }; committer?: { date?: string } };
+}
+async function loadLaneRange(
+  repo: string,
+  mine: string,
+  next: string,
+): Promise<{ rows: ReleaseCommit[]; truncated: boolean } | null> {
+  const m = /github\.com\/([^/]+\/[^/]+?)(?:\.git)?\/?$/.exec(repo);
+  if (!m || mine.length < 7 || next.length < 7) return null;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${m[1]}/compare/${mine}...${next}`, {
+      headers: { Accept: "application/vnd.github+json" },
+    });
+    if (!res.ok) return null;
+    const d = (await res.json()) as { commits?: unknown; total_commits?: unknown };
+    if (!Array.isArray(d.commits)) return null;
+    const rows = (d.commits as GhCommit[])
+      .filter((c) => c && typeof c.sha === "string" && c.commit)
+      .map<ReleaseCommit>((c) => {
+        const subject = String(c.commit.message ?? "").split("\n")[0];
+        return {
+          sha: c.sha,
+          at: c.commit.author?.date ?? c.commit.committer?.date ?? "",
+          author: c.commit.author?.name ?? "",
+          subject,
+          agent: agentFromSubject(subject),
+          dirs: [],
+          files: 0,
+        };
+      })
+      .reverse();
+    const total = typeof d.total_commits === "number" ? d.total_commits : rows.length;
+    return { rows, truncated: total > rows.length };
+  } catch {
+    return null;
+  }
+}
+
+/** The board or domain a subject names in its own `token:` prefix — the same
+ *  token cleanSubject strips — or, for a `board:` commit, the board named
+ *  right after it ("board: games-perf claims …"). Only ids the chip table
+ *  already knows count; anything else is null, and the row reads "Repo". */
+function agentFromSubject(subject: string): string | null {
+  const known = (id: string) => {
+    if (AGENTS[id]) return true;
+    for (const suf of ["-github-agent", "-github", "-assistant"]) if (id.endsWith(suf) && AGENTS[id.slice(0, -suf.length)]) return true;
+    return false;
+  };
+  const m = /^([A-Za-z0-9][\w-]*)(?:\s+(?:board|agent))?:\s*(?:([a-z][\w-]*)\b)?/.exec(subject);
+  if (!m) return null;
+  const token = m[1].toLowerCase();
+  if (token === "board" || token === "boards") return m[2] && known(m[2]) ? m[2] : "coordination";
+  return known(token) ? token : null;
 }
 
 /** The commits between the running build and the served one, newest first.
@@ -470,10 +546,30 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
       return;
     }
     const { rows, truncated } = sliceSince(doc, mine);
-    if (!rows.length) {
+    // THE SERVED SHA IS PAST THE FILE = a lane publish over this image (see
+    // loadLaneRange). The file's slice is painted at once if it has anything,
+    // and GitHub's answer for the whole of mine...new replaces it when it
+    // lands — that answer is a superset of the slice, never a second list.
+    const ahead = !sameSha(doc.head, newSha) && !doc.commits.some((c) => sameSha(c.sha, newSha));
+    if (!rows.length && !ahead) {
       sub.textContent = `Your build is ${mine.slice(0, 9)} — nothing listed between it and this one.`;
       return;
     }
+    if (rows.length) paint(doc, rows, truncated);
+    if (!ahead) return;
+    if (!rows.length) sub.textContent = `Your build is ${mine.slice(0, 9)} — a live update on top of it. Asking GitHub what changed…`;
+    void loadLaneRange(doc.repo, mine, newSha).then((lane) => {
+      if (open !== back) return; // closed while GitHub answered
+      if (!lane || !lane.rows.length) {
+        if (!rows.length) sub.textContent = `Your build is ${mine.slice(0, 9)} — a live update on top of it; GitHub did not answer with the list.`;
+        return;
+      }
+      paint(doc, lane.rows, lane.truncated);
+    });
+  };
+  const paint = (doc: ReleaseDoc, rows: ReleaseCommit[], truncated: boolean) => {
+    areas.replaceChildren();
+    list.replaceChildren();
     const n = rows.length;
     sub.textContent =
       `${n} change${n === 1 ? "" : "s"} since your build ${mine.slice(0, 9)}` +

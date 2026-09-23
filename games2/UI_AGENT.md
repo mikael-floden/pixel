@@ -782,6 +782,29 @@ from the games agent), #18 (title/landing screen).
   z-100 layer, all three dismissals, the outside-window case, that a MISSING
   file still opens the dialog with a working reload, and that Update now
   actually reloads.
+  **A LANE PUBLISH IS AHEAD OF THE FILE, AND THEN THE DIALOG ASKS GITHUB**
+  (maintainer 2026-09-23: "I still get 'New version out' dialogs that are
+  empty!"). The notes are built inside the IMAGE and end at the image's sha;
+  the fast and art lanes ship generations on top of that image with no build,
+  so `/version` moves past the file's head while the file stands still, and a
+  client built from that image asks for "everything after 08f154fef" of a
+  list whose newest entry IS 08f154fef — empty by construction, not by
+  accident (his screenshot: served `fb1eb5fbc`, a monsters push, over image
+  `08f154fef`). When the served sha is in neither `head` nor `commits`,
+  `updatenote.ts` fetches the repository's own compare endpoint for
+  `mine...new` (the `repo` field of the file names it; CORS `*`; anonymous, 60
+  an hour per address — ONE call per dialog OPEN, never per toast, and never
+  when the file already lists the served sha), reverses GitHub's oldest-first
+  order, reads the chip off the subject's own `token:` prefix when it names a
+  board or a domain (`board: games-perf claims …` is the board it names; an
+  unprefixed subject is "Repo", never a guess), and paints that in place of
+  the slice — it is a superset of it, never a second list. GitHub down: the
+  sentence says so and Update now still works. Rejected: publishing
+  `release_notes.json` from the lanes — root law says a lane never carries
+  `wiki/` (the file is reproduced from git history inside the image), and
+  this needed no law and no workflow. Gate arm 9 routes the compare to a
+  fixture, counts the calls (0 through the first eight sections), and asserts
+  the URL, the order, the chips and the down case.
 - **THE CUTOUT BAND IS ON EVERY SCREEN, AND THE APP NEVER REQUESTS FULLSCREEN**
   (maintainer 2026-09-18: "fake a black border so the game always looks the
   same! Even in character select this time!"). His shell letterboxes the

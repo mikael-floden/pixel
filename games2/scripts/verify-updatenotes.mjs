@@ -64,6 +64,29 @@ await page.route("**/release_notes.json*", async (route) => {
   if (!serveNotes) return route.fulfill({ status: 404, body: "" });
   await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(DOC) });
 });
+// GITHUB'S COMPARE, FOR A LANE PUBLISH (section 9): the fixture answer is
+// oldest-first exactly as the API sends it; the dialog must reverse it. `ghMode`
+// flips it to a failure; `ghCalls` proves a served sha INSIDE the file never
+// asks GitHub at all.
+const LANE_SHA = "fb1eb5fbc";
+const GH = {
+  status: "ahead",
+  total_commits: 3,
+  commits: [
+    { sha: "1111111aa", commit: { message: "Fix typo in README\n\nlonger body", author: { name: "Mikael Flodén", date: noon(0, 12, 40) } } },
+    { sha: "2222222bb", commit: { message: "board: games-perf claims the effects' frame cost", author: { name: "games-perf agent", date: noon(0, 12, 45) } } },
+    { sha: "3333333cc", commit: { message: "monsters: sand_scorpling die north-east re-rolled on his redo", author: { name: "claude[bot]", date: noon(0, 12, 50) } } },
+  ],
+};
+let ghMode = "ok";
+let ghCalls = 0;
+const ghUrls = [];
+await page.route("**/api.github.com/repos/**", async (route) => {
+  ghCalls++;
+  ghUrls.push(route.request().url());
+  if (ghMode !== "ok") return route.fulfill({ status: 503, contentType: "application/json", body: "{}" });
+  await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(GH) });
+});
 await page.goto(`${BASE}/`, { waitUntil: "load" });
 await page.waitForFunction(() => window.__mlUpdateNotes, null, { timeout: 25000 });
 // …with the CHARACTER SELECT up: the dialog lives on document.body, above
@@ -480,6 +503,70 @@ const openIt = async (mine = MY_SHA) => {
   after.select && !after.ingame && after.flag === null
     ? ok("updating from the character select comes back to the character select — the flag is never set there")
     : fail(`after updating from the select screen: ${JSON.stringify(after)}`);
+}
+
+// 9) A LANE PUBLISH IS AHEAD OF THE NOTES FILE (maintainer 2026-09-23: "I still
+//    get 'New version out' dialogs that are empty!"). His case exactly: the
+//    client IS the file's head (built from the image), /version says a sha the
+//    file has never heard of (a fast/art-lane generation on top of that image).
+//    The slice after the head is empty by construction; the dialog asks the
+//    repo's compare endpoint for mine...new and paints THAT.
+{
+  await page.waitForFunction(() => window.__mlUpdateNotes, null, { timeout: 25000 });
+  ghCalls === 0
+    ? ok("a served sha the file already lists never asks GitHub (0 calls through eight sections)")
+    : fail(`GitHub was asked ${ghCalls} time(s) while the served sha was inside the file: ${ghUrls.join(" ")}`);
+  await page.evaluate(() => window.__mlUpdateNotes.close());
+  await page.evaluate(([n, m]) => window.__mlUpdateNotes.open(n, m), [LANE_SHA, NEW_SHA]);
+  await page.waitForFunction(() => document.querySelectorAll(".ml-upd-list > .ml-upd-row").length >= 3, null, { timeout: 8000 }).catch(() => {});
+  const lane = await page.evaluate(() => {
+    const back = document.querySelector(".ml-upd-back");
+    return {
+      sub: back.querySelector(".ml-upd-sub").textContent,
+      chip: back.querySelector(".ml-upd-sha").textContent,
+      rows: [...back.querySelectorAll(".ml-upd-list > .ml-upd-row")].map((e) => ({
+        area: e.querySelector(".ml-upd-chip").textContent,
+        subj: e.querySelector(".ml-upd-subj").textContent,
+        meta: e.querySelector(".ml-upd-meta").textContent,
+      })),
+      mine: !!back.querySelector(".ml-upd-mine"),
+      summary: [...back.querySelectorAll(".ml-upd-areas span")].map((e) => e.textContent),
+    };
+  });
+  ghCalls === 1 && /compare\/aaaaaaaa1\.\.\.fb1eb5fbc$/.test(ghUrls[0] ?? "")
+    ? ok(`the dialog asked GitHub for exactly mine...new, once (${(ghUrls[0] ?? "").split("/repos/")[1]})`)
+    : fail(`GitHub calls: ${ghCalls} ${ghUrls.join(" ")}`);
+  lane.rows.length === 3 && /^3 changes since your build aaaaaaaa1/.test(lane.sub)
+    ? ok(`the lane's three commits are listed and counted ("${lane.sub}")`)
+    : fail(`lane rows ${lane.rows.length}, sub "${lane.sub}"`);
+  lane.rows[0] && /3333333cc/.test(lane.rows[0].meta) && /1111111aa/.test(lane.rows[2]?.meta ?? "")
+    ? ok("…newest first — GitHub's oldest-first order is reversed")
+    : fail(`row order: ${lane.rows.map((r) => r.meta).join(" | ")}`);
+  const areas = lane.rows.map((r) => r.area);
+  areas[0] === "Monster" && areas[1] === "Optimization" && areas[2] === "Repo"
+    ? ok(`the chips come from the subjects' own prefixes: ${areas.join(", ")} ("board: games-perf …" reads as the board it names; an unprefixed subject is Repo, not a guess)`)
+    : fail(`chips ${JSON.stringify(areas)}, want Monster, Optimization, Repo`);
+  lane.rows[0] && lane.rows[0].subj.startsWith("sand_scorpling")
+    ? ok(`the prefix the chip already says is dropped from the subject ("${lane.rows[0].subj}")`)
+    : fail(`subject "${lane.rows[0]?.subj}"`);
+  lane.chip === LANE_SHA && lane.mine
+    ? ok("the header names the served sha and the 'you are running' block still stands (my build is in the file)")
+    : fail(`chip ${lane.chip}, mine-block ${lane.mine}`);
+  // …and when GitHub does not answer, the sentence says so instead of "nothing"
+  ghMode = "down";
+  await page.evaluate(() => window.__mlUpdateNotes.close());
+  await page.evaluate(([n, m]) => window.__mlUpdateNotes.open(n, m), [LANE_SHA, NEW_SHA]);
+  await page.waitForFunction(() => /GitHub did not answer/.test(document.querySelector(".ml-upd-sub")?.textContent ?? ""), null, { timeout: 8000 }).catch(() => {});
+  const down = await page.evaluate(() => ({
+    sub: document.querySelector(".ml-upd-sub").textContent,
+    rows: document.querySelectorAll(".ml-upd-list > .ml-upd-row").length,
+    go: !!document.querySelector(".ml-upd-btn.go"),
+  }));
+  /live update on top of it; GitHub did not answer/.test(down.sub) && down.rows === 0 && down.go
+    ? ok(`GitHub down: the dialog says why and the Update button is still there ("${down.sub}")`)
+    : fail(`GitHub down: ${JSON.stringify(down)}`);
+  ghMode = "ok";
+  await page.evaluate(() => window.__mlUpdateNotes.close());
 }
 
 await browser.close();
