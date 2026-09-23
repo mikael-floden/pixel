@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-22T19:00:18.356Z",
+  "updated_at": "2026-09-23T17:54:30.788Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -14765,6 +14765,162 @@
       "rating": 1,
       "art": "4779277391c78b88",
       "updated_at": "2026-09-22T19:00:05.791Z"
+    },
+    "monsters/thorn_knot#walk#south": {
+      "note": "This still looks like an idle and not a walk",
+      "updated_at": "2026-09-23T17:51:35.943Z",
+      "status": "redo",
+      "art": "5a530aa11175d2cf"
+    },
+    "monsters/thorn_knot#walk#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "a01cb739c6b72d8d",
+      "updated_at": "2026-09-23T17:51:39.837Z"
+    },
+    "monsters/thorn_knot#angry#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "b0b29276575cacf5",
+      "updated_at": "2026-09-23T17:51:45.723Z"
+    },
+    "monsters/thorn_knot#angry#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "9bc24107de32528b",
+      "updated_at": "2026-09-23T17:51:48.522Z"
+    },
+    "monsters/thorn_knot#angry#east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "148c7fcda2a42377",
+      "updated_at": "2026-09-23T17:51:50.030Z"
+    },
+    "monsters/thorn_knot#angry#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "c9f1558c121e64d9",
+      "updated_at": "2026-09-23T17:51:51.374Z"
+    },
+    "monsters/thorn_knot#angry#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "f2ee719378022207",
+      "updated_at": "2026-09-23T17:51:52.813Z"
+    },
+    "monsters/thorn_knot#angry#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "a1f2ffdd16af7508",
+      "updated_at": "2026-09-23T17:51:54.214Z"
+    },
+    "monsters/thorn_knot#angry#west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "fc23156c15ac9692",
+      "updated_at": "2026-09-23T17:51:55.590Z"
+    },
+    "monsters/thorn_knot#angry#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "4dd9780e4de0da30",
+      "updated_at": "2026-09-23T17:51:57.082Z"
+    },
+    "monsters/thorn_knot#attack#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "0e57920663016aab",
+      "updated_at": "2026-09-23T17:52:01.057Z"
+    },
+    "monsters/thorn_knot#attack#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "e7f5492f0450b008",
+      "updated_at": "2026-09-23T17:52:14.731Z"
+    },
+    "monsters/thorn_knot#attack#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "9a9499b80972c4ca",
+      "updated_at": "2026-09-23T17:52:18.461Z"
+    },
+    "monsters/thorn_knot#attack#south-east": {
+      "note": "Looks the same as S (this ks SE)",
+      "updated_at": "2026-09-23T17:52:44.010Z",
+      "status": "redo",
+      "art": "58e5f4f90c9aeba5"
+    },
+    "monsters/thorn_knot#attack#east": {
+      "note": "Looks the same as S (this is E)",
+      "updated_at": "2026-09-23T17:53:48.471Z",
+      "status": "redo",
+      "art": "6226d3ab5012d2c6"
+    },
+    "monsters/thorn_knot#attack#north": {
+      "status": "redo",
+      "art": "d8a2d6b0df84e0e0",
+      "updated_at": "2026-09-23T17:53:29.147Z",
+      "note": "Doesn't look like an attack (only the legs are moving)"
+    },
+    "monsters/thorn_knot#attack#west": {
+      "status": "redo",
+      "art": "3fe26cd74563d7dc",
+      "updated_at": "2026-09-23T17:54:02.616Z",
+      "note": "Looks the same as S"
+    },
+    "monsters/thorn_knot#attack#south-west": {
+      "note": "Looks the same as S",
+      "updated_at": "2026-09-23T17:54:09.830Z",
+      "status": "redo",
+      "art": "e951e07c52ebf09a"
+    },
+    "monsters/thorn_knot#die#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "612928d174376620",
+      "updated_at": "2026-09-23T17:54:22.759Z"
+    },
+    "monsters/thorn_knot#die#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "3dc955b2cd041ba3",
+      "updated_at": "2026-09-23T17:54:23.823Z"
+    },
+    "monsters/thorn_knot#die#east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "89ba74377600f6f6",
+      "updated_at": "2026-09-23T17:54:25.566Z"
+    },
+    "monsters/thorn_knot#die#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "c466c94c19950a95",
+      "updated_at": "2026-09-23T17:54:26.622Z"
+    },
+    "monsters/thorn_knot#die#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "3249541b2476c7f2",
+      "updated_at": "2026-09-23T17:54:27.710Z"
+    },
+    "monsters/thorn_knot#die#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "0f73ada991dbcaec",
+      "updated_at": "2026-09-23T17:54:28.910Z"
+    },
+    "monsters/thorn_knot#die#west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "1cfeaaeb4a837bbb",
+      "updated_at": "2026-09-23T17:54:30.092Z"
+    },
+    "monsters/thorn_knot#die#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "dec15da2431b1591",
+      "updated_at": "2026-09-23T17:54:31.313Z"
     }
   }
 }
