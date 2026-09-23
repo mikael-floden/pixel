@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-23T18:05:58Z",
+  "updated_at": "2026-09-23T18:06:14.307Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -15808,6 +15808,150 @@
       "rating": 1,
       "art": "1cd92fe4f6062647",
       "updated_at": "2026-09-23T18:03:39.043Z"
+    },
+    "monsters/lava_toad#walk#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "e3f6434b0d34563a",
+      "updated_at": "2026-09-23T18:03:54.472Z"
+    },
+    "monsters/lava_toad#walk#south-east": {
+      "art": "19ed35bbf2bc6ed0",
+      "updated_at": "2026-09-23T18:04:32.580Z",
+      "note": "Doesn't jump with both legs",
+      "status": "redo"
+    },
+    "monsters/lava_toad#walk#east": {
+      "status": "redo",
+      "art": "cc67aad77f70d437",
+      "updated_at": "2026-09-23T18:04:26.996Z",
+      "note": "Doesn't jump with both legs"
+    },
+    "monsters/lava_toad#walk#north-east": {
+      "status": "redo",
+      "art": "734c83134e3b20fc",
+      "updated_at": "2026-09-23T18:04:22.705Z",
+      "note": "Doesn't jump with both legs"
+    },
+    "monsters/lava_toad#walk#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "96d4da05ffdb8038",
+      "updated_at": "2026-09-23T18:04:03.671Z"
+    },
+    "monsters/lava_toad#walk#north-west": {
+      "note": "Doesn't jump with both legs",
+      "updated_at": "2026-09-23T18:04:36.571Z",
+      "status": "redo",
+      "art": "1ef88bd234483b44"
+    },
+    "monsters/lava_toad#walk#west": {
+      "note": "Doesn't jump with both legs",
+      "updated_at": "2026-09-23T18:04:40.522Z",
+      "status": "redo",
+      "art": "040190a66222e08d"
+    },
+    "monsters/lava_toad#walk#south-west": {
+      "note": "Doesn't jump with both legs",
+      "updated_at": "2026-09-23T18:04:44.785Z",
+      "status": "redo",
+      "art": "ea3aeeb5ae7a32c8"
+    },
+    "monsters/lava_toad#angry#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "cd2a7d45f1de97fc",
+      "updated_at": "2026-09-23T18:04:49.118Z"
+    },
+    "monsters/lava_toad#angry#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "080eb67eba9e794b",
+      "updated_at": "2026-09-23T18:04:51.223Z"
+    },
+    "monsters/lava_toad#angry#east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "e428ee3251b3f5e1",
+      "updated_at": "2026-09-23T18:04:52.839Z"
+    },
+    "monsters/lava_toad#angry#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "930fa21db51fd2a9",
+      "updated_at": "2026-09-23T18:04:54.598Z"
+    },
+    "monsters/lava_toad#angry#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "36ae2f4385ae81d3",
+      "updated_at": "2026-09-23T18:04:56.286Z"
+    },
+    "monsters/lava_toad#angry#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "a6d98bc60a54f8b7",
+      "updated_at": "2026-09-23T18:04:57.783Z"
+    },
+    "monsters/lava_toad#angry#west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "86fd235e2ef84a3c",
+      "updated_at": "2026-09-23T18:04:59.352Z"
+    },
+    "monsters/lava_toad#angry#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "c33c564347ca8cbe",
+      "updated_at": "2026-09-23T18:05:00.545Z"
+    },
+    "monsters/lava_toad#attack#north-west": {
+      "note": "Try a jump and slam into the ground attack instead",
+      "updated_at": "2026-09-23T18:05:43.443Z",
+      "status": "redo",
+      "art": "e78eb6f8fcd234d9"
+    },
+    "monsters/lava_toad#attack#south": {
+      "note": "Try a jump and slam into the ground attack instead",
+      "updated_at": "2026-09-23T18:05:51.511Z",
+      "status": "redo",
+      "art": "6f17b3a546c8cf58"
+    },
+    "monsters/lava_toad#attack#south-east": {
+      "note": "Try a jump and slam into the ground attack instead",
+      "updated_at": "2026-09-23T18:05:50.456Z",
+      "status": "redo",
+      "art": "6aaea281f2d9b264"
+    },
+    "monsters/lava_toad#attack#east": {
+      "note": "Try a jump and slam into the ground attack instead",
+      "updated_at": "2026-09-23T18:05:54.711Z",
+      "status": "redo",
+      "art": "8bc08d5bdf8c4e23"
+    },
+    "monsters/lava_toad#attack#north-east": {
+      "note": "Try a jump and slam into the ground attack instead",
+      "updated_at": "2026-09-23T18:05:58.752Z",
+      "status": "redo",
+      "art": "aa0b0dd541172029"
+    },
+    "monsters/lava_toad#attack#north": {
+      "note": "Try a jump and slam into the ground attack instead",
+      "updated_at": "2026-09-23T18:06:02.437Z",
+      "status": "redo",
+      "art": "4fb13ef9fcc33ea4"
+    },
+    "monsters/lava_toad#attack#west": {
+      "status": "redo",
+      "art": "57389fe4fbb4927c",
+      "updated_at": "2026-09-23T18:06:09.124Z",
+      "note": "Try a jump and slam into the ground attack instead"
+    },
+    "monsters/lava_toad#attack#south-west": {
+      "note": "Try a jump and slam into the ground attack instead",
+      "updated_at": "2026-09-23T18:06:14.480Z",
+      "status": "redo",
+      "art": "4d1ccb08c8653fee"
     }
   }
 }
