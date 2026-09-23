@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-23T18:01:22.472Z",
+  "updated_at": "2026-09-23T18:02:42.021Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -14673,8 +14673,10 @@
       "updated_at": "2026-09-22T18:57:21.623Z"
     },
     "monsters/minotaur#walk#south": {
-      "note": "Doesn't look like a S walk at all!",
-      "updated_at": "2026-09-22T18:57:40.682Z"
+      "note": "Doesn't look like a S walk at all! (This comment was dangling, but the new animation needs the same comment). But I hate when the old comment is still present on the new animation!",
+      "updated_at": "2026-09-23T18:02:42.541Z",
+      "status": "redo",
+      "art": "73ab06adb3c1f2a4"
     },
     "monsters/plume_brawler#walk#south-east": {
       "status": "approved",
@@ -15681,6 +15683,12 @@
       "rating": 1,
       "art": "3e1b8a254928650d",
       "updated_at": "2026-09-23T18:01:22.295Z"
+    },
+    "monsters/minotaur#walk#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "7f64b4541188c6cc",
+      "updated_at": "2026-09-23T18:01:43.803Z"
     }
   }
 }
