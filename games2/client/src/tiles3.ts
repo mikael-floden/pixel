@@ -1035,6 +1035,10 @@ export interface SlopePick {
    *  frame, today's every published set. */
   ramp: boolean;
   h: number;
+  /** The set's own rise in px (`elevation`): a storey for a ramp, 4 for every
+   *  published bump — what the body's lift follows across the tile
+   *  (WorldScene.rampLiftPx), so the feet climb the terrace the art shows. */
+  rise: number;
 }
 
 /** THE SLOPE IS A RAMP FROM THIS ELEVATION UP (2026-09-19, maintainer: "1 level
@@ -2096,10 +2100,10 @@ export class Tiles3 {
         /* A MIS-SIZED PUBLICATION FALLS BACK TO THE FLAT PLATE, never crashes: a
          * 30-row tile cannot be masked by the 46-row silhouette. */
         if (this.data.slopeGuard) {
-          if (this.data.slopeGuard(file, h)) out = { index, dir: st.dir, file, ramp, h };
+          if (this.data.slopeGuard(file, h)) out = { index, dir: st.dir, file, ramp, h, rise: st.elevation ?? 4 };
         } else {
           this.stats.unguardedSlopes++;
-          out = { index, dir: st.dir, file, ramp, h };
+          out = { index, dir: st.dir, file, ramp, h, rise: st.elevation ?? 4 };
         }
       }
     }
@@ -2160,6 +2164,29 @@ export class Tiles3 {
     const ridx = this.slopeIndexAt(g, L, ground, x, y, zl, true);
     if (!ridx || ridx === 15) return 0;
     return this.slopeTile(ground, ridx, x, y, true) ? ridx : 0;
+  }
+
+  /** THE BUMP THIS CELL WEARS AT A ONE-LEVEL RISE, as its corner index, or 0
+   *  (maintainer 2026-09-23: "use the slope tiles we have already generated
+   *  and make a 1 level jump look like 2 0.5 level jumps ... the slope we
+   *  already have generated should be used as often as possible for a 1
+   *  level increase so the 2 level jump stands out"). Every raised corner
+   *  is EXACTLY one level up of the same ground — the exact-one mask and the
+   *  any-higher mask agree — never a full plateau top, and the set has a tile
+   *  the pick can hand out. A corner two or more up anywhere on the cell
+   *  makes it a cliff foot: 0, and the foot keeps the cell. Asked by
+   *  `wangSurface`, where the foot yields to it exactly as to a ramp. */
+  bumpInclineFor(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    ground: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): number {
+    const one = this.slopeIndexAt(g, L, ground, x, y, zl, true);
+    if (!one || one === 15 || one !== this.slopeIndexAt(g, L, ground, x, y, zl)) return 0;
+    return this.slopeTile(ground, one, x, y) ? one : 0;
   }
 
   /* -- fades --------------------------------------------------------------- */
@@ -2837,15 +2864,22 @@ export class Tiles3 {
     y: number,
     zl: number,
   ): Surface3 {
-    /* THE FOOT YIELDS TO THE RAMP (2026-09-19). A cell in front of a higher
-     * neighbour composes the wall-foot transition (`footBoundary`, his
-     * 2026-09-08 ask) INSTEAD of its plate — which is also why no slope tile
-     * has ever shown at a rise: the foot took every one of those cells. At a
-     * one-level rise the incline IS the foot, so a cell that wears a ramp
-     * composes no foot; a genuine two-ground quad still composes its boundary
-     * and wears no ramp (the tile is the boundary), and a cliff of two or more
-     * keeps its foot. Zero without a ramp set, so render3 parity holds. */
-    const ramp = this.rampIndexFor(g, L, gr, x, y, zl);
+    /* THE FOOT YIELDS TO THE SLOPE AT A ONE-LEVEL RISE. A cell in front of a
+     * higher neighbour composes the wall-foot transition (`footBoundary`, his
+     * 2026-09-08 ask) INSTEAD of its plate — which is why no slope tile ever
+     * showed at a stone-faced rise: the foot took every one of those cells,
+     * and the 2026-09-19 cut let only a storey-height RAMP set past it, of
+     * which none exists. His published sets are the incline (maintainer
+     * 2026-09-23: "use the slope tiles we have already generated ... as often
+     * as possible for a 1 level increase so the 2 level jump stands out"): at
+     * a rise of exactly one level the lower cell wears its slope tile
+     * (`bumpInclineFor`) and composes no foot — the terrace in the art is the
+     * first half of the step, the shortened face above it the second — while
+     * a cliff of two or more keeps its foot, which is the contrast he wants
+     * between "run up" and "jump". A genuine two-ground quad still composes
+     * its boundary. The foot is a GAME rule (`Tiles3Data.footBoundary`, off
+     * in the parity fixture), so render3 parity is untouched either way. */
+    const ramp = this.rampIndexFor(g, L, gr, x, y, zl) || this.bumpInclineFor(g, L, gr, x, y, zl);
     const b = this.boundaryAt(view, frame, g, L, x, y, ramp ? { foot: false } : undefined);
     if (b) {
       /* `art` names the cell's OWN half of the composed tile, so a draw layer

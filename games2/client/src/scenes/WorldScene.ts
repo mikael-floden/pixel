@@ -25793,8 +25793,10 @@ export class WorldScene extends Phaser.Scene {
     const row = Math.floor(y / CELL_WU);
     const cell = this.t3cellOf(t3, col, row);
     const sl = cell?.slope;
-    if (!cell || !sl || !sl.ramp || cell.level !== level) return 0;
-    return rampHeight(sl.index, x / CELL_WU - col, y / CELL_WU - row) * this.geom.lh;
+    if (!cell || !sl || cell.level !== level) return 0;
+    // A ramp climbs the storey; a bump climbs its own terrace (SlopePick.rise,
+    // 4 px on every published set) — the feet follow the art either way.
+    return rampHeight(sl.index, x / CELL_WU - col, y / CELL_WU - row) * (sl.ramp ? this.geom.lh : sl.rise);
   }
 
   private stepElevation(av: Avatar, target: number, dt: number): void {

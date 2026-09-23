@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight } from "../../client/src/tiles3.js";
+import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..", "..");
@@ -66,7 +66,7 @@ test("a set is a ramp from RAMP_MIN_PX up; every published set (elevation 4) is 
   assert.equal(sets.filter(isRampSet).length, 0, "no published set is a ramp yet — the storey-height sets are his generation");
 });
 
-function resolver(extraSets: object[], approvals: Record<string, { status: string }>) {
+function resolver(extraSets: object[], approvals: Record<string, { status: string }>, footBoundary = false) {
   const groundTypes = load("tiles/ground_types.json").grounds;
   const slopes = load("tiles/slopes/index.json");
   const feedback = { ...load("live/feedback/tiles.json").entries, ...approvals };
@@ -85,6 +85,7 @@ function resolver(extraSets: object[], approvals: Record<string, { status: strin
     topWallOverrides: load("live/tuning/top_walls.json").overrides,
     topOverrides: load("live/tuning/tile_tops.json").overrides,
     storeyPitch: 15,
+    footBoundary,
     warn: () => {},
   } as ConstructorParameters<typeof Tiles3>[0]);
 }
@@ -126,4 +127,40 @@ test("the pick: a ground with an approved storey-height set draws the RAMP in it
   // An unapproved ramp set is not a candidate — his verdict gates the incline like every slope tile.
   const unjudged = resolver([RAMP], {});
   assert.equal(unjudged.slopeSets("grass", true).length, 0);
+});
+
+// ============================================================================
+// THE FOOT YIELDS TO HIS PUBLISHED SLOPE AT A ONE-LEVEL RISE (maintainer
+// 2026-09-23: "use the slope tiles we have already generated and make a 1
+// level jump look like 2 0.5 level jumps ... used as often as possible for a 1
+// level increase so the 2 level jump stands out"). With the game's wall-foot
+// rule ON, as it runs in the client, every lower cell of a pure one-level
+// same-ground rise that has an approved tile wears its slope and composes no
+// foot; a cliff foot (a corner two or more up) keeps its foot transition.
+const WORLD = join(REPO, "maps2/worlds3/the_game/world.json");
+test("on the_game, with the foot on: a one-level rise wears the slope, a cliff foot keeps its transition", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  const t = resolver([], {}, true);
+  const view = viewFromDoc(JSON.parse(readFileSync(WORLD, "utf8")));
+  const out = t.resolveWindow(view);
+  const g = (x: number, y: number) => view.groundAt(x, y);
+  const L = (x: number, y: number) => view.levelAt(x, y);
+  let rises = 0, risesWrong: string[] = [], cliffFeet = 0;
+  for (const c of out.cells) {
+    const gr = g(c.x, c.y);
+    if (!gr || view.isLiquid(gr)) continue;
+    const one = t.bumpInclineFor(g, L, gr, c.x, c.y, c.level);
+    const any = t.slopeIndexAt(g, L, gr, c.x, c.y, c.level);
+    // A genuine two-ground quad still composes its boundary, by law — so the
+    // rise arm gates only on cells whose whole 8-ring is this one ground.
+    let pure = true;
+    for (let dy = -1; dy <= 1 && pure; dy++) for (let dx = -1; dx <= 1; dx++) if (g(c.x + dx, c.y + dy) !== gr) { pure = false; break; }
+    if (one && pure) {
+      rises++;
+      if (!c.slope || c.slope.index !== one || c.boundary) risesWrong.push(`${c.x},${c.y} L${c.level} ${gr}: slope ${c.slope?.index ?? "-"} boundary ${c.boundary ? "yes" : "no"}`);
+    } else if (any && !t.slopeIndexAt(g, L, gr, c.x, c.y, c.level, true) && c.boundary) cliffFeet++;
+  }
+  assert.deepEqual(risesWrong.slice(0, 8), [], `${risesWrong.length} of ${rises} one-level rises do not wear their slope`);
+  assert.ok(rises >= 100, `the world has enough one-level rises to gate on (${rises})`);
+  assert.ok(cliffFeet >= 1, "a cliff foot still composes its transition (the contrast)");
+  console.log(`slopes: ${rises} one-level rises wear the slope with the foot on; ${cliffFeet} cliff feet keep their transition`);
 });
