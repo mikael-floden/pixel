@@ -87,7 +87,9 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* 48, not 40: `flat` keeps the FIRST N entries and silently drops the rest,
      * so a cap close to the real key count turns "add a counter" into "lose the
      * counter at the end". 34 arrive today; the headroom is the point. */
-    counts: flat(body.counts, 64, 1e9),
+    /* 96, not 64: 58 keys arrived on 2026-09-12 and the GPU counters, the gap
+     * ledger and the rAF lag add fourteen — the cap-one-short trap, again. */
+    counts: flat(body.counts, 96, 1e9),
     /* THE WINDOW'S CONTEXT (2026-09-11): which page load (`runId`) and which
      * window of it, seconds since load, zone and hops with the last hop's
      * join/state/bound ms, what the player was doing (moving/running share,
@@ -222,7 +224,7 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * named here, which has now silently eaten `lights`, `zoomMean`/`jumps`,
      * and this. Add the field here in the same commit that emits it. */
     worst: Array.isArray(body.worst)
-      ? (body.worst as unknown[]).slice(0, 24).map((w) => str(JSON.stringify(w), 1200))
+      ? (body.worst as unknown[]).slice(0, 24).map((w) => str(JSON.stringify(w), 2400))
       : null,
     /* WHAT A GROUND PAINT ACTUALLY DID — cells resolved, blits issued,
      * boundaries composed and the ms they took. THE FOURTH FIELD THIS
@@ -246,6 +248,20 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * frames were doing, never where they were. The key is the block's corner,
      * so it reads back as a teleport target. */
     longWhere: nested(body.longWhere, 16, 6),
+    /* THE BROWSER'S OWN SPLIT OF THE LONG FRAMES (client/src/perfloaf.ts,
+     * Chrome's long-animation-frame entries): `state` first — "unsupported"
+     * must never read as "no long frames" — then how many, and their ms
+     * BEFORE the rendering update (`pre`: the tasks that ran first), inside
+     * the rAF callbacks (`raf`: our frame) and in style/layout/paint (`dom`).
+     * `loafBy` names the invokers over 5 ms ("WebSocket.onmessage",
+     * "Worker.onmessage", "TimerHandler:setTimeout", "FrameRequestCallback")
+     * with count and ms — a record of records, so `nested`. */
+    loaf: mixed(body.loaf, 12),
+    loafBy: nested(body.loafBy, 12, 4),
+    /* The long-frame census BY GROUP (ground, occ, light, sim, render, gl,
+     * busy, idle, other), idle and busy in the argmax — the one that turns
+     * "unattributed" into a population with a fix. */
+    longGroup: nested(body.longGroup, 24, 6),
   };
   return report;
 }

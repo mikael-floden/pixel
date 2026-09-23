@@ -22,8 +22,19 @@ const here = dirname(fileURLToPath(import.meta.url));
 const fail = (m) => { console.error("FAIL:", m); process.exitCode = 1; };
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox", "--enable-webgl", "--ignore-gpu-blocklist"] });
-const page = await browser.newPage({ viewport: { width: 500, height: 900 } });
+/* NO SERVICE WORKER IN THE GATE. The installed app's worker answers fetches
+ * itself, and a page route never sees a request the worker handled — the
+ * beacon's POST reached the dev server (503, no token) while this gate
+ * reported "no POST" (2026-09-23). Blocking workers in the context keeps
+ * every request on the path the route intercepts. */
+const page = await browser.newPage({ viewport: { width: 500, height: 900 }, serviceWorkers: "block" });
 page.on("pageerror", (e) => console.log("pageerror", e.message));
+/* THE POST IS CAUGHT INSIDE THE PAGE, NOT BY A ROUTE. The beacon sends with
+ * `keepalive: true` (it must outlive a hidden page), and Chromium 141 hands a
+ * keepalive fetch to the browser process where page.route never sees it — the
+ * route version of this gate silently let the POST reach the dev server (503,
+ * no token) and reported "no POST captured". Wrapping window.fetch before the
+ * app boots sees every body regardless of how the browser dispatches it. */
 let captured = null;
 // THE DELIVERY ARM (2026-09-19): the FIRST post is refused with a 502 — the
 // server's answer when the GitHub commit fails — and the client must post the
@@ -70,7 +81,7 @@ const MUST = {
   frames: ["n", "p50", "p90", "p99", "max", "le17", "gt100", "mean", "rafHz"],
   // `preUpdate`/`hooks`: the scene's own event listeners (Phaser's systems, the ambient mount), 2026-09-19.
   sections: ["render", "preUpdate", "hooks"],
-  counts: ["occluders", "occMean", "dlMean", "litOccMean", "monActMean", "flushMean", "sceneryImgsMean", "glTexNew", "capSwitch", "longN"],
+  counts: ["occluders", "occMean", "dlMean", "litOccMean", "monActMean", "flushMean", "sceneryImgsMean", "glTexNew", "capSwitch", "longN", "glDraws", "glFillMpx", "glFbSw", "glClears", "rafLagMean"],
   run: ["runId", "winIdx", "sinceLoadS", "visible", "zone", "hops", "moveFrac", "travelCells", "ua", "fade", "ambient", "lane"],
   rtt: ["n", "p50", "p90", "max", "patches", "patchHz", "reconnects"],
   cpu: ["bench", "scoreMs"],
@@ -84,6 +95,9 @@ const MUST = {
   longWhy: ["n", "wait", "task", "gc", "taskMs", "waitIdleMs", "gcMb"],
   // 2026-09-19: the client's own delivery ledger — a lost window is never silent again.
   beacon: ["sent", "ok", "failed", "retried", "lastStatus", "lastError", "lastOkWin", "queued", "attempt"],
+  // The browser's split of the long frames (perfloaf.ts): `state` first, and
+  // headless Chromium has the entries, so `n` must be a number here too.
+  loaf: ["state", "n", "pre", "raf", "dom"], loafBy: [], longGroup: [],
 };
 let ok = 0;
 for (const [block, keys] of Object.entries(MUST)) {
@@ -112,7 +126,15 @@ if (!w0) fail("no worst frame reached the file — the hitch recorder rides with
 else {
   let parsed = null;
   try { parsed = JSON.parse(w0); } catch { fail(`the first worst record is truncated JSON (${w0.length} chars) — raise the cap`); }
-  if (parsed) for (const k of ["total", "sec", "mode", "at", "z", "t", "dl", "occ"]) if (parsed[k] === undefined) fail(`worst[0].${k} did not reach the file`);
+  if (parsed) for (const k of ["total", "sec", "mode", "at", "z", "t", "dl", "occ", "gl", "lag"]) if (parsed[k] === undefined) fail(`worst[0].${k} did not reach the file`);
+  // The GPU counters ride inside `gl` (glframe.ts): draws and the fill estimate.
+  if (parsed?.gl) for (const k of ["dc", "vt", "fill"]) if (parsed.gl[k] === undefined) fail(`worst[0].gl.${k} did not reach the file`);
+  // The longest record must survive the cap whole, not only the first.
+  for (const w of rep.worst ?? []) { try { JSON.parse(w); } catch { fail(`a worst record is truncated JSON (${w.length} chars) — raise the cap`); break; } }
 }
+// The LoAF observer must be ON in Chromium — "unsupported" here means the
+// entry type name or the observe() call broke, not that the browser lacks it.
+if (rep.loaf && rep.loaf.state !== "on") fail(`loaf.state is "${rep.loaf.state}" in Chromium — the observer did not arm`);
 console.log(`beacon: ${ok}/${Object.keys(MUST).length} blocks survive the allowlist; frames n=${rep.frames?.n}, rtt n=${rep.rtt?.n}, gpu ${rep.gpu?.avail ? `p50 ${rep.gpu.p50} ms` : rep.gpu?.reason}, cpu ${rep.cpu?.scoreMs} ms, worst ${(rep.worst ?? []).length} frames, longWhere ${Object.keys(rep.longWhere ?? {}).length} blocks, why ${rep.run?.why}`);
+console.log(`  loaf ${rep.loaf?.state} n=${rep.loaf?.n} pre/raf/dom ${rep.loaf?.pre}/${rep.loaf?.raf}/${rep.loaf?.dom} ms, by ${JSON.stringify(rep.loafBy)}; longGroup ${JSON.stringify(rep.longGroup)}; gl draws/frame ${rep.counts?.glDraws} fill ${rep.counts?.glFillMpx} Mpx fb ${rep.counts?.glFbSw} clears ${rep.counts?.glClears} reads ${rep.counts?.glReads}; gap ${Object.entries(rep.counts ?? {}).filter(([k]) => k.startsWith("gap")).map(([k, v]) => `${k}=${v}`).join(" ")}; rafLag ${rep.counts?.rafLagMean}/${rep.counts?.rafLagMax}`);
 if (process.exitCode) console.error("the eaten-field trap: add the field on BOTH sides in the same commit (docs/perf.md)");

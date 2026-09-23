@@ -10,6 +10,7 @@
  *  bar): `ml-compose-worker` in localStorage, `__ml.composeWorker(on?)`.
  *  DEFAULT ON — the fallback is the same picture a frame later. */
 import type { PatternsDoc } from "./tiles3";
+import { gapBill, gapOn } from "./gapledger";
 import type { ComposeJob, Pixels, RemoteComposer } from "./tiles3draw";
 import type { ComposeOut } from "./composeworker";
 
@@ -165,6 +166,9 @@ export class ComposeWorker implements RemoteComposer {
     this.stats.workerMs += m.ms;
     this.onLand?.(m.key, { w: m.w, h: m.h, data: new Uint8ClampedArray(m.data) }, m.ms);
     this.stats.landed++;
-    this.stats.applyMs += performance.now() - t0;
+    const dt = performance.now() - t0;
+    this.stats.applyMs += dt;
+    // A landing runs between frames: bill it to the gap ledger (gapledger.ts).
+    if (gapOn()) gapBill("compose", dt);
   }
 }

@@ -145,9 +145,11 @@ import { buildLive, buildSocket } from "../buildlive";
 import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
-import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
+import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, glFrameCounters, type GlFrame } from "../glframe";
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
-import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary } from "../perfextra";
+import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary, sectionGroup } from "../perfextra";
+import { installLoaf, loafTake, loafAt } from "../perfloaf";
+import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -2253,6 +2255,19 @@ export class WorldScene extends Phaser.Scene {
    *  fell in that bucket, their total ms, the dominant section's share, and how
    *  much of it was idle. See the census note in closeHitchFrame. */
   private hitchBy: Record<string, { n: number; ms: number; top: number; idle: number }> = {};
+  /** `<ground mode>:<dominant GROUP>` (perfextra sectionGroup — ground, occ,
+   *  light, sim, render, gl, busy, idle, other): the same frames read by what
+   *  KIND of work dominated, so a frame spread thin over six sections still
+   *  names its population. `top` is the dominant group's mean ms. */
+  private hitchGroup: Record<string, { n: number; ms: number; top: number }> = {};
+  /** How late the current frame's update started after its rAF timestamp —
+   *  what ran ahead of it (Phaser's pre-step and the tasks queued before the
+   *  rendering update). Per frame, where the LoAF split covers only frames
+   *  over 50 ms. */
+  private perfRafLag = 0;
+  private perfRafLagSum = 0;
+  private perfRafLagMax = 0;
+  private perfRafLagN = 0;
   private hitchN = 0;
   private hitchSum = 0;
   private hitchPrevBuilt = 0;
@@ -2266,7 +2281,7 @@ export class WorldScene extends Phaser.Scene {
   private perfTexHooked = false;
   /** One frame's record — called at the TOP of update() for the frame that
    *  just ended, so `total` spans render as well. */
-  private closeHitchFrame(total: number): void {
+  private closeHitchFrame(total: number, now: number): void {
     const tex = this.t3tex;
     const built = (tex?.stats.built ?? 0) - this.hitchPrevBuilt;
     const buildMs = (tex?.stats.buildMs ?? 0) - this.hitchPrevBuildMs;
@@ -2319,7 +2334,18 @@ export class WorldScene extends Phaser.Scene {
        * `burst` how many long frames in a row this makes; `q` the slices still
        * owed; `dl`/`occ` what the scene held. */
       gl,
-      glPrev: glPrev && !glFrameEmpty(glPrev) ? glPrev : undefined,
+      /* The frame before is what the GPU is paying for NOW: its whole record
+       * when it did anything beyond steady draws, else just its counters. */
+      glPrev: glPrev ? (glFrameEmpty(glPrev) ? glFrameCounters(glPrev) : glPrev) : undefined,
+      /* HOW LATE THIS FRAME'S UPDATE STARTED after the vsync it was scheduled
+       * for — the tasks that ran ahead of it — and OUR handlers' share of the
+       * gap (gapledger.ts: net = the socket's patches, compose/resolve/art =
+       * the workers' landings). Busy gap minus the ledger is a foreign task,
+       * and the LoAF split attached at report time names it. */
+      lag: +this.perfRafLag.toFixed(1),
+      gap: gapFrameTake(),
+      _t0: now - total,
+      _t1: now,
       burst: this.hitchBurst,
       q: this.groundSliceQ.length,
       dl: this.children.length,
@@ -2368,6 +2394,27 @@ export class WorldScene extends Phaser.Scene {
       b.ms += total;
       b.top += best;
       b.idle += this.hitchSec.gapIdle ?? 0;
+      /* AND BY GROUP, with idle and busy IN the argmax: "unattributed" above
+       * was mostly a frame spread over six sections of one kind of work, or a
+       * frame that WAITED (idle dominant = GPU-bound) or was HELD (busy
+       * dominant = a foreign task — see `gap` and `loaf` on the records). */
+      const grp: Record<string, number> = {};
+      for (const k in this.hitchSec) {
+        const g = sectionGroup(k);
+        grp[g] = (grp[g] ?? 0) + this.hitchSec[k];
+      }
+      if (total - secMs > 0) grp.other = total - secMs;
+      let gBest = 0;
+      let gCause = "other";
+      for (const g in grp)
+        if (grp[g] > gBest) {
+          gBest = grp[g];
+          gCause = g;
+        }
+      const gb = (this.hitchGroup[`${this.groundLastMode}:${gCause}`] ??= { n: 0, ms: 0, top: 0 });
+      gb.n++;
+      gb.ms += total;
+      gb.top += gBest;
       /* AND BY PLACE. `longBy` says WHAT the bad frames were doing; this says
        * WHERE they were, in 8-cell blocks — the shape every report he sends
        * has ("when I run here it lags"), and the one thing the census could
@@ -2594,6 +2641,9 @@ export class WorldScene extends Phaser.Scene {
     const coverRowsMean = this.perfCoverRowsN ? Math.round(this.perfCoverRowsSum / this.perfCoverRowsN) : this.coverStat.rows;
     const coverSlotsMean = this.perfCoverRowsN ? +(this.perfCoverSlotsSum / this.perfCoverRowsN).toFixed(1) : this.coverStat.slots;
     const sceneryImgsMean = this.perfCountN ? Math.round(this.perfSceneryImgSum / cn) : this.sceneryImgs.length;
+    const rafLagMean = this.perfRafLagN ? +(this.perfRafLagSum / this.perfRafLagN).toFixed(2) : 0;
+    const rafLagMax = +this.perfRafLagMax.toFixed(1);
+    this.perfRafLagSum = this.perfRafLagMax = this.perfRafLagN = 0;
     const moveFrac = this.perfCountN ? +(this.perfMoveFrames / cn).toFixed(2) : 0;
     const runFrac = this.perfCountN ? +(this.perfRunFrames / cn).toFixed(2) : 0;
     const travelCells = +this.perfTravel.toFixed(1);
@@ -2790,6 +2840,15 @@ export class WorldScene extends Phaser.Scene {
         // GL allocations and bytes this window (glframe.ts): textures and
         // framebuffers created / deleted, MB handed to texImage2D/texSubImage2D.
         ...glWindowTake(),
+        /* OUR SHARE OF THE GAP (gapledger.ts): ms this window inside the
+         * socket's message handler (`gapNetMs`) and the workers' landings
+         * (`gapComposeMs`, `gapResolveMs`, `gapArtMs`) — against `gapBusy` x
+         * frames, the part of the busy gap that is ours. */
+        ...gapWindowTake(),
+        /* HOW LATE UPDATES START after their rAF timestamp, mean and worst:
+         * the tasks queued ahead of the rendering update, per frame. */
+        rafLagMean,
+        rafLagMax,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -2995,6 +3054,22 @@ export class WorldScene extends Phaser.Scene {
           .slice(0, 16)
           .map(([k, v]) => [k, { n: v.n, ms: +v.ms.toFixed(0), avg: +(v.ms / v.n).toFixed(1), worst: +v.worst.toFixed(0) }]),
       ),
+      /* THE BROWSER'S OWN SPLIT OF THE LONG FRAMES (perfloaf.ts; Chrome's
+       * long-animation-frame entries, `state` says whether his browser has
+       * them): `pre` ms of tasks that ran BEFORE the rendering update, `raf`
+       * inside the rAF callbacks (our frame), `dom` in style/layout/paint,
+       * and `loafBy` the invokers over 5 ms with their ms. `n` against
+       * `frames.le100 + gt100` says how many long frames the browser saw. */
+      ...loafTake(),
+      /* THE SAME CENSUS BY GROUP, idle and busy in the argmax — reads beside
+       * `longBy`: "cells:unattributed" there is "cells:occ" or "cells:idle"
+       * here, and that decides the fix. */
+      longGroup: Object.fromEntries(
+        Object.entries(this.hitchGroup)
+          .sort((a, b) => b[1].ms - a[1].ms)
+          .slice(0, 24)
+          .map(([k, v]) => [k, { n: v.n, ms: +v.ms.toFixed(0), avg: +(v.ms / v.n).toFixed(1), top: +(v.top / v.n).toFixed(1) }]),
+      ),
       longBy: Object.fromEntries(
         Object.entries(this.hitchBy)
           .sort((a, b) => b[1].ms - a[1].ms)
@@ -3016,7 +3091,24 @@ export class WorldScene extends Phaser.Scene {
            * this frame doing" is exactly what the tail is for. Twenty-four
            * records is a few KB against a report that already carries a PNG on
            * its final flush. */
-          return h?.worst ?? null;
+          const w = (h?.worst ?? null) as Record<string, unknown>[] | null;
+          if (!w) return null;
+          /* THE LOAF ENTRY FOR EACH RECORD, MATCHED BY TIME: the browser
+           * reports a long frame after it closed, so the record could not
+           * carry it when it was written. `_t0`/`_t1` are the record's
+           * performance.now() bounds and never leave the client. */
+          return w.map((r) => {
+            const o: Record<string, unknown> = { ...r };
+            const t0 = o._t0 as number | undefined;
+            const t1 = o._t1 as number | undefined;
+            delete o._t0;
+            delete o._t1;
+            if (t0 !== undefined && t1 !== undefined) {
+              const l = loafAt(t0, t1);
+              if (l) o.loaf = l;
+            }
+            return o;
+          });
         } catch {
           return null;
         }
@@ -3419,6 +3511,8 @@ export class WorldScene extends Phaser.Scene {
     installTexUploadProbe(this.renderer);
     installCaptureProbe(this.renderer);
     installGlFrameProbe(this.renderer, { ps: () => this.ps(), pe: (k) => this.pe(k) });
+    installLoaf(() => this.perfOn); // the browser's own split of every long frame (perfloaf.ts)
+    gapArm(() => this.perfOn); // our between-frames handlers bill themselves (gapledger.ts)
     installGpuTimer(
       this.game.renderer as unknown as { gl?: WebGLRenderingContext },
       this.game.events,
@@ -7793,6 +7887,7 @@ export class WorldScene extends Phaser.Scene {
           this.hitchOn = on;
           this.hitchWorst = [];
           this.hitchBy = {};
+          this.hitchGroup = {};
           this.hitchWhere = {};
           this.hitchSpans = [];
           this.hitchSec = {};
@@ -7806,6 +7901,7 @@ export class WorldScene extends Phaser.Scene {
         const worst = [...this.hitchWorst].sort((a, b) => (b.total as number) - (a.total as number));
         this.hitchWorst = [];
         this.hitchBy = {};
+        this.hitchGroup = {};
         this.hitchWhere = {};
         return { on: this.hitchOn, frames: this.hitchN, avgMs: +(this.hitchSum / Math.max(1, this.hitchN)).toFixed(1), worst };
       },
@@ -9595,6 +9691,25 @@ export class WorldScene extends Phaser.Scene {
     this.reconnectRetries = 0;
     this.roomBoundAt = this.time.now;
     room.onStateChange(() => { this.perfPatches++; }); // the beacon's patch rate
+    /* THE SOCKET'S BILL. Every state patch decodes inside the WebSocket's
+     * message handler, between frames, where the beacon could only see
+     * "busy". Wrapped on every (re)bind — the transport is rebuilt per
+     * connection — and billed to the gap ledger as `net`. Read defensively: a
+     * transport of another shape simply goes unbilled. */
+    try {
+      const ws = (room as unknown as { connection?: { transport?: { ws?: WebSocket } } }).connection?.transport?.ws;
+      const orig = ws?.onmessage;
+      if (ws && typeof orig === "function") {
+        ws.onmessage = function (this: WebSocket, ev: MessageEvent) {
+          const t0 = gapOn() ? performance.now() : 0;
+          const r = orig.call(this, ev);
+          if (t0) gapBill("net", performance.now() - t0);
+          return r;
+        };
+      }
+    } catch {
+      /* unbilled */
+    }
     const cam = this.cameras.main;
     const $ = getStateCallbacks(room);
     // Shared time-of-day: fires immediately with the current phase (instant
@@ -13390,7 +13505,7 @@ export class WorldScene extends Phaser.Scene {
     this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir, false);
   }
 
-  update(_time: number, delta: number) {
+  update(time: number, delta: number) {
     // One tick per frame, BEFORE any body registers. Both consumers test
     // `coverAt === coverTick`, and so do the dev probes AFTER the frame has
     // run — bumping it in the flush instead would make every probe read
@@ -13435,6 +13550,17 @@ export class WorldScene extends Phaser.Scene {
     if (this.perfOn) {
       const now = performance.now();
       if (this.perfLast) this.perfFrames.push(now - this.perfLast);
+      /* HOW LATE THIS UPDATE RAN. `time` is the rAF timestamp — the vsync
+       * the browser scheduled this frame for — so `now - time` is what ran
+       * first: Phaser's own pre-step and, mostly, the tasks queued ahead of
+       * the rendering update. It belongs to the frame being closed below
+       * (it sits inside that frame's gap). Under the timeout fallback of a
+       * hidden tab the stamp is performance.now() itself, hence ~0. */
+      const lag = time > 0 ? now - time : 0;
+      this.perfRafLag = lag > 0 && lag < 5000 ? lag : 0;
+      this.perfRafLagSum += this.perfRafLag;
+      this.perfRafLagN++;
+      if (this.perfRafLag > this.perfRafLagMax) this.perfRafLagMax = this.perfRafLag;
       // Close the gap the previous frame left open — see perfHookRender.
       this.hitchIdle0 = now;
       this.hitchIdle1 = now;
@@ -13445,7 +13571,7 @@ export class WorldScene extends Phaser.Scene {
         this.hitchIdle0 = Math.min(now, Math.max(msg, this.perfPostAt)); // what closeHitchFrame calls idle, on the clock
         this.perfPostAt = 0;
       }
-      if (this.hitchOn && this.perfLast) this.closeHitchFrame(now - this.perfLast);
+      if (this.hitchOn && this.perfLast) this.closeHitchFrame(now - this.perfLast, now);
       this.perfLast = now;
       if (this.perfTexFrame > this.perfTexFrameMax) this.perfTexFrameMax = this.perfTexFrame;
       this.perfTexFrame = 0;

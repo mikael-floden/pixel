@@ -72,7 +72,7 @@ if (diff) {
 }
 
 console.log(`${rows.length} windows (file updated ${doc.updated_at})`);
-console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops", "posts"].join(" | "));
+console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops", "posts", "lag", "loaf n:pre/raf/dom", "draws/fill/fb"].join(" | "));
 for (const r of rows) {
   const fr = r.frames ?? {};
   const over50 = fr.le100 !== undefined ? fr.le100 + fr.gt100 : "-";
@@ -86,8 +86,27 @@ for (const r of rows) {
     r.gpu ? (r.gpu.avail ? f(r.gpu.p50) : "n/a") : "-", r.heap ? f(r.heap.grewMbPerSec, 0) : "-", r.counts?.texturesAdded ?? "-", r.counts?.longN ?? "-", r.run ? r.run.hops : "-",
     // the delivery ledger (2026-09-19): posts that got through / posts made before this window, and the last failure
     r.beacon ? `${r.beacon.ok}/${r.beacon.sent}${r.beacon.failed ? ` FAIL ${r.beacon.failed} (${r.beacon.lastStatus} ${r.beacon.lastError || ""})` : ""}` : "-",
+    // The rAF lag (how late updates start, mean ms), the browser's split of the
+    // long frames (perfloaf.ts) and the GPU's bill per frame (glframe.ts).
+    r.counts?.rafLagMean !== undefined ? f(r.counts.rafLagMean) : "-",
+    r.loaf ? (r.loaf.state === "on" ? `${r.loaf.n}:${f(r.loaf.pre, 0)}/${f(r.loaf.raf, 0)}/${f(r.loaf.dom, 0)}` : r.loaf.state) : "-",
+    r.counts?.glDraws !== undefined ? `${f(r.counts.glDraws, 0)}/${f(r.counts.glFillMpx)}/${f(r.counts.glFbSw, 0)}` : "-",
   ].join(" | "));
 }
+// The census by GROUP (idle and busy in the argmax), summed over the printed windows.
+const groups = {};
+for (const r of rows) for (const [k, v] of Object.entries(r.longGroup ?? {})) { const c = (groups[k] ??= { n: 0, ms: 0, top: 0 }); c.n += v.n ?? 0; c.ms += v.ms ?? 0; c.top += (v.top ?? 0) * (v.n ?? 0); }
+const ge = Object.entries(groups).sort((a, b) => b[1].ms - a[1].ms).slice(0, 10);
+if (ge.length) console.log("\nlong frames by ground mode : dominant GROUP  —  " + ge.map(([k, v]) => `${k} ${v.n}x/${v.ms.toFixed(0)}ms (top ${(v.top / Math.max(1, v.n)).toFixed(1)})`).join("; "));
+// WHO held the thread in the long frames, by the browser's account, summed.
+const inv = {};
+for (const r of rows) for (const [k, v] of Object.entries(r.loafBy ?? {})) { const c = (inv[k] ??= { n: 0, ms: 0 }); c.n += v.n ?? 0; c.ms += v.ms ?? 0; }
+const ie = Object.entries(inv).sort((a, b) => b[1].ms - a[1].ms).slice(0, 8);
+if (ie.length) console.log("long-frame scripts by invoker (LoAF)  —  " + ie.map(([k, v]) => `${k} ${v.n}x/${v.ms.toFixed(0)}ms`).join("; "));
+// Our share of the busy gap, summed: the socket and the workers' landings.
+const gaps = {};
+for (const r of rows) for (const [k, v] of Object.entries(r.counts ?? {})) if (k.startsWith("gap") && k.endsWith("Ms")) gaps[k] = (gaps[k] ?? 0) + v;
+if (Object.keys(gaps).length) console.log("gap ledger (ms over the printed windows)  —  " + Object.entries(gaps).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k.slice(3, -2)} ${v.toFixed(0)}`).join("; "));
 // The long-frame census, summed over the printed windows.
 const census = {};
 for (const r of rows) for (const [k, v] of Object.entries(r.longBy ?? {})) { const c = (census[k] ??= { n: 0, ms: 0 }); c.n += v.n ?? 0; c.ms += v.ms ?? 0; }
@@ -102,8 +121,13 @@ if (we.length) console.log("\nlong frames by PLACE (8-cell blocks, teleport ther
 // The worst single frames of the printed windows, with where and when.
 const worst = rows.flatMap((r) => (r.worst ?? []).map((w) => { try { return JSON.parse(w); } catch { return null; } })).filter(Boolean).sort((a, b) => b.total - a.total).slice(0, 8);
 if (worst.length) {
-  console.log("\nworst frames: ms | at | zoom | t(s into window) | sections | mode | tex | dl/occ");
-  for (const w of worst) console.log(`  ${f(w.total, 0).padStart(5)} | ${String(w.at ?? "-").padStart(13)} | ${w.z ?? "-"} | ${w.t !== undefined ? (w.t / 1000).toFixed(1) : "-"} | ${Object.entries(w.sec ?? {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${k} ${v}`).join(", ")} | ${w.mode ?? "-"} | ${w.tex ?? "-"} | ${w.dl ?? "-"}/${w.occ ?? "-"}`);
+  console.log("\nworst frames: ms | at | zoom | t(s into window) | sections | mode | tex | dl/occ | lag | gap | gl draws/fill (prev) | loaf pre/raf/dom: by");
+  for (const w of worst) {
+    const gl = w.gl ? `${w.gl.dc ?? "-"}/${w.gl.fill ?? "-"}${w.glPrev ? ` (${w.glPrev.dc ?? "-"}/${w.glPrev.fill ?? "-"})` : ""}` : "-";
+    const gap = w.gap ? Object.entries(w.gap).map(([k, v]) => `${k} ${v}`).join(" ") : "-";
+    const loaf = w.loaf ? `${w.loaf.pre}/${w.loaf.raf}/${w.loaf.dom}: ${(w.loaf.by ?? []).map(([k, v]) => `${k} ${v}`).join(", ")}` : "-";
+    console.log(`  ${f(w.total, 0).padStart(5)} | ${String(w.at ?? "-").padStart(13)} | ${w.z ?? "-"} | ${w.t !== undefined ? (w.t / 1000).toFixed(1) : "-"} | ${Object.entries(w.sec ?? {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${k} ${v}`).join(", ")} | ${w.mode ?? "-"} | ${w.tex ?? "-"} | ${w.dl ?? "-"}/${w.occ ?? "-"} | ${w.lag ?? "-"} | ${gap} | ${gl} | ${loaf}`);
+  }
 }
 // THE AMBIENT EFFECTS' OWN METER, averaged over the printed windows that carry
 // it: mean ms a frame per effect (their `hooks` section is the sum), the peak

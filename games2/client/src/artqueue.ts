@@ -41,6 +41,7 @@
 import Phaser from "phaser";
 import type { ArtWorkerIn, ArtWorkerOut } from "./artworker";
 import { drawFrameInto, readTexturePixels } from "./framepixels";
+import { gapBill, gapOn } from "./gapledger";
 
 export interface ArtJob {
   /** Texture key to create. A key that already exists is never fetched. */
@@ -700,7 +701,12 @@ export class ArtQueue {
     }
     try {
       this.worker = new Worker(new URL("./artworker.ts", import.meta.url), { type: "module" });
-      this.worker.onmessage = (ev: MessageEvent<ArtWorkerOut>) => this.onWorker(ev.data);
+      this.worker.onmessage = (ev: MessageEvent<ArtWorkerOut>) => {
+        // A band's arrival runs between frames: bill it to the gap ledger (gapledger.ts).
+        const t0 = gapOn() ? performance.now() : 0;
+        this.onWorker(ev.data);
+        if (t0) gapBill("art", performance.now() - t0);
+      };
       /* A worker that dies must not take the art with it: an uncaught throw
        * inside it, or a module that fails to load at all (an old browser
        * without module workers reports it here, not at construction), sends

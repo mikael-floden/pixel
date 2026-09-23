@@ -17,6 +17,7 @@
  * does today with no worker at all.
  */
 import type { Frame } from "./tiles3";
+import { gapBill, gapOn } from "./gapledger";
 import type { Tiles3DocKey } from "./tiles3runtime";
 import type { ResolvedCell, WorkerOut } from "./tiles3worker";
 
@@ -185,7 +186,10 @@ export class ResolveWorker {
     this.stats.workerMs += m.ms;
     const t0 = performance.now();
     this.onCells?.(m.cells, m.paths);
-    this.stats.applyMs += performance.now() - t0;
+    const dt = performance.now() - t0;
+    this.stats.applyMs += dt;
+    // A landing runs between frames: bill it to the gap ledger (gapledger.ts).
+    if (gapOn()) gapBill("resolve", dt);
     this.stats.resolved += m.cells.length;
   }
 }

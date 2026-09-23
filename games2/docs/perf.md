@@ -1035,6 +1035,51 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `--diff` carries all of them. Sections cap raised 40 → 64 (36 arrive).
   Gates: `perfreport.test.ts` (each block survives, the cap keeps the last
   section), `perfextra.test.ts` (the input summary as arithmetic).
+- **A LONG FRAME NOW SAYS WHERE ITS TIME WENT** (2026-09-23, before his next
+  run: 20 of the 22 long frames in the 22:53 window were `cells:unattributed`
+  — no section owned a quarter of them — and the beacon could not say whether
+  the thread had WORKED, WAITED or been HELD). Four instruments, all armed
+  with the beacon and off otherwise:
+  `loaf`/`loafBy` (`client/src/perfloaf.ts`): Chrome's long-animation-frame
+  entries, the browser's own ledger of every frame over 50 ms — `pre` ms of
+  tasks that ran BEFORE the rendering update (a socket patch, a worker
+  landing, a timer, an input handler), `raf` inside the rAF callbacks (our
+  frame), `dom` in style/layout/paint (the HUD's bill), and the invokers over
+  5 ms by name ("WebSocket.onmessage", "Worker.onmessage",
+  "TimerHandler:setTimeout", "FrameRequestCallback"); `state` first, because
+  "unsupported" must never read as "no long frames". Each worst-frame record
+  carries its own entry as `loaf`, matched by time when the report is built
+  (the browser reports a frame after it closed).
+  `gl.dc/vt/fill/fillX/fb/cl/clMpx/rd` (`client/src/glframe.ts`) and their
+  window means (`counts.glDraws`, `glFillMpx`, `glFbSw`, `glClears`,
+  `glReads`): the GPU's bill counted at the API — draw calls, vertices, the
+  MEGAPIXELS the pipelines' triangles cover (read off the vertex buffer at
+  BEFORE_FLUSH, `perfextra.ts triFillPx`; the unit a tiler pays in),
+  framebuffer switches (a tile flush each on a Mali), clears with their area,
+  and sync points (readPixels/getError/finish — the finish clock's own
+  gl.finish counts, one in `gpu.every` frames). `glPrev` carries the frame
+  before, because that is what the GPU is paying for: a long frame with a
+  short `render`, a big `gapIdle` and a big `glPrev.fill` is GPU-bound.
+  `gap` on the record and `counts.gapNetMs/gapComposeMs/gapResolveMs/gapArtMs`
+  (`client/src/gapledger.ts`): OUR share of the busy gap — the socket's
+  message handler and the three workers' landings bill themselves. Busy gap
+  minus the ledger is a foreign task, and `loaf.by` names it.
+  `lag` on the record and `counts.rafLagMean/rafLagMax`: how late the update
+  started after its rAF timestamp — what ran ahead of the frame — for EVERY
+  frame, where the LoAF split covers only the long ones.
+  `longGroup` is the census read by GROUP (`sectionGroup`: ground, occ,
+  light, sim, render, gl, engine, hooks, busy, idle, other) with idle and
+  busy IN the argmax — beside `longWhy` (wait | task | gc, 2026-09-13), which
+  says the population and this says WHICH work owned it:
+  "cells:unattributed" in `longBy` is "cells:occ" (the occluder rebuild ran in
+  a slice frame — a scheduling fix) or "cells:idle" (waiting on the compositor
+  — a GPU fix) here. Rejected: `performance.memory` per frame as a GC signal
+  (bucketised and refreshed every 20 minutes without a flag); the WebGL1
+  timer query (his driver withholds it — `gpu.reason`). GATE:
+  `verify-beacon.mjs` opens its page with service workers BLOCKED — the
+  installed app's `sw.js` answers fetches itself and a page route never
+  sees a request the worker handled (the POST reached the dev server, 503,
+  while the gate said "no POST"; chromium-1194, 2026-09-23).
 - **THE PERF BEACON'S SERVER SIDE IS AN ALLOWLIST** (`server/src/perfreport.ts`,
   `perfReport`, tested in `server/test/perfreport.test.ts`): `/api/perf`
   rebuilds the report field by field, so a block the client starts sending is

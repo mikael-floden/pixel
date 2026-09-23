@@ -101,3 +101,44 @@ export function inputSummary(entries: readonly { name: string; startTime: number
     worst,
   };
 }
+
+/** THE PIXELS A TRIANGLES BATCH COVERS — the GPU's bill in the only unit a
+ *  tiler pays in. `view` is the pipeline's vertex buffer as floats, `stride`
+ *  the floats per vertex, `posOff` where the position sits in a vertex; every
+ *  consecutive triple is one triangle (Phaser's quads are two of them, so a
+ *  quad/tri mix reads exactly). Screen pixels on the main frame, texture
+ *  pixels inside a DynamicTexture bracket — both are fill. */
+export function triFillPx(view: ArrayLike<number>, vertexCount: number, stride: number, posOff: number): number {
+  let px = 0;
+  const n = vertexCount - (vertexCount % 3);
+  for (let i = 0; i < n; i += 3) {
+    const a = i * stride + posOff;
+    const b = a + stride;
+    const c = b + stride;
+    const x0 = view[a];
+    const y0 = view[a + 1];
+    const cross = (view[b] - x0) * (view[c + 1] - y0) - (view[c] - x0) * (view[b + 1] - y0);
+    px += cross < 0 ? -cross : cross;
+  }
+  return px * 0.5;
+}
+
+/** THE SECTION GROUPS the long-frame census reads by. A frame that spreads 45
+ *  ms over six sections is "unattributed" section by section and plainly
+ *  "the occluder rebuild ran in a ground-slice frame" group by group. `engine`
+ *  is Phaser's own pre-update, `hooks` the scene's UPDATE listeners (the
+ *  ambient mount), `busy` the gap held by a task that is not our frame, `idle`
+ *  the gap spent waiting for the compositor (GPU-bound when it dominates). */
+const SECTION_GROUPS: Record<string, string> = {
+  redrawGround: "ground", repaintCells: "ground", groundSlice: "ground", landRepaint: "ground",
+  rebuildOccluders: "occ", occWalkInc: "occ", occCull: "occ", occNear: "occ", coverIndex: "occ", rebuildScenery: "occ",
+  lighting: "light", litPass: "light", litObjects: "light", litCoverSurf: "light", litPick: "light", litAtmo: "light", litWeather: "light", litShapeJobs: "light",
+  avatarLoop: "sim", monsterLoop: "sim", stepNpcs: "sim", overlays: "sim", prefetch: "sim", artTick: "sim",
+  render: "render", depthSort: "render",
+  glBegin: "gl", glEnd: "gl",
+  preUpdate: "engine", hooks: "hooks",
+  gapBusy: "busy", gapIdle: "idle",
+};
+export function sectionGroup(key: string): string {
+  return SECTION_GROUPS[key] ?? (key.startsWith("lit") ? "light" : "misc");
+}

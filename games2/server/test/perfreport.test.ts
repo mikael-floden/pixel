@@ -336,3 +336,66 @@ test("the beacon's delivery ledger reaches the file — the run says what became
   ) as { beacon: Record<string, unknown> };
   assert.deepEqual(r.beacon, { sent: 4, ok: 2, failed: 2, retried: 1, lastStatus: 502, lastError: "HTTP 502 PUT perf.json: HTTP 409", lastOkWin: 2, queued: 1 });
 });
+
+test("the LoAF split, its invokers and the group census reach the file — the state string first", () => {
+  // client/src/perfloaf.ts: the browser's own split of every long frame.
+  // `state` is the first thing to read — "unsupported" must never read as "no
+  // long frames" — so the block is MIXED; the invokers and the group census
+  // are records of records and go through `nested`.
+  const r = perfReport(
+    {
+      loaf: { state: "on", n: 21, ms: 1180.5, pre: 402.1, raf: 690.3, dom: 88.1, block: 410, forced: 3.2 },
+      loafBy: { "FrameRequestCallback": { n: 21, ms: 688 }, "WebSocket.onmessage": { n: 9, ms: 301.5 }, "Worker.onmessage": { n: 4, ms: 61 } },
+      longGroup: { "cells:idle": { n: 12, ms: 590, avg: 49.2, top: 26.1 }, "scroll:occ": { n: 7, ms: 380, avg: 54.3, top: 24 } },
+    },
+    AT,
+  ) as Record<string, any>;
+  assert.equal(r.loaf.state, "on");
+  assert.equal(r.loaf.n, 21);
+  assert.equal(r.loaf.pre, 402.1);
+  assert.equal(r.loaf.raf, 690.3);
+  assert.equal(r.loaf.dom, 88.1);
+  assert.equal(r.loafBy["WebSocket.onmessage"].ms, 301.5);
+  assert.equal(r.loafBy["Worker.onmessage"].n, 4);
+  assert.equal(r.longGroup["cells:idle"].top, 26.1);
+  assert.equal(r.longGroup["scroll:occ"].n, 7);
+  assert.equal(perfReport({ frames: { n: 1 } }, AT).loaf, null, "absent stays null");
+});
+
+test("a worst record with the GL counters, the gap ledger and its LoAF entry arrives whole", () => {
+  // The cap has twice cut a record mid-JSON; the counters, the ledger and the
+  // browser's split add ~400 chars to a record that was 900. The reader
+  // JSON.parses every record, so a truncated one is a lost frame.
+  const rec = {
+    f: 2446, total: 85.4, other: 0.6,
+    sec: { glEnd: 0.4, groundSlice: 32.3, occCull: 1.2, artTick: 0.5, avatarLoop: 0.7, monsterLoop: 1.3, stepNpcs: 0.3, litObjects: 0.5, lighting: 0.7, depthSort: 1, render: 4.7, gapBusy: 39, gapIdle: 1.8 },
+    mode: "scroll", composed: 0, composeMs: 0, bnd: 0, defer: 0, owed: 0, tex: 1, files: 0, objs: 0, ring: 779,
+    gl: { brk: { "ground-rt-a": [1, 0.1, 0.4], "cover-E": [2, 0, 0.3], "cover-C": [2, 0, 0], "cover-O": [3, 0, 0] }, texNew: 0, texDel: 0, fbNew: 0, fbDel: 0, upKb: 131, capSw: 0, dc: 41, vt: 26412, fill: 11.62, fillX: 2.4, fb: 9, cl: 8, clMpx: 4.19, rd: 0 },
+    glPrev: { brk: { "ground-rt-a": [1, 0, 0.7], "cover-E": [2, 0, 0.1], "cover-C": [2, 0, 0], "cover-O": [3, 0, 0] }, texNew: 0, texDel: 0, fbNew: 0, fbDel: 0, upKb: 135, capSw: 0, dc: 39, vt: 25100, fill: 10.9, fillX: 2.4, fb: 9, cl: 8, clMpx: 4.19, rd: 0 },
+    lag: 37.2, gap: { net: 36.8, art: 0.4 },
+    burst: 1, q: 0, dl: 7027, occ: 6173, at: "254.3,186.3", z: 1.36, t: 26777,
+    loaf: { pre: 38.1, raf: 46.2, dom: 1.1, by: [["FrameRequestCallback", 46], ["WebSocket.onmessage", 36.5]] },
+  };
+  const r = perfReport({ worst: [rec] }, AT) as Record<string, any>;
+  const back = JSON.parse(r.worst[0]);
+  assert.equal(back.loaf.pre, 38.1);
+  assert.equal(back.gap.net, 36.8);
+  assert.equal(back.gl.fill, 11.62);
+  assert.equal(back.glPrev.dc, 39);
+  assert.equal(back.lag, 37.2);
+});
+
+test("the counts cap has headroom for the GPU counters, the gap ledger and the rAF lag", () => {
+  // 58 keys arrived on 2026-09-12; fourteen more ride now. `flat` keeps the
+  // first N and says nothing, so the cap is proved here, not assumed.
+  const counts: Record<string, number> = {};
+  for (let i = 0; i < 80; i++) counts[`k${i}`] = i;
+  counts.glFillMpx = 9.1;
+  counts.gapNetMs = 412.5;
+  counts.rafLagMean = 2.31;
+  const r = perfReport({ counts }, AT) as Record<string, any>;
+  assert.equal(r.counts.glFillMpx, 9.1);
+  assert.equal(r.counts.gapNetMs, 412.5);
+  assert.equal(r.counts.rafLagMean, 2.31);
+  assert.ok(Object.keys(r.counts).length >= 83);
+});
