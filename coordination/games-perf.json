@@ -1,8 +1,8 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-23T21:16:29+00:00",
+  "updated_at": "2026-09-23T21:30:50+00:00",
   "health": "running",
-  "current": "IDLE — waiting for the maintainer's perf run on 830c536fe4 or later (Beacon 3: every metric's start/end on the clock, a timeline per worst frame with the waits between regions; the zone field's bounded memos 115e15db85 are live). Next on his word: `node scripts/perf-read.mjs` on that run — the worst frames' timelines (what ran, when, and how long nothing timed ran between), `sectionsPeak` and the ambient peaks with their clocks, `_zone` rows under their caps (blur/cells/buckets 128k/48k/20k), heap max (was 900 MB), frames over 50 ms per window. Released every file.",
+  "current": "CLAIMED (2026-09-23, his 21:20 run on 115e15db85, 9 windows, 18 hops): the zone fix held (`_env` peak 481 -> 11.7 ms, `_gloom` peak 628 -> 90, heap max 900 -> 683 MB, hooks now fully metered: unmetered 0.2-0.4 ms/frame). WHAT IS LEFT IN HOOKS IS `_gloom`: 3.5-9.7 ms PER TICK, scaling with the frame time (3.5 at 43 fps, 9.7 at 21 fps) = up to 4.5 ms/frame — the signature of a GPU sync, most likely the mist mask's texImage2D on a texture the in-flight frame samples (nightlight.ts setMistMask -> tex.refresh() every tick). UNIT: mount.ts publishGloom billed in parts — `_gloom:field` (weightAt + coverage), `_gloom:raster`, `_gloom:mask` (the upload) — so his next run (with Beacon 3's timelines, which this run predates: his game loaded 54 s before 830c536fe4 went live) says which. If it is the upload, the fix is a double-buffered mask texture in nightlight.ts (two canvas textures alternating, the sampler rebound per tick) — games'/games-ambient-assistant's file, request posted rather than edited. FILES: games2/ambient/runtime/mount.ts (publishGloom bills only), games2/docs/perf.md, coordination/games-perf.json.",
   "progress": {
     "runs_read": 44,
     "units_shipped": 6
