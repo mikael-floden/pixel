@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-23T20:25:48.594Z",
+  "updated_at": "2026-09-23T20:26:20.115Z",
   "entries": {
     "monsters/ice_sprite": {
       "status": "approved",
@@ -12459,6 +12459,34 @@
       "art": "38cbf22f2a31833d",
       "updated_at": "2026-09-23T20:25:47.695Z",
       "note": "Doesn't look like a walk"
+    },
+    "monsters/thorn_knot#attack#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "3e6f58355948279e",
+      "updated_at": "2026-09-23T20:26:00.990Z"
+    },
+    "monsters/thorn_knot#attack#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "55022f7517f0269d",
+      "updated_at": "2026-09-23T20:26:11.608Z"
+    },
+    "monsters/thorn_knot#attack#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "7ad56aed5fb6af8f",
+      "updated_at": "2026-09-23T20:26:13.559Z"
+    },
+    "monsters/thorn_knot#attack#west": {
+      "status": "redo",
+      "art": "f00801a2d0b402d9",
+      "updated_at": "2026-09-23T20:26:16.662Z"
+    },
+    "monsters/thorn_knot#attack#east": {
+      "status": "redo",
+      "art": "8dec7334b4ee32d4",
+      "updated_at": "2026-09-23T20:26:18.450Z"
     }
   }
 }
