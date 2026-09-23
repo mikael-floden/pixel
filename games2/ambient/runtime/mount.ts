@@ -98,13 +98,22 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         height,
       };
     };
+    /* THE TICK'S PARTS ARE BILLED (games-perf, his 21:20 run: `_gloom` was
+     * 3.5-9.7 ms a tick and SCALED WITH THE FRAME TIME — 3.5 at 43 fps, 9.7
+     * at 21 — which is what a GPU sync looks like, not a raster). `_gloom:
+     * field` is the weights at my feet and the coverage, `_gloom:raster` the
+     * mask's walk, `_gloom:mask` the hand-off to the night shader (its
+     * texture upload). The next run says which one it is. */
     const publishGloom = () => {
       if (!zone.ruled) { setGloomField(null); mistMask(null); return; }
+      const g0 = performance.now();
       const feet = myFeet();
       const at: Record<string, number> = {};
       for (const n of Object.keys(CLOUD_OF)) at[n] = zone.weightAt(n, feet.x, feet.y);
       const cov = zone.coverage(MIST_EFFECT, ctx.view);
       setGloomField({ at, mistInView: cov.max });
+      const g1 = performance.now();
+      bill("_gloom:field", g1 - g0, g0);
       if (forcedGloom().includes(MIST_EFFECT)) {
         /* A FORCED ROW IS A TEST OF THE EFFECT ITSELF, so it covers the whole
          * view — and its ground is THE GROUND I AM STANDING ON. It used to
@@ -116,13 +125,18 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         const rect = maskRect();
         forcedMask.fill(255);
         forcedRef.fill(packRef(zone.cellAt(feet.x, feet.y)?.lvl ?? 0));
+        const g2 = performance.now();
         mistMask({ x: rect.x, y: rect.y, w: rect.width, h: rect.height, cols: MASK_COLS, rows: MASK_ROWS, data: forcedMask, ref: forcedRef });
+        bill("_gloom:mask", performance.now() - g2, g2);
         return;
       }
       const rect = maskRect();
       // the floor rides along in the mask's own walk (runtime/zonefloor.ts)
       const data = zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS, maskRef);
+      const g2 = performance.now();
+      bill("_gloom:raster", g2 - g1, g1);
       mistMask({ x: rect.x, y: rect.y, w: rect.width, h: rect.height, cols: MASK_COLS, rows: MASK_ROWS, data, ref: maskRef });
+      bill("_gloom:mask", performance.now() - g2, g2);
     };
     const safe = (fn: () => void) => {
       try {

@@ -1141,7 +1141,30 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   walk at 450 ms and one scratch row instead of an ImageData per install.
   Still open from that run, not games-perf's: `repath` 68 ms plus 76+69 ms
   in the touch handlers on a tap (the nav — games), `rtt` p50 130-200 ms
-  with p99 400-600 (his connection), and the heap's other 700 MB (games). Rejected: `performance.memory` per frame as a GC signal
+  with p99 400-600 (his connection), and the heap's other 700 MB (games).
+  HIS 21:20 RUN ON THE FIX (115e15db85, nine windows, 18 hops, the whole
+  map): `_env` peak 481 -> 11.7 ms, `_gloom` peak 628 -> 90, no hop
+  freeze (join 154-331 ms, all network), heap max 900 -> 683 MB, hooks now
+  FULLY metered (unmetered 0.2-0.4 ms/frame). p50 20-42 ms, 6-168 frames
+  over 50 ms a window — the west and south-west (marsh, lake: storm, rain,
+  foam, 3-6k occluders) are the slow windows. What is left, by owner:
+  `_gloom` 3.5-9.7 ms A TICK, scaling with the frame time (3.5 at 43 fps,
+  9.7 at 21) = up to 4.5 ms/frame — a GPU-sync signature, most likely the
+  mask's texImage2D on a texture the in-flight frame samples
+  (`setMistMask` -> `tex.refresh()` each tick); billed in parts now
+  (`_gloom:field/raster/mask`) to prove it (games-perf). The three worst
+  frames were COLLECTIONS: 725 ms (depthSort 566, dh -29 MB, w=gc), 569
+  (render 385 with 14 compositions uploaded in the one frame), 478 (hooks
+  462, dh -291 MB — a major collection inside storm's update); `allocBy`
+  puts `render` at 100-400 KB a FRAME, `repaintCells` 56-140, `avatarLoop`
+  30-100 (games). The backwards teleport: a 131-cell `jump` at t=135.9 s
+  on a hop back INTO zone 2, to where he had left it 70 s earlier
+  (196.2,99.6 — window 2's position), with rtt p99 2,341 ms in that
+  window: the room he re-entered bound him on a stale position (the
+  hand-off — games). The weather rows sum to 2.5-7 ms/frame (storm 0.73,
+  foam 0.95, rain 0.38, birds 0.31, windy 0.30, heavyrain 0.28, snow 0.22,
+  drizzle 0.21), and `_zone.picks` 100-180k a window are the drops' own
+  per-particle reads (games-ambient). Rejected: `performance.memory` per frame as a GC signal
   (bucketised and refreshed every 20 minutes without a flag); the WebGL1
   timer query (his driver withholds it — `gpu.reason`). GATE:
   `verify-beacon.mjs` opens its page with service workers BLOCKED — the
