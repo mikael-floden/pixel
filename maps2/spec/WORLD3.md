@@ -387,7 +387,11 @@ round the cell, the width the median of five walks across the band along
 it — a single walk read every bend's inner corner as thin and the pass
 crept, measured), a road keeps ITS OWN width (the lower quartile of its
 axis-running stretches, never below the three-row road's 77 px), and every
-stretch thinner than that by more than 4 px is dilated on its thin side onto
+stretch thinner than that by more than 4 px — a STRETCH: a cell whose fitted
+direction is strongly one-way (the covariance's eigenvalue ratio 4 or more; a
+road reads 9 to 28, a patch or a crossing about 2, and the first cut blew an
+eight-cell sand patch on the massif into a plaza) in a road of 24 cells or
+more — is dilated on its thin side onto
 the natural top beside it (grass, mud, snow, ice, bare rock — never paving,
 sand, water, a floor, a ramp cell or a cell a piece stands in) at the
 road's level, round after round until nothing widenable is thin. Never
@@ -396,7 +400,7 @@ projection, and thinning breaks the solid core. A cell narrower than 50 px
 is a yard path or a speck, not a road, and is left alone. The build runs it
 after `widen_roads`, before `ramps`; `roadwidth.py --check` prints the widths
 by screen direction and exits 1 on a thin stretch, `--apply` runs it on the
-world that ships (the_game: 529 cells added, 81 thin cells hemmed in by
+world that ships (the_game: 304 cells added, 84 thin cells hemmed in by
 paving and houses left as they are).
 
 `groom()` runs before anything is built (after `i2_systems`) and `regroom()`

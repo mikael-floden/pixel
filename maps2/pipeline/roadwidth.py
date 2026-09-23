@@ -23,7 +23,11 @@ width - the lower quartile of its stretches that run along a cell axis
 (`ref_width`, never below `MIN_REF` = the three-row road) - and every stretch of it
 narrower than that by more than `TOL` px is dilated onto the grass beside it
 on its thin side, at the road's level, round after round until nothing is
-narrow. A screen-horizontal road of three anti-diagonals becomes five (84 px);
+narrow. Only a STRETCH is widened: a cell whose fitted direction is strongly
+one-way (`ANISO`, the covariance's eigenvalue ratio - a road 9 or more, a
+patch or a crossing about 2) in a road of `ROAD_CELLS` or more; the first cut
+blew an eight-cell sand patch on the massif shoulder into a plaza. A
+screen-horizontal road of three anti-diagonals becomes five (84 px);
 an axis road of three rows is already 77 and does not move; a screen-vertical
 one is wider than its reference and is never thinned (thinning breaks the
 solid core, and a wide read is not what he minded). Only a ROAD is widened -
@@ -60,7 +64,9 @@ TOL = 4.0                   # px: narrower than the reference by more than this 
 ROAD_MIN = 50.0             # px: narrower than this is a path or a speck, not a road
 PCA_R = 5                   # cells: the neighbourhood the local direction is read from
 AXIS_DEG = 8.0              # a stretch within this of an axis direction is "along an axis"
+ANISO = 4.0                 # eigenvalue ratio below which the cell is in a patch or a crossing, not a stretch
 ROUNDS = 16
+ROAD_CELLS = 24             # a connected road has at least this many cells; less is a patch
 STEP = 1.0                  # px per step of the width walk
 ALONG = 2                   # cells before and after: the width is the median of five walks
 
@@ -87,7 +93,18 @@ def direction(road, x, y):
     sxx = sum((p[0] - mx) ** 2 for p in pts)
     syy = sum((p[1] - my) ** 2 for p in pts)
     sxy = sum((p[0] - mx) * (p[1] - my) for p in pts)
-    return 0.5 * math.atan2(2 * sxy, sxx - syy)
+    th = 0.5 * math.atan2(2 * sxy, sxx - syy)
+    # A STRETCH HAS A DIRECTION; a patch or a crossing has none. The
+    # eigenvalue ratio of the covariance: a three-row road within PCA_R is
+    # 9 or more (a screen-vertical staircase 11, an axis road 28), a
+    # junction or a sand patch about 2 - the first cut blew an eight-cell
+    # patch on the massif shoulder up into a plaza (measured).
+    tr, det = sxx + syy, sxx * syy - sxy * sxy
+    disc = max(0.0, tr * tr / 4 - det) ** 0.5
+    l1, l2 = tr / 2 + disc, tr / 2 - disc
+    if l2 <= 0 or l1 / l2 < ANISO:
+        return None
+    return th
 
 
 def _walk(road, cx, cy, px, py):
@@ -114,7 +131,7 @@ def width_at(road, x, y, th=None):
     is thin along its length."""
     th = direction(road, x, y) if th is None else th
     if th is None:
-        return None
+        return None                         # a patch or a crossing: no width to speak of
     ux, uy = math.cos(th), math.sin(th)
     px, py = -math.sin(th), math.cos(th)
     cx, cy = scr(x + 0.5, y + 0.5)
@@ -211,11 +228,12 @@ def equalise(doc, log=print, seed=0x50AD):
     # widened and the pass chased its own tail (measured: 326 thin cells
     # became 711 in eight rounds).
     widths = measure(road)
-    ref = {}
+    ref, comp_size = {}, {}
     for comp in components(road):
         w = ref_width(widths, comp)
         for c in comp:
             ref[c] = w
+            comp_size[c] = len(comp)
     added, stuck = {}, set()
     for rnd in range(ROUNDS):
         if rnd:
@@ -231,6 +249,9 @@ def equalise(doc, log=print, seed=0x50AD):
             px, py = -math.sin(th), math.cos(th)
             side = 1 if up <= down else -1         # the thin side
             z = lvl[y][x]
+            comp_n = comp_size.get((x, y), 0)
+            if comp_n < ROAD_CELLS:
+                continue                            # a patch, not a road
             best, bx = None, None
             cx, cy = scr(x + 0.5, y + 0.5)
             for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
@@ -249,6 +270,7 @@ def equalise(doc, log=print, seed=0x50AD):
                 lvl[bx[1]][bx[0]] = z
                 road.add(bx)
                 ref[bx] = rw
+                comp_size[bx] = comp_n
                 added[bx] = rnd
                 got += 1
             else:
@@ -274,7 +296,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("world_dir")
     gr = ap.add_mutually_exclusive_group(required=True)
-    gr.add_argument("--check", action="store_true", help="survey; exit 1 when a road stretch is thin")
+    gr.add_argument("--check", action="store_true", help="survey; exit 1 when a road stretch could still be widened")
     gr.add_argument("--apply", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
@@ -283,8 +305,12 @@ def main():
         N = len(doc["level"])
         soil = doc["grounds"].index(ROAD)
         road = {(x, y) for y in range(N) for x in range(N) if doc["ground"][y][x] == soil}
-        thin, _ = survey(road)
-        sys.exit(1 if thin else 0)
+        survey(road)
+        # the gate: what --apply would still widen (a thin cell with nothing
+        # beside it to take the road is reported, not failed)
+        added, stuck = equalise(doc, log=lambda *a: None)
+        print(f"{a.world_dir}: {len(added)} widenable cell(s), {len(stuck)} thin with nothing to take")
+        sys.exit(1 if added else 0)
     apply(a.world_dir, write=not a.dry_run)
 
 
