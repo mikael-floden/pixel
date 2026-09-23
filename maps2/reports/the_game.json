@@ -1417,6 +1417,29 @@
     }
    ],
    "artifact": "https://claude.ai/artifact/VYQYQ2jy88e76Bp2Ei2eTK"
+  },
+  {
+   "date": "2026-09-23",
+   "commit": "781a879015f",
+   "before": "7a7a980a307",
+   "title": "The timber house's stone roof restored: a roof is judged against what shows beyond its edge on screen",
+   "changes": [
+    {
+     "name": "The timber house in town: back to stone",
+     "what": "You were right and the roof was fine. The first cut of the rule sampled the cell beside the footprint, and beside this house lies the brown paving apron the yards laid - but a six-storey roof hides the five cells behind it on screen, so the apron never shows past the roof's edge and what the player sees there is grass. A stone roof against grass reads. Restored to brown paving. The rule now walks up the screen column from every north and west edge cell to the first cell whose top clears the roof's top vertex, and only a ground seen there by four or more edge cells is banned for the roof.",
+     "cell": [
+      305,
+      229
+     ],
+     "window": [
+      290,
+      216,
+      320,
+      240
+     ]
+    }
+   ],
+   "artifact": "https://claude.ai/artifact/AdqDf4FPTaLJRsprmbHmhr"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
