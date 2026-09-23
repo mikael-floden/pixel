@@ -392,8 +392,25 @@ them; folder isolation beats DRY here).
   zones whose bounding box holds it, one polygon pass; the picker memo is two
   generations, never cleared whole; a raster for the same world-anchored
   rect and table is answered from the last one — the overlap copied, the
-  new edge looked up. None changes an answer — `zonefield.test.ts` proves
-  it cell by cell against `zonesAt`. Measured on the_game's 96 zones
+  new edge looked up. EVERY MEMO IS TWO GENERATIONS UNDER A CAP (`BUCKET_CAP`
+  20,000 picks, `CELL_MEMO_CAP` 24,000 cells, `BLUR_MEMO_CAP` 80,000 blurred
+  reads — sized so a tick's working set fits the young half: his 19:53 run
+  had the blur memo at 824k entries, ~120 MB, and the picker memo missing
+  180k-470k times a window at 6,000). A RE-ROLL IS A STAMP, NOT A SCAN: the
+  changed zone takes a new epoch, a memo that read it is found stale when
+  it is next touched, and only the raster samples within the blur window
+  of the changed zone's box are looked up again — the rest are copied
+  (walking every memo at a re-roll, every ~6 s with 96 zones, was 33 ms
+  here and 481 ms once in his run). THE ROOM'S SKY DOES NOT EMPTY THEM: a
+  hop's empty table keeps every memo, the raster and the last real table,
+  and the table coming back is diffed against it (a refresh that cleared
+  everything rebuilt the mask cold, 200-650 ms in one tick, at each of his
+  16 hops). A doc is known by its fingerprint, so a fresh copy of the same
+  zones is the same doc; only a doc that differs empties the field. None
+  changes an answer — `zonefield.test.ts` proves it cell by cell against
+  `zonesAt`, byte for byte against a cold raster after a re-roll, and
+  across a hop. Offline on the_game's zones: a walking tick p50 0.7 ms,
+  a re-roll's refresh 33 -> 0.5 ms, a hop's first ruled tick 1.4-4.6 ms. Measured on the_game's 96 zones
   (median 77 vertices, one of 708; a desktop core, his phone is 3-5x
   slower): a cold cell 173 -> 34 µs, a walking tick's raster + coverage
   18.4 -> 2.5 ms, a standing one 5.3 -> 0.09 ms, the memo drop's worst

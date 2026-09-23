@@ -9,7 +9,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { AMBIENT_SCHEMA, CELL_WU, parseAmbientZones, zonesAt, type AmbientZoneDoc } from "@nangijala/shared";
 import {
-  BUCKET_CAP, FEATHER_CELLS, ZoneField, type ZonePick, type ZoneSource,
+  BLUR_MEMO_CAP, BUCKET_CAP, CELL_MEMO_CAP, FEATHER_CELLS, ZoneField, type ZonePick, type ZoneSource,
 } from "../../ambient/runtime/zonefield.js";
 import { PLACE_MIN, ZoneWatch } from "../../ambient/runtime/zoneplace.js";
 import type { AmbientCtx } from "../../ambient/runtime/types.js";
@@ -108,17 +108,18 @@ test("an elevation band: the cave's drips are on at its level and off above it",
   assert.equal(high.weightAt("drips", ...iso(15.5, 35.5)), 0);
 });
 
-test("a re-rolled table drops every memo; an unchanged one keeps them", () => {
+test("a re-rolled table drops every memo that read the zone; an unchanged one keeps them", () => {
   const { f, s } = field({});
   assert.equal(f.weightAt("rain", ...iso(15.5, 15.5)), 1);
-  const cells = f.debug().cells;
-  assert.ok(cells > 0);
+  const r0 = f.debug().resolves;
+  assert.ok(r0 > 0);
   assert.equal(f.refresh(), false, "same table: nothing to drop");
-  assert.equal(f.debug().cells, cells);
+  assert.equal(f.weightAt("rain", ...iso(15.5, 15.5)), 1);
+  assert.equal(f.debug().resolves, r0, "answered from memo");
   s.packed = "wet=gnats;dry=gnats;deep=drips"; // the wet zone's window lost its rain
   assert.equal(f.refresh(), true);
-  assert.equal(f.debug().cells, 0, "memos dropped");
-  assert.equal(f.weightAt("rain", ...iso(15.5, 15.5)), 0, "...and the new answer is read");
+  assert.equal(f.weightAt("rain", ...iso(15.5, 15.5)), 0, "the new answer is read");
+  assert.ok(f.debug().resolves > r0, "...by resolving the zone's cells again");
   assert.equal(f.weightAt("gnats", ...iso(15.5, 15.5)), 1);
 });
 
@@ -131,9 +132,7 @@ test("a re-roll in ONE zone drops only the cells that zone holds — the rest of
   const resolvesBefore = before.resolves;
   s.packed = "wet=rain,gnats;dry=;deep=drips"; // only the DRY zone's window changed
   assert.equal(f.refresh(), true);
-  const after = f.debug();
-  assert.ok(after.cells < before.cells, `some cells dropped (${before.cells} -> ${after.cells})`);
-  assert.ok(after.cells > 0, "...but not the wet zone's, which did not change");
+  assert.equal(f.debug().cells, before.cells, "a re-roll scans nothing: a memo is found stale when it is next touched");
   // the wet zone answers from memo (no new resolve); the dry zone re-resolves
   f.weightAt("rain", ...iso(15.5, 15.5));
   assert.equal(f.debug().resolves, resolvesBefore, "the untouched zone's cells were not re-resolved");
@@ -370,4 +369,108 @@ test("a raster for the same world-anchored rect is computed once, and a new tabl
   s.packed = "wet=gnats;dry=gnats;deep=drips";
   assert.equal(f.refresh(), true);
   assert.ok(f.raster("rain", rect, 20, 4).every((v) => v === 0), "rain rolled off: the memo did not answer for the old table");
+});
+
+test("a re-roll looks up only the raster samples near the changed zone — the rest are copied, and the bytes equal a cold raster", () => {
+  const { f, s } = field({});
+  // cols 5..44 x rows 5..24, one sample per cell: the wet zone and the dry zone both in the rect
+  const rect = { x: 5 * CELL_WU, y: 5 * CELL_WU, width: 40 * CELL_WU, height: 20 * CELL_WU };
+  const cols = 40, rows = 20;
+  const a = f.raster("gnats", rect, cols, rows);
+  const at = (g: Uint8Array, col: number, row: number) => g[(row - 5) * cols + (col - 5)];
+  assert.equal(at(a, 15, 15), 255, "the wet zone has gnats");
+  assert.equal(at(a, 35, 15), 255, "so has the dry");
+  const r0 = f.debug().resolves;
+  const p0 = f.stats.picks;
+  s.packed = "wet=rain,gnats;dry=;deep=drips"; // the dry zone's window closed
+  assert.equal(f.refresh(), true);
+  const b = f.raster("gnats", rect, cols, rows);
+  assert.equal(at(b, 35, 15), 0, "the dry zone reads its new window");
+  assert.equal(at(b, 15, 15), 255, "the wet zone is unchanged");
+  const again = f.debug().resolves - r0;
+  assert.ok(again > 0 && again < (cols * rows) / 2, `only the dry zone's cells were resolved again (${again} of ${cols * rows})`);
+  assert.equal(f.stats.picks, p0, "no sample was picked again: the picker memo holds them all");
+  const { f: cold } = field({ table: "wet=rain,gnats;dry=;deep=drips" });
+  assert.deepEqual([...b], [...cold.raster("gnats", rect, cols, rows)], "byte for byte a cold raster of the new table");
+  // and the next tick copies everything again: nothing stale is left behind
+  const r1 = f.debug().resolves;
+  const c = f.raster("gnats", rect, cols, rows);
+  assert.deepEqual([...c], [...b]);
+  assert.equal(f.debug().resolves, r1);
+});
+
+/* THE MEMOS ACROSS A HOP AND OVER A LONG WALK (games-perf 2026-09-23, his
+ * 19:53 run: the blur memo reached 824k entries, a refresh pruned them all in
+ * one 481 ms frame, and every zone hop — the room's sky ruling for the length
+ * of the join, then the same table back — cleared everything and rebuilt the
+ * mask cold). */
+test("the room's sky taking over keeps the memos, and the same table coming back drops none of them", () => {
+  const { f, s } = field({});
+  f.weightAt("rain", ...iso(15.5, 15.5));
+  f.weightAt("gnats", ...iso(35.5, 15.5));
+  const d0 = f.debug();
+  assert.ok(d0.cells > 0 && d0.blur > 0);
+  // the hop: the new room has not sent its table yet
+  s.roomSky = true;
+  assert.equal(f.refresh(), true);
+  assert.equal(f.ruled, false);
+  assert.equal(f.weightAt("rain", ...iso(15.5, 15.5)), 1, "unruled: every weight reads 1");
+  assert.equal(f.debug().cells, d0.cells, "the memos survive the room's sky");
+  assert.equal(f.debug().blur, d0.blur);
+  // the same table arrives: nothing re-rolled, nothing dropped, nothing re-resolved
+  s.roomSky = false;
+  assert.equal(f.refresh(), true);
+  assert.equal(f.debug().cells, d0.cells);
+  assert.equal(f.debug().pruned, 0);
+  assert.equal(f.weightAt("rain", ...iso(15.5, 15.5)), 1);
+  assert.equal(f.debug().resolves, d0.resolves, "answered from memo");
+  // a zone that re-rolled during the hop is still pruned, and only it
+  s.roomSky = true;
+  f.refresh();
+  s.packed = "wet=rain,gnats;dry=;deep=drips";
+  s.roomSky = false;
+  assert.equal(f.refresh(), true);
+  assert.equal(f.debug().pruned, 1, "the dry zone changed while the sky ruled");
+  assert.equal(f.weightAt("rain", ...iso(15.5, 15.5)), 1);
+  assert.equal(f.debug().resolves, d0.resolves, "the wet zone's memos were kept");
+  assert.equal(f.weightAt("gnats", ...iso(35.5, 15.5)), 0, "the dry zone reads its new window");
+});
+
+test("a fresh copy of the same doc — a room's own object — keeps the memos; a different doc drops them", () => {
+  const { f, s } = field({});
+  f.weightAt("rain", ...iso(15.5, 15.5));
+  const d0 = f.debug();
+  s.doc = doc(); // parsed again: a new object, the same zones
+  assert.equal(f.refresh(), false, "same content, same table: nothing changed");
+  assert.equal(f.debug().cells, d0.cells);
+  assert.equal(f.weightAt("rain", ...iso(20.5, 15.5)), 1 / 3, "the feathered edge, outside the old outline");
+  const other = doc();
+  other.zones[0].area = [[10, 10], [22, 10], [22, 20], [10, 20]]; // the wet zone grew
+  s.doc = other;
+  assert.equal(f.refresh(), true);
+  assert.equal(f.debug().cells, 0, "a changed outline is a new world: memos dropped");
+  assert.equal(f.weightAt("rain", ...iso(20.5, 15.5)), 1, "...and the new outline is read");
+});
+
+test("the memos are bounded on a long walk, and what was just asked is still there", () => {
+  const big = parseAmbientZones({
+    schema: AMBIENT_SCHEMA, world: "t", size: 400, exclusive: [],
+    zones: [{ id: "all", name: "all", kind: "marsh", area: [[0, 0], [400, 0], [400, 400], [0, 400]], effects: { gnats: 100 } }],
+  })!;
+  const s: ZoneSource = { doc: big, packed: "all=gnats", roomSky: false };
+  let picks = 0;
+  const f = new ZoneField(() => s, (x, y) => { picks++; return flat()(x, y); });
+  f.refresh();
+  for (let row = 0; row < 400; row += 2) for (let col = 0; col < 400; col += 2) f.weightAt("gnats", ...iso(col + 0.5, row + 0.5));
+  const d = f.debug();
+  assert.ok(d.cells <= CELL_MEMO_CAP, `cells ${d.cells}`);
+  assert.ok(d.blur <= BLUR_MEMO_CAP, `blur ${d.blur}`);
+  assert.ok(d.buckets <= BUCKET_CAP, `buckets ${d.buckets}`);
+  assert.ok(d.cells > 1000 && d.blur > 1000, "and the memos are in use");
+  // the last screen's worth is hot: asking it again resolves and picks nothing new
+  const r0 = f.debug().resolves;
+  const p0 = picks;
+  for (let row = 380; row < 400; row += 2) for (let col = 380; col < 400; col += 2) f.weightAt("gnats", ...iso(col + 0.5, row + 0.5));
+  assert.equal(f.debug().resolves, r0);
+  assert.equal(picks, p0);
 });

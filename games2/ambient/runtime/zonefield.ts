@@ -60,7 +60,19 @@ export const BUCKET_W = 16;
 export const BUCKET_H = 7;
 /** Buckets held before the picker memo is dropped whole (a walk across the
  *  world must not grow it without bound). */
-export const BUCKET_CAP = 6000;
+/* THE MEMOS ARE BOUNDED (games-perf 2026-09-23, his 19:53 run: the blur memo
+ * grew 113k -> 824k entries over five minutes — ~120 MB of heap, major
+ * collections of 250-384 MB inside the tick — and `zone.refresh()` pruned
+ * 800k entries by zone in one frame, 481 ms). Each memo is two generations:
+ * the young rotates into the old at half the cap, a hit in the old is
+ * promoted, and the two together never exceed the cap. The working set a
+ * tick touches — the mask's 2,560 samples, the coverage grids, the weather
+ * drops' reads — must fit the young generation, or every rotation drops what
+ * the next tick asks again: at 6,000 the picker memo missed 180k-470k times a
+ * window, every miss a ground pick. */
+export const BUCKET_CAP = 20000;
+export const CELL_MEMO_CAP = 24000;
+export const BLUR_MEMO_CAP = 80000;
 /** The coverage sampler's grid over the view. */
 export const COVER_COLS = 8;
 export const COVER_ROWS = 6;
@@ -82,11 +94,27 @@ export class ZoneField {
   private version = 0;
   /** Per cell: the resolved set, and the ids of the zones holding the cell —
    *  what a re-roll of one zone must drop, and only that. */
-  private cells = new Map<number, { set: ReadonlySet<string>; zones: readonly string[] }>();
+  private cells = new Map<number, CellRec>();
+  private cellsOld = new Map<number, CellRec>();
   /** Per effect, per blurred cell: the value, and the union of the zones its
-   *  window read. NUMERIC KEYS (cellKey below): a string key was built and
-   *  hashed on every lookup, and a tick makes ~13,000 of them. */
-  private blur = new Map<string, Map<number, { v: number; zones: readonly string[] }>>();
+   *  window read. ONE map, NUMERIC KEYS (blurKey below: the effect's index and
+   *  the cell in one number): a string key was built and hashed on every
+   *  lookup, and a tick makes ~13,000 of them. */
+  private blur = new Map<number, BlurRec>();
+  private blurOld = new Map<number, BlurRec>();
+  private nameIdx = new Map<string, number>();
+  /** A RE-ROLL IS A STAMP, NOT A SCAN. Each memo carries the epoch it was made
+   *  in and the zones it read; a re-rolled zone takes the new epoch, and a
+   *  memo is found stale when it is next TOUCHED (`stale`) — never by walking
+   *  every entry at refresh (100k entries at a re-roll every ~6 s was a 33 ms
+   *  tick here, ~100 on the phone, and 481 ms once when they were unbounded). */
+  private zoneVer = new Map<string, number>();
+  private epoch = 0;
+  /** Bumps when the DOC changes — the one event that empties the raster memo. */
+  private docGen = 0;
+  /** What the doc IS, not which object it is: a room's fresh copy of the same
+   *  zones keeps every memo. */
+  private docFp = "";
   /* THE PICKER MEMO IN TWO GENERATIONS (games-perf 2026-09-23). It used to
    * be cleared WHOLE at the cap, and the mist raster alone holds 2,560
    * buckets: every few seconds of walking the next tick re-picked the whole
@@ -100,14 +128,15 @@ export class ZoneField {
    *  tests the zones whose box holds it — one to three — instead of all of
    *  them (measured his run: ~96 zones, two polygon passes per cell miss, and
    *  the tick that walks the raster's leading edge was 15-55 ms). */
-  private boxes: { z: AmbientZone; x0: number; y0: number; x1: number; y1: number }[] = [];
+  private boxes: ZoneBox[] = [];
+  private boxById = new Map<string, ZoneBox>();
   private byId = new Map<string, AmbientZone>();
   /** The last raster before its fill passes: the mask is anchored to the world
    *  in whole sample steps, so the next tick's rect is this one shifted by
    *  whole samples — the overlap is copied and only the new edge is looked
    *  up (a still camera looks nothing up; a walking one ~40 samples a tick,
    *  not 2,560). */
-  private rasterMemo: { name: string; cols: number; rows: number; stepX: number; stepY: number; x: number; y: number; version: number; raw: Uint8Array; known: Uint8Array; ref: Uint8Array | null } | null = null;
+  private rasterMemo: { name: string; cols: number; rows: number; stepX: number; stepY: number; x: number; y: number; gen: number; raw: Uint8Array; known: Uint8Array; cc: Int16Array; rr: Int16Array; ref: Uint8Array | null } | null = null;
   private readonly feather: number;
   stats = { picks: 0, resolves: 0, refreshes: 0, pruned: 0 };
 
@@ -152,36 +181,98 @@ export class ZoneField {
     const packed = s?.packed ?? "";
     const roomSky = !s || !doc || s.roomSky || packed === "";
     if (doc === this.doc && packed === this.packed && roomSky === this.roomSky) return false;
-    const next = unpackZoneTable(packed);
-    if (doc === this.doc && roomSky === this.roomSky && this.doc) {
+    // The fingerprint is built only for a NEW object (~1 ms for the_game's
+    // 96 zones); the object the field holds is known by identity.
+    const fp = doc === null ? "" : doc === this.doc ? this.docFp : docFingerprint(doc);
+    const sameDoc = doc !== null && this.doc !== null && (doc === this.doc || fp === this.docFp);
+    if (sameDoc && packed === this.packed && roomSky === this.roomSky) {
+      // A fresh copy of the same doc (a room's own parse): no answer changed.
+      this.doc = doc;
+      return false;
+    }
+    if (!sameDoc) {
+      /* THE WORLD CHANGED (or this is the first doc): every memo is stale.
+       * A room's own copy of the same zones is NOT a change — it carries the
+       * same fingerprint, and a zone hop must not rebuild the mask cold. */
+      this.cells.clear();
+      this.cellsOld.clear();
+      this.blur.clear();
+      this.blurOld.clear();
+      this.zoneVer.clear();
+      this.rasterMemo = null;
+      this.docGen++;
+      this.boxes = doc ? doc.zones.map((z) => zoneBox(z)) : [];
+      this.boxById = new Map(this.boxes.map((b) => [b.z.id, b]));
+      this.byId = new Map((doc?.zones ?? []).map((z) => [z.id, z]));
+      this.floors.clear();
+      this.docFp = fp;
+      this.table = unpackZoneTable(packed);
+    } else if (!roomSky) {
       /* ONE ZONE RE-ROLLED, NOT THE WORLD. With ~96 zones phased ten minutes
        * apart a window closes somewhere every ~6 s (measured: 8 refreshes in
        * 40 s), and dropping every memo each time would have the field
        * re-resolving the whole view for every re-roll anywhere on the map.
-       * Only the cells a CHANGED zone holds are dropped. */
+       * Only the cells a CHANGED zone holds are dropped — against the LAST
+       * REAL table: a room's sky taking over in between (an empty table for
+       * the length of a hop) touched nothing, so the diff is real. */
+      const next = unpackZoneTable(packed);
       const changed = new Set<string>();
       for (const [id, set] of next) if (this.table.get(id) !== set) changed.add(id);
       for (const id of this.table.keys()) if (!next.has(id)) changed.add(id);
-      for (const [k, c] of this.cells) if (c.zones.some((z) => changed.has(z))) this.cells.delete(k);
-      for (const m of this.blur.values()) for (const [k, b] of m) if (b.zones.some((z) => changed.has(z))) m.delete(k);
+      if (changed.size) {
+        this.epoch++;
+        for (const id of changed) this.zoneVer.set(id, this.epoch);
+        this.staleRaster(changed);
+      }
       this.stats.pruned += changed.size;
-    } else {
-      this.cells.clear();
-      this.blur.clear();
+      this.table = next;
     }
-    if (doc !== this.doc) {
-      this.boxes = doc ? doc.zones.map((z) => zoneBox(z)) : [];
-      this.byId = new Map((doc?.zones ?? []).map((z) => [z.id, z]));
-      this.floors.clear();
-    }
+    /* else: THE ROOM'S SKY RULES FOR NOW (a forced sky, or the table not yet
+     * received after a hop). The memos and the last real table are kept:
+     * every answer reads 1 while unruled, and when the table returns the diff
+     * above drops exactly what re-rolled meanwhile — usually nothing. */
     this.doc = doc;
     this.packed = packed;
-    this.table = next;
     this.roomSky = roomSky;
     this.version++;
-    this.rasterMemo = null;
     this.stats.refreshes++;
     return true;
+  }
+
+  /** Stale when a zone it read re-rolled after it was made. The common case
+   *  — nothing re-rolled since — is one comparison. */
+  private stale(rec: { zones: readonly string[]; epoch: number }): boolean {
+    if (rec.epoch === this.epoch) return false;
+    for (const z of rec.zones) {
+      const v = this.zoneVer.get(z);
+      if (v !== undefined && v > rec.epoch) return true;
+    }
+    return false;
+  }
+
+  /** The raster samples a re-roll can have changed — those within the blur
+   *  window plus the bilinear neighbour of a changed zone's box — are marked
+   *  to be looked up again; every other sample is copied as before. A cell's
+   *  answer reads only the zones whose box holds it, so a sample farther from
+   *  every changed box than that reach read none of them. */
+  private staleRaster(changed: Set<string>): void {
+    const m = this.rasterMemo;
+    if (!m) return;
+    const reach = this.feather + 1;
+    for (const id of changed) {
+      const b = this.boxById.get(id);
+      if (!b) continue;
+      const c0 = Math.floor(b.x0) - reach - 1;
+      const c1 = Math.ceil(b.x1) + reach;
+      const r0 = Math.floor(b.y0) - reach - 1;
+      const r1 = Math.ceil(b.y1) + reach;
+      for (let k = 0; k < m.known.length; k++) {
+        if (m.known[k] !== 1) continue;
+        const c = m.cc[k];
+        const r = m.rr[k];
+        if (c >= c0 && c <= c1 && r >= r0 && r <= r1) m.known[k] = RASTER_STALE;
+      }
+    }
   }
 
   /** Zones decide (a doc is in and the table has been received); otherwise
@@ -190,7 +281,8 @@ export class ZoneField {
     return !this.roomSky && this.doc !== null;
   }
 
-  /** The current table version — bumps whenever a memo was dropped. */
+  /** The current table version — bumps whenever an answer may have changed
+   *  (a re-roll, the room's sky, a doc); the coverage readers re-sample on it. */
   get tableVersion(): number {
     return this.version;
   }
@@ -211,8 +303,13 @@ export class ZoneField {
   private cell(col: number, row: number, lvl: number): { set: ReadonlySet<string>; zones: readonly string[] } {
     if (!this.ruled || !this.doc) return NONE;
     const key = cellKey(col, row, lvl);
-    const hit = this.cells.get(key);
-    if (hit) return hit;
+    let hit = this.cells.get(key);
+    if (hit && !this.stale(hit)) return hit;
+    hit = this.cellsOld.get(key);
+    if (hit && !this.stale(hit)) {
+      this.rememberCell(key, hit);
+      return hit;
+    }
     this.stats.resolves++;
     /* THE ZONES THAT CAN HOLD THIS CELL, by box first, polygon once. The
      * server's rule then runs over exactly those (its own zoneHolds on one to
@@ -230,9 +327,17 @@ export class ZoneField {
       ? new Set(resolveAmbientAt({ ...this.doc, zones: holding }, this.table, col, row, lvl))
       : EMPTY;
     const zones = holding.map((z) => z.id);
-    const rec = { set, zones };
-    this.cells.set(key, rec);
+    const rec: CellRec = { set, zones, epoch: this.epoch };
+    this.rememberCell(key, rec);
     return rec;
+  }
+
+  private rememberCell(key: number, rec: CellRec): void {
+    this.cells.set(key, rec);
+    if (this.cells.size >= CELL_MEMO_CAP / 2) {
+      this.cellsOld = this.cells;
+      this.cells = new Map();
+    }
   }
 
   /** THE GROUND THIS EFFECT POOLS ON at a cell: the floor of the zone that
@@ -257,22 +362,28 @@ export class ZoneField {
    *  0..1 — the value the bilinear read below interpolates. The neighbours
    *  are asked at THIS cell's level: a boundary on a terrace stays on it. */
   blurred(name: string, col: number, row: number, lvl: number): number {
-    return this.blurIn(this.blurMap(name), name, col, row, lvl);
+    return this.blurIn(this.nameIndex(name), name, col, row, lvl);
   }
 
-  private blurMap(name: string): Map<number, { v: number; zones: readonly string[] }> {
-    let m = this.blur.get(name);
-    if (!m) {
-      m = new Map();
-      this.blur.set(name, m);
+  /** The effect's small integer for the blur key; a new name gets the next. */
+  private nameIndex(name: string): number {
+    let i = this.nameIdx.get(name);
+    if (i === undefined) {
+      i = this.nameIdx.size;
+      this.nameIdx.set(name, i);
     }
-    return m;
+    return i;
   }
 
-  private blurIn(m: Map<number, { v: number; zones: readonly string[] }>, name: string, col: number, row: number, lvl: number): number {
-    const key = cellKey(col, row, lvl);
-    const hit = m.get(key);
-    if (hit !== undefined) return hit.v;
+  private blurIn(ni: number, name: string, col: number, row: number, lvl: number): number {
+    const key = ni * BLUR_NAME_MUL + cellKey(col, row, lvl);
+    let hit = this.blur.get(key);
+    if (hit !== undefined && !this.stale(hit)) return hit.v;
+    hit = this.blurOld.get(key);
+    if (hit !== undefined && !this.stale(hit)) {
+      this.rememberBlur(key, hit);
+      return hit.v;
+    }
     const f = this.feather;
     let on = 0;
     let n = 0;
@@ -285,8 +396,16 @@ export class ZoneField {
         for (const z of c.zones) zones.add(z);
       }
     const v = on / n;
-    m.set(key, { v, zones: [...zones] });
+    this.rememberBlur(key, { v, zones: [...zones], epoch: this.epoch });
     return v;
+  }
+
+  private rememberBlur(key: number, rec: BlurRec): void {
+    this.blur.set(key, rec);
+    if (this.blur.size >= BLUR_MEMO_CAP / 2) {
+      this.blurOld = this.blur;
+      this.blur = new Map();
+    }
   }
 
   /** The cell under a drawn point, through the picker memo. */
@@ -330,9 +449,9 @@ export class ZoneField {
     const r0 = v < 0 ? p.row - 1 : p.row;
     const t = u < 0 ? u + 1 : u;
     const s = v < 0 ? v + 1 : v;
-    const m = this.blurMap(name);
-    const top = this.blurIn(m, name, c0, r0, p.lvl) * (1 - t) + this.blurIn(m, name, c0 + 1, r0, p.lvl) * t;
-    const bot = this.blurIn(m, name, c0, r0 + 1, p.lvl) * (1 - t) + this.blurIn(m, name, c0 + 1, r0 + 1, p.lvl) * t;
+    const ni = this.nameIndex(name);
+    const top = this.blurIn(ni, name, c0, r0, p.lvl) * (1 - t) + this.blurIn(ni, name, c0 + 1, r0, p.lvl) * t;
+    const bot = this.blurIn(ni, name, c0, r0 + 1, p.lvl) * (1 - t) + this.blurIn(ni, name, c0 + 1, r0 + 1, p.lvl) * t;
     return top * (1 - s) + bot * s;
   }
 
@@ -382,6 +501,8 @@ export class ZoneField {
      * the mist pass never reads it — it paints only where its march FOUND a
      * surface, which is the same test that failed the pick. */
     const known = new Uint8Array(cols * rows);
+    const cc = new Int16Array(cols * rows);
+    const rr = new Int16Array(cols * rows);
     /* THE OVERLAP WITH THE LAST RASTER IS COPIED. Sample i of this rect is
      * sample i+di of the last one when the rect moved by whole steps (the
      * mount snaps it so), so only the samples that entered the rect are
@@ -393,7 +514,7 @@ export class ZoneField {
     let di = 0;
     let dj = 0;
     let reuse = false;
-    if (m && m.name === name && m.cols === cols && m.rows === rows && m.version === this.version && Math.abs(m.stepX - stepX) < 1e-9 && Math.abs(m.stepY - stepY) < 1e-9) {
+    if (m && m.name === name && m.cols === cols && m.rows === rows && m.gen === this.docGen && Math.abs(m.stepX - stepX) < 1e-9 && Math.abs(m.stepY - stepY) < 1e-9) {
       di = Math.round((rect.x - m.x) / stepX);
       dj = Math.round((rect.y - m.y) / stepY);
       reuse =
@@ -410,10 +531,14 @@ export class ZoneField {
           const sj = j + dj;
           if (si >= 0 && si < cols && sj >= 0 && sj < rows) {
             const sk = sj * cols + si;
-            out[k] = m!.raw[sk];
-            known[k] = m!.known[sk];
-            if (refOut) refOut[k] = m!.ref ? m!.ref[sk] : 0;
-            continue;
+            if (m!.known[sk] !== RASTER_STALE) {
+              out[k] = m!.raw[sk];
+              known[k] = m!.known[sk];
+              cc[k] = m!.cc[sk];
+              rr[k] = m!.rr[sk];
+              if (refOut) refOut[k] = m!.ref ? m!.ref[sk] : 0;
+              continue;
+            }
           }
         }
         const x = rect.x + rect.width * ((i + 0.5) / cols);
@@ -422,10 +547,12 @@ export class ZoneField {
         if (p) {
           out[k] = Math.round(255 * this.weightAt(name, x, y));
           known[k] = 1;
+          cc[k] = p.col;
+          rr[k] = p.row;
           if (refOut) refOut[k] = packRef(this.floorAt(name, p.col, p.row, p.lvl));
         }
       }
-    this.rasterMemo = { name, cols, rows, stepX, stepY, x: rect.x, y: rect.y, version: this.version, raw: out.slice(), known: known.slice(), ref: refOut ? refOut.slice() : null };
+    this.rasterMemo = { name, cols, rows, stepX, stepY, x: rect.x, y: rect.y, gen: this.docGen, raw: out.slice(), known: known.slice(), cc, rr, ref: refOut ? refOut.slice() : null };
     for (let pass = 0; pass < 4; pass++) {
       let filled = 0;
       const was = known.slice();
@@ -467,8 +594,8 @@ export class ZoneField {
       zones: this.doc?.zones.length ?? 0,
       table: this.table.size,
       version: this.version,
-      cells: this.cells.size,
-      blur: [...this.blur.values()].reduce((n, m) => n + m.size, 0),
+      cells: this.cells.size + this.cellsOld.size,
+      blur: this.blur.size + this.blurOld.size,
       buckets: this.picks.size + this.picksOld.size,
       feather: this.feather,
       ...this.stats,
@@ -477,18 +604,35 @@ export class ZoneField {
 }
 
 const EMPTY: ReadonlySet<string> = new Set();
-const NONE = { set: EMPTY, zones: [] as readonly string[] };
+const NONE: CellRec = { set: EMPTY, zones: [], epoch: 0 };
+type CellRec = { set: ReadonlySet<string>; zones: readonly string[]; epoch: number };
+type BlurRec = { v: number; zones: readonly string[]; epoch: number };
+type ZoneBox = { z: AmbientZone; x0: number; y0: number; x1: number; y1: number };
+/** A raster memo sample a re-roll may have changed: looked up again, not copied. */
+const RASTER_STALE = 2;
 
-/** A cell, or a picker bucket, as ONE NUMBER: col and row within ±2^20 (a
- *  world is 394 cells; a bucket 16 px), level within ±512 — under 2^53, so
- *  exact. A Map keyed by numbers neither allocates nor hashes a string per
- *  lookup, and a tick makes ~13,000 lookups. */
+/** A picker bucket as ONE NUMBER: bucket columns and rows within ±2^20 (a
+ *  bucket is 16 px). A cell as one number: col and row within ±2048 (a world
+ *  is 394 cells), level within ±512 — under 2^34, which leaves room for the
+ *  effect's index above it in a blur key, all under 2^53 and exact. A Map
+ *  keyed by numbers neither allocates nor hashes a string per lookup, and a
+ *  tick makes ~13,000 lookups. */
 const KMUL = 1 << 21;
 const KOFF = 1 << 20;
-const cellKey = (col: number, row: number, lvl: number): number => ((lvl + 512) * KMUL + (row + KOFF)) * KMUL + (col + KOFF);
+const CMUL = 4096;
+const COFF = 2048;
+const cellKey = (col: number, row: number, lvl: number): number => ((lvl + 512) * CMUL + (row + COFF)) * CMUL + (col + COFF);
+const BLUR_NAME_MUL = 2 ** 35;
+
+/** What a doc IS — every zone's outline, band and effects, the size and the
+ *  exclusive groups, exactly — so a fresh copy is known for the same doc and
+ *  a moved vertex is a new one. */
+function docFingerprint(doc: AmbientZoneDoc): string {
+  return JSON.stringify({ size: doc.size, exclusive: doc.exclusive, zones: doc.zones });
+}
 
 /** A zone's bounding box over its polygon's vertices, in cell units. */
-function zoneBox(z: AmbientZone): { z: AmbientZone; x0: number; y0: number; x1: number; y1: number } {
+function zoneBox(z: AmbientZone): ZoneBox {
   let x0 = Infinity;
   let y0 = Infinity;
   let x1 = -Infinity;

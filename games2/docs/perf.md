@@ -1099,7 +1099,23 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   frame along a shore, made a canvas texture per shore cell and a sprite
   per cell on its own texture; its sheets live in shared atlases now, one
   texSubImage2D per cell (`ambient/README.md`), and `ambient["foam:parts"]`
-  carries its scans, bakes, installs and picks per window. Rejected: `performance.memory` per frame as a GC signal
+  carries its scans, bakes, installs and picks per window. HIS 19:53 RUN ON
+  ALL OF THAT (6cfca955f, nine windows, 16 zone hops) was NOT better — p50
+  34.5, 21-266 frames over 50 ms a window — and its own rows said why: the
+  field's memos were unbounded (`_zone.blur` 113k -> 824k, heap max 408 ->
+  900 MB, collections of 250-384 MB inside the tick = the 787/427 ms
+  frames), the picker memo thrashed (`_zone.picks` 180k-470k a window),
+  `_env` peaked at 481 ms pruning 800k entries, and every hop cleared the
+  memos twice (the room's sky, then the table) and rebuilt the mask cold —
+  the 150-650 ms `hooks` frames, and the backwards teleport he felt after
+  each (the server keeps moving through a freeze; the reconcile pulls the
+  body back). Fixed the same evening: bounded two-generation memos, a
+  re-roll that stamps instead of scanning, the sky keeps the memos and the
+  raster, a doc known by fingerprint (`ambient/README.md`); foam's view
+  walk at 450 ms and one scratch row instead of an ImageData per install.
+  Still open from that run, not games-perf's: `repath` 68 ms plus 76+69 ms
+  in the touch handlers on a tap (the nav — games), `rtt` p50 130-200 ms
+  with p99 400-600 (his connection), and the heap's other 700 MB (games). Rejected: `performance.memory` per frame as a GC signal
   (bucketised and refreshed every 20 minutes without a flag); the WebGL1
   timer query (his driver withholds it — `gpu.reason`). GATE:
   `verify-beacon.mjs` opens its page with service workers BLOCKED — the

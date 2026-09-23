@@ -70,7 +70,7 @@ const NAME = "foam";
 const DEPTH = -999_999;
 const PICK_DY = 4;
 const GAIN_TAU = 900;
-const SCAN_MS = 280; // how often the view is re-walked for cells
+const SCAN_MS = 450; // how often the view is re-walked for cells (his run: 100 walks a window at 3-5 ms each on the phone)
 const PAD = 24; // px beyond the view a cell is still kept live
 /* THE WORK IS BUDGETED IN TIME AND ORDERED BY DISTANCE, and both halves of
  * that are paid for (maintainer 2026-09-11, at 278,261: "why is the foam
@@ -207,6 +207,9 @@ export function foamFeature(): AmbientFeature {
   const stats = { resolves: 0, bakes: 0, bakeMs: 0, texMs: 0, texPeak: 0, installs: 0, scanMs: 0, scanPeak: 0, scans: 0, scanTotal: 0, picks: 0, coast: 0, crest: 0, dropped: 0 };
   const sheetLRU: string[] = [];
   const atlases: Atlas[] = [];
+  /** One row's bytes, reused: a fresh ImageData per install was 148 KB of
+   *  garbage a cell, ~30 MB a window along a shore. */
+  let rowScratch: ImageData | null = null;
   /** A free row on some atlas, opening a new atlas when every row is taken. */
   const takeSlot = (): { atlas: Atlas; row: number } | null => {
     for (const a of atlases) if (a.free.length) return { atlas: a, row: a.free.pop()! };
@@ -497,7 +500,8 @@ export function foamFeature(): AmbientFeature {
         // The whole row, the sheet at its left and the rest clear: a reused
         // row must not show the last tenant's pixels past the new sheet.
         const sw = out.w * out.frames;
-        const bytes = new ImageData(ATLAS_W, ROW_H);
+        const bytes = rowScratch ?? (rowScratch = new ImageData(ATLAS_W, ROW_H));
+        bytes.data.fill(0);
         for (let y = 0; y < out.h; y++) bytes.data.set(out.data.subarray(y * sw * 4, (y + 1) * sw * 4), y * ATLAS_W * 4);
         atlas.tex.context.putImageData(bytes, 0, y0);
         uploadRow(atlas, y0, bytes);
@@ -750,6 +754,9 @@ export function foamFeature(): AmbientFeature {
       }
     },
     setSuppressed(on) {
+      // Coming back on scans at once, whatever the cadence: the toggle (and
+      // the gate behind it) must not wait out SCAN_MS for its first cells.
+      if (!on && suppressed) scanAge = SCAN_MS;
       suppressed = on;
     },
     setForced(on) {
