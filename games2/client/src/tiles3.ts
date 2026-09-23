@@ -2367,16 +2367,22 @@ export class Tiles3 {
      * Tiles3Cell.cutCap): the side's own set, picked at this cell like any
      * ground's plate, so a cut wall reads as the same rock as its courses. */
     const exposed = frontLow < zl;
-    /* ONLY A NAMED ROCK GETS A LID. The cut-away truncates the walls of a
-     * building — a house's ring, a cave's ring — and maps2 names every one of
-     * those in `walls[]`; a faceless cell one step further in borrows the
-     * named neighbour's rock (a cave room's second ring is the mountain's
-     * snow by its own pick). Every other raised cell — the plateau, the
-     * terrace, the mountain outdoors — is never cut and gets none: the lid
-     * is one more file for the loader and the ship closure per cell, for a
-     * plate nothing ever draws. (The resolver itself does not care: 60x60 of
-     * the town resolves in 36-37 ms with the lid on every raised cell, on
-     * named cells only, or not at all — measured 2026-09-09, ten runs each.) */
+    /* A NAMED ROCK IS THE LID; AN UNNAMED WALL WEARS THE ROCK ITS FACE IS
+     * DRAWN WITH. maps2 names a building's ring in `walls[]`, and a faceless
+     * cell one step further in borrows the named neighbour's rock (a cave
+     * room's second ring is the mountain's snow by its own pick). A cave
+     * carved into an UNNAMED mountain has no entry — its ring is the
+     * mountain's own body — so its stumps got no lid at all and the cut
+     * course's flat top showed as one solid colour on every lowered wall
+     * (maintainer 2026-09-23, the grey-stone cave at 262,70: "the lowered
+     * walls have been drawn with the 'clean solid color' ... Like WTF?"). Such
+     * a cell falls through to `side`, the rock its courses are drawn with, so
+     * a cut through grey stone shows grey stone. The cost the named-only rule
+     * saved was one plate path per raised cell for the loader and the ship
+     * closure — the same few files the floor beside it already needs. (The
+     * resolver itself does not care: 60x60 of the town resolves in 36-37 ms
+     * with the lid on every raised cell, on named cells only, or not at all —
+     * measured 2026-09-09, ten runs each.) */
     let lidSide: string | null = override;
     if (lidSide === null && !exposed)
       for (const [nx, ny] of NEIGHBOURS8) {
@@ -2392,10 +2398,11 @@ export class Tiles3 {
      * the house walls are ice and we lower the ice walls... we should render
      * rock on top of the lowered walls"). A house's roof deck covers its wall
      * ring, so a cut wall's stump wears the deck's ground; a cave's lid is
-     * not a material (kind "cave") and a wall under no roof keeps its rock. */
+     * not a material (kind "cave") and a wall under no roof keeps its rock —
+     * the named one, else the one its face is drawn with (`side`). */
     const dis = this.decksOn(view, x, y);
     const roof = dis ? view.decks[dis.find((di) => view.decks[di].kind !== "cave" && !!view.decks[di].ground) ?? -1] : undefined;
-    const lidGround = roof?.ground ?? lidSide;
+    const lidGround = roof?.ground ?? lidSide ?? side;
     if (lidGround !== null && lidGround !== undefined) {
       cell.side = lidSide ?? lidGround;
       cell.cutSide = lidGround;

@@ -791,8 +791,12 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   course (`cellBlits`) and as the occluder cap (a field stump keeps its plate
   anchor, a wall stump takes it over its course). The lid's MATERIAL is the
   first non-cave deck with a ground over that cell (the roof: rock over ice
-  → rock on the lowered ice walls), else the wall's own rock; `cutSide` holds
-  it so the runtime never re-derives it. Over that plate the Settings dial
+  → rock on the lowered ice walls), else the wall's own rock — the side maps2
+  named in `walls[]`, else the rock its face is drawn with (`side`; a cave
+  carved into an UNNAMED mountain had no lid at all, so every lowered wall
+  showed the cut course's flat top as one solid colour — maintainer
+  2026-09-23, the grey-stone cave at 262,70); `cutSide` holds it so the
+  runtime never re-derives it. Over that plate the Settings dial
   "Lowered wall top darkening" (0..100%, default 33 — his 2026-09-18 call after 50; `setCutLidDark`,
   `Tiles3Textures.lid`) scales the colour — 0% is the roof as it is, 100%
   black — as its own `@lidNN` texture key, never a rewrite of the plate's,
