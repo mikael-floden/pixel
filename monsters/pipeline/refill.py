@@ -100,8 +100,12 @@ def refill(cid, state, direction, apply=True, verbose=True):
     man = json.load(open(mpath))
     anim = (man.get("animations") or {}).get(state)
     if not anim:
-        print(f"  {cid}: no {state} on the monster at all — this needs a sync, not a refill")
-        return False
+        # the whole state is missing (PixelLab no longer had it at graduation);
+        # it is created here and filled facing by facing from the candidate
+        anim = {"group_id": None, "source_name": f"candidates/{cid} ({_slot_for(cid, state)})",
+                "directions": {}}
+        man.setdefault("animations", {})[state] = anim
+        man.setdefault("states", {})[state] = state
     if direction in (anim.get("directions") or {}):
         if verbose:
             print(f"  {cid} {state} {direction}: already there")

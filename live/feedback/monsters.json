@@ -1,7 +1,6 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-23T21:40:08.307Z",
   "entries": {
     "monsters/ice_sprite": {
       "status": "approved",
@@ -2778,12 +2777,6 @@
       "version": 1,
       "updated_at": "2026-09-18T14:17:41.573Z"
     },
-    "monsters/candidates/burr_kin": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-18T14:18:18.658Z"
-    },
     "monsters/candidates/minotaur": {
       "status": "approved",
       "rating": 1,
@@ -2801,12 +2794,6 @@
       "rating": 1,
       "version": 1,
       "updated_at": "2026-09-18T14:19:51.709Z"
-    },
-    "monsters/candidates/mountain_ram": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-18T14:20:21.837Z"
     },
     "monsters/candidates/ember_kit": {
       "status": "approved",
@@ -12199,60 +12186,6 @@
       "art": "7ad56aed5fb6af8f",
       "updated_at": "2026-09-23T20:26:13.559Z"
     },
-    "monsters/plume_brawler#die#south": {
-      "status": "approved",
-      "rating": 1,
-      "art": "51e283e9705ae1c1",
-      "updated_at": "2026-09-23T18:08:45.037Z"
-    },
-    "monsters/plume_brawler#die#south-east": {
-      "status": "approved",
-      "rating": 1,
-      "art": "1763dcb85b538ba8",
-      "updated_at": "2026-09-23T18:08:51.885Z"
-    },
-    "monsters/plume_brawler#die#east": {
-      "status": "approved",
-      "rating": 1,
-      "art": "35c9db41dbf06623",
-      "updated_at": "2026-09-23T18:08:59.106Z"
-    },
-    "monsters/plume_brawler#die#north-east": {
-      "status": "approved",
-      "rating": 1,
-      "art": "7488d77bc70f0cd8",
-      "updated_at": "2026-09-23T18:09:16.123Z"
-    },
-    "monsters/plume_brawler#die#south-west": {
-      "status": "approved",
-      "rating": 1,
-      "art": "7afcbedf22c72601",
-      "updated_at": "2026-09-23T18:10:17.882Z"
-    },
-    "monsters/plume_brawler#die#west": {
-      "status": "approved",
-      "rating": 1,
-      "art": "b25eba1e0a0cd174",
-      "updated_at": "2026-09-23T18:09:36.100Z"
-    },
-    "monsters/naga#walk#west": {
-      "note": "The snake is scrolling",
-      "updated_at": "2026-09-23T17:58:04.513Z",
-      "status": "redo",
-      "art": "b86daec34d4618f5"
-    },
-    "monsters/plume_brawler#die#north": {
-      "status": "approved",
-      "rating": 1,
-      "art": "7488d77bc70f0cd8",
-      "updated_at": "2026-09-23T18:09:16.123Z"
-    },
-    "monsters/plume_brawler#die#north-west": {
-      "status": "approved",
-      "rating": 1,
-      "art": "df509d8421041e8c",
-      "updated_at": "2026-09-23T18:09:24.803Z"
-    },
     "monsters/thorn_knot#attack#east": {
       "status": "approved",
       "rating": 1,
@@ -12271,10 +12204,23 @@
       "art": "06c0bd5e4a6fd353",
       "updated_at": "2026-09-23T21:13:33.207Z"
     },
-    "monsters/ember_kit#angry#south": {
+    "monsters/candidates/burr_kin": {
+      "status": "approved",
+      "rating": 1,
+      "version": 1,
+      "updated_at": "2026-09-18T14:18:18.658Z"
+    },
+    "monsters/candidates/mountain_ram": {
+      "status": "approved",
+      "rating": 1,
+      "version": 1,
+      "updated_at": "2026-09-18T14:20:21.837Z"
+    },
+    "monsters/naga#walk#west": {
+      "note": "The snake is scrolling",
+      "updated_at": "2026-09-23T17:58:04.513Z",
       "status": "redo",
-      "art": "70e0754798061ebb",
-      "updated_at": "2026-09-23T21:39:11.383Z"
+      "art": "b86daec34d4618f5"
     },
     "monsters/ember_kit#attack#north-west": {
       "status": "approved",
@@ -12294,30 +12240,42 @@
       "art": "c5b129a656559cd7",
       "updated_at": "2026-09-23T21:39:38.136Z"
     },
-    "monsters/naga#walk#south-east": {
-      "status": "redo",
-      "art": "5db7657d305ec810",
-      "updated_at": "2026-09-23T21:39:55.354Z"
+    "monsters/plume_brawler#die#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "35c9db41dbf06623",
+      "updated_at": "2026-09-23T18:08:59.106Z"
     },
-    "monsters/naga#walk#south": {
-      "status": "redo",
-      "art": "4b5241e33f591f92",
-      "updated_at": "2026-09-23T21:39:57.890Z"
+    "monsters/plume_brawler#die#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "7488d77bc70f0cd8",
+      "updated_at": "2026-09-23T18:09:16.123Z"
     },
-    "monsters/naga#walk#east": {
-      "status": "redo",
-      "art": "a357517b09cd682c",
-      "updated_at": "2026-09-23T21:40:00.444Z"
+    "monsters/plume_brawler#die#east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "7488d77bc70f0cd8",
+      "updated_at": "2026-09-23T18:09:16.123Z"
     },
-    "monsters/naga#walk#north-east": {
-      "status": "redo",
-      "art": "39bf5bf138db8304",
-      "updated_at": "2026-09-23T21:40:03.244Z"
+    "monsters/plume_brawler#die#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "7488d77bc70f0cd8",
+      "updated_at": "2026-09-23T18:09:16.123Z"
     },
-    "monsters/naga#walk#south-west": {
-      "status": "redo",
-      "art": "0102620e2c9eb29f",
-      "updated_at": "2026-09-23T21:40:06.875Z"
+    "monsters/plume_brawler#die#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "1763dcb85b538ba8",
+      "updated_at": "2026-09-23T18:08:51.885Z"
+    },
+    "monsters/plume_brawler#die#west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "df509d8421041e8c",
+      "updated_at": "2026-09-23T18:09:24.803Z"
     }
-  }
+  },
+  "updated_at": "2026-09-23T21:41:11Z"
 }

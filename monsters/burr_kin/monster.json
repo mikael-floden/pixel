@@ -1,0 +1,733 @@
+{
+  "id": "burr_kin",
+  "name": "Burrkin",
+  "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "3b26b088-c6ca-4d2f-84b3-103db8dbc418",
+    "url": "https://www.pixellab.ai/create-character/3b26b088-c6ca-4d2f-84b3-103db8dbc418",
+    "prompt": "Tight round ball of dried burdock burrs and grass seed heads matted into a body, hooked bristles standing out all over it, two small black eyes deep inside the tangle, short woody root legs underneath, with loose straw and a scrap of torn wool caught in the hooks, calm serious expression, clean deliberate creature design, no cartoon grin, no drop shadow on the ground.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 40,
+    "height": 40
+  },
+  "native_size": {
+    "width": 40,
+    "height": 40
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "burr_kin/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "burr_kin/rotations/south.webp",
+    "west": "burr_kin/rotations/west.webp",
+    "east": "burr_kin/rotations/east.webp",
+    "north": "burr_kin/rotations/north.webp",
+    "south-east": "burr_kin/rotations/south-east.webp",
+    "north-east": "burr_kin/rotations/north-east.webp",
+    "north-west": "burr_kin/rotations/north-west.webp",
+    "south-west": "burr_kin/rotations/south-west.webp"
+  },
+  "animations": {
+    "die": {
+      "group_id": "38a7ef65-74f6-4d6f-9c3f-b5496cca11ff",
+      "source_name": "custom-Death - Faints, collapses to t",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "burr_kin/animations/die__east.webp",
+          "frame_paths": [
+            "burr_kin/animations/die/east/00.webp",
+            "burr_kin/animations/die/east/01.webp",
+            "burr_kin/animations/die/east/02.webp",
+            "burr_kin/animations/die/east/03.webp",
+            "burr_kin/animations/die/east/04.webp",
+            "burr_kin/animations/die/east/05.webp",
+            "burr_kin/animations/die/east/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:49 GMT",
+          "src_frames": 7,
+          "sub": "27ad0d6c-9666-4c95-aaae-70cb89c27916"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "burr_kin/animations/die__north.webp",
+          "frame_paths": [
+            "burr_kin/animations/die/north/00.webp",
+            "burr_kin/animations/die/north/01.webp",
+            "burr_kin/animations/die/north/02.webp",
+            "burr_kin/animations/die/north/03.webp",
+            "burr_kin/animations/die/north/04.webp",
+            "burr_kin/animations/die/north/05.webp",
+            "burr_kin/animations/die/north/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:51 GMT",
+          "src_frames": 7,
+          "sub": "8905bf9a-119b-462d-b426-b405d7ba611d"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "burr_kin/animations/die__north-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/die/north-east/00.webp",
+            "burr_kin/animations/die/north-east/01.webp",
+            "burr_kin/animations/die/north-east/02.webp",
+            "burr_kin/animations/die/north-east/03.webp",
+            "burr_kin/animations/die/north-east/04.webp",
+            "burr_kin/animations/die/north-east/05.webp",
+            "burr_kin/animations/die/north-east/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:53 GMT",
+          "src_frames": 7,
+          "sub": "10ccb285-beec-4634-a560-9d67eed6e00f"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "burr_kin/animations/die__south.webp",
+          "frame_paths": [
+            "burr_kin/animations/die/south/00.webp",
+            "burr_kin/animations/die/south/01.webp",
+            "burr_kin/animations/die/south/02.webp",
+            "burr_kin/animations/die/south/03.webp",
+            "burr_kin/animations/die/south/04.webp",
+            "burr_kin/animations/die/south/05.webp",
+            "burr_kin/animations/die/south/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:54 GMT",
+          "src_frames": 7,
+          "sub": "dc5d6ab2-1f06-4ed1-a591-54486c6e206e"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "burr_kin/animations/die__south-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/die/south-east/00.webp",
+            "burr_kin/animations/die/south-east/01.webp",
+            "burr_kin/animations/die/south-east/02.webp",
+            "burr_kin/animations/die/south-east/03.webp",
+            "burr_kin/animations/die/south-east/04.webp",
+            "burr_kin/animations/die/south-east/05.webp",
+            "burr_kin/animations/die/south-east/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:55 GMT",
+          "src_frames": 7,
+          "sub": "75d452df-6068-43ee-a32e-886a1ccc0b10"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "burr_kin/animations/die__south-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/die/south-west/00.webp",
+            "burr_kin/animations/die/south-west/01.webp",
+            "burr_kin/animations/die/south-west/02.webp",
+            "burr_kin/animations/die/south-west/03.webp",
+            "burr_kin/animations/die/south-west/04.webp",
+            "burr_kin/animations/die/south-west/05.webp",
+            "burr_kin/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "burr_kin/animations/die__west.webp",
+          "frame_paths": [
+            "burr_kin/animations/die/west/00.webp",
+            "burr_kin/animations/die/west/01.webp",
+            "burr_kin/animations/die/west/02.webp",
+            "burr_kin/animations/die/west/03.webp",
+            "burr_kin/animations/die/west/04.webp",
+            "burr_kin/animations/die/west/05.webp",
+            "burr_kin/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "burr_kin/animations/die__north-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/die/north-west/00.webp",
+            "burr_kin/animations/die/north-west/01.webp",
+            "burr_kin/animations/die/north-west/02.webp",
+            "burr_kin/animations/die/north-west/03.webp",
+            "burr_kin/animations/die/north-west/04.webp",
+            "burr_kin/animations/die/north-west/05.webp",
+            "burr_kin/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "d1ef5539-bd94-4bdd-b240-ed808d404193",
+      "source_name": "custom-Strike - Quickly lunges forward and strikes once",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "burr_kin/animations/attack__east.webp",
+          "frame_paths": [
+            "burr_kin/animations/attack/east/00.webp",
+            "burr_kin/animations/attack/east/01.webp",
+            "burr_kin/animations/attack/east/02.webp",
+            "burr_kin/animations/attack/east/03.webp",
+            "burr_kin/animations/attack/east/04.webp",
+            "burr_kin/animations/attack/east/05.webp",
+            "burr_kin/animations/attack/east/06.webp",
+            "burr_kin/animations/attack/east/07.webp",
+            "burr_kin/animations/attack/east/08.webp",
+            "burr_kin/animations/attack/east/09.webp",
+            "burr_kin/animations/attack/east/10.webp",
+            "burr_kin/animations/attack/east/11.webp",
+            "burr_kin/animations/attack/east/12.webp",
+            "burr_kin/animations/attack/east/13.webp",
+            "burr_kin/animations/attack/east/14.webp",
+            "burr_kin/animations/attack/east/15.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:57 GMT",
+          "src_frames": 16,
+          "sub": "f8bcd4a1-54aa-4cfa-83d3-fefcaadb7c23"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "burr_kin/animations/attack__north.webp",
+          "frame_paths": [
+            "burr_kin/animations/attack/north/00.webp",
+            "burr_kin/animations/attack/north/01.webp",
+            "burr_kin/animations/attack/north/02.webp",
+            "burr_kin/animations/attack/north/03.webp",
+            "burr_kin/animations/attack/north/04.webp",
+            "burr_kin/animations/attack/north/05.webp",
+            "burr_kin/animations/attack/north/06.webp",
+            "burr_kin/animations/attack/north/07.webp",
+            "burr_kin/animations/attack/north/08.webp",
+            "burr_kin/animations/attack/north/09.webp",
+            "burr_kin/animations/attack/north/10.webp",
+            "burr_kin/animations/attack/north/11.webp",
+            "burr_kin/animations/attack/north/12.webp",
+            "burr_kin/animations/attack/north/13.webp",
+            "burr_kin/animations/attack/north/14.webp",
+            "burr_kin/animations/attack/north/15.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:59 GMT",
+          "src_frames": 16,
+          "sub": "ce2d1e7e-1fb1-4c36-93ed-a1a91255b39e"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "burr_kin/animations/attack__north-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/attack/north-east/00.webp",
+            "burr_kin/animations/attack/north-east/01.webp",
+            "burr_kin/animations/attack/north-east/02.webp",
+            "burr_kin/animations/attack/north-east/03.webp",
+            "burr_kin/animations/attack/north-east/04.webp",
+            "burr_kin/animations/attack/north-east/05.webp",
+            "burr_kin/animations/attack/north-east/06.webp",
+            "burr_kin/animations/attack/north-east/07.webp",
+            "burr_kin/animations/attack/north-east/08.webp",
+            "burr_kin/animations/attack/north-east/09.webp",
+            "burr_kin/animations/attack/north-east/10.webp",
+            "burr_kin/animations/attack/north-east/11.webp",
+            "burr_kin/animations/attack/north-east/12.webp",
+            "burr_kin/animations/attack/north-east/13.webp",
+            "burr_kin/animations/attack/north-east/14.webp",
+            "burr_kin/animations/attack/north-east/15.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:40:01 GMT",
+          "src_frames": 16,
+          "sub": "4c02fdf6-38c2-4c15-855c-20ea9b7e2157"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "burr_kin/animations/attack__south.webp",
+          "frame_paths": [
+            "burr_kin/animations/attack/south/00.webp",
+            "burr_kin/animations/attack/south/01.webp",
+            "burr_kin/animations/attack/south/02.webp",
+            "burr_kin/animations/attack/south/03.webp",
+            "burr_kin/animations/attack/south/04.webp",
+            "burr_kin/animations/attack/south/05.webp",
+            "burr_kin/animations/attack/south/06.webp",
+            "burr_kin/animations/attack/south/07.webp",
+            "burr_kin/animations/attack/south/08.webp",
+            "burr_kin/animations/attack/south/09.webp",
+            "burr_kin/animations/attack/south/10.webp",
+            "burr_kin/animations/attack/south/11.webp",
+            "burr_kin/animations/attack/south/12.webp",
+            "burr_kin/animations/attack/south/13.webp",
+            "burr_kin/animations/attack/south/14.webp",
+            "burr_kin/animations/attack/south/15.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:40:03 GMT",
+          "src_frames": 16,
+          "sub": "9cdfcee2-8a05-4d11-8972-ff69112639bc"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "burr_kin/animations/attack__south-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/attack/south-east/00.webp",
+            "burr_kin/animations/attack/south-east/01.webp",
+            "burr_kin/animations/attack/south-east/02.webp",
+            "burr_kin/animations/attack/south-east/03.webp",
+            "burr_kin/animations/attack/south-east/04.webp",
+            "burr_kin/animations/attack/south-east/05.webp",
+            "burr_kin/animations/attack/south-east/06.webp",
+            "burr_kin/animations/attack/south-east/07.webp",
+            "burr_kin/animations/attack/south-east/08.webp",
+            "burr_kin/animations/attack/south-east/09.webp",
+            "burr_kin/animations/attack/south-east/10.webp",
+            "burr_kin/animations/attack/south-east/11.webp",
+            "burr_kin/animations/attack/south-east/12.webp",
+            "burr_kin/animations/attack/south-east/13.webp",
+            "burr_kin/animations/attack/south-east/14.webp",
+            "burr_kin/animations/attack/south-east/15.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:40:07 GMT",
+          "src_frames": 16,
+          "sub": "55ae4a89-777e-4183-a1c8-fe82d6680bc1"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "burr_kin/animations/attack__south-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/attack/south-west/00.webp",
+            "burr_kin/animations/attack/south-west/01.webp",
+            "burr_kin/animations/attack/south-west/02.webp",
+            "burr_kin/animations/attack/south-west/03.webp",
+            "burr_kin/animations/attack/south-west/04.webp",
+            "burr_kin/animations/attack/south-west/05.webp",
+            "burr_kin/animations/attack/south-west/06.webp",
+            "burr_kin/animations/attack/south-west/07.webp",
+            "burr_kin/animations/attack/south-west/08.webp",
+            "burr_kin/animations/attack/south-west/09.webp",
+            "burr_kin/animations/attack/south-west/10.webp",
+            "burr_kin/animations/attack/south-west/11.webp",
+            "burr_kin/animations/attack/south-west/12.webp",
+            "burr_kin/animations/attack/south-west/13.webp",
+            "burr_kin/animations/attack/south-west/14.webp",
+            "burr_kin/animations/attack/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "burr_kin/animations/attack__west.webp",
+          "frame_paths": [
+            "burr_kin/animations/attack/west/00.webp",
+            "burr_kin/animations/attack/west/01.webp",
+            "burr_kin/animations/attack/west/02.webp",
+            "burr_kin/animations/attack/west/03.webp",
+            "burr_kin/animations/attack/west/04.webp",
+            "burr_kin/animations/attack/west/05.webp",
+            "burr_kin/animations/attack/west/06.webp",
+            "burr_kin/animations/attack/west/07.webp",
+            "burr_kin/animations/attack/west/08.webp",
+            "burr_kin/animations/attack/west/09.webp",
+            "burr_kin/animations/attack/west/10.webp",
+            "burr_kin/animations/attack/west/11.webp",
+            "burr_kin/animations/attack/west/12.webp",
+            "burr_kin/animations/attack/west/13.webp",
+            "burr_kin/animations/attack/west/14.webp",
+            "burr_kin/animations/attack/west/15.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "burr_kin/animations/attack__north-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/attack/north-west/00.webp",
+            "burr_kin/animations/attack/north-west/01.webp",
+            "burr_kin/animations/attack/north-west/02.webp",
+            "burr_kin/animations/attack/north-west/03.webp",
+            "burr_kin/animations/attack/north-west/04.webp",
+            "burr_kin/animations/attack/north-west/05.webp",
+            "burr_kin/animations/attack/north-west/06.webp",
+            "burr_kin/animations/attack/north-west/07.webp",
+            "burr_kin/animations/attack/north-west/08.webp",
+            "burr_kin/animations/attack/north-west/09.webp",
+            "burr_kin/animations/attack/north-west/10.webp",
+            "burr_kin/animations/attack/north-west/11.webp",
+            "burr_kin/animations/attack/north-west/12.webp",
+            "burr_kin/animations/attack/north-west/13.webp",
+            "burr_kin/animations/attack/north-west/14.webp",
+            "burr_kin/animations/attack/north-west/15.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": null,
+      "source_name": "candidates/burr_kin (idle)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "burr_kin/animations/idle__south.webp",
+          "frame_paths": [
+            "burr_kin/animations/idle/south/00.webp",
+            "burr_kin/animations/idle/south/01.webp",
+            "burr_kin/animations/idle/south/02.webp",
+            "burr_kin/animations/idle/south/03.webp",
+            "burr_kin/animations/idle/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/idle/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "burr_kin/animations/idle__south-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/idle/south-east/00.webp",
+            "burr_kin/animations/idle/south-east/01.webp",
+            "burr_kin/animations/idle/south-east/02.webp",
+            "burr_kin/animations/idle/south-east/03.webp",
+            "burr_kin/animations/idle/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/idle/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "burr_kin/animations/idle__east.webp",
+          "frame_paths": [
+            "burr_kin/animations/idle/east/00.webp",
+            "burr_kin/animations/idle/east/01.webp",
+            "burr_kin/animations/idle/east/02.webp",
+            "burr_kin/animations/idle/east/03.webp",
+            "burr_kin/animations/idle/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/idle/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "burr_kin/animations/idle__north-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/idle/north-east/00.webp",
+            "burr_kin/animations/idle/north-east/01.webp",
+            "burr_kin/animations/idle/north-east/02.webp",
+            "burr_kin/animations/idle/north-east/03.webp",
+            "burr_kin/animations/idle/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/idle/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "burr_kin/animations/idle__north.webp",
+          "frame_paths": [
+            "burr_kin/animations/idle/north/00.webp",
+            "burr_kin/animations/idle/north/01.webp",
+            "burr_kin/animations/idle/north/02.webp",
+            "burr_kin/animations/idle/north/03.webp",
+            "burr_kin/animations/idle/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/idle/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "burr_kin/animations/idle__north-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/idle/north-west/00.webp",
+            "burr_kin/animations/idle/north-west/01.webp",
+            "burr_kin/animations/idle/north-west/02.webp",
+            "burr_kin/animations/idle/north-west/03.webp",
+            "burr_kin/animations/idle/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/idle/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "burr_kin/animations/idle__west.webp",
+          "frame_paths": [
+            "burr_kin/animations/idle/west/00.webp",
+            "burr_kin/animations/idle/west/01.webp",
+            "burr_kin/animations/idle/west/02.webp",
+            "burr_kin/animations/idle/west/03.webp",
+            "burr_kin/animations/idle/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/idle/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "burr_kin/animations/idle__south-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/idle/south-west/00.webp",
+            "burr_kin/animations/idle/south-west/01.webp",
+            "burr_kin/animations/idle/south-west/02.webp",
+            "burr_kin/animations/idle/south-west/03.webp",
+            "burr_kin/animations/idle/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/idle/south-west"
+        }
+      }
+    },
+    "walk": {
+      "group_id": null,
+      "source_name": "candidates/burr_kin (walk)",
+      "directions": {
+        "south": {
+          "frames": 4,
+          "strip": "burr_kin/animations/walk__south.webp",
+          "frame_paths": [
+            "burr_kin/animations/walk/south/00.webp",
+            "burr_kin/animations/walk/south/01.webp",
+            "burr_kin/animations/walk/south/02.webp",
+            "burr_kin/animations/walk/south/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/walk/south"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "burr_kin/animations/walk__south-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/walk/south-east/00.webp",
+            "burr_kin/animations/walk/south-east/01.webp",
+            "burr_kin/animations/walk/south-east/02.webp",
+            "burr_kin/animations/walk/south-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/walk/south-east"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "burr_kin/animations/walk__east.webp",
+          "frame_paths": [
+            "burr_kin/animations/walk/east/00.webp",
+            "burr_kin/animations/walk/east/01.webp",
+            "burr_kin/animations/walk/east/02.webp",
+            "burr_kin/animations/walk/east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/walk/east"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "burr_kin/animations/walk__north-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/walk/north-east/00.webp",
+            "burr_kin/animations/walk/north-east/01.webp",
+            "burr_kin/animations/walk/north-east/02.webp",
+            "burr_kin/animations/walk/north-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/walk/north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "burr_kin/animations/walk__north.webp",
+          "frame_paths": [
+            "burr_kin/animations/walk/north/00.webp",
+            "burr_kin/animations/walk/north/01.webp",
+            "burr_kin/animations/walk/north/02.webp",
+            "burr_kin/animations/walk/north/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "burr_kin/animations/walk__north-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/walk/north-west/00.webp",
+            "burr_kin/animations/walk/north-west/01.webp",
+            "burr_kin/animations/walk/north-west/02.webp",
+            "burr_kin/animations/walk/north-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/walk/north-west"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "burr_kin/animations/walk__west.webp",
+          "frame_paths": [
+            "burr_kin/animations/walk/west/00.webp",
+            "burr_kin/animations/walk/west/01.webp",
+            "burr_kin/animations/walk/west/02.webp",
+            "burr_kin/animations/walk/west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/walk/west"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "burr_kin/animations/walk__south-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/walk/south-west/00.webp",
+            "burr_kin/animations/walk/south-west/01.webp",
+            "burr_kin/animations/walk/south-west/02.webp",
+            "burr_kin/animations/walk/south-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/walk/south-west"
+        }
+      }
+    },
+    "angry": {
+      "group_id": null,
+      "source_name": "candidates/burr_kin (angry)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "burr_kin/animations/angry__south.webp",
+          "frame_paths": [
+            "burr_kin/animations/angry/south/00.webp",
+            "burr_kin/animations/angry/south/01.webp",
+            "burr_kin/animations/angry/south/02.webp",
+            "burr_kin/animations/angry/south/03.webp",
+            "burr_kin/animations/angry/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/angry/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "burr_kin/animations/angry__south-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/angry/south-east/00.webp",
+            "burr_kin/animations/angry/south-east/01.webp",
+            "burr_kin/animations/angry/south-east/02.webp",
+            "burr_kin/animations/angry/south-east/03.webp",
+            "burr_kin/animations/angry/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/angry/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "burr_kin/animations/angry__east.webp",
+          "frame_paths": [
+            "burr_kin/animations/angry/east/00.webp",
+            "burr_kin/animations/angry/east/01.webp",
+            "burr_kin/animations/angry/east/02.webp",
+            "burr_kin/animations/angry/east/03.webp",
+            "burr_kin/animations/angry/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/angry/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "burr_kin/animations/angry__north-east.webp",
+          "frame_paths": [
+            "burr_kin/animations/angry/north-east/00.webp",
+            "burr_kin/animations/angry/north-east/01.webp",
+            "burr_kin/animations/angry/north-east/02.webp",
+            "burr_kin/animations/angry/north-east/03.webp",
+            "burr_kin/animations/angry/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/angry/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "burr_kin/animations/angry__north.webp",
+          "frame_paths": [
+            "burr_kin/animations/angry/north/00.webp",
+            "burr_kin/animations/angry/north/01.webp",
+            "burr_kin/animations/angry/north/02.webp",
+            "burr_kin/animations/angry/north/03.webp",
+            "burr_kin/animations/angry/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/angry/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "burr_kin/animations/angry__north-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/angry/north-west/00.webp",
+            "burr_kin/animations/angry/north-west/01.webp",
+            "burr_kin/animations/angry/north-west/02.webp",
+            "burr_kin/animations/angry/north-west/03.webp",
+            "burr_kin/animations/angry/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/angry/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "burr_kin/animations/angry__west.webp",
+          "frame_paths": [
+            "burr_kin/animations/angry/west/00.webp",
+            "burr_kin/animations/angry/west/01.webp",
+            "burr_kin/animations/angry/west/02.webp",
+            "burr_kin/animations/angry/west/03.webp",
+            "burr_kin/animations/angry/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/angry/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "burr_kin/animations/angry__south-west.webp",
+          "frame_paths": [
+            "burr_kin/animations/angry/south-west/00.webp",
+            "burr_kin/animations/angry/south-west/01.webp",
+            "burr_kin/animations/angry/south-west/02.webp",
+            "burr_kin/animations/angry/south-west/03.webp",
+            "burr_kin/animations/angry/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/burr_kin/animations/angry/south-west"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

@@ -277,6 +277,17 @@
       "lore": "A snow-packed blob with a frozen grin. It spits ice spikes, and melts to slush when its winter finally ends."
     },
     {
+      "id": "burr_kin",
+      "kind": "character",
+      "pixellab_id": "3b26b088-c6ca-4d2f-84b3-103db8dbc418",
+      "name": "Burrkin",
+      "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
+      "renames": {
+        "custom-Strike - Quickly lunges forward and strikes once": "attack",
+        "custom-Death - Faints, collapses to t": "die"
+      }
+    },
+    {
       "id": "seed_husk",
       "kind": "character",
       "pixellab_id": "b195e0b5-746c-4b79-89a5-315da0bca909",
@@ -319,6 +330,17 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Axe Cleave - Swings the battle axe across in one h": "attack",
         "custom-Death - Drops the axe, faints ": "die"
+      }
+    },
+    {
+      "id": "mountain_ram",
+      "kind": "character",
+      "pixellab_id": "b43be5e0-0c75-47c9-9b65-0ed0a9497864",
+      "name": "Cragram",
+      "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won.",
+      "renames": {
+        "custom-Strike - Quickly lunges forward and strikes once": "attack",
+        "custom-Death - Faints, collapses to t": "die"
       }
     },
     {

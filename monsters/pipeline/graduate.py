@@ -171,9 +171,19 @@ def graduate(cid, entries, client, apply=True, verbose=True):
         return True
     renames, dead = _slot_names(client, man, chosen)
     if len(renames) < len(chosen):
-        print(f"  {cid}: NOT graduated — only matched {sorted(set(renames.values()))} "
-              f"of {sorted(chosen)} by action text; fix before moving it")
-        return False
+        # PIXELLAB NO LONGER HOLDS EVERY TAKE HE APPROVED. His mountain ram and
+        # burr kin had only attack and die left on the character; idle, walk
+        # and angry existed solely in this repo's candidate folder. The art he
+        # approved is the art that ships, so a state PixelLab cannot name is
+        # filled from the candidate folder after the sync (refill.py) — never
+        # a reason to hold a fully approved monster back.
+        unnamed = sorted(set(chosen) - set(renames.values()))
+        held = [st for st in unnamed
+                if not os.path.isdir(os.path.join(cand.cdir(cid), "animations", chosen[st]))]
+        if held:
+            print(f"  {cid}: NOT graduated — {held} neither on PixelLab nor in the candidate folder")
+            return False
+        print(f"  {cid}: {unnamed} not on PixelLab any more — filled from the candidate folder after the sync")
     roster = sync_mod.load_roster()
     if not any(m["id"] == cid for m in roster):
         roster.append({"id": cid, "kind": "character",
@@ -235,6 +245,10 @@ def graduate(cid, entries, client, apply=True, verbose=True):
         n = len([d for d in os.listdir(p)]) if os.path.isdir(p) else 0
         if n != len(DIRS_8):
             holes[st] = n
+    # a state the sync could not produce at all is a hole of eight, and the
+    # refill below fills it from the candidate folder like any other
+    for st in STATES:
+        holes.setdefault(st, 0) if not os.path.isdir(os.path.join(sync_mod.ROOT, cid, "animations", st)) else None
     if holes:
         # THE CANDIDATE IS STILL THE COPY OF WHAT IS MISSING, so fill from it
         # before giving up: a facing PixelLab has no group for (a mirror the

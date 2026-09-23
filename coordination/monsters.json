@@ -1,12 +1,14 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-09-23T20:30:47+00:00",
-  "health": "running",
-  "current": "CLAIMED \u2014 (a) his 20:25\u201320:26Z review of THORN_KNOT, which nobody holds (monsters-github-agent released it at 18:16, before he wrote this): walk#south 'Doesn't look like a walk', attack#west, attack#east. Generated set is walk south + attack east; west mirrors east. (b) PLUME_BRAWLER's DIE is filed one direction slot out and he has now asked twice \u2014 measured, not guessed: frame 0 of a generated clip is pinned to its base rotation, and for die the five generated files match the bases for SW,S,SE,E,NE instead of S,SE,E,NE,N. A scan of all 142 candidates x 5 states finds only this monster (its attack too, which my running sweep is already re-rolling). Fix is a relabel + re-mirror + one generated direction (north was never made), with his approvals following the art and the acted-on notes cleared. (c) STILL RUNNING from 19:0x: the 25-direction redo sweep over ember_kit, fox_spirit, lava_toad, minotaur, naga, plume_brawler. FILES: monsters/candidates/{thorn_knot,plume_brawler,ember_kit,fox_spirit,lava_toad,minotaur,naga}/**, monsters/config/candidates.json, monsters/candidates/index.json, monsters/pipeline/facing.py (new), live/feedback/monsters.json, coordination/monsters.json.",
+  "updated_at": "2026-09-23T21:40:32+00:00",
+  "health": "idle",
+  "current": "idle \u2014 every redo verdict on main is acted on (0 open). His 17:56-18:11 review: Cinderkit, magma toad, naga, minotaur, fox spirit, Plumefist all re-rolled and cleared; his 20:26 and 21:13 thorn knot reviews answered (walk south, attack east/west; all five states 8/8, waiting on his last five attack approvals). Plumefist: die and attack relabelled to the facings they show (facing.py; this character's PixelLab rotations sit one slot from ours), 7/8 each, north the named hole on both. mountain_ram and burr_kin GRADUATED \u2014 PixelLab had lost their idle/walk/angry, filled from the candidate folder (graduate+refill). No files held. NEXT: Plumefist's two norths (ask PixelLab for north-west), naga walk east still failing its loop.",
   "progress": {
-    "unit": "thorn_knot 2 dirs + plume_brawler die relabel + the 25-dir sweep in flight"
+    "unit": "idle",
+    "open_redos": 0,
+    "dangling_verdicts": 0
   },
-  "budget_remaining": "PixelLab USD $11.55 \u2014 this sweep is $0.33 on v3, $2.25 if every round goes PRO",
+  "budget_remaining": "PixelLab USD ~$9.4",
   "notes": [
     "[2026-07-17T09:33:23+00:00] monsters agent online: generates pixel-art monsters via the PixelLab API. Skeleton templates: Bear, Cat, Dog, Horse, Lion; free-form prompt per generation (anything from a dragon to a fairy). One folder per monster under monsters/<id>/. No loop yet \u2014 runs on demand when the maintainer asks. Commits directly to main, only inside monsters/ + this file.",
     "[2026-07-29T12:40:27+00:00] review gallery is now a claude.ai artifact (maintainer views it in chat): https://claude.ai/code/artifact/5907a10c-6355-4394-9ec0-5886776ba393 \u2014 rebuild with monsters/pipeline/review_artifact.py and republish to that URL after a resync. monsters/index.html + viewer_data.json + viewer_build.py are REMOVED from the repo; the game contract stays monsters/animation_map.json (unchanged).",

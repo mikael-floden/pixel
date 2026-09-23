@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-23T21:34:23+00:00",
+  "generated_at": "2026-09-23T21:40:11+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 142,
+  "count": 140,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -2597,285 +2597,6 @@
       }
     },
     {
-      "id": "mountain_ram",
-      "name": "Cragram",
-      "tier": "mid",
-      "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won.",
-      "biome": [
-        "grey_stone",
-        "snow"
-      ],
-      "items": [],
-      "size": [
-        112,
-        112
-      ],
-      "template_id": "horse",
-      "scale": "standard",
-      "pixellab_id": "b43be5e0-0c75-47c9-9b65-0ed0a9497864",
-      "version": 1,
-      "sheet": "mountain_ram/sheet.webp",
-      "rotations": {
-        "south": "mountain_ram/rotations/south.webp",
-        "south-east": "mountain_ram/rotations/south-east.webp",
-        "east": "mountain_ram/rotations/east.webp",
-        "north-east": "mountain_ram/rotations/north-east.webp",
-        "north": "mountain_ram/rotations/north.webp",
-        "north-west": "mountain_ram/rotations/north-west.webp",
-        "west": "mountain_ram/rotations/west.webp",
-        "south-west": "mountain_ram/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.706,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.706,
-            "bbox": [
-              9,
-              3,
-              102,
-              109
-            ],
-            "fill": 0.786,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.797,
-            "bbox": [
-              10,
-              4,
-              105,
-              108
-            ],
-            "fill": 0.788,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.759,
-            "bbox": [
-              7,
-              3,
-              102,
-              106
-            ],
-            "fill": 0.78,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.736,
-            "bbox": [
-              12,
-              3,
-              103,
-              109
-            ],
-            "fill": 0.769,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.751,
-            "bbox": [
-              13,
-              3,
-              98,
-              109
-            ],
-            "fill": 0.718,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.724,
-            "bbox": [
-              9,
-              3,
-              101,
-              109
-            ],
-            "fill": 0.777,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.752,
-            "bbox": [
-              9,
-              3,
-              105,
-              106
-            ],
-            "fill": 0.788,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.791,
-            "bbox": [
-              6,
-              4,
-              101,
-              108
-            ],
-            "fill": 0.788,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-09T19:05:29+00:00",
-      "verdict": "approved",
-      "graduation": {
-        "state": "ready",
-        "takes": {
-          "idle": "idle",
-          "walk": "walk",
-          "angry": "angry",
-          "attack": "attack",
-          "die": "die"
-        },
-        "blocking": null
-      }
-    },
-    {
-      "id": "burr_kin",
-      "name": "Burrkin",
-      "tier": "cute",
-      "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
-      "biome": [
-        "grass"
-      ],
-      "items": [],
-      "size": [
-        40,
-        40
-      ],
-      "template_id": "bear",
-      "scale": "small",
-      "pixellab_id": "3b26b088-c6ca-4d2f-84b3-103db8dbc418",
-      "version": 1,
-      "sheet": "burr_kin/sheet.webp",
-      "rotations": {
-        "south": "burr_kin/rotations/south.webp",
-        "south-east": "burr_kin/rotations/south-east.webp",
-        "east": "burr_kin/rotations/east.webp",
-        "north-east": "burr_kin/rotations/north-east.webp",
-        "north": "burr_kin/rotations/north.webp",
-        "north-west": "burr_kin/rotations/north-west.webp",
-        "west": "burr_kin/rotations/west.webp",
-        "south-west": "burr_kin/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.769,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.805,
-            "bbox": [
-              3,
-              2,
-              38,
-              37
-            ],
-            "fill": 0.766,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.804,
-            "bbox": [
-              4,
-              2,
-              35,
-              38
-            ],
-            "fill": 0.698,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.769,
-            "bbox": [
-              4,
-              2,
-              34,
-              38
-            ],
-            "fill": 0.675,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.79,
-            "bbox": [
-              3,
-              3,
-              35,
-              37
-            ],
-            "fill": 0.68,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.788,
-            "bbox": [
-              2,
-              3,
-              38,
-              37
-            ],
-            "fill": 0.765,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.78,
-            "bbox": [
-              5,
-              2,
-              36,
-              37
-            ],
-            "fill": 0.678,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.778,
-            "bbox": [
-              5,
-              3,
-              36,
-              38
-            ],
-            "fill": 0.678,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.799,
-            "bbox": [
-              5,
-              3,
-              36,
-              38
-            ],
-            "fill": 0.678,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-18T11:44:01+00:00",
-      "verdict": "approved",
-      "graduation": {
-        "state": "ready",
-        "takes": {
-          "idle": "idle",
-          "walk": "walk",
-          "angry": "angry",
-          "attack": "attack",
-          "die": "die"
-        },
-        "blocking": null
-      }
-    },
-    {
       "id": "thorn_knot",
       "name": "Briarknot",
       "tier": "mid",
@@ -3004,13 +2725,15 @@
       "generated_at": "2026-09-18T11:52:09+00:00",
       "verdict": "approved",
       "graduation": {
-        "state": "waiting",
+        "state": "ready",
         "takes": {
           "idle": "idle",
+          "walk": "walk",
           "angry": "angry",
+          "attack": "attack",
           "die": "die"
         },
-        "blocking": "not fully approved: walk, attack"
+        "blocking": null
       }
     },
     {

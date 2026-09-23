@@ -310,35 +310,6 @@
       "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws."
     },
     {
-      "id": "mountain_ram",
-      "name": "Cragram",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "horse",
-      "size": 112,
-      "biome": [
-        "grey_stone",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Mountain ram with realistic proportions, thick shaggy grey-white wool, huge curled horns of ridged brown bone, dark hooves, a proud bearded face with pale eyes, and small stones caught in its coat.",
-      "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won."
-    },
-    {
-      "id": "burr_kin",
-      "name": "Burrkin",
-      "tier": "cute",
-      "template_id": "bear",
-      "size": 40,
-      "scale": "small",
-      "biome": [
-        "grass"
-      ],
-      "prompt": "Tight round ball of dried burdock burrs and grass seed heads matted into a body, hooked bristles standing out all over it, two small black eyes deep inside the tangle, short woody root legs underneath, with loose straw and a scrap of torn wool caught in the hooks",
-      "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
-      "items": []
-    },
-    {
       "id": "thorn_knot",
       "name": "Briarknot",
       "tier": "mid",
@@ -6270,6 +6241,51 @@
         "angry": "angry_v1",
         "attack": "attack_v3",
         "die": "die_v1"
+      }
+    },
+    {
+      "id": "mountain_ram",
+      "name": "Cragram",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "horse",
+      "size": 112,
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Mountain ram with realistic proportions, thick shaggy grey-white wool, huge curled horns of ridged brown bone, dark hooves, a proud bearded face with pale eyes, and small stones caught in its coat.",
+      "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won.",
+      "graduated_at": "2026-09-23T21:39:14+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "burr_kin",
+      "name": "Burrkin",
+      "tier": "cute",
+      "template_id": "bear",
+      "size": 40,
+      "scale": "small",
+      "biome": [
+        "grass"
+      ],
+      "prompt": "Tight round ball of dried burdock burrs and grass seed heads matted into a body, hooked bristles standing out all over it, two small black eyes deep inside the tangle, short woody root legs underneath, with loose straw and a scrap of torn wool caught in the hooks",
+      "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
+      "items": [],
+      "graduated_at": "2026-09-23T21:40:10+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
       }
     }
   ]

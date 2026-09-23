@@ -1,0 +1,637 @@
+{
+  "id": "mountain_ram",
+  "name": "Cragram",
+  "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "b43be5e0-0c75-47c9-9b65-0ed0a9497864",
+    "url": "https://www.pixellab.ai/create-character/b43be5e0-0c75-47c9-9b65-0ed0a9497864",
+    "prompt": "Mountain ram with realistic proportions, thick shaggy grey-white wool, huge curled horns of ridged brown bone, dark hooves, a proud bearded face with pale eyes, and small stones caught in its coat, grim menacing expression, dark fantasy, no cartoon grin, no drop shadow on the ground.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 112,
+    "height": 112
+  },
+  "native_size": {
+    "width": 112,
+    "height": 112
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "mountain_ram/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "mountain_ram/rotations/south.webp",
+    "west": "mountain_ram/rotations/west.webp",
+    "east": "mountain_ram/rotations/east.webp",
+    "north": "mountain_ram/rotations/north.webp",
+    "south-east": "mountain_ram/rotations/south-east.webp",
+    "north-east": "mountain_ram/rotations/north-east.webp",
+    "north-west": "mountain_ram/rotations/north-west.webp",
+    "south-west": "mountain_ram/rotations/south-west.webp"
+  },
+  "animations": {
+    "die": {
+      "group_id": "573c4446-5426-42e7-996b-d998d103e228",
+      "source_name": "custom-Death - Faints, collapses to t",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "mountain_ram/animations/die__east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/die/east/00.webp",
+            "mountain_ram/animations/die/east/01.webp",
+            "mountain_ram/animations/die/east/02.webp",
+            "mountain_ram/animations/die/east/03.webp",
+            "mountain_ram/animations/die/east/04.webp",
+            "mountain_ram/animations/die/east/05.webp",
+            "mountain_ram/animations/die/east/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:38:54 GMT",
+          "src_frames": 7,
+          "sub": "d8298448-e783-45da-b6cb-e20b86dd1922"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "mountain_ram/animations/die__north.webp",
+          "frame_paths": [
+            "mountain_ram/animations/die/north/00.webp",
+            "mountain_ram/animations/die/north/01.webp",
+            "mountain_ram/animations/die/north/02.webp",
+            "mountain_ram/animations/die/north/03.webp",
+            "mountain_ram/animations/die/north/04.webp",
+            "mountain_ram/animations/die/north/05.webp",
+            "mountain_ram/animations/die/north/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:38:55 GMT",
+          "src_frames": 7,
+          "sub": "b0515dd6-8ba3-4468-8a6e-d2402cc3ca17"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "mountain_ram/animations/die__north-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/die/north-east/00.webp",
+            "mountain_ram/animations/die/north-east/01.webp",
+            "mountain_ram/animations/die/north-east/02.webp",
+            "mountain_ram/animations/die/north-east/03.webp",
+            "mountain_ram/animations/die/north-east/04.webp",
+            "mountain_ram/animations/die/north-east/05.webp",
+            "mountain_ram/animations/die/north-east/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:38:57 GMT",
+          "src_frames": 7,
+          "sub": "b3f9aa0e-8bc9-4efd-aae2-4c9230568756"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "mountain_ram/animations/die__south.webp",
+          "frame_paths": [
+            "mountain_ram/animations/die/south/00.webp",
+            "mountain_ram/animations/die/south/01.webp",
+            "mountain_ram/animations/die/south/02.webp",
+            "mountain_ram/animations/die/south/03.webp",
+            "mountain_ram/animations/die/south/04.webp",
+            "mountain_ram/animations/die/south/05.webp",
+            "mountain_ram/animations/die/south/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:38:58 GMT",
+          "src_frames": 7,
+          "sub": "9a3780d8-de4b-468f-b2a7-6a7007d516a6"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "mountain_ram/animations/die__south-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/die/south-east/00.webp",
+            "mountain_ram/animations/die/south-east/01.webp",
+            "mountain_ram/animations/die/south-east/02.webp",
+            "mountain_ram/animations/die/south-east/03.webp",
+            "mountain_ram/animations/die/south-east/04.webp",
+            "mountain_ram/animations/die/south-east/05.webp",
+            "mountain_ram/animations/die/south-east/06.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:00 GMT",
+          "src_frames": 7,
+          "sub": "429b5721-f023-4b8a-bfb3-b3307ade3b2d"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "mountain_ram/animations/die__south-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/die/south-west/00.webp",
+            "mountain_ram/animations/die/south-west/01.webp",
+            "mountain_ram/animations/die/south-west/02.webp",
+            "mountain_ram/animations/die/south-west/03.webp",
+            "mountain_ram/animations/die/south-west/04.webp",
+            "mountain_ram/animations/die/south-west/05.webp",
+            "mountain_ram/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "mountain_ram/animations/die__west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/die/west/00.webp",
+            "mountain_ram/animations/die/west/01.webp",
+            "mountain_ram/animations/die/west/02.webp",
+            "mountain_ram/animations/die/west/03.webp",
+            "mountain_ram/animations/die/west/04.webp",
+            "mountain_ram/animations/die/west/05.webp",
+            "mountain_ram/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "mountain_ram/animations/die__north-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/die/north-west/00.webp",
+            "mountain_ram/animations/die/north-west/01.webp",
+            "mountain_ram/animations/die/north-west/02.webp",
+            "mountain_ram/animations/die/north-west/03.webp",
+            "mountain_ram/animations/die/north-west/04.webp",
+            "mountain_ram/animations/die/north-west/05.webp",
+            "mountain_ram/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "c18ee881-8322-4adf-999c-e17e07c72812",
+      "source_name": "custom-Strike - Quickly lunges forward and strikes once",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/attack__east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/attack/east/00.webp",
+            "mountain_ram/animations/attack/east/01.webp",
+            "mountain_ram/animations/attack/east/02.webp",
+            "mountain_ram/animations/attack/east/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:02 GMT",
+          "src_frames": 4,
+          "sub": "ae0c41c6-3107-46c0-802f-245fa30ff3b7"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/attack__north.webp",
+          "frame_paths": [
+            "mountain_ram/animations/attack/north/00.webp",
+            "mountain_ram/animations/attack/north/01.webp",
+            "mountain_ram/animations/attack/north/02.webp",
+            "mountain_ram/animations/attack/north/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:03 GMT",
+          "src_frames": 4,
+          "sub": "8f5cbf7c-c976-416e-9de8-7f498dd64ca0"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/attack__north-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/attack/north-east/00.webp",
+            "mountain_ram/animations/attack/north-east/01.webp",
+            "mountain_ram/animations/attack/north-east/02.webp",
+            "mountain_ram/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:05 GMT",
+          "src_frames": 4,
+          "sub": "5d15c4c5-68aa-47d4-8b68-658a091e3baa"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/attack__south.webp",
+          "frame_paths": [
+            "mountain_ram/animations/attack/south/00.webp",
+            "mountain_ram/animations/attack/south/01.webp",
+            "mountain_ram/animations/attack/south/02.webp",
+            "mountain_ram/animations/attack/south/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:07 GMT",
+          "src_frames": 4,
+          "sub": "dc4111df-b65e-4c23-8781-6587f8869f0d"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/attack__south-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/attack/south-east/00.webp",
+            "mountain_ram/animations/attack/south-east/01.webp",
+            "mountain_ram/animations/attack/south-east/02.webp",
+            "mountain_ram/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:39:08 GMT",
+          "src_frames": 4,
+          "sub": "a6b780be-6720-44ec-84f8-9528c7c1ccf2"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/attack__south-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/attack/south-west/00.webp",
+            "mountain_ram/animations/attack/south-west/01.webp",
+            "mountain_ram/animations/attack/south-west/02.webp",
+            "mountain_ram/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/attack__west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/attack/west/00.webp",
+            "mountain_ram/animations/attack/west/01.webp",
+            "mountain_ram/animations/attack/west/02.webp",
+            "mountain_ram/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/attack__north-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/attack/north-west/00.webp",
+            "mountain_ram/animations/attack/north-west/01.webp",
+            "mountain_ram/animations/attack/north-west/02.webp",
+            "mountain_ram/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": null,
+      "source_name": "candidates/mountain_ram (idle)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/idle__south.webp",
+          "frame_paths": [
+            "mountain_ram/animations/idle/south/00.webp",
+            "mountain_ram/animations/idle/south/01.webp",
+            "mountain_ram/animations/idle/south/02.webp",
+            "mountain_ram/animations/idle/south/03.webp",
+            "mountain_ram/animations/idle/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/idle/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/idle__south-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/idle/south-east/00.webp",
+            "mountain_ram/animations/idle/south-east/01.webp",
+            "mountain_ram/animations/idle/south-east/02.webp",
+            "mountain_ram/animations/idle/south-east/03.webp",
+            "mountain_ram/animations/idle/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/idle/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/idle__east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/idle/east/00.webp",
+            "mountain_ram/animations/idle/east/01.webp",
+            "mountain_ram/animations/idle/east/02.webp",
+            "mountain_ram/animations/idle/east/03.webp",
+            "mountain_ram/animations/idle/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/idle/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/idle__north-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/idle/north-east/00.webp",
+            "mountain_ram/animations/idle/north-east/01.webp",
+            "mountain_ram/animations/idle/north-east/02.webp",
+            "mountain_ram/animations/idle/north-east/03.webp",
+            "mountain_ram/animations/idle/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/idle/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/idle__north.webp",
+          "frame_paths": [
+            "mountain_ram/animations/idle/north/00.webp",
+            "mountain_ram/animations/idle/north/01.webp",
+            "mountain_ram/animations/idle/north/02.webp",
+            "mountain_ram/animations/idle/north/03.webp",
+            "mountain_ram/animations/idle/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/idle/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/idle__north-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/idle/north-west/00.webp",
+            "mountain_ram/animations/idle/north-west/01.webp",
+            "mountain_ram/animations/idle/north-west/02.webp",
+            "mountain_ram/animations/idle/north-west/03.webp",
+            "mountain_ram/animations/idle/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/idle/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/idle__west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/idle/west/00.webp",
+            "mountain_ram/animations/idle/west/01.webp",
+            "mountain_ram/animations/idle/west/02.webp",
+            "mountain_ram/animations/idle/west/03.webp",
+            "mountain_ram/animations/idle/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/idle/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/idle__south-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/idle/south-west/00.webp",
+            "mountain_ram/animations/idle/south-west/01.webp",
+            "mountain_ram/animations/idle/south-west/02.webp",
+            "mountain_ram/animations/idle/south-west/03.webp",
+            "mountain_ram/animations/idle/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/idle/south-west"
+        }
+      }
+    },
+    "walk": {
+      "group_id": null,
+      "source_name": "candidates/mountain_ram (walk)",
+      "directions": {
+        "south": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/walk__south.webp",
+          "frame_paths": [
+            "mountain_ram/animations/walk/south/00.webp",
+            "mountain_ram/animations/walk/south/01.webp",
+            "mountain_ram/animations/walk/south/02.webp",
+            "mountain_ram/animations/walk/south/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/walk/south"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/walk__south-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/walk/south-east/00.webp",
+            "mountain_ram/animations/walk/south-east/01.webp",
+            "mountain_ram/animations/walk/south-east/02.webp",
+            "mountain_ram/animations/walk/south-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/walk/south-east"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/walk__east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/walk/east/00.webp",
+            "mountain_ram/animations/walk/east/01.webp",
+            "mountain_ram/animations/walk/east/02.webp",
+            "mountain_ram/animations/walk/east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/walk/east"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/walk__north-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/walk/north-east/00.webp",
+            "mountain_ram/animations/walk/north-east/01.webp",
+            "mountain_ram/animations/walk/north-east/02.webp",
+            "mountain_ram/animations/walk/north-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/walk/north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/walk__north.webp",
+          "frame_paths": [
+            "mountain_ram/animations/walk/north/00.webp",
+            "mountain_ram/animations/walk/north/01.webp",
+            "mountain_ram/animations/walk/north/02.webp",
+            "mountain_ram/animations/walk/north/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/walk__north-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/walk/north-west/00.webp",
+            "mountain_ram/animations/walk/north-west/01.webp",
+            "mountain_ram/animations/walk/north-west/02.webp",
+            "mountain_ram/animations/walk/north-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/walk/north-west"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/walk__west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/walk/west/00.webp",
+            "mountain_ram/animations/walk/west/01.webp",
+            "mountain_ram/animations/walk/west/02.webp",
+            "mountain_ram/animations/walk/west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/walk/west"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "mountain_ram/animations/walk__south-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/walk/south-west/00.webp",
+            "mountain_ram/animations/walk/south-west/01.webp",
+            "mountain_ram/animations/walk/south-west/02.webp",
+            "mountain_ram/animations/walk/south-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/walk/south-west"
+        }
+      }
+    },
+    "angry": {
+      "group_id": null,
+      "source_name": "candidates/mountain_ram (angry)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/angry__south.webp",
+          "frame_paths": [
+            "mountain_ram/animations/angry/south/00.webp",
+            "mountain_ram/animations/angry/south/01.webp",
+            "mountain_ram/animations/angry/south/02.webp",
+            "mountain_ram/animations/angry/south/03.webp",
+            "mountain_ram/animations/angry/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/angry/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/angry__south-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/angry/south-east/00.webp",
+            "mountain_ram/animations/angry/south-east/01.webp",
+            "mountain_ram/animations/angry/south-east/02.webp",
+            "mountain_ram/animations/angry/south-east/03.webp",
+            "mountain_ram/animations/angry/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/angry/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/angry__east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/angry/east/00.webp",
+            "mountain_ram/animations/angry/east/01.webp",
+            "mountain_ram/animations/angry/east/02.webp",
+            "mountain_ram/animations/angry/east/03.webp",
+            "mountain_ram/animations/angry/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/angry/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/angry__north-east.webp",
+          "frame_paths": [
+            "mountain_ram/animations/angry/north-east/00.webp",
+            "mountain_ram/animations/angry/north-east/01.webp",
+            "mountain_ram/animations/angry/north-east/02.webp",
+            "mountain_ram/animations/angry/north-east/03.webp",
+            "mountain_ram/animations/angry/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/angry/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/angry__north.webp",
+          "frame_paths": [
+            "mountain_ram/animations/angry/north/00.webp",
+            "mountain_ram/animations/angry/north/01.webp",
+            "mountain_ram/animations/angry/north/02.webp",
+            "mountain_ram/animations/angry/north/03.webp",
+            "mountain_ram/animations/angry/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/angry/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/angry__north-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/angry/north-west/00.webp",
+            "mountain_ram/animations/angry/north-west/01.webp",
+            "mountain_ram/animations/angry/north-west/02.webp",
+            "mountain_ram/animations/angry/north-west/03.webp",
+            "mountain_ram/animations/angry/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/angry/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/angry__west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/angry/west/00.webp",
+            "mountain_ram/animations/angry/west/01.webp",
+            "mountain_ram/animations/angry/west/02.webp",
+            "mountain_ram/animations/angry/west/03.webp",
+            "mountain_ram/animations/angry/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/angry/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "mountain_ram/animations/angry__south-west.webp",
+          "frame_paths": [
+            "mountain_ram/animations/angry/south-west/00.webp",
+            "mountain_ram/animations/angry/south-west/01.webp",
+            "mountain_ram/animations/angry/south-west/02.webp",
+            "mountain_ram/animations/angry/south-west/03.webp",
+            "mountain_ram/animations/angry/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/mountain_ram/animations/angry/south-west"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}
