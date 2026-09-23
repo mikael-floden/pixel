@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-23T21:13:35.196Z",
+  "updated_at": "2026-09-23T21:35:49Z",
   "entries": {
     "monsters/ice_sprite": {
       "status": "approved",
@@ -10159,12 +10159,6 @@
       "art": "0389c8894637d9b4",
       "updated_at": "2026-09-22T18:57:21.623Z"
     },
-    "monsters/minotaur#walk#south": {
-      "note": "Doesn't look like a S walk at all! (This comment was dangling, but the new animation needs the same comment). But I hate when the old comment is still present on the new animation!",
-      "updated_at": "2026-09-23T18:02:42.541Z",
-      "status": "redo",
-      "art": "73ab06adb3c1f2a4"
-    },
     "monsters/plume_brawler#walk#south-east": {
       "status": "approved",
       "rating": 1,
@@ -10561,11 +10555,6 @@
       "art": "3cf4c2fbef018f99",
       "updated_at": "2026-09-23T17:56:03.501Z"
     },
-    "monsters/ember_kit#angry#south": {
-      "status": "redo",
-      "art": "70e0754798061ebb",
-      "updated_at": "2026-09-23T17:56:05.289Z"
-    },
     "monsters/ember_kit#attack#south-east": {
       "status": "approved",
       "rating": 1,
@@ -10601,16 +10590,6 @@
       "rating": 1,
       "art": "9e9a53cf78a458a3",
       "updated_at": "2026-09-23T17:56:33.350Z"
-    },
-    "monsters/ember_kit#attack#north-east": {
-      "status": "redo",
-      "art": "4b1e334b5d60153d",
-      "updated_at": "2026-09-23T17:56:34.840Z"
-    },
-    "monsters/ember_kit#attack#north-west": {
-      "status": "redo",
-      "art": "225956f0f6a50616",
-      "updated_at": "2026-09-23T17:56:37.013Z"
     },
     "monsters/ember_kit#die#south": {
       "status": "approved",
@@ -10660,30 +10639,6 @@
       "art": "66ffe24b28c03e77",
       "updated_at": "2026-09-23T17:56:52.006Z"
     },
-    "monsters/naga#walk#south": {
-      "status": "redo",
-      "art": "4b5241e33f591f92",
-      "updated_at": "2026-09-23T17:57:27.961Z",
-      "note": "The snake is scrolling and not walking like a snake"
-    },
-    "monsters/naga#walk#south-east": {
-      "note": "The snake is scrolling",
-      "updated_at": "2026-09-23T17:57:39.904Z",
-      "status": "redo",
-      "art": "5db7657d305ec810"
-    },
-    "monsters/naga#walk#east": {
-      "note": "The snake is scrolling",
-      "updated_at": "2026-09-23T17:57:50.708Z",
-      "status": "redo",
-      "art": "a357517b09cd682c"
-    },
-    "monsters/naga#walk#north-east": {
-      "status": "redo",
-      "art": "39bf5bf138db8304",
-      "updated_at": "2026-09-23T17:57:47.110Z",
-      "note": "The snake is scrolling"
-    },
     "monsters/naga#walk#north": {
       "status": "approved",
       "rating": 1,
@@ -10695,17 +10650,6 @@
       "rating": 1,
       "art": "82aab147f1d02591",
       "updated_at": "2026-09-23T17:57:58.275Z"
-    },
-    "monsters/naga#walk#west": {
-      "note": "The snake is scrolling",
-      "updated_at": "2026-09-23T17:58:04.513Z",
-      "status": "redo",
-      "art": "b86daec34d4618f5"
-    },
-    "monsters/naga#walk#south-west": {
-      "status": "redo",
-      "art": "0102620e2c9eb29f",
-      "updated_at": "2026-09-23T17:58:08.657Z"
     },
     "monsters/naga#angry#south": {
       "status": "approved",
@@ -10779,11 +10723,6 @@
       "art": "ebe3d33128748ebf",
       "updated_at": "2026-09-23T17:58:35.062Z"
     },
-    "monsters/naga#attack#north": {
-      "status": "redo",
-      "art": "c5b129a656559cd7",
-      "updated_at": "2026-09-23T17:58:40.161Z"
-    },
     "monsters/naga#attack#north-west": {
       "status": "approved",
       "rating": 1,
@@ -10814,12 +10753,6 @@
       "art": "0f5587602bc6a393",
       "updated_at": "2026-09-23T17:58:51.427Z"
     },
-    "monsters/naga#die#east": {
-      "status": "redo",
-      "rating": 1,
-      "art": "7105050a379c52c9",
-      "updated_at": "2026-09-23T17:59:10.720Z"
-    },
     "monsters/naga#die#north-east": {
       "status": "approved",
       "rating": 1,
@@ -10837,12 +10770,6 @@
       "rating": 1,
       "art": "fc115d09c7770adf",
       "updated_at": "2026-09-23T17:59:03.978Z"
-    },
-    "monsters/naga#die#west": {
-      "status": "redo",
-      "rating": 1,
-      "art": "d169a804fa1ffad0",
-      "updated_at": "2026-09-23T17:59:08.080Z"
     },
     "monsters/naga#die#south-west": {
       "status": "approved",
@@ -11060,21 +10987,6 @@
       "art": "dc477d37672939a2",
       "updated_at": "2026-09-23T18:00:52.368Z"
     },
-    "monsters/fox_spirit#attack#north-east": {
-      "status": "redo",
-      "art": "fa238604412b88e3",
-      "updated_at": "2026-09-23T18:00:55.052Z"
-    },
-    "monsters/fox_spirit#attack#north": {
-      "status": "redo",
-      "art": "f4e2b8e401ed4bc3",
-      "updated_at": "2026-09-23T18:00:58.423Z"
-    },
-    "monsters/fox_spirit#attack#north-west": {
-      "status": "redo",
-      "art": "5d5bae45795ed4b3",
-      "updated_at": "2026-09-23T18:01:00.607Z"
-    },
     "monsters/fox_spirit#attack#west": {
       "status": "approved",
       "rating": 1,
@@ -11213,11 +11125,6 @@
       "art": "6db7b4a519ea0426",
       "updated_at": "2026-09-23T18:03:11.784Z"
     },
-    "monsters/minotaur#attack#north": {
-      "status": "redo",
-      "art": "18376247345f0516",
-      "updated_at": "2026-09-23T18:03:14.887Z"
-    },
     "monsters/minotaur#attack#north-west": {
       "status": "approved",
       "rating": 1,
@@ -11290,47 +11197,11 @@
       "art": "e3f6434b0d34563a",
       "updated_at": "2026-09-23T18:03:54.472Z"
     },
-    "monsters/lava_toad#walk#south-east": {
-      "art": "19ed35bbf2bc6ed0",
-      "updated_at": "2026-09-23T18:04:32.580Z",
-      "note": "Doesn't jump with both legs",
-      "status": "redo"
-    },
-    "monsters/lava_toad#walk#east": {
-      "status": "redo",
-      "art": "cc67aad77f70d437",
-      "updated_at": "2026-09-23T18:04:26.996Z",
-      "note": "Doesn't jump with both legs"
-    },
-    "monsters/lava_toad#walk#north-east": {
-      "status": "redo",
-      "art": "734c83134e3b20fc",
-      "updated_at": "2026-09-23T18:04:22.705Z",
-      "note": "Doesn't jump with both legs"
-    },
     "monsters/lava_toad#walk#north": {
       "status": "approved",
       "rating": 1,
       "art": "96d4da05ffdb8038",
       "updated_at": "2026-09-23T18:04:03.671Z"
-    },
-    "monsters/lava_toad#walk#north-west": {
-      "note": "Doesn't jump with both legs",
-      "updated_at": "2026-09-23T18:04:36.571Z",
-      "status": "redo",
-      "art": "1ef88bd234483b44"
-    },
-    "monsters/lava_toad#walk#west": {
-      "note": "Doesn't jump with both legs",
-      "updated_at": "2026-09-23T18:04:40.522Z",
-      "status": "redo",
-      "art": "040190a66222e08d"
-    },
-    "monsters/lava_toad#walk#south-west": {
-      "note": "Doesn't jump with both legs",
-      "updated_at": "2026-09-23T18:04:44.785Z",
-      "status": "redo",
-      "art": "ea3aeeb5ae7a32c8"
     },
     "monsters/lava_toad#angry#south": {
       "status": "approved",
@@ -11481,95 +11352,6 @@
       "rating": 1,
       "art": "4eb450eff453b1ae",
       "updated_at": "2026-09-23T18:07:21.230Z"
-    },
-    "monsters/plume_brawler#attack#south": {
-      "status": "redo",
-      "art": "9bdca3e63f61c6f7",
-      "updated_at": "2026-09-23T18:07:58.895Z",
-      "note": "Try a totally different attack prompt"
-    },
-    "monsters/plume_brawler#attack#south-east": {
-      "status": "redo",
-      "art": "25bf69addce5f6cf",
-      "updated_at": "2026-09-23T18:07:59.389Z"
-    },
-    "monsters/plume_brawler#attack#east": {
-      "status": "redo",
-      "art": "250b913790dd416f",
-      "updated_at": "2026-09-23T18:08:00.146Z"
-    },
-    "monsters/plume_brawler#attack#north-east": {
-      "status": "redo",
-      "art": "595e853a6ba637f7",
-      "updated_at": "2026-09-23T18:08:00.935Z"
-    },
-    "monsters/plume_brawler#attack#north": {
-      "status": "redo",
-      "art": "2e7dbc43edb86765",
-      "updated_at": "2026-09-23T18:08:01.834Z"
-    },
-    "monsters/plume_brawler#attack#north-west": {
-      "status": "redo",
-      "art": "b1fd5182824a6a92",
-      "updated_at": "2026-09-23T18:08:02.681Z"
-    },
-    "monsters/plume_brawler#attack#west": {
-      "status": "redo",
-      "art": "c14802aea34ff4f7",
-      "updated_at": "2026-09-23T18:08:03.990Z"
-    },
-    "monsters/plume_brawler#attack#south-west": {
-      "status": "redo",
-      "art": "b07d22b9f86d17e9",
-      "updated_at": "2026-09-23T18:08:05.174Z"
-    },
-    "monsters/plume_brawler#die#south": {
-      "status": "approved",
-      "rating": 1,
-      "art": "ce0c63166b03b1d9",
-      "updated_at": "2026-09-23T18:08:15.702Z"
-    },
-    "monsters/plume_brawler#die#south-east": {
-      "status": "approved",
-      "rating": 1,
-      "art": "51e283e9705ae1c1",
-      "updated_at": "2026-09-23T18:08:45.037Z"
-    },
-    "monsters/plume_brawler#die#east": {
-      "status": "approved",
-      "rating": 1,
-      "art": "1763dcb85b538ba8",
-      "updated_at": "2026-09-23T18:08:51.885Z"
-    },
-    "monsters/plume_brawler#die#north-east": {
-      "status": "approved",
-      "rating": 1,
-      "art": "35c9db41dbf06623",
-      "updated_at": "2026-09-23T18:08:59.106Z"
-    },
-    "monsters/plume_brawler#die#north": {
-      "status": "approved",
-      "rating": 1,
-      "art": "7488d77bc70f0cd8",
-      "updated_at": "2026-09-23T18:09:16.123Z"
-    },
-    "monsters/plume_brawler#die#north-west": {
-      "status": "approved",
-      "rating": 1,
-      "art": "df509d8421041e8c",
-      "updated_at": "2026-09-23T18:09:24.803Z"
-    },
-    "monsters/plume_brawler#die#west": {
-      "status": "approved",
-      "rating": 1,
-      "art": "b25eba1e0a0cd174",
-      "updated_at": "2026-09-23T18:09:36.100Z"
-    },
-    "monsters/plume_brawler#die#south-west": {
-      "status": "approved",
-      "rating": 1,
-      "art": "7afcbedf22c72601",
-      "updated_at": "2026-09-23T18:10:17.882Z"
     },
     "monsters/sand_scorpling#angry#south": {
       "status": "approved",
@@ -12417,23 +12199,41 @@
       "art": "7ad56aed5fb6af8f",
       "updated_at": "2026-09-23T20:26:13.559Z"
     },
-    "monsters/thorn_knot#attack#east": {
+    "monsters/plume_brawler#die#south": {
       "status": "approved",
       "rating": 1,
-      "art": "72078e84ed3b7459",
-      "updated_at": "2026-09-23T21:13:21.248Z"
+      "art": "51e283e9705ae1c1",
+      "updated_at": "2026-09-23T18:08:45.037Z"
     },
-    "monsters/thorn_knot#attack#west": {
+    "monsters/plume_brawler#die#south-east": {
       "status": "approved",
       "rating": 1,
-      "art": "fbd775fedd24a6e7",
-      "updated_at": "2026-09-23T21:13:29.143Z"
+      "art": "1763dcb85b538ba8",
+      "updated_at": "2026-09-23T18:08:51.885Z"
     },
-    "monsters/thorn_knot#walk#south": {
+    "monsters/plume_brawler#die#east": {
       "status": "approved",
       "rating": 1,
-      "art": "06c0bd5e4a6fd353",
-      "updated_at": "2026-09-23T21:13:33.207Z"
+      "art": "35c9db41dbf06623",
+      "updated_at": "2026-09-23T18:08:59.106Z"
+    },
+    "monsters/plume_brawler#die#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "7488d77bc70f0cd8",
+      "updated_at": "2026-09-23T18:09:16.123Z"
+    },
+    "monsters/plume_brawler#die#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "ce0c63166b03b1d9",
+      "updated_at": "2026-09-23T18:08:15.702Z"
+    },
+    "monsters/plume_brawler#die#west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "df509d8421041e8c",
+      "updated_at": "2026-09-23T18:09:24.803Z"
     }
   }
 }

@@ -508,43 +508,42 @@
       "directions": {
         "south": {
           "status": "warn",
-          "step_mean": 0.081,
-          "step_max": 0.0996,
-          "drift": 1.5,
-          "loop": 0.1822,
-          "loop_ratio": 2.25,
-          "travel": 2.17,
-          "pin": 0.954,
+          "step_mean": 0.1339,
+          "step_max": 0.1552,
+          "drift": 5.53,
+          "loop": 0.3152,
+          "loop_ratio": 2.35,
+          "travel": 1.61,
+          "pin": 0.936,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 1.011,
+          "end_area": 1.006,
           "end_iou": null,
           "canvas": [
             160,
             160
           ],
           "reasons": [
-            "motion 0.081 outside the calm band 0.1–0.4 — eyeball it",
-            "last→first hand-off 2.2× a step — eyeball the loop"
+            "drifts 5.5 px — eyeball it",
+            "last→first hand-off 2.4× a step — eyeball the loop"
           ],
-          "sub": null,
-          "group": null,
+          "sub": "2f58fe0d-07ac-4220-a950-a0721e9a6645",
+          "group": "5556f8c9-0926-4691-8cce-59b159edfbb2",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "mode": "text-v3",
+          "mode": "v3",
           "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
           "intensity": 0,
           "rolls": 1,
-          "frames": 6,
+          "frames": 4,
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-22T19:14:01+00:00",
-          "manual": true
+          "generated_at": "2026-09-23T21:03:03+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -813,9 +812,7 @@
           "minotaur/animations/walk/south/00.webp",
           "minotaur/animations/walk/south/01.webp",
           "minotaur/animations/walk/south/02.webp",
-          "minotaur/animations/walk/south/03.webp",
-          "minotaur/animations/walk/south/04.webp",
-          "minotaur/animations/walk/south/05.webp"
+          "minotaur/animations/walk/south/03.webp"
         ],
         "south-east": [
           "minotaur/animations/walk/south-east/00.webp",
@@ -1398,18 +1395,18 @@
         },
         "north": {
           "status": "warn",
-          "step_mean": 0.3767,
-          "step_max": 0.4404,
-          "drift": 5.02,
-          "loop": 0.0,
+          "step_mean": 0.4765,
+          "step_max": 0.5378,
+          "drift": 14.0,
+          "loop": 0.0003,
           "loop_ratio": 0.0,
-          "travel": 2.18,
+          "travel": 8.28,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.001,
-          "peak": 0.3589,
-          "reach": 0.283,
-          "turn": 0,
+          "flash": -0.0,
+          "peak": 0.5378,
+          "reach": 0.228,
+          "turn": 4,
           "end_area": 1.0,
           "end_iou": null,
           "canvas": [
@@ -1417,22 +1414,23 @@
             160
           ],
           "reasons": [
-            "shallow strike: reach 0.28 — eyeball it"
+            "drifts 14.0 px — eyeball it",
+            "shallow strike: reach 0.23 — eyeball it"
           ],
-          "sub": "d3673b6a-5db9-4022-a5e6-31c7bfc7857a",
-          "group": "70415ff2-9d27-4c95-af17-a16cb1227e93",
+          "sub": "011793d5-7074-4226-9664-f7a964de2fb1",
+          "group": "a2545a14-503a-404a-82e8-ab7c763037f9",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
           "mode": "pro",
           "action": "Strike - Quickly lunges forward and strikes once, a controlled strike, only the striking limb moves and the body stays planted",
           "intensity": 0,
-          "rolls": 2,
+          "rolls": 1,
           "frames": 4,
           "rung": -1,
           "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-22T20:28:18+00:00"
+          "tries": 1,
+          "generated_at": "2026-09-23T21:17:47+00:00"
         },
         "north-west": {
           "status": "warn",

@@ -112,6 +112,50 @@ def read(cid, state):
     return out
 
 
+def rotation_offset(cid):
+    """{PixelLab direction: the repo direction its rotation really is}, or {}.
+
+    The character's own eight rotations on PixelLab, against this repo's copy
+    of them. On a well-mirrored candidate this is the identity. On his
+    Plumefist it was a clean one-slot shift, all eight at 1.0000 — which is why
+    a clip whose frame 0 comes from the CHARACTER (die, attack, anything
+    unpinned) lands one slot off while a clip pinned from our file (idle, walk,
+    angry) faces the way he sees it. Only an exact map is returned: if any of
+    the eight is not a 1.0 match this says nothing rather than something wrong.
+    Costs one character read and eight image downloads, no generation."""
+    from pixellab_client import PixelLabClient
+    man_p = os.path.join(OUT, cid, "candidate.json")
+    if not os.path.isfile(man_p):
+        return {}
+    pid = json.load(open(man_p)).get("pixellab_id")
+    if not pid:
+        return {}
+    client = PixelLabClient()
+    detail = client.get_character(pid)
+    urls = {d: u for d, u in (detail.get("rotation_urls") or {}).items() if u and d in DIRS_8}
+    if len(urls) != len(DIRS_8):
+        return {}
+    imgs = dict(zip(sorted(urls), client.download_many([urls[d] for d in sorted(urls)])))
+    repo = _bases(cid)
+    if len(repo) != len(DIRS_8):
+        return {}
+    out = {}
+    for d, im in imgs.items():
+        if im is None:
+            return {}
+        a = np.array(im.convert("RGBA"))[..., 3] > 8
+        ys, xs = np.nonzero(a)
+        if not len(xs):
+            return {}
+        c = a[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+        m = np.array(Image.fromarray(c.astype(np.uint8) * 255).resize((64, 64), Image.NEAREST)) > 127
+        best, score = max(((x, _iou(m, repo[x])) for x in repo), key=lambda t: t[1])
+        if score < EXACT:
+            return {}
+        out[d] = best
+    return out
+
+
 def check(only=None, verbose=True):
     bad = []
     for cid in sorted(os.listdir(OUT)):
@@ -159,6 +203,30 @@ def true_of(cid, state):
 
 def fix(cid, state, apply=False, verbose=True):
     truth = true_of(cid, state)
+    # The offset says where a clip generated AS PixelLab's <d> really faces. A
+    # folder that was already relabelled no longer carries PixelLab's name, so
+    # the offset must never be applied to it again — run twice, it rotated a
+    # corrected attack a second time and crashed halfway (2026-09-23).
+    man_p0 = os.path.join(OUT, cid, "candidate.json")
+    rec0 = ((json.load(open(man_p0)).get("animations") or {}).get(state) or {}) if os.path.isfile(man_p0) else {}
+    done0 = {d for d, q in (rec0.get("directions") or {}).items() if q.get("relabelled_from")}
+    unplaced = [d for d in GENERATED if d not in truth and d not in done0
+                and os.path.isdir(os.path.join(OUT, cid, "animations", state, d))]
+    if unplaced:
+        # A PRO take has no pinned frame 0, so nothing in it matches a base
+        # exactly. The CHARACTER's rotation offset is exact for every clip
+        # generated on it, so it places what the clip itself cannot.
+        off = rotation_offset(cid)
+        if off:
+            for d in unplaced:
+                truth[d] = off[d]
+            for m, o in MIRROR_OF.items():
+                if o in truth and m not in truth:
+                    truth[m] = FLIP[truth[o]]
+            print(f"  {cid} {state}: {', '.join(unplaced)} placed by the character's rotation offset")
+        else:
+            print(f"  {cid} {state}: {', '.join(unplaced)} cannot be placed (unpinned, and the "
+                  f"character's rotations have no exact offset) — left where they are")
     if not truth:
         print(f"  {cid} {state}: nothing measurable (no exact match on any generated facing)")
         return False
@@ -174,7 +242,16 @@ def fix(cid, state, apply=False, verbose=True):
     for d, t in truth.items():
         if t not in src or (d in GENERATED and src[t] not in GENERATED):
             src[t] = d
-    missing = [d for d in DIRS_8 if d not in src]
+    # A FACING THAT ALREADY SITS CORRECTLY IS NOT OVERWRITTEN BY A MIRROR of
+    # the same view: the unmeasured genuine south-west stays, the flipped
+    # duplicate that also reads south-west is discarded.
+    discard = []
+    for t, d in list(src.items()):
+        if t != d and t not in truth and os.path.isdir(os.path.join(OUT, cid, "animations", state, t)):
+            discard.append(d)
+            del src[t]
+    missing = [d for d in DIRS_8 if d not in src and not
+               (d not in truth and os.path.isdir(os.path.join(OUT, cid, "animations", state, d)))]
     rebuild = [m for m in missing if MIRROR_OF.get(m) in src]
     still = [d for d in missing if d not in rebuild]
     print(f"  {cid} {state}: " + ", ".join(f"{src[t]}->{t}" for t in DIRS_8 if t in src))
@@ -206,7 +283,19 @@ def fix(cid, state, apply=False, verbose=True):
         s_strip = os.path.join(adir, f"{state}__{d}.webp")
         if os.path.exists(s_strip):
             os.rename(s_strip, os.path.join(adir, f".move-{state}__{t}.webp"))
+    # ONLY WHAT WAS MEASURED MOVES. A facing this could not place — a PRO take
+    # has no pinned frame 0, so nothing matches exactly — stays exactly where it
+    # is; the first version of this cleared every unmatched facing and threw
+    # away three freshly generated attack clips (2026-09-23, Plumefist).
+    # Cleared: every source that was staged out, every discarded duplicate,
+    # and every TARGET name — whatever still sits under a target's name after
+    # staging is a stale view of that facing (a mirror that lost the tie), and
+    # renaming the staged art onto it fails with "directory not empty".
+    moved_from = set(src.values()) | set(discard)
+    clear = moved_from | set(src) | set(rebuild)
     for d in DIRS_8:
+        if d not in clear:
+            continue
         p = os.path.join(adir, state, d)
         if os.path.isdir(p):
             shutil.rmtree(p)
@@ -239,7 +328,7 @@ def fix(cid, state, apply=False, verbose=True):
             strip.save(os.path.join(adir, f"{state}__{m}.webp"), "WEBP", lossless=True, exact=True)
         src[m] = MIRROR_OF[m]
 
-    new_dirs = {}
+    new_dirs = {d: q for d, q in old_dirs.items() if d not in clear}
     for t, d in src.items():
         if d in old_dirs:
             q = dict(old_dirs[d])
@@ -269,7 +358,8 @@ def fix(cid, state, apply=False, verbose=True):
             v.pop("note", None)
             moved[f"monsters/{cid}#{state}#{t}"] = v
     for d in DIRS_8:
-        ent.pop(f"monsters/{cid}#{state}#{d}", None)
+        if d in clear:
+            ent.pop(f"monsters/{cid}#{state}#{d}", None)
     ent.update(moved)
     fb["entries"] = ent
     from datetime import datetime, timezone
