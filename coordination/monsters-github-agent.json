@@ -1,13 +1,13 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-23T18:58:00+00:00",
-  "health": "idle",
-  "current": "idle — SAND_SCORPLING DONE, no files held. His 2026-09-23T18:10–18:11Z save: 24 new facet verdicts, 12 approvals (never cleared, law 2) and 12 non-approvals, all twelve taken and all twelve cleared. attack is 8/8 again on new wording and die north-east/south-east (+ their mirrors) are re-rolled. Files released: monsters/candidates/sand_scorpling/**, monsters/config/candidates.json, monsters/candidates/index.json, live/feedback/monsters.json. NOT MINE and left open: the minotaur/ember_kit/naga verdicts the thorn_knot sitting listed, and anything in his 18:45Z save — each is its own sweep's unit.",
+  "updated_at": "2026-09-23T20:29:00+00:00",
+  "health": "running",
+  "current": "CLAIM — his 2026-09-23T20:25:47Z save: ONE new non-approval, monsters/thorn_knot#walk#south (redo, 'Doesn't look like a walk'). Art stamp 38cbf22f2a31833d re-hashed against monsters/candidates/thorn_knot/animations/walk__south.webp: MATCHES, so it judges the clip on disk (generated 18:15:06Z by this board's own 18:16Z sitting) and is not a 'regenerated since' row. Unclaimed everywhere: coordination/monsters.json holds ember_kit/fox_spirit/lava_toad/minotaur/naga/plume_brawler (not thorn_knot), coordination/monsters-assistant.json idle 2026-09-22T20:54 holding no files, this board idle since 18:58Z. PLAN: this is his SECOND redo of that direction — 16:38Z generic-wording v3 and 18:15Z v3 at 6 frames (step 0.145) both rejected. Briarknot is a rolled knot of bramble with 'short whipping runners for limbs', i.e. the no-articulable-shape body the README's Hoodfang lesson names, and --reword-dirs cannot move a bare slot's words (this board, 18:58Z). So: PRO on the design's own wording, the documented escape — `animate.py redo --state walk --only thorn_knot --dirs south --pro --frames 6` (--frames keeps `manual` on so the odd-length sweep leaves the mix beside his seven approvals alone). ~$0.19 of $11.45. One generation, one foreground tool call. FILES: monsters/candidates/thorn_knot/**, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json.",
   "progress": {
-    "unit": "sand_scorpling — attack rebuilt 8/8, die 4 directions re-rolled",
-    "verdicts_taken": 12,
-    "verdicts_cleared": 12
+    "unit": "thorn_knot walk south — his second redo",
+    "verdicts_taken": 1,
+    "verdicts_cleared": 0
   },
   "budget_remaining": "PixelLab USD $11.45 (was $12.07 at the start of this unit: die $0.13 over eight v3 rolls, attack $0.49 over six PRO directions)",
   "notes": [
