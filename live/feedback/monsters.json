@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-23T17:56:51.723Z",
+  "updated_at": "2026-09-23T17:59:17.484Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -15206,6 +15206,196 @@
       "rating": 1,
       "art": "66ffe24b28c03e77",
       "updated_at": "2026-09-23T17:56:52.006Z"
+    },
+    "monsters/naga#walk#south": {
+      "status": "redo",
+      "art": "4b5241e33f591f92",
+      "updated_at": "2026-09-23T17:57:27.961Z",
+      "note": "The snake is scrolling and not walking like a snake"
+    },
+    "monsters/naga#walk#south-east": {
+      "note": "The snake is scrolling",
+      "updated_at": "2026-09-23T17:57:39.904Z",
+      "status": "redo",
+      "art": "5db7657d305ec810"
+    },
+    "monsters/naga#walk#east": {
+      "note": "The snake is scrolling",
+      "updated_at": "2026-09-23T17:57:50.708Z",
+      "status": "redo",
+      "art": "a357517b09cd682c"
+    },
+    "monsters/naga#walk#north-east": {
+      "status": "redo",
+      "art": "39bf5bf138db8304",
+      "updated_at": "2026-09-23T17:57:47.110Z",
+      "note": "The snake is scrolling"
+    },
+    "monsters/naga#walk#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "5c520a1f5785cc81",
+      "updated_at": "2026-09-23T17:57:53.036Z"
+    },
+    "monsters/naga#walk#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "82aab147f1d02591",
+      "updated_at": "2026-09-23T17:57:58.275Z"
+    },
+    "monsters/naga#walk#west": {
+      "note": "The snake is scrolling",
+      "updated_at": "2026-09-23T17:58:04.513Z",
+      "status": "redo",
+      "art": "b86daec34d4618f5"
+    },
+    "monsters/naga#walk#south-west": {
+      "status": "redo",
+      "art": "0102620e2c9eb29f",
+      "updated_at": "2026-09-23T17:58:08.657Z"
+    },
+    "monsters/naga#angry#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "50e1baa942e76354",
+      "updated_at": "2026-09-23T17:58:12.843Z"
+    },
+    "monsters/naga#angry#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "ac0b9fc4c034ac31",
+      "updated_at": "2026-09-23T17:58:14.519Z"
+    },
+    "monsters/naga#angry#east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "4c1ed83db88b65ea",
+      "updated_at": "2026-09-23T17:58:16.658Z"
+    },
+    "monsters/naga#angry#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "160c1401be34ebc1",
+      "updated_at": "2026-09-23T17:58:18.929Z"
+    },
+    "monsters/naga#angry#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "38af1e315e16275d",
+      "updated_at": "2026-09-23T17:58:20.952Z"
+    },
+    "monsters/naga#angry#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "69a98e6ede95d008",
+      "updated_at": "2026-09-23T17:58:22.760Z"
+    },
+    "monsters/naga#angry#west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "a58a1bca5a5b19cc",
+      "updated_at": "2026-09-23T17:58:24.425Z"
+    },
+    "monsters/naga#angry#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "6889f1cb00a13fef",
+      "updated_at": "2026-09-23T17:58:26.152Z"
+    },
+    "monsters/naga#attack#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "2eb03131ca2485ec",
+      "updated_at": "2026-09-23T17:58:29.187Z"
+    },
+    "monsters/naga#attack#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "2f2f9642a2b8f63a",
+      "updated_at": "2026-09-23T17:58:31.130Z"
+    },
+    "monsters/naga#attack#east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "d841c769ee36baec",
+      "updated_at": "2026-09-23T17:58:32.745Z"
+    },
+    "monsters/naga#attack#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "ebe3d33128748ebf",
+      "updated_at": "2026-09-23T17:58:35.062Z"
+    },
+    "monsters/naga#attack#north": {
+      "status": "redo",
+      "art": "c5b129a656559cd7",
+      "updated_at": "2026-09-23T17:58:40.161Z"
+    },
+    "monsters/naga#attack#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "1a408a09ffd39b0d",
+      "updated_at": "2026-09-23T17:58:42.311Z"
+    },
+    "monsters/naga#attack#west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "c1bf9c65acb8e504",
+      "updated_at": "2026-09-23T17:58:44.502Z"
+    },
+    "monsters/naga#attack#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "cdbf4ea9d8af9ad8",
+      "updated_at": "2026-09-23T17:58:46.215Z"
+    },
+    "monsters/naga#die#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "c2ce22d2638225c0",
+      "updated_at": "2026-09-23T17:58:49.621Z"
+    },
+    "monsters/naga#die#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "0f5587602bc6a393",
+      "updated_at": "2026-09-23T17:58:51.427Z"
+    },
+    "monsters/naga#die#east": {
+      "status": "redo",
+      "rating": 1,
+      "art": "7105050a379c52c9",
+      "updated_at": "2026-09-23T17:59:10.720Z"
+    },
+    "monsters/naga#die#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "a5aba2b5e77b10bf",
+      "updated_at": "2026-09-23T17:58:59.802Z"
+    },
+    "monsters/naga#die#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "c178f83dabd9fcdd",
+      "updated_at": "2026-09-23T17:59:01.784Z"
+    },
+    "monsters/naga#die#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "fc115d09c7770adf",
+      "updated_at": "2026-09-23T17:59:03.978Z"
+    },
+    "monsters/naga#die#west": {
+      "status": "redo",
+      "rating": 1,
+      "art": "d169a804fa1ffad0",
+      "updated_at": "2026-09-23T17:59:08.080Z"
+    },
+    "monsters/naga#die#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "c487f5f811c36309",
+      "updated_at": "2026-09-23T17:59:12.778Z"
     }
   }
 }
