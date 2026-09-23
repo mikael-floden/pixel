@@ -23,9 +23,11 @@ name: artifact registry watch
 #      or a competing automation; its absence is the exact state that cost the
 #      38 days, and it is invisible from the outside until the bill arrives.
 #   2. THE REPO IS UNDER SIZE_ALARM_MB. The policy keeps the newest 15 versions
-#      and deletes anything over 14 days, which settled the repo at a small
-#      residual; a number climbing back means images are being retained faster
-#      than 14 days can reap them, which is a real regression in deploy rate.
+#      and deletes anything over 2 days. That window is the ONLY lever on this
+#      bill: measured 2026-09-23, the repo converges on retention x push rate x
+#      size per version, and at 14 days x 88 builds/day x 425 MB that was
+#      490 GB. A number climbing past the alarm means the push rate has risen
+#      or the policy has stopped sweeping — both worth a human.
 #
 # A RED RUN IN THE FIRST DAYS AFTER APPLYING THE POLICY IS EXPECTED AND NOT A
 # BUG: Artifact Registry sweeps asynchronously, typically within 24 h, and the
@@ -72,11 +74,15 @@ jobs:
         env:
           REGION: ${{ vars.GCP_REGION }}
           AR_REPO: ${{ vars.GCP_AR_REPO }}
-          # The residual after `keep newest 15 + delete >14d` was expected at
-          # 10-25 GB against the 488 GB that provoked this. 60 GB is well clear
-          # of a healthy settled repo and well under the runaway, so it fires on
-          # a real regression and not on a busy week.
-          SIZE_ALARM_MB: "61440"
+          # DERIVED, not picked. The repo converges on
+          #   retention x push rate x size per version
+          # and the three are measured (2026-09-23): 2 days x ~88 image builds
+          # a day x 425 MB = ~70 GB. The alarm sits at 120 GB, ~1.7x that, so
+          # it rides out a heavy day and still fires long before the 490 GB the
+          # 14-day window produced. TIGHTEN IT once a settled number has been
+          # observed for a week — the 425 MB is an average over 1154 versions
+          # and layers are shared, so the real steady state may land lower.
+          SIZE_ALARM_MB: "122880"
         run: |
           set -uo pipefail
           : "${REGION:?GCP_REGION repo variable is not set}"
@@ -109,7 +115,7 @@ jobs:
             echo "| cleanup policy | $([ "${POLICY:-0}" -gt 0 ] && echo 'attached ✅' || echo 'MISSING ❌') |"
             echo "| alarm above | $((SIZE_ALARM_MB / 1024)) GB |"
             echo
-            echo "For context: 488,148 MB on 2026-09-22, the day the policy was first applied."
+            echo "For context: 488,148 MB on 2026-09-22 under a 14-day window; the window is 2 days from 2026-09-23."
           } >> "$GITHUB_STEP_SUMMARY"
 
           FAIL=0

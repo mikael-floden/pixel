@@ -26,7 +26,34 @@
 #   • anything older than 14 days beyond those is deleted, tagged or not.
 #   • :latest and the currently-serving image are by definition among the
 #     newest, so they are structurally inside the keep set.
+# WHY TWO DAYS, and it is the only lever there is (measured 2026-09-23).
+# The window was 14 days and the registry sat at 490 GB. That was not a leak
+# and not a broken policy — the policy WAS working, and 490 GB is simply what
+# 14 days converges to:
+#
+#   retention x push rate x size per version = steady state
+#   14 days   x  88/day   x     425 MB       = 490 GB
+#   (measured: 1154 versions, 489,886 MB, 425 MB each)
+#
+# Cross-checked against git: 1229 commits in those 14 days touch a path that
+# builds an image, against 1154 versions in the registry. Every push is a
+# version, and the window alone decides how many are alive. Running the manual
+# purge on top of it found EIGHT to delete, because the policy had taken the
+# rest — which is why "run the purge again" was never the answer.
+#
+# At 88 deploys a day, 2 days is ~176 rollback points, far more than anyone
+# reaches for, and the image rebuilds from any commit anyway (the backup is
+# .github/workflows/backup-gcs.yml, never this registry). Maintainer chose 2
+# days from a costed menu: ~70 GB, roughly kr 43/mo against kr 304.
+#
+# KEEP IT IN STEP WITH ar-purge.sh's KEEP_DAYS. They are one rule run by two
+# hands; if they disagree, the manual purge deletes what the policy means to
+# keep, or spares what it means to take.
 set -euo pipefail
+
+# Settings first: the project derivation below PROBES the registry with them.
+REGION="${REGION:-europe-north1}"
+AR_REPO="${AR_REPO:-nangijala}"
 
 # PROJECT: derived, never prompted. Cloud Shell exports DEVSHELL_PROJECT_ID for
 # the active project, and gcloud knows it too — so the paste needs no editing
@@ -57,16 +84,36 @@ if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "(unset)" ]; then
     PROJECT_ID="$PROJECTS"
     echo "▶ no active project set; using the only one on this account: $PROJECT_ID"
   else
-    echo "No active project, and this account has $COUNT of them:" >&2
-    printf '  %s\n' $PROJECTS >&2
-    echo >&2
-    echo "Paste this, with the one you want:" >&2
-    echo "  gcloud config set project THE-ID && curl -sS $SELF | bash" >&2
-    exit 1
+    # SEVERAL PROJECTS — ASK THE REGISTRY, DO NOT ASK HIM (maintainer 2026-09-23,
+    # on a phone: the paste ran, hit this branch, printed a line to edit, and
+    # stopped. He replied "Done". It had deleted nothing). His account has two
+    # projects and only ONE of them holds this repository, so the answer is a
+    # lookup, not a decision — and the project is spelled `nagijala` against the
+    # repo's `nangijala`, so it cannot be guessed either. Same law as the bucket
+    # name in backup-gcs.yml: derive, don't ask. Only a genuinely ambiguous
+    # answer (none, or more than one) still hands back a line.
+    echo "▶ no active project set; $COUNT on this account — asking which holds ${AR_REPO}" >&2
+    MATCHES=""
+    for p in $PROJECTS; do
+      if gcloud artifacts repositories describe "$AR_REPO" --location="$REGION" \
+           --project="$p" >/dev/null 2>&1; then
+        MATCHES="$MATCHES $p"
+      fi
+    done
+    set -- $MATCHES
+    if [ "$#" = "1" ]; then
+      PROJECT_ID="$1"
+      echo "▶ using $PROJECT_ID — the only one with a ${AR_REPO} repository in ${REGION}" >&2
+    else
+      echo "Could not tell which project to use ($# hold a ${AR_REPO} repository in ${REGION}):" >&2
+      printf '  %s\n' $PROJECTS >&2
+      echo >&2
+      echo "Paste this, with the one you want:" >&2
+      echo "  gcloud config set project THE-ID && curl -sS $SELF | bash" >&2
+      exit 1
+    fi
   fi
 fi
-REGION="${REGION:-europe-north1}"
-AR_REPO="${AR_REPO:-nangijala}"
 
 echo "▶ project=$PROJECT_ID region=$REGION repo=$AR_REPO"
 gcloud config set project "$PROJECT_ID" >/dev/null
@@ -88,14 +135,14 @@ cat > "$POLICY" <<'JSON'
     "mostRecentVersions": { "keepCount": 15 }
   },
   {
-    "name": "delete-older-than-14d",
+    "name": "delete-older-than-2d",
     "action": { "type": "Delete" },
-    "condition": { "tagState": "any", "olderThan": "14d" }
+    "condition": { "tagState": "any", "olderThan": "2d" }
   }
 ]
 JSON
 
-echo "▶ applying cleanup policy (keep newest 15, delete >14 days)"
+echo "▶ applying cleanup policy (keep newest 15, delete >2 days)"
 gcloud artifacts repositories set-cleanup-policies "$AR_REPO" \
   --location="$REGION" \
   --policy="$POLICY" \

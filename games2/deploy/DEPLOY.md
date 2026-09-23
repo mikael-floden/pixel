@@ -56,18 +56,30 @@ GCP_PROJECT_ID  GCP_REGION  GCP_AR_REPO  GCP_SERVICE  GCP_WIF_PROVIDER  GCP_DEPL
 ```
 
 **Artifact Registry retention** is one rule in three places, all saying *keep
-the newest 15 versions, delete anything over 14 days*:
+the newest 15 versions, delete anything over 2 days*.
+
+**The window is the only lever on this bill.** The repo converges on
+`retention x push rate x size per version`, and all three are measured
+(2026-09-23): 14 days x ~88 image builds a day x 425 MB = **490 GB**, which is
+exactly what sat there. It was never a leak and the policy was never broken —
+a manual purge on top of it found *eight* versions to take, because the policy
+had already swept the rest. Cross-check: 1229 commits in those 14 days touch a
+path that builds an image, against 1154 versions in the registry. At 2 days
+that is ~176 rollback points and ~70 GB (≈ kr 43/mo against kr 304); the image
+rebuilds from any commit, and the backup is `backup-gcs.yml`, never this
+registry.
 
 - `deploy/ar-cleanup.sh` attaches it as a **server-side cleanup policy** — the
   permanent answer, no CI job and no credentials. It sweeps asynchronously, so
   it proves nothing on the day it is pasted.
-- `deploy/ar-purge.sh` applies the same rule **by hand, now**, and prints the
+- `deploy/ar-purge.sh` applies the same rule **by hand, now** (its `KEEP_DAYS`
+  must stay in step with the policy's window — one rule, two hands), and prints the
   version count before and after. Use it when the space is wanted today.
   (`DRY_RUN=1` lists without deleting. The VERSION COUNT is the proof; the
   repository SIZE lags hours, because Artifact Registry frees a shared layer
   only once nothing references it.)
 - `.github/workflows/ar-watch.yml` reads the repo every morning and fails if the
-  policy is gone or the size is over 60 GB.
+  policy is gone or the size is over 120 GB (~1.7x the derived steady state).
 
 Both scripts are one Cloud-Shell paste with nothing to fill in, and both keep
 the newest 15 **whatever their age**. That arm is load-bearing, not decoration:

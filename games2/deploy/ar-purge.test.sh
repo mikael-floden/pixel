@@ -35,6 +35,15 @@ case "$args" in
   "config set project"*)       exit 0 ;;
   "projects list"*)            cat "$S/projects" 2>/dev/null; exit 0 ;;
   "artifacts repositories describe"*)
+      # A repository lives in ONE project. $S/repo_in names it; a describe
+      # against any other project 404s, exactly as gcloud does — which is what
+      # the multi-project probe reads.
+      want="$(cat "$S/repo_in" 2>/dev/null)"
+      asked=""
+      for a in "$@"; do case "$a" in --project=*) asked="${a#--project=}" ;; esac; done
+      if [ -n "$want" ] && [ -n "$asked" ] && [ "$asked" != "$want" ]; then
+        echo "NOT_FOUND: $asked" >&2; exit 1
+      fi
       echo "Repository Size: 488148.057MB"; exit 0 ;;
   "run services describe"*)
       case "$args" in
@@ -72,7 +81,7 @@ chmod +x "$TMP/bin/gcloud"
 
 reset() {
   rm -rf "$STATE"; mkdir -p "$STATE"
-  for f in calls.log deleted gone violations tags versions \
+  for f in calls.log deleted gone violations tags versions repo_in \
            serving_image revision revision_digest; do : > "$STATE/$f"; done
   echo p-nangijala > "$STATE/active_project"
   echo p-nangijala > "$STATE/projects"
@@ -88,13 +97,19 @@ clean() { if [ -s "$STATE/violations" ]; then bad "stub violations:"; cat "$STAT
 run()   { bash "$SCRIPT" > "$STATE/out" 2>&1; echo $?; }
 nth()   { sort -t, -k2,2r "$STATE/versions" | sed -n "${1}p" | cut -d, -f1; }
 
-# FRESH: all on 2026-09-21, hours 22..03 — inside any sane KEEP_DAYS window.
-# OLD:   2026-08-xx — outside it. Newest-first = every fresh row, then the old.
+# DATES ARE RELATIVE TO NOW, never literals. They were hardcoded to September
+# 2026 and would have started failing the day KEEP_DAYS came down to 2 — the
+# "fresh" rows were two days old by then. A fixture carrying today's date is a
+# test with an expiry date on it.
+#   FRESH: the last few hours, inside any KEEP_DAYS >= 1.
+#   OLD:   a month back, outside any window this repo would set.
+# Newest-first ordering = every fresh row, then the old ones.
+ago() { date -u -d "-$1 minutes" +%Y-%m-%dT%H:%M:%S.000000Z 2>/dev/null \
+        || date -u -v-"$1"M +%Y-%m-%dT%H:%M:%S.000000Z; }
 fresh() { local i; for i in $(seq 1 "$1"); do
-  printf '%ssha256:new%03d,2026-09-21T%02d:00:00.000000Z\n' "${STYLE:-}" "$i" "$((23 - i))"; done; }
+  printf '%ssha256:new%03d,%s\n' "${STYLE:-}" "$i" "$(ago $((i * 5)))"; done; }
 old()   { local i; for i in $(seq 1 "$1"); do
-  printf '%ssha256:old%03d,2026-08-%02dT%02d:00:00.000000Z\n' "${STYLE:-}" "$i" \
-    "$(( 28 - (i % 28) ))" "$(( 23 - (i % 24) ))"; done; }
+  printf '%ssha256:old%03d,%s\n' "${STYLE:-}" "$i" "$(ago $(( 43200 + i * 17 )))"; done; }
 serve() { echo "${IMG}:abc123" > "$STATE/serving_image"; printf 'abc123,%s\n' "$1" >> "$STATE/tags"; }
 
 echo "S1  normal day: 20 fresh + 120 old, serving is fresh"
@@ -165,6 +180,36 @@ says "names it" "using the only one on this account: p-nangijala"
 printf 'p-a\np-b\n' > "$STATE/projects"; : > "$STATE/active_project"
 is   "several projects -> exit 1" "$(run)" "1"
 says "hands back a ready paste line" "gcloud config set project THE-ID"
+
+echo "S7b SEVERAL projects: the one holding the registry is DERIVED, not asked"
+# Maintainer 2026-09-23, on his phone: the paste ran, found two projects, printed
+# a line to edit and stopped. He replied "Done" — it had deleted nothing. Only
+# one of his projects holds the repository, so this was never a decision to put
+# to a human; and the project is spelled `nagijala` against the repo's
+# `nangijala`, so it cannot be guessed either.
+reset; { fresh 20; old 30; } > "$STATE/versions"; serve sha256:new001
+: > "$STATE/active_project"
+printf 'custom-point-416909\nnagijala\n' > "$STATE/projects"
+echo "nagijala" > "$STATE/repo_in"
+is   "exit 0 — it picked one and ran" "$(run)" "0"
+says "and named which, and why" "the only one with a nangijala repository"
+says "it used that project"      "project=nagijala"
+is   "it actually purged"        "$(grep -c . "$STATE/deleted")" "30"
+clean
+
+echo "S7c ...but a genuinely ambiguous answer still asks"
+reset; old 3 > "$STATE/versions"
+: > "$STATE/active_project"
+printf 'p-a\np-b\n' > "$STATE/projects"
+: > "$STATE/repo_in"                      # empty = every project answers, so 2 match
+is   "several holders -> exit 1" "$(run)" "1"
+says "hands back a ready paste line" "gcloud config set project THE-ID"
+reset; old 3 > "$STATE/versions"
+: > "$STATE/active_project"
+printf 'p-a\np-b\n' > "$STATE/projects"
+echo "p-nobody" > "$STATE/repo_in"        # none of them hold it
+is   "no holder -> exit 1" "$(run)" "1"
+says "says how many held it" "0 hold a nangijala repository"
 
 echo "S8  a STALE :latest tag on an old digest is protected"
 reset; { fresh 20; old 30; } > "$STATE/versions"; serve sha256:new001

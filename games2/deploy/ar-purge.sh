@@ -24,7 +24,7 @@
 #      age-only rule would delete the very image Cloud Run needs to boot, and
 #      the symptom is "Nangijala could not start" with nothing in the logs about
 #      a registry. The newest 15 can never be that set.
-#   2. ANYTHING NEWER THAN KEEP_DAYS (14). The same rule ar-cleanup.sh installs
+#   2. ANYTHING NEWER THAN KEEP_DAYS (2). The same rule ar-cleanup.sh installs
 #      server-side, so the manual purge and the policy settle on one steady
 #      state rather than fighting.
 #   3. THE DIGEST CLOUD RUN IS SERVING, and the one :latest points at, read
@@ -44,10 +44,17 @@
 set -uo pipefail
 
 SELF="https://raw.githubusercontent.com/mikael-floden/pixel/main/games2/deploy/ar-purge.sh"
-KEEP_DAYS="${KEEP_DAYS:-14}"
+# MUST MATCH ar-cleanup.sh's policy window, or the two fight: the manual
+# purge and the server-side sweep are the same rule run by different hands.
+KEEP_DAYS="${KEEP_DAYS:-2}"
 KEEP_NEWEST="${KEEP_NEWEST:-15}"
 PARALLEL="${PARALLEL:-8}"   # gcloud calls in flight; 8 is polite and ~8x faster
 DRY_RUN="${DRY_RUN:-}"
+
+# Settings first: the project derivation below PROBES the registry with them.
+REGION="${REGION:-europe-north1}"
+AR_REPO="${AR_REPO:-nangijala}"
+SERVICE="${SERVICE:-nangijala}"
 
 # PROJECT: derived, never prompted — the same four sources as ar-cleanup.sh. A
 # fresh Cloud Shell opens as "(no project)", so DEVSHELL_PROJECT_ID and
@@ -63,18 +70,37 @@ if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "(unset)" ]; then
     PROJECT_ID="$PROJECTS"
     echo "▶ no active project set; using the only one on this account: $PROJECT_ID"
   else
-    echo "No active project, and this account has $COUNT of them:" >&2
-    printf '  %s\n' $PROJECTS >&2
-    echo >&2
-    echo "Paste this, with the one you want:" >&2
-    echo "  gcloud config set project THE-ID && curl -sS $SELF | bash" >&2
-    exit 1
+    # SEVERAL PROJECTS — ASK THE REGISTRY, DO NOT ASK HIM (maintainer 2026-09-23,
+    # on a phone: the paste ran, hit this branch, printed a line to edit, and
+    # stopped. He replied "Done". It had deleted nothing). His account has two
+    # projects and only ONE of them holds this repository, so the answer is a
+    # lookup, not a decision — and the project is spelled `nagijala` against the
+    # repo's `nangijala`, so it cannot be guessed either. Same law as the bucket
+    # name in backup-gcs.yml: derive, don't ask. Only a genuinely ambiguous
+    # answer (none, or more than one) still hands back a line.
+    echo "▶ no active project set; $COUNT on this account — asking which holds ${AR_REPO}" >&2
+    MATCHES=""
+    for p in $PROJECTS; do
+      if gcloud artifacts repositories describe "$AR_REPO" --location="$REGION" \
+           --project="$p" >/dev/null 2>&1; then
+        MATCHES="$MATCHES $p"
+      fi
+    done
+    set -- $MATCHES
+    if [ "$#" = "1" ]; then
+      PROJECT_ID="$1"
+      echo "▶ using $PROJECT_ID — the only one with a ${AR_REPO} repository in ${REGION}" >&2
+    else
+      echo "Could not tell which project to use ($# hold a ${AR_REPO} repository in ${REGION}):" >&2
+      printf '  %s\n' $PROJECTS >&2
+      echo >&2
+      echo "Paste this, with the one you want:" >&2
+      echo "  gcloud config set project THE-ID && curl -sS $SELF | bash" >&2
+      exit 1
+    fi
   fi
 fi
 
-REGION="${REGION:-europe-north1}"
-AR_REPO="${AR_REPO:-nangijala}"
-SERVICE="${SERVICE:-nangijala}"
 IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/${SERVICE}"
 
 echo "▶ project=$PROJECT_ID region=$REGION repo=$AR_REPO"
