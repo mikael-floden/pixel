@@ -5133,7 +5133,11 @@ export class WorldScene extends Phaser.Scene {
       this.dropEngage();
       this.pendingPickupId = null;
       this.holdPointerId = p.id;
-      const down = this.pickGround(p.worldX, p.worldY);
+      // A pixel with NO ground reading — a wall face, a solid prop — still
+      // means "over there": the nearest visible ground to it, never nothing
+      // (maintainer 2026-09-23: "the nav system should run to a tile that can
+      // be navigated next to and not run inside the cave").
+      const down = this.pickGround(p.worldX, p.worldY) ?? this.nearestGroundTo(p.worldX, p.worldY);
       this.holdGround = down ? { ...down, at: { wx: p.worldX, wy: p.worldY } } : null;
       // Fresh gesture = fresh trip (hold=false: reset the sticky slow, build
       // the beacon); subsequent drag replans go through holdRepath's budget.
@@ -16129,6 +16133,22 @@ export class WorldScene extends Phaser.Scene {
     return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, lift, shadowDepth, z };
   }
 
+  /** A FLOOR UNDER A CAVE LID THAT I AM NOT STANDING IN — hidden from every
+   *  pixel on screen, so no tap can mean it (maintainer 2026-09-23: "I don't
+   *  want the nav system to walk into a cave unless it's extremely obvious").
+   *  Three readings used to reach it: the second reading under a raised
+   *  pixel, the FIRST reading of a wall-face pixel (a face has no top surface
+   *  at its own level, so the top-down scan read straight through it to the
+   *  floor beneath), and the screen-space nearest ground beside a tap. One
+   *  predicate, asked by all three. A house is not this (its roof deck is not
+   *  a cave) and a cave I stand in is in my indoor mask. */
+  private hiddenCaveCell(ci: number, ri: number, lvl: number): boolean {
+    if (!this.world) return false;
+    const idx = ri * this.world.width + ci;
+    const dk = this.deckIndex.get(idx);
+    return !!dk && dk.deck.kind === "cave" && lvl < dk.deck.level - 0.5 && !this.indoorMask?.has(idx);
+  }
+
   private pickGround(
     wx: number,
     wy: number,
@@ -16201,6 +16221,11 @@ export class WorldScene extends Phaser.Scene {
       // wall drawn whole included.
       if (cutE !== undefined && cell.l > cutE) continue;
       if (cell.l !== l) continue;
+      // A wall-face pixel has no surface at the wall's level, so this scan
+      // fell through it to the cave floor beneath and made THAT the tap's
+      // first reading (maintainer 2026-09-23: "I press on a wall ... and we
+      // have a valid place on the same coordinate inside the cave").
+      if (this.hiddenCaveCell(ci, ri, l)) continue;
       // Re-resolve mode: this surface is the one we are looking UNDER.
       if (ignoreAtOrAbove !== undefined && l >= ignoreAtOrAbove) continue;
       const s = surfaceFor(cell.t);
@@ -16245,6 +16270,7 @@ export class WorldScene extends Phaser.Scene {
         const surf = surfaceFor(cell.t);
         if (!surf.standable) continue;
         if (g.blocked[r * g.width + c]) continue;
+        if (this.hiddenCaveCell(c, r, cell.l)) continue;
         // Where this cell's surface DRAWS, against the pixel we are aiming at.
         const sy = this.iso.oy + (c + r) * dy + dy - cell.l * lh;
         const sx = this.iso.ox + (c - r) * dx + tile / 2;
@@ -16386,13 +16412,9 @@ export class WorldScene extends Phaser.Scene {
     // not offered in its place: it measures in screen space and can land on
     // the same hidden floor.
     let hiddenCave = false;
-    if (under) {
-      const ui = Math.floor(under.y / CELL_WU) * (this.world?.width ?? 0) + Math.floor(under.x / CELL_WU);
-      const dk = this.deckIndex.get(ui);
-      if (dk && dk.deck.kind === "cave" && under.lvl < dk.deck.level && !this.indoorMask?.has(ui)) {
-        under = null;
-        hiddenCave = true;
-      }
+    if (under && this.hiddenCaveCell(Math.floor(under.x / CELL_WU), Math.floor(under.y / CELL_WU), under.lvl)) {
+      under = null;
+      hiddenCave = true;
     }
     if (under) cands.push({ x: under.x, y: under.y, goalLevel: under.lvl });
     // ...and when that reading is a WALL or empty sky, the answer is NOT "the

@@ -1211,7 +1211,14 @@ clip, no tint.
   cut of this still ran him; a base-layer node under a deck slab with the goal
   above it never becomes the best-effort rim. A goal that is itself under the
   slab (a house from its door) keeps every node. Gate: navtap.test.ts, the
-  cave-with-a-lid arm, red on the old pathfinder.
+  cave-with-a-lid arm, red on the old pathfinder. AND THE FIRST READING IS
+  GUARDED TOO (`hiddenCaveCell`, one predicate for `pickGround`,
+  `nearestGroundTo` and the second reading): a wall-face pixel has no surface
+  at the wall's level, so the top-down scan fell through it to the cave floor
+  beneath and made that the tap's FIRST reading, which no candidate rule ever
+  saw (the third time he ran into the dungeon, tapping the wall beside the
+  spot). A pixel with no reading at all now walks to the nearest visible
+  ground beside it instead of doing nothing.
 - **A RESPAWN GOES THROUGH THE LOADING SCREEN, NEVER AN INSTANT SNAP**
   (maintainer 2026-09-19: "the player spawns so fast at the new location so
   the graphics has not finished preparing the new ground and
