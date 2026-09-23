@@ -504,6 +504,12 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   from a pool (slime, lava, ice and lava, mud and slime, rock, ice, mud),
   dug in the build after `dungeons` and, with `--apply <world_dir>`, into
   the shipped world in place (`spec/WORLD3.md` → the north caves).
+- `cavewalls.py` — **a cave's ring is named with the cave's side** (games
+  agent 2026-09-23, grass on the walls of Pit VI): the cave half of
+  `cliff_faces` on the world that ships — the exposed faces and the near and
+  side walls the game caps with their named side, from the cave's own rock
+  line (`spec/WORLD3.md` → the cliff faces). `--check` (exit 1 on an unnamed
+  cell), `--apply <world_dir>`; `newcaves.py --apply` runs it after a dig.
 - `yards.py` — **somebody lives here** (maintainer 2026-09-18): the paving
   apron, the way from the door to the road, the garden plot and the household
   pieces round every house, drawn from pools per house and judged by the

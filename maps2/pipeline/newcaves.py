@@ -28,12 +28,13 @@ The lids wear their field, the floors take their theme AFTER `caves()` has
 widened and iced them, the rooms are dressed and lit as every cave is
 (braziers on a room's wall, two torches on the pit's rim, the 8-per-window
 light budget re-audited), the scree and the grooming passes run (they are
-idempotent on the shipped world - measured), and the sidecars follow:
+idempotent on the shipped world - measured), every ring cell is named with
+the cave's side (cavewalls.py: the cave half of cliff_faces, whose outdoor
+palette re-rolls on a shipped world and so is not run; the first three pits
+shipped with 0 of 356 ring cells named and the field's grass drawn on the
+walls of a stone cave - games agent 2026-09-23), and the sidecars follow:
 places.json (Pit VI, VII, VIII), spawns.json (one cave zone each, the cave
-cast), then ambient.py --apply and the minimap. NOT run: cliff_faces - its
-palette records cannot be regenerated from a shipped world (measured: the
-records come back different), so a new pit's faces draw the default wall
-palette, like most of the map.
+cast), then ambient.py --apply and the minimap.
 
 The build gets the same caves from the same code: `dig_north(grow, n)` runs
 in world3grow after `dungeons`, and `paint_themes(grow)` after `caves`.
@@ -298,6 +299,11 @@ def paint_themes(g, sites, log=print):
                         g.grd[y][x] = gi[pg]
                         laid += 1
         site["side"] = side
+        # the wall pass reads cave_side: the theme's side, not the rock the
+        # complex rolled in caves() (cliff_faces / cavewalls.py name the ring)
+        for i, dk in enumerate(g.doc["decks"]):
+            if dk.get("kind") == "cave" and any((c["x"], c["y"]) in floor for c in dk["cells"]):
+                g.cave_side[i] = side
         log(f"  {site['theme']}: floor {floor_g}, {laid} pool cells")
 
 
@@ -311,7 +317,7 @@ def _cave_state(g, sites):
             continue
         cells = [(c["x"], c["y"]) for c in dk["cells"]]
         for c in cells:
-            g.cave_floor[c] = int(dk["level"])
+            g.cave_floor[c] = i                 # by DECK INDEX, the generator's contract
         g.cave_rock_min[i] = min(g.ROCK_MIN, int(dk["level"]))
         for c in cells:
             if c in g.planned_rock:
@@ -530,6 +536,9 @@ def apply(world_dir, write=True, n=N_NORTH):
     braziers_and_torches(g, sites)
     g.cliff_apron()
     g.regroom()
+    import cavewalls
+    named = cavewalls.add(doc, cavewalls.missing(g))
+    print(f"  cave walls named: {named} ring cells (the caves' own sides)")
     R, _rev = g._reach(g._standable())
     g.reach_cells = {(x, y) for (x, y, layer) in R if layer == 0}
     for s in sites:

@@ -6687,11 +6687,17 @@ class Grow:
                     # 2026-09-09, five photographs). 282 of the_game's 792
                     # cave ring cells were unnamed; the game caps a stump
                     # with its named side (games2 tiles3 `cutCap`).
-                    if (x, y) not in cave and z >= self.ROCK_MIN:
+                    # AT THE CAVE'S OWN ROCK LINE (cave_rock_min: ROCK_MIN
+                    # for the mountain, the lid's level for a pit under a
+                    # field) - ROCK_MIN alone named no near or side wall
+                    # of a pit at 6 or 10, and the field's grass capped the
+                    # stumps of a stone cave (games agent 2026-09-23, Pit VI
+                    # at 262,66; cavewalls.py names the same cells in place).
+                    if (x, y) not in cave:
                         near = [m for m in ((x, y - 1), (x - 1, y), (x - 1, y - 1),
                                             (x + 1, y - 1), (x - 1, y + 1))
                                 if m in cave]
-                        if near:
+                        if near and z >= self.cave_rock_min.get(cave[near[0]], self.ROCK_MIN):
                             side = self.cave_side[cave[near[0]]]
                             groups[side].append({"x": x, "y": y})
                             kinds[(top, side)] += 1

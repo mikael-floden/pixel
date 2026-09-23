@@ -21,7 +21,9 @@ appends its push and republishes the SAME page (`artifact` is its URL):
                               "window": [x0, y0, x1, y1],   # optional, default the cell +- 10 x 7
                               "before": "...",              # optional, overrides the push's
                               "cutaway": true,              # optional: lift the cave lids over the window
-                              "roofcut": true}]}]}          # ...and the house roofs, to show a room
+                              "roofcut": true,              # ...and the house roofs, to show a room
+                              "overlay": "cavewalls"}]}]}   # optional (or per push): spawns, spawndensity,
+                                                            # cavewalls (each cave wall cell in its named side, red unnamed)
 Pushes are listed oldest first and numbered straight through, so a change's
 number never moves once he has quoted it; the page shows the newest push
 first.
@@ -139,6 +141,24 @@ def spawn_ground(doc, sdoc, world):
     return out
 
 
+# the overlay "cavewalls": one diamond per cave wall cell in its NAMED side,
+# RED where the cell is unnamed (the game then caps its cut stump with the
+# cell's own top - the field's grass on the walls of a stone cave)
+WALL_COL = {"grey_stone": (175, 178, 190, 170), "black_rock": (35, 35, 42, 190), "ice": (150, 225, 255, 170),
+            "dark_mud": (120, 85, 50, 170), "light_soil": (200, 170, 120, 170), "light_beach": (235, 215, 150, 170),
+            "snow": (245, 245, 250, 170)}
+
+
+def wall_ground(doc, pdoc):
+    """{(x, y): (level, side or None)} for every cell the cave-wall rule
+    names (cavewalls.ring_names), with the side walls[] gives it today."""
+    import cavewalls
+    g = cavewalls.cave_state(cavewalls._grow(doc), (pdoc or {}).get("places", []))
+    have = {(c["x"], c["y"]): w["side"] for w in doc["walls"]
+            if w.get("kind") in ("house", "cliff") for c in w["cells"]}
+    return {(x, y): (doc["level"][y][x], have.get((x, y))) for (x, y) in cavewalls.ring_names(g)}
+
+
 def paint_density(img, doc, dens, x0, y0, x1, y1, vmax=None):
     """Paint the spawn ground over a rendered window: one diamond per cell,
     BLUE where a monster may stand and RED where it would be trapped - ground
@@ -162,7 +182,9 @@ def paint_density(img, doc, dens, x0, y0, x1, y1, vmax=None):
         # Never a terrain colour: a green ramp over the meadow and an orange
         # one over the lava both read as ground, and the first cut of this
         # page washed the plateau green and showed him nothing.
-        if vmax is None:
+        if vmax is None and not isinstance(v, bool):
+            col = WALL_COL.get(v) or (235, 45, 55, 190)      # a cave wall: its side, RED when unnamed
+        elif vmax is None:
             col = (235, 45, 55, 190) if v else (70, 120, 255, 70)
         else:
             # A POPULATION PUSH IS A CHANGE OF DEGREE, so both pictures are
@@ -224,6 +246,8 @@ def build(spec, out, only=None):
         over = ch.get("overlay") or spec.get("overlay")
         bc = ch.get("before", spec.get("before"))
         dn = spawn_ground(doc, json.load(open(os.path.join(wdir, "spawns.json"))), world) if over == "spawns" else None
+        if over == "cavewalls":
+            dn = wall_ground(doc, json.load(open(os.path.join(wdir, "places.json"))))
         after = f"img/{n:02d}-after.webp"
         _window(doc, x0, y0, x1, y1, cut, rcut, dn).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
         before = None
@@ -231,6 +255,8 @@ def build(spec, out, only=None):
             bdoc = world_at(bc, world)
             if bdoc["size"] == doc["size"]:
                 bdn = spawn_ground(bdoc, sidecar_at(bc, world, "spawns.json"), world) if over == "spawns" else None
+                if over == "cavewalls":
+                    bdn = wall_ground(bdoc, sidecar_at(bc, world, "places.json"))
                 before = f"img/{n:02d}-before.webp"
                 _window(bdoc, x0, y0, x1, y1, cut, rcut, bdn).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
                 same_pixels(out, before, after, ch)
@@ -370,6 +396,8 @@ def build_log(log, out, only=None):
                 dn = spawn_ground(doc, sidecar_at(head, world, "spawns.json"), world)
             elif over == "spawndensity":
                 dn = spawn_field(doc, sidecar_at(head, world, "spawns.json"), world)
+            elif over == "cavewalls":
+                dn = wall_ground(doc, sidecar_at(head, world, "places.json"))
             after = f"img/{n:03d}-after.webp"
             before = None
             if bc:
@@ -381,6 +409,8 @@ def build_log(log, out, only=None):
                     elif over == "spawndensity":
                         bdn = spawn_field(bdoc, sidecar_at(bc, world, "spawns.json"), world)
                         vmax = max((v for _l, v in bdn.values()), default=0.0)
+                    elif over == "cavewalls":
+                        bdn = wall_ground(bdoc, sidecar_at(bc, world, "places.json"))
                     before = f"img/{n:03d}-before.webp"
                     if not os.path.exists(os.path.join(out, before)):
                         _window(bdoc, x0, y0, x1, y1, cut, rcut, bdn, vmax).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)

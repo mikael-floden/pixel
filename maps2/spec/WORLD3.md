@@ -317,6 +317,23 @@ reproduces:
 | shore | foot at water, beach, or within `SHORE_R = 2` of the sea | light_beach 2, grey_stone 1, dark_mud 1 |
 | lowland | everything else (grass, mud, soil) | grey_stone 3, black_rock 3, dark_mud 2, light_soil 2 |
 
+**A cave's ring is named with the cave's side, every cell of it.** The
+exposed faces whose foot is cave floor and the near and side walls that show
+no face — the game cuts a wall to one storey indoors and caps the stump with
+its NAMED side (`cutCap`), so an unnamed ring cell caps with its own top: the
+lid's field on the walls of a stone cave (maintainer 2026-09-09, the
+mountain's snow on a black-rock room; games agent 2026-09-23, grass inside
+Pit VI at 262,66). The near and side walls count from THE CAVE'S OWN ROCK
+LINE (`cave_rock_min`: `ROCK_MIN` 24 for the mountain, the lid's level for a
+pit under a field — `ROCK_MIN` alone left every such wall of a pit at 6 or
+10 unnamed). The side is what the dressing reads: the complex's rock or ice
+from `caves()`, the theme's side for a themed pit. `cliff_faces()` names
+them at build; `cavewalls.py --check/--apply <world_dir>` names the same
+cells in the world that ships (the cave half of the pass — its outdoor
+palette re-rolls on a shipped world, so that half never runs in place) and
+`newcaves.py --apply` runs it after every dig. It adds, never repaints: a
+cell already named keeps its side.
+
 **NOT BLACK AT THE WATERLINE**: `black_rock` is a flat near-black — the same
 reason it is not a roof — and against open water, at night, a face of it reads
 as a hole in the world rather than as rock (maintainer 2026-09-11, swimming
@@ -792,9 +809,9 @@ of one dig alike. A pool is a blob deep in a room with a rim of floor round
 it (`_pool_blob`, ring 1), so the way through a room is never cut, and the
 site audit proves every floor cell reachable. Floors take their theme AFTER
 `caves()` has widened and iced them; braziers stand on every themed floor
-but lava. NOT regenerated in place: the cliff palette records
-(`cliff_faces` comes back different from a shipped world — measured), so a
-pit dug in place draws the default wall palette. Everything else follows as
+but lava. The ring is named with the theme's side (`cavewalls.py`, above —
+the cliff palette itself is not regenerated in place: `cliff_faces` comes
+back different from a shipped world, measured). Everything else follows as
 for any cave: the lids wear the field, scree, grooming, places.json (Pit VI
 onward), spawns.json (a cave zone each), ambient.json, the minimap. A cave's
 torches and the first brazier of each hall OUTRANK the wild's glow round it,
