@@ -540,12 +540,12 @@
   ],
   "updated_at": "2026-09-23T20:44:02+00:00",
   "health": "idle",
-  "current": "IDLE. Shipped c7cf639b93 — a roof varies like the ground (one set per slab, a member per cell). Released every file.",
+  "current": "Rollout teleport: every player's position written and awaited on graceful shutdown (saveEveryPlayer, Server.onBeforeShutdown), a 2-cell walk marks dirty. Files: games2/server/src/rooms/WorldRoom.ts, games2/server/src/schema/WorldState.ts, games2/server/src/index.ts, games2/server/test/rolloutsave.test.ts, games2/docs/backend.md, games2/CLAUDE.md.",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-18T16:26:00+00:00"
+  "updated": "2026-09-23T21:12:25+00:00"
 }

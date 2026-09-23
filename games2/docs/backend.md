@@ -324,6 +324,23 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   room's own monsters). A dead body's respawn and the water sanctuary are the
   home room's as before.
 
+## Where you are is saved (2026-09-23)
+
+A player's position is written on leave, death, level-up, the 30 s dirty
+flush AND on graceful shutdown, where every player of every room is written
+and the writes AWAITED before the match-maker disconnects anyone
+(`Server.onBeforeShutdown` in `index.ts` → `saveEveryPlayer`; Colyseus runs
+it on SIGTERM, which is how Cloud Run replaces the instance on every push).
+A walk of `MOVE_SAVE_WU` (2 cells) from the last write marks the player
+`dirty` too, so the flush covers a crash the hook never sees. (Position rode
+along with progression only — a leave, a death, a ding — and the leave save
+was fire-and-forget under a dying process, so a player who only walked was
+restored to the account's last write: the maintainer ran forty cells from
+spawn, a rollout replaced the instance under him, the client rejoined and
+"BANG I was teleported back to the spawn area". Not "save every tick" — one
+write per moving player per 30 s window is the whole cost, and the
+shutdown save is what makes the rollout invisible. `rolloutsave.test.ts`.)
+
 ## Positions on the wire (2026-09-09)
 
 `shared/src/worldunits.ts`. Every body's position is synced as `px`/`py`:

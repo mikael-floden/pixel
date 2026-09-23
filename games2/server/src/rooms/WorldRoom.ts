@@ -425,6 +425,29 @@ interface RoomStat {
   bytesAt: number;
 }
 const roomStats = new Map<string, RoomStat>();
+/** Every room alive in this process, for the shutdown save (saveEveryPlayer). */
+const liveRooms = new Set<WorldRoom>();
+/** A WALK MARKS THE PLAYER DIRTY, two cells at a time. Position rode along
+ *  with progression only (a leave, a death, a ding), so a player who only
+ *  walked was never written: on 2026-09-23 a container rollout killed the
+ *  instance under the maintainer and the next join restored the account's
+ *  last write — the spawn he had walked forty cells from ("BANG I was
+ *  teleported back to the spawn area"). The shutdown save below is the fix;
+ *  this is the belt for a crash it never reaches (SIGKILL, OOM), bounding
+ *  the loss to the 30 s flush at one write per moving player per window. */
+const MOVE_SAVE_WU = 2 * CELL_WU;
+/** POSITIONS SURVIVE A ROLLOUT. Cloud Run replaces the instance on every
+ *  push (~88 a day); Colyseus' graceful shutdown disconnects every client,
+ *  whose onLeave fires a save the process may exit under. The server's
+ *  onBeforeShutdown callback (index.ts) awaits this FIRST — every player of
+ *  every room, dirty or not — so the write has landed before the client is
+ *  cut and rejoins the new instance, which reads it back. */
+export async function saveEveryPlayer(): Promise<number> {
+  const writes: Promise<void>[] = [];
+  for (const room of liveRooms) writes.push(...room.saveAll());
+  await Promise.allSettled(writes);
+  return writes.length;
+}
 let cpuLast = process.cpuUsage();
 let cpuLastAt = Date.now();
 let loopLagMax = 0;
@@ -780,6 +803,7 @@ export class WorldRoom extends Room<WorldState> {
     zone?: number; // the zone this room owns (spec/ZONES.md); absent = the whole world
     zonesCfg?: ZoneCfg; // TEST override: the zone grid for this world
   }) {
+    liveRooms.add(this);
     if (typeof options?.interestRadius === "number" && isFinite(options.interestRadius)) {
       const r = Math.max(0, options.interestRadius);
       this.interestR = r === 0 ? Infinity : r;
@@ -1727,10 +1751,22 @@ export class WorldRoom extends Room<WorldState> {
    * It REWRITES the held document rather than building a fresh one: the room
    * has no idea what secretHash, createdAt or another world's position are,
    * and a rebuild would silently drop all three. */
-  private savePlayer(player: Player) {
+  /** Every player of this room, written now (saveEveryPlayer). */
+  saveAll(): Promise<void>[] {
+    const out: Promise<void>[] = [];
+    this.state.players.forEach((p: Player) => {
+      const w = this.savePlayer(p);
+      if (w) out.push(w);
+    });
+    return out;
+  }
+
+  private savePlayer(player: Player): Promise<void> | undefined {
     const rec = player.rec;
-    if (!player.accountId || !rec) return;
+    if (!player.accountId || !rec) return undefined;
     player.dirty = false;
+    player.savedX = player.x;
+    player.savedY = player.y;
     rec.name = player.name;
     rec.character = player.character;
     rec.level = player.level;
@@ -1741,7 +1777,7 @@ export class WorldRoom extends Room<WorldState> {
     // that silently corrupted saves in the store this replaces.
     rec.inv = player.inv.map((s) => ({ item: s.item, n: s.n }));
     if (this.worldName) rec.pos[this.worldName] = { x: player.x, y: player.y, elev: player.elev };
-    void this.store
+    return this.store
       .save(player.accountId, rec)
       .catch((e) => console.error(`[account] save failed for ${player.accountId}:`, e));
   }
@@ -1894,6 +1930,11 @@ export class WorldRoom extends Room<WorldState> {
         }
         player.x = r.x;
         player.y = r.y;
+        // A walk of MOVE_SAVE_WU since the last write is worth a write.
+        if (player.savedX === undefined || player.savedY === undefined) {
+          player.savedX = player.x;
+          player.savedY = player.y;
+        } else if (!player.dirty && Math.hypot(player.x - player.savedX, player.y - player.savedY) >= MOVE_SAVE_WU) player.dirty = true;
         // Update the surface elevation the player now stands on (deck vs base).
         if (terrain) {
           const ctx2 = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
@@ -3664,6 +3705,7 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   onDispose() {
+    liveRooms.delete(this);
     roomStats.delete(this.roomId);
     if (this.zoneId !== WHOLE_WORLD && zoneRooms.get(zoneRoomKey(this.worldName, this.zoneId)) === this.roomId)
       zoneRooms.delete(zoneRoomKey(this.worldName, this.zoneId));

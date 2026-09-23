@@ -8,7 +8,7 @@ import { constants as zlibConstants } from "zlib";
 import { Server, matchMaker } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { ROOM_NAME } from "@nangijala/shared";
-import { WorldRoom, sceneryBbox, zonesConfigFor, perfStats, DEFAULT_WORLD } from "./rooms/WorldRoom.js";
+import { saveEveryPlayer, WorldRoom, sceneryBbox, zonesConfigFor, perfStats, DEFAULT_WORLD } from "./rooms/WorldRoom.js";
 import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
 import { cacheControlFor } from "./cachepolicy.js";
 import { assetHash } from "./assethash.js";
@@ -582,6 +582,13 @@ const gameServer = new Server({
 // who picked the SAME world and zone into one room and spins up a separate
 // room for each other pair (spec/ZONES.md; no zone = the whole-world room).
 gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world", "zone"]);
+// POSITIONS SURVIVE A ROLLOUT: every player of every room is written and the
+// writes AWAITED before the match-maker disconnects anyone (WorldRoom
+// saveEveryPlayer — the reason, and the belt for a crash, live there).
+gameServer.onBeforeShutdown(async () => {
+  const n = await saveEveryPlayer();
+  console.log(`[account] shutdown: ${n} player position(s) written`);
+});
 
 /** WARM ROOMS: every zone room of the published world exists before the
  *  first player arrives — no join waits for a terrain load, and the

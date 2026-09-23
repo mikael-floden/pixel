@@ -3,8 +3,7 @@
 This file loads on every games2 turn, so it holds ONLY the rules and where
 each subsystem's detail lives. **Measurements, traps and rejected approaches
 live in `games2/docs/<topic>.md` — open the one for the subsystem you touch;
-new detail goes THERE.** A rule here is one or two lines: the law, the
-reason, the doc with the story.
+new detail goes THERE.**
 
 ## What this is
 
@@ -232,8 +231,9 @@ THERE; read before touching the netcode)
   `/api/stats` are the load instrument.
 - Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else
   the in-process fake, same async contract). Writes are the Firestore
-  bill: a save on leave, death, level-up and the dirty flush (a player who
-  earned nothing is never written).
+  bill: a save on leave, death, level-up, the dirty flush (a 2-cell walk
+  dirties) and, AWAITED, on shutdown — a rollout never sends a player back
+  to spawn (`rolloutsave.test.ts`).
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns, no monsters.

@@ -61,8 +61,15 @@ export class Player extends Schema {
   /** Has this player EARNED something since their last save? Set on level, xp
    *  and inventory changes only — never on hp/ep, which regenerate and are not
    *  worth a durable write. The periodic flush saves the dirty and skips the
-   *  rest, so an idle world writes nothing at all. */
+   *  rest, so an idle world writes nothing at all. A WALK of two cells from
+   *  the last write counts too (WorldRoom MOVE_SAVE_WU): position rode along
+   *  with progression only, and a rollout under a walking player restored the
+   *  spawn he had left forty cells behind. */
   dirty = false;
+  /** Where the account last wrote this body (world units), plain fields — not
+   *  synced. Undefined until the first save or the first moved tick. */
+  savedX?: number;
+  savedY?: number;
   /** The loaded account document. Held so a save REWRITES it rather than
    *  rebuilding one from the live player — rebuilding would wipe the fields
    *  the room never sees (secretHash, createdAt, and every OTHER world's
