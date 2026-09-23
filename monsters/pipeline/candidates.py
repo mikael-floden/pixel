@@ -517,21 +517,18 @@ def reconcile(cfg, client=None, apply=True, verbose=True, tags=False):
         cfg.clear(); cfg.update(load_cfg())
         onDisk -= remove
 
-    known = onDisk | {m["id"] for m in json.load(open(os.path.join(ROOT, "config", "roster.json")))["monsters"]}
-    pruned = [k for k in ent
-              if k.startswith("monsters/")
-              and k.split("#")[0].split("/")[-1] not in known]
-    if pruned and apply:
-        for k in pruned:
-            ent.pop(k, None)
-        fb["entries"] = ent
-        fb["updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-        with open(FEEDBACK, "w") as f:
-            json.dump(fb, f, indent=2, ensure_ascii=False)
-            f.write("\n")
+    # A KEY IS AN ADDRESS, NOT AN ID. This used to compare the bare id
+    # (`seed_husk`) against the roster, so `monsters/candidates/seed_husk` —
+    # a gallery card graduation had deleted — read as alive, and 751 verdicts
+    # piled up at addresses the wiki could not open. verdicts.py resolves the
+    # WHOLE address, and carries a verdict to where the art moved rather than
+    # dropping his word on art that still ships.
+    import verdicts as _v                           # noqa: E402
+    pruned = _v.settle(apply=apply, verbose=False)
     if verbose:
         print(f"reconcile: {len(remove)} candidate(s) removed, "
-              f"{len(pruned)} dangling verdict(s) pruned")
+              f"{len(pruned)} dangling verdict(s) settled")
+        _v.check(verbose=True)
     # AND THE OTHER DIRECTION: a candidate whose design and all five states he
     # has approved stops being a candidate and becomes a monster, by itself
     # (maintainer 2026-09-18: "When all animations have been approved and the

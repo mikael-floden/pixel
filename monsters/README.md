@@ -611,6 +611,65 @@ candidate that no longer exists is a dangling reference the wiki can still
 surface, which is exactly what "no dangling states" means. Acted-on feedback is
 deleted, never kept — the same rule he first gave for redo notes.
 
+### A VERDICT NAMES AN ADDRESS, AND THE ADDRESS MUST EXIST — checked every run
+
+Maintainer 2026-09-23: "I had one dangling comment and are so damn angry
+dangling states still exist when I have told you a hundred times this should
+never ever happen."
+
+`wiki/tools/check-dangling.mjs` is the scoreboard and it is not ours: run
+`node wiki/build.mjs && node wiki/tools/check-dangling.mjs` and the monsters
+line must read **0 dangling**. `verdicts.py check` answers the same question
+from this side without a wiki build, and `reconcile` runs it on every
+`generate` and `qa`.
+
+**What made 751 of them: graduation moves the art and the verdicts stay
+behind.** The take he approved is RENAMED to its canonical state
+(`attack_v3` -> `attack`) and the gallery card becomes a creature page, so
+every verdict keyed on the old address is dangling the moment graduation
+returns. The old prune could not see it because it compared the bare **id**
+against the roster — `monsters/candidates/seed_husk` has the id of a monster
+that exists, so it read as alive. **A KEY IS AN ADDRESS, NOT AN ID:**
+`monsters/candidates/<id>` and `monsters/<id>` are two different places and
+only one of them exists at a time. Resolve the whole string.
+
+**Settling is not deleting** (`verdicts.py settle --apply`, called by
+`graduate()` in the same breath as the rename):
+- his yes on `attack_v3#south` was a yes on pixels that now ship as
+  `attack#south`, so the entry is **carried** to the new address;
+- where both addresses carry one, the **newer timestamp is his current word**
+  and the older dies whatever it says — that is what closed his one comment
+  ("the head ends up in the but", on `spider_queen#attack_v3#north` from 09-11,
+  against the same art hash he approved again as `attack#north` on 09-21);
+- only art that is genuinely gone — a take he never picked, deleted at
+  graduation — is **dropped**.
+
+**A HOLE IS NOT A DANGLING VERDICT AND IS NEVER CLEARED.** The state is on
+disk but one facing of it is not: his yes is then the only record the art was
+ever there, and clearing it would leave the game with a monster that cannot
+face that way. `verdicts.py` reports these separately and `refill.py` puts the
+art back — from the candidate folder, or from GIT HISTORY at the candidate
+path (the parent of the commit that deleted the folder is the last copy),
+padded onto the monster's canvas and written lossless. The wiki's own checker
+cannot see these: its filesystem fallback asks only whether ANY `walk__*` file
+exists, so a missing facing reads as fine. Three were hiding that way —
+crag_troll walk south-east and south-west, cave_troll_boss walk north.
+
+**Two traps behind those holes, both now closed in `graduate()`:**
+- **One take can be backed by several PixelLab groups, and a group can be
+  shared with an earlier attempt.** The ladder re-words the action on each
+  climb and PixelLab names a group after the wording. Deleting "the takes he
+  did not pick" by group id therefore deleted art the PICKED take needed — his
+  pebble crab's attack was four wordings, and the roster came out 4/8 with no
+  copy left on PixelLab. A group backing any facing of a chosen take is never
+  deleted.
+- **A graduation that synced with holes must stay a candidate.** Moving the
+  design to `config.graduated` while keeping the folder makes an ORPHAN: off
+  the candidate registry, so the wiki resolves neither its card nor its
+  numbered slots, and all 24 of its verdicts dangle invisibly — the folder was
+  still on disk, so every disk-based check called it alive. **The registry is
+  `config.candidates`, never the folder listing.**
+
 ### His verdicts: read them, act, then DELETE the ones you acted on
 
 **A REDO OR A REMOVE DIES WITH THE ART IT JUDGED, IN THE SAME BREATH**
@@ -825,6 +884,13 @@ python monsters/pipeline/sync.py --only <id> # limit mirroring to one monster
   `config/wrap_overrides.json`; die-tail trims are pinned in
   `config/die_trims.json` (human-reviewed — automated metrics can't judge
   them). Runs automatically inside sync.
+- `pipeline/verdicts.py` — every verdict of his must name an address that
+  exists. `settle --apply` carries one to where the art moved and clears one
+  whose art is gone; `check` exits 1 while any dangle and names them. Called by
+  `reconcile` and by `graduate()` in the same breath as the rename.
+- `pipeline/refill.py` — puts back a facing he approved that the move to the
+  roster lost, from the candidate folder or from git history at the candidate
+  path. Never regenerates: new pixels would reset his verdict.
 - `pipeline/states.py` — keyword classifier used only for brand-new monsters
   nobody has mapped yet.
 - `pipeline/review_artifact.py` — emits the self-contained review gallery HTML

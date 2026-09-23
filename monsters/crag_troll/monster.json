@@ -659,6 +659,36 @@
       "group_id": "63049a6b-30ca-4b36-a5de-7851e57330a0",
       "source_name": "custom-walk loop, full walk cycle in ",
       "directions": {
+        "south": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__south.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/south/00.webp",
+            "crag_troll/animations/walk/south/01.webp",
+            "crag_troll/animations/walk/south/02.webp",
+            "crag_troll/animations/walk/south/03.webp",
+            "crag_troll/animations/walk/south/04.webp",
+            "crag_troll/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:42 GMT",
+          "src_frames": 6,
+          "sub": "54ed9c4e-9569-432d-9b40-0935650fd373"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__south-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/south-east/00.webp",
+            "crag_troll/animations/walk/south-east/01.webp",
+            "crag_troll/animations/walk/south-east/02.webp",
+            "crag_troll/animations/walk/south-east/03.webp",
+            "crag_troll/animations/walk/south-east/04.webp",
+            "crag_troll/animations/walk/south-east/05.webp"
+          ],
+          "src_frames": 6,
+          "sub": null,
+          "refilled_from": "candidates/crag_troll/animations/walk/south-east"
+        },
         "east": {
           "frames": 6,
           "strip": "crag_troll/animations/walk__east.webp",
@@ -673,21 +703,6 @@
           "lm": "Fri, 18 Sep 2026 14:51:37 GMT",
           "src_frames": 6,
           "sub": "34c8ab0e-1e57-47f4-b63b-da47163fa0ba"
-        },
-        "north": {
-          "frames": 6,
-          "strip": "crag_troll/animations/walk__north.webp",
-          "frame_paths": [
-            "crag_troll/animations/walk/north/00.webp",
-            "crag_troll/animations/walk/north/01.webp",
-            "crag_troll/animations/walk/north/02.webp",
-            "crag_troll/animations/walk/north/03.webp",
-            "crag_troll/animations/walk/north/04.webp",
-            "crag_troll/animations/walk/north/05.webp"
-          ],
-          "lm": "Fri, 18 Sep 2026 14:51:39 GMT",
-          "src_frames": 6,
-          "sub": "b314a2b0-6683-4bc9-ba65-7a8841f558f9"
         },
         "north-east": {
           "frames": 6,
@@ -704,20 +719,33 @@
           "src_frames": 6,
           "sub": "853da555-0944-4b22-b435-d504fef82cbe"
         },
-        "south": {
+        "north": {
           "frames": 6,
-          "strip": "crag_troll/animations/walk__south.webp",
+          "strip": "crag_troll/animations/walk__north.webp",
           "frame_paths": [
-            "crag_troll/animations/walk/south/00.webp",
-            "crag_troll/animations/walk/south/01.webp",
-            "crag_troll/animations/walk/south/02.webp",
-            "crag_troll/animations/walk/south/03.webp",
-            "crag_troll/animations/walk/south/04.webp",
-            "crag_troll/animations/walk/south/05.webp"
+            "crag_troll/animations/walk/north/00.webp",
+            "crag_troll/animations/walk/north/01.webp",
+            "crag_troll/animations/walk/north/02.webp",
+            "crag_troll/animations/walk/north/03.webp",
+            "crag_troll/animations/walk/north/04.webp",
+            "crag_troll/animations/walk/north/05.webp"
           ],
-          "lm": "Fri, 18 Sep 2026 14:51:42 GMT",
+          "lm": "Fri, 18 Sep 2026 14:51:39 GMT",
           "src_frames": 6,
-          "sub": "54ed9c4e-9569-432d-9b40-0935650fd373"
+          "sub": "b314a2b0-6683-4bc9-ba65-7a8841f558f9"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__north-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/north-west/00.webp",
+            "crag_troll/animations/walk/north-west/01.webp",
+            "crag_troll/animations/walk/north-west/02.webp",
+            "crag_troll/animations/walk/north-west/03.webp",
+            "crag_troll/animations/walk/north-west/04.webp",
+            "crag_troll/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
         },
         "west": {
           "frames": 6,
@@ -732,18 +760,20 @@
           ],
           "mirrored_from": "east"
         },
-        "north-west": {
+        "south-west": {
           "frames": 6,
-          "strip": "crag_troll/animations/walk__north-west.webp",
+          "strip": "crag_troll/animations/walk__south-west.webp",
           "frame_paths": [
-            "crag_troll/animations/walk/north-west/00.webp",
-            "crag_troll/animations/walk/north-west/01.webp",
-            "crag_troll/animations/walk/north-west/02.webp",
-            "crag_troll/animations/walk/north-west/03.webp",
-            "crag_troll/animations/walk/north-west/04.webp",
-            "crag_troll/animations/walk/north-west/05.webp"
+            "crag_troll/animations/walk/south-west/00.webp",
+            "crag_troll/animations/walk/south-west/01.webp",
+            "crag_troll/animations/walk/south-west/02.webp",
+            "crag_troll/animations/walk/south-west/03.webp",
+            "crag_troll/animations/walk/south-west/04.webp",
+            "crag_troll/animations/walk/south-west/05.webp"
           ],
-          "mirrored_from": "north-east"
+          "src_frames": 6,
+          "sub": null,
+          "refilled_from": "candidates/crag_troll/animations/walk/south-west"
         }
       }
     }

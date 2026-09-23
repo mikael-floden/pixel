@@ -654,36 +654,6 @@
       "group_id": "15fcc1cc-8d2e-48eb-a839-be4a5730ff18",
       "source_name": "custom-walk loop, full walk cycle in ",
       "directions": {
-        "east": {
-          "frames": 6,
-          "strip": "cave_troll_boss/animations/walk__east.webp",
-          "frame_paths": [
-            "cave_troll_boss/animations/walk/east/00.webp",
-            "cave_troll_boss/animations/walk/east/01.webp",
-            "cave_troll_boss/animations/walk/east/02.webp",
-            "cave_troll_boss/animations/walk/east/03.webp",
-            "cave_troll_boss/animations/walk/east/04.webp",
-            "cave_troll_boss/animations/walk/east/05.webp"
-          ],
-          "lm": "Fri, 18 Sep 2026 15:02:58 GMT",
-          "src_frames": 6,
-          "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f"
-        },
-        "north-east": {
-          "frames": 6,
-          "strip": "cave_troll_boss/animations/walk__north-east.webp",
-          "frame_paths": [
-            "cave_troll_boss/animations/walk/north-east/00.webp",
-            "cave_troll_boss/animations/walk/north-east/01.webp",
-            "cave_troll_boss/animations/walk/north-east/02.webp",
-            "cave_troll_boss/animations/walk/north-east/03.webp",
-            "cave_troll_boss/animations/walk/north-east/04.webp",
-            "cave_troll_boss/animations/walk/north-east/05.webp"
-          ],
-          "lm": "Fri, 18 Sep 2026 15:02:59 GMT",
-          "src_frames": 6,
-          "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b"
-        },
         "south": {
           "frames": 6,
           "strip": "cave_troll_boss/animations/walk__south.webp",
@@ -714,18 +684,63 @@
           "src_frames": 6,
           "sub": "5ba3c119-9a94-44d3-943f-24bd47dcace6"
         },
-        "south-west": {
+        "east": {
           "frames": 6,
-          "strip": "cave_troll_boss/animations/walk__south-west.webp",
+          "strip": "cave_troll_boss/animations/walk__east.webp",
           "frame_paths": [
-            "cave_troll_boss/animations/walk/south-west/00.webp",
-            "cave_troll_boss/animations/walk/south-west/01.webp",
-            "cave_troll_boss/animations/walk/south-west/02.webp",
-            "cave_troll_boss/animations/walk/south-west/03.webp",
-            "cave_troll_boss/animations/walk/south-west/04.webp",
-            "cave_troll_boss/animations/walk/south-west/05.webp"
+            "cave_troll_boss/animations/walk/east/00.webp",
+            "cave_troll_boss/animations/walk/east/01.webp",
+            "cave_troll_boss/animations/walk/east/02.webp",
+            "cave_troll_boss/animations/walk/east/03.webp",
+            "cave_troll_boss/animations/walk/east/04.webp",
+            "cave_troll_boss/animations/walk/east/05.webp"
           ],
-          "mirrored_from": "south-east"
+          "lm": "Fri, 18 Sep 2026 15:02:58 GMT",
+          "src_frames": 6,
+          "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__north-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/north-east/00.webp",
+            "cave_troll_boss/animations/walk/north-east/01.webp",
+            "cave_troll_boss/animations/walk/north-east/02.webp",
+            "cave_troll_boss/animations/walk/north-east/03.webp",
+            "cave_troll_boss/animations/walk/north-east/04.webp",
+            "cave_troll_boss/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:59 GMT",
+          "src_frames": 6,
+          "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__north.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/north/00.webp",
+            "cave_troll_boss/animations/walk/north/01.webp",
+            "cave_troll_boss/animations/walk/north/02.webp",
+            "cave_troll_boss/animations/walk/north/03.webp",
+            "cave_troll_boss/animations/walk/north/04.webp",
+            "cave_troll_boss/animations/walk/north/05.webp"
+          ],
+          "src_frames": 6,
+          "sub": null,
+          "refilled_from": "candidates/cave_troll_boss/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__north-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/north-west/00.webp",
+            "cave_troll_boss/animations/walk/north-west/01.webp",
+            "cave_troll_boss/animations/walk/north-west/02.webp",
+            "cave_troll_boss/animations/walk/north-west/03.webp",
+            "cave_troll_boss/animations/walk/north-west/04.webp",
+            "cave_troll_boss/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
         },
         "west": {
           "frames": 6,
@@ -740,18 +755,18 @@
           ],
           "mirrored_from": "east"
         },
-        "north-west": {
+        "south-west": {
           "frames": 6,
-          "strip": "cave_troll_boss/animations/walk__north-west.webp",
+          "strip": "cave_troll_boss/animations/walk__south-west.webp",
           "frame_paths": [
-            "cave_troll_boss/animations/walk/north-west/00.webp",
-            "cave_troll_boss/animations/walk/north-west/01.webp",
-            "cave_troll_boss/animations/walk/north-west/02.webp",
-            "cave_troll_boss/animations/walk/north-west/03.webp",
-            "cave_troll_boss/animations/walk/north-west/04.webp",
-            "cave_troll_boss/animations/walk/north-west/05.webp"
+            "cave_troll_boss/animations/walk/south-west/00.webp",
+            "cave_troll_boss/animations/walk/south-west/01.webp",
+            "cave_troll_boss/animations/walk/south-west/02.webp",
+            "cave_troll_boss/animations/walk/south-west/03.webp",
+            "cave_troll_boss/animations/walk/south-west/04.webp",
+            "cave_troll_boss/animations/walk/south-west/05.webp"
           ],
-          "mirrored_from": "north-east"
+          "mirrored_from": "south-east"
         }
       }
     }

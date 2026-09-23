@@ -190,12 +190,24 @@ def graduate(cid, entries, client, apply=True, verbose=True):
     # BY GROUP ID, never by name: PixelLab generates each direction as its own
     # group under the same name, so a delete by animation_type matches five
     # groups at once and 409s (measured on the first graduation).
+    # A GROUP THAT BACKS ANY FACING OF A TAKE HE PICKED IS NEVER DELETED, even
+    # when another slot also points at it. The ladder re-words the action on
+    # each climb and PixelLab names a group after the wording, so ONE take on
+    # disk can be backed by several groups and one group can be shared with an
+    # earlier attempt — his pebble crab's attack was four wordings, three of
+    # them deleted here, and the roster came out with 4/8 facings and no copy
+    # left on PixelLab to re-sync from (recovered with refill.py).
+    keep_groups = set()
+    for slot in set(chosen.values()):
+        for q in ((man.get("animations") or {}).get(slot, {}).get("directions") or {}).values():
+            if q.get("group"):
+                keep_groups.add(q["group"])
     ndel = 0
     for slot, rec in (man.get("animations") or {}).items():
         if slot in set(chosen.values()):
             continue
         for d, q in (rec.get("directions") or {}).items():
-            if q.get("mirrored") or not q.get("group"):
+            if q.get("mirrored") or not q.get("group") or q["group"] in keep_groups:
                 continue
             try:
                 client.delete_animation(man["pixellab_id"], group_id=q["group"], direction=d)
@@ -224,15 +236,43 @@ def graduate(cid, entries, client, apply=True, verbose=True):
         if n != len(DIRS_8):
             holes[st] = n
     if holes:
-        print(f"  {cid}: SYNCED WITH HOLES {holes} — candidate folder KEPT. "
+        # THE CANDIDATE IS STILL THE COPY OF WHAT IS MISSING, so fill from it
+        # before giving up: a facing PixelLab has no group for (a mirror the
+        # candidate carried, or a wording whose group is gone) is art he has
+        # already approved and it is right here.
+        import refill  # noqa: E402  — local, keeps graduate importable without PIL
+        for st in list(holes):
+            have = os.listdir(os.path.join(sync_mod.ROOT, cid, "animations", st)) \
+                if os.path.isdir(os.path.join(sync_mod.ROOT, cid, "animations", st)) else []
+            for d in DIRS_8:
+                if d not in have:
+                    refill.refill(cid, st, d, verbose=verbose)
+            n = len(os.listdir(os.path.join(sync_mod.ROOT, cid, "animations", st)))
+            if n == len(DIRS_8):
+                holes.pop(st)
+            else:
+                holes[st] = n
+    if holes:
+        # AND IT STAYS A CANDIDATE. Moving the design to `graduated` while the
+        # folder is kept makes an ORPHAN — off the candidate registry, so the
+        # wiki resolves neither its card nor its numbered slots, and every
+        # verdict on it dangles (his pebble crab: 24 of them, invisible to the
+        # prune because the folder was still on disk).
+        print(f"  {cid}: SYNCED WITH HOLES {holes} — still a candidate, folder KEPT. "
               f"Repair the roster renames (two takes can share a name) and re-run sync --only {cid}")
-        cand.save_cfg(cfg)
         cand.rebuild_index(cand.load_cfg())
         return False
     cand.save_cfg(cfg)
     if os.path.isdir(cand.cdir(cid)):
         shutil.rmtree(cand.cdir(cid))
     cand.rebuild_index(cand.load_cfg())
+    # HIS VERDICTS MOVE WITH THE ART, IN THE SAME BREATH. The take he approved
+    # is now called `attack`, not `attack_v3`, and the gallery card is now a
+    # creature page: every verdict keyed on the old address is dangling the
+    # moment this returns unless it is carried across (751 of them had piled up
+    # by 2026-09-23, one carrying a comment of his).
+    import verdicts  # noqa: E402
+    verdicts.settle(apply=True, verbose=verbose)
     if verbose:
         print(f"  {cid}: GRADUATED — now monsters/{cid}, candidate folder removed")
     return True
