@@ -1380,6 +1380,43 @@
     }
    ],
    "artifact": "https://claude.ai/artifact/D1vyND41DCvE6UmKe6YCZw"
+  },
+  {
+   "date": "2026-09-23",
+   "commit": "7a7a980a307",
+   "before": "a4099573de6",
+   "title": "A roof never wears the ground round the house: two roofs re-rolled",
+   "changes": [
+    {
+     "name": "The highland house on the snowfield",
+     "what": "Your slope rule did reach this house - it had repainted the wall ring's tops grey stone against the snow - but a house's roof is drawn from its roof deck, which that rule never touched, so the game drew the deck's snow over grey-stone cells and the roof's edge vanished into the field behind it. The deck's ground and the ring's tops are one ground now, and it must differ from the ground round the footprint. Here the deck simply adopts the grey stone the slope rule had already chosen: a stone roof on a stone-walled house, and the edge reads.",
+     "cell": [
+      253,
+      146
+     ],
+     "window": [
+      240,
+      134,
+      268,
+      158
+     ]
+    },
+    {
+     "name": "The timber house in town: the apron was the second way",
+     "what": "The yards pave the apron round a wooden house in brown paving, and a timber roof IS brown paving, so this roof's north and west edges lay invisibly over the apron behind them. A matching roof re-rolls from a weighted pool of everything a roof may be - paving, timber, light soil, stone, snow, mud, grass, ice, black rock - less the grounds round the house and the wall's own material. This one drew light soil over parquet, your own example of a roof. The rule runs in the build after the yards and on the shipped world in place.",
+     "cell": [
+      305,
+      229
+     ],
+     "window": [
+      290,
+      216,
+      320,
+      240
+     ]
+    }
+   ],
+   "artifact": "https://claude.ai/artifact/VYQYQ2jy88e76Bp2Ei2eTK"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
