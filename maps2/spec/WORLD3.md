@@ -1405,16 +1405,21 @@ from up-screen exactly as the slope rule says — but the roof is DRAWN FROM
 THE DECK (`decks[].ground`), which `terrace_grounds` never touched: it had
 repainted the ring's tops grey stone and the game drew the deck's snow over
 them. So the deck's ground and the ring's tops are ONE ground (`roofs.py`),
-and it differs from the dominant ground of the footprint's rim and from any
-ground lining 4 or more rim cells on the north or west side (the face-less
-edges). A roof that matches re-rolls from `ROOF_POOL` — paving 3+3, light
+and it differs from the ground the player SEES beyond the roof's north and
+west edges (the face-less edges) — seen on screen, not the cell next to the
+footprint: a roof six storeys up hides the five cells behind it, so the
+ground past its edge is the first whose top clears the roof's top vertex
+(`roofs.behind`); four or more edge cells seeing one ground bans it. (The
+first cut sampled the rim and re-rolled the town's stone timber roof against
+grass because the paving apron hidden at its foot matched it — maintainer
+2026-09-23: *"The ground behind is grass and the roof was stone"*; restored.) A roof that matches re-rolls from `ROOF_POOL` — paving 3+3, light
 soil 3 (his "Light Soil over Parquet Floor"), timber 2, grey stone 2, snow 2,
 mud, grass, ice, black rock 1 each: everything a roof may be, "open up for the
 unlikely" — less the grounds round the house and the wall's own material,
 seeded by the house's anchor; where the ring already contrasts the deck
 adopts it. It runs after `yards` because the apron is the second way a roof
-matches: the timber house at 298,225 wore brown paving over the brown-paving
-apron the yards laid. `--check` exits 1 on a matching roof.
+could match, though a one-cell apron at the foot of a six-storey house never
+shows past the roof. `--check` exits 1 on a matching roof.
 
 the_game ships 5 timber, 2 longhouse, 2 stone, 2 brick and one **highland on
 the mountain shelf** (`highest_pad`, level 46 — the massif's own materials, not

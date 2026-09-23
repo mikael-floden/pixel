@@ -16,10 +16,16 @@ paving, and the timber roof IS brown paving, so the roof's north and west
 edges lie invisibly over the apron behind them.
 
 THE RULE: a roof's ground is one ground for the deck and the ring cells that
-carry it, and it differs from the ground that surrounds the footprint (the
-dominant ground of the eight-neighbour rim, and any ground that lines
-`EDGE_MIN` or more of the rim's north or west side - the face-less edges,
-where a same-ground step is invisible). A roof that matches takes a new one
+carry it, and it differs from the ground the player SEES beyond the roof's
+north and west edges - the face-less edges, where a same-ground step is
+invisible. Seen ON SCREEN: a roof six storeys up hides the five cells behind
+it, so the ground past its edge is the one whose top clears the roof's top
+vertex (`behind`), never the cell next to the footprint (the first cut read
+the paving apron hidden at the foot of the town's timber house as "behind
+it" and re-rolled a stone roof that stood against grass - maintainer
+2026-09-23: "Why did you change the roof type on this house? The ground
+behind is grass and the roof was stone"). `EDGE_MIN` or more edge cells
+seeing one ground bans it. A roof that matches takes a new one
 from `ROOF_POOL`, a weighted pool of everything a roof may be (the
 maintainer's own examples: paving, timber, light soil over parquet, snow on
 the mountain, grass on a house - "open up for the unlikely"), less the
@@ -47,39 +53,50 @@ sys.path.insert(0, _HERE)
 
 ROOF_POOL = (("brown_paving_stone", 3), ("grey_paving_stone", 3), ("light_soil", 3), ("parquet_floor", 2),
              ("grey_stone", 2), ("snow", 2), ("dark_mud", 1), ("grass", 1), ("ice", 1), ("black_rock", 1))
-EDGE_MIN = 4        # a same ground along this many rim cells on the face-less side is an edge nobody sees
+EDGE_MIN = 4        # this many edge cells seeing one ground beyond the roof bans it for the roof
 
 
-def _rim(cells):
-    rim, nw = set(), collections.Counter()
-    for (x, y) in cells:
-        for dx in (-1, 0, 1):
-            for dy in (-1, 0, 1):
-                n = (x + dx, y + dy)
-                if n not in cells:
-                    rim.add(n)
-        for dx, dy in ((-1, 0), (0, -1)):            # north and west of me: the face-less side
-            n = (x + dx, y + dy)
-            if n not in cells:
-                nw[n] += 1
-    return rim, set(nw)
+LP = 15.0           # the game's storey in px
+DY = 14.0           # half a cell's screen height
+
+
+def behind(cells, lvl, x, y, L, N):
+    """The cell the player sees just beyond a roof cell's north-west edge on
+    screen: up the screen column (x-k, y-k) until a cell's top diamond clears
+    the roof's top vertex - a six-storey roof hides the five cells behind it,
+    so the apron at its foot is never what shows past the edge (measured: a
+    stone roof on grass was re-rolled because the hidden apron matched it)."""
+    for k in range(1, 40):
+        cx, cy = x - k, y - k
+        if not (0 <= cx < N and 0 <= cy < N):
+            return None
+        if (cx, cy) in cells:
+            continue
+        if 2 * k * DY > (L - lvl[cy][cx]) * LP + 2 * DY:
+            return (cx, cy)
+    return None
 
 
 def survey(doc):
-    """[(deck index, roof, ring top, banned grounds, wall)] for every roof deck."""
+    """[(deck index, roof, ring top, banned grounds, wall)] for every roof deck:
+    banned = the grounds seen beyond the roof's north and west edges."""
     G, grd, lvl, N = doc["grounds"], doc["ground"], doc["level"], len(doc["level"])
     out = []
     for i, dk in enumerate(doc["decks"]):
         if dk.get("kind") != "roof":
             continue
+        L = int(dk["level"])
         cells = {(c["x"], c["y"]) for c in dk["cells"]}
-        ring = [c for c in cells if lvl[c[1]][c[0]] == int(dk["level"])]
+        ring = [c for c in cells if lvl[c[1]][c[0]] == L]
         top = collections.Counter(G[grd[y][x]] for x, y in ring).most_common(1)[0][0] if ring else dk["ground"]
-        rim, nw = _rim(cells)
-        rim = {c for c in rim if 0 <= c[0] < N and 0 <= c[1] < N}
-        around = collections.Counter(G[grd[y][x]] for x, y in rim)
-        side = collections.Counter(G[grd[y][x]] for x, y in nw if (x, y) in rim)
-        banned = {around.most_common(1)[0][0]} | {g for g, n in side.items() if n >= EDGE_MIN}
+        seen = collections.Counter()
+        for (x, y) in cells:
+            if (x, y - 1) in cells and (x - 1, y) in cells:
+                continue                              # not on the face-less edge
+            b = behind(cells, lvl, x, y, L, N)
+            if b:
+                seen[G[grd[b[1]][b[0]]]] += 1
+        banned = {g for g, n in seen.items() if n >= EDGE_MIN}
         out.append((i, dk["ground"], top, banned, dk.get("side")))
     return out
 

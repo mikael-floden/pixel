@@ -506,8 +506,9 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   the shipped world in place (`spec/WORLD3.md` → the north caves).
 - `roofs.py` — **a roof never wears the ground round the house** (maintainer
   2026-09-23, the snow roof on the snowfield): the roof deck's ground and the
-  ring's tops are one ground, and it differs from the field or apron round the
-  footprint; a matching roof re-rolls from a weighted pool of everything a roof
+  ring's tops are one ground, and it differs from the ground the player sees
+  beyond the roof's north and west edges on screen (a six-storey roof hides
+  the five cells behind it); a matching roof re-rolls from a weighted pool of everything a roof
   may be (`spec/WORLD3.md` → a house is not all the same house). `--check`,
   `--apply <world_dir>`; the build runs it after `yards`.
 - `roadwidth.py` — **a road is as wide on screen whichever way it runs**
