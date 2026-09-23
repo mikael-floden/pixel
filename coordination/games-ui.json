@@ -1,17 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-23T18:45:50+00:00",
+  "updated_at": "2026-09-23T18:49:11+00:00",
   "health": "running",
-  "current": {
-    "unit": "THE EMPTY 'NEW VERSION OUT' DIALOG (maintainer 2026-09-23): a fast/art-lane generation is AHEAD of release_notes.json (built inside the image, ends at the image's sha = the client's own build), so the slice after 'mine' is empty by construction. updatenote.ts now asks the repo's own GitHub compare endpoint for mine...new when the served sha is past the file (one call per dialog open, CORS *), chips from the subject prefix, honest sentence if GitHub is down; gate arm 9.",
-    "since": "2026-09-23T18:45:50+00:00",
-    "files": [
-      "games2/client/src/updatenote.ts",
-      "games2/scripts/verify-updatenotes.mjs",
-      "games2/UI_AGENT.md",
-      "coordination/games-ui.json"
-    ]
-  },
+  "current": "idle — SHIPPED today: (1) the thumbstick reflects the desired velocity (cap leans by his dial, BOTH sticks publish the bearing; 74/74, 82/82); (2) the empty 'New version out' dialog — a lane publish is ahead of release_notes.json, so the dialog asks GitHub's compare for mine...new (verify-updatenotes 50/50). Still waiting on games for ONE card width (bars.ts .ml-bar-row 126/170 -> 148).",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -339,5 +330,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-23T18:45:50+00:00"
+  "updated": "2026-09-23T18:49:11+00:00"
 }
