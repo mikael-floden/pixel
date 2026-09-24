@@ -2434,6 +2434,11 @@ function makePlayer(entity, kind, opts = {}) {
       stateSeg.scrollLeft = on.offsetLeft + on.offsetWidth - stateSeg.clientWidth + pad;
   }
   const fbDomain = state.admin ? FACET_DOMAIN[kind] : null;
+  // The directions a state's chip answers for. A creature's is all eight
+  // whatever shipped — seven approved facings are "7 of 8 approved — not
+  // finished", and a redo on the missing one colours the chip — while an NPC
+  // or a piece answers only for the facings it was made with.
+  const dirsOwed = (s) => kind === "monster" ? state.data.directions : Object.keys(anims[s]?.dirs ?? {});
   function renderStateSeg() {
     stateSeg.replaceChildren(...baseStates.map((s) => {
       // A state's chip carries the LIVE take's verdicts — that is the one that
@@ -2441,7 +2446,7 @@ function makePlayer(entity, kind, opts = {}) {
       // A state with no take of its own is marked by the take that ships, or
       // by its first version when every take is a version.
       const shown = anims[s] ? s : takesOf(s)[0];
-      const mark = fbDomain ? facetMark(fbDomain, entity.path, shown, Object.keys(anims[shown]?.dirs ?? {}), entity) : { cls: "", title: null };
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, shown, dirsOwed(shown), entity) : { cls: "", title: null };
       return h("button", {
         class: [s === takeOf(cur.state) ? "on" : "", mark.cls].filter(Boolean).join(" "),
         onclick: () => {
@@ -2478,7 +2483,7 @@ function makePlayer(entity, kind, opts = {}) {
     takeRow.hidden = takes.length < 2;
     if (takeRow.hidden) { takeSeg.replaceChildren(); return; }
     takeSeg.replaceChildren(...takes.map((s) => {
-      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {}), entity) : { cls: "", title: null };
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, dirsOwed(s), entity) : { cls: "", title: null };
       const label = anims[s]?.takeLabel ?? "live";
       const words = s === takeOf(s) ? "the take that ships" : `a parallel take of ${stateWords(takeOf(s))}, not in the game`;
       return h("button", {
@@ -2503,14 +2508,30 @@ function makePlayer(entity, kind, opts = {}) {
     // them to learn which way the art faces. Availability is PER STATE — a
     // monster's angry can ship 5 of 8 while its walk ships all — so this
     // re-runs on every state change, which it already did.
-    dirPad.replaceChildren(...state.data.directions.filter(clipForDir).map((d) => {
+    //
+    // EXCEPT A CREATURE, WHICH OWES ALL EIGHT (maintainer 2026-09-24, on a
+    // Die with no N: "The problem with N being missing is that I can't click
+    // on N and place a review to redo N … All monster animation need all 8
+    // directions, so N is a direction we need! Would be good … to at least
+    // make it possible for me to select it (nothing rendered in the preview)
+    // just for me to write a review to generate this missing state"). An NPC
+    // whose idle faces south is finished; a monster whose die has seven
+    // facings is not, and the eighth is exactly the one he needs a verdict
+    // slot for. So a creature's pad shows every direction, the missing ones
+    // dashed, and selecting one gives an empty stage with the feedback row
+    // still live under it — a redo there is the ask that generates it.
+    const owedDirs = kind === "monster" ? state.data.directions : state.data.directions.filter(clipForDir);
+    dirPad.replaceChildren(...owedDirs.map((d) => {
       // The direction is where a verdict actually lives, so it is marked
       // exactly, not summarised: this one file is approved, rejected or not
       // looked at yet.
       const mark = fbDomain ? facetMark(fbDomain, entity.path, cur.state, [d], entity) : { cls: "", title: null };
+      const missing = !clipForDir(d);
       return h("button", {
-        class: [d === cur.dir ? "on" : "", mark.cls].filter(Boolean).join(" "),
-        title: mark.title ? `${d} — ${mark.title}` : d,
+        class: [d === cur.dir ? "on" : "", mark.cls, missing ? "missing" : ""].filter(Boolean).join(" "),
+        title: missing
+          ? `${d} — no ${stateWords(cur.state)} facing ${DIR_LABEL[d]} yet${mark.title && mark.title !== "not reviewed yet" ? ` — ${mark.title}` : ""}. Select it and ask for a redo to have it generated.`
+          : mark.title ? `${d} — ${mark.title}` : d,
         // A DIRECTION IS A FACET TOO (maintainer 2026-08-14: "you can
         // regenerate an animation for a direction, you don't regenerate for
         // all directions … maybe the SE direction on the state LIGHTS_ON is
@@ -6760,7 +6781,15 @@ function viewMonster(id) {
           : "The 8-direction base every animation was rotated from. Nothing to judge here."));
       return;
     }
-    facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
+    // A FACING THAT DOES NOT EXIST YET is still a slot he can verdict — that
+    // is the point of the dashed chip — so the row renders over an empty
+    // stage, with one line saying why the stage is empty and what a redo
+    // here does.
+    const absent = !m.animations?.[st]?.dirs?.[dir];
+    facetBox.replaceChildren(
+      absent ? h("p", { class: "muted facet-absent" },
+        `No ${stateLabel(st)} facing ${DIR_LABEL[dir] ?? dir} yet — every creature owes all eight. A redo here asks the monsters agent to generate it.`) : null,
+      feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),
       // The hash of exactly this animation in exactly this direction, so the
@@ -6774,7 +6803,9 @@ function viewMonster(id) {
       reject: false,
       rejectTitle: `Slated for removal — clear it here; this row only asks for redos now`,
       rejectedLabel: "slated for removal",
-      redo: { label: "↻ redo", title: `Ask the monsters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted. If this state can never be made right, remove the whole creature instead — it must not ship without it.`, doneLabel: "another take requested" },
+      redo: absent
+        ? { label: "↻ redo", title: `Ask the monsters agent to generate ${stateLabel(st)} facing ${dir} — it does not exist yet, and the creature cannot ship without all eight.`, doneLabel: "generation requested" }
+        : { label: "↻ redo", title: `Ask the monsters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted. If this state can never be made right, remove the whole creature instead — it must not ship without it.`, doneLabel: "another take requested" },
     }));
   };
   player.onFacetChange = renderFacet;

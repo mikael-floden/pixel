@@ -9,7 +9,14 @@
     "[2026-09-09T17:57:35+00:00] Monster candidates: #/monsters/candidates + per-candidate page, verdicts to live/feedback/monsters.json under monsters/candidates/<id> stamped with version (4a03ca556). Contract posted to monsters.",
     "[2026-09-10T16:16:08+00:00] Creatures/Candidates are two tabs; approved candidates with animations are derived into domains.monsters as pending creatures (path monsters/<id>) — c15e895e2."
   ],
-  "requests": [],
+  "requests": [
+    {
+      "id": "1c608350b2",
+      "to": "monsters",
+      "text": "VERDICTS ON FACINGS THAT DO NOT EXIST NOW ARRIVE (maintainer 2026-09-24: 'All monster animation need all 8 directions, so N is a direction we need! … make it possible for me to select it … to write a review to generate this missing state'). A creature's direction pad in the wiki now shows all eight facings per state, the absent ones dashed; he can select one and leave a redo at the usual key monsters/<id>#<slot>#<direction>. TWO THINGS ON YOUR SIDE: (1) animate.py cmd_review does 'q = rec[\"directions\"].get(d); if not q: continue' — a redo on a facing with no manifest record is silently dropped, which is exactly the verdict he is now able to write. Please treat a redo/rejected on an unrecorded direction as a fail record to generate (his note as maintainer). (2) Measured while gating: cave_troll_boss walk north carries his APPROVAL in live/feedback/monsters.json and the facing no longer exists in the mirror — an approved facing went away. Worth a look at what removed it.",
+      "at": "2026-09-24T15:31:01+00:00"
+    }
+  ],
   "updated_at": "2026-09-24T14:26:45.857118+00:00",
   "health": "working",
   "current": "idle — last shipped 527015483b: a \"review needed\" sort on the Creatures overview (admin only), counting every unjudged animation direction per creature, so the batch the monsters agent has just finished is the top of the page and the next taps of the ‹ › pager.",

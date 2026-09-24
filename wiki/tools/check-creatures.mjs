@@ -322,6 +322,44 @@ await pa.goto(`${W}#/monsters/${shownIds[0]}`, { waitUntil: "load" });
 await pa.waitForTimeout(2200);
 const pager = await pa.evaluate(() => document.querySelector(".detail-count")?.textContent ?? "");
 ok(pager.endsWith(`/ ${expNone}`), `and ‹ › on a creature page walks only the queue (${pager})`);
+/* ---- A FACING THAT DOES NOT EXIST IS STILL A SLOT (maintainer 2026-09-24:
+ * "The problem with N being missing is that I can't click on N and place a
+ * review to redo N … All monster animation need all 8 directions"). A
+ * creature's pad shows all eight, the absent ones dashed; selecting one gives
+ * an empty stage, the line saying why, and a live feedback row whose redo
+ * colours the chip AND the state. The creature is found from the data, not
+ * named here — the day every creature has all eight this block goes quiet. */
+const gap = roster.flatMap((m) => Object.entries(m.animations ?? {})
+  .filter(([, a]) => !a.still && Object.keys(a.dirs ?? {}).length > 0 && Object.keys(a.dirs ?? {}).length < 8)
+  .map(([st, a]) => ({ m, st, missing: D.directions.filter((d) => !a.dirs[d]) })))[0];
+if (!gap) console.log("  (every creature has all eight facings in every state — nothing to check)");
+else {
+  const { m: gm, st: gst, missing: gmiss } = gap;
+  await pa.goto(`${W}#/monsters/${gm.id}`, { waitUntil: "load" });
+  await pa.waitForTimeout(2200);
+  await pa.evaluate((label) => [...document.querySelectorAll(".seg-states button")].find((x) => x.textContent.trim().toLowerCase().startsWith(label))?.click(), gst.toLowerCase());
+  await pa.waitForTimeout(700);
+  const padOf = () => pa.evaluate(() => [...document.querySelectorAll(".dirpad button")].map((x) => ({ t: x.textContent.trim(), cls: x.className })));
+  let pd = await padOf();
+  const LBL = { south: "S", "south-east": "SE", east: "E", "north-east": "NE", north: "N", "north-west": "NW", west: "W", "south-west": "SW" };
+  const dashed = pd.filter((x) => /\bmissing\b/.test(x.cls)).map((x) => x.t);
+  ok(pd.length === 8, `a creature's pad shows all eight facings even when ${gm.id}'s ${gst} ships ${8 - gmiss.length} (${pd.length} chips)`);
+  ok(dashed.length === gmiss.length && gmiss.every((d) => dashed.includes(LBL[d])),
+    `and exactly the absent ones are dashed (${dashed.join(", ") || "none"} — expected ${gmiss.map((d) => LBL[d]).join(", ")})`);
+  const errsBefore = aerrs.length;
+  await pa.evaluate((t) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent.trim() === t)?.click(), LBL[gmiss[0]]);
+  await pa.waitForTimeout(700);
+  const absentLine = await pa.evaluate(() => document.querySelector(".facet-absent")?.textContent.trim() ?? "");
+  ok(/owes all eight/.test(absentLine) && aerrs.length === errsBefore,
+    `selecting it gives an empty stage that says why, without a page error ("${absentLine.slice(0, 48)}…")`);
+  await pa.evaluate(() => [...document.querySelectorAll("button")].find((x) => /^↻\s*redo$/.test(x.textContent.trim()))?.click());
+  await pa.waitForTimeout(700);
+  pd = await padOf();
+  const chip = pd.find((x) => x.t === LBL[gmiss[0]]);
+  const stateCls = await pa.evaluate(() => document.querySelector(".seg-states button.on")?.className ?? "");
+  ok(/judged-redo/.test(chip?.cls ?? "") && /judged-redo/.test(stateCls),
+    `and a redo there lands on the facing and colours its state (${LBL[gmiss[0]]}: "${chip?.cls}", state: "${stateCls}")`);
+}
 ok(aerrs.length === 0, `no page errors in the admin pass${aerrs.length ? `: ${aerrs[0]}` : ""}`);
 await actx.close();
 // A PLAYER IS NEVER FILTERED BY A CONTROL THEY CANNOT SEE — including one left
