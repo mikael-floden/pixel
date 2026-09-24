@@ -24,9 +24,8 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: monsters-animate
-  cancel-in-progress: false
+# No concurrency group: each run owns the folders of the ids it was given, and
+# a second review's monsters should not wait an hour behind the first's.
 
 jobs:
   plan:
