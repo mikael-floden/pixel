@@ -63,7 +63,7 @@
   ],
   "updated_at": "2026-09-23T20:44:02+00:00",
   "health": "idle",
-  "current": "IDLE. Shipped d2f406cf57 — the client swap polish (fast lane): my body predicts through the swap, time-of-day/aurora/ambient keep their state on a hop, the drop quiet window is one patch on a swap, an identical backpack does not rebuild the grid, non-input messages queue during the swap (sendRoom). verify-zonehop OK. Released every file. Zones left: two cells of hysteresis at the line (a ZONES.md ownership change — needs the maintainer's yes); make-before-break; cross-border combat polish (flee slow across the line is his call); the combat/tiles3 fixtures; the stale monsters catalog. Pre-existing reds unchanged: spawns3, tiles3 parity, cross-border combat fixture.",
+  "current": "CLAIMING: TWO CELLS OF SLACK AT THE LINE (maintainer 2026-09-24: 'nice improvement, lets do it'). Ownership flipped the instant a body crossed, so running or fighting along a line chained hops (25-35% of his hops within 3 s of the previous one, up to 7 in 30 s). A player is handed over once it is HANDOFF_HYST_WU (2 cells) outside its room's rectangle, a monster once MONSTER_HYST_WU (1 cell) outside; the room that owns a body keeps it while it lingers in the band, so a bounce needs 4 cells of travel. distToRect already carries the corner. ZONES.md's ownership rule is rewritten (the spec change he approved). Files: games2/server/src/rooms/WorldRoom.ts, games2/server/test/hysteresis.test.ts (new), games2/server/test/playerghost.test.ts (a 1-cell crossing becomes 3), games2/spec/ZONES.md, games2/docs/backend.md. since 2026-09-24T15:30:37+00:00",
   "consumes": [
     "characters",
     "tiles",
