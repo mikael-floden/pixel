@@ -69,10 +69,13 @@ test("a set is a ramp from RAMP_MIN_PX up; every published set (elevation 4) is 
   assert.equal(sets.filter(isRampSet).length, 0, "no published set is a ramp yet — the storey-height sets are his generation");
 });
 
-function resolver(extraSets: object[], approvals: Record<string, { status: string }>, footBoundary = false) {
+function resolver(extraSets: object[], approvals: Record<string, { status: string }>, footBoundary = false, forget?: string) {
   const groundTypes = load("tiles/ground_types.json").grounds;
   const slopes = load("tiles/slopes/index.json");
-  const feedback = { ...load("live/feedback/tiles.json").entries, ...approvals };
+  const live = load("live/feedback/tiles.json").entries as Record<string, { status: string }>;
+  // `forget` drops every live verdict under that key prefix: the unjudged-ground arm needs a ground with none.
+  const kept = forget ? Object.fromEntries(Object.entries(live).filter(([k]) => !k.startsWith(forget))) : live;
+  const feedback = { ...kept, ...approvals };
   return new Tiles3({
     baseTileSets: load("live/tuning/base_tile_sets.json"),
     memberResolve: load("tiles/resolve.json"),
@@ -306,18 +309,20 @@ test("the body's lift on a cut cell: rise x rampHeight(index) - cut drops from t
 /* -- every stair (maintainer 2026-09-24: "slopes on every single 1 level stair") -- */
 
 test("an unjudged ground falls back to its first complete bump set; a rejected tile of it is refused; a ramp set never falls back", { skip }, () => {
-  const t = resolver([], {}, true);
-  assert.equal(resolver([], {}).slopeSets("light_soil").length, 0, "the parity path keeps render3's approved-only pools");
+  // light_soil with its live verdicts forgotten (he approved two sets of it on 2026-09-24).
+  const NONE = "tiles/slopes/light_soil/";
+  const t = resolver([], {}, true, NONE);
+  assert.equal(resolver([], {}, false, NONE).slopeSets("light_soil").length, 0, "the parity path keeps render3's approved-only pools");
   assert.equal(t.slopeSets("light_soil").length, 1, "light_soil (no verdict) has its fallback set");
   const p = t.slopeTile("light_soil", 12, 0, 0);
   assert.ok(p && p.dir.startsWith("tiles/slopes/light_soil/"), JSON.stringify(p));
   // A verdict on any set of the ground retires the fallback: only approved tiles then.
-  const judged = resolver([], { [`${p!.dir}/tile_03`]: { status: "approved" } }, true);
+  const judged = resolver([], { [`${p!.dir}/tile_03`]: { status: "approved" } }, true, NONE);
   assert.equal(judged.slopeSets("light_soil").length, 1);
   assert.equal(judged.slopeTile("light_soil", 12, 0, 0), null, "an approved set is gated tile by tile");
   assert.ok(judged.slopeTile("light_soil", 3, 0, 0));
   // A rejected tile of the fallback is refused.
-  const rejected = resolver([], { [`${p!.dir}/tile_12`]: { status: "rejected" } }, true);
+  const rejected = resolver([], { [`${p!.dir}/tile_12`]: { status: "rejected" } }, true, NONE);
   assert.equal(rejected.slopeTile("light_soil", 12, 0, 0), null);
   assert.ok(rejected.slopeTile("light_soil", 10, 0, 0));
   // An unjudged storey-height set is not a candidate.
