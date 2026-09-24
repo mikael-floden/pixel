@@ -1,0 +1,743 @@
+{
+  "id": "ember_kit",
+  "name": "Cinderkit",
+  "lore": "A fox born in the ash beds. It is warm to the touch and will not be held.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "2bdef42a-c504-4d1a-88fe-b5bf209c4d35",
+    "url": "https://www.pixellab.ai/create-character/2bdef42a-c504-4d1a-88fe-b5bf209c4d35",
+    "prompt": "Small fantasy fire fox kit with dark ash-grey fur, glowing orange ember patterns along its back and tail, bright amber eyes, large ears tipped with small flames, and a fluffy tail curled around its paws, calm serious expression, clean deliberate creature design, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 48,
+    "height": 48
+  },
+  "native_size": {
+    "width": 48,
+    "height": 48
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "ember_kit/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "ember_kit/rotations/south.webp",
+    "west": "ember_kit/rotations/west.webp",
+    "east": "ember_kit/rotations/east.webp",
+    "north": "ember_kit/rotations/north.webp",
+    "south-east": "ember_kit/rotations/south-east.webp",
+    "north-east": "ember_kit/rotations/north-east.webp",
+    "north-west": "ember_kit/rotations/north-west.webp",
+    "south-west": "ember_kit/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "568e0172-04a6-4119-9a1f-96e163080c6b",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "ember_kit/animations/angry__south.webp",
+          "frame_paths": [
+            "ember_kit/animations/angry/south/00.webp",
+            "ember_kit/animations/angry/south/01.webp",
+            "ember_kit/animations/angry/south/02.webp",
+            "ember_kit/animations/angry/south/03.webp",
+            "ember_kit/animations/angry/south/04.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:20 GMT",
+          "src_frames": 5,
+          "sub": "dce9e0ac-a06f-4bba-8b74-017c0a6a26f5"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "ember_kit/animations/angry__south-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/angry/south-east/00.webp",
+            "ember_kit/animations/angry/south-east/01.webp",
+            "ember_kit/animations/angry/south-east/02.webp",
+            "ember_kit/animations/angry/south-east/03.webp",
+            "ember_kit/animations/angry/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/angry/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "ember_kit/animations/angry__east.webp",
+          "frame_paths": [
+            "ember_kit/animations/angry/east/00.webp",
+            "ember_kit/animations/angry/east/01.webp",
+            "ember_kit/animations/angry/east/02.webp",
+            "ember_kit/animations/angry/east/03.webp",
+            "ember_kit/animations/angry/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/angry/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "ember_kit/animations/angry__north-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/angry/north-east/00.webp",
+            "ember_kit/animations/angry/north-east/01.webp",
+            "ember_kit/animations/angry/north-east/02.webp",
+            "ember_kit/animations/angry/north-east/03.webp",
+            "ember_kit/animations/angry/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/angry/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "ember_kit/animations/angry__north.webp",
+          "frame_paths": [
+            "ember_kit/animations/angry/north/00.webp",
+            "ember_kit/animations/angry/north/01.webp",
+            "ember_kit/animations/angry/north/02.webp",
+            "ember_kit/animations/angry/north/03.webp",
+            "ember_kit/animations/angry/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/angry/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "ember_kit/animations/angry__north-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/angry/north-west/00.webp",
+            "ember_kit/animations/angry/north-west/01.webp",
+            "ember_kit/animations/angry/north-west/02.webp",
+            "ember_kit/animations/angry/north-west/03.webp",
+            "ember_kit/animations/angry/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/angry/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "ember_kit/animations/angry__west.webp",
+          "frame_paths": [
+            "ember_kit/animations/angry/west/00.webp",
+            "ember_kit/animations/angry/west/01.webp",
+            "ember_kit/animations/angry/west/02.webp",
+            "ember_kit/animations/angry/west/03.webp",
+            "ember_kit/animations/angry/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/angry/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "ember_kit/animations/angry__south-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/angry/south-west/00.webp",
+            "ember_kit/animations/angry/south-west/01.webp",
+            "ember_kit/animations/angry/south-west/02.webp",
+            "ember_kit/animations/angry/south-west/03.webp",
+            "ember_kit/animations/angry/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/angry/south-west"
+        }
+      }
+    },
+    "die": {
+      "group_id": "757d11e9-44f5-4c5c-8c8a-50d53b4ca914",
+      "source_name": "custom-Death - Faints, collapses to t",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "ember_kit/animations/die__east.webp",
+          "frame_paths": [
+            "ember_kit/animations/die/east/00.webp",
+            "ember_kit/animations/die/east/01.webp",
+            "ember_kit/animations/die/east/02.webp",
+            "ember_kit/animations/die/east/03.webp",
+            "ember_kit/animations/die/east/04.webp",
+            "ember_kit/animations/die/east/05.webp",
+            "ember_kit/animations/die/east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:21 GMT",
+          "src_frames": 7,
+          "sub": "7d0e89d7-fa3a-41c3-b277-a97e1d8aa72d"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "ember_kit/animations/die__north.webp",
+          "frame_paths": [
+            "ember_kit/animations/die/north/00.webp",
+            "ember_kit/animations/die/north/01.webp",
+            "ember_kit/animations/die/north/02.webp",
+            "ember_kit/animations/die/north/03.webp",
+            "ember_kit/animations/die/north/04.webp",
+            "ember_kit/animations/die/north/05.webp",
+            "ember_kit/animations/die/north/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:28 GMT",
+          "src_frames": 7,
+          "sub": "81ee8163-6e08-4747-9a1f-7faeb24d8f33"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "ember_kit/animations/die__north-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/die/north-east/00.webp",
+            "ember_kit/animations/die/north-east/01.webp",
+            "ember_kit/animations/die/north-east/02.webp",
+            "ember_kit/animations/die/north-east/03.webp",
+            "ember_kit/animations/die/north-east/04.webp",
+            "ember_kit/animations/die/north-east/05.webp",
+            "ember_kit/animations/die/north-east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:30 GMT",
+          "src_frames": 7,
+          "sub": "8079bb60-4c67-41fe-8d7a-7f29eeb58db5"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "ember_kit/animations/die__south.webp",
+          "frame_paths": [
+            "ember_kit/animations/die/south/00.webp",
+            "ember_kit/animations/die/south/01.webp",
+            "ember_kit/animations/die/south/02.webp",
+            "ember_kit/animations/die/south/03.webp",
+            "ember_kit/animations/die/south/04.webp",
+            "ember_kit/animations/die/south/05.webp",
+            "ember_kit/animations/die/south/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:33 GMT",
+          "src_frames": 7,
+          "sub": "06e5b0cb-13bb-44f8-b2ae-6199648af4e6"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "ember_kit/animations/die__south-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/die/south-east/00.webp",
+            "ember_kit/animations/die/south-east/01.webp",
+            "ember_kit/animations/die/south-east/02.webp",
+            "ember_kit/animations/die/south-east/03.webp",
+            "ember_kit/animations/die/south-east/04.webp",
+            "ember_kit/animations/die/south-east/05.webp",
+            "ember_kit/animations/die/south-east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:35 GMT",
+          "src_frames": 7,
+          "sub": "22327726-30ea-4b37-a9fb-f77fef706216"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "ember_kit/animations/die__south-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/die/south-west/00.webp",
+            "ember_kit/animations/die/south-west/01.webp",
+            "ember_kit/animations/die/south-west/02.webp",
+            "ember_kit/animations/die/south-west/03.webp",
+            "ember_kit/animations/die/south-west/04.webp",
+            "ember_kit/animations/die/south-west/05.webp",
+            "ember_kit/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "ember_kit/animations/die__west.webp",
+          "frame_paths": [
+            "ember_kit/animations/die/west/00.webp",
+            "ember_kit/animations/die/west/01.webp",
+            "ember_kit/animations/die/west/02.webp",
+            "ember_kit/animations/die/west/03.webp",
+            "ember_kit/animations/die/west/04.webp",
+            "ember_kit/animations/die/west/05.webp",
+            "ember_kit/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "ember_kit/animations/die__north-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/die/north-west/00.webp",
+            "ember_kit/animations/die/north-west/01.webp",
+            "ember_kit/animations/die/north-west/02.webp",
+            "ember_kit/animations/die/north-west/03.webp",
+            "ember_kit/animations/die/north-west/04.webp",
+            "ember_kit/animations/die/north-west/05.webp",
+            "ember_kit/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "568dad1e-f47c-4f29-88b6-c6923b0cc401",
+      "source_name": "custom-Strike - Quickly lunges forward and strikes once",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "ember_kit/animations/attack__east.webp",
+          "frame_paths": [
+            "ember_kit/animations/attack/east/00.webp",
+            "ember_kit/animations/attack/east/01.webp",
+            "ember_kit/animations/attack/east/02.webp",
+            "ember_kit/animations/attack/east/03.webp",
+            "ember_kit/animations/attack/east/04.webp",
+            "ember_kit/animations/attack/east/05.webp",
+            "ember_kit/animations/attack/east/06.webp",
+            "ember_kit/animations/attack/east/07.webp",
+            "ember_kit/animations/attack/east/08.webp",
+            "ember_kit/animations/attack/east/09.webp",
+            "ember_kit/animations/attack/east/10.webp",
+            "ember_kit/animations/attack/east/11.webp",
+            "ember_kit/animations/attack/east/12.webp",
+            "ember_kit/animations/attack/east/13.webp",
+            "ember_kit/animations/attack/east/14.webp",
+            "ember_kit/animations/attack/east/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:36 GMT",
+          "src_frames": 16,
+          "sub": "84e7ccbe-e292-49c5-bffa-3ba49dcbaa60"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "ember_kit/animations/attack__north.webp",
+          "frame_paths": [
+            "ember_kit/animations/attack/north/00.webp",
+            "ember_kit/animations/attack/north/01.webp",
+            "ember_kit/animations/attack/north/02.webp",
+            "ember_kit/animations/attack/north/03.webp",
+            "ember_kit/animations/attack/north/04.webp",
+            "ember_kit/animations/attack/north/05.webp",
+            "ember_kit/animations/attack/north/06.webp",
+            "ember_kit/animations/attack/north/07.webp",
+            "ember_kit/animations/attack/north/08.webp",
+            "ember_kit/animations/attack/north/09.webp",
+            "ember_kit/animations/attack/north/10.webp",
+            "ember_kit/animations/attack/north/11.webp",
+            "ember_kit/animations/attack/north/12.webp",
+            "ember_kit/animations/attack/north/13.webp",
+            "ember_kit/animations/attack/north/14.webp",
+            "ember_kit/animations/attack/north/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:40 GMT",
+          "src_frames": 16,
+          "sub": "44c98260-219f-4420-a87e-30c6c9efe4db"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "ember_kit/animations/attack__north-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/attack/north-east/00.webp",
+            "ember_kit/animations/attack/north-east/01.webp",
+            "ember_kit/animations/attack/north-east/02.webp",
+            "ember_kit/animations/attack/north-east/03.webp",
+            "ember_kit/animations/attack/north-east/04.webp",
+            "ember_kit/animations/attack/north-east/05.webp",
+            "ember_kit/animations/attack/north-east/06.webp",
+            "ember_kit/animations/attack/north-east/07.webp",
+            "ember_kit/animations/attack/north-east/08.webp",
+            "ember_kit/animations/attack/north-east/09.webp",
+            "ember_kit/animations/attack/north-east/10.webp",
+            "ember_kit/animations/attack/north-east/11.webp",
+            "ember_kit/animations/attack/north-east/12.webp",
+            "ember_kit/animations/attack/north-east/13.webp",
+            "ember_kit/animations/attack/north-east/14.webp",
+            "ember_kit/animations/attack/north-east/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:43 GMT",
+          "src_frames": 16,
+          "sub": "a48d1494-ce8d-430c-9668-336ec6954464"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "ember_kit/animations/attack__south.webp",
+          "frame_paths": [
+            "ember_kit/animations/attack/south/00.webp",
+            "ember_kit/animations/attack/south/01.webp",
+            "ember_kit/animations/attack/south/02.webp",
+            "ember_kit/animations/attack/south/03.webp",
+            "ember_kit/animations/attack/south/04.webp",
+            "ember_kit/animations/attack/south/05.webp",
+            "ember_kit/animations/attack/south/06.webp",
+            "ember_kit/animations/attack/south/07.webp",
+            "ember_kit/animations/attack/south/08.webp",
+            "ember_kit/animations/attack/south/09.webp",
+            "ember_kit/animations/attack/south/10.webp",
+            "ember_kit/animations/attack/south/11.webp",
+            "ember_kit/animations/attack/south/12.webp",
+            "ember_kit/animations/attack/south/13.webp",
+            "ember_kit/animations/attack/south/14.webp",
+            "ember_kit/animations/attack/south/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:45 GMT",
+          "src_frames": 16,
+          "sub": "d59a4464-9be3-49ad-8b42-5826c1ed8ee6"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "ember_kit/animations/attack__south-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/attack/south-east/00.webp",
+            "ember_kit/animations/attack/south-east/01.webp",
+            "ember_kit/animations/attack/south-east/02.webp",
+            "ember_kit/animations/attack/south-east/03.webp",
+            "ember_kit/animations/attack/south-east/04.webp",
+            "ember_kit/animations/attack/south-east/05.webp",
+            "ember_kit/animations/attack/south-east/06.webp",
+            "ember_kit/animations/attack/south-east/07.webp",
+            "ember_kit/animations/attack/south-east/08.webp",
+            "ember_kit/animations/attack/south-east/09.webp",
+            "ember_kit/animations/attack/south-east/10.webp",
+            "ember_kit/animations/attack/south-east/11.webp",
+            "ember_kit/animations/attack/south-east/12.webp",
+            "ember_kit/animations/attack/south-east/13.webp",
+            "ember_kit/animations/attack/south-east/14.webp",
+            "ember_kit/animations/attack/south-east/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:15:47 GMT",
+          "src_frames": 16,
+          "sub": "7c086bc5-a66e-478c-a590-9328e4d72135"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "ember_kit/animations/attack__south-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/attack/south-west/00.webp",
+            "ember_kit/animations/attack/south-west/01.webp",
+            "ember_kit/animations/attack/south-west/02.webp",
+            "ember_kit/animations/attack/south-west/03.webp",
+            "ember_kit/animations/attack/south-west/04.webp",
+            "ember_kit/animations/attack/south-west/05.webp",
+            "ember_kit/animations/attack/south-west/06.webp",
+            "ember_kit/animations/attack/south-west/07.webp",
+            "ember_kit/animations/attack/south-west/08.webp",
+            "ember_kit/animations/attack/south-west/09.webp",
+            "ember_kit/animations/attack/south-west/10.webp",
+            "ember_kit/animations/attack/south-west/11.webp",
+            "ember_kit/animations/attack/south-west/12.webp",
+            "ember_kit/animations/attack/south-west/13.webp",
+            "ember_kit/animations/attack/south-west/14.webp",
+            "ember_kit/animations/attack/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "ember_kit/animations/attack__west.webp",
+          "frame_paths": [
+            "ember_kit/animations/attack/west/00.webp",
+            "ember_kit/animations/attack/west/01.webp",
+            "ember_kit/animations/attack/west/02.webp",
+            "ember_kit/animations/attack/west/03.webp",
+            "ember_kit/animations/attack/west/04.webp",
+            "ember_kit/animations/attack/west/05.webp",
+            "ember_kit/animations/attack/west/06.webp",
+            "ember_kit/animations/attack/west/07.webp",
+            "ember_kit/animations/attack/west/08.webp",
+            "ember_kit/animations/attack/west/09.webp",
+            "ember_kit/animations/attack/west/10.webp",
+            "ember_kit/animations/attack/west/11.webp",
+            "ember_kit/animations/attack/west/12.webp",
+            "ember_kit/animations/attack/west/13.webp",
+            "ember_kit/animations/attack/west/14.webp",
+            "ember_kit/animations/attack/west/15.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "ember_kit/animations/attack__north-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/attack/north-west/00.webp",
+            "ember_kit/animations/attack/north-west/01.webp",
+            "ember_kit/animations/attack/north-west/02.webp",
+            "ember_kit/animations/attack/north-west/03.webp",
+            "ember_kit/animations/attack/north-west/04.webp",
+            "ember_kit/animations/attack/north-west/05.webp",
+            "ember_kit/animations/attack/north-west/06.webp",
+            "ember_kit/animations/attack/north-west/07.webp",
+            "ember_kit/animations/attack/north-west/08.webp",
+            "ember_kit/animations/attack/north-west/09.webp",
+            "ember_kit/animations/attack/north-west/10.webp",
+            "ember_kit/animations/attack/north-west/11.webp",
+            "ember_kit/animations/attack/north-west/12.webp",
+            "ember_kit/animations/attack/north-west/13.webp",
+            "ember_kit/animations/attack/north-west/14.webp",
+            "ember_kit/animations/attack/north-west/15.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": null,
+      "source_name": "candidates/ember_kit (idle)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "ember_kit/animations/idle__south.webp",
+          "frame_paths": [
+            "ember_kit/animations/idle/south/00.webp",
+            "ember_kit/animations/idle/south/01.webp",
+            "ember_kit/animations/idle/south/02.webp",
+            "ember_kit/animations/idle/south/03.webp",
+            "ember_kit/animations/idle/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/idle/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "ember_kit/animations/idle__south-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/idle/south-east/00.webp",
+            "ember_kit/animations/idle/south-east/01.webp",
+            "ember_kit/animations/idle/south-east/02.webp",
+            "ember_kit/animations/idle/south-east/03.webp",
+            "ember_kit/animations/idle/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/idle/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "ember_kit/animations/idle__east.webp",
+          "frame_paths": [
+            "ember_kit/animations/idle/east/00.webp",
+            "ember_kit/animations/idle/east/01.webp",
+            "ember_kit/animations/idle/east/02.webp",
+            "ember_kit/animations/idle/east/03.webp",
+            "ember_kit/animations/idle/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/idle/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "ember_kit/animations/idle__north-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/idle/north-east/00.webp",
+            "ember_kit/animations/idle/north-east/01.webp",
+            "ember_kit/animations/idle/north-east/02.webp",
+            "ember_kit/animations/idle/north-east/03.webp",
+            "ember_kit/animations/idle/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/idle/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "ember_kit/animations/idle__north.webp",
+          "frame_paths": [
+            "ember_kit/animations/idle/north/00.webp",
+            "ember_kit/animations/idle/north/01.webp",
+            "ember_kit/animations/idle/north/02.webp",
+            "ember_kit/animations/idle/north/03.webp",
+            "ember_kit/animations/idle/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/idle/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "ember_kit/animations/idle__north-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/idle/north-west/00.webp",
+            "ember_kit/animations/idle/north-west/01.webp",
+            "ember_kit/animations/idle/north-west/02.webp",
+            "ember_kit/animations/idle/north-west/03.webp",
+            "ember_kit/animations/idle/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/idle/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "ember_kit/animations/idle__west.webp",
+          "frame_paths": [
+            "ember_kit/animations/idle/west/00.webp",
+            "ember_kit/animations/idle/west/01.webp",
+            "ember_kit/animations/idle/west/02.webp",
+            "ember_kit/animations/idle/west/03.webp",
+            "ember_kit/animations/idle/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/idle/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "ember_kit/animations/idle__south-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/idle/south-west/00.webp",
+            "ember_kit/animations/idle/south-west/01.webp",
+            "ember_kit/animations/idle/south-west/02.webp",
+            "ember_kit/animations/idle/south-west/03.webp",
+            "ember_kit/animations/idle/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/idle/south-west"
+        }
+      }
+    },
+    "walk": {
+      "group_id": null,
+      "source_name": "candidates/ember_kit (walk)",
+      "directions": {
+        "south": {
+          "frames": 4,
+          "strip": "ember_kit/animations/walk__south.webp",
+          "frame_paths": [
+            "ember_kit/animations/walk/south/00.webp",
+            "ember_kit/animations/walk/south/01.webp",
+            "ember_kit/animations/walk/south/02.webp",
+            "ember_kit/animations/walk/south/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/walk/south"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "ember_kit/animations/walk__south-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/walk/south-east/00.webp",
+            "ember_kit/animations/walk/south-east/01.webp",
+            "ember_kit/animations/walk/south-east/02.webp",
+            "ember_kit/animations/walk/south-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/walk/south-east"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "ember_kit/animations/walk__east.webp",
+          "frame_paths": [
+            "ember_kit/animations/walk/east/00.webp",
+            "ember_kit/animations/walk/east/01.webp",
+            "ember_kit/animations/walk/east/02.webp",
+            "ember_kit/animations/walk/east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/walk/east"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "ember_kit/animations/walk__north-east.webp",
+          "frame_paths": [
+            "ember_kit/animations/walk/north-east/00.webp",
+            "ember_kit/animations/walk/north-east/01.webp",
+            "ember_kit/animations/walk/north-east/02.webp",
+            "ember_kit/animations/walk/north-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/walk/north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "ember_kit/animations/walk__north.webp",
+          "frame_paths": [
+            "ember_kit/animations/walk/north/00.webp",
+            "ember_kit/animations/walk/north/01.webp",
+            "ember_kit/animations/walk/north/02.webp",
+            "ember_kit/animations/walk/north/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "ember_kit/animations/walk__north-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/walk/north-west/00.webp",
+            "ember_kit/animations/walk/north-west/01.webp",
+            "ember_kit/animations/walk/north-west/02.webp",
+            "ember_kit/animations/walk/north-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/walk/north-west"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "ember_kit/animations/walk__west.webp",
+          "frame_paths": [
+            "ember_kit/animations/walk/west/00.webp",
+            "ember_kit/animations/walk/west/01.webp",
+            "ember_kit/animations/walk/west/02.webp",
+            "ember_kit/animations/walk/west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/walk/west"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "ember_kit/animations/walk__south-west.webp",
+          "frame_paths": [
+            "ember_kit/animations/walk/south-west/00.webp",
+            "ember_kit/animations/walk/south-west/01.webp",
+            "ember_kit/animations/walk/south-west/02.webp",
+            "ember_kit/animations/walk/south-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/ember_kit/animations/walk/south-west"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-Angry combat idle, frustrated ",
+      "key": "angry",
+      "direction": "south",
+      "takes": [
+        "2aaa1556-2193-4d56-b73b-76e14890189b",
+        "dce9e0ac-a06f-4bba-8b74-017c0a6a26f5"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

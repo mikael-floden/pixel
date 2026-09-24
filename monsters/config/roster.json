@@ -318,6 +318,31 @@
       }
     },
     {
+      "id": "minotaur",
+      "kind": "character",
+      "pixellab_id": "5a25ac5d-984b-4694-a718-87b8e2661ed9",
+      "name": "Hornmaul",
+      "lore": "The maze was built around it, not for it. It knows every turn, and it is always one turn behind you.",
+      "renames": {
+        "custom-walk loop seen head-on, full walk cycle in place, ": "walk",
+        "custom-Strike - Quickly lunges forward and strikes once": "attack",
+        "custom-Strike - Quickly lunges forward and strikes once, ": "attack",
+        "custom-Death - Faints, collapses to t": "die"
+      }
+    },
+    {
+      "id": "sand_scorpling",
+      "kind": "character",
+      "pixellab_id": "62a5f426-0eb2-458e-ad5a-9348395e3757",
+      "name": "Sandsting",
+      "lore": "It hides in boots and bedrolls. The sting is small; the fever it brings is not.",
+      "renames": {
+        "custom-Lunging Sting - Snaps the curled tail forward in o": "attack",
+        "custom-Tail Sting - Whips the curled tail up over its hea": "attack",
+        "custom-Death - Faints, collapses to t": "die"
+      }
+    },
+    {
       "id": "bridge_troll",
       "kind": "character",
       "pixellab_id": "c7255fb1-fd21-44b5-8b3d-baf0e51fb913",
@@ -441,6 +466,18 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Club Smash - Heaves the stalactite club overhead a": "attack",
         "custom-Death - Drops the club, sinks ": "die"
+      }
+    },
+    {
+      "id": "ember_kit",
+      "kind": "character",
+      "pixellab_id": "2bdef42a-c504-4d1a-88fe-b5bf209c4d35",
+      "name": "Cinderkit",
+      "lore": "A fox born in the ash beds. It is warm to the touch and will not be held.",
+      "renames": {
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Strike - Quickly lunges forward and strikes once": "attack",
+        "custom-Death - Faints, collapses to t": "die"
       }
     },
     {

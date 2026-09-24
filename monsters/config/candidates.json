@@ -66,21 +66,6 @@
       "lore": "Born where the old stag fell. The forest watches over it, and takes offence on its behalf."
     },
     {
-      "id": "ember_kit",
-      "name": "Cinderkit",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "dog",
-      "size": 48,
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Small fantasy fire fox kit with dark ash-grey fur, glowing orange ember patterns along its back and tail, bright amber eyes, large ears tipped with small flames, and a fluffy tail curled around its paws.",
-      "lore": "A fox born in the ash beds. It is warm to the touch and will not be held."
-    },
-    {
       "id": "marsh_heron",
       "name": "Stiltwing",
       "tier": "mid",
@@ -170,22 +155,6 @@
       "lore": "He kept his oath after his lord broke it, and now the oath is all that is left of him."
     },
     {
-      "id": "minotaur",
-      "name": "Hornmaul",
-      "tier": "boss",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 160,
-      "biome": [
-        "grey_paving_stone",
-        "parquet_floor"
-      ],
-      "items": [],
-      "prompt": "Minotaur shown full body from head to feet, realistic proportions, a massive bull's head with wide curved horns and a ring through the nose, dark brown hide over enormous muscle, a leather harness, cloven hooves, and a double-headed axe held low at its side.",
-      "lore": "The maze was built around it, not for it. It knows every turn, and it is always one turn behind you.",
-      "walk_action": "walk loop seen head-on, full walk cycle in place, the near leg swings forward and plants while the far leg pushes off behind, the legs clearly crossing past each other, the massive shoulders rocking side to side and the head dipping with each step, hooves lifting off the ground, seamless loop whose last frame leads straight back into the first, no turning"
-    },
-    {
       "id": "wild_bull",
       "name": "Blackhorn",
       "tier": "mid",
@@ -199,22 +168,6 @@
       "items": [],
       "prompt": "Aurochs bull with realistic proportions, a huge black-brown body, a heavy neck hump, long forward-curving horns with pale tips, a broad head with small dark eyes, and thick legs with dark hooves.",
       "lore": "The last of the wild herd, and it knows it. It charges anything that crosses the meadow, and the meadow is wide."
-    },
-    {
-      "id": "sand_scorpling",
-      "name": "Sandsting",
-      "tier": "mid",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 32,
-      "biome": [
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Small desert scorpion with realistic proportions, a pale sand-yellow armored body, two pincers held close, a segmented tail curled over its back ending in a dark stinger, and eight short legs.",
-      "lore": "It hides in boots and bedrolls. The sting is small; the fever it brings is not.",
-      "attack_action": "Lunging Sting - Snaps the curled tail forward in one fast vicious strike, the stinger shooting out far past its own claws toward the target at full reach, the body lunging behind it, then whips back",
-      "attack_simple": "Pincer Snap - Throws one pincer wide open and snaps it shut"
     },
     {
       "id": "lantern_wraith",
@@ -9439,6 +9392,77 @@
       "attack_action": "Tail Flare - Rears back onto its hind legs and whips all three flame-tipped tails forward over its head in one hard arc, blue fire streaming off them, then drops back down",
       "attack_extreme": "Foxfire Burst - Throws its whole body up with the three tails snapping forward together, blue flame erupting off them in a wide spray",
       "graduated_at": "2026-09-24T19:38:18+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "ember_kit",
+      "name": "Cinderkit",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "dog",
+      "size": 48,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small fantasy fire fox kit with dark ash-grey fur, glowing orange ember patterns along its back and tail, bright amber eyes, large ears tipped with small flames, and a fluffy tail curled around its paws.",
+      "lore": "A fox born in the ash beds. It is warm to the touch and will not be held.",
+      "graduated_at": "2026-09-24T21:23:06+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "minotaur",
+      "name": "Hornmaul",
+      "tier": "boss",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 160,
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Minotaur shown full body from head to feet, realistic proportions, a massive bull's head with wide curved horns and a ring through the nose, dark brown hide over enormous muscle, a leather harness, cloven hooves, and a double-headed axe held low at its side.",
+      "lore": "The maze was built around it, not for it. It knows every turn, and it is always one turn behind you.",
+      "walk_action": "walk loop seen head-on, full walk cycle in place, the near leg swings forward and plants while the far leg pushes off behind, the legs clearly crossing past each other, the massive shoulders rocking side to side and the head dipping with each step, hooves lifting off the ground, seamless loop whose last frame leads straight back into the first, no turning",
+      "graduated_at": "2026-09-24T21:23:56+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "sand_scorpling",
+      "name": "Sandsting",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small desert scorpion with realistic proportions, a pale sand-yellow armored body, two pincers held close, a segmented tail curled over its back ending in a dark stinger, and eight short legs.",
+      "lore": "It hides in boots and bedrolls. The sting is small; the fever it brings is not.",
+      "attack_action": "Lunging Sting - Snaps the curled tail forward in one fast vicious strike, the stinger shooting out far past its own claws toward the target at full reach, the body lunging behind it, then whips back",
+      "attack_simple": "Pincer Snap - Throws one pincer wide open and snaps it shut",
+      "graduated_at": "2026-09-24T21:24:37+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

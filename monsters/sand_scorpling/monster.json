@@ -1,0 +1,905 @@
+{
+  "id": "sand_scorpling",
+  "name": "Sandsting",
+  "lore": "It hides in boots and bedrolls. The sting is small; the fever it brings is not.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "62a5f426-0eb2-458e-ad5a-9348395e3757",
+    "url": "https://www.pixellab.ai/create-character/62a5f426-0eb2-458e-ad5a-9348395e3757",
+    "prompt": "Small desert scorpion with realistic proportions, a pale sand-yellow armored body, two pincers held close, a segmented tail curled over its back ending in a dark stinger, and eight short legs, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 38,
+    "height": 38
+  },
+  "native_size": {
+    "width": 32,
+    "height": 32
+  },
+  "pad": {
+    "x": 3,
+    "y": 3
+  },
+  "sprite": "sand_scorpling/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "sand_scorpling/rotations/south.webp",
+    "west": "sand_scorpling/rotations/west.webp",
+    "east": "sand_scorpling/rotations/east.webp",
+    "north": "sand_scorpling/rotations/north.webp",
+    "south-east": "sand_scorpling/rotations/south-east.webp",
+    "north-east": "sand_scorpling/rotations/north-east.webp",
+    "north-west": "sand_scorpling/rotations/north-west.webp",
+    "south-west": "sand_scorpling/rotations/south-west.webp"
+  },
+  "animations": {
+    "die": {
+      "group_id": "59755c1c-a790-4c34-88ab-02f245b1424e",
+      "source_name": "custom-Death - Faints, collapses to t",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "sand_scorpling/animations/die__east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/die/east/00.webp",
+            "sand_scorpling/animations/die/east/01.webp",
+            "sand_scorpling/animations/die/east/02.webp",
+            "sand_scorpling/animations/die/east/03.webp",
+            "sand_scorpling/animations/die/east/04.webp",
+            "sand_scorpling/animations/die/east/05.webp",
+            "sand_scorpling/animations/die/east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:17:52 GMT",
+          "src_frames": 7,
+          "sub": "447389f7-cbcc-425f-895f-8d419cfbd006"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "sand_scorpling/animations/die__north.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/die/north/00.webp",
+            "sand_scorpling/animations/die/north/01.webp",
+            "sand_scorpling/animations/die/north/02.webp",
+            "sand_scorpling/animations/die/north/03.webp",
+            "sand_scorpling/animations/die/north/04.webp",
+            "sand_scorpling/animations/die/north/05.webp",
+            "sand_scorpling/animations/die/north/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:17:53 GMT",
+          "src_frames": 7,
+          "sub": "0678ef8c-fd3f-4cf9-b4ea-ab28517b9616"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "sand_scorpling/animations/die__north-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/die/north-east/00.webp",
+            "sand_scorpling/animations/die/north-east/01.webp",
+            "sand_scorpling/animations/die/north-east/02.webp",
+            "sand_scorpling/animations/die/north-east/03.webp",
+            "sand_scorpling/animations/die/north-east/04.webp",
+            "sand_scorpling/animations/die/north-east/05.webp",
+            "sand_scorpling/animations/die/north-east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:17:55 GMT",
+          "src_frames": 7,
+          "sub": "816f82eb-8b8b-4796-8142-fccbb278cf9c"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "sand_scorpling/animations/die__south.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/die/south/00.webp",
+            "sand_scorpling/animations/die/south/01.webp",
+            "sand_scorpling/animations/die/south/02.webp",
+            "sand_scorpling/animations/die/south/03.webp",
+            "sand_scorpling/animations/die/south/04.webp",
+            "sand_scorpling/animations/die/south/05.webp",
+            "sand_scorpling/animations/die/south/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:17:56 GMT",
+          "src_frames": 7,
+          "sub": "0765eb58-c5cc-4afa-8eda-1fb11165f2f6"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "sand_scorpling/animations/die__south-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/die/south-east/00.webp",
+            "sand_scorpling/animations/die/south-east/01.webp",
+            "sand_scorpling/animations/die/south-east/02.webp",
+            "sand_scorpling/animations/die/south-east/03.webp",
+            "sand_scorpling/animations/die/south-east/04.webp",
+            "sand_scorpling/animations/die/south-east/05.webp",
+            "sand_scorpling/animations/die/south-east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:17:58 GMT",
+          "src_frames": 7,
+          "sub": "300ad549-1b52-4240-b7d3-7fae68713bf6"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "sand_scorpling/animations/die__south-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/die/south-west/00.webp",
+            "sand_scorpling/animations/die/south-west/01.webp",
+            "sand_scorpling/animations/die/south-west/02.webp",
+            "sand_scorpling/animations/die/south-west/03.webp",
+            "sand_scorpling/animations/die/south-west/04.webp",
+            "sand_scorpling/animations/die/south-west/05.webp",
+            "sand_scorpling/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "sand_scorpling/animations/die__west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/die/west/00.webp",
+            "sand_scorpling/animations/die/west/01.webp",
+            "sand_scorpling/animations/die/west/02.webp",
+            "sand_scorpling/animations/die/west/03.webp",
+            "sand_scorpling/animations/die/west/04.webp",
+            "sand_scorpling/animations/die/west/05.webp",
+            "sand_scorpling/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "sand_scorpling/animations/die__north-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/die/north-west/00.webp",
+            "sand_scorpling/animations/die/north-west/01.webp",
+            "sand_scorpling/animations/die/north-west/02.webp",
+            "sand_scorpling/animations/die/north-west/03.webp",
+            "sand_scorpling/animations/die/north-west/04.webp",
+            "sand_scorpling/animations/die/north-west/05.webp",
+            "sand_scorpling/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "21c3019b-ba54-4fc7-b0c3-f3025414245b",
+      "source_name": "custom-Lunging Sting - Snaps the curled tail forward in o + custom-Tail Sting - Whips the curled tail up over its hea",
+      "directions": {
+        "north-east": {
+          "frames": 16,
+          "strip": "sand_scorpling/animations/attack__north-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/attack/north-east/00.webp",
+            "sand_scorpling/animations/attack/north-east/01.webp",
+            "sand_scorpling/animations/attack/north-east/02.webp",
+            "sand_scorpling/animations/attack/north-east/03.webp",
+            "sand_scorpling/animations/attack/north-east/04.webp",
+            "sand_scorpling/animations/attack/north-east/05.webp",
+            "sand_scorpling/animations/attack/north-east/06.webp",
+            "sand_scorpling/animations/attack/north-east/07.webp",
+            "sand_scorpling/animations/attack/north-east/08.webp",
+            "sand_scorpling/animations/attack/north-east/09.webp",
+            "sand_scorpling/animations/attack/north-east/10.webp",
+            "sand_scorpling/animations/attack/north-east/11.webp",
+            "sand_scorpling/animations/attack/north-east/12.webp",
+            "sand_scorpling/animations/attack/north-east/13.webp",
+            "sand_scorpling/animations/attack/north-east/14.webp",
+            "sand_scorpling/animations/attack/north-east/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:17:59 GMT",
+          "src_frames": 16,
+          "sub": "1d46cd70-699c-4538-a23f-3e6fe02ce5ef"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "sand_scorpling/animations/attack__south.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/attack/south/00.webp",
+            "sand_scorpling/animations/attack/south/01.webp",
+            "sand_scorpling/animations/attack/south/02.webp",
+            "sand_scorpling/animations/attack/south/03.webp",
+            "sand_scorpling/animations/attack/south/04.webp",
+            "sand_scorpling/animations/attack/south/05.webp",
+            "sand_scorpling/animations/attack/south/06.webp",
+            "sand_scorpling/animations/attack/south/07.webp",
+            "sand_scorpling/animations/attack/south/08.webp",
+            "sand_scorpling/animations/attack/south/09.webp",
+            "sand_scorpling/animations/attack/south/10.webp",
+            "sand_scorpling/animations/attack/south/11.webp",
+            "sand_scorpling/animations/attack/south/12.webp",
+            "sand_scorpling/animations/attack/south/13.webp",
+            "sand_scorpling/animations/attack/south/14.webp",
+            "sand_scorpling/animations/attack/south/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:18:01 GMT",
+          "src_frames": 16,
+          "sub": "701caa58-8bcb-480d-ac2d-f1b83d58d1ba"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "sand_scorpling/animations/attack__south-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/attack/south-east/00.webp",
+            "sand_scorpling/animations/attack/south-east/01.webp",
+            "sand_scorpling/animations/attack/south-east/02.webp",
+            "sand_scorpling/animations/attack/south-east/03.webp",
+            "sand_scorpling/animations/attack/south-east/04.webp",
+            "sand_scorpling/animations/attack/south-east/05.webp",
+            "sand_scorpling/animations/attack/south-east/06.webp",
+            "sand_scorpling/animations/attack/south-east/07.webp",
+            "sand_scorpling/animations/attack/south-east/08.webp",
+            "sand_scorpling/animations/attack/south-east/09.webp",
+            "sand_scorpling/animations/attack/south-east/10.webp",
+            "sand_scorpling/animations/attack/south-east/11.webp",
+            "sand_scorpling/animations/attack/south-east/12.webp",
+            "sand_scorpling/animations/attack/south-east/13.webp",
+            "sand_scorpling/animations/attack/south-east/14.webp",
+            "sand_scorpling/animations/attack/south-east/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:18:03 GMT",
+          "src_frames": 16,
+          "sub": "894009cf-7d17-4f6b-9480-f9f97779019a"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "sand_scorpling/animations/attack__south-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/attack/south-west/00.webp",
+            "sand_scorpling/animations/attack/south-west/01.webp",
+            "sand_scorpling/animations/attack/south-west/02.webp",
+            "sand_scorpling/animations/attack/south-west/03.webp",
+            "sand_scorpling/animations/attack/south-west/04.webp",
+            "sand_scorpling/animations/attack/south-west/05.webp",
+            "sand_scorpling/animations/attack/south-west/06.webp",
+            "sand_scorpling/animations/attack/south-west/07.webp",
+            "sand_scorpling/animations/attack/south-west/08.webp",
+            "sand_scorpling/animations/attack/south-west/09.webp",
+            "sand_scorpling/animations/attack/south-west/10.webp",
+            "sand_scorpling/animations/attack/south-west/11.webp",
+            "sand_scorpling/animations/attack/south-west/12.webp",
+            "sand_scorpling/animations/attack/south-west/13.webp",
+            "sand_scorpling/animations/attack/south-west/14.webp",
+            "sand_scorpling/animations/attack/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "sand_scorpling/animations/attack__north-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/attack/north-west/00.webp",
+            "sand_scorpling/animations/attack/north-west/01.webp",
+            "sand_scorpling/animations/attack/north-west/02.webp",
+            "sand_scorpling/animations/attack/north-west/03.webp",
+            "sand_scorpling/animations/attack/north-west/04.webp",
+            "sand_scorpling/animations/attack/north-west/05.webp",
+            "sand_scorpling/animations/attack/north-west/06.webp",
+            "sand_scorpling/animations/attack/north-west/07.webp",
+            "sand_scorpling/animations/attack/north-west/08.webp",
+            "sand_scorpling/animations/attack/north-west/09.webp",
+            "sand_scorpling/animations/attack/north-west/10.webp",
+            "sand_scorpling/animations/attack/north-west/11.webp",
+            "sand_scorpling/animations/attack/north-west/12.webp",
+            "sand_scorpling/animations/attack/north-west/13.webp",
+            "sand_scorpling/animations/attack/north-west/14.webp",
+            "sand_scorpling/animations/attack/north-west/15.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
+        "east": {
+          "frames": 16,
+          "strip": "sand_scorpling/animations/attack__east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/attack/east/00.webp",
+            "sand_scorpling/animations/attack/east/01.webp",
+            "sand_scorpling/animations/attack/east/02.webp",
+            "sand_scorpling/animations/attack/east/03.webp",
+            "sand_scorpling/animations/attack/east/04.webp",
+            "sand_scorpling/animations/attack/east/05.webp",
+            "sand_scorpling/animations/attack/east/06.webp",
+            "sand_scorpling/animations/attack/east/07.webp",
+            "sand_scorpling/animations/attack/east/08.webp",
+            "sand_scorpling/animations/attack/east/09.webp",
+            "sand_scorpling/animations/attack/east/10.webp",
+            "sand_scorpling/animations/attack/east/11.webp",
+            "sand_scorpling/animations/attack/east/12.webp",
+            "sand_scorpling/animations/attack/east/13.webp",
+            "sand_scorpling/animations/attack/east/14.webp",
+            "sand_scorpling/animations/attack/east/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:07:18 GMT",
+          "src_frames": 16,
+          "sub": "bb55d36b-ca4f-4447-b372-84ab3bf7ab76"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "sand_scorpling/animations/attack__north.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/attack/north/00.webp",
+            "sand_scorpling/animations/attack/north/01.webp",
+            "sand_scorpling/animations/attack/north/02.webp",
+            "sand_scorpling/animations/attack/north/03.webp",
+            "sand_scorpling/animations/attack/north/04.webp",
+            "sand_scorpling/animations/attack/north/05.webp",
+            "sand_scorpling/animations/attack/north/06.webp",
+            "sand_scorpling/animations/attack/north/07.webp",
+            "sand_scorpling/animations/attack/north/08.webp",
+            "sand_scorpling/animations/attack/north/09.webp",
+            "sand_scorpling/animations/attack/north/10.webp",
+            "sand_scorpling/animations/attack/north/11.webp",
+            "sand_scorpling/animations/attack/north/12.webp",
+            "sand_scorpling/animations/attack/north/13.webp",
+            "sand_scorpling/animations/attack/north/14.webp",
+            "sand_scorpling/animations/attack/north/15.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 21:18:06 GMT",
+          "src_frames": 16,
+          "sub": "0101f592-eb60-4c26-98e0-b7b673abcf88"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "sand_scorpling/animations/attack__west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/attack/west/00.webp",
+            "sand_scorpling/animations/attack/west/01.webp",
+            "sand_scorpling/animations/attack/west/02.webp",
+            "sand_scorpling/animations/attack/west/03.webp",
+            "sand_scorpling/animations/attack/west/04.webp",
+            "sand_scorpling/animations/attack/west/05.webp",
+            "sand_scorpling/animations/attack/west/06.webp",
+            "sand_scorpling/animations/attack/west/07.webp",
+            "sand_scorpling/animations/attack/west/08.webp",
+            "sand_scorpling/animations/attack/west/09.webp",
+            "sand_scorpling/animations/attack/west/10.webp",
+            "sand_scorpling/animations/attack/west/11.webp",
+            "sand_scorpling/animations/attack/west/12.webp",
+            "sand_scorpling/animations/attack/west/13.webp",
+            "sand_scorpling/animations/attack/west/14.webp",
+            "sand_scorpling/animations/attack/west/15.webp"
+          ],
+          "mirrored_from": "east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": null,
+      "source_name": "candidates/sand_scorpling (idle)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/idle__south.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/idle/south/00.webp",
+            "sand_scorpling/animations/idle/south/01.webp",
+            "sand_scorpling/animations/idle/south/02.webp",
+            "sand_scorpling/animations/idle/south/03.webp",
+            "sand_scorpling/animations/idle/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/idle/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/idle__south-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/idle/south-east/00.webp",
+            "sand_scorpling/animations/idle/south-east/01.webp",
+            "sand_scorpling/animations/idle/south-east/02.webp",
+            "sand_scorpling/animations/idle/south-east/03.webp",
+            "sand_scorpling/animations/idle/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/idle/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/idle__east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/idle/east/00.webp",
+            "sand_scorpling/animations/idle/east/01.webp",
+            "sand_scorpling/animations/idle/east/02.webp",
+            "sand_scorpling/animations/idle/east/03.webp",
+            "sand_scorpling/animations/idle/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/idle/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/idle__north-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/idle/north-east/00.webp",
+            "sand_scorpling/animations/idle/north-east/01.webp",
+            "sand_scorpling/animations/idle/north-east/02.webp",
+            "sand_scorpling/animations/idle/north-east/03.webp",
+            "sand_scorpling/animations/idle/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/idle/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/idle__north.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/idle/north/00.webp",
+            "sand_scorpling/animations/idle/north/01.webp",
+            "sand_scorpling/animations/idle/north/02.webp",
+            "sand_scorpling/animations/idle/north/03.webp",
+            "sand_scorpling/animations/idle/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/idle/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/idle__north-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/idle/north-west/00.webp",
+            "sand_scorpling/animations/idle/north-west/01.webp",
+            "sand_scorpling/animations/idle/north-west/02.webp",
+            "sand_scorpling/animations/idle/north-west/03.webp",
+            "sand_scorpling/animations/idle/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/idle/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/idle__west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/idle/west/00.webp",
+            "sand_scorpling/animations/idle/west/01.webp",
+            "sand_scorpling/animations/idle/west/02.webp",
+            "sand_scorpling/animations/idle/west/03.webp",
+            "sand_scorpling/animations/idle/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/idle/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/idle__south-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/idle/south-west/00.webp",
+            "sand_scorpling/animations/idle/south-west/01.webp",
+            "sand_scorpling/animations/idle/south-west/02.webp",
+            "sand_scorpling/animations/idle/south-west/03.webp",
+            "sand_scorpling/animations/idle/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/idle/south-west"
+        }
+      }
+    },
+    "walk": {
+      "group_id": null,
+      "source_name": "candidates/sand_scorpling (walk)",
+      "directions": {
+        "south": {
+          "frames": 4,
+          "strip": "sand_scorpling/animations/walk__south.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/walk/south/00.webp",
+            "sand_scorpling/animations/walk/south/01.webp",
+            "sand_scorpling/animations/walk/south/02.webp",
+            "sand_scorpling/animations/walk/south/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/walk/south"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "sand_scorpling/animations/walk__south-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/walk/south-east/00.webp",
+            "sand_scorpling/animations/walk/south-east/01.webp",
+            "sand_scorpling/animations/walk/south-east/02.webp",
+            "sand_scorpling/animations/walk/south-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/walk/south-east"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "sand_scorpling/animations/walk__east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/walk/east/00.webp",
+            "sand_scorpling/animations/walk/east/01.webp",
+            "sand_scorpling/animations/walk/east/02.webp",
+            "sand_scorpling/animations/walk/east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/walk/east"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "sand_scorpling/animations/walk__north-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/walk/north-east/00.webp",
+            "sand_scorpling/animations/walk/north-east/01.webp",
+            "sand_scorpling/animations/walk/north-east/02.webp",
+            "sand_scorpling/animations/walk/north-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/walk/north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "sand_scorpling/animations/walk__north.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/walk/north/00.webp",
+            "sand_scorpling/animations/walk/north/01.webp",
+            "sand_scorpling/animations/walk/north/02.webp",
+            "sand_scorpling/animations/walk/north/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "sand_scorpling/animations/walk__north-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/walk/north-west/00.webp",
+            "sand_scorpling/animations/walk/north-west/01.webp",
+            "sand_scorpling/animations/walk/north-west/02.webp",
+            "sand_scorpling/animations/walk/north-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/walk/north-west"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "sand_scorpling/animations/walk__west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/walk/west/00.webp",
+            "sand_scorpling/animations/walk/west/01.webp",
+            "sand_scorpling/animations/walk/west/02.webp",
+            "sand_scorpling/animations/walk/west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/walk/west"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "sand_scorpling/animations/walk__south-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/walk/south-west/00.webp",
+            "sand_scorpling/animations/walk/south-west/01.webp",
+            "sand_scorpling/animations/walk/south-west/02.webp",
+            "sand_scorpling/animations/walk/south-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/walk/south-west"
+        }
+      }
+    },
+    "angry": {
+      "group_id": null,
+      "source_name": "candidates/sand_scorpling (angry)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/angry__south.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/angry/south/00.webp",
+            "sand_scorpling/animations/angry/south/01.webp",
+            "sand_scorpling/animations/angry/south/02.webp",
+            "sand_scorpling/animations/angry/south/03.webp",
+            "sand_scorpling/animations/angry/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/angry/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/angry__south-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/angry/south-east/00.webp",
+            "sand_scorpling/animations/angry/south-east/01.webp",
+            "sand_scorpling/animations/angry/south-east/02.webp",
+            "sand_scorpling/animations/angry/south-east/03.webp",
+            "sand_scorpling/animations/angry/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/angry/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/angry__east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/angry/east/00.webp",
+            "sand_scorpling/animations/angry/east/01.webp",
+            "sand_scorpling/animations/angry/east/02.webp",
+            "sand_scorpling/animations/angry/east/03.webp",
+            "sand_scorpling/animations/angry/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/angry/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/angry__north-east.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/angry/north-east/00.webp",
+            "sand_scorpling/animations/angry/north-east/01.webp",
+            "sand_scorpling/animations/angry/north-east/02.webp",
+            "sand_scorpling/animations/angry/north-east/03.webp",
+            "sand_scorpling/animations/angry/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/angry/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/angry__north.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/angry/north/00.webp",
+            "sand_scorpling/animations/angry/north/01.webp",
+            "sand_scorpling/animations/angry/north/02.webp",
+            "sand_scorpling/animations/angry/north/03.webp",
+            "sand_scorpling/animations/angry/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/angry/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/angry__north-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/angry/north-west/00.webp",
+            "sand_scorpling/animations/angry/north-west/01.webp",
+            "sand_scorpling/animations/angry/north-west/02.webp",
+            "sand_scorpling/animations/angry/north-west/03.webp",
+            "sand_scorpling/animations/angry/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/angry/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/angry__west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/angry/west/00.webp",
+            "sand_scorpling/animations/angry/west/01.webp",
+            "sand_scorpling/animations/angry/west/02.webp",
+            "sand_scorpling/animations/angry/west/03.webp",
+            "sand_scorpling/animations/angry/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/angry/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "sand_scorpling/animations/angry__south-west.webp",
+          "frame_paths": [
+            "sand_scorpling/animations/angry/south-west/00.webp",
+            "sand_scorpling/animations/angry/south-west/01.webp",
+            "sand_scorpling/animations/angry/south-west/02.webp",
+            "sand_scorpling/animations/angry/south-west/03.webp",
+            "sand_scorpling/animations/angry/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/sand_scorpling/animations/angry/south-west"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      32,
+      32
+    ],
+    "pad": [
+      3,
+      3
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 7,
+        "side": "left",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 4,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 9,
+        "side": "left",
+        "target": 8,
+        "overlap": 1.0,
+        "strip_px": 4,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 10,
+        "side": "left",
+        "target": 9,
+        "overlap": 1.0,
+        "strip_px": 4,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 10,
+        "side": "top",
+        "target": 9,
+        "overlap": 1.0,
+        "strip_px": 6,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 11,
+        "side": "left",
+        "target": 10,
+        "overlap": 1.0,
+        "strip_px": 4,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 11,
+        "side": "top",
+        "target": 10,
+        "overlap": 1.0,
+        "strip_px": 6,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 6,
+        "side": "left",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 3,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 9,
+        "side": "left",
+        "target": 8,
+        "overlap": 1.0,
+        "strip_px": 3,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 6,
+        "side": "right",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 3,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 9,
+        "side": "right",
+        "target": 8,
+        "overlap": 1.0,
+        "strip_px": 3,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 7,
+        "side": "right",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 4,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 9,
+        "side": "right",
+        "target": 8,
+        "overlap": 1.0,
+        "strip_px": 4,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 10,
+        "side": "right",
+        "target": 9,
+        "overlap": 1.0,
+        "strip_px": 4,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 10,
+        "side": "top",
+        "target": 9,
+        "overlap": 1.0,
+        "strip_px": 6,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 11,
+        "side": "right",
+        "target": 10,
+        "overlap": 1.0,
+        "strip_px": 4,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 11,
+        "side": "top",
+        "target": 10,
+        "overlap": 1.0,
+        "strip_px": 6,
+        "ext": 1
+      }
+    ]
+  }
+}
