@@ -268,9 +268,23 @@ them; folder isolation beats DRY here).
   bytes go into the canvas (the CPU copy a context restore re-uploads) and to
   the GPU as one texSubImage2D of that row; its twenty frames are names on
   the atlas (`c,r:k`) and the sprite steps through them. The walk's scan
-  fires per CELL of travel, not per half-cell. `verify-foam.mjs` judges the
-  pixels; `stats` carries scans/scanTotal/installs, and the beacon's
+  fires per CELL of travel, not per half-cell, AND IT IS A SWEEP OVER FRAMES
+  (games-perf Task 3, 2026-09-24: his run marked `amb:foam` 6.7 ms mean and
+  11.1 max inside the worst frames — the whole lattice walk, every storey on
+  screen, in one frame): `scanBegin` keeps the head, `scanStep` walks rows
+  SCAN_SLICE_MS (1 ms) a frame, `scanFinish` lands the queue nearest-first,
+  the retirements and the sheet LRU; the queue in force stays the last one
+  meanwhile, and a sweep in flight is never restarted. `verify-foam.mjs`
+  judges the pixels; `stats` carries scans/scanSlices/scanTotal/installs
+  (`scanPeak` is the worst SLICE, what a frame pays), and the beacon's
   `ambient["foam:parts"]` row is their window deltas.
+  **A POOL GROWS A FEW A FRAME** (Task 3): walking onto water asked for every
+  wave and glint mark in one frame (`water` peaked 9.8 ms), the first night
+  frame in a zone spawned every fly with five placement tries each
+  (`fireflies` 10.1) — both grow GROW_PER_FRAME (6 marks, 4 flies) a frame.
+  The weather layer's pool already eases in over SHOWN_TAU_S. An effect that
+  creates its whole population in one `while (pool.length < want)` pays that
+  frame; grow it a few a frame or ease `want`.
 - **THE LIGHT KINDS, AND WHICH EFFECT READS WHICH.** The scenery domain
   classified all 500 lit pieces by eye, and the two fire effects ask different
   questions of that data. `embers/` reads the published `light.embers` boolean

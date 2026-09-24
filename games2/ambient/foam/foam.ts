@@ -71,6 +71,7 @@ const DEPTH = -999_999;
 const PICK_DY = 4;
 const GAIN_TAU = 900;
 const SCAN_MS = 450; // how often the view is re-walked for cells (his run: 100 walks a window at 3-5 ms each on the phone)
+const SCAN_SLICE_MS = 1.0; // a sweep's share of ONE frame (Task 3: the whole walk was 9-13 ms in one frame on his phone)
 const PAD = 24; // px beyond the view a cell is still kept live
 /* THE WORK IS BUDGETED IN TIME AND ORDERED BY DISTANCE, and both halves of
  * that are paid for (maintainer 2026-09-11, at 278,261: "why is the foam
@@ -200,13 +201,20 @@ export function foamFeature(): AmbientFeature {
   /** The prioritised work queue for the current view, nearest first. */
   let queue: { c: number; r: number; d2: number }[] = [];
   let queueAt = 0;
+  /** The view walk in flight — rows left, what it has queued so far (Task 3). */
+  interface Sweep {
+    x0: number; x1: number; y0: number; y1: number; sMin: number; sMax: number;
+    levels: number[]; zi: number; t: number; tMax: number; cx: number; cy: number;
+    wanted: Set<number>; q: { c: number; r: number; d2: number }[]; t0: number; ms: number;
+  }
+  let sweep: Sweep | null = null;
   let scene: Phaser.Scene | null = null;
   let sprites = 0; // live sprites, kept as a count so the frame never walks the map to ask
   let drawnG = -1;
   let drawnOn = false;
   // The peaks carry WHEN (performance.now() at the start; the beacon's
   // `counts.clock0` makes it a clock reading) as well as how long.
-  const stats = { resolves: 0, bakes: 0, bakeMs: 0, bakePeak: 0, bakePeakT0: 0, texMs: 0, texPeak: 0, texPeakT0: 0, installs: 0, scanMs: 0, scanPeak: 0, scanPeakT0: 0, scans: 0, scanTotal: 0, picks: 0, coast: 0, crest: 0, dropped: 0 };
+  const stats = { resolves: 0, bakes: 0, bakeMs: 0, bakePeak: 0, bakePeakT0: 0, texMs: 0, texPeak: 0, texPeakT0: 0, installs: 0, scanMs: 0, scanPeak: 0, scanPeakT0: 0, scans: 0, scanSlices: 0, scanTotal: 0, picks: 0, coast: 0, crest: 0, dropped: 0 };
   const sheetLRU: string[] = [];
   const atlases: Atlas[] = [];
   /** One row's bytes, reused: a fresh ImageData per install was 148 KB of
@@ -564,7 +572,7 @@ export function foamFeature(): AmbientFeature {
 
   /* ---- the scan ---------------------------------------------------------- */
 
-  const scan = (view: Phaser.Geom.Rectangle) => {
+  const scanBegin = (view: Phaser.Geom.Rectangle) => {
     if (!world) {
       const f = ml()?.worldInfo as undefined | (() => { w?: number; h?: number; maxL?: number } | null);
       let w: { w?: number; h?: number; maxL?: number } | null = null;
@@ -616,17 +624,46 @@ export function foamFeature(): AmbientFeature {
     }
     const sMin = Math.floor((x0 - ox) / DX) - 1;
     const sMax = Math.ceil((x1 - ox) / DX) + 1;
-    const wanted = new Set<number>();
-    /* THE QUEUE, NEAREST TO THE MIDDLE OF THE VIEW FIRST. Nothing is resolved
-     * here — a candidate's plate position follows from the lattice alone, so
-     * the ordering costs no `t3at` at all, and the only per-cell work in the
-     * walk is the cheap liquid-quad test (`surfaceAt`, 0.1 us measured). */
-    const cx = view.x + view.width / 2;
-    const cy = view.y + view.height / 2;
-    const q: { c: number; r: number; d2: number }[] = [];
-    for (const z of levels)
-    for (let t = Math.floor((y0 - oy + z * pitch) / DY) - 3, tMax = Math.ceil((y1 - oy + z * pitch) / DY) + 1; t <= tMax; t++)
-      for (let s = sMin; s <= sMax; s++) {
+    /* THE WALK IS A SWEEP OVER FRAMES (games-perf Task 3, 2026-09-24): his
+     * 14:01 run paid the whole lattice walk in one frame — `amb:foam` 6.7 ms
+     * mean and 11.1 max inside the worst frames, twice a second and on every
+     * cell of travel. The rows are walked SCAN_SLICE_MS a frame from here
+     * (scanStep); the queue, the retirements and the sheet LRU land when the
+     * sweep completes (scanFinish). The queue in force stays the last one
+     * meanwhile, and a sweep in flight is never restarted by the trigger. */
+    const lv = [...levels];
+    const z = lv[0];
+    sweep = {
+      x0, x1, y0, y1, sMin, sMax, levels: lv, zi: 0,
+      t: Math.floor((y0 - oy + z * pitch) / DY) - 3,
+      tMax: Math.ceil((y1 - oy + z * pitch) / DY) + 1,
+      cx: view.x + view.width / 2,
+      cy: view.y + view.height / 2,
+      wanted: new Set<number>(),
+      q: [],
+      t0,
+      ms: 0,
+    };
+    stats.scans++;
+  };
+
+  /** One frame's share of the sweep: rows until SCAN_SLICE_MS has gone. */
+  const scanStep = (): void => {
+    const sw = sweep;
+    if (!sw || !world) return;
+    const t0 = performance.now();
+    for (;;) {
+      if (sw.t > sw.tMax) {
+        sw.zi++;
+        if (sw.zi >= sw.levels.length) break;
+        const z = sw.levels[sw.zi];
+        sw.t = Math.floor((sw.y0 - oy + z * pitch) / DY) - 3;
+        sw.tMax = Math.ceil((sw.y1 - oy + z * pitch) / DY) + 1;
+        continue;
+      }
+      const z = sw.levels[sw.zi];
+      const t = sw.t++;
+      for (let s = sw.sMin; s <= sw.sMax; s++) {
         if (((s + t) & 1) !== 0) continue;
         const c = (s + t) / 2;
         const r = (t - s) / 2;
@@ -636,16 +673,36 @@ export function foamFeature(): AmbientFeature {
         // where this cell's plate lands, straight off the lattice
         const sx = ox + (c - r) * DX;
         const sy = oy + (c + r) * DY - z * pitch;
-        if (sx + TILE < x0 || sx > x1 || sy + TOP_ROWS < y0 || sy > y1) continue;
+        if (sx + TILE < sw.x0 || sx > sw.x1 || sy + TOP_ROWS < sw.y0 || sy > sw.y1) continue;
         const i = idx(c, r);
-        if (wanted.has(i)) continue; // another storey already claimed this cell
-        wanted.add(i);
+        if (sw.wanted.has(i)) continue; // another storey already claimed this cell
+        sw.wanted.add(i);
         const back = live.get(i);
         if (back) back.warm = false; // in view again
-        const dx = sx + DX - cx;
-        const dy = (sy + DY - cy) * (DX / DY); // screen distance, not lattice distance
-        q.push({ c, r, d2: dx * dx + dy * dy });
+        const dx = sx + DX - sw.cx;
+        const dy = (sy + DY - sw.cy) * (DX / DY); // screen distance, not lattice distance
+        sw.q.push({ c, r, d2: dx * dx + dy * dy });
       }
+      if (performance.now() - t0 >= SCAN_SLICE_MS) break;
+    }
+    const ms = performance.now() - t0;
+    sw.ms += ms;
+    stats.scanSlices++;
+    stats.scanTotal += ms;
+    if (ms > stats.scanPeak) {
+      stats.scanPeak = ms; // the worst SLICE: what a frame pays
+      stats.scanPeakT0 = t0;
+    }
+    if (sw.zi >= sw.levels.length) scanFinish(sw);
+  };
+
+  /** The sweep landed: the queue nearest-first, what left the view retired,
+   *  the sheet LRU trimmed — the walk's old tail, unchanged. */
+  const scanFinish = (sw: Sweep): void => {
+    sweep = null;
+    const t0 = performance.now();
+    const wanted = sw.wanted;
+    const q = sw.q;
     q.sort((a, b) => a.d2 - b.d2);
     queue = q;
     queueAt = 0;
@@ -670,13 +727,9 @@ export function foamFeature(): AmbientFeature {
         }
       if (sheetLRU[0] === key) sheetLRU.shift();
     }
-    stats.scanMs = performance.now() - t0;
-    stats.scans++;
-    stats.scanTotal += stats.scanMs;
-    if (stats.scanMs > stats.scanPeak) {
-      stats.scanPeak = stats.scanMs;
-      stats.scanPeakT0 = t0;
-    }
+    const ms = performance.now() - t0;
+    stats.scanTotal += ms;
+    stats.scanMs = sw.ms + ms; // the whole sweep, over its frames
   };
 
   /** Walk the queue nearest-first under a time budget: resolve, decide, bake,
@@ -735,12 +788,13 @@ export function foamFeature(): AmbientFeature {
        * half-cell trigger ran the lattice walk eight times a second. */
       const moved = Math.abs(view.x - lastViewX) > 2 * DX || Math.abs(view.y - lastViewY) > 4 * DY;
       const outdoorNow = ctx.outdoor > 0.01 || forced;
-      if ((scanAge >= SCAN_MS || moved) && !suppressed && outdoorNow) {
+      if (!sweep && (scanAge >= SCAN_MS || moved) && !suppressed && outdoorNow) {
         scanAge = 0;
         lastViewX = view.x;
         lastViewY = view.y;
-        scan(view);
+        scanBegin(view);
       }
+      if (sweep && !suppressed) scanStep();
       if (outdoorNow && !suppressed && !Number.isNaN(ox)) work();
       const target = forced ? 1 : suppressed ? 0 : sprites > 0 ? 1 : 0;
       gain += (target - gain) * Math.min(1, (dtc / GAIN_TAU) * 3);

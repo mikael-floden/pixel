@@ -15,6 +15,7 @@ const MARGIN = 48; // world px beyond the view before a fly re-anchors
 const AREA_PER_FLY = 9000; // ~17 flies on a 480×320 phone view
 const MIN_FLIES = 6;
 const MAX_FLIES = 28;
+const GROW_PER_FRAME = 4; // flies spawned per frame at most (Task 3)
 const GAIN_TAU = 1500; // ms — swarm fade in/out
 // Warm lantern hues — mostly green-gold, the odd amber one.
 const TINTS = [0xb8ff78, 0xd4ff8a, 0xb8ff78, 0xffe08a];
@@ -117,7 +118,9 @@ export function firefliesFeature(): AmbientFeature {
 
       // Population follows the view size (zoom/resize aware).
       const want = targetCount(view);
-      while (flies.length < want) {
+      // A FEW A FRAME (games-perf Task 3, 2026-09-24): the first night frame in a
+      // zone spawned every fly, five placement tries each — `fireflies` peaked 10.1 ms.
+      for (let k = 0; k < GROW_PER_FRAME && flies.length < want; k++) {
         const sprite = ctx.scene.add
           .image(0, 0, TEX)
           .setDepth(DEPTH)

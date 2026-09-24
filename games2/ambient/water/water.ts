@@ -39,6 +39,7 @@ const DEPTH_GLINT = 900_000.45;
 const GAIN_TAU = 1200;
 const SAMPLE_MS = 150; // how often we re-scan the view for water
 const GRID = 8; // GRID×GRID water probe samples across the view (spawn candidates)
+const GROW_PER_FRAME = 6; // marks created per frame at most (Task 3)
 const AREA_PER_WAVE = 8000; // ~ waves per water on a phone view (sparse — spacing matters)
 const AREA_PER_GLINT = 11000;
 const MAX_WAVE = 26;
@@ -291,8 +292,10 @@ export function waterFeature(): AmbientFeature {
         ? 0
         : Math.min(MAX_GLINT, Math.round((area / AREA_PER_GLINT) * waterFrac * refl.strength));
 
-      while (waves.length < wantWave) waves.push(makeMark(ctx.scene, WAVE_FRAMES, DEPTH_WAVE, true));
-      while (glints.length < wantGlint) glints.push(makeMark(ctx.scene, GLINT_FRAMES, DEPTH_GLINT, true));
+      // A FEW A FRAME (games-perf Task 3, 2026-09-24): walking onto water asked for
+      // every wave and glint in one frame — `water` peaked 9.8 ms in his run.
+      for (let k = 0; k < GROW_PER_FRAME && waves.length < wantWave; k++) waves.push(makeMark(ctx.scene, WAVE_FRAMES, DEPTH_WAVE, true));
+      for (let k = 0; k < GROW_PER_FRAME && glints.length < wantGlint; k++) glints.push(makeMark(ctx.scene, GLINT_FRAMES, DEPTH_GLINT, true));
       while (waves.length > wantWave) waves.pop()!.sprite.destroy();
       while (glints.length > wantGlint) glints.pop()!.sprite.destroy();
 

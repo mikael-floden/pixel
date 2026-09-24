@@ -413,6 +413,17 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   "fps meter" mounts `fpsbadge.ts`'s corner readout (fps, worst frame,
   hitches over 5 s) and remembers per device (localStorage `ml-fps`, the
   same switch `?fps=1`/`?fps=0` sets); `unmountFpsBadge` takes it down.
+- **AMBIENT SCANS AND BURSTS ARE BOUNDED PER FRAME** (Task 3 of his order,
+  games-perf 2026-09-24). Inside his 14:01 run's worst frames the timelines
+  marked `amb:foam` 6.7 ms mean / 11.1 max: foam's whole lattice walk in one
+  frame, every 450 ms and per cell of travel; the per-effect peaks named
+  water 9.8 (every wave and glint mark created in one frame) and fireflies
+  10.1 (every fly spawned in one frame, five tries each). Foam's walk is a
+  sweep (`scanBegin`/`scanStep` 1 ms a frame/`scanFinish`, the queue swapped
+  when it lands); water and fireflies grow their pools a few a frame
+  (`GROW_PER_FRAME`). Law in `ambient/README.md` (foam's scan paragraph,
+  the pool rule). Dragonflies' scan-on-move (peak 8.3) is games-ambient's
+  file in flight: posted to them, not edited.
 - **THE WALK IS INCREMENTAL TOO** (`rebuildOccluders` full vs step,
   `tiles3Occluders(..., only)`, 2026-09-12). The pool kept the IMAGES; the
   walk that decided them still visited every cell of the window — ~2,700 on
