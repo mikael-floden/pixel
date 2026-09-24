@@ -55,7 +55,7 @@
  *  terrainbake.test.ts; the baker needs a scene. */
 
 import type Phaser from "phaser";
-import { BAKE_CHUNK, BAKE_ATLAS_W, BAKE_ATLAS_H, BAKE_MAX_PAGES, BAKE_MS, BAKE_MAX_ATLASES, BAKE_RETRY_MS, buildSegments, chunkKey, chunksInWindow, packShelves, slotOf, type BakeOp, type BakeSegment } from "./terrainbakecore";
+import { BAKE_CHUNK, BAKE_ATLAS_W, BAKE_ATLAS_H, BAKE_MAX_PAGES, BAKE_MS, BAKE_MAX_ATLASES, BAKE_RETRY_MS, BAKE_RETRY_MAX_MS, BAKE_REFRESH_MIN_MS, BAKE_WARM, buildSegments, chunkKey, chunksInWindow, packShelves, slotOf, type BakeOp, type BakeSegment } from "./terrainbakecore";
 export * from "./terrainbakecore";
 
 /* ------------------------------------------------------------ the baker --- */
@@ -86,6 +86,13 @@ export interface BakeHost {
   onChunk(cells: number[], baked: boolean): void;
   /** Cells the indoor cut-away masks right now — those chunks stay live. */
   masked(col: number, row: number): boolean;
+  /** THE BAKE NEVER ASKS FOR ART: a cell is walked only when the live walk
+   *  has already walked it complete (its art landed and composed for the
+   *  sprites). His 19:06 run on c2f857aad7 measured walking anything else —
+   *  `bakeStep` 7-10 ms a frame, 36-84 ms peaks, the resolver composing for
+   *  chunks beyond the view. A cell that is not walkable draws live and the
+   *  chunk retries when it is. */
+  walkable(col: number, row: number): boolean;
 }
 
 type Img = Phaser.GameObjects.Image;
@@ -94,7 +101,7 @@ interface Chunk {
   cx: number;
   cy: number;
   key: number;
-  state: "pending" | "walking" | "waiting" | "drawing" | "baked" | "live";
+  state: "pending" | "walking" | "waiting" | "packing" | "preparing" | "drawing" | "finishing" | "baked" | "live";
   /** Walk cursor (cell index within the chunk) while walking. */
   cursor: number;
   ops: BakeOp[];
@@ -110,9 +117,13 @@ interface Chunk {
   stale: boolean;
   /** The retry interval, doubled per idle re-walk up to BAKE_RETRY_MAX_MS. */
   retryMs: number;
+  /** When the last walk of this chunk ended (refresh coalescing). */
+  lastWalkAt: number;
   segs: BakeSegment[];
   pages: string[];
   pageSize: number;
+  /** Pages the pack decided on; `preparing` acquires them one by one. */
+  pagesNeeded: number;
   drawCursor: number;
   images: Img[];
   gen: number;
@@ -145,6 +156,22 @@ export interface BakeRow {
   ops: number;
   opsMax: number;
   unbakeable: number;
+  /** The worst single unit of each kind this window, ms: a cell's walk, a
+   *  chunk's pack (segments, shelves), an atlas allocation (a texture and a
+   *  framebuffer: the one unit that cannot be sliced, so at most one a
+   *  frame, warmed in idle frames), a page's prep (frames, the clear), a
+   *  segment's draw, a bracket's end (capture + blit), a chunk's finish
+   *  (images, drops). Which one exceeds the budget is what to cut.
+   *  `peakSteady` is the worst frame that allocated nothing: what the bake
+   *  costs once its pool is warm. */
+  peakWalk: number;
+  peakPack: number;
+  peakAlloc: number;
+  peakPrep: number;
+  peakDraw: number;
+  peakEnd: number;
+  peakFinish: number;
+  peakSteady: number;
 }
 
 /** The atlas sizes a chunk may take, smallest first: a sparse chunk pays for
@@ -152,9 +179,6 @@ export interface BakeRow {
 const ATLAS_SIZES = [256, 512, BAKE_ATLAS_W];
 /** Ops per segment below which a chunk is not worth baking (stays live). */
 const BAKE_SPARSE_RATIO = 2;
-/** The retry interval's ceiling for a standing bake whose live cells never land. */
-const BAKE_RETRY_MAX_MS = 30000;
-
 /** A signature of an op list: order-sensitive (the order is the picture). */
 function opsSignature(ops: readonly BakeOp[]): number {
   let h = 2166136261 >>> 0;
@@ -182,7 +206,9 @@ export class TerrainBake {
   private suspended = false;
   /** Every band image alive, for the cull and the cover index. */
   images: Img[] = [];
-  private win = { ms: 0, peak: 0, bakes: 0, evicted: 0, dirtied: 0, ops: 0, opsMax: 0, unbakeable: 0 };
+  private win = { ms: 0, peak: 0, bakes: 0, evicted: 0, dirtied: 0, ops: 0, opsMax: 0, unbakeable: 0, peakWalk: 0, peakPack: 0, peakAlloc: 0, peakPrep: 0, peakDraw: 0, peakEnd: 0, peakFinish: 0, peakSteady: 0 };
+  /** An atlas was allocated in this step (one a frame, and the frame is not "steady"). */
+  private allocated = false;
 
   constructor(private readonly host: BakeHost) {}
 
@@ -200,7 +226,10 @@ export class TerrainBake {
   setEnabled(on: boolean): void {
     if (on === this.userOn) return;
     this.userOn = on;
-    if (!this.enabled) for (const c of [...this.chunks.values()]) this.drop(c, "off");
+    if (!this.enabled) {
+      for (const c of [...this.chunks.values()]) this.drop(c, "off");
+      this.freePool(); // off is not a pause: the VRAM goes with it (the indoor suspend keeps it)
+    }
   }
 
   /** THE INDOOR CUT-AWAY SUSPENDS THE BAKE: the mask rewrites every column
@@ -237,7 +266,7 @@ export class TerrainBake {
       this.wanted.add(k);
       let c = this.chunks.get(k);
       if (!c) {
-        c = { cx, cy, key: k, state: "pending", cursor: 0, ops: [], liveCells: new Set(), bakedLive: new Set(), sig: 0, stale: false, retryMs: BAKE_RETRY_MS, segs: [], pages: [], pageSize: 0, drawCursor: 0, images: [], gen: 0, wantedAt: now, dist: 0, retryAt: 0, why: "", bakeMs: 0 };
+        c = { cx, cy, key: k, state: "pending", cursor: 0, ops: [], liveCells: new Set(), bakedLive: new Set(), sig: 0, stale: false, retryMs: BAKE_RETRY_MS, lastWalkAt: 0, segs: [], pages: [], pageSize: 0, pagesNeeded: 0, drawCursor: 0, images: [], gen: 0, wantedAt: now, dist: 0, retryAt: 0, why: "", bakeMs: 0 };
         this.chunks.set(k, c);
       }
       c.wantedAt = now;
@@ -259,7 +288,18 @@ export class TerrainBake {
     const c = this.chunks.get(chunkKey(Math.floor(col / BAKE_CHUNK), Math.floor(row / BAKE_CHUNK)));
     if (!c || c.state !== "baked" || c.stale) return;
     c.stale = true;
-    c.retryAt = 0;
+    c.retryAt = c.lastWalkAt + BAKE_REFRESH_MIN_MS; // coalesced: one re-walk per interval however many landings
+  }
+
+  /** The resolver was rebuilt (an edit: regions, set picks and transitions
+   *  may have moved anywhere in the region): every standing bake re-walks
+   *  when its turn comes and re-bakes only if its ops changed. */
+  refreshAll(): void {
+    for (const c of this.chunks.values())
+      if (c.state === "baked" && !c.stale) {
+        c.stale = true;
+        c.retryAt = c.lastWalkAt + BAKE_REFRESH_MIN_MS;
+      }
   }
 
   /** An edit at (col,row) (or anything within `radius` cells of it): the
@@ -289,15 +329,22 @@ export class TerrainBake {
     if (!this.enabled) return;
     const t0 = performance.now();
     const deadline = t0 + budgetMs;
+    this.allocated = false;
     let guard = 64;
+    let idle = true;
     while (performance.now() < deadline && guard-- > 0) {
       const c = this.pick();
       if (!c) break;
+      idle = false;
       this.advance(c, deadline);
+      if (this.allocated) break; // the frame's one allocation is spent: no spin on the chunk that wants another
     }
+    // Nothing to bake: warm the pool, one atlas a frame, toward BAKE_WARM.
+    if (idle) this.warm();
     const spent = performance.now() - t0;
     this.win.ms += spent;
     if (spent > this.win.peak) this.win.peak = spent;
+    if (!this.allocated && spent > this.win.peakSteady) this.win.peakSteady = spent;
   }
 
   private pick(): Chunk | null {
@@ -308,7 +355,7 @@ export class TerrainBake {
     for (const k of this.wanted) {
       const c = this.chunks.get(k);
       if (!c) continue;
-      if (c.state === "walking" || c.state === "drawing") return c;
+      if (c.state === "walking" || c.state === "packing" || c.state === "preparing" || c.state === "drawing" || c.state === "finishing") return c;
       const due = c.state === "pending" || ((c.state === "waiting" || (c.state === "baked" && (c.bakedLive.size > 0 || c.stale))) && c.retryAt <= now);
       if (due && (!best || c.dist < best.dist)) best = c;
     }
@@ -347,6 +394,11 @@ export class TerrainBake {
         const u = col - row;
         const v = col + row;
         const idx = row * host.worldW + col;
+        // Never a walk the live path has not finished: it would compose.
+        if (!host.walkable(col, row)) {
+          c.liveCells.add(idx);
+          continue;
+        }
         let oi = 0;
         const mine: BakeOp[] = [];
         cellIncomplete = false;
@@ -360,7 +412,10 @@ export class TerrainBake {
           // the band draws its texels at the same whole pixel.
           mine.push({ key, x: Math.floor(x), y: Math.floor(y), v, u, i: oi++, w: sz.w, h: sz.h, role });
         };
+        const tw = performance.now();
         host.walkCell(col, row, sink);
+        const wms = performance.now() - tw;
+        if (wms > this.win.peakWalk) this.win.peakWalk = wms;
         // A cell whose art is streaming draws live inside the baked chunk and
         // the chunk re-walks when the retry comes due.
         if (cellIncomplete) c.liveCells.add(idx);
@@ -371,6 +426,23 @@ export class TerrainBake {
         return;
       }
       if (c.cursor < n) return; // more cells next frame
+      c.lastWalkAt = performance.now();
+      c.state = "packing";
+      // The pack (segments, shelves, the atlas, its frames, the clear) is its
+      // own unit: never in the frame that spent the budget walking (gate 51:
+      // units under 3 ms, frames of 11 — this was the untimed remainder).
+      if (performance.now() >= deadline) return;
+    }
+    if (c.state === "packing") {
+      const tp = performance.now();
+      // A chunk with nothing walkable yet is not a bake: wait for the live walk.
+      if (!c.ops.length && c.liveCells.size) {
+        c.state = "waiting";
+        c.why = "streaming";
+        c.retryAt = c.lastWalkAt + BAKE_RETRY_MS;
+        c.ops = [];
+        return;
+      }
       // A re-walk of a standing bake that found the same ops keeps the bake
       // (and backs its retry off); a different picture re-bakes.
       const sig = opsSignature(c.ops);
@@ -413,29 +485,61 @@ export class TerrainBake {
       c.gen = ++this.gen;
       c.pages = [];
       c.pageSize = size;
-      const scene = host.scene;
-      for (let p = 0; p < pages; p++) {
-        const key = `bake:${c.cx},${c.cy}:${c.gen}:${p}`;
-        const dt = scene.textures.addDynamicTexture(key, size, size);
+      c.pagesNeeded = pages;
+      (c as unknown as { old: typeof old }).old = old;
+      c.state = "preparing";
+      const pms = performance.now() - tp;
+      if (pms > this.win.peakPack) this.win.peakPack = pms;
+      if (performance.now() >= deadline) return; // the pages are prepared next frame
+    }
+    if (c.state === "preparing") {
+      /* THE PAGES, one at a time: an atlas from the pool, or — at most ONE a
+       * frame, as the frame's whole bake unit — a new one (gate 52: the
+       * allocation inside the pack made 17 ms frames at a spot the pool had
+       * not warmed for, 4 ms where it had). Then the page's frames and the
+       * clear of the rect this bake draws into: A POOLED ATLAS KEEPS ITS LAST
+       * OCCUPANT'S TEXELS, and a segment's box is transparent wherever its ops
+       * are not — the old texels showed through (gate 48: 75,748 texels
+       * differ at the cliff, max delta 255). */
+      while (c.pages.length < c.pagesNeeded) {
+        const p = c.pages.length;
+        let dt = this.pooledAtlas(c.pageSize);
         if (!dt) {
-          c.images = old.images;
-          for (const k of c.pages) scene.textures.remove(k);
-          c.pages = old.pages;
-          this.finishLive(c, "no atlas", false);
-          return;
+          if (this.allocated) return; // one allocation a frame
+          dt = this.allocAtlas(c.pageSize);
+          if (!dt) {
+            const old = (c as unknown as { old?: { images: Img[]; pages: string[] } }).old;
+            for (const k of c.pages) this.releaseAtlas(k);
+            c.images = old?.images ?? [];
+            c.pages = old?.pages ?? [];
+            (c as unknown as { old?: unknown }).old = undefined;
+            this.finishLive(c, "no atlas", false);
+            return;
+          }
         }
-        dt.setFilter(1); // NEAREST — addDynamicTexture does not inherit pixelArt (initCoverSurfaces)
+        const tp = performance.now();
+        let ux0 = Infinity, uy0 = Infinity, ux1 = -Infinity, uy1 = -Infinity;
         for (let s = 0; s < c.segs.length; s++) {
           const seg = c.segs[s];
           if (seg.page !== p) continue;
-          dt.add(`s${s}`, 0, seg.ax, seg.ay, seg.x1 - seg.x0, seg.y1 - seg.y0);
+          const w = seg.x1 - seg.x0;
+          const h = seg.y1 - seg.y0;
+          dt.add(`g${c.gen}s${s}`, 0, seg.ax, seg.ay, w, h);
+          ux0 = Math.min(ux0, seg.ax);
+          uy0 = Math.min(uy0, seg.ay);
+          ux1 = Math.max(ux1, seg.ax + w);
+          uy1 = Math.max(uy1, seg.ay + h);
         }
-        c.pages.push(key);
+        if (ux1 > ux0 && uy1 > uy0) dt.clear(ux0, uy0, ux1 - ux0, uy1 - uy0);
+        c.pages.push(dt.key);
+        const pms = performance.now() - tp;
+        if (pms > this.win.peakPrep) this.win.peakPrep = pms;
+        if (performance.now() >= deadline) return; // the next page next frame
       }
-      (c as unknown as { old: typeof old }).old = old;
       c.state = "drawing";
       c.drawCursor = 0;
       c.bakeMs = 0;
+      if (performance.now() >= deadline) return; // the first slice draws next frame
     }
     if (c.state === "drawing") {
       const t0 = performance.now();
@@ -446,7 +550,12 @@ export class TerrainBake {
       let dt: Phaser.Textures.DynamicTexture | null = null;
       let rx0 = Infinity, ry0 = Infinity, rx1 = -Infinity, ry1 = -Infinity;
       const end = () => {
-        if (dt) endDrawScissored(scene, dt, rx0, ry0, rx1, ry1);
+        if (dt) {
+          const te = performance.now();
+          endDrawScissored(scene, dt, rx0, ry0, rx1, ry1);
+          const ems = performance.now() - te;
+          if (ems > this.win.peakEnd) this.win.peakEnd = ems;
+        }
         dt = null;
         rx0 = ry0 = Infinity;
         rx1 = ry1 = -Infinity;
@@ -454,14 +563,17 @@ export class TerrainBake {
       while (c.drawCursor < c.segs.length) {
         const seg = c.segs[c.drawCursor];
         if (seg.page !== page) {
-          end();
+          if (page >= 0) break; // one bracket a frame: a page change waits for the next slice
           page = seg.page;
           dt = scene.textures.get(c.pages[page]) as Phaser.Textures.DynamicTexture;
           dt.beginDraw();
         }
         const offx = seg.ax - seg.x0;
         const offy = seg.ay - seg.y0;
+        const td = performance.now();
         for (const op of seg.ops) dt!.batchDraw(op.key, op.x + offx, op.y + offy);
+        const dms = performance.now() - td;
+        if (dms > this.win.peakDraw) this.win.peakDraw = dms;
         rx0 = Math.min(rx0, seg.ax);
         ry0 = Math.min(ry0, seg.ay);
         rx1 = Math.max(rx1, seg.ax + (seg.x1 - seg.x0));
@@ -473,18 +585,24 @@ export class TerrainBake {
       end();
       c.bakeMs += performance.now() - t0;
       if (c.drawCursor < c.segs.length) return;
+      c.state = "finishing";
+      if (performance.now() >= deadline) return; // the images stand next frame
+    }
+    if (c.state === "finishing") {
       // Drawn whole: the band images stand, the old generation and the cells'
       // live images go.
+      const tf = performance.now();
+      const scene = host.scene;
       for (let s = 0; s < c.segs.length; s++) {
         const seg = c.segs[s];
-        const im = scene.add.image(seg.x0, seg.y0, c.pages[seg.page], `s${s}`).setOrigin(0, 0).setDepth(seg.depth);
+        const im = scene.add.image(seg.x0, seg.y0, c.pages[seg.page], `g${c.gen}s${s}`).setOrigin(0, 0).setDepth(seg.depth);
         (im as unknown as { bakeChunk: number }).bakeChunk = c.key;
         c.images.push(im);
       }
       const old = (c as unknown as { old?: { images: Img[]; pages: string[] } }).old;
       if (old) {
         for (const im of old.images) im.destroy();
-        for (const k of old.pages) if (scene.textures.exists(k)) scene.textures.remove(k);
+        for (const k of old.pages) this.releaseAtlas(k);
         (c as unknown as { old?: unknown }).old = undefined;
       }
       c.state = "baked";
@@ -499,6 +617,8 @@ export class TerrainBake {
       c.segs = [];
       this.rebuildImages();
       host.onChunk(this.cellsOf(c, c.bakedLive), true);
+      const fms = performance.now() - tf;
+      if (fms > this.win.peakFinish) this.win.peakFinish = fms;
     }
   }
 
@@ -534,12 +654,11 @@ export class TerrainBake {
     const wasBaked = c.state === "baked";
     for (const im of c.images) im.destroy();
     c.images = [];
-    const scene = this.host.scene;
-    for (const key of c.pages) if (scene.textures.exists(key)) scene.textures.remove(key);
+    for (const key of c.pages) this.releaseAtlas(key);
     const old = (c as unknown as { old?: { images: Img[]; pages: string[] } }).old;
     if (old) {
       for (const im of old.images) im.destroy();
-      for (const k of old.pages) if (scene.textures.exists(k)) scene.textures.remove(k);
+      for (const k of old.pages) this.releaseAtlas(k);
       (c as unknown as { old?: unknown }).old = undefined;
     }
     c.pages = [];
@@ -577,18 +696,78 @@ export class TerrainBake {
     }
   }
 
+  /* THE ATLAS POOL. A texture and a framebuffer per bake generation — 170-390
+   * framebuffers created a window on his 19:06 run — is the allocation churn
+   * the capture pool exists to prevent (capturepool.ts: queued where measured,
+   * paid where not). Atlases are acquired by size and released back, never
+   * freed while the bake lives; a released atlas keeps its texels (frames
+   * only ever cover what a bake drew) and drops its frames. */
+  private atlasFree = new Map<number, Phaser.Textures.DynamicTexture[]>();
+  private atlasN = 0;
+
+  private pooledAtlas(size: number): Phaser.Textures.DynamicTexture | null {
+    return this.atlasFree.get(size)?.pop() ?? null;
+  }
+
+  /** A new atlas: the one bake unit that cannot be sliced (a texture and a
+   *  framebuffer), so the step allows one a frame and counts it. */
+  private allocAtlas(size: number): Phaser.Textures.DynamicTexture | null {
+    const scene = this.host.scene;
+    const key = `bake:atlas:${size}:${this.atlasN++}`;
+    const t0 = performance.now();
+    const made = scene.textures.addDynamicTexture(key, size, size);
+    if (made) made.setFilter(1); // NEAREST — addDynamicTexture does not inherit pixelArt (initCoverSurfaces)
+    const ms = performance.now() - t0;
+    this.allocated = true;
+    if (ms > this.win.peakAlloc) this.win.peakAlloc = ms;
+    return made ?? null;
+  }
+
+  /** An idle frame fills the pool toward BAKE_WARM, one atlas. */
+  private warm(): void {
+    if (this.allocated) return;
+    for (const [size, n] of BAKE_WARM) {
+      if ((this.atlasFree.get(size)?.length ?? 0) >= n) continue;
+      const dt = this.allocAtlas(size);
+      if (dt) {
+        let free = this.atlasFree.get(size);
+        if (!free) this.atlasFree.set(size, (free = []));
+        free.push(dt);
+      }
+      return;
+    }
+  }
+
+  private releaseAtlas(key: string): void {
+    const scene = this.host.scene;
+    if (!scene.textures.exists(key)) return;
+    const dt = scene.textures.get(key) as Phaser.Textures.DynamicTexture;
+    for (const name of dt.getFrameNames()) dt.remove(name);
+    let free = this.atlasFree.get(dt.width);
+    if (!free) this.atlasFree.set(dt.width, (free = []));
+    free.push(dt);
+  }
+
   private rebuildImages(): void {
     const out: Img[] = [];
     for (const c of this.chunks.values()) for (const im of c.images) if (im.scene) out.push(im);
     this.images = out;
   }
 
-  /** Everything goes (scene shutdown, world change). */
+  /** Everything goes (scene shutdown, world change): the pool too. */
   destroy(): void {
     for (const c of [...this.chunks.values()]) this.drop(c, "destroyed");
     this.chunks.clear();
     this.wanted.clear();
     this.images = [];
+    this.freePool();
+  }
+
+  /** The pooled atlases go (every chunk dropped first: a released atlas is in the pool). */
+  private freePool(): void {
+    const scene = this.host.scene;
+    for (const list of this.atlasFree.values()) for (const dt of list) if (scene.textures.exists(dt.key)) scene.textures.remove(dt.key);
+    this.atlasFree.clear();
   }
 
   /** The beacon's row; resets the window's counters. */
@@ -606,8 +785,9 @@ export class TerrainBake {
     const row: BakeRow = {
       on: this.enabled ? 1 : 0, chunks: this.chunks.size, baked, live, waiting, liveCells, images: this.images.length, atlases,
       ms: +w.ms.toFixed(1), peakMs: +w.peak.toFixed(2), bakes: w.bakes, evicted: w.evicted, dirtied: w.dirtied, ops: w.ops, opsMax: w.opsMax, unbakeable: w.unbakeable,
+      peakWalk: +w.peakWalk.toFixed(2), peakPack: +w.peakPack.toFixed(2), peakAlloc: +w.peakAlloc.toFixed(2), peakPrep: +w.peakPrep.toFixed(2), peakDraw: +w.peakDraw.toFixed(2), peakEnd: +w.peakEnd.toFixed(2), peakFinish: +w.peakFinish.toFixed(2), peakSteady: +w.peakSteady.toFixed(2),
     };
-    this.win = { ms: 0, peak: 0, bakes: 0, evicted: 0, dirtied: 0, ops: 0, opsMax: 0, unbakeable: 0 };
+    this.win = { ms: 0, peak: 0, bakes: 0, evicted: 0, dirtied: 0, ops: 0, opsMax: 0, unbakeable: 0, peakWalk: 0, peakPack: 0, peakAlloc: 0, peakPrep: 0, peakDraw: 0, peakEnd: 0, peakFinish: 0, peakSteady: 0 };
     return row;
   }
 

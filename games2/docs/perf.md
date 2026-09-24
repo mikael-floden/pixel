@@ -442,25 +442,54 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   ground's scissored end-draw, then one Image per segment stands and the
   cells' live images go (`bakeOnChunk`); the live walk emits no image for a
   cell a baked chunk owns (`emit` in tiles3Occluders) and still records its
-  meta. Atlas names carry a generation (`bake:<cx>,<cy>:<gen>:<page>`): a
-  re-bake is a NEW texture drawn beside the standing one, the old goes
-  after the new images stand. LIVE, NOT BAKED: a cell whose art is
-  streaming (`incomplete`) draws live INSIDE its baked chunk and the chunk
-  re-walks after `BAKE_RETRY_MS` (backing off to 30 s) and re-bakes when
-  its ops changed (an order-sensitive signature); a cell whose transition
-  landed later (`t3landBoundaries`' repair) marks the chunk `stale` for
-  the same re-walk, bands standing meanwhile — the live path shows that
-  cell stale too until it re-enters the window; a sparse chunk (under 2 ops
-  a segment: a village) is not worth an atlas; the indoor cut-away
-  (`suspend`: the mask rewrites columns per room — every chunk drops to
-  live indoors and bakes again outdoors); an edited cell (`dirty(col,row)`:
-  its chunks draw live from the next rebuild and re-bake); an overflow; the
-  switch off (`ml-bake`, `?bake=0`, Settings→Dev "terrain bake" — today's
-  sprites, the A/B). Resident atlases are capped (`BAKE_MAX_ATLASES` 24) by
-  last use; chunks bake nearest the window's centre first. MEASURED
-  (headless, 412x732): the cliff top 258,217 draws 2,517 sprites as 1,037
-  band images and none live; the mountain 277,269 826 as 583; a village
-  chunk stays live. The gate
+  meta. OPT-IN (`ml-bake` "1", `?bake=1`, Settings→Dev "terrain bake"),
+  AND THIS IS THE LAW THE BAKE PAID FOR: his 19:06 run on c2f857aad7, the
+  bake on by default, read frame p50 34-63 ms against 17-23 the run
+  before, `bakeStep` 7-10 ms a frame with 36-84 ms peaks, 170-390
+  framebuffers a window ("it lagged even more"). The drawing got cheaper
+  (draw calls 738-1,694 → 253-799 a frame, ~1-2 ms on a phone whose
+  bottleneck is the main thread); the BAKING cost 7-10: the resolver
+  composing for whole chunks the screen had not asked for, a texture and a
+  framebuffer per bake (the capture pool's churn, back), a re-walk per
+  landed transition. Nothing turns on by default on his phone before a run
+  of his with it on shows the frame shorter; a headless gate proves texels,
+  never milliseconds. The cost rules since: THE BAKE NEVER ASKS FOR ART —
+  a cell is walked only when the live walk completed it (`walkable`:
+  occCellState, incomplete false), the rest draw live inside the chunk;
+  atlases come from A POOL PER SIZE (`bake:atlas:<size>:<n>`, frames
+  `g<gen>s<i>`, the drawn rect cleared on reuse — an uncleared reuse showed
+  the last occupant through a segment's transparency, 75,748 texels), kept
+  over the indoor suspend and freed on the switch off; a landed transition marks a standing bake
+  `stale` for ONE re-walk no sooner than `BAKE_REFRESH_MIN_MS` 5 s after
+  its last (re-baked only if its ops' signature changed), live cells retry
+  at 3 s doubling to 30; the budget is `BAKE_MS` 1 honoured per unit in
+  five phases (walk, pack, prepare, draw, finish) each ending at the
+  deadline — the pack between the last cell and the first slice was the
+  untimed remainder that made 11 ms frames of 3 ms units; the atlas
+  allocation inside it (a texture and a framebuffer, the one unit that
+  cannot be sliced) made 17 ms frames where the pool was cold and 4 where
+  it was warm, so `prepare` takes at most ONE new atlas a frame and idle
+  frames warm the pool toward `BAKE_WARM` (2x1024, 4x512, 4x256, ~13 MB) —
+  one bracket a frame, no slice on a frame that painted ground; the beacon's
+  `peakSteady` is the worst frame that allocated nothing, and that is what
+  the budget binds. LIVE, NOT BAKED: a sparse chunk (under 2 ops
+  a segment: a village); the indoor cut-away (`suspend`: the mask rewrites
+  columns per room); an edited cell (`dirty`: its chunk draws live from the
+  next rebuild and re-bakes); an overflow. Resident atlases capped
+  (`BAKE_MAX_ATLASES` 24) by last use; chunks bake nearest the window's
+  centre first. MEASURED (headless, 412x732): the cliff top 258,217 draws
+  2,451 sprites as 1,108 band images and none live; the mountain 277,269
+  826 as 583; the object count is what falls, and it is worth 1-2 ms on
+  his phone, so the bake is only worth having at a build cost under 1 ms a
+  frame — his run decides. THE EDIT TOOL (Settings→Dev "edit tile" cycles
+  the world's grounds; "place tile here", "dig here", "raise here" act on
+  the player's cell; `worldEdit`): the doc's cell is mutated and everything
+  derived follows the road a Settings dial takes — terrain grid, resolver
+  (`initTiles3`: region fill, set picks, transitions), `repaintWorld`, the
+  chunk dirtied, every standing bake refreshed. Client-side until the
+  server learns edits (chunk 4): a dug cell walks by the server's level.
+  Headless: grass/4 → water/3 → grass/4 at the cliff, parity identical at
+  each step. The gate
   draws the baked chunks' ops DIRECTLY in the live order and their band
   images into two view-sized textures and compares texels (`__ml.
   bakeParity`); it also writes the before/after screenshots. Nothing is

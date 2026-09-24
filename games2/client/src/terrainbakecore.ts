@@ -14,12 +14,25 @@ export const BAKE_ATLAS_W = 1024;
 export const BAKE_ATLAS_H = 1024;
 /** Atlases a chunk may spread over before it is declared unbakeable (live). */
 export const BAKE_MAX_PAGES = 2;
-/** Per-frame budget for walking and drawing, ms — the ground slice's own. */
-export const BAKE_MS = 2;
+/** Per-frame budget for walking and drawing, ms. ONE, honoured per cell and
+ *  per segment: the first unit of work past the deadline ends the slice (2,
+ *  checked only between chunks, let a phone frame run 36-84 ms). */
+export const BAKE_MS = 1;
 /** Resident atlases before the least recently wanted chunk is evicted. */
 export const BAKE_MAX_ATLASES = 24;
-/** A chunk whose art is still streaming is walked again after this long. */
-export const BAKE_RETRY_MS = 1500;
+/** A chunk with cells left live (their art streaming) is walked again after
+ *  this long, doubling to BAKE_RETRY_MAX_MS while nothing lands. */
+export const BAKE_RETRY_MS = 3000;
+export const BAKE_RETRY_MAX_MS = 30000;
+/** A standing bake a landed transition refreshed re-walks no sooner than this
+ *  after its last walk: landings come per frame while streaming, and a
+ *  re-walk per landing was a 64-cell walk per frame. */
+export const BAKE_REFRESH_MIN_MS = 5000;
+/** The atlas pool's warm target per size, filled ONE atlas per idle frame
+ *  (a frame the bake had nothing else to do): a bake then finds its pages
+ *  pooled instead of allocating them in the frame it packs (a 1024 texture
+ *  and its framebuffer are the one unit the bake cannot slice). */
+export const BAKE_WARM: ReadonlyArray<readonly [number, number]> = [[BAKE_ATLAS_W, 2], [512, 4], [256, 4]];
 /** Slots per cell in the live path's depth epsilon band (tiles3Occluders). */
 export const BAKE_SLOTS = 40;
 export const BAKE_U_WRAP = 128;

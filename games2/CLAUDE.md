@@ -159,7 +159,7 @@ push, no PRs unless asked.
   a full paint (`__ml.groundHash`); a landing walks `occIncomplete`. A
   tab-in poisons the latch; `?ground=legacy` bisects.
 - Pacing (`pacing.ts`): a steady 30 when 60 is not held. Terrain bake
-  (`terrainbake.ts`): raised terrain drawn once per chunk as bands, live
+  (`terrainbake.ts`, OPT-IN: his run read it slower): bands per chunk, live
   where streaming/indoors/edited; parity gated (`verify-bake.mjs`).
 - The beacon: `sections` are window means, `counts` snapshots (never
   correlate); allowlisted server-side (`verify-beacon.mjs`; `perf-read.mjs`

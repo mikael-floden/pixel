@@ -2543,6 +2543,11 @@ export class WorldScene extends Phaser.Scene {
       },
       onChunk: (cells, baked) => this.bakeOnChunk(cells, baked),
       masked: () => !!this.indoorMask,
+      // The live walk has this cell complete: its art landed and composed.
+      walkable: (col, row) => {
+        const st = this.occCellState.get(row * world.width + col);
+        return !!st && !st.incomplete;
+      },
     };
     this.bakeHost = host;
     this.bake = new TerrainBake(host);
@@ -2554,10 +2559,21 @@ export class WorldScene extends Phaser.Scene {
   private bakeWalkCell(col: number, row: number, sink: BakeSink): void {
     if (!this.world) return;
     this.bakeSink = sink;
+    const t0 = performance.now();
+    const s0 = this.t3stats;
+    const cells0 = s0.cells, bounds0 = s0.boundaries, composed0 = s0.composed, composeMs0 = s0.composeMs;
+    const built0 = this.t3tex?.stats.built ?? 0;
     try {
       this.tiles3Occluders(0, 0, 0, 0, null, null, this.indoorTop, () => true, () => true, new Set([row * this.world.width + col]));
     } finally {
       this.bakeSink = null;
+      const ms = performance.now() - t0;
+      // A cell is the one walk unit the bake cannot slice: a slow one names
+      // what it did in there (a composition, a resolve), which is what to cut.
+      if (ms > 4) {
+        const s1 = this.t3stats;
+        console.warn(`[bake] slow walk ${col},${row}: ${ms.toFixed(1)} ms; t3 cells +${s1.cells - cells0} boundaries +${s1.boundaries - bounds0} composed +${s1.composed - composed0} (${(s1.composeMs - composeMs0).toFixed(1)} ms) built +${(this.t3tex?.stats.built ?? 0) - built0}`);
+      }
     }
   }
 
@@ -2577,6 +2593,72 @@ export class WorldScene extends Phaser.Scene {
       for (const k of cells) if (this.occCellState.has(k)) this.bakeRewalk.add(k);
     }
     this.bakeSetChanged = true;
+  }
+
+  /* THE EDIT TOOL (terrain bake chunk 3; maintainer 2026-09-24: "add an
+   * option in settings so I can place a tile or dig a hole ... a dropdown for
+   * me to select what tile ... the world should update in a clever way that
+   * maintains the nice boundary/transition tiles"). CLIENT-SIDE until the
+   * server learns edits (chunk 4, the games agent's): the world doc is
+   * mutated at a cell, and everything derived from the doc follows the road a
+   * Settings dial already takes — the resolver is rebuilt (its region flood
+   * fill, set picks and transitions read the new ground and level), the
+   * ground repainted, the terrain grid rebuilt (the client's own collision
+   * and levels), the bake's chunk dirtied (live at once, re-baked in slices)
+   * and every other standing bake refreshed (re-walked; re-baked only where
+   * its ops changed). The server still holds the old level, so a dug cell
+   * walks by the server's rule until chunk 4. */
+  private editTileIdx = 0;
+  private editLast = "";
+
+  /** The grounds this world uses, sorted — the "dropdown" is a button that cycles them. */
+  private editGrounds(): string[] {
+    const seen = new Set<string>();
+    for (const row of this.world?.rows ?? []) for (const c of row) if (c.t) seen.add(c.t);
+    return [...seen].sort();
+  }
+
+  private editTileName(): string {
+    const g = this.editGrounds();
+    return g.length ? g[((this.editTileIdx % g.length) + g.length) % g.length] : "?";
+  }
+
+  /** Mutate one cell of the world doc and make everything follow. */
+  worldEdit(col: number, row: number, change: { t?: string; dl?: number }): { ok: boolean; error?: string; before?: { t: string; l: number }; after?: { t: string; l: number } } {
+    const world = this.world;
+    if (!world || !this.maps3) return { ok: false, error: "no maps3 world" };
+    const cell = world.rows[row]?.[col];
+    if (!cell) return { ok: false, error: `off world: ${col},${row}` };
+    const before = { t: cell.t, l: cell.l };
+    if (change.t !== undefined) {
+      if (!this.editGrounds().includes(change.t)) return { ok: false, error: `unknown ground ${change.t}` };
+      cell.t = change.t;
+    }
+    if (change.dl) cell.l = Math.max(0, Math.min(this.terrainMaxLevel, (cell.l ?? 0) + change.dl));
+    const after = { t: cell.t, l: cell.l };
+    if (before.t === after.t && before.l === after.l) return { ok: true, before, after };
+    this.terrain = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+    this.initTiles3();
+    this.repaintWorld();
+    if (this.bake) {
+      this.bake.dirty(col, row);
+      this.bake.refreshAll();
+    }
+    this.editLast = `${col},${row}: ${before.t}/${before.l} → ${after.t}/${after.l}`;
+    return { ok: true, before, after };
+  }
+
+  /** The local player's cell (the edit buttons act there). */
+  private myCell(): [number, number] | null {
+    const p = this.mePos();
+    return p ? [Math.floor(p.x), Math.floor(p.y)] : null;
+  }
+
+  private editHere(change: { t?: string; dl?: number }): void {
+    const c = this.myCell();
+    if (!c) return;
+    const r = this.worldEdit(c[0], c[1], change);
+    if (!r.ok) this.editLast = r.error ?? "failed";
   }
 
   private toggleTerrainBake(): void {
@@ -5836,6 +5918,12 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.bake?.on,
           state: () => this.bakeLabel(),
         },
+        /* THE EDIT TOOL (see worldEdit): the tile "dropdown" cycles the world's
+         * grounds; place/dig/raise act on the player's own cell. */
+        { label: "edit tile", act: () => { this.editTileIdx++; }, state: () => this.editTileName() },
+        { label: "place tile here", act: () => this.editHere({ t: this.editTileName() }), state: () => this.editLast || "client-only" },
+        { label: "dig here", act: () => this.editHere({ dl: -1 }), state: () => this.editLast || "level -1" },
+        { label: "raise here", act: () => this.editHere({ dl: 1 }), state: () => this.editLast || "level +1" },
       ],
     });
     mountPageFrame();
@@ -5961,6 +6049,10 @@ export class WorldScene extends Phaser.Scene {
       },
       /** Live occluder sprites against band images — what the bake removes. */
       bakeCount: () => ({ live: this.occluders.length, bands: this.bake?.images.length ?? 0, displayList: this.children.length }),
+      /** The edit tool (worldEdit): mutate a cell, everything follows. */
+      worldEdit: (col: number, row: number, change: { t?: string; dl?: number }) => this.worldEdit(col, row, change),
+      myCell: () => this.myCell(),
+      cellAt: (col: number, row: number) => { const c = this.world?.rows[row]?.[col]; return c ? { t: c.t, l: c.l } : null; },
       liveTuning: () => liveTuningSnapshot(),
       // Live feed for the HUD Map tab (hud.ts polls per rAF): the current world
       // id + grid size (cells) and the LOCAL player's SMOOTH predicted cell —
@@ -14138,7 +14230,8 @@ export class WorldScene extends Phaser.Scene {
     this.ps();
     this.rebuildOccluders();
     this.pe("rebuildOccluders");
-    if (this.bake) {
+    // The bake's slice stands down on a frame that already painted ground.
+    if (this.bake && !this.groundRedrewThisFrame) {
       this.ps();
       this.bake.step();
       this.pe("bakeStep");
