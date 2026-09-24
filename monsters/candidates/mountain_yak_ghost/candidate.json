@@ -1,0 +1,140 @@
+{
+  "id": "mountain_yak_ghost",
+  "name": "Yakshade",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It carried loads over the pass for a hundred years and still does.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Ghostly white-grey yak with an enormous shaggy coat trailing to nothing, long horns, calm faint eyes.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mountain_yak_ghost/rotations/south.webp",
+    "south-east": "mountain_yak_ghost/rotations/south-east.webp",
+    "east": "mountain_yak_ghost/rotations/east.webp",
+    "north-east": "mountain_yak_ghost/rotations/north-east.webp",
+    "north": "mountain_yak_ghost/rotations/north.webp",
+    "north-west": "mountain_yak_ghost/rotations/north-west.webp",
+    "west": "mountain_yak_ghost/rotations/west.webp",
+    "south-west": "mountain_yak_ghost/rotations/south-west.webp"
+  },
+  "sheet": "mountain_yak_ghost/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8658d255-297e-42c7-a75e-430bd712036b",
+  "seed": 1346915481,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:00:21+00:00",
+  "elapsed_s": 205.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.519,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.692,
+        "bbox": [
+          59,
+          10,
+          170,
+          217
+        ],
+        "fill": 0.458,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.654,
+        "bbox": [
+          37,
+          12,
+          209,
+          218
+        ],
+        "fill": 0.706,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.629,
+        "bbox": [
+          10,
+          9,
+          210,
+          209
+        ],
+        "fill": 0.797,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.618,
+        "bbox": [
+          41,
+          7,
+          193,
+          220
+        ],
+        "fill": 0.645,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.641,
+        "bbox": [
+          42,
+          7,
+          170,
+          220
+        ],
+        "fill": 0.543,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.623,
+        "bbox": [
+          14,
+          11,
+          206,
+          216
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.639,
+        "bbox": [
+          7,
+          9,
+          216,
+          214
+        ],
+        "fill": 0.854,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.519,
+        "bbox": [
+          10,
+          8,
+          210,
+          218
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      }
+    }
+  }
+}
