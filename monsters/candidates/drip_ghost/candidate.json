@@ -1,0 +1,140 @@
+{
+  "id": "drip_ghost",
+  "name": "Dripghost",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The cave has been dripping for a thousand years into the shape of a man.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Faint figure of constant water drips, a shape held only by falling water, glowing faintly blue.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "drip_ghost/rotations/south.webp",
+    "south-east": "drip_ghost/rotations/south-east.webp",
+    "east": "drip_ghost/rotations/east.webp",
+    "north-east": "drip_ghost/rotations/north-east.webp",
+    "north": "drip_ghost/rotations/north.webp",
+    "north-west": "drip_ghost/rotations/north-west.webp",
+    "west": "drip_ghost/rotations/west.webp",
+    "south-west": "drip_ghost/rotations/south-west.webp"
+  },
+  "sheet": "drip_ghost/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "91f7807e-a7e3-4b10-9e49-3bcf3b90d19d",
+  "seed": 969494484,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:45:15+00:00",
+  "elapsed_s": 190.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.759,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.794,
+        "bbox": [
+          14,
+          4,
+          75,
+          84
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.832,
+        "bbox": [
+          18,
+          5,
+          71,
+          85
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.836,
+        "bbox": [
+          29,
+          4,
+          63,
+          85
+        ],
+        "fill": 0.356,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.772,
+        "bbox": [
+          20,
+          4,
+          67,
+          84
+        ],
+        "fill": 0.486,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.759,
+        "bbox": [
+          16,
+          3,
+          72,
+          83
+        ],
+        "fill": 0.579,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.759,
+        "bbox": [
+          21,
+          4,
+          69,
+          84
+        ],
+        "fill": 0.496,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.823,
+        "bbox": [
+          25,
+          4,
+          57,
+          85
+        ],
+        "fill": 0.335,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.831,
+        "bbox": [
+          19,
+          5,
+          71,
+          85
+        ],
+        "fill": 0.537,
+        "touches_edge": false
+      }
+    }
+  }
+}
