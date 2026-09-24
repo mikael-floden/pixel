@@ -1,0 +1,140 @@
+{
+  "id": "urchin_king",
+  "name": "Spineking",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Every urchin on the reef bows to it, painfully.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Enormous black sea urchin on short spiky legs, purple spines, a glowing orange mouth underneath, a crown of shells.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "urchin_king/rotations/south.webp",
+    "south-east": "urchin_king/rotations/south-east.webp",
+    "east": "urchin_king/rotations/east.webp",
+    "north-east": "urchin_king/rotations/north-east.webp",
+    "north": "urchin_king/rotations/north.webp",
+    "north-west": "urchin_king/rotations/north-west.webp",
+    "west": "urchin_king/rotations/west.webp",
+    "south-west": "urchin_king/rotations/south-west.webp"
+  },
+  "sheet": "urchin_king/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "eb8e43d6-e6a9-46cc-8302-4d7afad3f0f5",
+  "seed": 1118817876,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:41:16+00:00",
+  "elapsed_s": 331.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.781,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.781,
+        "bbox": [
+          5,
+          5,
+          84,
+          83
+        ],
+        "fill": 0.796,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.83,
+        "bbox": [
+          6,
+          3,
+          77,
+          86
+        ],
+        "fill": 0.761,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.811,
+        "bbox": [
+          6,
+          6,
+          71,
+          85
+        ],
+        "fill": 0.663,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.815,
+        "bbox": [
+          5,
+          7,
+          73,
+          83
+        ],
+        "fill": 0.667,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.795,
+        "bbox": [
+          4,
+          7,
+          83,
+          77
+        ],
+        "fill": 0.714,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.805,
+        "bbox": [
+          15,
+          7,
+          82,
+          83
+        ],
+        "fill": 0.658,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.807,
+        "bbox": [
+          16,
+          6,
+          82,
+          85
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.831,
+        "bbox": [
+          12,
+          3,
+          82,
+          86
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      }
+    }
+  }
+}
