@@ -1,0 +1,141 @@
+{
+  "id": "brimstone_goat",
+  "name": "Brimgoat",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The smell of it arrives a day before it does.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Yellow-grey goat crusted with sulphur, horns dripping yellow crystals, yellow eyes, a smell you can see as haze.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "brimstone_goat/rotations/south.webp",
+    "south-east": "brimstone_goat/rotations/south-east.webp",
+    "east": "brimstone_goat/rotations/east.webp",
+    "north-east": "brimstone_goat/rotations/north-east.webp",
+    "north": "brimstone_goat/rotations/north.webp",
+    "north-west": "brimstone_goat/rotations/north-west.webp",
+    "west": "brimstone_goat/rotations/west.webp",
+    "south-west": "brimstone_goat/rotations/south-west.webp"
+  },
+  "sheet": "brimstone_goat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4014ac7d-6990-42e3-a8ed-be08eaad99f6",
+  "seed": 2044906579,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:33:29+00:00",
+  "elapsed_s": 188.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.7,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.7,
+        "bbox": [
+          8,
+          5,
+          77,
+          86
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.807,
+        "bbox": [
+          1,
+          4,
+          78,
+          86
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.786,
+        "bbox": [
+          2,
+          3,
+          81,
+          84
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.74,
+        "bbox": [
+          18,
+          2,
+          71,
+          87
+        ],
+        "fill": 0.582,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.78,
+        "bbox": [
+          20,
+          2,
+          64,
+          86
+        ],
+        "fill": 0.477,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.789,
+        "bbox": [
+          9,
+          3,
+          82,
+          85
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.794,
+        "bbox": [
+          6,
+          4,
+          86,
+          85
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.829,
+        "bbox": [
+          12,
+          6,
+          69,
+          86
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      }
+    }
+  }
+}
