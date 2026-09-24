@@ -1,0 +1,141 @@
+{
+  "id": "moss_hound",
+  "name": "Mosshound",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The moss took the dog and kept its manners.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Hound covered in thick soft green moss instead of fur, tiny white flowers on its back, black wet nose, mossy ears dripping.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "moss_hound/rotations/south.webp",
+    "south-east": "moss_hound/rotations/south-east.webp",
+    "east": "moss_hound/rotations/east.webp",
+    "north-east": "moss_hound/rotations/north-east.webp",
+    "north": "moss_hound/rotations/north.webp",
+    "north-west": "moss_hound/rotations/north-west.webp",
+    "west": "moss_hound/rotations/west.webp",
+    "south-west": "moss_hound/rotations/south-west.webp"
+  },
+  "sheet": "moss_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2b2b2401-0c5e-44c0-b5e7-dd42e00208ae",
+  "seed": 2099676945,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:20:09+00:00",
+  "elapsed_s": 382.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.767,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.796,
+        "bbox": [
+          22,
+          1,
+          66,
+          86
+        ],
+        "fill": 0.483,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.768,
+        "bbox": [
+          15,
+          1,
+          72,
+          86
+        ],
+        "fill": 0.626,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.798,
+        "bbox": [
+          3,
+          1,
+          85,
+          83
+        ],
+        "fill": 0.868,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.802,
+        "bbox": [
+          5,
+          3,
+          79,
+          85
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.83,
+        "bbox": [
+          13,
+          4,
+          67,
+          85
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.767,
+        "bbox": [
+          8,
+          3,
+          83,
+          86
+        ],
+        "fill": 0.804,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.818,
+        "bbox": [
+          3,
+          2,
+          83,
+          85
+        ],
+        "fill": 0.857,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.787,
+        "bbox": [
+          8,
+          1,
+          83,
+          86
+        ],
+        "fill": 0.823,
+        "touches_edge": false
+      }
+    }
+  }
+}
