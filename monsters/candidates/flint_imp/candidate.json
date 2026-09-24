@@ -1,0 +1,140 @@
+{
+  "id": "flint_imp",
+  "name": "Flintimp",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Strike it and it strikes back, sparks first.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Small angular imp of black flint with sharp edges, a spark in each eye, claws that strike sparks on the rock.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "flint_imp/rotations/south.webp",
+    "south-east": "flint_imp/rotations/south-east.webp",
+    "east": "flint_imp/rotations/east.webp",
+    "north-east": "flint_imp/rotations/north-east.webp",
+    "north": "flint_imp/rotations/north.webp",
+    "north-west": "flint_imp/rotations/north-west.webp",
+    "west": "flint_imp/rotations/west.webp",
+    "south-west": "flint_imp/rotations/south-west.webp"
+  },
+  "sheet": "flint_imp/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "29929de7-8bc2-47c8-9125-cd970d5eeec4",
+  "seed": 109153086,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:43:43+00:00",
+  "elapsed_s": 805.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.664,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.744,
+        "bbox": [
+          1,
+          4,
+          37,
+          38
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.764,
+        "bbox": [
+          9,
+          2,
+          38,
+          38
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.746,
+        "bbox": [
+          8,
+          2,
+          31,
+          38
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.672,
+        "bbox": [
+          6,
+          3,
+          37,
+          38
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.664,
+        "bbox": [
+          2,
+          3,
+          39,
+          37
+        ],
+        "fill": 0.786,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.689,
+        "bbox": [
+          4,
+          2,
+          32,
+          37
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.71,
+        "bbox": [
+          9,
+          2,
+          32,
+          38
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.774,
+        "bbox": [
+          3,
+          2,
+          33,
+          38
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      }
+    }
+  }
+}
