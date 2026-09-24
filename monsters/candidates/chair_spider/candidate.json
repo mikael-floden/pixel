@@ -1,0 +1,140 @@
+{
+  "id": "chair_spider",
+  "name": "Chairspider",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Nobody sits in the chair at the end of the table.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Old wooden dining chair that has grown six extra spindle legs and a cushioned head with two button eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "chair_spider/rotations/south.webp",
+    "south-east": "chair_spider/rotations/south-east.webp",
+    "east": "chair_spider/rotations/east.webp",
+    "north-east": "chair_spider/rotations/north-east.webp",
+    "north": "chair_spider/rotations/north.webp",
+    "north-west": "chair_spider/rotations/north-west.webp",
+    "west": "chair_spider/rotations/west.webp",
+    "south-west": "chair_spider/rotations/south-west.webp"
+  },
+  "sheet": "chair_spider/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "de12ddba-5544-4c23-b180-f59100eb742a",
+  "seed": 1246616075,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:50:44+00:00",
+  "elapsed_s": 230.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.75,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.766,
+        "bbox": [
+          17,
+          4,
+          70,
+          84
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.833,
+        "bbox": [
+          17,
+          4,
+          71,
+          84
+        ],
+        "fill": 0.558,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.803,
+        "bbox": [
+          20,
+          4,
+          70,
+          83
+        ],
+        "fill": 0.51,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.786,
+        "bbox": [
+          18,
+          8,
+          71,
+          83
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.75,
+        "bbox": [
+          19,
+          11,
+          69,
+          81
+        ],
+        "fill": 0.452,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.781,
+        "bbox": [
+          17,
+          11,
+          69,
+          82
+        ],
+        "fill": 0.477,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.769,
+        "bbox": [
+          19,
+          7,
+          66,
+          81
+        ],
+        "fill": 0.449,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.806,
+        "bbox": [
+          17,
+          4,
+          70,
+          84
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      }
+    }
+  }
+}
