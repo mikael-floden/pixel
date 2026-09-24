@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-24T18:54:00+00:00",
+  "generated_at": "2026-09-24T19:10:03+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 214,
+  "count": 223,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -27900,6 +27900,145 @@
       }
     },
     {
+      "id": "fen_sow",
+      "name": "Fensow",
+      "tier": "mid",
+      "lore": "Her piglets are the mud of the fen and there are always more.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "21aeae11-4cfd-4b97-aa25-7bc8cb790793",
+      "version": 1,
+      "sheet": "fen_sow/sheet.webp",
+      "rotations": {
+        "south": "fen_sow/rotations/south.webp",
+        "south-east": "fen_sow/rotations/south-east.webp",
+        "east": "fen_sow/rotations/east.webp",
+        "north-east": "fen_sow/rotations/north-east.webp",
+        "north": "fen_sow/rotations/north.webp",
+        "north-west": "fen_sow/rotations/north-west.webp",
+        "west": "fen_sow/rotations/west.webp",
+        "south-west": "fen_sow/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.727,
+        "reasons": [
+          "south-east: content touches the canvas edge (clipped)",
+          "east: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)",
+          "west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.727,
+            "bbox": [
+              2,
+              9,
+              87,
+              87
+            ],
+            "fill": 0.856,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.798,
+            "bbox": [
+              0,
+              7,
+              88,
+              86
+            ],
+            "fill": 0.898,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.766,
+            "bbox": [
+              0,
+              2,
+              83,
+              83
+            ],
+            "fill": 0.868,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.768,
+            "bbox": [
+              19,
+              2,
+              84,
+              86
+            ],
+            "fill": 0.705,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.762,
+            "bbox": [
+              16,
+              2,
+              84,
+              83
+            ],
+            "fill": 0.711,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.742,
+            "bbox": [
+              3,
+              2,
+              88,
+              81
+            ],
+            "fill": 0.867,
+            "touches_edge": true
+          },
+          "west": {
+            "run1": 0.779,
+            "bbox": [
+              0,
+              6,
+              87,
+              81
+            ],
+            "fill": 0.843,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.824,
+            "bbox": [
+              4,
+              8,
+              70,
+              84
+            ],
+            "fill": 0.648,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T19:03:24+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "mire_lantern_bearer",
       "name": "Lampbearer",
       "tier": "evil",
@@ -28575,6 +28714,139 @@
       }
     },
     {
+      "id": "mountain_hermit",
+      "name": "Cragfather",
+      "tier": "mid",
+      "lore": "He climbed the mountain to be alone and became part of it.",
+      "biome": [
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "688e42ac-a675-42bc-9253-e5ff6f176ae6",
+      "version": 1,
+      "sheet": "mountain_hermit/sheet.webp",
+      "rotations": {
+        "south": "mountain_hermit/rotations/south.webp",
+        "south-east": "mountain_hermit/rotations/south-east.webp",
+        "east": "mountain_hermit/rotations/east.webp",
+        "north-east": "mountain_hermit/rotations/north-east.webp",
+        "north": "mountain_hermit/rotations/north.webp",
+        "north-west": "mountain_hermit/rotations/north-west.webp",
+        "west": "mountain_hermit/rotations/west.webp",
+        "south-west": "mountain_hermit/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.792,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.792,
+            "bbox": [
+              5,
+              4,
+              81,
+              84
+            ],
+            "fill": 0.785,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.832,
+            "bbox": [
+              10,
+              6,
+              79,
+              85
+            ],
+            "fill": 0.704,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.811,
+            "bbox": [
+              9,
+              6,
+              69,
+              85
+            ],
+            "fill": 0.612,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.796,
+            "bbox": [
+              13,
+              6,
+              82,
+              83
+            ],
+            "fill": 0.686,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.809,
+            "bbox": [
+              8,
+              4,
+              82,
+              82
+            ],
+            "fill": 0.745,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.804,
+            "bbox": [
+              18,
+              3,
+              68,
+              83
+            ],
+            "fill": 0.517,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.838,
+            "bbox": [
+              17,
+              4,
+              78,
+              85
+            ],
+            "fill": 0.638,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.847,
+            "bbox": [
+              8,
+              4,
+              78,
+              85
+            ],
+            "fill": 0.732,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T19:02:42+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "quartz_wolf",
       "name": "Quartzwolf",
       "tier": "mid",
@@ -28844,6 +29116,148 @@
       }
     },
     {
+      "id": "ledge_goat",
+      "name": "Ledgegoat",
+      "tier": "mid",
+      "lore": "It carries its ledge because it trusts no other.",
+      "biome": [
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "f0f0e3dd-35b3-4163-ad72-308462a4425d",
+      "version": 1,
+      "sheet": "ledge_goat/sheet.webp",
+      "rotations": {
+        "south": "ledge_goat/rotations/south.webp",
+        "south-east": "ledge_goat/rotations/south-east.webp",
+        "east": "ledge_goat/rotations/east.webp",
+        "north-east": "ledge_goat/rotations/north-east.webp",
+        "north": "ledge_goat/rotations/north.webp",
+        "north-west": "ledge_goat/rotations/north-west.webp",
+        "west": "ledge_goat/rotations/west.webp",
+        "south-west": "ledge_goat/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.721,
+        "reasons": [
+          "south: content touches the canvas edge (clipped)",
+          "south-east: content touches the canvas edge (clipped)",
+          "east: content touches the canvas edge (clipped)",
+          "north-east: content touches the canvas edge (clipped)",
+          "north: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)",
+          "west: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.721,
+            "bbox": [
+              0,
+              4,
+              79,
+              88
+            ],
+            "fill": 0.857,
+            "touches_edge": true
+          },
+          "south-east": {
+            "run1": 0.804,
+            "bbox": [
+              2,
+              4,
+              75,
+              88
+            ],
+            "fill": 0.792,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.754,
+            "bbox": [
+              4,
+              4,
+              72,
+              88
+            ],
+            "fill": 0.738,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.732,
+            "bbox": [
+              10,
+              4,
+              72,
+              88
+            ],
+            "fill": 0.673,
+            "touches_edge": true
+          },
+          "north": {
+            "run1": 0.749,
+            "bbox": [
+              11,
+              4,
+              77,
+              88
+            ],
+            "fill": 0.716,
+            "touches_edge": true
+          },
+          "north-west": {
+            "run1": 0.743,
+            "bbox": [
+              14,
+              4,
+              83,
+              88
+            ],
+            "fill": 0.748,
+            "touches_edge": true
+          },
+          "west": {
+            "run1": 0.768,
+            "bbox": [
+              12,
+              4,
+              83,
+              88
+            ],
+            "fill": 0.77,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.807,
+            "bbox": [
+              12,
+              4,
+              76,
+              88
+            ],
+            "fill": 0.694,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T19:07:22+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "echo_thing",
       "name": "Echo",
       "tier": "evil",
@@ -28969,6 +29383,810 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-24T18:33:18+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "crag_spider",
+      "name": "Cragspider",
+      "tier": "mid",
+      "lore": "Its web is spun from the dust of the hill and catches birds.",
+      "biome": [
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "4af023c1-0e74-4eae-bb35-4a391d94ac14",
+      "version": 1,
+      "sheet": "crag_spider/sheet.webp",
+      "rotations": {
+        "south": "crag_spider/rotations/south.webp",
+        "south-east": "crag_spider/rotations/south-east.webp",
+        "east": "crag_spider/rotations/east.webp",
+        "north-east": "crag_spider/rotations/north-east.webp",
+        "north": "crag_spider/rotations/north.webp",
+        "north-west": "crag_spider/rotations/north-west.webp",
+        "west": "crag_spider/rotations/west.webp",
+        "south-west": "crag_spider/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.686,
+        "reasons": [
+          "south-east: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.686,
+            "bbox": [
+              2,
+              3,
+              86,
+              85
+            ],
+            "fill": 0.889,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.817,
+            "bbox": [
+              3,
+              5,
+              82,
+              88
+            ],
+            "fill": 0.847,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.776,
+            "bbox": [
+              6,
+              12,
+              82,
+              86
+            ],
+            "fill": 0.726,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.761,
+            "bbox": [
+              8,
+              12,
+              82,
+              85
+            ],
+            "fill": 0.698,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.756,
+            "bbox": [
+              2,
+              6,
+              86,
+              67
+            ],
+            "fill": 0.662,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.757,
+            "bbox": [
+              5,
+              12,
+              80,
+              85
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.766,
+            "bbox": [
+              7,
+              12,
+              82,
+              85
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.814,
+            "bbox": [
+              6,
+              5,
+              85,
+              88
+            ],
+            "fill": 0.847,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T19:02:54+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "ore_beetle",
+      "name": "Orebeetle",
+      "tier": "mid",
+      "lore": "Miners follow it to the seam. The seam follows it too.",
+      "biome": [
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "f483beea-5b93-4745-9a2b-dc961e58082c",
+      "version": 1,
+      "sheet": "ore_beetle/sheet.webp",
+      "rotations": {
+        "south": "ore_beetle/rotations/south.webp",
+        "south-east": "ore_beetle/rotations/south-east.webp",
+        "east": "ore_beetle/rotations/east.webp",
+        "north-east": "ore_beetle/rotations/north-east.webp",
+        "north": "ore_beetle/rotations/north.webp",
+        "north-west": "ore_beetle/rotations/north-west.webp",
+        "west": "ore_beetle/rotations/west.webp",
+        "south-west": "ore_beetle/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.771,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.771,
+            "bbox": [
+              4,
+              10,
+              84,
+              82
+            ],
+            "fill": 0.744,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.821,
+            "bbox": [
+              8,
+              11,
+              84,
+              83
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.816,
+            "bbox": [
+              6,
+              19,
+              84,
+              77
+            ],
+            "fill": 0.584,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.773,
+            "bbox": [
+              10,
+              11,
+              83,
+              72
+            ],
+            "fill": 0.575,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.778,
+            "bbox": [
+              7,
+              10,
+              82,
+              69
+            ],
+            "fill": 0.571,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.771,
+            "bbox": [
+              10,
+              11,
+              79,
+              72
+            ],
+            "fill": 0.544,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.81,
+            "bbox": [
+              4,
+              19,
+              82,
+              77
+            ],
+            "fill": 0.584,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.832,
+            "bbox": [
+              4,
+              11,
+              80,
+              83
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T19:08:32+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "stone_marten",
+      "name": "Stonemarten",
+      "tier": "cute",
+      "lore": "Quick as a dropped pebble and harder to catch.",
+      "biome": [
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "cat",
+      "scale": "small",
+      "pixellab_id": "b18d0263-1d8d-4f5b-958f-f399d9f26fff",
+      "version": 1,
+      "sheet": "stone_marten/sheet.webp",
+      "rotations": {
+        "south": "stone_marten/rotations/south.webp",
+        "south-east": "stone_marten/rotations/south-east.webp",
+        "east": "stone_marten/rotations/east.webp",
+        "north-east": "stone_marten/rotations/north-east.webp",
+        "north": "stone_marten/rotations/north.webp",
+        "north-west": "stone_marten/rotations/north-west.webp",
+        "west": "stone_marten/rotations/west.webp",
+        "south-west": "stone_marten/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.632,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.749,
+            "bbox": [
+              10,
+              3,
+              30,
+              37
+            ],
+            "fill": 0.425,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.726,
+            "bbox": [
+              7,
+              3,
+              34,
+              37
+            ],
+            "fill": 0.574,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.632,
+            "bbox": [
+              2,
+              5,
+              38,
+              36
+            ],
+            "fill": 0.698,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.638,
+            "bbox": [
+              7,
+              4,
+              34,
+              37
+            ],
+            "fill": 0.557,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.652,
+            "bbox": [
+              10,
+              4,
+              30,
+              37
+            ],
+            "fill": 0.412,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.665,
+            "bbox": [
+              6,
+              4,
+              34,
+              37
+            ],
+            "fill": 0.578,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.662,
+            "bbox": [
+              2,
+              5,
+              38,
+              36
+            ],
+            "fill": 0.698,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.735,
+            "bbox": [
+              7,
+              3,
+              32,
+              37
+            ],
+            "fill": 0.531,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T19:04:44+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "snow_crone",
+      "name": "Snowcrone",
+      "tier": "evil",
+      "lore": "She sweeps the snow into your tracks so nobody follows you home.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "fadc9dbd-9d68-486f-b6c3-1aa4e319a778",
+      "version": 1,
+      "sheet": "snow_crone/sheet.webp",
+      "rotations": {
+        "south": "snow_crone/rotations/south.webp",
+        "south-east": "snow_crone/rotations/south-east.webp",
+        "east": "snow_crone/rotations/east.webp",
+        "north-east": "snow_crone/rotations/north-east.webp",
+        "north": "snow_crone/rotations/north.webp",
+        "north-west": "snow_crone/rotations/north-west.webp",
+        "west": "snow_crone/rotations/west.webp",
+        "south-west": "snow_crone/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.718,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.751,
+            "bbox": [
+              3,
+              3,
+              80,
+              84
+            ],
+            "fill": 0.805,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.822,
+            "bbox": [
+              14,
+              4,
+              76,
+              85
+            ],
+            "fill": 0.649,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.812,
+            "bbox": [
+              13,
+              4,
+              66,
+              86
+            ],
+            "fill": 0.561,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.739,
+            "bbox": [
+              12,
+              2,
+              86,
+              85
+            ],
+            "fill": 0.793,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.718,
+            "bbox": [
+              11,
+              3,
+              86,
+              84
+            ],
+            "fill": 0.784,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.722,
+            "bbox": [
+              18,
+              2,
+              74,
+              85
+            ],
+            "fill": 0.6,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.777,
+            "bbox": [
+              21,
+              4,
+              75,
+              86
+            ],
+            "fill": 0.572,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.81,
+            "bbox": [
+              2,
+              4,
+              79,
+              86
+            ],
+            "fill": 0.815,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T18:59:13+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "ice_shard_wolf",
+      "name": "Shardwolf",
+      "tier": "mid",
+      "lore": "The pack that froze on the ridge still hunts together.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "dog",
+      "scale": "standard",
+      "pixellab_id": "906e4580-7c4a-49b7-9f68-81f9c0500e5e",
+      "version": 1,
+      "sheet": "ice_shard_wolf/sheet.webp",
+      "rotations": {
+        "south": "ice_shard_wolf/rotations/south.webp",
+        "south-east": "ice_shard_wolf/rotations/south-east.webp",
+        "east": "ice_shard_wolf/rotations/east.webp",
+        "north-east": "ice_shard_wolf/rotations/north-east.webp",
+        "north": "ice_shard_wolf/rotations/north.webp",
+        "north-west": "ice_shard_wolf/rotations/north-west.webp",
+        "west": "ice_shard_wolf/rotations/west.webp",
+        "south-west": "ice_shard_wolf/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.744,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.744,
+            "bbox": [
+              8,
+              3,
+              77,
+              85
+            ],
+            "fill": 0.731,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.835,
+            "bbox": [
+              5,
+              5,
+              72,
+              84
+            ],
+            "fill": 0.683,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.818,
+            "bbox": [
+              4,
+              6,
+              80,
+              85
+            ],
+            "fill": 0.775,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.794,
+            "bbox": [
+              6,
+              2,
+              71,
+              84
+            ],
+            "fill": 0.688,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.768,
+            "bbox": [
+              15,
+              4,
+              76,
+              82
+            ],
+            "fill": 0.614,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.809,
+            "bbox": [
+              16,
+              3,
+              83,
+              84
+            ],
+            "fill": 0.701,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.813,
+            "bbox": [
+              8,
+              6,
+              84,
+              84
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.83,
+            "bbox": [
+              15,
+              5,
+              83,
+              83
+            ],
+            "fill": 0.685,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T19:03:21+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "ice_worm",
+      "name": "Iceworm",
+      "tier": "mid",
+      "lore": "It tunnels through the glacier and the glacier lets it.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "236dbb51-48bc-4e36-bfae-16053b96fd42",
+      "version": 1,
+      "sheet": "ice_worm/sheet.webp",
+      "rotations": {
+        "south": "ice_worm/rotations/south.webp",
+        "south-east": "ice_worm/rotations/south-east.webp",
+        "east": "ice_worm/rotations/east.webp",
+        "north-east": "ice_worm/rotations/north-east.webp",
+        "north": "ice_worm/rotations/north.webp",
+        "north-west": "ice_worm/rotations/north-west.webp",
+        "west": "ice_worm/rotations/west.webp",
+        "south-west": "ice_worm/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.787,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.812,
+            "bbox": [
+              7,
+              4,
+              81,
+              84
+            ],
+            "fill": 0.764,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.849,
+            "bbox": [
+              16,
+              5,
+              79,
+              85
+            ],
+            "fill": 0.651,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.851,
+            "bbox": [
+              28,
+              3,
+              67,
+              86
+            ],
+            "fill": 0.418,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.8,
+            "bbox": [
+              18,
+              2,
+              76,
+              83
+            ],
+            "fill": 0.607,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.787,
+            "bbox": [
+              8,
+              2,
+              80,
+              82
+            ],
+            "fill": 0.744,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.796,
+            "bbox": [
+              13,
+              2,
+              70,
+              83
+            ],
+            "fill": 0.596,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.85,
+            "bbox": [
+              22,
+              3,
+              61,
+              86
+            ],
+            "fill": 0.418,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.86,
+            "bbox": [
+              9,
+              4,
+              74,
+              85
+            ],
+            "fill": 0.68,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T19:06:46+00:00",
       "verdict": null,
       "graduation": {
         "state": "waiting",
