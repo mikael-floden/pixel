@@ -1,0 +1,141 @@
+{
+  "id": "magma_serpent",
+  "name": "Magmacoil",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It swims through the lava the way an eel swims through mud.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Huge serpent of black crust over bright orange molten rock, a head of jagged basalt, glowing throat.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "magma_serpent/rotations/south.webp",
+    "south-east": "magma_serpent/rotations/south-east.webp",
+    "east": "magma_serpent/rotations/east.webp",
+    "north-east": "magma_serpent/rotations/north-east.webp",
+    "north": "magma_serpent/rotations/north.webp",
+    "north-west": "magma_serpent/rotations/north-west.webp",
+    "west": "magma_serpent/rotations/west.webp",
+    "south-west": "magma_serpent/rotations/south-west.webp"
+  },
+  "sheet": "magma_serpent/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "713b29f7-2cf4-49a5-99cb-ac44dba1953c",
+  "seed": 1304292984,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:04:35+00:00",
+  "elapsed_s": 243.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.651,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.651,
+        "bbox": [
+          27,
+          6,
+          198,
+          218
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.691,
+        "bbox": [
+          27,
+          10,
+          184,
+          220
+        ],
+        "fill": 0.657,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.699,
+        "bbox": [
+          25,
+          10,
+          182,
+          215
+        ],
+        "fill": 0.641,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.689,
+        "bbox": [
+          21,
+          10,
+          178,
+          212
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.693,
+        "bbox": [
+          23,
+          6,
+          181,
+          212
+        ],
+        "fill": 0.649,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.679,
+        "bbox": [
+          36,
+          10,
+          191,
+          212
+        ],
+        "fill": 0.624,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.704,
+        "bbox": [
+          34,
+          10,
+          203,
+          209
+        ],
+        "fill": 0.67,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.694,
+        "bbox": [
+          35,
+          10,
+          202,
+          220
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      }
+    }
+  }
+}
