@@ -1,0 +1,141 @@
+{
+  "id": "forge_hound",
+  "name": "Forgehound",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It guards a forge that has been cold for a century.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Iron-grey dog of riveted metal plates heated cherry-red at the joints, a coal-fire mouth, clanking gait.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "forge_hound/rotations/south.webp",
+    "south-east": "forge_hound/rotations/south-east.webp",
+    "east": "forge_hound/rotations/east.webp",
+    "north-east": "forge_hound/rotations/north-east.webp",
+    "north": "forge_hound/rotations/north.webp",
+    "north-west": "forge_hound/rotations/north-west.webp",
+    "west": "forge_hound/rotations/west.webp",
+    "south-west": "forge_hound/rotations/south-west.webp"
+  },
+  "sheet": "forge_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b0e2e6d3-2f7d-423c-aaf0-d971f57f8b1a",
+  "seed": 293757812,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:32:52+00:00",
+  "elapsed_s": 286.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.749,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.749,
+        "bbox": [
+          10,
+          3,
+          74,
+          86
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.835,
+        "bbox": [
+          3,
+          2,
+          84,
+          86
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.817,
+        "bbox": [
+          3,
+          2,
+          84,
+          83
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.809,
+        "bbox": [
+          19,
+          3,
+          68,
+          86
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.8,
+        "bbox": [
+          18,
+          2,
+          70,
+          86
+        ],
+        "fill": 0.564,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.819,
+        "bbox": [
+          2,
+          2,
+          84,
+          83
+        ],
+        "fill": 0.858,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.818,
+        "bbox": [
+          4,
+          3,
+          81,
+          86
+        ],
+        "fill": 0.825,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.84,
+        "bbox": [
+          18,
+          4,
+          71,
+          86
+        ],
+        "fill": 0.561,
+        "touches_edge": false
+      }
+    }
+  }
+}
