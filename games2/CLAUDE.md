@@ -158,9 +158,9 @@ push, no PRs unless asked.
   full paint in play is sliced; compositions budgeted; pixel-identical to
   a full paint (`__ml.groundHash`); a landing walks `occIncomplete`. A
   tab-in poisons the latch; `?ground=legacy` bisects. A band pass walks
-  only cells that reach it and builds no plate.
+  only cells reaching it, builds no plate; a repaint is cell-sized.
 - Pacing (`pacing.ts`): a steady 30 when 60 is not held. Terrain bake
-  (`terrainbake.ts`) is OPT-IN (his run read it slower); `verify-bake.mjs`.
+  (`terrainbake.ts`) is OPT-IN: his run read it slower.
 - The beacon: `sections` are window means, `counts` snapshots (never
   correlate); allowlisted server-side (`verify-beacon.mjs`; `perf-read.mjs`
   reads runs).

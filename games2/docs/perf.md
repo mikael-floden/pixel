@@ -438,6 +438,25 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   Gates: verify-groundbracket.mjs `tightCmp`/`cellsTightCmp` (band and cells,
   tight off vs on over the poison, identical), verify-compose.mjs (every
   worker raster, plates included, audited byte for byte).
+- **A CELL REPAINT IS THE CELL'S SIZE** (2026-09-24; his 21:13 run on
+  310bbf0439: ground work dominated 1,367 of ~1,900 long frames, `repaintCells`
+  6-14 ms a frame MEAN, 350-780 repaint runs a window at ~13 ms each, 278-3,637
+  landed cells carried a window past the budget). A landed or owed cell's rect
+  ran from the world's highest storey (`maxLevel` 40 x 15 px, ~700 px tall)
+  down to its base whatever stood there, and a batch was 12 cells sorted by
+  COLUMN — cells of one column lie on a screen diagonal, so a batch's rect
+  could span the texture. Now (`groundRectOn`, `?groundrect=0`, Settings→Dev
+  "ground: tight repaint") the rect runs from the cell's OWN top
+  (`t3cellTopLevel`: the doc level, the resolved level, its decks, + 1 storey)
+  less `T3_TOP_Y + lh + T3_TILE`, and a batch (the landing's chunks, the drain's
+  groups) stays inside one 8x8-lattice screen block (`t3repaintBucket`).
+  MEASURED headless (`scripts/probe-repaint.mjs`, his worst places 96,244 /
+  104,240 / 168,120 / 328,232): mean rect 194x686 → 141x302, cells walked a
+  repaint 675 → 338, draws 1,667 → 813; verify-groundbracket's 9-cell repaint
+  copies 163-194 k texels against 302-476 k. SAFE BY MEASUREMENT: the extent
+  check (`__ml.groundExtentCheck`) draws each of 250 cells alone into the
+  cleared scratch at each place and requires no texel above its sized rect —
+  1,000 of 1,000.
 - **THE FPS METER IS A DEV BUTTON** (maintainer 2026-09-24): Settings/dev
   "fps meter" mounts `fpsbadge.ts`'s corner readout (fps, worst frame,
   hitches over 5 s) and remembers per device (localStorage `ml-fps`, the

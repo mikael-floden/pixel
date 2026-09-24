@@ -4524,6 +4524,15 @@ export class WorldScene extends Phaser.Scene {
    *  builds no plate on the frame thread (`groundDeferOn`, setGroundClip).
    *  `?groundtight=0` / `?grounddefer=0`, Settings→Dev, bisect. */
   private groundTightOn = groundFlagOn("groundtight", "ml-groundtight");
+  /** A CELL REPAINT IS SIZED TO THE CELL (his 21:13 run, 2026-09-24: ground
+   *  work dominated 1,367 of ~1,900 long frames, cell repaints 350-780 runs a
+   *  window at ~13 ms each): a landed cell's rect runs from ITS OWN top — its
+   *  level, its decks, a storey and a tile of margin — not from the world's
+   *  highest storey (40 x 15 px), and a batch is a screen block, not a column
+   *  (t3cellTopLevel, t3repaintBucket). `?groundrect=0` / Settings→Dev. */
+  private groundRectOn = groundFlagOn("groundrect", "ml-groundrect");
+  /** The last 64 cell repaints (top-level calls), read by `__ml.groundRepaintLog`. */
+  private groundRepaintLog: { ms: number; cells: number; w: number; h: number; walked: number; blits: number; depth: number }[] = [];
   private groundDeferOn = groundFlagOn("grounddefer", "ml-grounddefer");
   /** Ground ops whose placement was NOT a whole texel — see t3Blit. Zero on
    *  this machine; the maintainer's device is the one that can say otherwise. */
@@ -5969,6 +5978,15 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.groundTightOn,
           state: () => (this.groundTightOn ? "on" : "off"),
+        },
+        {
+          label: "ground: tight repaint",
+          act: () => {
+            this.groundRectOn = !this.groundRectOn;
+            localStorage.setItem("ml-groundrect", this.groundRectOn ? "1" : "0");
+          },
+          get: () => this.groundRectOn,
+          state: () => (this.groundRectOn ? "on" : "off"),
         },
         {
           label: "ground: plates off-thread",
@@ -7951,6 +7969,76 @@ export class WorldScene extends Phaser.Scene {
         const log = this.groundSliceLog;
         this.groundSliceLog = [];
         return log;
+      },
+      /** Cell repaints sized to the cell (A/B), and the last repaints' anatomy (cleared on read). */
+      groundRect: (on?: boolean) => {
+        if (typeof on === "boolean") this.groundRectOn = on;
+        return this.groundRectOn;
+      },
+      groundRepaintLog: () => {
+        const log = this.groundRepaintLog;
+        this.groundRepaintLog = [];
+        return log;
+      },
+      /** THE EXTENT CHECK for the sized repaint: each of up to `n` cells nearest
+       *  the player is drawn ALONE into the cleared scratch (plates built here,
+       *  the compose unbudgeted), its old full-column rect read back, and every
+       *  texel it painted must lie inside the rect a sized repaint would copy. */
+      groundExtentCheck: (n = 200) => {
+        const world = this.world, a = this.groundAnchor, f = this.t3?.frame, scratch = this.groundScratch, pp = this.mePos();
+        const gl = (this.game.renderer as { gl?: WebGLRenderingContext | WebGL2RenderingContext }).gl;
+        if (!world || !a || !f || !scratch || !pp || !gl || !this.maps3) return { error: `not ready (world ${!!world} anchor ${!!a} scratch ${!!scratch} me ${!!pp})` };
+        const { lh } = this.geom;
+        const W = scratch.width, H = scratch.height;
+        const cx0 = Math.floor(pp.x), cy0 = Math.floor(pp.y);
+        const cand: [number, number][] = [];
+        for (let r = 1; cand.length < n && r < 40; r++)
+          for (let dy = -r; dy <= r; dy++)
+            for (let dx = -r; dx <= r; dx++) {
+              if (Math.max(Math.abs(dx), Math.abs(dy)) !== r || cand.length >= n) continue;
+              const c = cx0 + dx, rw = cy0 + dy;
+              if (c >= 0 && rw >= 0 && c < world.width && rw < world.height) cand.push([c, rw]);
+            }
+        const dWas = this.groundDeferOn;
+        this.groundDeferOn = false;
+        let checked = 0, outside = 0, empty = 0, offTex = 0;
+        const bad: unknown[] = [];
+        try {
+          this.withoutComposeBudget(() => {
+            for (const [col, row] of cand) {
+              const cx = t3columnX(f, col, row) - a.ax;
+              const oldTop = Math.floor(t3columnY(f, col, row, this.maxLevel) - T3_TOP_Y - lh - a.ay) - T3_TILE;
+              const newTop = Math.floor(t3columnY(f, col, row, this.t3cellTopLevel(col, row)) - T3_TOP_Y - lh - T3_TILE - a.ay);
+              const bot = Math.ceil(t3columnY(f, col, row, 0) + T3_TILE + lh - a.ay) + T3_TILE;
+              const rx0 = Math.max(0, Math.floor(cx) - T3_TILE), rx1 = Math.min(W, Math.ceil(cx) + 2 * T3_TILE);
+              const ry0 = Math.max(0, oldTop), ry1 = Math.min(H, bot);
+              if (rx1 <= rx0 || ry1 <= ry0) { offTex++; continue; }
+              scratch.setPosition(a.ax, a.ay);
+              scratch.clear();
+              const u = col - row, v = col + row;
+              this.setGroundClip({ x0: rx0, y0: ry0, x1: rx1, y1: ry1 });
+              try {
+                this.drawTiles3Ground(scratch, a.ax, a.ay, u, u, v, v, null, null, this.indoorTop);
+              } finally {
+                this.setGroundClip(null);
+              }
+              const src = scratch.texture.source[0];
+              const tex = (src?.glTexture as { webGLTexture?: WebGLTexture } | null)?.webGLTexture;
+              const px = tex ? readTextureRect(gl, tex, rx0, ry0, rx1 - rx0, ry1 - ry0) : null;
+              if (!px) continue;
+              checked++;
+              let minY = Infinity;
+              const w = rx1 - rx0;
+              for (let i = 3; i < px.length; i += 4) if (px[i]) { const y = ry0 + Math.floor((i >> 2) / w); if (y < minY) minY = y; }
+              if (minY === Infinity) { empty++; continue; }
+              if (minY < newTop) { outside++; if (bad.length < 8) bad.push({ col, row, level: this.t3cellTopLevel(col, row) - 1, minY, newTop, over: newTop - minY }); }
+            }
+          });
+        } finally {
+          this.groundDeferOn = dWas;
+          this.lastGround = { x: NaN, y: NaN }; // the scratch was borrowed: the next latch paints in full
+        }
+        return { checked, outside, empty, offTex, bad };
       },
       /** The band pass's two cuts (A/B): the cell reject and the plates on the worker. */
       groundTight: (on?: boolean) => {
@@ -14206,11 +14294,24 @@ export class WorldScene extends Phaser.Scene {
        * the 29-79 ms his run paid for a batch. A chunk that poisons the
        * latch (one cell too wide) ends the carry: the full paint covers all. */
       const W = this.world?.width ?? 1;
-      dirty.sort((a, b) => (a % W) - (b % W) || a - b);
+      const rectOn = this.groundRectOn;
+      if (rectOn) {
+        const bk = new Map<number, number>();
+        for (const i of dirty) bk.set(i, this.t3repaintBucket(i));
+        dirty.sort((a, b) => bk.get(a)! - bk.get(b)! || a - b);
+      } else dirty.sort((a, b) => (a % W) - (b % W) || a - b);
       const t0 = performance.now();
       let at = 0;
       while (at < dirty.length) {
-        const chunk = dirty.slice(at, at + GROUND_REPAINT_CHUNK);
+        let end = Math.min(dirty.length, at + GROUND_REPAINT_CHUNK);
+        if (rectOn) {
+          // A batch never leaves its screen block (a compact rect).
+          const k0 = this.t3repaintBucket(dirty[at]);
+          let e = at + 1;
+          while (e < end && this.t3repaintBucket(dirty[e]) === k0) e++;
+          end = e;
+        }
+        const chunk = dirty.slice(at, end);
         at += chunk.length;
         this.repaintTiles3Cells(chunk);
         if (Number.isNaN(this.lastGround.x)) { at = dirty.length; break; }
@@ -21544,6 +21645,30 @@ export class WorldScene extends Phaser.Scene {
     if (load && load.stats.pending === 0 && load.queuedCount > 0) load.flush();
   }
 
+  /** The highest storey a cell's own art reaches: its doc level, its resolved
+   *  level, its decks — plus one for a slope's or ramp's rise. What a landing
+   *  at this cell can change lies at or below it (`reaches` uses the same
+   *  column, verified texel-identical by verify-groundbracket). */
+  private t3cellTopLevel(col: number, row: number): number {
+    let lv = this.world?.rows[row]?.[col]?.l ?? 0;
+    const t3 = this.t3;
+    if (t3) {
+      const c = this.t3cellOf(t3, col, row);
+      if (c && c.level > lv) lv = c.level;
+      for (const d of this.t3decksOf(t3, col, row)) if (d.level > lv) lv = d.level;
+    }
+    return Math.min(this.maxLevel, lv + 1);
+  }
+
+  /** A screen block of 8x8 lattice steps: a repaint batch stays inside one, so
+   *  its rect is compact (column order let a batch span the texture's height). */
+  private t3repaintBucket(idx: number): number {
+    const W = this.world?.width ?? 1;
+    const col = idx % W;
+    const row = (idx - col) / W;
+    return (((col - row) >> 3) + 1024) * 4096 + (((col + row) >> 3) + 1024);
+  }
+
   /** REPAINT THE CELLS A LANDING MADE DRAWABLE — their rectangle (each cell's
    *  64-wide column from the world's highest storey down past its base, the
    *  same reach the window rule assumes) is reset to the background through
@@ -21578,7 +21703,9 @@ export class WorldScene extends Phaser.Scene {
       const col = idx % world.width;
       const row = (idx - col) / world.width;
       const cx = t3columnX(f, col, row) - a.ax;
-      const top = t3columnY(f, col, row, this.maxLevel) - T3_TOP_Y - lh - a.ay;
+      const top = this.groundRectOn
+        ? t3columnY(f, col, row, this.t3cellTopLevel(col, row)) - T3_TOP_Y - lh - T3_TILE - a.ay
+        : t3columnY(f, col, row, this.maxLevel) - T3_TOP_Y - lh - a.ay;
       const bot = t3columnY(f, col, row, 0) + T3_TILE + lh - a.ay;
       // A cell that has scrolled off the texture since it asked (t3missing
       // outlives the window until the next full paint) must not stretch the
@@ -21760,7 +21887,10 @@ export class WorldScene extends Phaser.Scene {
     this.groundLastMode = "cells";
     this.groundCellStats.runs++;
     this.groundCellStats.cells += cells.length;
-    this.groundCellStats.ms += performance.now() - t0;
+    const runMs = performance.now() - t0;
+    this.groundCellStats.ms += runMs;
+    this.groundRepaintLog.push({ ms: +runMs.toFixed(2), cells: cells.length, w: x1 - x0, h: y1 - y0, walked: this.t3stats.cells, blits: this.t3stats.blits, depth });
+    if (this.groundRepaintLog.length > 64) this.groundRepaintLog.shift();
   }
 
   /** THE PREFETCH RING, armed by every ground redraw: the cells of the texture
@@ -22800,7 +22930,11 @@ export class WorldScene extends Phaser.Scene {
     const owed = [...this.t3dropOwed].filter((c) => !queued.has(c) && this.t3cellOnTexture(c));
     this.t3dropOwed.clear();
     if (!owed.length) return;
-    owed.sort((a, b) => ((a % W) - Math.floor(a / W)) - ((b % W) - Math.floor(b / W)));
+    if (this.groundRectOn) {
+      const bk = new Map<number, number>();
+      for (const i of owed) bk.set(i, this.t3repaintBucket(i));
+      owed.sort((a, b) => bk.get(a)! - bk.get(b)! || a - b);
+    } else owed.sort((a, b) => ((a % W) - Math.floor(a / W)) - ((b % W) - Math.floor(b / W)));
     this.t3drainQueue.push(...owed);
   }
 
@@ -22831,7 +22965,15 @@ export class WorldScene extends Phaser.Scene {
    *  second or two, and the picture ends pixel-identical to a full paint. */
   private t3drainTick(): void {
     if (!this.t3drainQueue.length || !this.maps3) return;
-    const group = this.t3drainQueue.splice(0, T3_DRAIN_GROUP);
+    let n = Math.min(T3_DRAIN_GROUP, this.t3drainQueue.length);
+    if (this.groundRectOn) {
+      // A group never leaves its screen block (a compact rect).
+      const k0 = this.t3repaintBucket(this.t3drainQueue[0]);
+      let e = 1;
+      while (e < n && this.t3repaintBucket(this.t3drainQueue[e]) === k0) e++;
+      n = e;
+    }
+    const group = this.t3drainQueue.splice(0, n);
     this.ps();
     this.repaintTiles3Cells(group);
     this.pe("repaintCells");
