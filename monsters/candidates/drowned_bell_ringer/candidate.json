@@ -1,0 +1,140 @@
+{
+  "id": "drowned_bell_ringer",
+  "name": "Bellringer",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He rings for the ships that did not come home.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Drowned man in a monk's habit dragging a small bronze bell on a chain, water pouring from his hood.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "drowned_bell_ringer/rotations/south.webp",
+    "south-east": "drowned_bell_ringer/rotations/south-east.webp",
+    "east": "drowned_bell_ringer/rotations/east.webp",
+    "north-east": "drowned_bell_ringer/rotations/north-east.webp",
+    "north": "drowned_bell_ringer/rotations/north.webp",
+    "north-west": "drowned_bell_ringer/rotations/north-west.webp",
+    "west": "drowned_bell_ringer/rotations/west.webp",
+    "south-west": "drowned_bell_ringer/rotations/south-west.webp"
+  },
+  "sheet": "drowned_bell_ringer/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8ec5285b-9582-44a1-afc8-6f40cf0fe303",
+  "seed": 1513842988,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:27:10+00:00",
+  "elapsed_s": 205.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.757,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.77,
+        "bbox": [
+          11,
+          4,
+          72,
+          84
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.816,
+        "bbox": [
+          22,
+          4,
+          66,
+          85
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.794,
+        "bbox": [
+          30,
+          4,
+          61,
+          85
+        ],
+        "fill": 0.324,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.772,
+        "bbox": [
+          23,
+          4,
+          74,
+          83
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.766,
+        "bbox": [
+          18,
+          4,
+          78,
+          82
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.757,
+        "bbox": [
+          24,
+          4,
+          69,
+          83
+        ],
+        "fill": 0.459,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.771,
+        "bbox": [
+          28,
+          4,
+          57,
+          84
+        ],
+        "fill": 0.3,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.821,
+        "bbox": [
+          11,
+          4,
+          64,
+          85
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      }
+    }
+  }
+}
