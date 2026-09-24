@@ -872,14 +872,14 @@
       "directions": {
         "south": {
           "status": "pass",
-          "step_mean": 0.2422,
-          "step_max": 0.3583,
-          "drift": 3.37,
+          "step_mean": 0.2236,
+          "step_max": 0.2827,
+          "drift": 2.49,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.37,
+          "travel": 2.49,
           "pin": 1.0,
-          "pad": 1,
+          "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
@@ -887,15 +887,13 @@
           "end_area": 1.0,
           "end_iou": null,
           "canvas": [
-            50,
-            50
+            48,
+            48
           ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "9079951a-7c31-4d89-aed6-3d4d781f6a71",
-          "group": "8cb0c93a-0f20-42b9-9f57-d61486031220",
-          "takes": 1,
+          "reasons": [],
+          "sub": "2aaa1556-2193-4d56-b73b-76e14890189b",
+          "group": "568e0172-04a6-4119-9a1f-96e163080c6b",
+          "takes": 2,
           "version": 2,
           "mirrored": false,
           "mode": "v3",
@@ -906,7 +904,7 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-23T21:15:51+00:00"
+          "generated_at": "2026-09-24T16:06:10+00:00"
         },
         "south-east": {
           "status": "pass",
