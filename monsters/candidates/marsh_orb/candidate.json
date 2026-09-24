@@ -1,0 +1,141 @@
+{
+  "id": "marsh_orb",
+  "name": "Marshorb",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It holds a piece of the bog and keeps it tidy.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Perfect sphere of swirling brown bog water hovering above the ground, small bubbles inside, a tiny pale fish visible within.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "marsh_orb/rotations/south.webp",
+    "south-east": "marsh_orb/rotations/south-east.webp",
+    "east": "marsh_orb/rotations/east.webp",
+    "north-east": "marsh_orb/rotations/north-east.webp",
+    "north": "marsh_orb/rotations/north.webp",
+    "north-west": "marsh_orb/rotations/north-west.webp",
+    "west": "marsh_orb/rotations/west.webp",
+    "south-west": "marsh_orb/rotations/south-west.webp"
+  },
+  "sheet": "marsh_orb/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fb3fc712-f93b-483d-92e6-0a57cee3c60f",
+  "seed": 1537991984,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:36:05+00:00",
+  "elapsed_s": 657.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.648,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.753,
+        "bbox": [
+          4,
+          2,
+          36,
+          37
+        ],
+        "fill": 0.7,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.743,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.673,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.674,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.648,
+        "bbox": [
+          4,
+          2,
+          36,
+          37
+        ],
+        "fill": 0.7,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.673,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.691,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.749,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      }
+    }
+  }
+}
