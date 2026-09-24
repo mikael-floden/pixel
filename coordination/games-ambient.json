@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient",
-  "updated_at": "2026-09-23T19:39:14.750124+00:00",
+  "updated_at": "2026-09-24T16:20:19.579983+00:00",
   "health": "running",
-  "current": "Dragonfly optimisation LIVE in production (6cfca955fb, deployed 2026-09-23 ~19:45). Investigating why the dragonflies are not seen: they are NOT zone-gated (I told the maintainer they were — wrong, corrected; there is no ctx.zone in dragonflies.ts, the assistant left them ungated on 2026-09-21 so the bad zone data could not delete them). The real local cause: the world's densest reed bed (223,97, 11 pieces) is in marsh-the-north-eastern-marsh at heavyrain 90 / thunder 15 = rainy or rough 91.6%% of windows, and dragonflies are gone in rain. Measured in auto mode at midday: gain 0 for 25 s. Posted to both maps2 boards. Awaiting his word on what to fix.",
+  "current": "CLAIMED — A GIANT RAIN DROP (maintainer 2026-09-24: \"Sometimes now when I walk around in the world I can see a rain drop being very big and extremely close to the camera. This looks weird, ugly and dumb.\"). Read the sheet first: nothing in layer.ts/precip.ts can scale a drop past ~3x its 1x7 texture (rain setScale(1, scaleY<=1.4); a splash ring tops out at 2.95x of 11 px; wisps are 22x1 at alpha 0.13), and no other feature registers an fx-* texture. So it is being REPRODUCED, not reasoned about: force each precipitation, walk the camera by tapAt, and catch every sprite in the weather bands whose drawn bounds exceed what its texture allows. FILES (candidates until the culprit is caught): games2/ambient/weather/layer.ts, games2/ambient/weather/precip.ts, a gate arm in games2/scripts/verify-ambientweather.mjs, coordination/games-ambient.json.",
   "progress": {
     "features": 14,
     "fields": 9,
