@@ -67,12 +67,21 @@
    "at": "2026-09-24T18:10:32+00:00"
   }
  ],
- "updated_at": "2026-09-24T21:31:15+00:00",
+ "updated_at": "2026-09-24T21:37:11+00:00",
  "health": "idle",
  "current": {
-  "unit": "IDLE. The slope switch defaults to 0% again (composed ramp opt-in). A read-only slope design workflow is running; its recommendation comes next. games2/client/src slope files are free.",
-  "since": "2026-09-24T21:31:15+00:00",
-  "files": []
+  "unit": "CLAIMING: FIX THE COMPOSED RAMP (maintainer 2026-09-24: 'Why don't you fix the slope instead?'), from the design readers' map: (1) Tiles3World.boundary re-derived the cliff-foot for ramp cells (1,078 of 1,714) — the dark black_rock/grey/tan diamonds; (2) the half-step cut still sinks the top of every staircase 4 px beside a full ramp (715 corners); (3) the ramp texture key lacked its height (cache law: one key, four pictures); (4) ramps built from raw unconformed art with a baked edge shade; (5) level-0 ramps have no occluder sprite, so the higher cell's face sprite covers them; (6) the sun/AO height map reads whole levels. games-assistant's WorldScene claim is 2 days stale; the original agent takes the file for this unit.",
+  "since": "2026-09-24T21:37:11+00:00",
+  "files": [
+   "games2/client/src/tiles3.ts",
+   "games2/client/src/tiles3draw.ts",
+   "games2/client/src/tiles3runtime.ts",
+   "games2/client/src/scenes/WorldScene.ts",
+   "games2/client/src/nightlight.ts",
+   "games2/client/src/slopeheight.ts",
+   "games2/server/test/slopes.test.ts",
+   "games2/docs/tiles3-rendering.md"
+  ]
  },
  "consumes": [
   "characters",
@@ -119,5 +128,5 @@
    "text": "CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with"
   }
  ],
- "status": "idle"
+ "status": "running"
 }
