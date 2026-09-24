@@ -4765,6 +4765,20 @@ function creatureRedos(m) {
   }
   return n;
 }
+/** When the agent last worked on this creature: its newest facing's stamp, or
+ *  a redo of his it is still answering, whichever is later. "" = no stamp. */
+function creatureActivity(m) {
+  let at = "";
+  for (const [st, anim] of Object.entries(m?.animations ?? {})) {
+    if (anim?.still) continue;
+    for (const [dir, clip] of Object.entries(anim?.dirs ?? {})) {
+      if (clip?.at && clip.at > at) at = clip.at;
+      const e = fb("monsters", `${m.path}#${st}#${dir}`);
+      if (e.status === "redo" && e.updated_at && e.updated_at > at) at = e.updated_at;
+    }
+  }
+  return at;
+}
 /** How much animation a creature has: its facings across every real state. */
 const creatureFacings = (m) => Object.values(m?.animations ?? {})
   .filter((a) => !a?.still).reduce((n, a) => n + Object.keys(a?.dirs ?? {}).length, 0);
@@ -4847,15 +4861,25 @@ function monsterSort(list) {
    *       against the art: the agent's turn, most outstanding first;
    *   2 — settled; the most animated first.
    * Counted once per creature, not per comparison. */
+  /* …AND ABOVE ALL, THE BATCH BEING WORKED ON (maintainer 2026-09-24, on the
+   * tiers: "The idea is for me to see the 10 monsters we are working on
+   * currently first"). The tiers alone put the never-opened backlog —
+   * unstamped, 40 facings each — above the five creatures the agent touched
+   * today. So the FIRST key is when the agent last worked on the creature:
+   * its newest facing's generated_at, or a redo of his it is answering.
+   * Measured: Foxfire, Cinderkit, the sand scorpling, Plumefist, Hornmaul —
+   * the only ones with all six states, all within the day — come first, then
+   * the batch before them. His three tiers break ties inside a moment, and
+   * order everything with no stamp at all. */
   if (sort === "queue") {
     const key = new Map(list.map((m) => {
       const owed = creatureOwed(m), redos = creatureRedos(m);
-      return [m.id, { tier: owed ? 0 : redos ? 1 : 2, at: owed ? creatureOwedAt(m) : "", redos, facings: creatureFacings(m) }];
+      return [m.id, { act: creatureActivity(m), tier: owed ? 0 : redos ? 1 : 2, redos, facings: creatureFacings(m) }];
     }));
     CMP.queue = (a, b) => {
       const A = key.get(a.id), B = key.get(b.id);
-      return A.tier - B.tier
-        || (A.tier === 0 ? (B.at > A.at ? 1 : B.at < A.at ? -1 : 0) : 0)
+      return (B.act > A.act ? 1 : B.act < A.act ? -1 : 0)
+        || A.tier - B.tier
         || B.redos - A.redos
         || B.facings - A.facings
         || byName(a, b);
@@ -4891,23 +4915,25 @@ function monsterSort(list) {
  * standing on mid-walk. The batch is decided on the overview and stays put
  * until he goes back there, which is where it is re-planned. */
 let reviewQueue = { key: "", ids: [] };
-const reviewQueueKey = () => `review\u0000${state.query ?? ""}`;
+// EVERY filter and sort, not only the queue (maintainer 2026-09-24: "The
+// next monster once I click on a monster doesn't follow the same sort", on
+// "in the making" + "review first"). That sort is computed from his verdicts,
+// so re-sorting on each page moved the creature he had just judged down a tier
+// and ‹ › jumped. ‹ › walks the order the overview SHOWED him, frozen there.
+const reviewQueueKey = () => `${shadowFilter()}\u0000${monsterSortMode()}\u0000${state.query ?? ""}`;
 /** The creatures the current filter keeps, in the order the overview shows
  *  them — the list ‹ › walks on a creature page. */
 function monsterNav() {
   const mode = shadowFilter();
   const all = creatures();
   const kept = mode === "all" ? all : all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
-  if (mode === "review") {
-    // The batch the overview planned — FROZEN, because his own verdicts are
-    // what it is computed from — minus anything the roster has since dropped;
-    // a deep link that never passed the overview plans its own.
-    const byId = new Map(all.map((m) => [m.id, m]));
-    const frozen = reviewQueue.key === reviewQueueKey()
-      ? reviewQueue.ids.map((id) => byId.get(id)).filter(Boolean) : [];
-    const q = frozen.length ? frozen : monsterSort(kept);
-    if (q.length) return q;                       // nothing owed: fall through to the full list
-  }
+  // The order the overview planned — FROZEN, because some sorts and filters
+  // are computed from his own verdicts — minus anything the roster has since
+  // dropped; a deep link that never passed the overview plans its own.
+  const byId = new Map(all.map((m) => [m.id, m]));
+  const frozen = reviewQueue.key === reviewQueueKey()
+    ? reviewQueue.ids.map((id) => byId.get(id)).filter(Boolean) : [];
+  if (frozen.length) return frozen;
   return monsterSort(kept.length ? kept : all);   // never strand him on an empty pager
 }
 /* ---- THE CREATURES OVERVIEW IS A SHOWCASE ----
@@ -5236,7 +5262,7 @@ function viewMonsters() {
   // THE OVERVIEW IS WHERE THE BATCH IS PLANNED, and the only place it is
   // re-planned: every arrival here re-reads his verdicts, so finishing four
   // and coming back gives him the next four rather than yesterday's list.
-  if (mode === "review") reviewQueue = { key: reviewQueueKey(), ids: sorted.map((m) => m.id) };
+  reviewQueue = { key: reviewQueueKey(), ids: sorted.map((m) => m.id) };
   return h("div", {},
     sectionHead("monsters"),
     creatureTabs("monsters"),
@@ -5247,7 +5273,7 @@ function viewMonsters() {
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
-      ...(state.admin ? [["queue", "review first", "The ones that owe you a verdict first (newest art on top), then the ones with a redo of yours still outstanding, then the most animated"]] : []),
+      ...(state.admin ? [["queue", "review first", "The creatures the agent is working on right now first (newest art or your waiting redo), then: owes you a verdict, redo outstanding, most animated"]] : []),
     ], sort, () => route(), { wrap: true }),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.

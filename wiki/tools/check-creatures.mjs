@@ -292,12 +292,55 @@ await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-s
 await pa.waitForTimeout(1600);
 const qOrder = (await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].map((a) => a.getAttribute("href").split("/").pop())))
   .map((id) => roster.find((m) => m.id === id)).filter(Boolean);
-const tiers = qOrder.map(tierOf);
-ok(qOrder.length === total && tiers.every((x, i) => i === 0 || tiers[i - 1] <= x) && new Set(tiers).size > 1,
-  `"review first" sorts the whole page into his three tiers (${[0, 1, 2].map((k) => `${tiers.filter((x) => x === k).length} tier ${k}`).join(", ")})`);
-const t1 = qOrder.filter((m) => tierOf(m) === 1).map(redosOf), t2 = qOrder.filter((m) => tierOf(m) === 2).map(facingsOf);
-ok(t1.every((x, i) => i === 0 || t1[i - 1] >= x), `outstanding redos most-first inside tier 1 (${t1.slice(0, 5).join(" ≥ ") || "none"})`);
-ok(t2.every((x, i) => i === 0 || t2[i - 1] >= x), `and the most animated first inside tier 2 (${t2.slice(0, 5).join(" ≥ ")}…)`);
+/* THE BATCH BEING WORKED ON FIRST ("The idea is for me to see the 10
+ * monsters we are working on currently first"): the first key is the
+ * agent's last touch — newest facing stamp, or a redo of his it answers —
+ * then his three tiers, which alone order everything unstamped. */
+const actOf = (m) => {
+  let at = "";
+  for (const [st, a] of Object.entries(m.animations ?? {})) {
+    if (a?.still) continue;
+    for (const [dir, c] of Object.entries(a?.dirs ?? {})) {
+      if (c?.at && c.at > at) at = c.at;
+      const e = FB[`${m.path}#${st}#${dir}`] ?? {};
+      if (e.status === "redo" && e.updated_at && e.updated_at > at) at = e.updated_at;
+    }
+  }
+  return at;
+};
+const acts = qOrder.map(actOf);
+ok(qOrder.length === total && acts.every((a, i) => i === 0 || acts[i - 1] >= a) && acts[0],
+  `"review first" puts the batch being worked on first, newest touch on top (${qOrder.slice(0, 5).map((m) => m.id).join(", ")})`);
+const unst = qOrder.filter((m) => !actOf(m)), tiers = unst.map(tierOf);
+ok(tiers.every((x, i) => i === 0 || tiers[i - 1] <= x),
+  `and his three tiers order everything with no stamp (${[0, 1, 2].map((k) => `${tiers.filter((x) => x === k).length} tier ${k}`).join(", ")})`);
+const t2 = unst.filter((m) => tierOf(m) === 2).map(facingsOf);
+ok(t2.every((x, i) => i === 0 || t2[i - 1] >= x), `and the most animated first among the settled (${t2.slice(0, 5).join(" ≥ ")}…)`);
+/* AND ‹ › FOLLOWS THAT SORT inside "in the making", even as he judges
+ * (maintainer 2026-09-24: "The next monster once I click on a monster doesn't
+ * follow the same sort"). The page's order is frozen for the walk. */
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /^in the making/.test(x.textContent))?.click());
+await pa.waitForTimeout(1400);
+const mkIds = await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].map((a) => a.getAttribute("href").split("/").pop()));
+await pa.click(".showcase-card");
+await pa.waitForTimeout(2200);
+const mkWalk = [await pa.evaluate(() => location.hash.split("/").pop())];
+for (let i = 0; i < 4; i++) {
+  // judge something on the way, the way he does — the FACET row's approve (the
+  // row that carries ↻ redo), never the first "approve" on the page: that can
+  // be a shadow's accept, which tunes a shadow and skews the shadow checks.
+  await pa.evaluate(() => [...(document.querySelector(".redo-btn")?.parentElement?.querySelectorAll("button") ?? [])].find((x) => /^✓\s*approve$/i.test(x.textContent.trim()))?.click());
+  await pa.waitForTimeout(400);
+  await pa.click('.detail-nav a[title^="Next"]');
+  await pa.waitForTimeout(1300);
+  mkWalk.push(await pa.evaluate(() => location.hash.split("/").pop()));
+}
+ok(mkWalk.every((id, i) => id === mkIds[i]),
+  `‹ › inside "in the making" + "review first" walks the page's order while he judges (${mkWalk.join(" → ")} vs ${mkIds.slice(0, 5).join(" → ")})`);
+await pa.goto(`${W}#/monsters`, { waitUntil: "load" });
+await pa.waitForTimeout(1400);
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /^all /.test(x.textContent))?.click());
+await pa.waitForTimeout(1000);
 await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => /by name/.test(x.textContent))?.click());
 await pa.waitForTimeout(1000);
 await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /^review needed/.test(x.textContent))?.click());
