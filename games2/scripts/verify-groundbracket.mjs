@@ -30,6 +30,7 @@ let SEED=11; const rand=()=>((SEED=(SEED*1103515245+12345)&0x7fffffff)/0x7ffffff
 let failed = false; const fail=(m)=>{ failed=true; console.log("FAIL: "+m); };
 const tap=async()=>page.evaluate(({a,d})=>{const m=window.__ml.me(); if(!m) return; const x=m.x+Math.cos(a)*d, y=m.y+Math.sin(a)*d; if(window.__ml.blockedAt(x,y)) return; const s=window.__ml.surfaceAt(x,y); if(!s||(!s.standable&&!s.swimmable)) return; window.__ml.tapTo(x,y,true);},{a:rand()*Math.PI*2,d:(8+rand()*10)*32});
 let cellsOk = 0, bandsOk = 0, fullOk = 0, tries = 0;
+let tightOk = 0;
 const SPOTS = [[230,230],[258,217],[277,269],[304,200]];
 // Latch steps: one axis each way (the band is one column or row of slices), then both (an L).
 const STEPS = [[288,0],[0,288],[-288,0],[0,-288],[256,256],[-256,200]];
@@ -55,6 +56,11 @@ while (Date.now()-t0 < 150000 && (cellsOk < 5 || bandsOk < 5 || fullOk < 5)) {
   if (!l || l.error || l.diff !== 0) fail(`live scissored vs whole inside the band (step ${stx},${sty}): ${l ? say(l) : "no comparison"}`); else fullOk++;
   if (f && fw && !f.error && !fw.error && f.diff + f.diffOut > fw.diff + fw.diffOut) fail(`the scissored picture is further from a full paint (${f.diff + f.diffOut} texels) than the whole one (${fw.diff + fw.diffOut})`);
   if (!s || s.error || s.diff !== 0 || s.poisonOut !== 0) fail(`band over the poison (step ${stx},${sty}): ${s ? say(s) : "no comparison"}`); else bandsOk++;
+  // THE TIGHT BAND (2026-09-24): a band pass walks only the cells that can reach its rect — no texel may change.
+  const t = r.tightCmp, ct = r.cellsTightCmp;
+  console.log(`  tight band: ${t ? say(t) : "-"} | tight cells: ${ct ? say(ct) : "-"}`);
+  if (!t || t.error || t.diff !== 0 || t.poisonOut !== 0) fail(`the tight band changed texels (step ${stx},${sty}): ${t ? say(t) : "no comparison"}`); else tightOk++;
+  if (!ct || ct.error || ct.diff !== 0) fail(`the tight cell repaint changed texels: ${ct ? say(ct) : "no comparison"}`);
   // One axis: the band is a column or a row of the texture. Both axes: an L whose union is most of it.
   if (s && !s.error && (stx === 0 || sty === 0) && !(s.blitPxScissor > 0 && s.blitPxScissor * 3 < s.blitPxWhole)) fail(`band: blitted ${s.blitPxScissor} against ${s.blitPxWhole}`);
   await sleep(1500); await tap(); await sleep(2500);
@@ -63,6 +69,7 @@ console.log(`compared: cells ${cellsOk}, live bands ${fullOk}, poisoned bands ${
 if (cellsOk < 4) fail(`only ${cellsOk} cell comparisons (wanted 4+)`);
 if (fullOk < 4) fail(`only ${fullOk} live band comparisons (wanted 4+)`);
 if (bandsOk < 4) fail(`only ${bandsOk} band comparisons (wanted 4+)`);
+if (tightOk < 4) fail(`only ${tightOk} tight-band comparisons (wanted 4+)`);
 const gs = await page.evaluate(()=>{ try { return localStorage.getItem("ml-ground-scissor"); } catch { return "?"; } });
 console.log(`ml-ground-scissor after: ${gs} (null = the default, on); errs ${errs.length}`, errs.slice(0,3));
 if (gs === "0") fail("the probe left the ground blit switched to whole");

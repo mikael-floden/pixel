@@ -1239,6 +1239,17 @@ const GROUND_RING_MS = 2;
 /** An occluder image carries the cell it came from as plain properties — see
  *  `tagOccluder`. Read only by `__ml.occAudit()` and `__ml.occDump()`. */
 type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number; ocBase?: number; ocNear?: number };
+/** A ground switch: on unless the URL says `?<param>=0` or Settings→Dev stored "0". */
+function groundFlagOn(param: string, storeKey: string): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get(param);
+    if (q === "0") return false;
+    if (q === "1") return true;
+    return localStorage.getItem(storeKey) !== "0";
+  } catch {
+    return true;
+  }
+}
 
 const GROUND_COMPOSE_MS = 2;
 /* TASK 1 (games-perf on the maintainer's order, 2026-09-24: "still laggy ...
@@ -1273,6 +1284,9 @@ const T3_BOUNDARY_LAND = 12;
 const T3_REPAINT_SPLITS = 2;
 /** The drop drain's group size (cells per frame) — see t3drainTick. */
 const T3_DRAIN_GROUP = 8;
+/** A raster the compose worker landed drains the owed cells once the worker is
+ *  idle, or at most this often while it stays busy (see t3drainDrops). */
+const T3_REMOTE_DRAIN_MS = 400;
 /** THE ART QUEUE'S PRIORITIES (artqueue.ts; lower first). The maintainer's
  *  order, 2026-09-12: my own urgent clips; the attack and die strips of a
  *  kind whose monster is chasing or fighting (`fight`), then its angry; the
@@ -2152,7 +2166,7 @@ export class WorldScene extends Phaser.Scene {
    *  whose surface op did not draw. It used to be one per flat cell; if this
    *  climbs back toward `cells`, art is not landing and the pass is paying for
    *  the insurance again. */
-  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0 };
+  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0, resolveMs: 0, opsMs: 0 };
   /** The ground has drawn SOMETHING this world — sticky, because after a
    *  scroll t3stats counts only the exposed bands (which can be all void). */
   private groundPainted = false;
@@ -4504,6 +4518,13 @@ export class WorldScene extends Phaser.Scene {
   private groundScratch?: Phaser.GameObjects.RenderTexture;
   private groundAnchor: { ax: number; ay: number; mask: Map<number, number> | null; top: number } | null = null;
   private groundClip: { x0: number; y0: number; x1: number; y1: number } | null = null;
+  /** THE GROUND BRACKET HITCHES (his 16:50 run, 2026-09-24: groundSlice 12-28 ms
+   *  and repaintCells 17-65 ms peaks in every window): a band pass walks only
+   *  the cells that can reach its rect (`groundTightOn`, drawTiles3Ground) and
+   *  builds no plate on the frame thread (`groundDeferOn`, setGroundClip).
+   *  `?groundtight=0` / `?grounddefer=0`, Settings→Dev, bisect. */
+  private groundTightOn = groundFlagOn("groundtight", "ml-groundtight");
+  private groundDeferOn = groundFlagOn("grounddefer", "ml-grounddefer");
   /** Ground ops whose placement was NOT a whole texel — see t3Blit. Zero on
    *  this machine; the maintainer's device is the one that can say otherwise. */
   private groundNonInt = 0;
@@ -4581,6 +4602,10 @@ export class WorldScene extends Phaser.Scene {
    *  does by accident: it re-anchors, and re-anchoring is cheaper than the
    *  scrolls it prevents. See t3drainDrops.
    *  `__ml.groundDrain(true)` puts it back for an A/B. */
+  /** The compose worker landed a raster a drop may have waited on (a deferred
+   *  plate, a fade) since the last drain — see t3drainDrops. */
+  private t3remoteLanded = false;
+  private t3remoteDrainAt = 0;
   private groundDrainRepaint = true; // `__ml.groundDrain(false)` for a dev A/B; the Settings switch is gone (no felt change)
   /* THE BURST TEST (maintainer 2026-09-12: "prove the fix works before you
    * write the code... push a broken version that doesn't do the slow code").
@@ -4622,6 +4647,9 @@ export class WorldScene extends Phaser.Scene {
   /** Texels blitted into the ground RTs this beacon window (`groundDrew.blitMpx`). */
   private groundBlitPx = 0;
   private groundSliceStats = { runs: 0, slices: 0, ms: 0, flushes: 0, drains: 0 };
+  /** The last 64 slices' anatomy (t3paintSliceStep), read by `__ml.groundSliceLog`. */
+  private groundSliceLog: { ms: number; w: number; h: number; cells: number; blits: number; culled: number; dropped: number; composeMs: number; boundaries: number; underlays: number; fades: number; resolveMs: number; opsMs: number }[] = [];
+  private groundSliceDrops0 = 0;
   /** The drain's per-frame budget in force. A dev A/B sets it to ~0 to get the
    *  OLD topology back — one rect per bracket per frame — so the merge can be
    *  proved pixel-identical against the behaviour it replaced. */
@@ -5931,6 +5959,26 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.bake?.on,
           state: () => this.bakeLabel(),
         },
+        /* THE GROUND BRACKET HITCHES (2026-09-24): both on by default — they only
+         * remove work from a band pass; off is the bisect. */
+        {
+          label: "ground: tight band",
+          act: () => {
+            this.groundTightOn = !this.groundTightOn;
+            localStorage.setItem("ml-groundtight", this.groundTightOn ? "1" : "0");
+          },
+          get: () => this.groundTightOn,
+          state: () => (this.groundTightOn ? "on" : "off"),
+        },
+        {
+          label: "ground: plates off-thread",
+          act: () => {
+            this.groundDeferOn = !this.groundDeferOn;
+            localStorage.setItem("ml-grounddefer", this.groundDeferOn ? "1" : "0");
+          },
+          get: () => this.groundDeferOn,
+          state: () => (this.groundDeferOn ? "on" : "off"),
+        },
         /* THE EDIT TOOL (see worldEdit): the tile "dropdown" cycles the world's
          * grounds; place/dig/raise act on the player's own cell. */
         { label: "edit tile", act: () => { this.editTileIdx++; }, state: () => this.editTileName() },
@@ -7075,7 +7123,7 @@ export class WorldScene extends Phaser.Scene {
               rt.clear();
               this.fillGround(rt, bg);
               const win = this.t3groundWindow(ax, ay, 0, 0, W, H);
-              this.groundClip = null;
+              this.setGroundClip(null);
               this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
               const full = read();
               /* The live contract of the scissor: over the REAL kept picture the
@@ -7092,12 +7140,45 @@ export class WorldScene extends Phaser.Scene {
               // The bracket's own contract, over the poison: the band both ways.
               const ss = run(true, flush), sw = run(false, flush);
               out.sliceCmp = { ...compare(ss.px, sw.px, band, true), rect: band, slices: q.length, step, blitPxScissor: ss.blit, blitPxWhole: sw.blit };
+              /* THE TIGHT BAND CHANGES NO TEXEL (drawTiles3Ground `reaches`): the
+               * band over the poison with the reject off, then on — plates built
+               * here (the deferral's drops are timing, not the reject) and the
+               * compose unbudgeted (the refusals are budget, not the reject). */
+              const tWas = this.groundTightOn, dWas = this.groundDeferOn;
+              this.groundDeferOn = false;
+              try {
+                this.groundTightOn = false;
+                const loose = run(true, flush);
+                this.groundTightOn = true;
+                const tight = run(true, flush);
+                out.tightCmp = { ...compare(tight.px, loose.px, band, true), rect: band, step };
+              } finally {
+                this.groundTightOn = tWas;
+                this.groundDeferOn = dWas;
+              }
             });
           }
           // The cells last: this poisons the picture the scroll above copied forward.
           const cs = run(true, () => this.repaintTiles3Cells(cells));
           const cw = run(false, () => this.repaintTiles3Cells(cells));
           out.cellsCmp = { ...compare(cs.px, cw.px), blitPxScissor: cs.blit, blitPxWhole: cw.blit };
+          // ...and the cell repaint, tight off vs on, the same way.
+          {
+            const tWas = this.groundTightOn, dWas = this.groundDeferOn;
+            this.groundDeferOn = false;
+            try {
+              this.withoutComposeBudget(() => {
+                this.groundTightOn = false;
+                const loose = run(true, () => this.repaintTiles3Cells(cells));
+                this.groundTightOn = true;
+                const tight = run(true, () => this.repaintTiles3Cells(cells));
+                out.cellsTightCmp = compare(tight.px, loose.px);
+              });
+            } finally {
+              this.groundTightOn = tWas;
+              this.groundDeferOn = dWas;
+            }
+          }
         } finally {
           setGroundScissor(was);
           this.lastGround = { x: NaN, y: NaN }; // the next latch paints in full: the poison and the moved anchor go
@@ -7864,6 +7945,21 @@ export class WorldScene extends Phaser.Scene {
       groundBandMs: (v?: number) => {
         if (typeof v === "number") this.groundBandMs = v;
         return { budgetMs: this.groundBandMs, ...this.groundSliceStats };
+      },
+      /** The last slices' anatomy: ms, rect, cells walked, blits, clip-culled ops, dropped (deferred-texture) ops. Cleared on read. */
+      groundSliceLog: () => {
+        const log = this.groundSliceLog;
+        this.groundSliceLog = [];
+        return log;
+      },
+      /** The band pass's two cuts (A/B): the cell reject and the plates on the worker. */
+      groundTight: (on?: boolean) => {
+        if (typeof on === "boolean") this.groundTightOn = on;
+        return this.groundTightOn;
+      },
+      groundDefer: (on?: boolean) => {
+        if (typeof on === "boolean") this.groundDeferOn = on;
+        return this.groundDeferOn;
       },
       groundDrain: (on?: boolean) => {
         if (typeof on === "boolean") this.groundDrainRepaint = on;
@@ -14269,7 +14365,16 @@ export class WorldScene extends Phaser.Scene {
     this.t3workerStep(); // a postMessage, unguarded — see t3workerStep
     this.t3retryArt(); // unguarded too — see t3retryArt
     this.ps();
-    this.t3prefetchStep();
+    {
+      // THE RING ASKS AHEAD, ON THE WORKER: a plate it finds unbuilt is posted, never built here (setGroundClip).
+      const texR = this.t3tex;
+      if (texR) texR.deferPlates = this.groundDeferOn && composeWorkerEnabled();
+      try {
+        this.t3prefetchStep();
+      } finally {
+        if (texR) texR.deferPlates = false;
+      }
+    }
     this.t3retryBoundaries();
     this.pe("prefetch");
     // ...and, once the art has settled, repair anything a paint dropped.
@@ -20533,7 +20638,11 @@ export class WorldScene extends Phaser.Scene {
     /* THE COMPOSE WORKER boots with the factory — the same three sheets and
      * the patterns index, fetched by the worker itself. Rasters land through
      * `landRemote`; a miss lets the frame thread compose that key. */
-    this.t3compose.onComposed((key, px) => this.t3tex?.landRemote(key, px));
+    this.t3compose.onComposed((key, px) => {
+      this.t3tex?.landRemote(key, px);
+      // A boundary has its own retry (t3boundaryOwed); a plate or a fade was a DROP, and drops drain.
+      if (!key.startsWith("t3x:")) this.t3remoteLanded = true;
+    });
     this.t3compose.onMissed((key) => this.t3tex?.remoteMissed(key));
     {
       const p = patternSheetPaths(patterns);
@@ -20937,7 +21046,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     this.groundSliceStats.runs++;
-    this.t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0 };
+    this.t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0, resolveMs: 0, opsMs: 0 };
     // The cache keeps the FULL window's cells, not the band's — the next step
     // wants the ~82% it already knows.
     if (this.groundCacheOn && this.t3keepIdx) this.t3pruneCache(this.t3keepIdx);
@@ -20947,6 +21056,18 @@ export class WorldScene extends Phaser.Scene {
     cur.setVisible(false);
     this.groundAnchor = { ax, ay, mask, top };
     this.groundLastMode = "scroll";
+  }
+
+  /** The band pass's clip — and with it the factory's plate deferral: inside a
+   *  band pass (a scroll slice, a cell repaint) a plate that is not built goes
+   *  to the compose worker and its op is dropped, the cell owed and repainted
+   *  when the raster lands, exactly as a boundary is (tiles3draw `deferPlates`).
+   *  A full paint keeps the sync build: it is behind the veil, or already a
+   *  whole-texture cost. Off the frame thread because a plate build is the
+   *  ~13 ms atom on his phone and one slice paid 5-16 ms of them (2026-09-24). */
+  private setGroundClip(c: { x0: number; y0: number; x1: number; y1: number } | null): void {
+    this.groundClip = c;
+    if (this.t3tex) this.t3tex.deferPlates = !!c && this.groundDeferOn && composeWorkerEnabled();
   }
 
   /** ONE SLICE OF THE EXPOSED BAND, painted into the live texture through the
@@ -20959,17 +21080,24 @@ export class WorldScene extends Phaser.Scene {
     if (!b || !ctx || !rt || !this.maps3) return 0;
     this.groundSliceQ.shift();
     const t0 = performance.now();
+    this.groundSliceDrops0 = this.t3tex?.droppedOps ?? 0;
     const win = this.t3groundWindow(ctx.ax, ctx.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
-    this.groundClip = b;
+    this.setGroundClip(b);
     try {
       this.drawTiles3Ground(rt, ctx.ax, ctx.ay, win.u0, win.u1, win.v0, win.v1, ctx.mask, ctx.cuts, ctx.top);
     } finally {
-      this.groundClip = null;
+      this.setGroundClip(null);
     }
     this.groundNoteRect(b);
     const sliceMs = performance.now() - t0;
     this.groundSliceStats.slices++;
     this.groundSliceStats.ms += sliceMs;
+    // THE ANATOMY OF ONE SLICE, for the probe (`__ml.groundSliceLog`): what it
+    // walked, blitted, culled and dropped, and what it cost — the numbers that
+    // say whether a slow slice is its cells, its draws or its brackets.
+    const st = this.t3stats;
+    this.groundSliceLog.push({ ms: +sliceMs.toFixed(2), w: b.x1 - b.x0, h: b.y1 - b.y0, cells: st.cells, blits: st.blits, culled: this.groundCulled, dropped: (this.t3tex?.droppedOps ?? 0) - (this.groundSliceDrops0 ?? 0), composeMs: +st.composeMs.toFixed(2), boundaries: st.boundaries, underlays: st.underlays, fades: st.fades, resolveMs: +st.resolveMs.toFixed(2), opsMs: +st.opsMs.toFixed(2) });
+    if (this.groundSliceLog.length > 64) this.groundSliceLog.shift();
     /* THE SIZE RATCHET IS GONE. It grew `groundSlicePx` only when a slice cost
      * under GROUND_SLICE_MS/2 = 1 ms, and a slice on his phone costs ~20 ms
      * because of the bracket — so the condition was unreachable and the size
@@ -21608,12 +21736,12 @@ export class WorldScene extends Phaser.Scene {
     this.groundBracketRect = { ...cull };
     const prevBatch = this.groundBatchRT;
     this.groundBatchRT = scratch;
-    this.groundClip = cull;
+    this.setGroundClip(cull);
     try {
       scratch.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1, skipBatch: true });
       this.drawTiles3Ground(scratch, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, a.top);
     } finally {
-      this.groundClip = null;
+      this.setGroundClip(null);
       this.groundBatchRT = prevBatch;
       this.t3countBatches(scratch);
       this.groundEndDraw(scratch, cull);
@@ -22233,7 +22361,7 @@ export class WorldScene extends Phaser.Scene {
     // Published BEFORE the passes and mutated in place: a gate reads these
     // counters to tell a correct dark frame from a black one, and an exception
     // mid-pass must leave what actually drew visible, not last frame's numbers.
-    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0 };
+    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0, resolveMs: 0, opsMs: 0 };
     this.groundCulled = 0;
     const built0 = tex?.stats.built ?? 0;
     const buildMs0 = tex?.stats.buildMs ?? 0;
@@ -22246,6 +22374,32 @@ export class WorldScene extends Phaser.Scene {
 
     // The window, once — all three passes walk the same cells.
     const cells = this.t3windowCells(u0, u1, v0, v1);
+    /* A BAND PASS WALKS ONLY THE CELLS THAT CAN REACH ITS RECT (2026-09-24;
+     * his 16:50 run: groundSlice 12-28 ms and repaintCells 17-65 ms peaks in
+     * every window). The window pads by the world's whole level range below
+     * the rect (t3groundWindow: a column's art rises above its cell), so a
+     * 289x492 slice walked ~825 cells for ~135 inside it and generated ~3,500
+     * ops of which ~1,700 the clip threw away (probe-groundslice.mjs at his
+     * worst spot). A cell's own column — its level's top to its base, a tile
+     * of margin each way for the corner-lattice boundary, a ramp's taller
+     * frame and the slope lift — is exactly what can reach the rect; a cell
+     * whose column cannot is not walked at all. The pixels are the full
+     * paint's: an op outside the rect drew nothing inside it. A deck is asked
+     * at its own level. `?groundtight=0` / Settings→Dev bisects. */
+    const clipRect = this.groundClip;
+    const tight = !!clipRect && this.groundTightOn;
+    const fr = t3.frame;
+    const lhPx = this.geom.lh;
+    const rx0 = tight && clipRect ? ax + clipRect.x0 - T3_TILE : 0;
+    const rx1 = tight && clipRect ? ax + clipRect.x1 + T3_TILE : 0;
+    const ry0 = tight && clipRect ? ay + clipRect.y0 - T3_TILE : 0;
+    const ry1 = tight && clipRect ? ay + clipRect.y1 + T3_TILE : 0;
+    const reaches = (col: number, row: number, level: number): boolean => {
+      const cx = t3columnX(fr, col, row);
+      if (cx + T3_TILE < rx0 || cx > rx1) return false;
+      if (t3columnY(fr, col, row, level) - T3_TOP_Y - lhPx > ry1) return false;
+      return t3columnY(fr, col, row, 0) + T3_TILE + lhPx >= ry0;
+    };
 
     /* ONE BRACKET, POSSIBLY OWNED BY THE CALLER. Every beginDraw/endDraw pair
      * costs a capture-target clear AND a full-texture blit whatever it draws
@@ -22263,8 +22417,15 @@ export class WorldScene extends Phaser.Scene {
       this.groundBracketRect = this.groundClip ? { ...this.groundClip } : null;
     }
     for (const [col, row] of cells) {
+      /* BEFORE THE RESOLVE, by the doc's own level (a level of margin for a
+       * slope's rise or a lid): a cell the rect cannot see is not resolved
+       * either — with the resolve worker off (his verdict) a resolve is frame
+       * thread work, and a slice at a new spot resolved ~825 of them. */
+      if (tight && !reaches(col, row, (world.rows[row]?.[col]?.l ?? 0) + 1)) continue;
+      const tr = performance.now();
       const cell = cellOf(col, row);
       if (!cell) continue;
+      if (tight && !reaches(col, row, cell.level)) continue;
       stats.cells++;
       if (cell.fade) stats.fades++;
       needIdx = row * world.width + col;
@@ -22283,6 +22444,7 @@ export class WorldScene extends Phaser.Scene {
       // drawn WITH the cell now" (render3.py:1190). In painter order a cell
       // draws once, and everything that cell wears draws inside that slot.
       const b = boundaryOf(col, row);
+      stats.resolveMs += performance.now() - tr;
       if (b) boundaryArtPaths(b, need);
       if (!tex) continue;
       const idx = row * world.width + col;
@@ -22320,6 +22482,7 @@ export class WorldScene extends Phaser.Scene {
        * of every slice, all thrown away on the success path. The catch is the
        * same once-per-message warning; only the error path allocates now. */
       let bop: ReturnType<typeof tex.opsForBoundary> = null;
+      const to = performance.now();
       if (b && !cutSuppressed) {
         try {
           bop = tex.opsForBoundary(b);
@@ -22386,6 +22549,7 @@ export class WorldScene extends Phaser.Scene {
           this.t3Warn("blits", col, row, e);
         }
       }
+      stats.opsMs += performance.now() - to;
       /* COVERED MEANS THE WHOLE FOOTPRINT, not merely "something drew". A
        * TOP-FACE-ONLY raster — a raised cell's surface, a raised or liquid
        * boundary — paints 924 of the plate's 2,012 texels, so treating it as
@@ -22482,6 +22646,17 @@ export class WorldScene extends Phaser.Scene {
     for (const [col, row] of cells) {
       const idx = row * world.width + col;
       if (mask && (cuts ? cuts.get(idx) : top) !== undefined) continue; // my roof, or a lid over my floor
+      if (tight) {
+        // By column first (no resolve), then the whole cell or none of it at
+        // its decks' own levels: the owed-deck bookkeeping below is per cell.
+        const cx = t3columnX(fr, col, row);
+        if (cx + T3_TILE < rx0 || cx > rx1) continue;
+        const td = performance.now();
+        let any = false;
+        for (const d of decksOf(col, row)) if (reaches(col, row, d.level)) { any = true; break; }
+        stats.resolveMs += performance.now() - td;
+        if (!any) continue;
+      }
       needIdx = idx;
       let deckMissing = false;
       const dropsDeck = tex?.droppedOps ?? 0;
@@ -22523,7 +22698,10 @@ export class WorldScene extends Phaser.Scene {
      * again, and pays a full paint at every loader idle edge for a picture that
      * cannot change. One repaint per drop episode is the feature; the rest was
      * the bug. */
-    if ((tex?.droppedOps ?? 0) > drops0 && this.t3terrainGen !== this.t3drainGen) this.groundDropsPending = true;
+    /* A drop arms the drain when TERRAIN art may still land (the gen) — or, with
+     * plates on the worker, while the worker holds a job: its raster is a
+     * landing the loader never sees (t3drainDrops' remote edge). */
+    if ((tex?.droppedOps ?? 0) > drops0 && (this.t3terrainGen !== this.t3drainGen || (this.groundDeferOn && (tex?.inflightCount() ?? 0) > 0))) this.groundDropsPending = true;
     load?.flush();
     this.checkTiles3Pitch();
   }
@@ -22565,7 +22743,17 @@ export class WorldScene extends Phaser.Scene {
     const idle = load.queuedCount === 0 && load.idle;
     const rising = idle && !this.t3loadWasIdle;
     this.t3loadWasIdle = idle;
-    if (!this.groundDropsPending || !rising) return;
+    /* THE WORKER'S LANDING IS A LANDING TOO. A plate deferred to the compose
+     * worker (groundDeferOn) drops its op and owes the cell; its raster comes
+     * back through `landRemote`, which the loader never sees — in an area whose
+     * art has all loaded the loader stays idle, no rising edge comes, and the
+     * hole would stand until something else loaded. So a remote landing drains
+     * once the worker is idle, or every T3_REMOTE_DRAIN_MS while it stays busy. */
+    const remoteDue =
+      this.groundDeferOn &&
+      this.t3remoteLanded &&
+      ((this.t3tex?.inflightCount() ?? 0) === 0 || performance.now() - this.t3remoteDrainAt >= T3_REMOTE_DRAIN_MS);
+    if (!this.groundDropsPending || !(rising || remoteDue)) return;
     /* THE LANDING PATH ALREADY OWES THESE CELLS — let it pay, it is cheaper.
      *
      * An op drops because its texture is not resident, and `need()` records the
@@ -22582,6 +22770,8 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     this.groundDropsPending = false;
+    this.t3remoteLanded = false;
+    this.t3remoteDrainAt = performance.now();
     this.t3drainGen = this.t3terrainGen; // nothing new can drop until TERRAIN art lands
     this.repaintStats.drains++;
     /* AND IT DOES NOT REPAINT. The drop classes above are all owned elsewhere,
@@ -24680,7 +24870,7 @@ export class WorldScene extends Phaser.Scene {
       rt.clear();
       this.fillGround(rt, this.groundFillRGB(mask));
       const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
-      this.groundClip = null;
+      this.setGroundClip(null);
       this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
       this.groundAnchor = { ax, ay, mask, top };
       this.groundLastMode = "full";

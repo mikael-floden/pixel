@@ -409,6 +409,35 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `fullSliced` beside `fullPaints`; the mode census gains `sliced`.
   `__ml.groundHash` flushes pending slices first, so verify-cave's
   ground-equals-full-paint check still reads a settled picture.
+- **A BAND PASS DOES ONLY THE BAND'S WORK** (2026-09-24; his 16:50 run:
+  `groundSlice` 12-28 ms and `repaintCells` 17-65 ms PEAKS in every 30 s
+  window — the worst frames, which are what he feels). A band pass (a scroll
+  slice, a cell repaint, a drain group) walks only the cells whose column
+  can reach its rect: the cell's level's top (`- T3_TOP_Y - lh`) to its base
+  (`+ T3_TILE + lh`), the rect grown by a tile each way for the corner
+  lattice's boundary — rejected BEFORE the resolve by the doc's level + 1,
+  then by the resolved level; a deck by column, then at its own level
+  (`reaches` in drawTiles3Ground; `?groundtight=0`, Settings→Dev "ground:
+  tight band"). And it builds NO PLATE on the frame thread: an unbuilt plate
+  is a `plate` job on the compose worker (tiles3draw `deferPlates`,
+  `postPlate`; the worker's memoised side raster, copied), its op dropped
+  and the cell owed, exactly as a boundary; the ring prefetch defers the
+  same way; a full paint builds as before (`?grounddefer=0`, "ground: plates
+  off-thread"). THE WORKER'S LANDING IS A LANDING: the drop drain fires on
+  the loader's idle edge, which a worker raster never makes — in an area
+  whose art has all loaded a deferred plate stood as a hole until something
+  else loaded — so a landed plate or fade arms it (`t3remoteLanded`: drained
+  once the worker is idle or every `T3_REMOTE_DRAIN_MS` 400 while busy), and
+  a drop arms the drain while the worker holds a job. MEASURED headless at
+  his worst spot 229,256 (`scripts/probe-groundslice.mjs`, a 1.5-cell walk):
+  a 289x492 slice walked ~825 cells for ~135 inside its rect, made ~3,500
+  ops of which ~1,700 the clip threw away, and built 5-23 ms of plates;
+  with both cuts the worst slice 48 → 25 ms, all slices 154 → 80 ms (258,217:
+  27 → 20, 116 → 64). WHAT IS LEFT is the first resolve of cells (16-20 ms
+  in the worst slice): the resolve worker is off by his 09-08 verdict.
+  Gates: verify-groundbracket.mjs `tightCmp`/`cellsTightCmp` (band and cells,
+  tight off vs on over the poison, identical), verify-compose.mjs (every
+  worker raster, plates included, audited byte for byte).
 - **THE FPS METER IS A DEV BUTTON** (maintainer 2026-09-24): Settings/dev
   "fps meter" mounts `fpsbadge.ts`'s corner readout (fps, worst frame,
   hitches over 5 s) and remembers per device (localStorage `ml-fps`, the

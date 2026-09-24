@@ -1554,7 +1554,11 @@ export interface ComposeSide {
 }
 export type ComposeJob =
   | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide; slope?: { side: "a" | "b"; rise: number; lift: number } }
-  | { kind: "fade"; key: string; side: ComposeSide; top: [number, number, number] };
+  | { kind: "fade"; key: string; side: ComposeSide; top: [number, number, number] }
+  /** A PLATE — the conformed field art under its own key, the same
+   *  `buildPlatePixels` the worker builds a boundary's sides with. Posted only
+   *  while the factory's `deferPlates` is up (a band pass, the ring). */
+  | { kind: "plate"; key: string; side: ComposeSide };
 
 /** Something that composes OFF THE FRAME THREAD (composeclient.ts). The
  *  factory hands it a job when `ready()` and draws the plain plate until the
@@ -1705,6 +1709,14 @@ export class Tiles3Textures {
    * session, so they cost nothing to leave alone. */
   private composeBudgetMs = Infinity;
   private composeSpent = 0;
+  /** PLATES GO TO THE WORKER TOO while this is up (the scene raises it for a
+   *  band pass and the prefetch ring, never for a full paint): a plate that is
+   *  not built is posted as a `plate` job and answered null — the op is
+   *  dropped, the cell owed, and repainted when the raster lands, exactly as
+   *  a boundary is. A plate build is the ~13 ms atom on his phone, and a
+   *  scroll slice paid 5-16 ms of them headless at his worst spot
+   *  (2026-09-24, probe-groundslice.mjs). */
+  deferPlates = false;
   private mine = new Map<string, true>();
   private pix = new Map<string, Pixels | null>();
 
@@ -1944,13 +1956,33 @@ export class Tiles3Textures {
        * file: worst case is exactly today's picture. */
       const hit = this.ensureHit(skey);
       if (hit) return hit;
+      if (this.deferPlates && this.postPlate(skey, art, ground)) return null;
       const capped = this.ensure(skey, () => this.platePixels(art, ground));
       if (capped) return capped;
       if (!this.o.textures.exists(key)) return null;
       this.plateRawFallbacks++;
       return key;
     }
-    return this.ensureHit(key) ?? this.ensure(key, () => this.platePixels(art, ground));
+    const built = this.ensureHit(key);
+    if (built) return built;
+    if (this.deferPlates && this.postPlate(key, art, ground)) return null;
+    return this.ensure(key, () => this.platePixels(art, ground));
+  }
+
+  /** The plate's raster from the worker (see `deferPlates`): true when the job
+   *  is over there — posted now, or already in flight — and this draw drops
+   *  the op; false when there is no worker for it and the build is ours. */
+  private postPlate(key: string, art: PlateLike, ground: string): boolean {
+    const remote = this.remoteFor(key);
+    if (!remote) return false;
+    if (!this.inflight.has(key)) {
+      this.inflight.add(key);
+      this.stats.queued++;
+      if (this.audit) this.auditJobs.set(key, () => this.platePixels(art, ground));
+      remote.compose({ kind: "plate", key, side: this.side(art, ground) });
+    }
+    this.stats.deferred++;
+    return true;
   }
 
   /** THE LID OF A LOWERED WALL: a composed plate grown by ONE PIXEL on every

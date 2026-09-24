@@ -123,6 +123,14 @@ async function compose(g: number, j: ComposeJob): Promise<void> {
       if (g !== gen) return;
       t0 = performance.now();
       px = fadeOverlay(sheets, src, j.top, j.side.wall);
+    } else if (j.kind === "plate") {
+      // The memoised side raster, COPIED: the post below transfers the buffer,
+      // and a transferred buffer is detached from the memo a boundary job
+      // would read next.
+      const p = await plate(j.side);
+      if (g !== gen) return;
+      t0 = performance.now();
+      px = { w: p.w, h: p.h, data: new Uint8ClampedArray(p.data) };
     } else {
       const [a, b] = await Promise.all([plate(j.a), plate(j.b)]);
       if (g !== gen) return;
