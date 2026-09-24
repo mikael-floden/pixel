@@ -2872,6 +2872,13 @@ function buildCandidateMonsters(shippedIds) {
     if (!isDir(animRoot) && c.verdict !== "approved") continue;
     const frameW = c.size?.[0] ?? null, frameH = c.size?.[1] ?? frameW;
     const anims = {};
+    // WHEN EACH FACING WAS MADE, from the domain's own record (candidate.json
+    // stamps `generated_at` per direction). The wiki's review queue orders by
+    // it — newest art first — so the batch the agent finished an hour ago is
+    // the top of the page and the 40-facing backlog he never opened is the
+    // bottom (maintainer 2026-09-24, on the queue reading the backlog first:
+    // "Feels buggy"). A shipped creature's record has no stamp and sorts last.
+    const made = readJson(join(base, c.id, "candidate.json"))?.animations ?? {};
     const still = staticState(join(base, c.id, "rotations"), `monsters/candidates/${c.id}/rotations`);
     if (still) anims.static = still;
     // THE STATE ROW IS THE DOMAIN'S OWN LIST, IN ITS OWN ORDER — exactly what
@@ -2917,6 +2924,7 @@ function buildCandidateMonsters(shippedIds) {
           fh: dims ? dims.h : frameH,
           framesDir: `monsters/candidates/${c.id}/animations/${state}/${dir}`,
           ...frameNaming(frameDir),
+          at: made[state]?.directions?.[dir]?.generated_at ?? null,
         };
       }
       if (Object.keys(dirs).length) {

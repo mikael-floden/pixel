@@ -4686,6 +4686,23 @@ const creatureComplete = (m) => {
  * a time, so a filter would take that away from him. A sort composes with it —
  * and the ‹ › pager walks the sorted order, so the batch the agent just
  * dropped is the top of the page AND the next taps. */
+/* AND IT IS A FILTER, NOT A SORT — the second time round (maintainer
+ * 2026-09-24, on the sort: "The review needed sort with the 'in the making'
+ * filter doesn't seem to work and changes depending on how I click. Feels
+ * buggy."). Measured: the batch the agent finishes LEAVES "in the making" the
+ * moment its art is complete — `pending` is the agent's flag, cleared when the
+ * art is done, not when he has judged it — so the two composed to "review
+ * needed 0" on exactly the creatures that owed him the most. And a sort chip
+ * whose count was per-filter read 0 under one chip and 5 under the next, and
+ * hid itself at 0: a control that comes and goes with the click before it.
+ *
+ * So it answers "which creatures", the question the filter row answers: one
+ * chip, one global count, always there for the Game Master (a 0 there is the
+ * finish line, not a missing button). ORDERED BY NEWEST ART FIRST (`at`, the
+ * facing's own generated_at): the batch the agent finished an hour ago is the
+ * top of the page, and the backlog he never opened — Ironhide, Ashling, 40
+ * facings each, no stamp at all — is the bottom. Fullest-inbox-first put that
+ * backlog on top, which is the opposite of what he is looking for. */
 function creatureOwed(m) {
   let owed = 0;
   for (const [st, anim] of Object.entries(m?.animations ?? {})) {
@@ -4697,6 +4714,33 @@ function creatureOwed(m) {
     }
   }
   return owed;
+}
+/** HOW RECENT the newest facing he still owes is — the key the queue orders
+ *  by, newest first. Three sources, in order of trust:
+ *   1. the facing's own stamp (`at`, generated_at from candidate.json — every
+ *      facing built in the candidates pipeline carries one);
+ *   2. for a facing REGENERATED SINCE HE JUDGED IT (the stale case: a redo
+ *      that landed on a shipped creature, whose mirror carries no stamp), the
+ *      verdict it outdated — the art is newer than that, which is what puts
+ *      it above the backlog he never opened (measured: Burrkin's die SE/SW,
+ *      judged 09-23 17:55, regenerated since);
+ *   3. nothing — art with no stamp he never judged, which is the backlog, and
+ *      sorts last.
+ *  ISO strings compare lexically, so a stamp and a verdict time order together. */
+function creatureOwedAt(m) {
+  let newest = "";
+  for (const [st, anim] of Object.entries(m?.animations ?? {})) {
+    if (anim?.still) continue;
+    for (const [dir, clip] of Object.entries(anim?.dirs ?? {})) {
+      const e = fb("monsters", `${m.path}#${st}#${dir}`);
+      const judged = !!(e.status || e.rating);
+      const stale = judged && facetStale(m, st, dir, e);
+      if (judged && !stale) continue;
+      const key = clip?.at ?? (stale ? e.updated_at ?? "" : "");
+      if (key > newest) newest = key;
+    }
+  }
+  return newest;
 }
 const needsReview = (m) => creatureOwed(m) > 0;
 const MONSTER_SHADOWS = {
@@ -4729,6 +4773,12 @@ const MONSTER_SHADOWS = {
     title: "Creatures whose shadow you have already tuned — size and per-facet offsets",
     hit: (m) => !!shadowRaw(m),
   },
+  review: {
+    label: "review needed",
+    title: "Creatures with an animation direction you have not judged yet — the ones the agent finished most recently first",
+    hit: needsReview,
+    always: true,       // a 0 here is the finish line, not a chip nothing can fill
+  },
 };
 const shadowFilter = () => {
   if (!state.admin) return "all";
@@ -4744,31 +4794,29 @@ const shadowFilter = () => {
 function monsterSortMode() {
   let sort = "name";
   try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
-  return sort === "review" && !state.admin ? "name" : sort;
+  return sort === "review" ? "name" : sort;   // the queue moved to the filter row; an old stored choice is by name
 }
 function monsterSort(list) {
   const sort = monsterSortMode();
   const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
   const byName = (a, b) => a.name.localeCompare(b.name);
   const lvl = (m) => Number(stat.get(m.id)?.level ?? 0);
-  // Counted once per creature, not once per comparison: a sort is O(n log n)
-  // calls and this walks five states of eight directions.
-  const owedBy = new Map(list.map((m) => [m.id, creatureOwed(m)]));
-  const owed = (m) => owedBy.get(m.id) ?? 0;
   const CMP = {
     name: byName,
     level: (a, b) => lvl(b) - lvl(a) || byName(a, b),
     // Aggressive first, and hardest first within each half — "what can come
     // for me, worst first" is the question this sort answers.
     threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
-    // The ones waiting on him first, the fullest inbox at the top — a batch the
-    // agent has just finished animating owes all eight of five states, an old
-    // creature he stopped halfway owes two. Everything settled falls below the
-    // fold in its usual alphabetical order, so the page still reads as a list
-    // of creatures rather than a scoreboard.
-    review: (a, b) => owed(b) - owed(a) || byName(a, b),
   };
-  return [...list].sort(CMP[sort] ?? byName);
+  const cmp = CMP[sort] ?? byName;
+  // THE REVIEW QUEUE IS NEWEST ART FIRST, whatever sort chip is lit — the
+  // chip only breaks ties inside one batch (same generated_at to the minute).
+  // Unstamped art (shipped creatures, the backlog) sorts last.
+  if (shadowFilter() === "review") {
+    const at = new Map(list.map((m) => [m.id, creatureOwedAt(m)]));
+    return [...list].sort((a, b) => (at.get(b.id) > at.get(a.id) ? 1 : at.get(b.id) < at.get(a.id) ? -1 : 0) || cmp(a, b));
+  }
+  return [...list].sort(cmp);
 }
 /* THE REVIEW QUEUE IS A QUEUE, NOT AN ORDER (maintainer 2026-09-24: "The
  * sorting and filter you added is not kept when klicking on a monster and
@@ -4790,24 +4838,24 @@ function monsterSort(list) {
  * standing on mid-walk. The batch is decided on the overview and stays put
  * until he goes back there, which is where it is re-planned. */
 let reviewQueue = { key: "", ids: [] };
-const reviewQueueKey = () => `${shadowFilter()}\u0000${state.query ?? ""}`;
+const reviewQueueKey = () => `review\u0000${state.query ?? ""}`;
 /** The creatures the current filter keeps, in the order the overview shows
  *  them — the list ‹ › walks on a creature page. */
 function monsterNav() {
   const mode = shadowFilter();
   const all = creatures();
   const kept = mode === "all" ? all : all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
-  const base = kept.length ? kept : all;          // never strand him on an empty pager
-  if (monsterSortMode() === "review") {
-    // The batch the overview planned, minus anything the roster has since
-    // dropped; a deep link that never passed the overview plans its own.
-    const byId = new Map(base.map((m) => [m.id, m]));
+  if (mode === "review") {
+    // The batch the overview planned — FROZEN, because his own verdicts are
+    // what it is computed from — minus anything the roster has since dropped;
+    // a deep link that never passed the overview plans its own.
+    const byId = new Map(all.map((m) => [m.id, m]));
     const frozen = reviewQueue.key === reviewQueueKey()
       ? reviewQueue.ids.map((id) => byId.get(id)).filter(Boolean) : [];
-    const q = frozen.length ? frozen : monsterSort(base.filter(needsReview));
+    const q = frozen.length ? frozen : monsterSort(kept);
     if (q.length) return q;                       // nothing owed: fall through to the full list
   }
-  return monsterSort(base);
+  return monsterSort(kept.length ? kept : all);   // never strand him on an empty pager
 }
 /* ---- THE CREATURES OVERVIEW IS A SHOWCASE ----
  * Maintainer 2026-08-18, round 1: "some big monsters are displayed with 0.5x
@@ -5131,11 +5179,11 @@ function viewMonsters() {
   const nAggro = list.filter((m) => isAggressive(stat.get(m.id))).length;
   const nPending = list.filter((m) => m.pending).length;
   const nNone = list.filter((m) => !shadowRaw(m)).length;
-  const nOwed = state.admin ? shown.filter(needsReview).length : 0;
+  const nOwed = mode === "review" ? shown.length : 0;
   // THE OVERVIEW IS WHERE THE BATCH IS PLANNED, and the only place it is
   // re-planned: every arrival here re-reads his verdicts, so finishing four
   // and coming back gives him the next four rather than yesterday's list.
-  if (sort === "review") reviewQueue = { key: reviewQueueKey(), ids: sorted.filter(needsReview).map((m) => m.id) };
+  if (mode === "review") reviewQueue = { key: reviewQueueKey(), ids: sorted.map((m) => m.id) };
   return h("div", {},
     sectionHead("monsters"),
     creatureTabs("monsters"),
@@ -5146,16 +5194,6 @@ function viewMonsters() {
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
-      /* THE COUNT IS OF WHAT IS ON THIS PAGE, not of the whole library — the
-       * filter row below decides which creatures these are, so with "in the
-       * making" selected this chip reads as the size of exactly the job he
-       * came here to do. Hidden when nothing is owed (a dead button is not an
-       * option, same law as the shadow chips), but kept while it is the
-       * selected sort so finishing the queue shows him the 0 rather than
-       * yanking the control out from under his thumb. */
-      ...(state.admin && (nOwed || sort === "review")
-        ? [["review", `review needed ${nOwed}`, "Creatures with an animation direction you have not judged yet — the ones the agent has just finished, first"]]
-        : []),
     ], sort, () => route()),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.
@@ -5163,17 +5201,15 @@ function viewMonsters() {
       Object.entries(MONSTER_SHADOWS)
         // A chip nothing can fill is not an option — "in the making 0" the day
         // the agent finishes them all would just be a dead button.
-        .filter(([id, f]) => id === "all" || list.some((m) => f.hit(m)))
+        .filter(([id, f]) => id === "all" || f.always || list.some((m) => f.hit(m)))
         .map(([id, f]) => [id, `${f.label} ${id === "all" ? list.length : list.filter((m) => f.hit(m)).length}`, f.title]),
       mode, () => route()) : null,
-    state.admin && sort === "review" && nOwed ? h("p", { class: "muted" },
-      `${nOwed} still owe${nOwed === 1 ? "s" : ""} a verdict on an animation direction. Open one and ‹ › walks only these.`) : null,
     state.admin && mode !== "all" ? h("p", { class: "muted" },
       shown.length
-        // ONE LINE OWNS THE PAGER. With the review queue on, ‹ › walks the
-        // batch, not the filter — two sentences each claiming the pager is how
-        // a page stops being believed.
-        ? `${shown.length} of ${list.length} creature${list.length === 1 ? "" : "s"}.${sort === "review" && nOwed ? "" : " Open one and ‹ › walks only these."}`
+        ? mode === "review"
+          ? `${nOwed} still owe${nOwed === 1 ? "s" : ""} a verdict on an animation direction, newest art first. Open one and ‹ › walks only these.`
+          : `${shown.length} of ${list.length} creature${list.length === 1 ? "" : "s"}. Open one and ‹ › walks only these.`
+        : mode === "review" ? "Every animation direction has your verdict. Nothing to review."
         : mode === "none"
           ? "Every creature has a tuned shadow. Nothing left to do."
           : "No creature has a tuned shadow yet.") : null,

@@ -218,15 +218,17 @@ ok(chipFor("no shadow") === `no shadow ${expNone}` && chipFor("shadow set") === 
 ok(sv.sel.startsWith("all") && sv.cards === total, `it opens unfiltered (${sv.cards} of ${total}, on "${sv.sel}")`);
 
 /* ---- "REVIEW NEEDED" (maintainer 2026-09-24: "the monster-agent usually
- * start with 10 monsters at a time and it's hard for me to find them … a sort
- * only available for the admin that can sort by 'review needed'").
+ * start with 10 monsters at a time and it's hard for me to find them", then on
+ * the first cut, a sort composed with "in the making": "doesn't seem to work
+ * and changes depending on how I click. Feels buggy").
  *
- * The expectation is derived from the SAME two files the page reads — the
- * roster's animations and his feedback doc — never from a number typed here,
- * because the answer changes every time he approves a direction. Three claims:
- * the chip counts what is actually owed, choosing it really does lift those
- * creatures to the top, and a player never gets it even with the preference
- * left in their storage by an admin session in the same browser. */
+ * A FILTER chip with a GLOBAL count, always present for the Game Master, and
+ * the order inside it is NEWEST ART FIRST — the facing's own generated_at —
+ * so the batch the agent just finished is the top and the unstamped backlog
+ * the bottom. The expectation is derived from the SAME two files the page
+ * reads, never a number typed here. Then ‹ › walks the batch and only the
+ * batch, the count reads "n / owed", and a verdict entered mid-walk does not
+ * reorder it under him. */
 const FB = (() => {
   try { return JSON.parse(readFileSync(join(ROOT, "live/feedback/monsters.json"), "utf8")).entries ?? {}; }
   catch { return {}; }
@@ -235,43 +237,49 @@ const facetStale = (m, st, dir, e) => {
   const hh = m?.animations?.[st]?.dirs?.[dir]?.h;
   return !(!e.art || !hh) && e.art !== hh && e.art !== m.artHash;
 };
-const owedBy = (m) => {
-  let n = 0;
+const owedOf = (m) => {
+  let n = 0, at = "";
   for (const [st, a] of Object.entries(m.animations ?? {})) {
     if (a?.still) continue;                       // the base is looked at, not judged
-    for (const dir of Object.keys(a?.dirs ?? {})) {
+    for (const [dir, clip] of Object.entries(a?.dirs ?? {})) {
       const e = FB[`${m.path}#${st}#${dir}`] ?? {};
-      if ((e.status || e.rating) && !facetStale(m, st, dir, e)) continue;
-      n++;
+      const judged = !!(e.status || e.rating), stale = judged && facetStale(m, st, dir, e);
+      if (judged && !stale) continue;
+      // Same three-way key as the page: the stamp, else the verdict a
+      // regeneration outdated, else nothing (the backlog).
+      const key = clip?.at ?? (stale ? e.updated_at ?? "" : "");
+      n++; if (key > at) at = key;
     }
   }
-  return n;
+  return { n, at };
 };
-const expOwed = roster.filter((m) => owedBy(m) > 0);
-ok(expOwed.length > 0 && expOwed.length < roster.length,
-  `the roster has both kinds, so the sort is actually distinguishable (${expOwed.length} owe a verdict, ${roster.length - expOwed.length} settled)`);
-const sortChips = () => pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].map((x) => x.textContent.trim()));
-const sc = await sortChips();
-ok(sc.includes(`review needed ${expOwed.length}`),
-  `the admin gets a "review needed" sort carrying the live count (${sc.join(" | ") || "no bar"})`);
-await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => /review needed/.test(x.textContent))?.click());
-await pa.waitForTimeout(1600);
-const topIds = await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].slice(0, 6).map((a) => a.getAttribute("href").split("/").pop()));
+const expOwed = roster.filter((m) => owedOf(m).n > 0);
 const owedIds = new Set(expOwed.map((m) => m.id));
-ok(topIds.length > 0 && topIds.slice(0, Math.min(topIds.length, expOwed.length)).every((id) => owedIds.has(id)),
-  `and choosing it lifts the ones waiting on him to the top (${topIds.slice(0, 4).join(", ")})`);
-// FULLEST INBOX FIRST — the batch the agent has just finished animating owes
-// far more than a creature he stopped halfway through, and that is the one he
-// wants first.
-const topOwed = topIds.map((id) => owedBy(roster.find((m) => m.id === id) ?? {}));
-ok(topOwed.every((n, i) => i === 0 || topOwed[i - 1] >= n),
-  `and the fullest inbox first (${topOwed.join(" ≥ ")})`);
-/* AND ‹ › WALKS THE BATCH, NOT THE PAGE (maintainer 2026-09-24: "The sorting
- * and filter you added is not kept when klicking on a monster and press
- * 'next'"). The sort named 4 creatures and the pager walked all 57, so the
- * fifth tap left the queue — the same dead end he named on tiles. The count
- * must read "n / owed", the walk must stay inside the batch all the way round,
- * and a verdict entered mid-walk must not reorder it under him. */
+ok(expOwed.length > 0 && expOwed.length < roster.length,
+  `the roster has both kinds, so the queue is actually distinguishable (${expOwed.length} owe a verdict, ${roster.length - expOwed.length} settled)`);
+sv = await shadowBar();
+ok(sv.chips.includes(`review needed ${expOwed.length}`),
+  `"review needed" is a FILTER chip carrying the global count (${sv.chips.join(" | ")})`);
+ok(!(await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].some((x) => /review/.test(x.textContent)))),
+  "and not a sort — a sort composed with \"in the making\" read 0 on the batch that had just graduated out of it");
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /^review needed/.test(x.textContent))?.click());
+await pa.waitForTimeout(1600);
+sv = await shadowBar();
+const qIds = await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].map((a) => a.getAttribute("href").split("/").pop()));
+ok(sv.cards === expOwed.length && qIds.every((id) => owedIds.has(id)),
+  `choosing it keeps exactly the ones waiting on him (${sv.cards} of ${total})`);
+const ats = qIds.map((id) => owedOf(roster.find((m) => m.id === id) ?? {}).at);
+const keyed = ats.filter(Boolean).length;
+ok(ats.every((a, i) => i === 0 || ats[i - 1] >= a),
+  `and orders them NEWEST ART FIRST (${ats.slice(0, 3).map((a) => a || "—").join(" ≥ ")} … ${ats.slice(-1).map((a) => a || "—")})`);
+// NOT VACUOUS: the recent ones must exist and must all sit above the backlog.
+// With a live feedback file this holds through the stale case alone (a redo
+// that landed on a shipped creature), so the claim is checked, not assumed.
+ok(keyed > 0 && keyed < ats.length && ats.slice(0, keyed).every(Boolean) && ats.slice(keyed).every((a) => !a),
+  `and every creature with recent art sits above the never-opened backlog (${keyed} recent, ${ats.length - keyed} backlog)`);
+const lineTxt = await pa.evaluate(() => [...document.querySelectorAll("p.muted")].map((e) => e.textContent).find((t) => /owe/.test(t)) ?? "");
+ok(/newest art first/.test(lineTxt) && /‹ › walks only these/.test(lineTxt), `and the page says so (${lineTxt.slice(0, 70)}…)`);
+/* AND ‹ › WALKS THE BATCH, NOT THE PAGE. */
 await pa.click(".showcase-card");
 await pa.waitForTimeout(2400);
 const step = () => pa.evaluate(() => ({
@@ -285,11 +293,12 @@ for (let i = 0; i < Math.min(expOwed.length, 6); i++) {
   walk.push(await step());
 }
 ok(walk.every((w) => w.count.endsWith(`/ ${expOwed.length}`)),
-  `‹ › counts the batch, not the page (${walk.map((w) => w.count).join(", ")})`);
+  `‹ › counts the batch (${walk.map((w) => w.count).join(", ")})`);
 ok(walk.every((w) => owedIds.has(w.id)),
   `and never leaves it, even wrapping past the end (${walk.map((w) => w.id).join(" → ")})`);
+ok(walk[1].id === qIds[1], `and walks it in the page's order (${walk[0].id} → ${walk[1].id})`);
 // The wrap is only observable when the whole batch fits in the steps taken —
-// today's roster owes 66, so this arms itself on the day he has worked it down.
+// this arms itself on the day he has worked the queue down.
 const wrapped = walk.length > expOwed.length;
 ok(!wrapped || walk[expOwed.length].id === walk[0].id,
   wrapped ? `and past the last one it wraps to the first (${walk[0].id})`
@@ -306,7 +315,7 @@ ok(after.count.endsWith(`/ ${expOwed.length}`) && owedIds.has(after.id),
   `and a verdict entered mid-walk does not move the queue (${before.count} → ${after.count})`);
 await pa.goto(`${W}#/monsters`, { waitUntil: "load" });
 await pa.waitForTimeout(1600);
-await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => /by name/.test(x.textContent))?.click());
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /^all /.test(x.textContent))?.click());
 await pa.waitForTimeout(1200);
 await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /no shadow/.test(x.textContent))?.click());
 await pa.waitForTimeout(1600);
