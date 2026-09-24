@@ -1,0 +1,140 @@
+{
+  "id": "hearth_hound",
+  "name": "Hearthhound",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "It keeps the fire warm for a family that moved away.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Dog of iron and glowing coals curled by an invisible fire, ash-grey fur, orange embers in its chest, warm eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hearth_hound/rotations/south.webp",
+    "south-east": "hearth_hound/rotations/south-east.webp",
+    "east": "hearth_hound/rotations/east.webp",
+    "north-east": "hearth_hound/rotations/north-east.webp",
+    "north": "hearth_hound/rotations/north.webp",
+    "north-west": "hearth_hound/rotations/north-west.webp",
+    "west": "hearth_hound/rotations/west.webp",
+    "south-west": "hearth_hound/rotations/south-west.webp"
+  },
+  "sheet": "hearth_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a719a6e4-5d81-466a-8362-58474ded5b44",
+  "seed": 1580240929,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:49:14+00:00",
+  "elapsed_s": 225.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.719,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.728,
+        "bbox": [
+          4,
+          2,
+          78,
+          85
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.804,
+        "bbox": [
+          3,
+          3,
+          80,
+          85
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.772,
+        "bbox": [
+          2,
+          2,
+          84,
+          84
+        ],
+        "fill": 0.868,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.749,
+        "bbox": [
+          10,
+          2,
+          74,
+          84
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.719,
+        "bbox": [
+          10,
+          2,
+          77,
+          83
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.75,
+        "bbox": [
+          10,
+          2,
+          81,
+          86
+        ],
+        "fill": 0.77,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.77,
+        "bbox": [
+          5,
+          2,
+          85,
+          84
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.803,
+        "bbox": [
+          9,
+          3,
+          79,
+          85
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      }
+    }
+  }
+}
