@@ -1,0 +1,149 @@
+{
+  "id": "cliff_widow",
+  "name": "Cliffwidow",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "She stands at the edge and waits for the sea to give something back.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Grey-cloaked woman standing on the edge of a rock she carries, hair of loose grey scree, face turned away.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cliff_widow/rotations/south.webp",
+    "south-east": "cliff_widow/rotations/south-east.webp",
+    "east": "cliff_widow/rotations/east.webp",
+    "north-east": "cliff_widow/rotations/north-east.webp",
+    "north": "cliff_widow/rotations/north.webp",
+    "north-west": "cliff_widow/rotations/north-west.webp",
+    "west": "cliff_widow/rotations/west.webp",
+    "south-west": "cliff_widow/rotations/south-west.webp"
+  },
+  "sheet": "cliff_widow/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ac07cce6-166d-4088-95ee-cca39f78b767",
+  "seed": 248863396,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:23:48+00:00",
+  "elapsed_s": 1947.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.693,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.693,
+        "bbox": [
+          14,
+          1,
+          76,
+          88
+        ],
+        "fill": 0.697,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.711,
+        "bbox": [
+          13,
+          1,
+          84,
+          88
+        ],
+        "fill": 0.798,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.751,
+        "bbox": [
+          19,
+          2,
+          77,
+          88
+        ],
+        "fill": 0.644,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.779,
+        "bbox": [
+          16,
+          3,
+          83,
+          88
+        ],
+        "fill": 0.735,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.8,
+        "bbox": [
+          9,
+          3,
+          76,
+          88
+        ],
+        "fill": 0.735,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.733,
+        "bbox": [
+          6,
+          3,
+          73,
+          88
+        ],
+        "fill": 0.735,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.796,
+        "bbox": [
+          8,
+          2,
+          70,
+          88
+        ],
+        "fill": 0.689,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.732,
+        "bbox": [
+          10,
+          2,
+          69,
+          88
+        ],
+        "fill": 0.655,
+        "touches_edge": true
+      }
+    }
+  }
+}
