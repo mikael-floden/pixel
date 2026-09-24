@@ -7114,11 +7114,6 @@
       "art": "f2e292e318c5b42d",
       "updated_at": "2026-09-22T12:56:48.697Z"
     },
-    "monsters/ember_kit": {
-      "status": "approved",
-      "rating": 1,
-      "updated_at": "2026-09-22T12:56:51.840Z"
-    },
     "monsters/ember_kit#idle#south": {
       "status": "approved",
       "rating": 1,
@@ -8679,11 +8674,6 @@
       "rating": 1,
       "art": "95c9d34ba754ef2d",
       "updated_at": "2026-09-22T13:34:27.833Z"
-    },
-    "monsters/plume_brawler": {
-      "status": "approved",
-      "rating": 1,
-      "updated_at": "2026-09-22T13:34:30.232Z"
     },
     "monsters/plume_brawler#idle#south": {
       "status": "approved",
@@ -12219,20 +12209,20 @@
     "monsters/plume_brawler#die#south": {
       "status": "approved",
       "rating": 1,
-      "art": "35c9db41dbf06623",
-      "updated_at": "2026-09-23T18:08:59.106Z"
+      "art": "51e283e9705ae1c1",
+      "updated_at": "2026-09-24T15:39:05.050Z"
     },
     "monsters/plume_brawler#die#south-east": {
       "status": "approved",
       "rating": 1,
-      "art": "7488d77bc70f0cd8",
-      "updated_at": "2026-09-23T18:09:16.123Z"
+      "art": "1763dcb85b538ba8",
+      "updated_at": "2026-09-24T15:39:06.609Z"
     },
     "monsters/plume_brawler#die#east": {
       "status": "approved",
       "rating": 1,
-      "art": "7488d77bc70f0cd8",
-      "updated_at": "2026-09-23T18:09:16.123Z"
+      "art": "35c9db41dbf06623",
+      "updated_at": "2026-09-24T15:39:08.362Z"
     },
     "monsters/plume_brawler#die#north-east": {
       "status": "approved",
@@ -12255,14 +12245,14 @@
     "monsters/fox_spirit#attack#north-east": {
       "status": "approved",
       "rating": 1,
-      "art": "fa238604412b88e3",
-      "updated_at": "2026-09-23T21:40:28.769Z"
+      "art": "e7c21b549e8fab85",
+      "updated_at": "2026-09-24T15:39:40.359Z"
     },
     "monsters/fox_spirit#attack#north-west": {
       "status": "approved",
       "rating": 1,
-      "art": "5d5bae45795ed4b3",
-      "updated_at": "2026-09-23T21:40:34.510Z"
+      "art": "a548cff05d6b0b01",
+      "updated_at": "2026-09-24T15:39:42.194Z"
     },
     "monsters/minotaur#attack#north": {
       "status": "approved",
@@ -12449,7 +12439,17 @@
       "rating": 1,
       "art": "b3c50839e02ab3c1",
       "updated_at": "2026-09-24T14:56:48.880Z"
+    },
+    "monsters/ember_kit#angry#south": {
+      "status": "redo",
+      "art": "b79eaae921719043",
+      "updated_at": "2026-09-24T15:39:26.476Z"
+    },
+    "monsters/fox_spirit#attack#north": {
+      "status": "redo",
+      "art": "99505f6eca3c1b59",
+      "updated_at": "2026-09-24T15:39:45.566Z"
     }
   },
-  "updated_at": "2026-09-24T15:22:57Z"
+  "updated_at": "2026-09-24T15:39:47.751Z"
 }
