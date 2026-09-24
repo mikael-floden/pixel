@@ -1,0 +1,140 @@
+{
+  "id": "cave_lion_bones",
+  "name": "Cavelion",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The last of the great lions, still hunting in the dark.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Skeleton of a great cave lion, bones yellowed, fangs intact, a faint red glow inside the ribcage, prowling.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "cat",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cave_lion_bones/rotations/south.webp",
+    "south-east": "cave_lion_bones/rotations/south-east.webp",
+    "east": "cave_lion_bones/rotations/east.webp",
+    "north-east": "cave_lion_bones/rotations/north-east.webp",
+    "north": "cave_lion_bones/rotations/north.webp",
+    "north-west": "cave_lion_bones/rotations/north-west.webp",
+    "west": "cave_lion_bones/rotations/west.webp",
+    "south-west": "cave_lion_bones/rotations/south-west.webp"
+  },
+  "sheet": "cave_lion_bones/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5920e1f6-dee3-4b60-bedb-d6ebc2b76547",
+  "seed": 1716406729,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:01:57+00:00",
+  "elapsed_s": 215.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.626,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.692,
+        "bbox": [
+          59,
+          13,
+          156,
+          207
+        ],
+        "fill": 0.375,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.69,
+        "bbox": [
+          14,
+          16,
+          209,
+          200
+        ],
+        "fill": 0.715,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.716,
+        "bbox": [
+          11,
+          20,
+          212,
+          201
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.626,
+        "bbox": [
+          27,
+          19,
+          209,
+          205
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.704,
+        "bbox": [
+          58,
+          22,
+          162,
+          207
+        ],
+        "fill": 0.383,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.695,
+        "bbox": [
+          50,
+          24,
+          191,
+          208
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.71,
+        "bbox": [
+          16,
+          20,
+          212,
+          198
+        ],
+        "fill": 0.695,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.693,
+        "bbox": [
+          19,
+          13,
+          176,
+          207
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      }
+    }
+  }
+}
