@@ -1,14 +1,17 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T20:05:46+00:00",
+  "updated_at": "2026-09-24T20:23:55+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED — the steady milliseconds of his 16:50 run, in my domain, each opt-in behind a Dev switch until his run reads it shorter (his verdict 2026-09-24): (1) occCull: ~4,000 AABB tests a frame (0.5-1.3 ms) → a per-image re-test due by its distance to the view edge over the camera's top speed, reset on rebuild; (2) depthSort: Phaser's merge sort of the whole display list every frame a body moved (0.9-1.9 ms) → a full sort on rebuild frames only, binary re-insertion of the moved bodies otherwise, gated by an order-parity probe against StableSort (a same-depth flip is the 'buggy tiles' report; a rejected insertion sort of 2026-09-12 is why it is gated, not assumed); (3) the 616 ms full ground paint at 91,237 (his 19:07 window, 4 hops): name the trigger. FIRST: his two runs of the live build, bake off and bake on (Settings→Dev), pacing auto in both — the bake's atlases are VRAM (12-16 pages of 1024 resident at a cliff in the headless window) and its cost on his GPU is what the row's units will say.",
-    "since": "2026-09-24T20:05:46+00:00",
+    "unit": "CLAIMED — THE GROUND BRACKET HITCHES (his verdict 2026-09-24 20:0x: 'THAT'S THE ISSUE' — the 40-176 ms frames, not the average). His 16:50 run: repaintCells peaks 17-65 ms and groundSlice 12-28 ms in EVERY 30 s window. Measured headless at his worst spot (probe-groundslice.mjs): a 289x492 slice walks ~825 cells for ~135 inside its rect (the window pads by maxLevel*lh = 600 px), generates ~3,500 ops and throws ~1,700 away at the clip, and pays 5-16 ms of SYNCHRONOUS plate composition inside the slice (a plate is the ~13 ms atom on his phone; boundaries and fades already go to the compose worker, plates do not). Two cuts, parity-gated by verify-groundbracket (band vs full paint): (A) a per-cell extent reject in band passes — a cell whose column (its own level's top to its base, a tile of margin) cannot reach the rect is not walked; (B) plates composed on the worker in band passes and the ring (a new 'plate' job kind, the same buildPlatePixels), the op dropped and the cell owed meanwhile, exactly as a boundary is today. Both default ON with Dev switches to turn OFF (they only remove work from the frame; the risk is a pixel, which the gate holds), and his next run's sectionsPeak for repaintCells/groundSlice is the verdict.",
+    "since": "2026-09-24T20:23:55+00:00",
     "files": [
-      "games2/client/src/scenes/WorldScene.ts (cullOccluderSubmits, installDepthSort, the ground-paint triggers)",
-      "games2/client/src/terrainbake.ts",
-      "games2/scripts/verify-bake.mjs",
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/client/src/tiles3draw.ts (plate(): the remote branch; ComposeJob 'plate')",
+      "games2/client/src/composeworker.ts",
+      "games2/client/src/composeclient.ts",
+      "games2/scripts/probe-groundslice.mjs (new)",
+      "games2/scripts/verify-groundbracket.mjs",
       "games2/server/test/*.test.ts (new tests only)",
       "games2/docs/perf.md",
       "games2/CLAUDE.md"
