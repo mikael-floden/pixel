@@ -1,0 +1,140 @@
+{
+  "id": "kelp_kraken_child",
+  "name": "Kelpling",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The kraken sends its children ashore to learn the land.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Small octopus of brown kelp fronds with bladder eyes, walking on eight weedy arms, a bulb head.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "kelp_kraken_child/rotations/south.webp",
+    "south-east": "kelp_kraken_child/rotations/south-east.webp",
+    "east": "kelp_kraken_child/rotations/east.webp",
+    "north-east": "kelp_kraken_child/rotations/north-east.webp",
+    "north": "kelp_kraken_child/rotations/north.webp",
+    "north-west": "kelp_kraken_child/rotations/north-west.webp",
+    "west": "kelp_kraken_child/rotations/west.webp",
+    "south-west": "kelp_kraken_child/rotations/south-west.webp"
+  },
+  "sheet": "kelp_kraken_child/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "44b2ebad-9bb3-4695-91de-452ba2e7837e",
+  "seed": 1623152499,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:41:05+00:00",
+  "elapsed_s": 274.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.803,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.803,
+        "bbox": [
+          2,
+          3,
+          85,
+          85
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.855,
+        "bbox": [
+          5,
+          4,
+          83,
+          86
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.819,
+        "bbox": [
+          8,
+          5,
+          84,
+          85
+        ],
+        "fill": 0.785,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.819,
+        "bbox": [
+          8,
+          5,
+          80,
+          84
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.808,
+        "bbox": [
+          3,
+          8,
+          83,
+          84
+        ],
+        "fill": 0.785,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.82,
+        "bbox": [
+          9,
+          5,
+          79,
+          83
+        ],
+        "fill": 0.705,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.816,
+        "bbox": [
+          5,
+          5,
+          81,
+          84
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.846,
+        "bbox": [
+          5,
+          4,
+          85,
+          86
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      }
+    }
+  }
+}
