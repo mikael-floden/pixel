@@ -1,0 +1,141 @@
+{
+  "id": "eel_knot",
+  "name": "Eelknot",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The eels in the drain wound themselves together one winter.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Ball of black eels tangled together into a rough body with several heads poking out, glistening, moving on trailing eel-legs.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "eel_knot/rotations/south.webp",
+    "south-east": "eel_knot/rotations/south-east.webp",
+    "east": "eel_knot/rotations/east.webp",
+    "north-east": "eel_knot/rotations/north-east.webp",
+    "north": "eel_knot/rotations/north.webp",
+    "north-west": "eel_knot/rotations/north-west.webp",
+    "west": "eel_knot/rotations/west.webp",
+    "south-west": "eel_knot/rotations/south-west.webp"
+  },
+  "sheet": "eel_knot/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "79e93c78-54d6-4d27-915c-2c02a21731f2",
+  "seed": 246204438,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:37:34+00:00",
+  "elapsed_s": 173.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.744,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.744,
+        "bbox": [
+          5,
+          5,
+          81,
+          83
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.834,
+        "bbox": [
+          12,
+          4,
+          75,
+          84
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.811,
+        "bbox": [
+          11,
+          4,
+          70,
+          86
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.817,
+        "bbox": [
+          9,
+          7,
+          73,
+          84
+        ],
+        "fill": 0.636,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.796,
+        "bbox": [
+          10,
+          10,
+          80,
+          84
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.809,
+        "bbox": [
+          19,
+          4,
+          76,
+          86
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.808,
+        "bbox": [
+          18,
+          5,
+          78,
+          84
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.833,
+        "bbox": [
+          7,
+          8,
+          79,
+          84
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      }
+    }
+  }
+}
