@@ -1,0 +1,141 @@
+{
+  "id": "ash_wolf",
+  "name": "Ashwolf",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It runs through the burnt forest and the forest does not burn again.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Wolf of grey ash with cracks of orange ember showing through, smoke rising from its back, red eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ash_wolf/rotations/south.webp",
+    "south-east": "ash_wolf/rotations/south-east.webp",
+    "east": "ash_wolf/rotations/east.webp",
+    "north-east": "ash_wolf/rotations/north-east.webp",
+    "north": "ash_wolf/rotations/north.webp",
+    "north-west": "ash_wolf/rotations/north-west.webp",
+    "west": "ash_wolf/rotations/west.webp",
+    "south-west": "ash_wolf/rotations/south-west.webp"
+  },
+  "sheet": "ash_wolf/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0e6382eb-480e-4dfc-bd8f-1f42a7cb357e",
+  "seed": 532405228,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:29:14+00:00",
+  "elapsed_s": 1540.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.739,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.805,
+        "bbox": [
+          21,
+          9,
+          69,
+          82
+        ],
+        "fill": 0.452,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.779,
+        "bbox": [
+          10,
+          10,
+          84,
+          85
+        ],
+        "fill": 0.717,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.813,
+        "bbox": [
+          3,
+          8,
+          87,
+          84
+        ],
+        "fill": 0.824,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.739,
+        "bbox": [
+          8,
+          5,
+          84,
+          86
+        ],
+        "fill": 0.795,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.86,
+        "bbox": [
+          17,
+          3,
+          69,
+          86
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.831,
+        "bbox": [
+          17,
+          2,
+          75,
+          86
+        ],
+        "fill": 0.629,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.82,
+        "bbox": [
+          1,
+          4,
+          86,
+          83
+        ],
+        "fill": 0.867,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.781,
+        "bbox": [
+          4,
+          10,
+          76,
+          86
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      }
+    }
+  }
+}
