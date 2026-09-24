@@ -1402,30 +1402,30 @@
         },
         "north-west": {
           "status": "pass",
-          "step_mean": 0.3747,
-          "step_max": 0.4899,
-          "drift": 3.46,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 3.09,
-          "pin": 0.348,
+          "step_mean": 0.6621,
+          "step_max": 0.6699,
+          "drift": 5.62,
+          "loop": 0.6784,
+          "loop_ratio": 1.02,
+          "travel": 9.06,
+          "pin": 0.376,
           "pad": 0,
-          "flash": -0.001,
-          "peak": 0.4899,
-          "reach": 0.588,
+          "flash": -0.029,
+          "peak": 0.714,
+          "reach": 0.31,
           "turn": 3,
-          "end_area": 1.0,
+          "end_area": 1.511,
           "end_iou": null,
           "canvas": [
             104,
             104
           ],
           "reasons": [],
-          "sub": "dfb81749-9673-4414-bd8f-853457ed6878",
-          "group": "969fd911-1965-4e35-93ab-39d81e007de7",
+          "sub": "772f46a8-ddbc-447e-a221-f9ad87cbb151",
+          "group": "cab573db-e9f1-4e21-8743-1fa63940f373",
           "takes": 1,
-          "version": 2,
-          "mirrored": true,
+          "version": 4,
+          "mirrored": false,
           "mode": "pro",
           "action": "Talon Rake - Keeps both feet planted on the ground, leans its heavy body forward and rakes one hooked talon foot down and forward in a short hard swipe, wings half open, then pulls back into the same stance, no hop, no jump, the whole bird stays inside the frame",
           "intensity": 0,
@@ -1434,8 +1434,7 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-24T18:36:51+00:00",
-          "relabelled_from": "flip of north-east"
+          "generated_at": "2026-09-24T19:47:16+00:00"
         },
         "west": {
           "status": "warn",
@@ -1598,6 +1597,12 @@
           "plume_brawler/animations/attack/south-west/01.webp",
           "plume_brawler/animations/attack/south-west/02.webp",
           "plume_brawler/animations/attack/south-west/03.webp"
+        ],
+        "north": [
+          "plume_brawler/animations/attack/north/00.webp",
+          "plume_brawler/animations/attack/north/01.webp",
+          "plume_brawler/animations/attack/north/02.webp",
+          "plume_brawler/animations/attack/north/03.webp"
         ]
       },
       "strips": {
@@ -1607,7 +1612,8 @@
         "north-east": "plume_brawler/animations/attack__north-east.webp",
         "north-west": "plume_brawler/animations/attack__north-west.webp",
         "west": "plume_brawler/animations/attack__west.webp",
-        "south-west": "plume_brawler/animations/attack__south-west.webp"
+        "south-west": "plume_brawler/animations/attack__south-west.webp",
+        "north": "plume_brawler/animations/attack__north.webp"
       }
     },
     "die": {
