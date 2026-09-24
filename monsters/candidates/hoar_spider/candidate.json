@@ -1,0 +1,141 @@
+{
+  "id": "hoar_spider",
+  "name": "Hoarspider",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Its web is the frost on the window.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "White spider with legs of frost crystals, a body like a snowball, black eyes, a web of ice threads.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hoar_spider/rotations/south.webp",
+    "south-east": "hoar_spider/rotations/south-east.webp",
+    "east": "hoar_spider/rotations/east.webp",
+    "north-east": "hoar_spider/rotations/north-east.webp",
+    "north": "hoar_spider/rotations/north.webp",
+    "north-west": "hoar_spider/rotations/north-west.webp",
+    "west": "hoar_spider/rotations/west.webp",
+    "south-west": "hoar_spider/rotations/south-west.webp"
+  },
+  "sheet": "hoar_spider/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "401ab4d3-59b0-4897-b873-7e02ac43f84e",
+  "seed": 1670182399,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:29:31+00:00",
+  "elapsed_s": 1772.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.767,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.767,
+        "bbox": [
+          3,
+          7,
+          85,
+          81
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.856,
+        "bbox": [
+          6,
+          8,
+          84,
+          83
+        ],
+        "fill": 0.755,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.826,
+        "bbox": [
+          12,
+          11,
+          83,
+          82
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.849,
+        "bbox": [
+          3,
+          14,
+          82,
+          82
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.836,
+        "bbox": [
+          4,
+          17,
+          83,
+          78
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.841,
+        "bbox": [
+          5,
+          14,
+          85,
+          82
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.833,
+        "bbox": [
+          5,
+          11,
+          76,
+          82
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.85,
+        "bbox": [
+          4,
+          8,
+          82,
+          83
+        ],
+        "fill": 0.755,
+        "touches_edge": false
+      }
+    }
+  }
+}
