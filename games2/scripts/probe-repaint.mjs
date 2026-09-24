@@ -20,6 +20,34 @@ const spots = process.argv.includes("--spot") ? [process.argv[process.argv.index
 let extentBad = 0;
 const modeDefer = process.argv.includes("--defer");
 const modeLazy = process.argv.includes("--lazy");
+if (process.argv.includes("--extent")) {
+  // THE WIDE EXTENT CHECK: many places (towns with roofs, bridges, cliffs, stairs, caves), slopes off and on.
+  const places = [[441, 364], [447, 371], [297, 252], [262, 66], [277, 269], [258, 217], [230, 230], [176, 288], [96, 244], [335, 238]];
+  let bad = 0, total = 0, decks = 0, ramps = 0, maxLv = 0;
+  for (const slope of ["0", "100"]) {
+    const ctx = await browser.newContext({ viewport: { width: 412, height: 732 }, serviceWorkers: "block" });
+    const page = await ctx.newPage();
+    await page.addInitScript((sl) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "B" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-slope-height", sl); }, slope);
+    await page.goto(origin + "/", { waitUntil: "commit" });
+    await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 180000, polling: 100 });
+    for (const [x, y] of places) {
+      await page.evaluate(([a, b]) => window.__ml.teleport(a, b), [x, y]);
+      await sleep(7000);
+      await page.evaluate(([a, b]) => window.__ml.teleport(a, b), [x + 1, y]); // one step: a scroll gives the scratch
+      await sleep(2500);
+      const ex = await page.evaluate(() => window.__ml.groundExtentCheck(400));
+      console.log(`slope ${slope}% ${x},${y}: ${JSON.stringify(ex).slice(0, 260)}`);
+      if (ex.error) { bad++; continue; }
+      total += ex.checked; decks += ex.withDecks; ramps += ex.ramps; maxLv = Math.max(maxLv, ex.maxLv);
+      if (ex.outside > 0) bad++;
+    }
+    await ctx.close();
+  }
+  console.log(`WIDE EXTENT: ${total} cells checked (${decks} with decks, ${ramps} slopes/ramps, top level ${maxLv}); ${bad ? bad + " place(s) FAILED or errored" : "none painted above its sized rect"}`);
+  await browser.close();
+  stop();
+  process.exit(bad ? 1 : 0);
+}
 const cases = modeLazy ? [["repaint only near OFF", { l: "0" }], ["repaint only near ON", { l: "1" }]] : modeDefer ? [["plates off-thread OFF", { d: "0" }], ["plates off-thread ON", { d: "1" }]] : (process.argv.includes("--on-only") ? [["sized repaint ON", { r: "1" }]] : [["sized repaint OFF", { r: "0" }], ["sized repaint ON", { r: "1" }]]);
 for (const [label, set] of cases) {
   const ctx = await browser.newContext({ viewport: { width: 412, height: 732 }, serviceWorkers: "block" });

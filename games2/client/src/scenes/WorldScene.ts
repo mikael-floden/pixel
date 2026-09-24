@@ -8038,7 +8038,7 @@ export class WorldScene extends Phaser.Scene {
             }
         const dWas = this.groundDeferOn;
         this.groundDeferOn = false;
-        let checked = 0, outside = 0, empty = 0, offTex = 0;
+        let checked = 0, outside = 0, empty = 0, offTex = 0, withDecks = 0, ramps = 0, maxLv = 0;
         const bad: unknown[] = [];
         try {
           this.withoutComposeBudget(() => {
@@ -8064,6 +8064,10 @@ export class WorldScene extends Phaser.Scene {
               const px = tex ? readTextureRect(gl, tex, rx0, ry0, rx1 - rx0, ry1 - ry0) : null;
               if (!px) continue;
               checked++;
+              if (this.t3 && this.t3decksOf(this.t3, col, row).length) withDecks++;
+              const rc = this.t3 ? this.t3cellOf(this.t3, col, row) : null;
+              if (rc?.slope) ramps++;
+              maxLv = Math.max(maxLv, this.t3cellTopLevel(col, row) - 1);
               let minY = Infinity;
               const w = rx1 - rx0;
               for (let i = 3; i < px.length; i += 4) if (px[i]) { const y = ry0 + Math.floor((i >> 2) / w); if (y < minY) minY = y; }
@@ -8075,7 +8079,7 @@ export class WorldScene extends Phaser.Scene {
           this.groundDeferOn = dWas;
           this.lastGround = { x: NaN, y: NaN }; // the scratch was borrowed: the next latch paints in full
         }
-        return { checked, outside, empty, offTex, bad };
+        return { checked, outside, empty, offTex, withDecks, ramps, maxLv, bad };
       },
       /** The band pass's two cuts (A/B): the cell reject and the plates on the worker. */
       groundTight: (on?: boolean) => {
