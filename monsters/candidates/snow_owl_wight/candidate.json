@@ -1,0 +1,141 @@
+{
+  "id": "snow_owl_wight",
+  "name": "Owlwight",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It watches over the frozen and it has good eyes.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "White owl with hollow dark eyes and frost on its feathers, wings spread, a faint blue glow inside its chest.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snow_owl_wight/rotations/south.webp",
+    "south-east": "snow_owl_wight/rotations/south-east.webp",
+    "east": "snow_owl_wight/rotations/east.webp",
+    "north-east": "snow_owl_wight/rotations/north-east.webp",
+    "north": "snow_owl_wight/rotations/north.webp",
+    "north-west": "snow_owl_wight/rotations/north-west.webp",
+    "west": "snow_owl_wight/rotations/west.webp",
+    "south-west": "snow_owl_wight/rotations/south-west.webp"
+  },
+  "sheet": "snow_owl_wight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a7c23995-0533-402b-8f0d-5cbcd62e074e",
+  "seed": 1511106463,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:42:53+00:00",
+  "elapsed_s": 205.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.781,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.781,
+        "bbox": [
+          2,
+          5,
+          86,
+          82
+        ],
+        "fill": 0.835,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.844,
+        "bbox": [
+          13,
+          3,
+          76,
+          82
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.849,
+        "bbox": [
+          26,
+          3,
+          67,
+          83
+        ],
+        "fill": 0.424,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.839,
+        "bbox": [
+          13,
+          2,
+          75,
+          82
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.823,
+        "bbox": [
+          3,
+          4,
+          85,
+          79
+        ],
+        "fill": 0.794,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.83,
+        "bbox": [
+          11,
+          2,
+          75,
+          81
+        ],
+        "fill": 0.653,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.851,
+        "bbox": [
+          21,
+          3,
+          62,
+          84
+        ],
+        "fill": 0.429,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.844,
+        "bbox": [
+          12,
+          3,
+          76,
+          82
+        ],
+        "fill": 0.653,
+        "touches_edge": false
+      }
+    }
+  }
+}
