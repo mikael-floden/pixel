@@ -12189,16 +12189,14 @@
       "updated_at": "2026-09-23T21:13:33.207Z"
     },
     "monsters/ember_kit#attack#north-west": {
-      "status": "approved",
-      "rating": 1,
-      "art": "225956f0f6a50616",
-      "updated_at": "2026-09-23T21:39:23.074Z"
+      "status": "redo",
+      "art": "e9827b77babb3ce6",
+      "updated_at": "2026-09-24T16:11:10.769Z"
     },
     "monsters/ember_kit#attack#north-east": {
-      "status": "approved",
-      "rating": 1,
-      "art": "4b1e334b5d60153d",
-      "updated_at": "2026-09-23T21:39:24.590Z"
+      "status": "redo",
+      "art": "bb9e6fa141bbda58",
+      "updated_at": "2026-09-24T16:11:12.101Z"
     },
     "monsters/naga#attack#north": {
       "status": "approved",
@@ -12257,8 +12255,8 @@
     "monsters/minotaur#attack#north": {
       "status": "approved",
       "rating": 1,
-      "art": "18376247345f0516",
-      "updated_at": "2026-09-23T21:40:46.107Z"
+      "art": "1e3652b6b60bcbfe",
+      "updated_at": "2026-09-24T16:11:36.624Z"
     },
     "monsters/lava_toad#walk#south-east": {
       "status": "approved",
@@ -12446,14 +12444,16 @@
       "updated_at": "2026-09-24T15:39:45.566Z"
     },
     "monsters/naga#walk#west": {
-      "status": "redo",
-      "art": "7c8a1850b356bf6c",
-      "updated_at": "2026-09-24T15:39:59.142Z"
+      "status": "approved",
+      "art": "f0b4e41ad05cd232",
+      "updated_at": "2026-09-24T16:11:19.369Z",
+      "rating": 1
     },
     "monsters/naga#walk#east": {
-      "status": "redo",
-      "art": "74b614b8085eba41",
-      "updated_at": "2026-09-24T15:40:00.333Z"
+      "status": "approved",
+      "art": "4dfd448ce908c508",
+      "updated_at": "2026-09-24T16:11:17.780Z",
+      "rating": 1
     },
     "monsters/minotaur#walk#south": {
       "note": "This should look like a walk S",
@@ -12504,7 +12504,19 @@
       "updated_at": "2026-09-24T16:10:57.425Z",
       "status": "redo",
       "art": "4dc057cb4196f860"
+    },
+    "monsters/lava_toad#walk#north-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "052233814082a375",
+      "updated_at": "2026-09-24T16:11:24.837Z"
+    },
+    "monsters/lava_toad#walk#north-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "ac57e785b2c77907",
+      "updated_at": "2026-09-24T16:11:26.500Z"
     }
   },
-  "updated_at": "2026-09-24T16:10:57.602Z"
+  "updated_at": "2026-09-24T16:11:38.538Z"
 }
