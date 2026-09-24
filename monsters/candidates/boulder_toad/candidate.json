@@ -1,0 +1,142 @@
+{
+  "id": "boulder_toad",
+  "name": "Boulderoad",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The track goes round a boulder. The boulder moves.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Enormous grey toad indistinguishable from a boulder until its yellow eyes open, moss on its back, a crevice mouth.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "boulder_toad/rotations/south.webp",
+    "south-east": "boulder_toad/rotations/south-east.webp",
+    "east": "boulder_toad/rotations/east.webp",
+    "north-east": "boulder_toad/rotations/north-east.webp",
+    "north": "boulder_toad/rotations/north.webp",
+    "north-west": "boulder_toad/rotations/north-west.webp",
+    "west": "boulder_toad/rotations/west.webp",
+    "south-west": "boulder_toad/rotations/south-west.webp"
+  },
+  "sheet": "boulder_toad/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3e9bec91-39b5-454f-b31c-5da1c6cd9706",
+  "seed": 417713137,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:54:24+00:00",
+  "elapsed_s": 235.7,
+  "qa": {
+    "status": "warn",
+    "min_run1": 0.484,
+    "reasons": [
+      "soft density: min run1 0.484 < 0.5 — eyeball it"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.484,
+        "bbox": [
+          9,
+          16,
+          214,
+          207
+        ],
+        "fill": 0.78,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.627,
+        "bbox": [
+          11,
+          23,
+          212,
+          212
+        ],
+        "fill": 0.757,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.624,
+        "bbox": [
+          18,
+          20,
+          206,
+          205
+        ],
+        "fill": 0.693,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.626,
+        "bbox": [
+          20,
+          14,
+          206,
+          210
+        ],
+        "fill": 0.727,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.599,
+        "bbox": [
+          17,
+          14,
+          207,
+          199
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.63,
+        "bbox": [
+          16,
+          14,
+          202,
+          209
+        ],
+        "fill": 0.723,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.62,
+        "bbox": [
+          17,
+          20,
+          206,
+          205
+        ],
+        "fill": 0.697,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.629,
+        "bbox": [
+          11,
+          23,
+          211,
+          212
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      }
+    }
+  }
+}
