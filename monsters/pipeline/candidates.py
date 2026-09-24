@@ -313,6 +313,11 @@ def generate_one(client, cfg, design, version, verbose=True, adopt=None):
             detail=design.get("detail") or dflt.get("detail"),
             job_timeout=2400)
     rots = client.character_rotations(pl_id)
+    if len(rots) < 8:
+        # an adopted orphan still rendering (or a job that finished with holes):
+        # never write a half base, and never crash the worker over it — the
+        # next generate adopts it once all eight are there
+        raise PixelLabError(f"{cid}: only {len(rots)}/8 rotations on {pl_id} yet — left for the next run")
     tag = dflt.get("candidate_tag", "MONSTER_CANDIDATE")
     client.set_character_tags(pl_id, [tag])
     # FILED ONE COMPASS STEP LATE, AND FIXED IN POST BEFORE HE EVER SEES IT
