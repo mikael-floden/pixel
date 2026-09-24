@@ -1,0 +1,140 @@
+{
+  "id": "doll_watcher",
+  "name": "Dollwatch",
+  "tier": "evil",
+  "scale": "small",
+  "lore": "It is never where you left it.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Porcelain doll with cracked cheeks, one glass eye missing, a faded blue dress, standing perfectly still.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "doll_watcher/rotations/south.webp",
+    "south-east": "doll_watcher/rotations/south-east.webp",
+    "east": "doll_watcher/rotations/east.webp",
+    "north-east": "doll_watcher/rotations/north-east.webp",
+    "north": "doll_watcher/rotations/north.webp",
+    "north-west": "doll_watcher/rotations/north-west.webp",
+    "west": "doll_watcher/rotations/west.webp",
+    "south-west": "doll_watcher/rotations/south-west.webp"
+  },
+  "sheet": "doll_watcher/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "305402b3-9cdb-457a-9aba-fa9e76703ce5",
+  "seed": 792859251,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:47:10+00:00",
+  "elapsed_s": 181.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.61,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.799,
+        "bbox": [
+          9,
+          2,
+          31,
+          37
+        ],
+        "fill": 0.481,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.797,
+        "bbox": [
+          11,
+          2,
+          29,
+          37
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.737,
+        "bbox": [
+          10,
+          3,
+          28,
+          38
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.663,
+        "bbox": [
+          10,
+          2,
+          28,
+          37
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.61,
+        "bbox": [
+          9,
+          2,
+          31,
+          37
+        ],
+        "fill": 0.481,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.664,
+        "bbox": [
+          12,
+          2,
+          30,
+          37
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.74,
+        "bbox": [
+          12,
+          3,
+          30,
+          38
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.807,
+        "bbox": [
+          11,
+          2,
+          29,
+          37
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      }
+    }
+  }
+}
