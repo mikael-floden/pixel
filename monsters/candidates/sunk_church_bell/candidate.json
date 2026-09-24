@@ -1,0 +1,141 @@
+{
+  "id": "sunk_church_bell",
+  "name": "Bellwraith",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It rings for services held under the water.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Huge cracked bronze bell risen from the bog on tangled roots, a hollow dark interior with a swinging bone clapper, moss and rust.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "sunk_church_bell/rotations/south.webp",
+    "south-east": "sunk_church_bell/rotations/south-east.webp",
+    "east": "sunk_church_bell/rotations/east.webp",
+    "north-east": "sunk_church_bell/rotations/north-east.webp",
+    "north": "sunk_church_bell/rotations/north.webp",
+    "north-west": "sunk_church_bell/rotations/north-west.webp",
+    "west": "sunk_church_bell/rotations/west.webp",
+    "south-west": "sunk_church_bell/rotations/south-west.webp"
+  },
+  "sheet": "sunk_church_bell/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "65c05f46-66bf-4767-a520-dda4e1c37ee7",
+  "seed": 548100414,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:42:25+00:00",
+  "elapsed_s": 170.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.623,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.623,
+        "bbox": [
+          28,
+          9,
+          196,
+          215
+        ],
+        "fill": 0.69,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.678,
+        "bbox": [
+          28,
+          10,
+          199,
+          216
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.683,
+        "bbox": [
+          27,
+          7,
+          188,
+          219
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.668,
+        "bbox": [
+          26,
+          5,
+          187,
+          219
+        ],
+        "fill": 0.687,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.666,
+        "bbox": [
+          27,
+          4,
+          197,
+          214
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.666,
+        "bbox": [
+          35,
+          5,
+          196,
+          220
+        ],
+        "fill": 0.69,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.675,
+        "bbox": [
+          36,
+          8,
+          196,
+          216
+        ],
+        "fill": 0.663,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.674,
+        "bbox": [
+          31,
+          10,
+          196,
+          217
+        ],
+        "fill": 0.681,
+        "touches_edge": false
+      }
+    }
+  }
+}
