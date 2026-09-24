@@ -1,0 +1,141 @@
+{
+  "id": "ash_giant",
+  "name": "Ashgiant",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The ash of a whole village, still standing where the village stood.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Giant of compacted grey ash that sheds clouds as it moves, orange fissures across its chest, a featureless face with two ember eyes.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ash_giant/rotations/south.webp",
+    "south-east": "ash_giant/rotations/south-east.webp",
+    "east": "ash_giant/rotations/east.webp",
+    "north-east": "ash_giant/rotations/north-east.webp",
+    "north": "ash_giant/rotations/north.webp",
+    "north-west": "ash_giant/rotations/north-west.webp",
+    "west": "ash_giant/rotations/west.webp",
+    "south-west": "ash_giant/rotations/south-west.webp"
+  },
+  "sheet": "ash_giant/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1b5c4405-1ea8-4b92-ac17-a95c026d3045",
+  "seed": 76096601,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:09:40+00:00",
+  "elapsed_s": 281.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.591,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.594,
+        "bbox": [
+          31,
+          10,
+          193,
+          215
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.686,
+        "bbox": [
+          37,
+          7,
+          177,
+          218
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.695,
+        "bbox": [
+          62,
+          10,
+          144,
+          217
+        ],
+        "fill": 0.338,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.61,
+        "bbox": [
+          53,
+          7,
+          168,
+          215
+        ],
+        "fill": 0.477,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.591,
+        "bbox": [
+          35,
+          11,
+          189,
+          213
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.614,
+        "bbox": [
+          60,
+          6,
+          169,
+          215
+        ],
+        "fill": 0.454,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.693,
+        "bbox": [
+          80,
+          9,
+          164,
+          217
+        ],
+        "fill": 0.348,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.667,
+        "bbox": [
+          44,
+          10,
+          190,
+          218
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      }
+    }
+  }
+}
