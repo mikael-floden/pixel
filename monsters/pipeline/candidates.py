@@ -377,13 +377,35 @@ def cmd_generate(args):
     try:
         for it in client._list_all("characters"):
             if not it.get("tags") and it.get("name"):
-                prev = orphans.get(it["name"])
-                if not prev or (it.get("created_at") or "") > (prev.get("created_at") or ""):
-                    orphans[it["name"]] = it
+                orphans.setdefault(it["name"], []).append(it)
     except PixelLabError as e:
         print(f"  (orphan scan skipped: {e})")
+
+    def finished_orphan(name):
+        """The newest untagged same-name character that is actually DRAWN.
+
+        An orphan can also be a job that died: a character record with no
+        rotations that will never get any. Adopting one of those skipped the
+        design with 'only 0/8 rotations yet' on every run, forever — 19 of the
+        v3 batch sat at 181/200 that way (2026-09-24). A dead one is deleted so
+        it cannot be picked again, and the design generates fresh.
+        """
+        for it in sorted(orphans.get(name, []), key=lambda x: x.get("created_at") or "", reverse=True):
+            try:
+                urls = [u for u in (client.get_character(it["id"]).get("rotation_urls") or {}).values() if u]
+            except PixelLabError:
+                continue
+            if len(urls) >= 8:
+                return it
+            try:
+                client.delete_character(it["id"])
+                print(f"  {name}: deleted dead orphan {it['id']} (0 rotations, the job never finished)", flush=True)
+            except PixelLabError:
+                pass
+        return None
+
     for design in todo:
-        orphan = None if args.redo else orphans.get(design["name"])
+        orphan = None if args.redo else finished_orphan(design["name"])
         if orphan:
             try:
                 print(f"  {design['id']}: adopting finished orphan {orphan['id']} — no new generation", flush=True)
