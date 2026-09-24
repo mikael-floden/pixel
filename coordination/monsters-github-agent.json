@@ -1,16 +1,15 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:29:40+00:00",
-  "health": "idle",
-  "current": "RELEASED — holding no files. His 22:21:07–22:23:22Z approval burst is recorded (28736c4dd): eight candidates review=approved + APPROVED tag + index rebuilt. Nothing cleared, nothing generated, $0.00.",
+  "updated_at": "2026-09-24T22:33:00+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 22:26Z approval burst: monsters/candidates/gargoyle_pup (22:26:37Z) and monsters/candidates/tick_swell (22:26:13Z), both approved r1, both still review=pending on disk, on no board. Recording them with animate.py approve. FILES: monsters/candidates/gargoyle_pup/candidate.json, monsters/candidates/tick_swell/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT live/feedback/monsters.json (an approval is never cleared).",
   "progress": {
-    "unit": "his 22:21-22:23Z approval burst — 8 candidates recorded",
-    "entries_taken": 8,
+    "unit": "his 22:26Z approval burst — 2 candidates",
+    "entries_taken": 2,
     "entries_cleared": 0,
     "generations": 0,
-    "usd_spent": 0.0,
-    "dangling_verdicts": 0
+    "usd_spent": 0.0
   },
   "budget_remaining": "PixelLab USD ~$7.09 (floor $5) — this sitting spent $0.00",
   "notes": [
