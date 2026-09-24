@@ -540,7 +540,7 @@
   ],
   "updated_at": "2026-09-23T20:44:02+00:00",
   "health": "idle",
-  "current": "CLAIMING: A MONSTER CROSSES A LINE WITH ITS WALK AND ITS FIGHT. The monster:xfer receiver keeps the hunt only if the victim is a PLAYER of the new room (a ghost victim drops it: roam outside its polygon -> the safety net snaps it home 181-398 wu), rebuilds no trip (nextMoveAt = now + 200: a 200-380 ms stall and a new heading on 2 of 3 crossings) and zeroes nextAttackAt (a double bite 6 ms apart). Fix: victim by bodyOf (players or ghosts) with a short grace for a body not yet mirrored; targetX/Y + tripActive restart the trip on arrival; nextMove/nextAttack/aggroCheck carried as remaining ms. Files: games2/server/src/rooms/WorldRoom.ts, games2/server/src/schema/WorldState.ts, games2/server/test/monsterxfer.test.ts (new), games2/docs/backend.md, games2/spec/ZONES.md. since 2026-09-24T13:53:49+00:00",
+  "current": "IDLE. Shipped 9cbb855010 — a monster crosses a line with its walk (trip re-planned to the same goal, pause kept) and its fight (hunt kept for a player OR ghost victim with a 400 ms grace, cooldowns carried as remaining ms; a hunt called off walks home, never snaps). monsterxfer.test.ts. rolloutsave.test.ts hardened (measured walk). Released every file. Pre-existing reds unchanged: spawns3, tiles3 parity, cross-border combat fixture. Stale tracked catalog games2/client/public/monsters.json still noted. Next candidates: carry the rest of the body in HotState (jump, mark, swing timer, death, fallPend); the respawn/teleport-into-another-zone hop with the int16 clamp; the client swap polish on the fast lane; the tiles3 parity fixture.",
   "consumes": [
     "characters",
     "tiles",
