@@ -1,0 +1,150 @@
+{
+  "id": "moss_tortoise",
+  "name": "Mosshell",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "People have lived on its back without knowing.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Enormous tortoise whose shell is a small hill of moss and ferns with a birch sapling growing from it, wrinkled grey head.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "moss_tortoise/rotations/south.webp",
+    "south-east": "moss_tortoise/rotations/south-east.webp",
+    "east": "moss_tortoise/rotations/east.webp",
+    "north-east": "moss_tortoise/rotations/north-east.webp",
+    "north": "moss_tortoise/rotations/north.webp",
+    "north-west": "moss_tortoise/rotations/north-west.webp",
+    "west": "moss_tortoise/rotations/west.webp",
+    "south-west": "moss_tortoise/rotations/south-west.webp"
+  },
+  "sheet": "moss_tortoise/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fbcd4b97-c01f-4103-9531-a0cff5ba054b",
+  "seed": 1816726101,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:56:46+00:00",
+  "elapsed_s": 236.6,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.665,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.665,
+        "bbox": [
+          17,
+          0,
+          205,
+          216
+        ],
+        "fill": 0.809,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.75,
+        "bbox": [
+          8,
+          0,
+          218,
+          220
+        ],
+        "fill": 0.921,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.736,
+        "bbox": [
+          9,
+          0,
+          217,
+          214
+        ],
+        "fill": 0.887,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.743,
+        "bbox": [
+          14,
+          0,
+          212,
+          211
+        ],
+        "fill": 0.833,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.734,
+        "bbox": [
+          22,
+          0,
+          202,
+          205
+        ],
+        "fill": 0.735,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.747,
+        "bbox": [
+          8,
+          0,
+          211,
+          211
+        ],
+        "fill": 0.854,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.741,
+        "bbox": [
+          6,
+          0,
+          216,
+          214
+        ],
+        "fill": 0.896,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.749,
+        "bbox": [
+          6,
+          0,
+          217,
+          220
+        ],
+        "fill": 0.925,
+        "touches_edge": true
+      }
+    }
+  }
+}
