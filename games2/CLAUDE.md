@@ -154,11 +154,11 @@ push, no PRs unless asked.
 **Perf** (`docs/perf.md`)
 - The capture pool is ALWAYS ON: no draw bracket may resize Phaser's capture
   target (that re-allocation WAS the new-area lag).
-- The ground scrolls, paints in slices, repaints landed cells (budgeted),
-  prefetches, budgets compositions (`GROUND_COMPOSE_MS` 2, boundaries only)
-  — each pixel-identical to a full paint (`__ml.groundHash`); a landing's
-  occluder walk is the incomplete set (`occIncomplete`), no scan. A tab-in
-  poisons the latch. Keep the drop drain's repaint. `?ground=legacy` bisects.
+- The ground scrolls, paints in slices, repaints landed cells (budgeted), and
+  a requested full paint in play is sliced too (`queueFullGroundSlices`);
+  compositions budgeted (`GROUND_COMPOSE_MS` 2) — pixel-identical to a full
+  paint (`__ml.groundHash`); a landing's occluder walk is the incomplete set
+  (`occIncomplete`). A tab-in poisons the latch. `?ground=legacy` bisects.
 - The beacon: `sections` are window means, `counts` snapshots (never
   correlate them); allowlisted server-side (`verify-beacon.mjs`);
   `perf-read.mjs` reads a run.

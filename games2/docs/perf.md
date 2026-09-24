@@ -394,6 +394,25 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   law and numbers in `ambient/README.md`). Next in the ambient line: the
   per-effect scan peaks (foam 9-13 ms every 450 ms, windy 11.7, water 9.8,
   dragonflies 8.3) spread over frames.
+- **NO FULL GROUND PAINT IN PLAY** (maintainer 2026-09-24, "fix ground repaint
+  on zone hops"). His 14:01 run's `mode: full` frames were 45-226 ms, one or
+  two a window — not the hops as such: the coalesced full repaint
+  (`repaintGroundPending`) and the landing repaint's more-than-half-the-
+  texture fallback, each poisoning the latch so the next latch painted the
+  whole texture in one frame. Both now go through `queueFullGroundSlices`:
+  with a latched picture whose cut is the drawn one, the whole texture is
+  queued as bands into the scroll's slice queue (`GROUND_SLICE_MS` a frame,
+  the same clipped pass, the same pixels; appended behind a scroll's bands,
+  never flushed synchronously) and the picture stands until each band
+  lands; the first paint, a poisoned latch, a changed cut (repaintWorld, the
+  indoor flip) and the legacy modes paint in full as before. Beacon counts:
+  `fullSliced` beside `fullPaints`; the mode census gains `sliced`.
+  `__ml.groundHash` flushes pending slices first, so verify-cave's
+  ground-equals-full-paint check still reads a settled picture.
+- **THE FPS METER IS A DEV BUTTON** (maintainer 2026-09-24): Settings/dev
+  "fps meter" mounts `fpsbadge.ts`'s corner readout (fps, worst frame,
+  hitches over 5 s) and remembers per device (localStorage `ml-fps`, the
+  same switch `?fps=1`/`?fps=0` sets); `unmountFpsBadge` takes it down.
 - **THE WALK IS INCREMENTAL TOO** (`rebuildOccluders` full vs step,
   `tiles3Occluders(..., only)`, 2026-09-12). The pool kept the IMAGES; the
   walk that decided them still visited every cell of the window — ~2,700 on

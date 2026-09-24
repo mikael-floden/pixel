@@ -151,6 +151,7 @@ import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary, sectionGroup } f
 import { installLoaf, loafTake, loafAt } from "../perfloaf";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
 import { tlArm, tlMark, tlTake, tlCompact, clock0, type Mark } from "../perftimeline";
+import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -2499,6 +2500,16 @@ export class WorldScene extends Phaser.Scene {
     return this.gpuStr;
   }
 
+  private toggleFpsMeter(): void {
+    if (fpsBadgeOn()) {
+      unmountFpsBadge();
+      try { localStorage.removeItem("ml-fps"); } catch { /* private mode */ }
+    } else {
+      mountFpsBadge();
+      try { localStorage.setItem("ml-fps", "1"); } catch { /* private mode */ }
+    }
+  }
+
   private togglePerfBeacon(): void {
     // TURNING OFF: send what has accumulated first, or the last window — the
     // one he just finished reproducing something in — is thrown away.
@@ -2621,6 +2632,7 @@ export class WorldScene extends Phaser.Scene {
     const prevFull = this.perfPrevFullPaints;
     const prevCellRuns = this.perfPrevCellRuns;
     const prevCarried = this.perfPrevCellCarried;
+    const prevFullSliced = this.perfPrevFullSliced;
     const prevDrain = this.perfPrevDrains;
     const prevDefer = this.perfPrevDeferred;
     const prevCtx = this.perfPrevCtxRestores;
@@ -2628,6 +2640,7 @@ export class WorldScene extends Phaser.Scene {
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevCellRuns = this.groundCellStats.runs;
     this.perfPrevCellCarried = this.groundCellStats.carried;
+    this.perfPrevFullSliced = this.groundFullSliced;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
     // The resolver's, the ambient effects' and the fade textures' bills advance
@@ -2951,6 +2964,7 @@ export class WorldScene extends Phaser.Scene {
         // landed cells a run carried to a later frame (GROUND_REPAINT_MS).
         cellRuns: this.groundCellStats.runs - prevCellRuns,
         cellCarried: this.groundCellStats.carried - prevCarried,
+        fullSliced: this.groundFullSliced - prevFullSliced, // full paints that went through the slice queue
         drains: this.repaintStats.drains - prevDrain,
         drainsDeferred: this.repaintStats.drainsDeferred - prevDefer,
       },
@@ -3608,6 +3622,7 @@ export class WorldScene extends Phaser.Scene {
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevCellRuns = this.groundCellStats.runs;
     this.perfPrevCellCarried = this.groundCellStats.carried;
+    this.perfPrevFullSliced = this.groundFullSliced;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
     this.perfPrevCtxRestores = this.ctxRestores;
@@ -4044,6 +4059,7 @@ export class WorldScene extends Phaser.Scene {
   private perfPrevFullPaints = 0;
   private perfPrevCellRuns = 0; // per-cell landing repaints this window (Task 1)
   private perfPrevCellCarried = 0; // landed cells carried to a later frame by the budget
+  private perfPrevFullSliced = 0; // full paints painted in slices this window
   private perfPrevCtxRestores = 0;
   /** Ground repaints forced by a context restore or a tab-in — see
    *  hookContextRestore. Reported per window by the beacon. */
@@ -4322,7 +4338,7 @@ export class WorldScene extends Phaser.Scene {
    * from the rework, and if it vanishes it is. Remembered in localStorage
    * (`ml-ground-path`) so it survives the reload; `?ground=fast` restores. */
   private groundScroll = groundPathFast();
-  private groundLastMode: "full" | "scroll" | "cells" = "full";
+  private groundLastMode: "full" | "scroll" | "cells" | "sliced" = "full";
   /* THE LANDING REPAINT + THE PREFETCH RING — see onTerrainBatch, repaintTiles3Cells,
    * t3prefetchStep. Which window cells wanted which missing file (rebuilt by every
    * full paint, extended by band paints); the cells a landed batch made drawable;
@@ -4436,6 +4452,8 @@ export class WorldScene extends Phaser.Scene {
   private groundRedrewThisFrame = false;
   /** Full ground paints, so a frame can tell one happened — see below. */
   private groundFullRuns = 0;
+  /** Full paints painted in slices instead (queueFullGroundSlices). */
+  private groundFullSliced = 0;
   /** Ground paints of any kind since load (groundEndDraw) — a small snap
    *  SCROLLS the ground in slices, which neither full runs nor cell runs
    *  count (measured: a respawn a few cells off never read "painted"). */
@@ -5676,6 +5694,16 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.togglePerfBeacon(),
           get: () => this.perfBeacon,
           state: () => (this.perfBeacon ? "reporting" : "off"),
+        },
+        /* THE FPS METER (maintainer 2026-09-24: "add a button under settings/dev
+         * to render/show the FPS on screen"): fpsbadge.ts's corner readout —
+         * fps, worst frame, hitches over the last 5 s — on a button, remembered
+         * per device like the `?fps=1` switch it shares (localStorage ml-fps). */
+        {
+          label: "fps meter",
+          act: () => this.toggleFpsMeter(),
+          get: () => fpsBadgeOn(),
+          state: () => (fpsBadgeOn() ? "on screen" : "off"),
         },
       ],
     });
@@ -13793,7 +13821,8 @@ export class WorldScene extends Phaser.Scene {
       this.repaintGroundPending = false;
       this.repaintGroundPartial = false; // the full paint covers the landed cells
       this.groundDirtyCells = [];
-      this.lastGround = { x: NaN, y: NaN };
+      // In slices when there is a picture to paint over (queueFullGroundSlices); else the next latch paints in full.
+      if (!this.queueFullGroundSlices()) this.lastGround = { x: NaN, y: NaN };
       this.repaintStats.groundRuns++;
     } else if (this.repaintGroundPartial) {
       this.repaintGroundPartial = false;
@@ -20770,6 +20799,45 @@ export class WorldScene extends Phaser.Scene {
 
   /** Pay off every owed slice NOW — before a scroll copies the picture forward,
    *  and before any probe reads the texture back. */
+  /** A REQUESTED FULL PAINT IN PLAY IS PAINTED IN SLICES (maintainer
+   *  2026-09-24, "fix ground repaint on zone hops": his 14:01 run's `mode:
+   *  full` frames were 45-226 ms, one or two a window — not the hops as such
+   *  but the coalesced full repaint, `repaintGroundPending`, and the landing
+   *  repaint's "more than half the texture" fallback, each poisoning the
+   *  latch so the next latch painted the whole texture in one frame). With a
+   *  latched picture whose cut is the drawn one, the whole texture is queued
+   *  as bands into the scroll's slice queue — GROUND_SLICE_MS a frame, the
+   *  same clipped pass, the same pixels — and the picture stands until each
+   *  band lands. Appended behind whatever a scroll left queued (the same
+   *  anchor and cut, by the check), never flushed synchronously. The first
+   *  paint, a poisoned latch, a cut that changed (repaintWorld and the
+   *  indoor flip are their own paths) and the legacy modes paint in full as
+   *  before. Returns false when it could not queue. */
+  private queueFullGroundSlices(): boolean {
+    const rt = this.groundRT;
+    const a = this.groundAnchor;
+    if (!this.maps3 || !this.groundScroll || !this.groundSliced || !rt || !a || !this.groundScratch || Number.isNaN(this.lastGround.x) || this.streamingHeld) return false;
+    const mask = this.indoorInside ? this.indoorMask : null;
+    const top = this.indoorTop;
+    if (a.mask !== mask || a.top !== top) return false;
+    const ctx = this.groundSliceCtx;
+    if (ctx && (ctx.ax !== a.ax || ctx.ay !== a.ay || ctx.mask !== mask || ctx.top !== top)) return false;
+    const cuts = mask ? this.indoorCut : null;
+    if (!ctx) this.groundSliceCtx = { ax: a.ax, ay: a.ay, mask, cuts, top };
+    const IW = rt.width;
+    const IH = rt.height;
+    const px = Math.max(16, this.groundSlicePx);
+    const n = Math.max(1, Math.min(Math.ceil(IH / px), Math.ceil((IW * IH) / (px * px))));
+    for (let i = 0; i < n; i++) {
+      const lo = Math.round((IH * i) / n);
+      const hi = Math.round((IH * (i + 1)) / n);
+      if (hi > lo) this.groundSliceQ.push({ x0: 0, y0: lo, x1: IW, y1: hi });
+    }
+    this.groundFullSliced++;
+    this.groundLastMode = "sliced";
+    return true;
+  }
+
   private t3flushSlices(): void {
     if (!this.groundSliceQ.length) return;
     this.groundSliceStats.flushes++;
@@ -21160,7 +21228,7 @@ export class WorldScene extends Phaser.Scene {
         return;
       }
       this.groundCellStats.full++;
-      this.lastGround = { x: NaN, y: NaN };
+      if (!this.queueFullGroundSlices()) this.lastGround = { x: NaN, y: NaN };
       return;
     }
     const mask = a.mask;

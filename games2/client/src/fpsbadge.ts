@@ -10,7 +10,24 @@
  *  wall clock (walked back over the gaps until 5,000 ms), not a frame count
  *  sized by the long-run rate — that version lagged the very drops it was for
  *  (review, 2026-09-02). Gaps over 2 s are a hidden tab, not a frame. */
+let live: { el: HTMLElement; stop: boolean } | null = null;
+
+/** Is the meter on screen (the Settings/dev button reads this). */
+export function fpsBadgeOn(): boolean {
+  return live !== null;
+}
+
+/** Take the meter down (the Settings/dev button; `?fps=0` at boot does the
+ *  same through localStorage). Idempotent. */
+export function unmountFpsBadge(): void {
+  if (!live) return;
+  live.stop = true;
+  live.el.remove();
+  live = null;
+}
+
 export function mountFpsBadge(): void {
+  if (live) return;
   const el = document.createElement("div");
   el.id = "ml-fps";
   el.style.cssText =
@@ -21,13 +38,15 @@ export function mountFpsBadge(): void {
     "font:11px/1.3 ui-monospace,Menlo,monospace;color:#cfd3dc;background:rgba(0,0,0,.55);" +
     "padding:3px 6px;border-radius:6px;white-space:nowrap";
   document.body.append(el);
+  const me = { el, stop: false };
+  live = me;
   let last = performance.now();
   const gaps: number[] = [];
   let shownAt = last;
   const tick = (now: number) => {
     const gap = now - last;
     last = now;
-    if (gap < 2000) gaps.push(gap);
+    if (gap >= 0 && gap < 2000) gaps.push(gap); // the first frame's stamp can predate the mount: not a frame
     if (now - shownAt >= 500) {
       // Walk back until ~5 s of wall clock is covered.
       let sum = 0;
@@ -41,7 +60,7 @@ export function mountFpsBadge(): void {
       shownAt = now;
       if (gaps.length > 1200) gaps.splice(0, gaps.length - 600);
     }
-    requestAnimationFrame(tick);
+    if (!me.stop) requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
 }
