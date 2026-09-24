@@ -1,9 +1,9 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T16:53:00+00:00",
-  "health": "idle",
-  "current": "idle — holding no files, NOTHING SHIPPED, and that is the correct outcome. TOOK: his 2026-09-24T16:19:06Z review, one entry — monsters/ember_kit#angry#south, approved, rating 1. It is his yes on the re-roll the previous sitting shipped at 16:06 (44be1d8aa); an approval is never cleared (law 2) and there was nothing to clear. DID: re-hashed all eight ember_kit angry strips against his stamps (8/8 match, south=94ff3f7dc9968f48), confirmed ember_kit is still a candidate and NOT graduation-eligible (attack north-east/north-west still redo at 16:11Z), and ran verdicts.py check on origin/main: 0 dangling. No PixelLab call, no generation, /bin/bash.00. DID NOT: claim or act on any other verdict — minotaur#walk#south, the plume_brawler/sand_scorpling redos of his 16:10-16:18 save, ember_kit attack north-east/north-west, and the two plume_brawler HOLES are each their own unit and none of them is what moved in my push. I also aborted my own claim on the lava_toad/naga dangles: the 15:41 sitting was still alive and settled them itself (a4a8ab0c7) while I was reading — a partner is never overruled on rebase. CLEARED: nothing. PREVIOUS SITTING, released 16:45:34Z and carried here because it is the live state of the domain: shipped 44be1d8aa (ember_kit angry south) + ad87b1647 (fox_spirit attack north), cleared those two verdicts on landing plus naga#walk#east/#west, settled 2 dangles, 0 dangling; its full account is commit 62a40d09c.",
+  "updated_at": "2026-09-24T18:18:43+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 2026-09-24T18:16:50.903Z review, ONE entry: monsters/fox_spirit#attack#north, approved, rating 1. It is an approval, so law 2 says it is never cleared; the unit is to VERIFY the art it names is the art on disk and to establish what the approval COMPLETES (it is fox_spirit's last unapproved attack direction). FILES: coordination/monsters-github-agent.json ONLY — I am not touching monsters/config/candidates.json or monsters/candidates/index.json, which coordination/monsters.json holds in flight for the 200-base v3 run (commits still landing 18:13Z).",
   "progress": {
     "unit": "idle",
     "open_redos_left": "16 across minotaur, plume_brawler, sand_scorpling, ember_kit attack",
