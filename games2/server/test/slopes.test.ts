@@ -8,6 +8,9 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
+import { patternSheetPaths, patternSheets, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
+// @ts-expect-error — plain .mjs helper shared with the build scripts
+import { imgRGBA } from "../../scripts/imagelib.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..", "..");
@@ -163,4 +166,139 @@ test("on the_game, with the foot on: a one-level rise wears the slope, a cliff f
   assert.ok(rises >= 100, `the world has enough one-level rises to gate on (${rises})`);
   assert.ok(cliffFeet >= 1, "a cliff foot still composes its transition (the contrast)");
   console.log(`slopes: ${rises} one-level rises wear the slope with the foot on; ${cliffFeet} cliff feet keep their transition`);
+});
+
+/* -- both sides of the rise (maintainer 2026-09-24) ------------------------- */
+
+test("on the_game: the higher cell of a one-level rise CUTS down to the half level wherever both sides can wear a tile, and every corner agrees", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  const t = resolver([], {}, true);
+  const view = viewFromDoc(JSON.parse(readFileSync(WORLD, "utf8")));
+  const out = t.resolveWindow(view);
+  const g = (x: number, y: number) => view.groundAt(x, y);
+  const L = (x: number, y: number) => view.levelAt(x, y);
+  const byCell = new Map<string, (typeof out.cells)[number]>();
+  for (const c of out.cells) byCell.set(`${c.x},${c.y}`, c);
+  // The height a cell claims for its corner i (NW 0, NE 1, SW 2, SE 3), in half levels.
+  const claim = (c: (typeof out.cells)[number], i: number): number => {
+    const bit = (c.slope?.index ?? 0) & (8 >> i);
+    if (!c.slope || c.slope.ramp) return c.level * 2;
+    if (c.slope.cut) return c.level * 2 - (bit ? 0 : 1);
+    return c.level * 2 + (bit ? 1 : 0);
+  };
+  let cuts = 0, raises = 0, wrong: string[] = [], disagree: string[] = [], lonelyCut: string[] = [];
+  for (const c of out.cells) {
+    const sl = c.slope;
+    if (!sl || sl.ramp) continue;
+    if (sl.cut) {
+      cuts++;
+      if (sl.cut !== sl.rise || sl.index === 15 || c.boundary) wrong.push(`${c.x},${c.y} cut ${sl.cut} rise ${sl.rise} index ${sl.index} boundary ${!!c.boundary}`);
+      // Every lowered corner meets a lower cell that raised it.
+      for (let i = 0; i < 4; i++) {
+        if (sl.index & (8 >> i)) continue;
+        const cx = c.x + (i & 1), cy = c.y + (i >> 1);
+        let met = false;
+        for (let k = 0; k < 4 && !met; k++) {
+          const n = byCell.get(`${cx - 1 + (k & 1)},${cy - 1 + (k >> 1)}`);
+          if (n && n.level === c.level - 1 && n.slope && !n.slope.cut && !n.slope.ramp) {
+            // which corner of n is this point? (dx,dy) from n's NW corner
+            const ni = (cx - n.x) + 2 * (cy - n.y);
+            if (n.slope.index & (8 >> ni)) met = true;
+          }
+        }
+        if (!met) lonelyCut.push(`${c.x},${c.y} corner ${i}`);
+      }
+    } else raises++;
+  }
+  // Corner agreement: two cells at the same level touching one corner claim one height.
+  for (const c of out.cells) {
+    if (!c.slope || c.slope.ramp) continue;
+    for (let i = 0; i < 4; i++) {
+      const cx = c.x + (i & 1), cy = c.y + (i >> 1);
+      for (let k = 0; k < 4; k++) {
+        const n = byCell.get(`${cx - 1 + (k & 1)},${cy - 1 + (k >> 1)}`);
+        if (!n || n === c || n.level !== c.level || g(n.x, n.y) !== g(c.x, c.y)) continue;
+        // A raise beside a plate that wears nothing is the lip meeting a flat neighbour — the
+        // bump has always done that; only a CUT must never face a plate that did not cut.
+        if (!c.slope.cut && !n.slope?.cut) continue;
+        const ni = (cx - n.x) + 2 * (cy - n.y);
+        if (claim(c, i) !== claim(n, ni) && disagree.length < 6) disagree.push(`${c.x},${c.y} corner ${i} says ${claim(c, i)} but ${n.x},${n.y} corner ${ni} says ${claim(n, ni)} (L${L(c.x, c.y)})`);
+      }
+    }
+  }
+  assert.deepEqual(wrong.slice(0, 6), [], `${wrong.length} malformed cuts`);
+  assert.deepEqual(lonelyCut.slice(0, 6), [], `${lonelyCut.length} lowered corners with no raise under them`);
+  assert.ok(cuts >= 50, `the world has cuts to gate on (${cuts})`);
+  assert.ok(raises >= cuts, `raises (${raises}) are never fewer than cuts (${cuts}): a cut needs a raise, a raise needs no cut`);
+  // A raise against a plate that did not cut is allowed (the lip meets the full face); a cut
+  // against a same-level plate that did not cut is not — that is the disagreement list.
+  assert.deepEqual(disagree, [], "two plates at one level disagree on a corner");
+  console.log(`slopes: ${raises} cells raise, ${cuts} cells cut down to the half level`);
+});
+
+test("the parity path (footBoundary off, render3's rule set) still wears the any-higher bump and never cuts", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  const t = resolver([], {});
+  const view = viewFromDoc(JSON.parse(readFileSync(WORLD, "utf8")));
+  const out = t.resolveWindow(view);
+  const g = (x: number, y: number) => view.groundAt(x, y);
+  const L = (x: number, y: number) => view.levelAt(x, y);
+  let bumps = 0, cuts = 0, wrong = 0;
+  for (const c of out.cells) {
+    if (!c.slope) continue;
+    if (c.slope.cut) cuts++;
+    bumps++;
+    const gr = g(c.x, c.y)!;
+    if (c.slope.index !== t.slopeIndexAt(g, L, gr, c.x, c.y, c.level)) wrong++;
+  }
+  assert.equal(cuts, 0);
+  assert.equal(wrong, 0);
+  assert.ok(bumps >= 400, `bumps on the parity path (${bumps})`);
+});
+
+test("a cut's pick: the flat tile (0) is allowed, the full plateau (15) is not; a raise refuses 0", { skip }, () => {
+  const t = resolver([], {});
+  const p0 = t.slopeTile("grass", 0, 5, 5, false, true);
+  assert.ok(p0 && p0.cut === p0.rise && p0.rise === 4 && p0.index === 0, JSON.stringify(p0));
+  assert.equal(t.slopeTile("grass", 15, 5, 5, false, true), null);
+  assert.equal(t.slopeTile("grass", 0, 5, 5), null);
+  const p12 = t.slopeTile("grass", 12, 5, 5);
+  assert.ok(p12 && p12.cut === 0 && p12.rise === 4);
+});
+
+test("slopeTopOnly keeps a slope tile's sunk flat part under the library diamond and drops its band; topFaceOnly clipped it", { skip }, () => {
+  const pat = load("tiles/patterns/index.json");
+  const paths = patternSheetPaths(pat);
+  const px = (rel: string): Pixels => { const i = imgRGBA(join(REPO, rel)) as { width: number; height: number; data: Uint8Array }; return { w: i.width, h: i.height, data: new Uint8ClampedArray(i.data) }; };
+  const sheets = patternSheets(pat, px(paths.silhouette), px(paths.masks), px(paths.border));
+  const idx = load("tiles/slopes/index.json");
+  const st = idx.sets.find((s: any) => s.dir === "tiles/slopes/grass/a14_s02");
+  // THE SET'S GEOMETRY, measured: the plateau (tile 15) tops the frame at row 0 like the
+  // library diamond; the flat tile (0) tops it at row `elevation` — the flat part is SUNK.
+  const topRow = (p: Pixels) => { for (let y = 0; y < p.h; y++) for (let x = 0; x < p.w; x++) if (p.data[(y * p.w + x) * 4 + 3] > 0) return y; return -1; };
+  let libTopRow = -1, libBottomRow = -1;
+  for (let y = 0; y < sheets.fh; y++) for (let x = 0; x < sheets.fw; x++) if (sheets.libTop[y * sheets.fw + x]) { if (libTopRow < 0) libTopRow = y; libBottomRow = y; }
+  assert.equal(libTopRow, 0);
+  assert.equal(topRow(px(`${st.dir}/post/${st.post_files[15]}`)), 0, "the plateau tops the frame with the library diamond");
+  assert.equal(topRow(px(`${st.dir}/post/${st.post_files[0]}`)), st.elevation, "the flat tile is sunk by the set's elevation");
+  const src = px(`${st.dir}/post/${st.post_files[12]}`); // NW+NE on the plateau, SW+SE sunk
+  const top = topFaceOnly(sheets, src), ext = slopeTopOnly(sheets, src, st.elevation);
+  const opaqueRows = (p: Pixels, y0: number, y1: number) => { let n = 0; for (let y = y0; y <= y1; y++) for (let x = 0; x < p.w; x++) if (p.data[(y * p.w + x) * 4 + 3] > 0) n++; return n; };
+  // The sunk flat's lower edges lie in the `elevation` rows under the diamond: kept by the
+  // slope mask, dropped (all but the one margin row) by the plain one.
+  assert.ok(opaqueRows(ext, libBottomRow + 2, libBottomRow + st.elevation) > 20, `the sunk rows survive (${opaqueRows(ext, libBottomRow + 2, libBottomRow + st.elevation)})`);
+  assert.equal(opaqueRows(top, libBottomRow + 2, libBottomRow + st.elevation), 0);
+  // The band below them is dropped by both.
+  assert.equal(opaqueRows(ext, libBottomRow + st.elevation + 2, sheets.fh - 1), 0);
+  assert.equal(opaqueRows(top, libBottomRow + 2, sheets.fh - 1), 0);
+  // Inside the diamond both agree.
+  let diff = 0;
+  for (let y = libTopRow; y <= libBottomRow; y++) for (let x = 0; x < sheets.fw; x++) { const i = (y * sheets.fw + x) * 4; if (sheets.libTop[y * sheets.fw + x] && (top.data[i] !== ext.data[i] || top.data[i + 3] !== ext.data[i + 3])) diff++; }
+  assert.equal(diff, 0);
+});
+
+test("the body's lift on a cut cell: rise x rampHeight(index) - cut drops from the level to the half level", { skip }, () => {
+  const rise = 4, cut = 4, index = 12; // NW+NE stay up, SW+SE lowered
+  const lift = (u: number, v: number) => rampHeight(index, u, v) * rise - cut;
+  assert.equal(lift(0.5, 0), 0);
+  assert.equal(lift(0.5, 1), -cut);
+  assert.equal(lift(0.5, 0.5), -cut / 2);
 });

@@ -58,9 +58,10 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   `canEnter` allows a move if the destination is enterable and the UPWARD step
   is within the climb allowance. `WALK_CLIMB = 1`: a one-level step is walked
   (the client eases the lift up over it, `integrateFall`; on a cell that wears
-  a slope the feet also climb the tile's own terrace — `WorldScene.rampLiftPx`,
-  4 px for his published sets, the storey for a ramp; docs/tiles3-rendering.md
-  "A ONE-LEVEL RISE WEARS HIS PUBLISHED SLOPE"); a
+  a slope the feet follow the tile — up the raise's plateau on the lower cell,
+  down the cut on the higher one — `WorldScene.rampLiftPx`, the set's
+  `elevation` (4 px published), the storey for a ramp; docs/tiles3-rendering.md
+  "A ONE-LEVEL RISE WEARS HIS SLOPE ON BOTH SIDES"); a
   timed **jump** (`JUMP_CLIMB = 2`, Space, or the auto-jump when stalled
   against a ledge) climbs two. Descending one level eases, more falls
   (`makeDrops`, FALL_TRIGGER_FRAC). `stepMovement` resolves axis-separated

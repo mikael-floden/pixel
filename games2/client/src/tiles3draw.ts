@@ -310,7 +310,45 @@ export function buildBoundaryPixels(
  *  `platePixels`). Shared with the worker for the same reason. */
 export function buildPlatePixels(sheets: PatternSheets, art: PlateLike, src: Pixels, wallRGB: readonly [number, number, number]): Pixels {
   const out = art.kind === "conform" ? conformPlate(sheets, src, wallRGB) : src;
-  return art.topOnly ? topFaceOnly(sheets, capWallToSurface(sheets, out)) : capWallToSurface(sheets, out);
+  if (!art.topOnly) return capWallToSurface(sheets, out);
+  return art.rise ? slopeTopOnly(sheets, capWallToSurface(sheets, out), art.rise) : topFaceOnly(sheets, capWallToSurface(sheets, out));
+}
+
+/** A SLOPE TILE, TOP FACE ONLY: the library diamond EXTENDED `rise` ROWS DOWN
+ *  each column, then the margin row. A published set draws its plateau on the
+ *  library diamond and its flat part `rise` rows below it (`slopeLift`), so
+ *  the flat part's lower edges — and the lip's face between the two — lie
+ *  under the library silhouette, and `topFaceOnly` (the silhouette alone)
+ *  cut them off at every level above 0, where a surface is top-only: the
+ *  cell showed its plateau and the wall under it, and no slope. The band
+ *  under the flat part's lower edges is still dropped, so the cell's own
+ *  x-over-y wall stays the only wall. */
+export function slopeTopOnly(sheets: PatternSheets, src: Pixels, rise: number): Pixels {
+  const { fw, fh, libTop } = sheets;
+  const a = cropToArt(src, fw, fh);
+  const out = newPixels(fw, fh);
+  const down = Math.max(0, Math.min(fh, Math.round(rise)));
+  for (let x = 0; x < fw; x++) {
+    let top = -1;
+    let bottom = -1;
+    for (let y = 0; y < fh; y++) if (libTop[y * fw + x]) { if (top < 0) top = y; bottom = y; }
+    if (top < 0) continue;
+    const last = Math.min(fh - 1, bottom + down);
+    for (let y = top; y <= last; y++) {
+      const i = y * fw + x;
+      out.data[i * 4] = a.data[i * 4];
+      out.data[i * 4 + 1] = a.data[i * 4 + 1];
+      out.data[i * 4 + 2] = a.data[i * 4 + 2];
+      out.data[i * 4 + 3] = a.data[i * 4 + 3];
+    }
+    // The margin row, as topFaceOnly: a copy of the column's own bottom surface pixel.
+    if (last + 1 < fh && out.data[(last * fw + x) * 4 + 3] !== 0) {
+      const from = last * fw + x;
+      const to = (last + 1) * fw + x;
+      for (let c = 0; c < 4; c++) out.data[to * 4 + c] = out.data[from * 4 + c];
+    }
+  }
+  return out;
 }
 
 /** A FADE OVERLAY'S KEY. Distinct from the conformed plate of the same file:
@@ -890,6 +928,11 @@ export interface PlateLike {
    *  cache bug that served whole wrong tiles in render3 (`never key a cache on
    *  id()`). */
   topOnly?: boolean;
+  /** A SLOPE TILE'S RISE in px: its raised corners stand this many rows above
+   *  the flat diamond, so the top-only mask is the diamond extended that far
+   *  up (`slopeTopOnly`) — the library silhouette alone clipped every raised
+   *  corner off at every level above 0. Part of the picture, so in the key. */
+  rise?: number;
 }
 
 /** THE CONTENT IDENTITY OF ONE PLATE — what actually went into its pixels, and
@@ -907,7 +950,7 @@ export function plateSourceId(art: PlateLike, ground: string): string {
  *  copied; a conformed plate is a derived raster and gets its own. */
 export function plateKey(art: PlateLike, ground: string): string {
   const base = art.kind === "conform" ? `t3c:${ground}|${art.path}` : artKey(art.path);
-  return art.topOnly ? `t3f:${base}` : base;
+  return art.topOnly ? `t3f${art.rise ? "r" + art.rise : ""}:${base}` : base;
 }
 
 /** The composed boundary's key: mask frame + both plate identities + the pass.
@@ -1137,15 +1180,35 @@ function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
   ops.push({ key: footKey(walls, water, mask), x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "foot" });
 }
 
+/** WHERE A SLOPE TILE'S PLATE HANGS. A published set draws its PLATEAU at the
+ *  frame's top — the library diamond's own rows — and its flat part `rise`
+ *  rows BELOW it (measured on every set: tile 15's top is row 0, tile 0's is
+ *  row 4). So a RAISE (the lower cell, its raised corners meeting the higher
+ *  cell) hangs the whole plate `rise` rows up: the flat part lands on the
+ *  level and the plateau stands `rise` above it. A CUT (the higher cell
+ *  stepping down to the half level) draws at the level: its plateau IS the
+ *  level and its lowered corners sink `rise` under it, over the top of the
+ *  x-over-y wall band, which shows for what is left of the storey between
+ *  the two (15 - 2 x rise: 7 px at the published 4, none from 8). Drawn at
+ *  the level, as 834b119e2b did, a raise SANK its cell 4 px instead — the
+ *  slope nobody could see. A ramp's taller frame carries its own rise. */
+function slopeLift(cell: Tiles3Cell): number {
+  const sl = cell.slope;
+  return sl && !sl.ramp && !sl.cut ? sl.rise : 0;
+}
+
 function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
   if (cell.kind === "field") {
     const art = cell.art;
     if (!art) return [];
     const key = art.kind === "liquid" ? liquidKey(art.topRGB) : plateKey(art, cell.ground);
+    const py = cell.pasteY ?? cell.sy;
     const ops: Tiles3Blit[] = [
       // A RAMP'S TALLER FRAME HANGS ABOVE THE PLATE'S: anchored on the bottom
-      // row, so its extra rows rise into the higher neighbour's band.
-      { key, x: cell.sx, y: (cell.pasteY ?? cell.sy) - Math.max(0, art.h - PLATE_H), sx: 0, sy: 0, sw: art.w, sh: art.h, role: "surface" },
+      // row, so its extra rows rise into the higher neighbour's band. A RAISE
+      // hangs its plate `rise` rows up (slopeLift): the set's plateau is drawn
+      // at the frame's top and its flat part `rise` rows below it.
+      { key, x: cell.sx, y: py - Math.max(0, art.h - PLATE_H) - slopeLift(cell), sx: 0, sy: 0, sw: art.w, sh: art.h, role: "surface" },
     ];
     /* ...AND THE FADE'S SCATTER ON TOP OF IT. A fade no longer replaces the
      * plate (see the resolver): it paints only the texels that are not the
@@ -1155,7 +1218,7 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
       ops.push({
         key: fadeKey(cell.fade.file, cell.ground),
         x: cell.sx,
-        y: cell.pasteY ?? cell.sy,
+        y: py,
         sx: 0,
         sy: 0,
         sw: TILE,
@@ -1169,7 +1232,7 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
       ops.push({
         key: detailKey(cell.detail.file, cell.ground),
         x: cell.sx,
-        y: cell.pasteY ?? cell.sy,
+        y: py,
         sx: 0,
         sy: 0,
         sw: TILE,
@@ -1199,10 +1262,11 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
    * cap's own x-over-y art. */
   if (cell.dressed && cell.art && cell.art.kind !== "liquid") {
     const art = cell.art;
+    const py = cell.pasteY ?? cell.sy;
     ops.push({
       key: plateKey(art, cell.ground),
       x: cell.sx,
-      y: (cell.pasteY ?? cell.sy) - Math.max(0, art.h - PLATE_H), // a ramp's frame hangs above the plate's
+      y: py - Math.max(0, art.h - PLATE_H) - slopeLift(cell), // a ramp's frame hangs above the plate's; a raise hangs its plate up
       sx: 0,
       sy: 0,
       sw: art.w,
@@ -1217,7 +1281,7 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
       ops.push({
         key: fadeKey(cell.fade.file, cell.ground),
         x: cell.sx,
-        y: cell.pasteY ?? cell.sy,
+        y: py,
         sx: 0,
         sy: 0,
         sw: TILE,
@@ -1232,7 +1296,7 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
       ops.push({
         key: detailKey(cell.detail.file, cell.ground),
         x: cell.sx,
-        y: cell.pasteY ?? cell.sy,
+        y: py,
         sx: 0,
         sy: 0,
         sw: TILE,

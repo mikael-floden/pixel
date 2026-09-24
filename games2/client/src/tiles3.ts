@@ -897,7 +897,7 @@ export function columnY(f: Frame, x: number, y: number, storey: number): number 
  *  slab. It is a MASK, not a crop — the wall is a vertical extrusion under the
  *  diamond, so no source rectangle expresses it. */
 export type FieldArt =
-  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean }
+  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean; rise?: number }
   | { kind: "liquid"; topRGB: [number, number, number]; w: number; h: number; topOnly?: boolean };
 
 /** GROUND PEOPLE WALK ON. Nothing grows where feet keep coming (maintainer
@@ -1012,7 +1012,7 @@ export interface FadePick {
 /** The resolved surface of one cell, before it is placed. `art` is what draws;
  *  the rest is the provenance a fixture and a gate check. */
 export interface Surface3 {
-  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number };
+  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; rise?: number };
   set?: number;
   memberIndex?: number;
   plate?: PlateArt;
@@ -1039,6 +1039,12 @@ export interface SlopePick {
    *  published bump — what the body's lift follows across the tile
    *  (WorldScene.rampLiftPx), so the feet climb the terrace the art shows. */
   rise: number;
+  /** THE CUT: px this cell's plate is drawn LOWER than its level — `rise` on a
+   *  higher cell stepping down half a step to the lower cells beside it, 0 on
+   *  a raise (maintainer 2026-09-24: "placed both to lower a level 2 to 1.5
+   *  and push up a level 1 to 1.5"). Its `index` names the corners that stay
+   *  at the level; the feet follow `rise * rampHeight(index) - cut`. */
+  cut: number;
 }
 
 /** THE SLOPE IS A RAMP FROM THIS ELEVATION UP (2026-09-19, maintainer: "1 level
@@ -2082,14 +2088,16 @@ export class Tiles3 {
    *  hillside keeps one boundary character for the same reason a base set does.
    *  Null for an unjudged ground (light_soil, and every ground with no approved
    *  set) and for the flat/full indices 0 and 15. */
-  slopeTile(ground: string, index: number, x: number, y: number, ramp = false): SlopePick | null {
-    const ck = `${ramp ? "r" : "b"}|${ground}|${index}|${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
+  slopeTile(ground: string, index: number, x: number, y: number, ramp = false, cut = false): SlopePick | null {
+    const ck = `${ramp ? "r" : cut ? "c" : "b"}|${ground}|${index}|${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
     const hit = this.slopeTileCache.get(ck);
     if (hit !== undefined) return hit;
     let out: SlopePick | null = null;
     // A full plateau top (15) is no incline: a ramp pick refuses it; the bump
-    // library keeps its plateau tile for the cell whose every corner is up.
-    if (index > 0 && index < (ramp ? 15 : 16)) {
+    // library keeps its plateau tile for the cell whose every corner is up. A
+    // CUT keeps the flat tile (0) for the cell whose every corner steps down,
+    // and refuses 15 (nothing lowered is no cut).
+    if (cut ? index < 15 : index > 0 && index < (ramp ? 15 : 16)) {
       const sets = this.slopeSets(ground, ramp).filter((st) => this.slopeApproved(st.dir, index));
       if (sets.length) {
         const st = sets[fnv1a(`slope|${ground}|${Math.floor(x / REGION_CHUNK)}|${Math.floor(y / REGION_CHUNK)}`) % sets.length];
@@ -2099,11 +2107,12 @@ export class Tiles3 {
         const h = ramp ? Math.max(PLATE_H, st.size?.[1] ?? PLATE_H) : PLATE_H;
         /* A MIS-SIZED PUBLICATION FALLS BACK TO THE FLAT PLATE, never crashes: a
          * 30-row tile cannot be masked by the 46-row silhouette. */
+        const rise = st.elevation ?? 4;
         if (this.data.slopeGuard) {
-          if (this.data.slopeGuard(file, h)) out = { index, dir: st.dir, file, ramp, h, rise: st.elevation ?? 4 };
+          if (this.data.slopeGuard(file, h)) out = { index, dir: st.dir, file, ramp, h, rise, cut: cut ? rise : 0 };
         } else {
           this.stats.unguardedSlopes++;
-          out = { index, dir: st.dir, file, ramp, h, rise: st.elevation ?? 4 };
+          out = { index, dir: st.dir, file, ramp, h, rise, cut: cut ? rise : 0 };
         }
       }
     }
@@ -2176,6 +2185,24 @@ export class Tiles3 {
    *  the pick can hand out. A corner two or more up anywhere on the cell
    *  makes it a cliff foot: 0, and the foot keeps the cell. Asked by
    *  `wangSurface`, where the foot yields to it exactly as to a ramp. */
+  /** THE SLOPE THIS CELL WEARS UNDER THE GAME RULE, as a non-zero mask (the
+   *  raise's corners, or the cut's lowered ones), or 0 — what the foot yields
+   *  to in `wangSurface`. The parity path answers with `bumpInclineFor`. */
+  slopeWorn(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    ground: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): number {
+    if (!this.data.footBoundary) return this.bumpInclineFor(g, L, ground, x, y, zl);
+    const half = this.slopeHalfAt(g, L, ground, x, y, zl);
+    if (half.up) return this.slopeTile(ground, half.up, x, y) ? half.up : 0;
+    if (half.down) return this.slopeTile(ground, 15 & ~half.down, x, y, false, true) ? half.down : 0;
+    return 0;
+  }
+
   bumpInclineFor(
     g: (x: number, y: number) => string | null,
     L: (x: number, y: number) => number,
@@ -2187,6 +2214,102 @@ export class Tiles3 {
     const one = this.slopeIndexAt(g, L, ground, x, y, zl, true);
     if (!one || one === 15 || one !== this.slopeIndexAt(g, L, ground, x, y, zl)) return 0;
     return this.slopeTile(ground, one, x, y) ? one : 0;
+  }
+
+  /** SLOPES ON BOTH SIDES OF A ONE-LEVEL RISE — the half-level corner rule
+   *  (maintainer 2026-09-24: "almost always use slope tiles when the
+   *  cliff/elevation change is only 1 level ... placed both to lower a level
+   *  2 to 1.5 and push up a level 1 to 1.5 ... same as stairs — a stair can
+   *  cut into the ground or be extended outwards"). `up`: the corners an
+   *  ELIGIBLE cell (`slopeEligible`) raises with its slope tile — every corner
+   *  a cell exactly one level up touches, as the bump always did. `down`: the
+   *  corners a cell CUTS down to the half level (its tile drawn `rise` px
+   *  lower, index = the corners that stay) — only where every cell touching
+   *  the corner is eligible, the corner holds exactly this level and the one
+   *  below, and every cell at this level there raises nothing itself, so a
+   *  cut never faces a plate that did not rise and two plates at one level
+   *  never disagree on a corner. A cell that raises anything cuts nothing —
+   *  one tile holds two heights, not three; a storey-height set (isRampSet)
+   *  is the incline for a climb. */
+  slopeHalfAt(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    gr: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): { up: number; down: number } {
+    const up = this.slopeUpAt(g, L, gr, x, y, zl);
+    if (up || !this.slopeEligible(g, L, gr, x, y, zl)) return { up, down: 0 };
+    let down = 0;
+    for (let i = 0; i < 4; i++) {
+      const cx = x + (i & 1);
+      const cy = y + (i >> 1);
+      let below = false;
+      let ok = true;
+      for (let k = 0; k < 4 && ok; k++) {
+        const ax = cx - 1 + (k & 1);
+        const ay = cy - 1 + (k >> 1);
+        if (ax === x && ay === y) continue;
+        const l = L(ax, ay);
+        if (g(ax, ay) !== gr || l > zl || l < zl - 1 || !this.slopeEligible(g, L, gr, ax, ay, l)) ok = false;
+        else if (l === zl - 1) below = true;
+        else if (this.slopeUpAt(g, L, gr, ax, ay, l)) ok = false;
+      }
+      if (ok && below) down |= 8 >> i;
+    }
+    return { up, down };
+  }
+
+  /** THE CORNERS AN ELIGIBLE CELL RAISES: each one a cell exactly one level up
+   *  touches (`slopeIndexAt` exact-one; the ring is one ground and nothing in
+   *  it stands two up, so this is the bump's own mask). 0 when not eligible.
+   *  Memoised with the eligibility. */
+  private slopeUp = new Map<number, number>();
+  slopeUpAt(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    gr: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): number {
+    const k = (x + 32768) * 65536 + (y + 32768);
+    const hit = this.slopeUp.get(k);
+    if (hit !== undefined) return hit;
+    const up = this.slopeEligible(g, L, gr, x, y, zl) ? this.slopeIndexAt(g, L, gr, x, y, zl, true) : 0;
+    this.slopeUp.set(k, up);
+    return up;
+  }
+
+  /** A cell that CAN wear a slope tile: its ground has an approved set, its
+   *  whole 8-ring is that ground (a second ground composes a boundary tile,
+   *  which is the surface then), and no corner of it is raised ONLY by cells
+   *  two or more levels up — the exact-one and any-higher masks agree, the
+   *  bump's own test since 834b119e2b — so a cliff foot keeps its transition
+   *  (the contrast between "run up" and "jump"). Memoised per window. */
+  private slopeElig = new Map<number, boolean>();
+  slopeEligible(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    gr: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): boolean {
+    const k = (x + 32768) * 65536 + (y + 32768);
+    const hit = this.slopeElig.get(k);
+    if (hit !== undefined) return hit;
+    let ok = this.slopeSets(gr).length > 0;
+    for (let dy = -1; dy <= 1 && ok; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue;
+        if (g(x + dx, y + dy) !== gr) { ok = false; break; }
+      }
+    }
+    if (ok) ok = this.slopeIndexAt(g, L, gr, x, y, zl) === this.slopeIndexAt(g, L, gr, x, y, zl, true);
+    this.slopeElig.set(k, ok);
+    return ok;
   }
 
   /* -- fades --------------------------------------------------------------- */
@@ -2294,6 +2417,8 @@ export class Tiles3 {
    *  point of the module: one call from the world doc to the art. */
   resolveWindow(view: World3View): Tiles3Window {
     this.setView(view);
+    this.slopeElig.clear();
+    this.slopeUp.clear();
     const b: Bounds = { x0: view.x0, y0: view.y0, x1: view.x1, y1: view.y1 };
     const frame = isoFrame(b, view.maxLevel, this.data.storeyPitch);
     const inWindow = (x: number, y: number): boolean =>
@@ -2867,19 +2992,17 @@ export class Tiles3 {
     /* THE FOOT YIELDS TO THE SLOPE AT A ONE-LEVEL RISE. A cell in front of a
      * higher neighbour composes the wall-foot transition (`footBoundary`, his
      * 2026-09-08 ask) INSTEAD of its plate — which is why no slope tile ever
-     * showed at a stone-faced rise: the foot took every one of those cells,
-     * and the 2026-09-19 cut let only a storey-height RAMP set past it, of
-     * which none exists. His published sets are the incline (maintainer
-     * 2026-09-23: "use the slope tiles we have already generated ... as often
-     * as possible for a 1 level increase so the 2 level jump stands out"): at
-     * a rise of exactly one level the lower cell wears its slope tile
-     * (`bumpInclineFor`) and composes no foot — the terrace in the art is the
-     * first half of the step, the shortened face above it the second — while
-     * a cliff of two or more keeps its foot, which is the contrast he wants
-     * between "run up" and "jump". A genuine two-ground quad still composes
-     * its boundary. The foot is a GAME rule (`Tiles3Data.footBoundary`, off
-     * in the parity fixture), so render3 parity is untouched either way. */
-    const ramp = this.rampIndexFor(g, L, gr, x, y, zl) || this.bumpInclineFor(g, L, gr, x, y, zl);
+     * showed at a stone-faced rise: the foot took every one of those cells.
+     * At a rise of exactly one level the lower cell RAISES its corners with
+     * its slope tile and the higher cell CUTS its own down to the half level
+     * (`slopeHalfAt`, maintainer 2026-09-24: "placed both to lower a level 2
+     * to 1.5 and push up a level 1 to 1.5"), and neither composes a foot —
+     * while a cliff of two or more keeps its foot, which is the contrast he
+     * wants between "run up" and "jump". A genuine two-ground quad still
+     * composes its boundary (a slope cell's ring is one ground). The foot is
+     * a GAME rule (`Tiles3Data.footBoundary`, off in the parity fixture), so
+     * render3 parity is untouched either way. */
+    const ramp = this.rampIndexFor(g, L, gr, x, y, zl) || this.slopeWorn(g, L, gr, x, y, zl);
     const b = this.boundaryAt(view, frame, g, L, x, y, ramp ? { foot: false } : undefined);
     if (b) {
       /* `art` names the cell's OWN half of the composed tile, so a draw layer
@@ -3119,21 +3242,32 @@ export class Tiles3 {
       plate: p.art,
     };
 
-    /* THE RAMP BEFORE THE BUMP. A ground with a storey-height set (isRampSet)
-     * wears it on every cell whose corners touch a cell exactly one level up
-     * (never on a full plateau top, 15, which is no incline); every other rise,
-     * and every ground without one, keeps the sub-storey bump this library
-     * has always drawn. Its art is a "ramp": drawn raw in its taller frame,
-     * anchored on the plate's bottom row (tiles3draw), so the incline covers
-     * the higher cell's wall band where the two meet. */
+    /* THE RAMP BEFORE THE HALF STEP. A ground with a storey-height set
+     * (isRampSet) wears it on every cell whose corners touch a cell exactly
+     * one level up (never on a full plateau top, 15, which is no incline):
+     * drawn raw in its taller frame, anchored on the plate's bottom row
+     * (tiles3draw), so the incline covers the higher cell's wall band where
+     * the two meet. Every other rise wears the published set on BOTH sides
+     * (`slopeHalfAt`): the lower cell's raise hangs its plate `rise` rows up,
+     * the higher cell's cut draws at the level (`slopeLift`, tiles3draw). */
     const sidx = this.slopeIndexAt(g, L, gr, x, y, zl); // any rise: the bump's mask, and the detail veto below
     let sl: SlopePick | null = null;
     const ridx = sidx ? this.rampIndexFor(g, L, gr, x, y, zl) : 0;
     if (ridx) sl = this.slopeTile(gr, ridx, x, y, true);
-    if (!sl && sidx) sl = this.slopeTile(gr, sidx, x, y);
+    if (!sl) {
+      if (this.data.footBoundary) {
+        /* THE GAME RULE (slopeHalfAt): the lower cell raises its corners to
+         * the half level, the higher cell cuts its own down to it. The parity
+         * path (footBoundary off, render3's rule set) keeps the any-higher
+         * bump below; the change is posted to maps2. */
+        const half = this.slopeHalfAt(g, L, gr, x, y, zl);
+        if (half.up) sl = this.slopeTile(gr, half.up, x, y);
+        else if (half.down) sl = this.slopeTile(gr, 15 & ~half.down, x, y, false, true);
+      } else if (sidx) sl = this.slopeTile(gr, sidx, x, y);
+    }
     if (sl) {
       out.slope = sl;
-      out.art = { kind: sl.ramp ? "ramp" : "plate", path: sl.file, w: TILE, h: sl.h };
+      out.art = sl.ramp ? { kind: "ramp", path: sl.file, w: TILE, h: sl.h } : { kind: "plate", path: sl.file, w: TILE, h: sl.h, rise: sl.rise };
     }
 
     const fade = this.fadeFor(view, g, L, gr, x, y, zl);

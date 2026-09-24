@@ -7475,7 +7475,7 @@ export class WorldScene extends Phaser.Scene {
         const zl = c.l ?? 0;
         const mask = t.slopeIndexAt(g, L, c.t, col, row, zl);
         const exact = t.slopeIndexAt(g, L, c.t, col, row, zl, true);
-        return { ground: c.t, level: zl, mask, exact, ramp: t.rampIndexFor(g, L, c.t, col, row, zl), north: [g(col, row - 1), L(col, row - 1)], east: [g(col + 1, row), L(col + 1, row)], pick: mask ? t.slopeTile(c.t, mask, col, row) : null };
+        return { ground: c.t, level: zl, mask, exact, half: t.slopeHalfAt(g, L, c.t, col, row, zl), ramp: t.rampIndexFor(g, L, c.t, col, row, zl), north: [g(col, row - 1), L(col, row - 1)], east: [g(col + 1, row), L(col + 1, row)], pick: mask ? t.slopeTile(c.t, mask, col, row) : null };
       },
       t3slopes: (ground: string) => {
         const t = this.t3?.tiles;
@@ -26197,8 +26197,10 @@ export class WorldScene extends Phaser.Scene {
     const sl = cell?.slope;
     if (!cell || !sl || cell.level !== level) return 0;
     // A ramp climbs the storey; a bump climbs its own terrace (SlopePick.rise,
-    // 4 px on every published set) — the feet follow the art either way.
-    return rampHeight(sl.index, x / CELL_WU - col, y / CELL_WU - row) * (sl.ramp ? this.geom.lh : sl.rise);
+    // 4 px on every published set) — the feet follow the art either way. On a
+    // CUT cell the plate sits `cut` px below its level and `index` names the
+    // corners that stay up, so the feet drop toward the lowered ones.
+    return rampHeight(sl.index, x / CELL_WU - col, y / CELL_WU - row) * (sl.ramp ? this.geom.lh : sl.rise) - (sl.cut ?? 0);
   }
 
   private stepElevation(av: Avatar, target: number, dt: number): void {

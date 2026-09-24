@@ -555,50 +555,63 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   with the art still unrequested, which is the pop-in the hold was built to
   stop. verify-tiles3 still walks to its scenery window instead of `lookAt`;
   that is belt and braces now, not a requirement.)
-- **A ONE-LEVEL RISE WEARS HIS PUBLISHED SLOPE; A CLIFF OF TWO KEEPS ITS FOOT**
-  (maintainer 2026-09-19: "Think how Zelda - a link to the past created
-  slopes Link could run upwards without needing to jump ... 1 level elevation
-  diff will turn into slopes (where possible) and 2 level elevation diff will
-  stay as is"; 2026-09-23: "use the slope tiles we have already generated and
-  make a 1 level jump look like 2 0.5 level jumps ... used as often as
-  possible for a 1 level increase so the 2 level jump stands out"). The
-  library: 225 slope sets (`tiles/slopes/<ground>/<set>`, a Wang set on
-  ELEVATION — bit set = that corner is RAISED — approved tile by tile in the
-  wiki's Slope tab), every one at PixelLab `elevation: 4`: a terraced half
-  step inside the 64x46 plate frame. THE FOOT YIELDS TO IT: a cell in front
-  of a higher neighbour composes the wall-foot transition (`footBoundary`,
-  his 2026-09-08 ask) INSTEAD of its plate, which is why no slope ever showed
-  at a stone-faced rise; now `wangSurface` asks `bumpInclineFor` — every
-  raised corner EXACTLY one level up of the same ground (the exact-one and
-  any-higher masks agree), never a plateau top, and an approved tile — and
-  composes no foot on such a cell, so the lower cell wears its slope: the
-  terrace in the art is the first half of the step and the shortened face
-  above it the second. A corner two or more up anywhere on the cell is a
-  cliff foot and keeps its transition — the contrast between "run up" and
-  "jump". A genuine two-ground quad still composes its boundary. The foot is
-  a GAME rule (off in the parity fixture), so render3 parity is untouched.
-  Measured on the_game with the foot on (`slopes.test.ts`, the real-world
-  arm): every one-level rise with a tile wears it, cliff feet keep theirs.
-  THE BODY FOLLOWS THE ART: `WorldScene.rampLiftPx` adds `rampHeight` (the
-  bilinear blend of the corner bits at the feet's position) times
-  `SlopePick.rise` — the set's own `elevation`, 4 px for every bump, the
-  storey for a ramp — for players, NPCs and monsters. Movement is unchanged:
-  `WALK_CLIMB` 1 already walks a one-level step and `JUMP_CLIMB` 2 jumps two.
-  THE RAMP PATH STAYS for a storey-height set (`isRampSet`, `RAMP_MIN_PX` 12,
-  `rampIndexFor`, kind `"ramp"` drawn raw in its taller frame, `rampTopOnly`
-  on a wall cell): the same PixelLab job at `elevation` 15 would drop in, but
-  it is not what he asked for on 2026-09-23 — the published sets ARE the
-  slope — and none is published (`slopes.test.ts` pins that). REJECTED: a
-  second-half slope on the higher cell (its art has no lowered corners) and
-  cropping the higher cell's face band to half a storey (a hole onto whatever
-  stood behind it).
-  Gates: `server/test/slopes.test.ts` (the height field, the classification,
-  the exact mask, the pick), `scripts/verify-slopes.mjs` (a synthetic
-  storey-height set routed into the headless client: the lower cell of a
-  pure one-level grass rise wears the ramp in its taller frame, the lift
-  takes intermediate values across it and the body reaches the higher cell
-  without a jump, a two-level rise stays a cliff; probes `__ml.t3cell`,
-  `__ml.t3mask`, `__ml.t3slopes`, `__ml.lift`).
+- **A ONE-LEVEL RISE WEARS HIS SLOPE ON BOTH SIDES; A CLIFF OF TWO KEEPS ITS
+  FOOT** (maintainer 2026-09-19: "Think how Zelda - a link to the past
+  created slopes Link could run upwards without needing to jump ... 1 level
+  elevation diff will turn into slopes (where possible) and 2 level elevation
+  diff will stay as is"; 2026-09-24: "almost always use slope tiles when the
+  cliff/elevation change is only 1 level ... it can be placed both to lower a
+  level 2 to 1.5 and push up a level 1 to 1.5 ... same as stairs - a stair
+  can cut into the ground or be extended outwards"). THE LIBRARY: 225 slope
+  sets (`tiles/slopes/<ground>/<set>`, a Wang set on ELEVATION — bit set =
+  that corner is on the plateau — approved tile by tile in the wiki's Slope
+  tab; 15 sets approved, one per ground, `light_soil` none: roads wear no
+  slope until he approves one). THE ART'S GEOMETRY, measured on every set:
+  the plateau tops the 64x46 frame on the library diamond's own rows and the
+  flat part is SUNK `elevation` rows under it (tile 15 tops at row 0, tile 0
+  at row 4). Every published set is `elevation` 4 (his web-UI "terrain
+  height 4px"); the storey is 15, so a half step is 8 — two of his 4s leave
+  a 7 px face between them, and a set generated at 8 closes it (the rule
+  reads `elevation`, nothing else changes). THE RULE (`slopeHalfAt`,
+  decided PER CORNER so both sides agree): a cell is ELIGIBLE
+  (`slopeEligible`) when its ground has an approved set, its whole 8-ring is
+  that ground and no corner is raised only by cells two or more up (the
+  exact-one and any-higher masks agree). An eligible cell RAISES every
+  corner a cell exactly one up touches (`up`, the bump's own mask): its tile
+  hangs `rise` rows UP (`slopeLift`, tiles3draw), so the flat part lands on
+  the level and the plateau meets the higher cell. An eligible cell CUTS a
+  corner (`down`) when every cell touching it is eligible, the corner holds
+  exactly this level and the one below, and every cell at this level there
+  raises nothing: its tile (index = the corners that stay) draws AT the
+  level, so the lowered corners sink `rise` over the top of the x-over-y
+  wall, and the wall shows for what is left of the storey. A cell that
+  raises anything cuts nothing (one tile holds two heights, not three; a
+  storey-height set, `isRampSet`, is the incline for a climb). THE FOOT
+  YIELDS to either side (`slopeWorn` in `wangSurface`); a cliff of two keeps
+  it — the contrast between "run up" and "jump". A genuine two-ground quad
+  still composes its boundary. TOP-ONLY: `slopeTopOnly` is the library
+  diamond extended `rise` rows DOWN (the sunk flat part and the lip's face
+  lie under the silhouette; `topFaceOnly` cut them off at every level above
+  0, and 834b119e2b drew the raise AT the level, which SANK the cell 4 px —
+  the slope nobody could see). THE BODY FOLLOWS THE ART:
+  `WorldScene.rampLiftPx` = `rise * rampHeight(index) - cut` (the bilinear
+  blend of the corner bits at the feet's position; the storey for a ramp).
+  Movement is unchanged: `WALK_CLIMB` 1 walks a one-level step. The foot and
+  the half rule are GAME rules (`footBoundary`; off in the parity fixture,
+  which keeps the any-higher bump), so render3 parity is untouched; the rule
+  is posted to maps2. Measured on the_game (`slopes.test.ts`): 403 one-level
+  rises wear a raise, 209 cells cut, every cut corner has a raise under it
+  and no two plates at one level disagree on a corner. THE RAMP PATH STAYS
+  for a storey-height set (`RAMP_MIN_PX` 12, `rampIndexFor`, kind `"ramp"`
+  drawn raw in its taller frame, `rampTopOnly`); none is published.
+  REJECTED: doubling the 4 px art in the renderer (the plateau's boundary is
+  uneven and unknowable per pixel; the seam would sit exactly where the eye
+  looks) and cropping the higher cell's face band (a hole onto whatever stood
+  behind it). Gates: `server/test/slopes.test.ts` (the geometry of the sets,
+  the masks, the pick, both sides on the_game, corner agreement, the mask),
+  `scripts/verify-slopes.mjs` (the synthetic storey-height ramp through the
+  headless client; probes `__ml.t3cell`, `__ml.t3mask` with `half`,
+  `__ml.t3slopes`, `__ml.lift`).
 - **THE RESOLVER AND render3 HOLD ONE RULE SET, AND THE GAME'S VERDICTS ARE
   THE RULES** (2026-09-09; `maps2/pipeline/render3.py` was brought to the
   game, not the game to it, because every rule below is a maintainer verdict
