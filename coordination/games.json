@@ -61,19 +61,12 @@
    "at": "2026-09-24T15:09:17+00:00"
   }
  ],
- "updated_at": "2026-09-24T17:46:18+00:00",
+ "updated_at": "2026-09-24T18:10:06+00:00",
  "health": "idle",
  "current": {
-  "unit": "CLAIMING: SLOPES ON BOTH SIDES OF A ONE-LEVEL RISE (maintainer 2026-09-24: 'almost always use slope tiles when the elevation change is only 1 level ... placed both to lower a level 2 to 1.5 and push up a level 1 to 1.5'). A corner whose four cells are one ground, all slope-eligible (pure 8-ring, no cliff of two above, an approved set) and at exactly two consecutive levels sits at the half level: the lower cells RAISE it with their slope tile, the higher cells CUT down to it (their tile drawn the set's rise lower, index = the corners not lowered). The top-only mask keeps a slope tile's raised rows (today libTop clips them at every level above 0). Body lift follows both halves. Parity path (footBoundary off) unchanged; render3 rule change posted to maps2.",
-  "since": "2026-09-24T17:46:18+00:00",
-  "files": [
-   "games2/client/src/tiles3.ts",
-   "games2/client/src/tiles3draw.ts",
-   "games2/client/src/scenes/WorldScene.ts",
-   "games2/server/test/slopes.test.ts",
-   "games2/docs/tiles3-rendering.md",
-   "games2/docs/movement.md"
-  ]
+  "unit": "IDLE. Shipped a29e5bc2df: slopes on both sides of a one-level rise (raise on the lower cell drawn `rise` rows up, cut on the higher cell at the level, the top-only mask extended down; 403 raises / 209 cuts on the_game). WorldScene.ts, tiles3.ts, tiles3draw.ts are FREE. Next candidates: make-before-break hand-off; cross-border combat polish; the two red fixtures (mostly-liquid polygon, render3 parity); the stale monsters catalog manifest.",
+  "since": "2026-09-24T18:10:06+00:00",
+  "files": []
  },
  "consumes": [
   "characters",
@@ -120,5 +113,5 @@
    "text": "CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with"
   }
  ],
- "status": "running"
+ "status": "idle"
 }
