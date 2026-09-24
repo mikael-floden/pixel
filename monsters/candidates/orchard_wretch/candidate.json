@@ -1,0 +1,143 @@
+{
+  "id": "orchard_wretch",
+  "name": "Applewretch",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The orchard was left to rot, and it got up.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Bent creature made of gnarled apple wood with rotting red apples for a head and shoulders, wasps around it, twig fingers, sweet-sick stains.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "orchard_wretch/rotations/south.webp",
+    "south-east": "orchard_wretch/rotations/south-east.webp",
+    "east": "orchard_wretch/rotations/east.webp",
+    "north-east": "orchard_wretch/rotations/north-east.webp",
+    "north": "orchard_wretch/rotations/north.webp",
+    "north-west": "orchard_wretch/rotations/north-west.webp",
+    "west": "orchard_wretch/rotations/west.webp",
+    "south-west": "orchard_wretch/rotations/south-west.webp"
+  },
+  "sheet": "orchard_wretch/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e9d8b20a-dcfc-444a-86a1-5616332cec21",
+  "seed": 1765990735,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:13:19+00:00",
+  "elapsed_s": 7.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.813,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.814,
+        "bbox": [
+          9,
+          2,
+          79,
+          85
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.839,
+        "bbox": [
+          14,
+          1,
+          74,
+          87
+        ],
+        "fill": 0.666,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.83,
+        "bbox": [
+          23,
+          1,
+          64,
+          87
+        ],
+        "fill": 0.455,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.824,
+        "bbox": [
+          17,
+          1,
+          68,
+          86
+        ],
+        "fill": 0.56,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.819,
+        "bbox": [
+          8,
+          2,
+          80,
+          85
+        ],
+        "fill": 0.772,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.813,
+        "bbox": [
+          19,
+          2,
+          71,
+          86
+        ],
+        "fill": 0.564,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.824,
+        "bbox": [
+          23,
+          4,
+          64,
+          87
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.84,
+        "bbox": [
+          15,
+          3,
+          75,
+          87
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      }
+    }
+  }
+}
