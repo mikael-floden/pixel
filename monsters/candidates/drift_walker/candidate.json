@@ -1,0 +1,141 @@
+{
+  "id": "drift_walker",
+  "name": "Driftwalk",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The blizzard has a shape if you stand very still.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Tall figure of blown snow with no clear face, a long trailing white cloak of drift, arms of wind-packed snow.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "drift_walker/rotations/south.webp",
+    "south-east": "drift_walker/rotations/south-east.webp",
+    "east": "drift_walker/rotations/east.webp",
+    "north-east": "drift_walker/rotations/north-east.webp",
+    "north": "drift_walker/rotations/north.webp",
+    "north-west": "drift_walker/rotations/north-west.webp",
+    "west": "drift_walker/rotations/west.webp",
+    "south-west": "drift_walker/rotations/south-west.webp"
+  },
+  "sheet": "drift_walker/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "25754056-4ee4-4ccf-8b87-589bcde86176",
+  "seed": 1803044978,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:59:16+00:00",
+  "elapsed_s": 283.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.595,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.602,
+        "bbox": [
+          58,
+          16,
+          196,
+          208
+        ],
+        "fill": 0.528,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.724,
+        "bbox": [
+          47,
+          16,
+          185,
+          213
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.699,
+        "bbox": [
+          43,
+          15,
+          148,
+          211
+        ],
+        "fill": 0.41,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.636,
+        "bbox": [
+          31,
+          13,
+          159,
+          209
+        ],
+        "fill": 0.5,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.595,
+        "bbox": [
+          27,
+          13,
+          174,
+          206
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.636,
+        "bbox": [
+          50,
+          13,
+          188,
+          208
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.673,
+        "bbox": [
+          75,
+          15,
+          178,
+          211
+        ],
+        "fill": 0.402,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.711,
+        "bbox": [
+          61,
+          16,
+          191,
+          214
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      }
+    }
+  }
+}
