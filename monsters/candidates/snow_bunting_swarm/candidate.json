@@ -1,0 +1,141 @@
+{
+  "id": "snow_bunting_swarm",
+  "name": "Buntingcloud",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "A flurry that flies against the wind.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Whirling cloud of small white and brown snow buntings, a loose ball shape with many black eyes.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snow_bunting_swarm/rotations/south.webp",
+    "south-east": "snow_bunting_swarm/rotations/south-east.webp",
+    "east": "snow_bunting_swarm/rotations/east.webp",
+    "north-east": "snow_bunting_swarm/rotations/north-east.webp",
+    "north": "snow_bunting_swarm/rotations/north.webp",
+    "north-west": "snow_bunting_swarm/rotations/north-west.webp",
+    "west": "snow_bunting_swarm/rotations/west.webp",
+    "south-west": "snow_bunting_swarm/rotations/south-west.webp"
+  },
+  "sheet": "snow_bunting_swarm/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "bd03d393-27a3-44df-aa8c-876d79a9968f",
+  "seed": 888285040,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:31:03+00:00",
+  "elapsed_s": 1898.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.681,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.689,
+        "bbox": [
+          7,
+          6,
+          37,
+          35
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.708,
+        "bbox": [
+          3,
+          6,
+          32,
+          36
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.681,
+        "bbox": [
+          3,
+          5,
+          33,
+          35
+        ],
+        "fill": 0.562,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.735,
+        "bbox": [
+          7,
+          4,
+          32,
+          34
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.73,
+        "bbox": [
+          8,
+          4,
+          32,
+          34
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.741,
+        "bbox": [
+          8,
+          4,
+          32,
+          34
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.698,
+        "bbox": [
+          7,
+          5,
+          37,
+          36
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.708,
+        "bbox": [
+          8,
+          6,
+          37,
+          36
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      }
+    }
+  }
+}
