@@ -1,0 +1,141 @@
+{
+  "id": "snow_bear_cub",
+  "name": "Snowcub",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Its mother is near. Its mother is always near.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Round white bear cub with frost tips on its fur, black nose, blue eyes, sitting up with paws raised.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snow_bear_cub/rotations/south.webp",
+    "south-east": "snow_bear_cub/rotations/south-east.webp",
+    "east": "snow_bear_cub/rotations/east.webp",
+    "north-east": "snow_bear_cub/rotations/north-east.webp",
+    "north": "snow_bear_cub/rotations/north.webp",
+    "north-west": "snow_bear_cub/rotations/north-west.webp",
+    "west": "snow_bear_cub/rotations/west.webp",
+    "south-west": "snow_bear_cub/rotations/south-west.webp"
+  },
+  "sheet": "snow_bear_cub/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7947db9e-823c-4701-ad90-2b834a0c6f1d",
+  "seed": 113605632,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:44:14+00:00",
+  "elapsed_s": 175.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.67,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.729,
+        "bbox": [
+          3,
+          2,
+          37,
+          37
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.755,
+        "bbox": [
+          9,
+          2,
+          35,
+          37
+        ],
+        "fill": 0.569,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.73,
+        "bbox": [
+          9,
+          2,
+          33,
+          38
+        ],
+        "fill": 0.54,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.675,
+        "bbox": [
+          9,
+          2,
+          34,
+          37
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.689,
+        "bbox": [
+          5,
+          2,
+          35,
+          37
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.67,
+        "bbox": [
+          6,
+          2,
+          31,
+          37
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.728,
+        "bbox": [
+          7,
+          2,
+          31,
+          38
+        ],
+        "fill": 0.54,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.745,
+        "bbox": [
+          5,
+          2,
+          31,
+          37
+        ],
+        "fill": 0.569,
+        "touches_edge": false
+      }
+    }
+  }
+}
