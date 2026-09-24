@@ -1,0 +1,141 @@
+{
+  "id": "crane_fly_hag",
+  "name": "Cranehag",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "She taps on windows in autumn, all six hands at once.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Impossibly thin old woman with six long thin cranefly legs, dragonfly wings on her back, a small human face, grey rags.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "crane_fly_hag/rotations/south.webp",
+    "south-east": "crane_fly_hag/rotations/south-east.webp",
+    "east": "crane_fly_hag/rotations/east.webp",
+    "north-east": "crane_fly_hag/rotations/north-east.webp",
+    "north": "crane_fly_hag/rotations/north.webp",
+    "north-west": "crane_fly_hag/rotations/north-west.webp",
+    "west": "crane_fly_hag/rotations/west.webp",
+    "south-west": "crane_fly_hag/rotations/south-west.webp"
+  },
+  "sheet": "crane_fly_hag/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "156c9392-1ef3-4fd2-8ac8-a02bdd23f656",
+  "seed": 200746056,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:20:36+00:00",
+  "elapsed_s": 1985.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.798,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.798,
+        "bbox": [
+          3,
+          6,
+          85,
+          81
+        ],
+        "fill": 0.794,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.847,
+        "bbox": [
+          4,
+          5,
+          79,
+          85
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.83,
+        "bbox": [
+          15,
+          3,
+          62,
+          85
+        ],
+        "fill": 0.498,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.836,
+        "bbox": [
+          9,
+          3,
+          79,
+          81
+        ],
+        "fill": 0.705,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.826,
+        "bbox": [
+          2,
+          6,
+          86,
+          76
+        ],
+        "fill": 0.759,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.835,
+        "bbox": [
+          11,
+          3,
+          79,
+          81
+        ],
+        "fill": 0.685,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.829,
+        "bbox": [
+          26,
+          3,
+          72,
+          85
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.841,
+        "bbox": [
+          11,
+          5,
+          84,
+          85
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      }
+    }
+  }
+}
