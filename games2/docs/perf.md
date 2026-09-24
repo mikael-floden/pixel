@@ -480,6 +480,20 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   "ground: repaint only near". ALSO MEASURED: plates on the worker (410d19f944)
   add ~30% repaint runs (the drain repaints the cells whose plate dropped);
   near-only makes most of those park.
+- **ONE GROUND JOB A FRAME** (2026-09-24; his 21:13 run: 64 of the 192 worst
+  recorded frames stacked a landing cell repaint, median 25 ms, AND a band
+  slice, median 19.6 ms — median frame 122 ms, against 96 for the other worst
+  frames). The frame's paint check (`groundBefore`) was read AFTER the landing
+  repaint, so a landing never counted as having painted and the band slice ran
+  behind it; the drain's group (`t3drainTick`) ran with no check at all. Now a
+  landing that painted stands the band slice, the drain group and the bake
+  down, and when a slice and a landing both wait they take turns
+  (`groundTurn`). Scheduling only — the same work and pixels, spread over
+  frames. MEASURED headless (`probe-repaint.mjs --onejob`, his places):
+  frames with ground work that stacked 2+ jobs 45 of 69 (65%) → 0 of 26, and
+  every queue (slices, landed cells, drain) empty 4 s after each walk.
+  `__ml.groundJobs()`; `?groundonejob=0` / Settings→Dev "ground: one job a
+  frame".
 - **THE FPS METER IS A DEV BUTTON** (maintainer 2026-09-24): Settings/dev
   "fps meter" mounts `fpsbadge.ts`'s corner readout (fps, worst frame,
   hitches over 5 s) and remembers per device (localStorage `ml-fps`, the
