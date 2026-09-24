@@ -1,0 +1,141 @@
+{
+  "id": "bog_skull_stack",
+  "name": "Skullstack",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Everything the bog ever kept, stood up in a row.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Column of mud-brown animal skulls stacked and fused, a rib cage for arms, walking on two thigh-bone legs.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_skull_stack/rotations/south.webp",
+    "south-east": "bog_skull_stack/rotations/south-east.webp",
+    "east": "bog_skull_stack/rotations/east.webp",
+    "north-east": "bog_skull_stack/rotations/north-east.webp",
+    "north": "bog_skull_stack/rotations/north.webp",
+    "north-west": "bog_skull_stack/rotations/north-west.webp",
+    "west": "bog_skull_stack/rotations/west.webp",
+    "south-west": "bog_skull_stack/rotations/south-west.webp"
+  },
+  "sheet": "bog_skull_stack/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f4f055f4-5c29-490e-b300-715018c4edc9",
+  "seed": 457919518,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:26:12+00:00",
+  "elapsed_s": 741.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.829,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.829,
+        "bbox": [
+          9,
+          3,
+          80,
+          85
+        ],
+        "fill": 0.752,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.874,
+        "bbox": [
+          20,
+          4,
+          73,
+          86
+        ],
+        "fill": 0.561,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.847,
+        "bbox": [
+          29,
+          3,
+          59,
+          84
+        ],
+        "fill": 0.314,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.855,
+        "bbox": [
+          19,
+          2,
+          72,
+          82
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.829,
+        "bbox": [
+          9,
+          3,
+          78,
+          82
+        ],
+        "fill": 0.704,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.837,
+        "bbox": [
+          15,
+          2,
+          69,
+          82
+        ],
+        "fill": 0.558,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.838,
+        "bbox": [
+          30,
+          3,
+          59,
+          82
+        ],
+        "fill": 0.296,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.881,
+        "bbox": [
+          15,
+          3,
+          71,
+          82
+        ],
+        "fill": 0.571,
+        "touches_edge": false
+      }
+    }
+  }
+}
