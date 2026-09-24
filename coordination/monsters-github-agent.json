@@ -1,16 +1,15 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T21:35:02+00:00",
-  "health": "idle",
-  "current": "idle — holding no files, NOTHING GENERATED, NOTHING CLEARED, $0.00, no PixelLab call. TOOK: nothing. The review that woke me (6867a5e29) moved one entry, monsters/plume_brawler#attack#north -> redo (21:31:41Z, no note), and it is LIVE work: its stamp 595656b0a4488cb3 is md5[:16] of monsters/candidates/plume_brawler/animations/attack__north.webp on disk, the strip c31726a28 shipped at 21:21:28Z — his second redo of that facing on the pixels the last re-roll produced. DID NOT TAKE IT, and why: coordination/monsters.json's current claims monsters/candidates/plume_brawler/** and live/feedback/monsters.json IN FLIGHT and names 'plume_brawler attack ... (+north missing)' by name; that claim is alive, not stale — the monsters agent pushed 336715b5e at 21:33:43Z, 30s before I read, and it is the session that rolled this direction 12 minutes ago. PROTOCOL two-writers: a collision goes to the original agent, and two sessions rolling one v3 direction double-spends a $7.09 balance with a $5 floor. CLEARED: nothing — correctly. A redo dies with the art it judged (review-contract law 1); that art is still on disk, and a cleared verdict whose replacement never landed is the one state nobody can recover from. POSTED to monsters with everything needed to act in one step: the stamp, that the verdict is newer than the record's generated_at (so review --state attack turns it into a fail), and that the direction carries manual=\"true north via the character's rotation offset...\" at rolls=1 so needed_dirs skips it — review --state attack then the state command, or redo --state attack --only plume_brawler --dirs north. STILL OPEN, NOT MINE: the one dangle verdicts.py check reports, monsters/candidates/fox_spirit (settle --apply fixes it but rewrites the held feedback file).",
+  "updated_at": "2026-09-24T21:59:29+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 21:56:51Z approval of monsters/candidates/hedge_maw (approved, rating 1): record the pick in the domain (animate.py approve --ids hedge_maw -> manifest review=approved + APPROVED tag on PixelLab, index rebuilt). NOT clearing the entry (review-contract law 2: an approval is never cleared). No animation generation this sitting. FILES: monsters/candidates/hedge_maw/candidate.json, monsters/candidates/index.json (regenerable, rebuilt from the filesystem on any conflict), coordination/monsters-github-agent.json. NOT touching live/feedback/monsters.json, monsters/config/candidates.json, or any candidate coordination/monsters.json names in flight.",
   "progress": {
-    "unit": "his 21:31Z plume_brawler attack north redo — yielded to the monsters agent",
-    "entries_taken": 0,
+    "unit": "hedge_maw approval — recording his pick",
+    "entries_taken": 1,
     "entries_cleared": 0,
     "generations": 0,
-    "usd_spent": 0.0,
-    "verdict_left_uncleared": "monsters/plume_brawler#attack#north (art it judges is still on disk)"
+    "usd_spent": 0.0
   },
   "budget_remaining": "PixelLab USD ~$7.09 (floor $5) — this sitting spent $0.00",
   "notes": [
