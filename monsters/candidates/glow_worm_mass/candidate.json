@@ -1,0 +1,140 @@
+{
+  "id": "glow_worm_mass",
+  "name": "Wormglow",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Look up in the cave and the stars are looking down.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Hanging mass of glowing blue-green worm threads gathered into a rough body shape, no face, drifting.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "glow_worm_mass/rotations/south.webp",
+    "south-east": "glow_worm_mass/rotations/south-east.webp",
+    "east": "glow_worm_mass/rotations/east.webp",
+    "north-east": "glow_worm_mass/rotations/north-east.webp",
+    "north": "glow_worm_mass/rotations/north.webp",
+    "north-west": "glow_worm_mass/rotations/north-west.webp",
+    "west": "glow_worm_mass/rotations/west.webp",
+    "south-west": "glow_worm_mass/rotations/south-west.webp"
+  },
+  "sheet": "glow_worm_mass/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ddc3e05b-1eff-42f6-a56a-e301331d915d",
+  "seed": 470547210,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:46:43+00:00",
+  "elapsed_s": 307.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.821,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.839,
+        "bbox": [
+          15,
+          6,
+          73,
+          81
+        ],
+        "fill": 0.562,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.883,
+        "bbox": [
+          17,
+          6,
+          69,
+          83
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.864,
+        "bbox": [
+          19,
+          5,
+          58,
+          83
+        ],
+        "fill": 0.393,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.842,
+        "bbox": [
+          18,
+          6,
+          67,
+          81
+        ],
+        "fill": 0.475,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.821,
+        "bbox": [
+          16,
+          6,
+          71,
+          81
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.835,
+        "bbox": [
+          22,
+          5,
+          70,
+          81
+        ],
+        "fill": 0.471,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.867,
+        "bbox": [
+          31,
+          5,
+          70,
+          83
+        ],
+        "fill": 0.393,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.872,
+        "bbox": [
+          19,
+          5,
+          72,
+          83
+        ],
+        "fill": 0.534,
+        "touches_edge": false
+      }
+    }
+  }
+}
