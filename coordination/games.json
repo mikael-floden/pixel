@@ -540,7 +540,7 @@
   ],
   "updated_at": "2026-09-23T20:44:02+00:00",
   "health": "idle",
-  "current": "IDLE. Shipped 9cbb855010 — a monster crosses a line with its walk (trip re-planned to the same goal, pause kept) and its fight (hunt kept for a player OR ghost victim with a 400 ms grace, cooldowns carried as remaining ms; a hunt called off walks home, never snaps). monsterxfer.test.ts. rolloutsave.test.ts hardened (measured walk). Released every file. Pre-existing reds unchanged: spawns3, tiles3 parity, cross-border combat fixture. Stale tracked catalog games2/client/public/monsters.json still noted. Next candidates: carry the rest of the body in HotState (jump, mark, swing timer, death, fallPend); the respawn/teleport-into-another-zone hop with the int16 clamp; the client swap polish on the fast lane; the tiles3 parity fixture.",
+  "current": "CLAIMING: THE WHOLE BODY CROSSES THE LINE. HotState carries position/hp/inv but not the jump window and cooldown, the swing timer, the engaged monster, a death mid-join (undone at 1 hp) or a pending fall — the lost ledge climb and the 150-800 ms without swings after a hop. Fix: every clock travels as remaining ms and is restored on adoption; a death crosses as a death; a hop nobody completed in HANDOFF_TIMEOUT_MS is re-sent under the SAME key instead of re-keyed under the client's in-flight join; onLeave's post-grace removal is guarded by pidSid (a newer session of the same body, adopted by a hand-off while the old seat waited, is never deleted by the old seat's expiry). Files: games2/server/src/rooms/WorldRoom.ts, games2/server/test/bodycarry.test.ts (new), games2/docs/backend.md, games2/spec/ZONES.md. since 2026-09-24T14:11:26+00:00",
   "consumes": [
     "characters",
     "tiles",
