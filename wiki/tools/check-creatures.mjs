@@ -266,6 +266,46 @@ ok(topIds.length > 0 && topIds.slice(0, Math.min(topIds.length, expOwed.length))
 const topOwed = topIds.map((id) => owedBy(roster.find((m) => m.id === id) ?? {}));
 ok(topOwed.every((n, i) => i === 0 || topOwed[i - 1] >= n),
   `and the fullest inbox first (${topOwed.join(" ≥ ")})`);
+/* AND ‹ › WALKS THE BATCH, NOT THE PAGE (maintainer 2026-09-24: "The sorting
+ * and filter you added is not kept when klicking on a monster and press
+ * 'next'"). The sort named 4 creatures and the pager walked all 57, so the
+ * fifth tap left the queue — the same dead end he named on tiles. The count
+ * must read "n / owed", the walk must stay inside the batch all the way round,
+ * and a verdict entered mid-walk must not reorder it under him. */
+await pa.click(".showcase-card");
+await pa.waitForTimeout(2400);
+const step = () => pa.evaluate(() => ({
+  id: location.hash.split("/").pop(),
+  count: document.querySelector(".detail-count")?.textContent ?? "",
+}));
+const walk = [await step()];
+for (let i = 0; i < Math.min(expOwed.length, 6); i++) {
+  await pa.click('.detail-nav a[title^="Next"]');
+  await pa.waitForTimeout(1400);
+  walk.push(await step());
+}
+ok(walk.every((w) => w.count.endsWith(`/ ${expOwed.length}`)),
+  `‹ › counts the batch, not the page (${walk.map((w) => w.count).join(", ")})`);
+ok(walk.every((w) => owedIds.has(w.id)),
+  `and never leaves it, even wrapping past the end (${walk.map((w) => w.id).join(" → ")})`);
+// The wrap is only observable when the whole batch fits in the steps taken —
+// today's roster owes 66, so this arms itself on the day he has worked it down.
+const wrapped = walk.length > expOwed.length;
+ok(!wrapped || walk[expOwed.length].id === walk[0].id,
+  wrapped ? `and past the last one it wraps to the first (${walk[0].id})`
+          : `(batch of ${expOwed.length} is longer than the ${walk.length - 1} steps walked — wrap unobservable)`);
+// A verdict entered mid-walk changes what this creature owes. The queue was
+// planned on the overview and must not re-plan under his thumb.
+const before = await step();
+await pa.evaluate(() => [...document.querySelectorAll("button")].find((x) => /^✓\s*approve$/i.test(x.textContent.trim()))?.click());
+await pa.waitForTimeout(900);
+await pa.click('.detail-nav a[title^="Next"]');
+await pa.waitForTimeout(1400);
+const after = await step();
+ok(after.count.endsWith(`/ ${expOwed.length}`) && owedIds.has(after.id),
+  `and a verdict entered mid-walk does not move the queue (${before.count} → ${after.count})`);
+await pa.goto(`${W}#/monsters`, { waitUntil: "load" });
+await pa.waitForTimeout(1600);
 await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => /by name/.test(x.textContent))?.click());
 await pa.waitForTimeout(1200);
 await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /no shadow/.test(x.textContent))?.click());

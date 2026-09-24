@@ -4703,9 +4703,17 @@ const shadowFilter = () => {
 };
 /** The sort the overview is showing, as a comparator — so the page and the
  *  ‹ › pager cannot disagree about what "next" means. */
-function monsterSort(list) {
+/** The sort chip that is lit, with the admin guard applied once. A sort only
+ *  the Game Master has cannot survive a logout: the key persists in
+ *  localStorage, and a player opening the page would otherwise get an order
+ *  computed from verdicts they cannot see. */
+function monsterSortMode() {
   let sort = "name";
   try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
+  return sort === "review" && !state.admin ? "name" : sort;
+}
+function monsterSort(list) {
+  const sort = monsterSortMode();
   const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
   const byName = (a, b) => a.name.localeCompare(b.name);
   const lvl = (m) => Number(stat.get(m.id)?.level ?? 0);
@@ -4726,19 +4734,46 @@ function monsterSort(list) {
     // of creatures rather than a scoreboard.
     review: (a, b) => owed(b) - owed(a) || byName(a, b),
   };
-  // A sort only the Game Master has cannot survive a logout: the key persists
-  // in localStorage, and a player opening the page would otherwise get an
-  // order computed from verdicts they cannot see.
-  if (sort === "review" && !state.admin) sort = "name";
   return [...list].sort(CMP[sort] ?? byName);
 }
+/* THE REVIEW QUEUE IS A QUEUE, NOT AN ORDER (maintainer 2026-09-24: "The
+ * sorting and filter you added is not kept when klicking on a monster and
+ * press 'next'"). Sorting by "review needed" put the 4 creatures waiting on
+ * him at the top of the overview — and then ‹ › walked all 57, so the fifth
+ * tap dropped him into the settled ones in alphabetical order and the sort
+ * looked lost. Every other queue in the wiki already promises the opposite
+ * ("Open one and ‹ › walks only these"), and the dead end he named on tiles
+ * was this same shape: "I use your code to filter on NOT reviewed. I then
+ * click on that tile set, but can't navigate further to find the review."
+ *
+ * So with that sort chosen, ‹ › walks ONLY what it named, and the count reads
+ * "2 / 4" — how much of the batch is left, which is the number he is actually
+ * working against.
+ *
+ * FROZEN WHEN HE ENTERS IT, because the queue is computed from the very
+ * verdicts he is about to enter: approving a direction changes what a creature
+ * owes, which would reorder the list under his thumb and evict the page he is
+ * standing on mid-walk. The batch is decided on the overview and stays put
+ * until he goes back there, which is where it is re-planned. */
+let reviewQueue = { key: "", ids: [] };
+const reviewQueueKey = () => `${shadowFilter()}\u0000${state.query ?? ""}`;
 /** The creatures the current filter keeps, in the order the overview shows
  *  them — the list ‹ › walks on a creature page. */
 function monsterNav() {
   const mode = shadowFilter();
   const all = creatures();
   const kept = mode === "all" ? all : all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
-  return monsterSort(kept.length ? kept : all);   // never strand him on an empty pager
+  const base = kept.length ? kept : all;          // never strand him on an empty pager
+  if (monsterSortMode() === "review") {
+    // The batch the overview planned, minus anything the roster has since
+    // dropped; a deep link that never passed the overview plans its own.
+    const byId = new Map(base.map((m) => [m.id, m]));
+    const frozen = reviewQueue.key === reviewQueueKey()
+      ? reviewQueue.ids.map((id) => byId.get(id)).filter(Boolean) : [];
+    const q = frozen.length ? frozen : monsterSort(base.filter(needsReview));
+    if (q.length) return q;                       // nothing owed: fall through to the full list
+  }
+  return monsterSort(base);
 }
 /* ---- THE CREATURES OVERVIEW IS A SHOWCASE ----
  * Maintainer 2026-08-18, round 1: "some big monsters are displayed with 0.5x
@@ -5054,9 +5089,7 @@ function viewMonsters() {
   const list = creatures().filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
   // Default is BY NAME. The underlying order is the folder id, which reads as
   // random to anyone looking at display names (Emberwing, Nightmule, Ashfiend…).
-  let sort = "name";
-  try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
-  if (sort === "review" && !state.admin) sort = "name";
+  const sort = monsterSortMode();
   const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
   const mode = shadowFilter();
   const shown = list.filter((m) => MONSTER_SHADOWS[mode].hit(m));
@@ -5065,6 +5098,10 @@ function viewMonsters() {
   const nPending = list.filter((m) => m.pending).length;
   const nNone = list.filter((m) => !shadowRaw(m)).length;
   const nOwed = state.admin ? shown.filter(needsReview).length : 0;
+  // THE OVERVIEW IS WHERE THE BATCH IS PLANNED, and the only place it is
+  // re-planned: every arrival here re-reads his verdicts, so finishing four
+  // and coming back gives him the next four rather than yesterday's list.
+  if (sort === "review") reviewQueue = { key: reviewQueueKey(), ids: sorted.filter(needsReview).map((m) => m.id) };
   return h("div", {},
     sectionHead("monsters"),
     creatureTabs("monsters"),
@@ -5095,9 +5132,14 @@ function viewMonsters() {
         .filter(([id, f]) => id === "all" || list.some((m) => f.hit(m)))
         .map(([id, f]) => [id, `${f.label} ${id === "all" ? list.length : list.filter((m) => f.hit(m)).length}`, f.title]),
       mode, () => route()) : null,
+    state.admin && sort === "review" && nOwed ? h("p", { class: "muted" },
+      `${nOwed} still owe${nOwed === 1 ? "s" : ""} a verdict on an animation direction. Open one and ‹ › walks only these.`) : null,
     state.admin && mode !== "all" ? h("p", { class: "muted" },
       shown.length
-        ? `${shown.length} of ${list.length} creature${list.length === 1 ? "" : "s"}. Open one and ‹ › walks only these.`
+        // ONE LINE OWNS THE PAGER. With the review queue on, ‹ › walks the
+        // batch, not the filter — two sentences each claiming the pager is how
+        // a page stops being believed.
+        ? `${shown.length} of ${list.length} creature${list.length === 1 ? "" : "s"}.${sort === "review" && nOwed ? "" : " Open one and ‹ › walks only these."}`
         : mode === "none"
           ? "Every creature has a tuned shadow. Nothing left to do."
           : "No creature has a tuned shadow yet.") : null,
