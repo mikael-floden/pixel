@@ -1,0 +1,141 @@
+{
+  "id": "cinder_hare",
+  "name": "Cinderhare",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It hops over the hot rock as if it were snow.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Small hare of black cinder with ember-orange ears and eyes, leaving tiny sparks as it hops.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cinder_hare/rotations/south.webp",
+    "south-east": "cinder_hare/rotations/south-east.webp",
+    "east": "cinder_hare/rotations/east.webp",
+    "north-east": "cinder_hare/rotations/north-east.webp",
+    "north": "cinder_hare/rotations/north.webp",
+    "north-west": "cinder_hare/rotations/north-west.webp",
+    "west": "cinder_hare/rotations/west.webp",
+    "south-west": "cinder_hare/rotations/south-west.webp"
+  },
+  "sheet": "cinder_hare/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e6da556c-c6d2-414b-8c7f-25dd1705a3eb",
+  "seed": 432949453,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:29:16+00:00",
+  "elapsed_s": 184.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.558,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.594,
+        "bbox": [
+          6,
+          2,
+          29,
+          37
+        ],
+        "fill": 0.503,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.596,
+        "bbox": [
+          3,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.672,
+        "bbox": [
+          3,
+          2,
+          35,
+          37
+        ],
+        "fill": 0.7,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.717,
+        "bbox": [
+          5,
+          2,
+          37,
+          36
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.732,
+        "bbox": [
+          10,
+          3,
+          31,
+          38
+        ],
+        "fill": 0.459,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.639,
+        "bbox": [
+          4,
+          3,
+          37,
+          38
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.604,
+        "bbox": [
+          4,
+          2,
+          37,
+          38
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.558,
+        "bbox": [
+          3,
+          2,
+          33,
+          36
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      }
+    }
+  }
+}
