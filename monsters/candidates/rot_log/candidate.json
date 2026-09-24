@@ -1,0 +1,143 @@
+{
+  "id": "rot_log",
+  "name": "Rotlog",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It was a bridge. It fell in. It has not stopped falling.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fallen rotten log with a mouth of splintered bark, orange fungus shelves for eyes, wet black insides, moving on root-stubs.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rot_log/rotations/south.webp",
+    "south-east": "rot_log/rotations/south-east.webp",
+    "east": "rot_log/rotations/east.webp",
+    "north-east": "rot_log/rotations/north-east.webp",
+    "north": "rot_log/rotations/north.webp",
+    "north-west": "rot_log/rotations/north-west.webp",
+    "west": "rot_log/rotations/west.webp",
+    "south-west": "rot_log/rotations/south-west.webp"
+  },
+  "sheet": "rot_log/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0829308c-f39c-46cc-b6e5-2e3cc4d2a845",
+  "seed": 747187097,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:13:16+00:00",
+  "elapsed_s": 6.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.771,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.798,
+        "bbox": [
+          7,
+          5,
+          82,
+          83
+        ],
+        "fill": 0.755,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.837,
+        "bbox": [
+          9,
+          6,
+          77,
+          84
+        ],
+        "fill": 0.685,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.841,
+        "bbox": [
+          21,
+          5,
+          69,
+          83
+        ],
+        "fill": 0.483,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.777,
+        "bbox": [
+          12,
+          5,
+          71,
+          82
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.771,
+        "bbox": [
+          7,
+          5,
+          80,
+          80
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.785,
+        "bbox": [
+          15,
+          5,
+          74,
+          82
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.836,
+        "bbox": [
+          17,
+          5,
+          66,
+          83
+        ],
+        "fill": 0.494,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.845,
+        "bbox": [
+          10,
+          6,
+          77,
+          84
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      }
+    }
+  }
+}
