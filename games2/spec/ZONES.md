@@ -69,7 +69,11 @@ Kubernetes). Rules here are present tense; the measurements land in
   signature, this pid and key, an age within the TTL and the account the
   client's own claim resolves to; anything else is the ordinary join.
 - **Monsters cross too, AND THE HAND-OFF OVERLAPS.** A monster whose position
-  leaves its rect is transferred with its full brain state (`monster:xfer`);
+  leaves its rect is transferred with its full brain state (`monster:xfer`):
+  the roam goal and its trip (re-planned on arrival), the pause, attack and
+  scan deadlines as remaining ms, and the hunt — kept whenever the victim is
+  a player or a ghost of the new room, with a short grace for one mirrored
+  by neither yet (docs/backend.md, `monsterxfer.test.ts`);
   every room holds the whole spawn-zone list but seeds only the cells inside
   its own rect (`num` split by cell share), so a transferred monster's zone
   rules still resolve. The sender does NOT simply delete it: in the same tick

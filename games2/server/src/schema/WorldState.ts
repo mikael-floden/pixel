@@ -213,6 +213,9 @@ export class Monster extends Schema {
   chaseOx = 0;
   chaseOy = 0;
   aggroCheckAt = 0; // throttle the proximity scan (~2/s, not per tick)
+  /** A hunt that arrived by hand-off waits until this for its victim's body to
+   *  be mirrored here (WorldRoom XFER_HUNT_GRACE_MS) before it is called off. */
+  huntGraceUntil = 0;
   orbitSign = 1; // per-monster circling handedness (id-hashed at seed)
   returning = false; // walking home after a chase ended outside the zone
   diedAt = 0; // when the death started (drops + removal at diedAt + MONSTER_DIE_MS)

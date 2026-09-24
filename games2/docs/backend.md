@@ -212,8 +212,19 @@ found; gate `server/test/lawsize.test.ts`).
   server start is the obvious next step and is not built.
 - **Monsters transfer with their brain** (`monster:xfer` on the receiver's
   `ctl` channel: kind, position, hp, area, home zone, orbit sign, chase
-  anchor); the hunt survives only if the victim is a player of the new room,
-  else it roams. Seeding takes each spawn polygon's cells inside the rect and
+  anchor, the roam goal and whether a trip is in flight, and the move,
+  attack and aggro-scan deadlines as REMAINING ms). The receiver re-plans the
+  trip to the same goal, keeps a pause's remaining time, and keeps the hunt
+  whenever the victim is a body it holds — a player OR a ghost, as the fight
+  code itself resolves it (`bodyOf`) — with `XFER_HUNT_GRACE_MS` (400 ms) for
+  a victim the owner's next snapshot or the adoption has not mirrored yet;
+  a hunt called off walks home (`disengageMonster`), never snaps. (Before:
+  no trip and `nextMoveAt = now + 200` — a 200-380 ms stand-still at every
+  line and a new heading on 2 of 3 crossings; the hunt kept only for a
+  PLAYER of the new room, so a monster that crossed away from its victim
+  fell into a roam outside its polygon and the safety net snapped it home
+  181-398 wu; `nextAttackAt` 0, so a fight that crossed bit twice 6 ms
+  apart. `server/test/monsterxfer.test.ts`.) Seeding takes each spawn polygon's cells inside the rect and
   a proportional share of `num`; a respawn goes to the `home` zone that
   seeded it (`monster:respawn`). `dbgmonster {id, x, y}` moves one for gates.
 - **The world clock is the bus document `clock:<world>`** (index, phaseT,

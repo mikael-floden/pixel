@@ -253,6 +253,10 @@ const HANDOFF_GHOST_GRACE_MS = 600;
  *  reverses backend.md's "NOT taken" by maintainer decision. */
 const WAKE_LOOKAHEAD_S = 1;
 const WAKE_WU = GHOST_BAND_WU + RUN_SPEED * PLAYER_SPEED_DEFAULT * WAKE_LOOKAHEAD_S;
+/** A hunt that arrives by `monster:xfer` with a victim mirrored by neither map
+ *  yet waits this long for the owner's next edge snapshot (50 ms from a room
+ *  the wake band keeps at 20 Hz) or the adoption before it is called off. */
+const XFER_HUNT_GRACE_MS = 400;
 const WAKE_HOLD_MS = 1000; // an awake neighbour names this room every 50 ms; a lost message or two must not idle it
 /** A MONSTER THE MAP HAS BOXED IN MUST NOT COST THE SERVER ANYTHING.
  *
@@ -421,6 +425,14 @@ interface MonsterXfer {
   hp: number; hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number;
   areaId: string; home: number; orbitSign: number; provoked: boolean; returning: boolean;
   targetSid: string; chaseOx: number; chaseOy: number;
+  /** THE WALK AND THE FIGHT CROSS WITH THE BODY (all optional: a hot state
+   *  written by the previous build still restores during a rollout). The
+   *  receiver used to rebuild a monster with no trip and `nextMoveAt = now +
+   *  200`, so every crossing was a 200-380 ms stand-still and, on 2 of 3, a
+   *  new heading; and with `nextAttackAt` 0 a fight that crossed bit twice 6
+   *  ms apart. Deadlines travel as REMAINING ms, never as epochs. */
+  targetX?: number; targetY?: number; tripActive?: boolean;
+  nextMoveInMs?: number; nextAttackInMs?: number; aggroCheckInMs?: number;
   /** THE DEBUG PIN CROSSES THE BORDER WITH THE BODY. `dbgmonster {pin}` means
    *  "stand exactly here", and a pin the hand-off drops is not a pin: the
    *  receiving room built a fresh Monster with pinned false and `nextMoveAt =
@@ -2239,11 +2251,17 @@ export class WorldRoom extends Room<WorldState> {
       // --- COMBAT STATES (chase / in-fight) --------------------------------
       if (m.targetSid) {
         const tp = this.bodyOf(m.targetSid);
-        if (!tp || tp.dead) this.disengageMonster(m, zone, now);
+        if ((!tp && now >= m.huntGraceUntil) || tp?.dead) this.disengageMonster(m, zone, now);
       }
       if (m.mstate === "chase" || m.mstate === "combat") {
         const tp = this.bodyOf(m.targetSid);
         if (!tp) {
+          // A hunt that just crossed waits for its victim to be mirrored here
+          // (XFER_HUNT_GRACE_MS) before it is called off.
+          if (now < m.huntGraceUntil) {
+            m.moving = false;
+            return;
+          }
           this.disengageMonster(m, zone, now);
           return;
         }
@@ -3666,15 +3684,39 @@ export class WorldRoom extends Room<WorldState> {
       mon.orbitSign = d.orbitSign;
       mon.chaseOx = d.chaseOx;
       mon.chaseOy = d.chaseOy;
-      // The hunt survives the border only if the victim is here too.
-      const victim = d.targetSid && this.state.players.has(d.targetSid) ? d.targetSid : "";
-      mon.targetSid = victim;
-      mon.provoked = victim ? d.provoked : false;
-      mon.mstate = victim && (d.mstate === "chase" || d.mstate === "combat") ? d.mstate : "roam";
-      mon.tsid = mon.mstate === "roam" ? "" : victim;
-      mon.returning = !victim && d.returning;
+      /* THE HUNT CROSSES THE LINE. Cross-border combat runs in the MONSTER's
+       * room against the ghost it mirrors (bodyOf: a player here OR a ghost),
+       * so a victim who is only a ghost of this room is a victim all the
+       * same — keeping the hunt only for a PLAYER of this room dropped it
+       * whenever the monster crossed AWAY from its victim (a knockback, the
+       * orbit, a separation shove), and the roam it fell into stood outside
+       * its polygon, so the safety net snapped it home 181-398 wu (measured).
+       * A victim mirrored by neither yet — the tick phase between this
+       * message and the owner's next edge snapshot or the adoption — gets
+       * XFER_HUNT_GRACE_MS before the hunt is called off, and calling it off
+       * walks the monster home (disengageMonster) instead of snapping it. */
+      const hunting = !!d.targetSid && (d.mstate === "chase" || d.mstate === "combat");
+      mon.targetSid = hunting ? d.targetSid : "";
+      mon.provoked = hunting ? d.provoked : false;
+      mon.mstate = hunting ? d.mstate : "roam";
+      mon.tsid = hunting ? d.targetSid : "";
+      mon.huntGraceUntil = hunting && !this.bodyOf(d.targetSid) ? now + XFER_HUNT_GRACE_MS : 0;
+      mon.returning = !hunting && d.returning;
       mon.pinned = !!d.pinned; // a debug pin is a pin on both sides of the line
-      mon.nextMoveAt = now + 200;
+      mon.nextAttackAt = now + (d.nextAttackInMs ?? 0);
+      mon.aggroCheckAt = now + (d.aggroCheckInMs ?? 0);
+      // THE WALK CROSSES THE LINE: the same goal, the trip re-planned from
+      // here (a trip handle is not serialisable; a plan is cheap). A pause
+      // in progress keeps its remaining time. A previous build's message
+      // carries neither and gets the old 200 ms.
+      const grid = this.terrain;
+      if (!hunting && d.tripActive && grid && typeof d.targetX === "number" && typeof d.targetY === "number") {
+        mon.targetX = d.targetX;
+        mon.targetY = d.targetY;
+        mon.trip = startTrip(grid, mon.x, mon.y, d.targetX, d.targetY, false, now, mon.elev, undefined, d.returning ? 900 : MONSTER_ROAM_MAX_NODES, false);
+        mon.tripActive = !!mon.trip;
+      }
+      if (!mon.tripActive) mon.nextMoveAt = now + (typeof d.nextMoveInMs === "number" ? d.nextMoveInMs : 200);
       this.state.ghostMonsters.delete(m.id);
       this.ghostOwner.delete(m.id);
       this.handedGhostAt.delete(m.id); // it is ours again; the overlap is over
@@ -3747,11 +3789,15 @@ export class WorldRoom extends Room<WorldState> {
   private transferMonster(id: string, to: number) {
     const m = this.state.monsters.get(id);
     if (!m) return;
+    const now = Date.now();
     const data: MonsterXfer = {
       kind: m.kind, x: m.x, y: m.y, dir: m.dir, moving: m.moving, elev: m.elev,
       hp: m.hp, hpMax: m.hpMax, mstate: m.mstate, actionSeq: m.actionSeq, level: m.level, aggro: m.aggro,
       areaId: m.areaId, home: m.home, orbitSign: m.orbitSign, provoked: m.provoked, returning: m.returning,
       targetSid: m.targetSid, chaseOx: m.chaseOx, chaseOy: m.chaseOy, pinned: m.pinned,
+      targetX: m.targetX, targetY: m.targetY, tripActive: m.tripActive,
+      nextMoveInMs: Math.max(0, m.nextMoveAt - now), nextAttackInMs: Math.max(0, m.nextAttackAt - now),
+      aggroCheckInMs: Math.max(0, m.aggroCheckAt - now),
     };
     void bus().publish(this.chan.ctl(to), { type: "monster:xfer", id, m: data } satisfies CtlMessage);
     /* THE HAND-OFF OVERLAPS — this is the invisible monster at a border

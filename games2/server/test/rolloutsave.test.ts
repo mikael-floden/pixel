@@ -55,10 +55,12 @@ test("a walking player's position is written on graceful shutdown, and a walk ma
     const x0 = me().x;
     const y0 = me().y;
     assert.equal((await store.load(acc.id))!.pos?.the_game, undefined, "a fresh account has no position yet");
-    // Hold the stick screen-left for a second: a walk, nothing earned.
+    // Hold the stick screen-left until two cells are covered (MOVE_SAVE_WU):
+    // a walk, nothing earned. Measured, not timed — a fixed second fell short
+    // under a loaded runner (the suite runs its files concurrently).
     const t0 = Date.now();
     let seq = 0;
-    while (Date.now() - t0 < 1200) {
+    while (Date.now() - t0 < 8000 && Math.hypot(me().x - x0, me().y - y0) < 2 * 32 + 8) {
       r.send("input", { ax: -1, ay: 0, running: true, seq: ++seq, dt: 1 / 20 });
       await settle(50);
     }
