@@ -1,0 +1,141 @@
+{
+  "id": "peat_wolf",
+  "name": "Peatwolf",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Cut from the bank and stacked to dry, and it walked off the stack.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Wolf made of layered black peat, cracked and crumbling at the edges, red ember eyes, crumbs falling as it walks.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "peat_wolf/rotations/south.webp",
+    "south-east": "peat_wolf/rotations/south-east.webp",
+    "east": "peat_wolf/rotations/east.webp",
+    "north-east": "peat_wolf/rotations/north-east.webp",
+    "north": "peat_wolf/rotations/north.webp",
+    "north-west": "peat_wolf/rotations/north-west.webp",
+    "west": "peat_wolf/rotations/west.webp",
+    "south-west": "peat_wolf/rotations/south-west.webp"
+  },
+  "sheet": "peat_wolf/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ee2832e3-83d9-41b6-a709-9bd85987251e",
+  "seed": 1926610601,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:20:45+00:00",
+  "elapsed_s": 432.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.743,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.743,
+        "bbox": [
+          10,
+          3,
+          76,
+          85
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.827,
+        "bbox": [
+          4,
+          4,
+          75,
+          84
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.799,
+        "bbox": [
+          2,
+          4,
+          83,
+          84
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.765,
+        "bbox": [
+          10,
+          3,
+          78,
+          83
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.776,
+        "bbox": [
+          14,
+          3,
+          75,
+          81
+        ],
+        "fill": 0.614,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.764,
+        "bbox": [
+          8,
+          3,
+          83,
+          82
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.802,
+        "bbox": [
+          5,
+          4,
+          86,
+          83
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.823,
+        "bbox": [
+          15,
+          3,
+          76,
+          84
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      }
+    }
+  }
+}
