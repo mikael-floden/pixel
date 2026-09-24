@@ -1,0 +1,141 @@
+{
+  "id": "snail_hermit",
+  "name": "Snailhermit",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "He left the village forty years ago and has gone about three miles.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Old bearded man wearing a giant snail shell as a house, only head and arms out, a wooden bowl, slime trail.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snail_hermit/rotations/south.webp",
+    "south-east": "snail_hermit/rotations/south-east.webp",
+    "east": "snail_hermit/rotations/east.webp",
+    "north-east": "snail_hermit/rotations/north-east.webp",
+    "north": "snail_hermit/rotations/north.webp",
+    "north-west": "snail_hermit/rotations/north-west.webp",
+    "west": "snail_hermit/rotations/west.webp",
+    "south-west": "snail_hermit/rotations/south-west.webp"
+  },
+  "sheet": "snail_hermit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9e693f15-9d7e-4bd3-bf32-aaa95c485036",
+  "seed": 854469117,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:29:53+00:00",
+  "elapsed_s": 434.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.766,
+        "bbox": [
+          10,
+          5,
+          82,
+          85
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.814,
+        "bbox": [
+          6,
+          4,
+          81,
+          84
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.799,
+        "bbox": [
+          7,
+          4,
+          75,
+          83
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.73,
+        "bbox": [
+          14,
+          4,
+          73,
+          81
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.743,
+        "bbox": [
+          6,
+          5,
+          76,
+          80
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.791,
+        "bbox": [
+          8,
+          7,
+          82,
+          82
+        ],
+        "fill": 0.717,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.789,
+        "bbox": [
+          18,
+          6,
+          82,
+          86
+        ],
+        "fill": 0.661,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.81,
+        "bbox": [
+          13,
+          6,
+          74,
+          86
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      }
+    }
+  }
+}
