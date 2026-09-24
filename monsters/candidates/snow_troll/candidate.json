@@ -1,0 +1,141 @@
+{
+  "id": "snow_troll",
+  "name": "Snowtroll",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Built by children, and it did not want to melt.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Hulking troll of grey-white packed snow with rocks embedded like warts, icicle teeth, tiny dark eyes, a huge belly.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snow_troll/rotations/south.webp",
+    "south-east": "snow_troll/rotations/south-east.webp",
+    "east": "snow_troll/rotations/east.webp",
+    "north-east": "snow_troll/rotations/north-east.webp",
+    "north": "snow_troll/rotations/north.webp",
+    "north-west": "snow_troll/rotations/north-west.webp",
+    "west": "snow_troll/rotations/west.webp",
+    "south-west": "snow_troll/rotations/south-west.webp"
+  },
+  "sheet": "snow_troll/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e0bd781f-4b1a-4669-bfe0-08ef9eb7cca4",
+  "seed": 893457530,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:04:17+00:00",
+  "elapsed_s": 221.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.566,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.566,
+        "bbox": [
+          24,
+          18,
+          198,
+          206
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.659,
+        "bbox": [
+          30,
+          18,
+          193,
+          208
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.659,
+        "bbox": [
+          57,
+          21,
+          153,
+          210
+        ],
+        "fill": 0.362,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.634,
+        "bbox": [
+          39,
+          16,
+          174,
+          206
+        ],
+        "fill": 0.511,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.616,
+        "bbox": [
+          26,
+          14,
+          196,
+          203
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.638,
+        "bbox": [
+          43,
+          16,
+          185,
+          207
+        ],
+        "fill": 0.541,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.668,
+        "bbox": [
+          71,
+          21,
+          159,
+          210
+        ],
+        "fill": 0.331,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.65,
+        "bbox": [
+          34,
+          18,
+          192,
+          208
+        ],
+        "fill": 0.598,
+        "touches_edge": false
+      }
+    }
+  }
+}
