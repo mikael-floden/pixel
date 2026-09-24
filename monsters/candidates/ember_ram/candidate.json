@@ -1,0 +1,143 @@
+{
+  "id": "ember_ram",
+  "name": "Emberram",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It butts the rock until the rock catches fire.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Black ram with horns of glowing orange-red rock, a coat of charred wool, smoke curling from its nostrils.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ember_ram/rotations/south.webp",
+    "south-east": "ember_ram/rotations/south-east.webp",
+    "east": "ember_ram/rotations/east.webp",
+    "north-east": "ember_ram/rotations/north-east.webp",
+    "north": "ember_ram/rotations/north.webp",
+    "north-west": "ember_ram/rotations/north-west.webp",
+    "west": "ember_ram/rotations/west.webp",
+    "south-west": "ember_ram/rotations/south-west.webp"
+  },
+  "sheet": "ember_ram/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7418dc03-122b-45e0-944a-88fbd9d05aa9",
+  "seed": 47807160,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:47:09+00:00",
+  "elapsed_s": 163.3,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.758,
+    "reasons": [
+      "north-east: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.758,
+        "bbox": [
+          10,
+          4,
+          79,
+          87
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.824,
+        "bbox": [
+          4,
+          5,
+          78,
+          87
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.81,
+        "bbox": [
+          4,
+          3,
+          75,
+          87
+        ],
+        "fill": 0.77,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.8,
+        "bbox": [
+          11,
+          3,
+          76,
+          88
+        ],
+        "fill": 0.713,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.796,
+        "bbox": [
+          7,
+          3,
+          73,
+          87
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.789,
+        "bbox": [
+          12,
+          3,
+          79,
+          87
+        ],
+        "fill": 0.727,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.805,
+        "bbox": [
+          11,
+          3,
+          82,
+          84
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.835,
+        "bbox": [
+          9,
+          5,
+          78,
+          87
+        ],
+        "fill": 0.731,
+        "touches_edge": false
+      }
+    }
+  }
+}
