@@ -1,0 +1,143 @@
+{
+  "id": "hare_drum",
+  "name": "Drumhare",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It drums the alarm for the warren and sometimes for no reason at all.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "White hare with a small leather drum strapped to its belly, thumping it with its hind foot, wild eyes, ears straight up.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hare_drum/rotations/south.webp",
+    "south-east": "hare_drum/rotations/south-east.webp",
+    "east": "hare_drum/rotations/east.webp",
+    "north-east": "hare_drum/rotations/north-east.webp",
+    "north": "hare_drum/rotations/north.webp",
+    "north-west": "hare_drum/rotations/north-west.webp",
+    "west": "hare_drum/rotations/west.webp",
+    "south-west": "hare_drum/rotations/south-west.webp"
+  },
+  "sheet": "hare_drum/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "26071bd0-5a6b-47e5-80a9-45b54c6f4994",
+  "seed": 1823858452,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:13:25+00:00",
+  "elapsed_s": 3.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.656,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.753,
+        "bbox": [
+          9,
+          1,
+          31,
+          39
+        ],
+        "fill": 0.522,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.751,
+        "bbox": [
+          8,
+          1,
+          30,
+          38
+        ],
+        "fill": 0.509,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.711,
+        "bbox": [
+          8,
+          1,
+          30,
+          39
+        ],
+        "fill": 0.522,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.656,
+        "bbox": [
+          11,
+          1,
+          31,
+          39
+        ],
+        "fill": 0.475,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.698,
+        "bbox": [
+          9,
+          1,
+          31,
+          39
+        ],
+        "fill": 0.522,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.681,
+        "bbox": [
+          10,
+          1,
+          31,
+          39
+        ],
+        "fill": 0.499,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.767,
+        "bbox": [
+          10,
+          1,
+          32,
+          39
+        ],
+        "fill": 0.522,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.762,
+        "bbox": [
+          9,
+          1,
+          31,
+          39
+        ],
+        "fill": 0.522,
+        "touches_edge": false
+      }
+    }
+  }
+}
