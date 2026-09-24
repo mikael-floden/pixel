@@ -1,0 +1,145 @@
+{
+  "id": "frozen_fisherman",
+  "name": "Icefisher",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He waited too long for a bite. He is still waiting.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Man frozen solid in a sitting position with a fishing rod, blue-white skin, still moving stiffly, ice cracking with each step.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frozen_fisherman/rotations/south.webp",
+    "south-east": "frozen_fisherman/rotations/south-east.webp",
+    "east": "frozen_fisherman/rotations/east.webp",
+    "north-east": "frozen_fisherman/rotations/north-east.webp",
+    "north": "frozen_fisherman/rotations/north.webp",
+    "north-west": "frozen_fisherman/rotations/north-west.webp",
+    "west": "frozen_fisherman/rotations/west.webp",
+    "south-west": "frozen_fisherman/rotations/south-west.webp"
+  },
+  "sheet": "frozen_fisherman/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "00a23988-6b6e-4807-ab08-b06e402525e0",
+  "seed": 1494902282,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:42:51+00:00",
+  "elapsed_s": 197.8,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.787,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.787,
+        "bbox": [
+          11,
+          3,
+          82,
+          85
+        ],
+        "fill": 0.752,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.87,
+        "bbox": [
+          19,
+          3,
+          82,
+          88
+        ],
+        "fill": 0.692,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.847,
+        "bbox": [
+          22,
+          2,
+          66,
+          87
+        ],
+        "fill": 0.483,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.813,
+        "bbox": [
+          19,
+          2,
+          70,
+          87
+        ],
+        "fill": 0.56,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.797,
+        "bbox": [
+          5,
+          3,
+          77,
+          84
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.823,
+        "bbox": [
+          16,
+          2,
+          67,
+          87
+        ],
+        "fill": 0.56,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.837,
+        "bbox": [
+          24,
+          2,
+          66,
+          88
+        ],
+        "fill": 0.466,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.865,
+        "bbox": [
+          14,
+          3,
+          75,
+          88
+        ],
+        "fill": 0.67,
+        "touches_edge": true
+      }
+    }
+  }
+}
