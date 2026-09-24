@@ -1,0 +1,141 @@
+{
+  "id": "sleigh_horse_ghost",
+  "name": "Sleighshade",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The mail sleigh went through the ice. The horse still brings the letters.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Ghost of a grey draught horse still in harness, dragging a broken sleigh runner, breath of frost, eyes white.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "sleigh_horse_ghost/rotations/south.webp",
+    "south-east": "sleigh_horse_ghost/rotations/south-east.webp",
+    "east": "sleigh_horse_ghost/rotations/east.webp",
+    "north-east": "sleigh_horse_ghost/rotations/north-east.webp",
+    "north": "sleigh_horse_ghost/rotations/north.webp",
+    "north-west": "sleigh_horse_ghost/rotations/north-west.webp",
+    "west": "sleigh_horse_ghost/rotations/west.webp",
+    "south-west": "sleigh_horse_ghost/rotations/south-west.webp"
+  },
+  "sheet": "sleigh_horse_ghost/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ce32b683-c9ec-442c-9664-6ea8103f31a1",
+  "seed": 70375499,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:49:34+00:00",
+  "elapsed_s": 202.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.668,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.7,
+        "bbox": [
+          72,
+          24,
+          165,
+          204
+        ],
+        "fill": 0.334,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.714,
+        "bbox": [
+          23,
+          27,
+          204,
+          196
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.72,
+        "bbox": [
+          10,
+          28,
+          207,
+          185
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.668,
+        "bbox": [
+          37,
+          28,
+          192,
+          195
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.742,
+        "bbox": [
+          73,
+          28,
+          144,
+          197
+        ],
+        "fill": 0.239,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.736,
+        "bbox": [
+          25,
+          29,
+          194,
+          195
+        ],
+        "fill": 0.559,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.714,
+        "bbox": [
+          20,
+          30,
+          207,
+          189
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.707,
+        "bbox": [
+          35,
+          24,
+          174,
+          201
+        ],
+        "fill": 0.49,
+        "touches_edge": false
+      }
+    }
+  }
+}
