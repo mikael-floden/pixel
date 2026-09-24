@@ -1,0 +1,144 @@
+{
+  "id": "white_fox_mask",
+  "name": "Foxmask",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It bows politely before it bites.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "White fox standing upright wearing a smiling white mask over an empty face, a red ribbon, elegant stillness.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "white_fox_mask/rotations/south.webp",
+    "south-east": "white_fox_mask/rotations/south-east.webp",
+    "east": "white_fox_mask/rotations/east.webp",
+    "north-east": "white_fox_mask/rotations/north-east.webp",
+    "north": "white_fox_mask/rotations/north.webp",
+    "north-west": "white_fox_mask/rotations/north-west.webp",
+    "west": "white_fox_mask/rotations/west.webp",
+    "south-west": "white_fox_mask/rotations/south-west.webp"
+  },
+  "sheet": "white_fox_mask/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "464ea284-17f8-4a04-81bd-0c2d34f9d2aa",
+  "seed": 2014098757,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:30:06+00:00",
+  "elapsed_s": 196.4,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.67,
+    "reasons": [
+      "north-east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.721,
+        "bbox": [
+          3,
+          2,
+          84,
+          86
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.825,
+        "bbox": [
+          3,
+          2,
+          70,
+          87
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.779,
+        "bbox": [
+          1,
+          1,
+          75,
+          86
+        ],
+        "fill": 0.812,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.725,
+        "bbox": [
+          5,
+          0,
+          70,
+          84
+        ],
+        "fill": 0.705,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.67,
+        "bbox": [
+          22,
+          1,
+          81,
+          82
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.736,
+        "bbox": [
+          19,
+          0,
+          85,
+          84
+        ],
+        "fill": 0.716,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.774,
+        "bbox": [
+          14,
+          1,
+          86,
+          86
+        ],
+        "fill": 0.79,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.815,
+        "bbox": [
+          14,
+          2,
+          85,
+          87
+        ],
+        "fill": 0.779,
+        "touches_edge": false
+      }
+    }
+  }
+}
