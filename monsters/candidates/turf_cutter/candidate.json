@@ -1,0 +1,141 @@
+{
+  "id": "turf_cutter",
+  "name": "Turfcutter",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "He still cuts turf in a bog that was drained before he was born.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Squat man of dark peat carrying a rusted turf spade, a flat wide-brimmed hat of moss, a face of cracked earth.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "turf_cutter/rotations/south.webp",
+    "south-east": "turf_cutter/rotations/south-east.webp",
+    "east": "turf_cutter/rotations/east.webp",
+    "north-east": "turf_cutter/rotations/north-east.webp",
+    "north": "turf_cutter/rotations/north.webp",
+    "north-west": "turf_cutter/rotations/north-west.webp",
+    "west": "turf_cutter/rotations/west.webp",
+    "south-west": "turf_cutter/rotations/south-west.webp"
+  },
+  "sheet": "turf_cutter/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "90b2f5ac-0b95-4066-ba2a-b911b0f9b5ff",
+  "seed": 633709447,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:26:52+00:00",
+  "elapsed_s": 348.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.754,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.772,
+        "bbox": [
+          2,
+          4,
+          80,
+          84
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.823,
+        "bbox": [
+          20,
+          6,
+          74,
+          86
+        ],
+        "fill": 0.558,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.815,
+        "bbox": [
+          11,
+          5,
+          72,
+          86
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.788,
+        "bbox": [
+          5,
+          3,
+          84,
+          83
+        ],
+        "fill": 0.816,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.775,
+        "bbox": [
+          14,
+          4,
+          83,
+          82
+        ],
+        "fill": 0.695,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.754,
+        "bbox": [
+          18,
+          3,
+          70,
+          83
+        ],
+        "fill": 0.537,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.799,
+        "bbox": [
+          19,
+          5,
+          84,
+          86
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.822,
+        "bbox": [
+          5,
+          6,
+          86,
+          86
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      }
+    }
+  }
+}
