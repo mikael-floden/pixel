@@ -1,0 +1,140 @@
+{
+  "id": "broom_wight",
+  "name": "Broomwight",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It sweeps the house every night for a mistress who died.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Old birch broom with a face in its handle and bristles for a skirt, sweeping constantly, dust cloud around it.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "broom_wight/rotations/south.webp",
+    "south-east": "broom_wight/rotations/south-east.webp",
+    "east": "broom_wight/rotations/east.webp",
+    "north-east": "broom_wight/rotations/north-east.webp",
+    "north": "broom_wight/rotations/north.webp",
+    "north-west": "broom_wight/rotations/north-west.webp",
+    "west": "broom_wight/rotations/west.webp",
+    "south-west": "broom_wight/rotations/south-west.webp"
+  },
+  "sheet": "broom_wight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2e8cfa10-a96a-46a5-9bb4-d488ff81136b",
+  "seed": 397045882,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:50:09+00:00",
+  "elapsed_s": 344.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.797,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.821,
+        "bbox": [
+          5,
+          6,
+          84,
+          83
+        ],
+        "fill": 0.786,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.87,
+        "bbox": [
+          12,
+          6,
+          82,
+          80
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.837,
+        "bbox": [
+          23,
+          6,
+          80,
+          81
+        ],
+        "fill": 0.552,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.825,
+        "bbox": [
+          21,
+          4,
+          79,
+          81
+        ],
+        "fill": 0.577,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.828,
+        "bbox": [
+          7,
+          4,
+          82,
+          79
+        ],
+        "fill": 0.726,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.843,
+        "bbox": [
+          5,
+          6,
+          68,
+          80
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.797,
+        "bbox": [
+          15,
+          7,
+          68,
+          86
+        ],
+        "fill": 0.541,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.867,
+        "bbox": [
+          13,
+          6,
+          76,
+          84
+        ],
+        "fill": 0.635,
+        "touches_edge": false
+      }
+    }
+  }
+}
