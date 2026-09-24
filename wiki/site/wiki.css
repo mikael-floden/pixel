@@ -1500,6 +1500,11 @@ input[type="range"] { accent-color: var(--accent); }
   overflow: hidden;
 }
 .sortbar::-webkit-scrollbar { display: none; }
+/* The wrapping variant: pill chips that flow onto a second line, so a phone
+   shows every option (the panning strip hides its scrollbar — a 6th chip was
+   invisible with nothing saying so). */
+.sortbar-wrap { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible; border: none; background: none; border-radius: 0; }
+.sortbar-wrap .sortbar-btn { border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
 .sortbar-btn,
 .picker-sort-btn {
   flex: 1; padding: 7px 8px; font-size: 12.5px; line-height: 1.2;

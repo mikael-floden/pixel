@@ -4592,12 +4592,21 @@ function aggroPill(st) {
  *  to this browser — the per-tile wall mode is one control per tile, and
  *  remembering hundreds of them in localStorage would be storing the document
  *  twice, in a place that can go stale against it. */
-function sortBar(key, options, current, onPick, { persist = true } = {}) {
+/* WRAP, NEVER PAN, ON A ROW THAT HOLDS HIS REVIEW CONTROLS (maintainer
+ * 2026-09-24: "The first image show a monster that can be reviewed and I can't
+ * even press the 'sort by review' button! What a fail!"). The strip pans and
+ * hides its scrollbar, so on a 393px phone the 5th and 6th chips of the
+ * creature filter — "shadow set 86", "review needed 67" — were simply off the
+ * right edge with nothing saying so; he had never once seen "shadow set". A
+ * control he cannot see is not a control. `wrap: true` makes the row flow
+ * onto a second line as pill chips instead. The panning strip stays for the
+ * rows that were built for it (8 scenery types). */
+function sortBar(key, options, current, onPick, { persist = true, wrap = false } = {}) {
   // The row carries its storage key: three of these stack on the Scenery page
   // (type, sort, review status) and several share chip ids like "all", so
   // anything selecting a chip — including the gates — needs to say which row
   // it means.
-  const row = h("div", { class: "sortbar", "data-bar": key, role: "radiogroup" });
+  const row = h("div", { class: `sortbar${wrap ? " sortbar-wrap" : ""}`, "data-bar": key, role: "radiogroup" });
   // A fourth tuple element DISABLES a chip. Used where an option exists in the
   // vocabulary but cannot apply here — a Raw chip on a pair the generator never
   // produced (maintainer 2026-08-27: "If no raw is available for a type. Just
@@ -4761,6 +4770,12 @@ const creatureFacings = (m) => Object.values(m?.animations ?? {})
   .filter((a) => !a?.still).reduce((n, a) => n + Object.keys(a?.dirs ?? {}).length, 0);
 const MONSTER_SHADOWS = {
   all: { label: "all", title: "Every creature", hit: () => true },
+  review: {
+    label: "review needed",
+    title: "Creatures with an animation direction you have not judged yet — the ones the agent finished most recently first",
+    hit: needsReview,
+    always: true,       // a 0 here is the finish line, not a chip nothing can fill
+  },
   making: {
     label: "in the making",
     title: "Approved designs the monsters agent is still animating — every state is a set of versions until one is promoted",
@@ -4788,12 +4803,6 @@ const MONSTER_SHADOWS = {
     label: "shadow set",
     title: "Creatures whose shadow you have already tuned — size and per-facet offsets",
     hit: (m) => !!shadowRaw(m),
-  },
-  review: {
-    label: "review needed",
-    title: "Creatures with an animation direction you have not judged yet — the ones the agent finished most recently first",
-    hit: needsReview,
-    always: true,       // a 0 here is the finish line, not a chip nothing can fill
   },
 };
 const shadowFilter = () => {
@@ -5239,7 +5248,7 @@ function viewMonsters() {
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
       ...(state.admin ? [["queue", "review first", "The ones that owe you a verdict first (newest art on top), then the ones with a redo of yours still outstanding, then the most animated"]] : []),
-    ], sort, () => route()),
+    ], sort, () => route(), { wrap: true }),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.
     state.admin ? sortBar(MONSTER_SHADOW_KEY,
@@ -5248,7 +5257,7 @@ function viewMonsters() {
         // the agent finishes them all would just be a dead button.
         .filter(([id, f]) => id === "all" || f.always || list.some((m) => f.hit(m)))
         .map(([id, f]) => [id, `${f.label} ${id === "all" ? list.length : list.filter((m) => f.hit(m)).length}`, f.title]),
-      mode, () => route()) : null,
+      mode, () => route(), { wrap: true }) : null,
     state.admin && mode !== "all" ? h("p", { class: "muted" },
       shown.length
         ? mode === "review"

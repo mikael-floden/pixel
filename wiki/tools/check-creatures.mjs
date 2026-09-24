@@ -213,6 +213,15 @@ let sv = await shadowBar();
 const chipFor = (label) => sv.chips.find((c) => c.startsWith(`${label} `)) ?? "";
 ok(["all", "no shadow", "shadow set"].every((l) => chipFor(l)),
   `the admin gets a shadow filter — all / no shadow / shadow set (${sv.chips.join(" | ") || "no bar"})`);
+/* EVERY CHIP ON THE SCREEN (maintainer 2026-09-24: "I can't even press the
+ * 'sort by review' button! What a fail!"). The strip panned with a hidden
+ * scrollbar, so on his phone the 5th and 6th filter chips were off the right
+ * edge with nothing saying so. Both creature rows must fit a 393px viewport
+ * entirely — measured by rects, not by CSS intent. */
+const offscreen = await pa.evaluate(() => ["wiki-monster-sort", "wiki-monster-shadow"].flatMap((k) =>
+  [...document.querySelectorAll(`[data-bar="${k}"] button`)].filter((b) => { const r = b.getBoundingClientRect(); return r.right > innerWidth + 0.5 || r.left < -0.5 || r.width === 0; }).map((b) => b.textContent.trim())));
+ok(offscreen.length === 0, `every chip of both creature rows is on a 393px screen${offscreen.length ? ` — off: ${offscreen.join(", ")}` : ""}`);
+ok(sv.chips[1]?.startsWith("review needed "), `and "review needed" is the chip right after "all", never the last one (${sv.chips[1]})`);
 ok(chipFor("no shadow") === `no shadow ${expNone}` && chipFor("shadow set") === `shadow set ${setIds.length}`,
   `and the counts come from the LIVE tuning doc, not a snapshot (${expNone} unset, ${setIds.length} set)`);
 ok(sv.sel.startsWith("all") && sv.cards === total, `it opens unfiltered (${sv.cards} of ${total}, on "${sv.sel}")`);
