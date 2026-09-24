@@ -1,16 +1,15 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:37:00+00:00",
-  "health": "idle",
-  "current": "RELEASED — holding no files. His 22:26Z approval burst is recorded (8caac59b3): gargoyle_pup + tick_swell review=approved + APPROVED tag + index rebuilt. Nothing cleared, nothing generated, $0.00.",
+  "updated_at": "2026-09-24T22:52:11+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 22:46–22:48Z approval burst, 9 candidates (all `monsters/candidates/<id>` approved r1, all review=pending on disk): cradle_thing crane_fly_hag cricket_knight ember_bat_swarm flint_imp glacier_ox mire_ox rockfall_giant vent_lizard. Recording the approval only (animate.py approve --ids): FILES monsters/candidates/{cradle_thing,crane_fly_hag,cricket_knight,ember_bat_swarm,flint_imp,glacier_ox,mire_ox,rockfall_giant,vent_lizard}/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. No generation, no clearing (law 2). Not in the monsters agent's 22:29Z claim — those 32 were approved before his burst — and not in either in-flight monsters-animate run.",
   "progress": {
-    "unit": "his 22:26Z approval burst — 2 candidates recorded",
-    "entries_taken": 2,
+    "unit": "his 22:46–22:48Z approval burst — 9 candidates",
+    "entries_taken": 9,
     "entries_cleared": 0,
     "generations": 0,
-    "usd_spent": 0.0,
-    "dangling_verdicts": 0
+    "usd_spent": 0.0
   },
   "budget_remaining": "PixelLab USD ~$7.09 (floor $5) — this sitting spent $0.00",
   "notes": [
