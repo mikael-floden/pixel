@@ -67,14 +67,12 @@
    "at": "2026-09-24T18:10:32+00:00"
   }
  ],
- "updated_at": "2026-09-24T21:30:24+00:00",
+ "updated_at": "2026-09-24T21:31:15+00:00",
  "health": "idle",
  "current": {
-  "unit": "CLAIMING: the slope switch's default back to 0% (the half-step look) — the composed ramp at 100% (99cd2811f4) renders stepped shadows, leftover faces, stretched texture and holes on the live game (maintainer 2026-09-24: 'Still looks so bad and buggy!'). A slope design workflow is running; nothing else changes.",
-  "since": "2026-09-24T21:30:24+00:00",
-  "files": [
-   "games2/client/src/slopeheight.ts"
-  ]
+  "unit": "IDLE. The slope switch defaults to 0% again (composed ramp opt-in). A read-only slope design workflow is running; its recommendation comes next. games2/client/src slope files are free.",
+  "since": "2026-09-24T21:31:15+00:00",
+  "files": []
  },
  "consumes": [
   "characters",
@@ -121,5 +119,5 @@
    "text": "CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with"
   }
  ],
- "status": "running"
+ "status": "idle"
 }
