@@ -1,0 +1,141 @@
+{
+  "id": "swamp_lantern_moth",
+  "name": "Bogmoth",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Its eyes are painted on. Nobody believes it.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Large brown moth with two glowing green eye-spots on its wings, a furry body, long antennae, wings spread.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "swamp_lantern_moth/rotations/south.webp",
+    "south-east": "swamp_lantern_moth/rotations/south-east.webp",
+    "east": "swamp_lantern_moth/rotations/east.webp",
+    "north-east": "swamp_lantern_moth/rotations/north-east.webp",
+    "north": "swamp_lantern_moth/rotations/north.webp",
+    "north-west": "swamp_lantern_moth/rotations/north-west.webp",
+    "west": "swamp_lantern_moth/rotations/west.webp",
+    "south-west": "swamp_lantern_moth/rotations/south-west.webp"
+  },
+  "sheet": "swamp_lantern_moth/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4917285d-dd3b-4a23-879d-eb970fc32ce2",
+  "seed": 1489252623,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:29:49+00:00",
+  "elapsed_s": 352.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.693,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.698,
+        "bbox": [
+          1,
+          6,
+          39,
+          32
+        ],
+        "fill": 0.618,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.737,
+        "bbox": [
+          2,
+          6,
+          35,
+          32
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.732,
+        "bbox": [
+          11,
+          6,
+          29,
+          32
+        ],
+        "fill": 0.292,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.712,
+        "bbox": [
+          5,
+          6,
+          33,
+          32
+        ],
+        "fill": 0.455,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.693,
+        "bbox": [
+          1,
+          7,
+          39,
+          32
+        ],
+        "fill": 0.594,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.707,
+        "bbox": [
+          7,
+          6,
+          34,
+          32
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.726,
+        "bbox": [
+          11,
+          6,
+          29,
+          32
+        ],
+        "fill": 0.292,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.747,
+        "bbox": [
+          5,
+          6,
+          38,
+          32
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      }
+    }
+  }
+}
