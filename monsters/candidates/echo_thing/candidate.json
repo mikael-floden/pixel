@@ -1,0 +1,140 @@
+{
+  "id": "echo_thing",
+  "name": "Echo",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It says your name after you do, a little too late.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Faint grey doubled silhouette of a human shape, two overlapping outlines slightly out of step, no face.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "echo_thing/rotations/south.webp",
+    "south-east": "echo_thing/rotations/south-east.webp",
+    "east": "echo_thing/rotations/east.webp",
+    "north-east": "echo_thing/rotations/north-east.webp",
+    "north": "echo_thing/rotations/north.webp",
+    "north-west": "echo_thing/rotations/north-west.webp",
+    "west": "echo_thing/rotations/west.webp",
+    "south-west": "echo_thing/rotations/south-west.webp"
+  },
+  "sheet": "echo_thing/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f60fa710-6d44-4d80-9974-37482adf2dab",
+  "seed": 444091632,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:33:18+00:00",
+  "elapsed_s": 355.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.772,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.772,
+        "bbox": [
+          15,
+          5,
+          74,
+          83
+        ],
+        "fill": 0.594,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.833,
+        "bbox": [
+          21,
+          6,
+          72,
+          84
+        ],
+        "fill": 0.514,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.845,
+        "bbox": [
+          32,
+          6,
+          61,
+          84
+        ],
+        "fill": 0.292,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.796,
+        "bbox": [
+          24,
+          4,
+          71,
+          83
+        ],
+        "fill": 0.479,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.79,
+        "bbox": [
+          17,
+          4,
+          71,
+          82
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.789,
+        "bbox": [
+          18,
+          4,
+          64,
+          83
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.862,
+        "bbox": [
+          28,
+          6,
+          58,
+          84
+        ],
+        "fill": 0.302,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.831,
+        "bbox": [
+          17,
+          6,
+          68,
+          84
+        ],
+        "fill": 0.514,
+        "touches_edge": false
+      }
+    }
+  }
+}
