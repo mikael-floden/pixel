@@ -1,0 +1,141 @@
+{
+  "id": "marsh_widow",
+  "name": "Marshwidow",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "She waits for a man who went out on the ice.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Tall thin woman in a black veil and dress soaked and dripping, hands white and bloated, standing in ankle-deep water, still.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "marsh_widow/rotations/south.webp",
+    "south-east": "marsh_widow/rotations/south-east.webp",
+    "east": "marsh_widow/rotations/east.webp",
+    "north-east": "marsh_widow/rotations/north-east.webp",
+    "north": "marsh_widow/rotations/north.webp",
+    "north-west": "marsh_widow/rotations/north-west.webp",
+    "west": "marsh_widow/rotations/west.webp",
+    "south-west": "marsh_widow/rotations/south-west.webp"
+  },
+  "sheet": "marsh_widow/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8f753034-4f2b-474c-bf27-585d88a65a76",
+  "seed": 1048608402,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:24:56+00:00",
+  "elapsed_s": 668.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.657,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.695,
+        "bbox": [
+          11,
+          1,
+          78,
+          87
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.748,
+        "bbox": [
+          11,
+          1,
+          78,
+          87
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.732,
+        "bbox": [
+          11,
+          1,
+          77,
+          87
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.663,
+        "bbox": [
+          11,
+          1,
+          78,
+          87
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.657,
+        "bbox": [
+          11,
+          1,
+          78,
+          87
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.681,
+        "bbox": [
+          11,
+          1,
+          78,
+          87
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.712,
+        "bbox": [
+          11,
+          1,
+          78,
+          87
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.743,
+        "bbox": [
+          11,
+          1,
+          78,
+          87
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      }
+    }
+  }
+}
