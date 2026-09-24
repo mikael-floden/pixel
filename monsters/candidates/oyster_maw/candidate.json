@@ -1,0 +1,140 @@
+{
+  "id": "oyster_maw",
+  "name": "Oystermaw",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Its pearl is the size of a man's head, and it is not for sale.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Giant grey oyster shell open on a pink interior full of teeth, a pearl eye, moving on a thick foot of flesh.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "oyster_maw/rotations/south.webp",
+    "south-east": "oyster_maw/rotations/south-east.webp",
+    "east": "oyster_maw/rotations/east.webp",
+    "north-east": "oyster_maw/rotations/north-east.webp",
+    "north": "oyster_maw/rotations/north.webp",
+    "north-west": "oyster_maw/rotations/north-west.webp",
+    "west": "oyster_maw/rotations/west.webp",
+    "south-west": "oyster_maw/rotations/south-west.webp"
+  },
+  "sheet": "oyster_maw/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "67242438-5f42-4f7d-9556-4e440a9ac84c",
+  "seed": 1308445844,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:10:21+00:00",
+  "elapsed_s": 200.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.652,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.652,
+        "bbox": [
+          37,
+          15,
+          183,
+          207
+        ],
+        "fill": 0.559,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.7,
+        "bbox": [
+          43,
+          15,
+          176,
+          210
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.72,
+        "bbox": [
+          51,
+          12,
+          179,
+          211
+        ],
+        "fill": 0.508,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.709,
+        "bbox": [
+          44,
+          13,
+          180,
+          204
+        ],
+        "fill": 0.518,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.684,
+        "bbox": [
+          37,
+          13,
+          189,
+          200
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.703,
+        "bbox": [
+          45,
+          13,
+          180,
+          204
+        ],
+        "fill": 0.514,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.7,
+        "bbox": [
+          45,
+          13,
+          173,
+          212
+        ],
+        "fill": 0.508,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.7,
+        "bbox": [
+          42,
+          14,
+          182,
+          205
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      }
+    }
+  }
+}
