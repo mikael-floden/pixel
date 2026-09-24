@@ -1,0 +1,149 @@
+{
+  "id": "reed_pipe_player",
+  "name": "Reedpiper",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Its tune carries across the fen and the fen follows it.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Thin green figure of woven reeds with a bird skull head, playing a set of reed pipes, water dripping from its feet.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "reed_pipe_player/rotations/south.webp",
+    "south-east": "reed_pipe_player/rotations/south-east.webp",
+    "east": "reed_pipe_player/rotations/east.webp",
+    "north-east": "reed_pipe_player/rotations/north-east.webp",
+    "north": "reed_pipe_player/rotations/north.webp",
+    "north-west": "reed_pipe_player/rotations/north-west.webp",
+    "west": "reed_pipe_player/rotations/west.webp",
+    "south-west": "reed_pipe_player/rotations/south-west.webp"
+  },
+  "sheet": "reed_pipe_player/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "105804fb-d620-4d4e-9c6e-8c0ffd67d43d",
+  "seed": 740220117,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:23:37+00:00",
+  "elapsed_s": 614.1,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.805,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.805,
+        "bbox": [
+          9,
+          1,
+          73,
+          88
+        ],
+        "fill": 0.719,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.832,
+        "bbox": [
+          18,
+          1,
+          72,
+          88
+        ],
+        "fill": 0.607,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.832,
+        "bbox": [
+          22,
+          1,
+          63,
+          88
+        ],
+        "fill": 0.461,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.826,
+        "bbox": [
+          22,
+          1,
+          83,
+          88
+        ],
+        "fill": 0.685,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.823,
+        "bbox": [
+          15,
+          2,
+          77,
+          87
+        ],
+        "fill": 0.681,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.815,
+        "bbox": [
+          18,
+          1,
+          69,
+          88
+        ],
+        "fill": 0.573,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.832,
+        "bbox": [
+          13,
+          1,
+          64,
+          88
+        ],
+        "fill": 0.573,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.83,
+        "bbox": [
+          3,
+          1,
+          69,
+          88
+        ],
+        "fill": 0.741,
+        "touches_edge": true
+      }
+    }
+  }
+}
