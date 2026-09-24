@@ -8,7 +8,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
-import { buildBoundaryPixels, patternSheetPaths, patternSheets, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
+import { buildBoundaryPixels, patternSheetPaths, patternSheets, slopeLift, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
+import { dressKey, surfaceY } from "../../client/src/tiles3runtime.js";
 // @ts-expect-error — plain .mjs helper shared with the build scripts
 import { imgRGBA } from "../../scripts/imagelib.mjs";
 
@@ -382,4 +383,21 @@ test("buildBoundaryPixels with a slope: the other side is shifted `lift` rows do
     if (isB === liftedB) moved++; else missed++;
   }
   assert.ok(missed < moved / 50, `the mask curve rides with the raster (${moved} agree, ${missed} do not)`);
+});
+
+test("the occluder pass anchors a raise's cap where the ground pass paints it: `rise` rows up (dressKey, surfaceY)", { skip }, () => {
+  const art = { kind: "plate", path: "tiles/slopes/grass/a14_s02/post/tile_10.x.webp", w: 64, h: 46, topOnly: true, rise: 4 };
+  const raise = { index: 10, dir: "d", file: art.path, ramp: false, h: 46, rise: 4, cut: 0 };
+  const cut = { ...raise, index: 12, cut: 4 };
+  const cell = (kind: "wall" | "field", slope: typeof raise | undefined) => ({ x: 1, y: 1, level: 3, ground: "grass", kind, dressed: true, art, slope, sx: 100, sy: 200, pasteY: 200, w: 64, h: 46 }) as any;
+  const t3 = { plate: () => "key" } as any;
+  assert.equal(slopeLift(cell("wall", raise)), 4);
+  assert.equal(slopeLift(cell("wall", cut)), 0);
+  assert.equal(slopeLift(cell("wall", undefined)), 0);
+  assert.equal(dressKey(t3, cell("wall", raise))!.y, 196, "a dressed wall cap's sprite rides 4 rows up with its raise");
+  assert.equal(dressKey(t3, cell("wall", cut))!.y, 200, "a cut stays at the level");
+  assert.equal(dressKey(t3, cell("wall", undefined))!.y, 200);
+  assert.equal(surfaceY(cell("field", raise)), 196, "a raised field cell's surface anchor rides up too");
+  assert.equal(surfaceY(cell("field", cut)), 200);
+  assert.equal(surfaceY(cell("field", undefined)), 200);
 });

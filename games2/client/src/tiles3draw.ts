@@ -1218,7 +1218,7 @@ function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
  *  the two (15 - 2 x rise: 7 px at the published 4, none from 8). Drawn at
  *  the level, as 834b119e2b did, a raise SANK its cell 4 px instead — the
  *  slope nobody could see. A ramp's taller frame carries its own rise. */
-function slopeLift(cell: Tiles3Cell): number {
+export function slopeLift(cell: Tiles3Cell): number {
   const sl = cell.slope;
   return sl && !sl.ramp && !sl.cut ? sl.rise : 0;
 }

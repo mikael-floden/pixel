@@ -53,7 +53,7 @@ import { PLATE_H,
   type World3View,
   TopsDoc,
 } from "./tiles3";
-import {
+import { slopeLift,
   artKey,
   assetPath,
   patternSheetPaths,
@@ -757,7 +757,11 @@ export function dressKey(t3: Tiles3Textures, cell: Tiles3Cell): { key: string; x
   const art = cell.art;
   if (!art || art.kind === "liquid") return null;
   const key = t3.plate(art, cell.ground);
-  return key ? { key, x: cell.sx, y: cell.pasteY ?? cell.sy } : null;
+  // A RAISE HANGS ITS PLATE `rise` ROWS UP (tiles3draw slopeLift) — the same
+  // anchor the ground pass paints it at. Without it this sprite landed on top
+  // of the ground texture at the plain anchor, the sunk picture over the
+  // raised one, and no slope ever showed on a terrace (2026-09-24).
+  return key ? { key, x: cell.sx, y: (cell.pasteY ?? cell.sy) - slopeLift(cell) } : null;
 }
 
 /** WHERE `surfaceKey`'S RASTER IS PASTED, and the reason this function exists.
@@ -779,7 +783,7 @@ export function surfaceY(cell: Tiles3Cell): number | null {
   if (cell.kind === "wall") return null;
   // A ramp's taller frame hangs above the plate's (tiles3draw's surface op).
   const extra = cell.art && cell.art.kind !== "liquid" ? Math.max(0, cell.art.h - PLATE_H) : 0;
-  return (cell.pasteY ?? cell.sy) - extra;
+  return (cell.pasteY ?? cell.sy) - extra - slopeLift(cell); // a raise hangs its plate up, as in the ground pass
 }
 
 /** The column's REPRESENTATIVE course — the streaming guard and the fallback,
