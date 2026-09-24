@@ -1,9 +1,9 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:01:15+00:00",
+  "updated_at": "2026-09-24T22:02:03+00:00",
   "health": "running",
-  "current": "CLAIMED — HE IS REVIEWING THE NEW v3 BASES LIVE, one press every ~30s. Recording his candidate approvals: hedge_maw (21:56:51Z, SHIPPED be8abad77) + starfish_walker (21:58:37Z), sand_dollar_golem (21:59:33Z), boulder_toad (22:00:19Z), sea_glass_sprite (22:00:32Z) — all approved r1. animate.py approve --ids <them> -> manifest review=approved + APPROVED tag on PixelLab, index rebuilt from the filesystem. No entry cleared (law 2), no generation, $0.00. FILES: monsters/candidates/{hedge_maw,starfish_walker,sand_dollar_golem,boulder_toad,sea_glass_sprite}/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT MINE: his loom_widow REJECTION (21:59:45Z) — a drop rewrites monsters/config/candidates.json while monsters-candidates.yml is mid-run over the 200 bases and coordination/monsters.json names that file in flight. Also not mine: live/feedback/monsters.json, held in flight.",
+  "current": "CLAIMED (final pass) — his live candidate review keeps landing; recording bog_skull_stack, scree_lizard, snow_troll the same way as the five already shipped (animate.py approve --ids -> review=approved + APPROVED tag, index rebuilt). No entry cleared, no generation, $0.00. FILES: monsters/candidates/<those>/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT MINE, stated in the release: his loom_widow REJECTION (21:59:45Z), and anything he presses after this pass.",
   "progress": {
     "unit": "his 21:56-22:00Z candidate approvals",
     "entries_taken": 5,
