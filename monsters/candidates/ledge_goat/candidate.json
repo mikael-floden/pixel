@@ -1,0 +1,149 @@
+{
+  "id": "ledge_goat",
+  "name": "Ledgegoat",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It carries its ledge because it trusts no other.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Shaggy grey mountain goat with horns grown into a full ring, standing on two legs on a fragment of ledge it carries.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ledge_goat/rotations/south.webp",
+    "south-east": "ledge_goat/rotations/south-east.webp",
+    "east": "ledge_goat/rotations/east.webp",
+    "north-east": "ledge_goat/rotations/north-east.webp",
+    "north": "ledge_goat/rotations/north.webp",
+    "north-west": "ledge_goat/rotations/north-west.webp",
+    "west": "ledge_goat/rotations/west.webp",
+    "south-west": "ledge_goat/rotations/south-west.webp"
+  },
+  "sheet": "ledge_goat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f0f0e3dd-35b3-4163-ad72-308462a4425d",
+  "seed": 351533523,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:07:22+00:00",
+  "elapsed_s": 1866.3,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.721,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.721,
+        "bbox": [
+          0,
+          4,
+          79,
+          88
+        ],
+        "fill": 0.857,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.804,
+        "bbox": [
+          2,
+          4,
+          75,
+          88
+        ],
+        "fill": 0.792,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.754,
+        "bbox": [
+          4,
+          4,
+          72,
+          88
+        ],
+        "fill": 0.738,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.732,
+        "bbox": [
+          10,
+          4,
+          72,
+          88
+        ],
+        "fill": 0.673,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.749,
+        "bbox": [
+          11,
+          4,
+          77,
+          88
+        ],
+        "fill": 0.716,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.743,
+        "bbox": [
+          14,
+          4,
+          83,
+          88
+        ],
+        "fill": 0.748,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.768,
+        "bbox": [
+          12,
+          4,
+          83,
+          88
+        ],
+        "fill": 0.77,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.807,
+        "bbox": [
+          12,
+          4,
+          76,
+          88
+        ],
+        "fill": 0.694,
+        "touches_edge": true
+      }
+    }
+  }
+}
