@@ -1,0 +1,143 @@
+{
+  "id": "glutton_toad",
+  "name": "Gluttoad",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It ate the pond, then the frogs, then the man who came to look.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Enormously fat brown toad with a belly dragging on the ground, warty skin, a mouth wide enough for a sheep, tiny gold eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "glutton_toad/rotations/south.webp",
+    "south-east": "glutton_toad/rotations/south-east.webp",
+    "east": "glutton_toad/rotations/east.webp",
+    "north-east": "glutton_toad/rotations/north-east.webp",
+    "north": "glutton_toad/rotations/north.webp",
+    "north-west": "glutton_toad/rotations/north-west.webp",
+    "west": "glutton_toad/rotations/west.webp",
+    "south-west": "glutton_toad/rotations/south-west.webp"
+  },
+  "sheet": "glutton_toad/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8c77014d-932c-4eda-9c23-687f7ec58328",
+  "seed": 775368388,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:12:57+00:00",
+  "elapsed_s": 2.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.739,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.739,
+        "bbox": [
+          2,
+          11,
+          86,
+          79
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.808,
+        "bbox": [
+          7,
+          11,
+          81,
+          80
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.801,
+        "bbox": [
+          7,
+          9,
+          76,
+          79
+        ],
+        "fill": 0.624,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.771,
+        "bbox": [
+          6,
+          7,
+          80,
+          80
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.744,
+        "bbox": [
+          9,
+          8,
+          79,
+          76
+        ],
+        "fill": 0.615,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.781,
+        "bbox": [
+          9,
+          7,
+          82,
+          80
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.808,
+        "bbox": [
+          12,
+          9,
+          81,
+          79
+        ],
+        "fill": 0.624,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.816,
+        "bbox": [
+          7,
+          11,
+          81,
+          80
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      }
+    }
+  }
+}
