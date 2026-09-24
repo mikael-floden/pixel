@@ -1,0 +1,141 @@
+{
+  "id": "mire_crab_king",
+  "name": "Mirecrab",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It holds the ford, and everyone who crosses pays.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Massive flat mud-brown crab with a crown of snapped reeds, a mossy shell, two uneven pincers, stalk eyes.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mire_crab_king/rotations/south.webp",
+    "south-east": "mire_crab_king/rotations/south-east.webp",
+    "east": "mire_crab_king/rotations/east.webp",
+    "north-east": "mire_crab_king/rotations/north-east.webp",
+    "north": "mire_crab_king/rotations/north.webp",
+    "north-west": "mire_crab_king/rotations/north-west.webp",
+    "west": "mire_crab_king/rotations/west.webp",
+    "south-west": "mire_crab_king/rotations/south-west.webp"
+  },
+  "sheet": "mire_crab_king/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5920c438-1c85-44de-9760-055b682ea630",
+  "seed": 1511678494,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:57:14+00:00",
+  "elapsed_s": 216.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.606,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.606,
+        "bbox": [
+          5,
+          13,
+          219,
+          198
+        ],
+        "fill": 0.789,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.691,
+        "bbox": [
+          6,
+          11,
+          219,
+          211
+        ],
+        "fill": 0.849,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.679,
+        "bbox": [
+          7,
+          11,
+          215,
+          212
+        ],
+        "fill": 0.833,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.678,
+        "bbox": [
+          7,
+          12,
+          213,
+          212
+        ],
+        "fill": 0.821,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.651,
+        "bbox": [
+          9,
+          15,
+          214,
+          207
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.676,
+        "bbox": [
+          12,
+          12,
+          218,
+          211
+        ],
+        "fill": 0.817,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.683,
+        "bbox": [
+          9,
+          11,
+          218,
+          210
+        ],
+        "fill": 0.829,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.69,
+        "bbox": [
+          4,
+          11,
+          218,
+          211
+        ],
+        "fill": 0.853,
+        "touches_edge": false
+      }
+    }
+  }
+}
