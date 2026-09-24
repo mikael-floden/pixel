@@ -8,6 +8,7 @@ import { DemoButton } from "./hudbutton";
 import { birdDensity, setBirdDensity } from "./density";
 import { OUTDOOR_FADE_MS, OutdoorGain, readIndoor } from "./outdoor";
 import { ZoneField, levelFromProbe, pickFromProbe, sourceFromProbe } from "./zonefield";
+import { directorRunsNow } from "./cadence";
 import { packRef, REF_SCALE } from "./zonefloor";
 import { ZoneLines } from "./zonelines";
 import { CLOUD_OF, MIST_EFFECT, forcedGloom, setGloomField } from "../weather/gloom";
@@ -212,7 +213,8 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       const dt = lastTick ? Math.min(500, now - lastTick) : phaserDt;
       lastTick = now;
       envAge += dt;
-      if (envAge >= ENV_SAMPLE_MS) {
+      const envFrame = envAge >= ENV_SAMPLE_MS;
+      if (envFrame) {
         envAge = 0;
         const t0 = performance.now();
         ctx.env = sampleEnv(ctx.env, cam.worldView.centerX, cam.worldView.centerY);
@@ -227,7 +229,13 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         bill("_env", t1 - t0, t0);
         bill("_gloom", t2 - t1, t1);
         directorDue = true;
-      } else if (directorDue) {
+      }
+      /* THE DIRECTOR'S TURN (runtime/cadence.ts): the frame after an env
+       * frame while frames are fast; the SAME frame when the frame is already
+       * longer than the sample period, because then the next frame is an env
+       * frame too and "the frame after" never comes — which is how every
+       * episode went dark on slow clients from 2026-09-23 until this. */
+      if (directorRunsNow(envFrame, directorDue, dt, ENV_SAMPLE_MS)) {
         directorDue = false;
         const t0 = performance.now();
         safe(() => director.tick(ctx.env, ctx));
