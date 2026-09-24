@@ -1,0 +1,143 @@
+{
+  "id": "leech_mother",
+  "name": "Leechmother",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Every leech in the fen is hers and comes when she calls.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Bloated black leech with a ring of dozens of tiny leeches attached to her flanks, a round sucker mouth, glistening, rearing up.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "leech_mother/rotations/south.webp",
+    "south-east": "leech_mother/rotations/south-east.webp",
+    "east": "leech_mother/rotations/east.webp",
+    "north-east": "leech_mother/rotations/north-east.webp",
+    "north": "leech_mother/rotations/north.webp",
+    "north-west": "leech_mother/rotations/north-west.webp",
+    "west": "leech_mother/rotations/west.webp",
+    "south-west": "leech_mother/rotations/south-west.webp"
+  },
+  "sheet": "leech_mother/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "6797a165-3f9a-4f1b-834a-d9b787def1f0",
+  "seed": 2142957668,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T21:34:32+00:00",
+  "elapsed_s": 3.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.714,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.736,
+        "bbox": [
+          3,
+          3,
+          85,
+          85
+        ],
+        "fill": 0.868,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          6,
+          3,
+          75,
+          86
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.77,
+        "bbox": [
+          18,
+          4,
+          73,
+          85
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.714,
+        "bbox": [
+          9,
+          3,
+          76,
+          85
+        ],
+        "fill": 0.709,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.732,
+        "bbox": [
+          5,
+          4,
+          85,
+          85
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.716,
+        "bbox": [
+          14,
+          3,
+          80,
+          85
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.768,
+        "bbox": [
+          16,
+          4,
+          73,
+          85
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.799,
+        "bbox": [
+          14,
+          3,
+          84,
+          86
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      }
+    }
+  }
+}
