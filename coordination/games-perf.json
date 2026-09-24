@@ -1,11 +1,17 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T22:05:48+00:00",
+  "updated_at": "2026-09-24T23:21:19+00:00",
   "health": "running",
   "current": {
-    "unit": "IDLE after 500fb2ddd2 (deploying). Waiting for his next run; an ultracode investigation (read-only) is running.",
-    "since": "2026-09-24T22:05:48+00:00",
-    "files": []
+    "unit": "CLAIMED — the boundary's second resolve: Tiles3World.boundary(x, y, known?) takes the caller's already-resolved cell (the scene's cache, the worker's own call) instead of resolving it again; games' board lists tiles3 files FREE. Parity: 25,000 cells identical, 6-23 -> 0.8-4 µs per boundary.",
+    "since": "2026-09-24T23:21:19+00:00",
+    "files": [
+      "games2/client/src/tiles3runtime.ts (boundary(): one optional parameter)",
+      "games2/client/src/tiles3worker.ts (one call)",
+      "games2/client/src/scenes/WorldScene.ts (t3boundaryOf, a probe)",
+      "games2/scripts/probe-repaint.mjs",
+      "games2/docs/perf.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
@@ -39,6 +45,10 @@
     {
       "at": "2026-09-24T22:05:48+00:00",
       "text": "SHIPPED 500fb2ddd2 — REPAINT ONLY WHAT CAN BE SEEN SOON: a landed/owed/flipped cell farther than 256 px from the view is parked (t3stale) and repainted when the camera comes near, forgotten when it leaves the texture; groundHash/Snapshot/Snap flush parked cells first. Headless, two A/Bs that disagree — honest: cells repainted -18%, runs about equal (the first A/B's 184 -> 12 did not reproduce); parked cells on screen 0/96 samples. verify-cave, verify-wallband, verify-groundbracket green. ?groundlazy=0."
+    },
+    {
+      "at": "2026-09-24T23:21:19+00:00",
+      "text": "REVERTED 58da4b2202 (one ground job a frame) as bec16d326f: it moved ground work instead of removing it (3/3 skeptics; his 09-03 'slicing only redistributes' verdict; his 2026-09-24 'don't move the cost somewhere else'). SHIPPED 64f81dce7f: the swim foam bakes into bytes, not a canvas (every water crossing on his loop stalled 20-130 ms per new foam key on CanvasTexture's read-back; headless 618 ms -> 0.2 ms mean per bake; 163 texels differ by 1). The ultracode investigation (42 agents, 3 skeptics per candidate) found the body of his hitches is a saturated main thread (work per frame predicts frames >50 ms, r=0.94), the regression +149 ms/s of ground work; everything else it proposed was refuted as too small or as moving work."
     }
   ],
   "requests": [
