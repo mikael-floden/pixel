@@ -412,7 +412,49 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
 - **THE FPS METER IS A DEV BUTTON** (maintainer 2026-09-24): Settings/dev
   "fps meter" mounts `fpsbadge.ts`'s corner readout (fps, worst frame,
   hitches over 5 s) and remembers per device (localStorage `ml-fps`, the
-  same switch `?fps=1`/`?fps=0` sets); `unmountFpsBadge` takes it down.
+  same switch `?fps=1`/`?fps=0` sets); `unmountFpsBadge` takes it down. It
+  counts the frames the game RENDERED (from the pacer) and tags "paced";
+  a hitch is three vsyncs or more (over 45 ms — 50.0 is exactly three and
+  straddled the old "over 50").
+- **FRAME PACING: A STEADY 30 WHEN 60 CANNOT BE HELD** (maintainer
+  2026-09-24, "The FPS is not stable! Think outside the box";
+  `client/src/pacing.ts`, `pacing.test.ts`). His 16:50 run on 0b274482:
+  frame p50 17.1-23.0 ms against a 16.7 ms vsync — the work sits ON the
+  budget, so a third of the frames make their vsync and the rest slip to
+  the next (17, 33, 17, 33) while Phaser's 10-tick smoothed delta (~25 ms)
+  moves the world by an amount that agrees with neither: the alternation IS
+  the instability. The pacer wraps the loop's callback (rAF still ticks
+  every vsync; a skipped tick costs nothing): the step runs on the tick at
+  or past `PACE_MS - vsync/2` — every 2nd at 60 Hz, 3rd at 90, 4th at 120,
+  never an N/N+1 wobble on jitter — and after a long frame the next tick
+  runs at once with no catch-up frame behind it (50 then 33, never 17).
+  `auto` (default) locks when a quarter of a second's ticks arrive later
+  than the 60 Hz frame plus half a vsync (a missed 60 Hz frame on any
+  display: a 120 Hz phone holding a steady 60 on every 2nd vsync is never
+  late), unlocks after 3 s of step work under 55% of the 60 Hz frame and
+  never inside 15 s of the lock (a desktop holding 60 never locks, a phone
+  at 15 ms of work never flaps); `30` always, `60` never — Settings→Dev
+  "frame pacing" cycles them, `?pace=auto|30|60`, localStorage `ml-pace`.
+  The step's delta is the skipped ticks' smoothed deltas SUMMED and
+  `game.loop.delta` is set to agree, so every ease, tween and animation
+  keeps its time constant; the decision is on RAW wall clock (the smoothed
+  value lags a hitch by ten ticks and would skip the tick after a slow
+  frame). The vsync is each second's smallest tick gap (nothing arrives
+  faster than the display); the skip threshold's period is NEVER RAISED — a
+  second where every frame missed reads as a 30 Hz display, and a threshold
+  built on 33 ms lets the next light frame through at 60 (an under-estimate
+  is harmless: an LTPO panel dropping 120→60 still paces every 2nd).
+  Rejected: Phaser's `fps.limit` — it sums the SMOOTHED delta against
+  exactly 1000/limit, which two 60 Hz ticks reach only when neither jittered
+  short (33/33/50), and it is bound at `start()`, not switchable. TRAP: the
+  loop's callback is NOOP until `Game.start()` binds the step (after the
+  default textures decode, later than `new Phaser.Game` returns), so the
+  wrap is taken at the first PRE_STEP, never at construction (the probe saw
+  zero steps; `paceInstall` test). The
+  beacon's `pace` block (mode, paced share, `tickHz`, step work p50/p90/max)
+  says why `frames.p50` reads 33; `perf-read.mjs` prints it as "pace". Half
+  the steps a second is half the CPU a second: his window 4 ran the fixed
+  benchmark at 21.4 ms — a throttled phone — and a paced game runs cooler.
 - **AMBIENT SCANS AND BURSTS ARE BOUNDED PER FRAME** (Task 3 of his order,
   games-perf 2026-09-24). Inside his 14:01 run's worst frames the timelines
   marked `amb:foam` 6.7 ms mean / 11.1 max: foam's whole lattice walk in one

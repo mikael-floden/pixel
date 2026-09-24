@@ -152,6 +152,7 @@ import { installLoaf, loafTake, loafAt } from "../perfloaf";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
 import { tlArm, tlMark, tlTake, tlCompact, clock0, type Mark } from "../perftimeline";
 import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
+import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -2776,6 +2777,10 @@ export class WorldScene extends Phaser.Scene {
       final,
       beacon: null as Record<string, unknown> | null, // stamped by perfPost: what became of the posts before this one
       frames: { ...(snap.frames as Record<string, number>), ...hist, rafHz: rafHz(frameList) },
+      /* THE PACER'S ROW (pacing.ts): whether the window ran paced, how much
+       * of it, the display's own rate and the step's work inside the callback
+       * — `frames.p50` is 33 under a paced 30 and this says why. */
+      pace: paceTake(),
       sections: perFrame,
       sectionsPeak,
       // HEAP GROWTH BY SECTION, KB PER FRAME (the dozen largest) — the
@@ -5705,6 +5710,16 @@ export class WorldScene extends Phaser.Scene {
           get: () => fpsBadgeOn(),
           state: () => (fpsBadgeOn() ? "on screen" : "off"),
         },
+        /* FRAME PACING (pacing.ts; maintainer 2026-09-24: "The FPS is not
+         * stable!"): a steady 30 when 60 cannot be held. auto → 30 → 60, the
+         * A/B he runs with the fps meter on (its "paced" tag); remembered per
+         * device (localStorage ml-pace, `?pace=`). */
+        {
+          label: "frame pacing",
+          act: () => paceCycle(),
+          get: () => pacedNow(),
+          state: () => paceLabel(),
+        },
       ],
     });
     mountPageFrame();
@@ -5808,6 +5823,10 @@ export class WorldScene extends Phaser.Scene {
     (window as any).__ml = {
       players: () => this.avatars.size,
       myId: () => this.myId,
+      // The pacer's state and its dev button, for the gates (pacing.ts).
+      pace: () => ({ mode: paceMode(), paced: pacedNow(), label: paceLabel() }),
+      paceCycle: () => paceCycle(),
+      paceTake: () => paceTake(),
       liveTuning: () => liveTuningSnapshot(),
       // Live feed for the HUD Map tab (hud.ts polls per rAF): the current world
       // id + grid size (cells) and the LOCAL player's SMOOTH predicted cell —

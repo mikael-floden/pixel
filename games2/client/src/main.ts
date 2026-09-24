@@ -1,6 +1,7 @@
 import { renderRes, setFullBacking } from "./resolution";
 import { zoneAt, zoneGrid, CELL_WU, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
 import { mountFpsBadge } from "./fpsbadge";
+import { paceInstall } from "./pacing";
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
@@ -488,6 +489,9 @@ async function boot() {
   });
   game.registry.set("renderScale", rsNow());
   game.registry.set("renderRes", renderRes());
+  // FRAME PACING (pacing.ts): a steady 30 when 60 cannot be held. Wraps the
+  // loop's step; `?pace=auto|30|off` / Settings→Dev "frame pacing" choose.
+  paceInstall(game);
   // A REAL touch device — hud.ts's touchDevice(), inlined (no import: keep
   // main.ts free of the HUD module graph). Gates the rotation coherence
   // check below so desktop is never affected.

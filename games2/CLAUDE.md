@@ -102,10 +102,10 @@ push, no PRs unless asked.
   (`artqueue.ts`): priority order, a BYTE budget per frame, no kind's strips
   before a monster of it exists, its fight art raised when a fight starts,
   scenery animations last. Decoded on a worker, uploaded in bands
-  (`artworker.ts`); boxes ride the bands, alpha and pixels come from the
-  worker on demand. THREE NEVERS (each a decode or a pipeline drain per strip
-  on the phone): `texImage2D` an `<img>` for streamed art, measure a streamed
-  image's pixels on the frame thread, read a banded texture back in the frame.
+  (`artworker.ts`; boxes, alpha and pixels on demand). THREE NEVERS (each a
+  decode or a pipeline drain per strip on the phone): `texImage2D` an
+  `<img>` for streamed art, measure a streamed image's pixels on the frame
+  thread, read a banded texture back in the frame.
 - A DynamicTexture BRACKET is the GPU cost (a capture clear + blit): an
   erase is the object's own ERASE blend inside the pass; the capture binds
   the rows in use (`coverRaster`).
@@ -154,13 +154,15 @@ push, no PRs unless asked.
 **Perf** (`docs/perf.md`)
 - The capture pool is ALWAYS ON: no draw bracket may resize Phaser's capture
   target (that re-allocation WAS the new-area lag).
-- The ground scrolls, paints in slices, repaints landed cells (budgeted), and
-  a requested full paint in play is sliced too (`queueFullGroundSlices`);
-  compositions budgeted (`GROUND_COMPOSE_MS` 2) — pixel-identical to a full
-  paint (`__ml.groundHash`); a landing's occluder walk is the incomplete set
-  (`occIncomplete`). A tab-in poisons the latch. `?ground=legacy` bisects.
+- The ground scrolls, paints in slices, repaints landed cells (budgeted); a
+  full paint in play is sliced (`queueFullGroundSlices`); compositions
+  budgeted (`GROUND_COMPOSE_MS` 2); pixel-identical to a full paint
+  (`__ml.groundHash`); a landing walks `occIncomplete`. A tab-in poisons
+  the latch; `?ground=legacy` bisects.
+- Pacing (`pacing.ts`): a steady 30 when 60 is not held (auto/30/60 in
+  Settings→Dev).
 - The beacon: `sections` are window means, `counts` snapshots (never
-  correlate them); allowlisted server-side (`verify-beacon.mjs`);
+  correlate); allowlisted server-side (`verify-beacon.mjs`);
   `perf-read.mjs` reads a run.
 
 **Movement** (`docs/movement.md`)
