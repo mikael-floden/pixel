@@ -1,0 +1,147 @@
+{
+  "id": "net_wraith",
+  "name": "Netwraith",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Caught in the net he was mending. He is still mending it.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Ghostly figure tangled in old fishing net, rotted rope trailing, fish bones caught in the mesh, faint blue glow.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "net_wraith/rotations/south.webp",
+    "south-east": "net_wraith/rotations/south-east.webp",
+    "east": "net_wraith/rotations/east.webp",
+    "north-east": "net_wraith/rotations/north-east.webp",
+    "north": "net_wraith/rotations/north.webp",
+    "north-west": "net_wraith/rotations/north-west.webp",
+    "west": "net_wraith/rotations/west.webp",
+    "south-west": "net_wraith/rotations/south-west.webp"
+  },
+  "sheet": "net_wraith/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "dfd4a1c8-6a03-4f88-90c5-7757325cf8f7",
+  "seed": 1182691613,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:42:05+00:00",
+  "elapsed_s": 206.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.839,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.85,
+        "bbox": [
+          6,
+          2,
+          81,
+          86
+        ],
+        "fill": 0.814,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.883,
+        "bbox": [
+          13,
+          2,
+          78,
+          88
+        ],
+        "fill": 0.722,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.864,
+        "bbox": [
+          7,
+          1,
+          62,
+          88
+        ],
+        "fill": 0.618,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.854,
+        "bbox": [
+          10,
+          1,
+          68,
+          88
+        ],
+        "fill": 0.652,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.839,
+        "bbox": [
+          9,
+          1,
+          79,
+          88
+        ],
+        "fill": 0.786,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.858,
+        "bbox": [
+          21,
+          1,
+          76,
+          88
+        ],
+        "fill": 0.618,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.862,
+        "bbox": [
+          26,
+          1,
+          81,
+          88
+        ],
+        "fill": 0.618,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.882,
+        "bbox": [
+          10,
+          2,
+          77,
+          87
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      }
+    }
+  }
+}
