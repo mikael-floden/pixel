@@ -1,0 +1,141 @@
+{
+  "id": "frost_bitten_dog",
+  "name": "Bittendog",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "It waits outside the door for a master who went into the snow.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Thin grey dog with frostbite-black ears and paws, ribs showing, frost on its muzzle, loyal tired eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frost_bitten_dog/rotations/south.webp",
+    "south-east": "frost_bitten_dog/rotations/south-east.webp",
+    "east": "frost_bitten_dog/rotations/east.webp",
+    "north-east": "frost_bitten_dog/rotations/north-east.webp",
+    "north": "frost_bitten_dog/rotations/north.webp",
+    "north-west": "frost_bitten_dog/rotations/north-west.webp",
+    "west": "frost_bitten_dog/rotations/west.webp",
+    "south-west": "frost_bitten_dog/rotations/south-west.webp"
+  },
+  "sheet": "frost_bitten_dog/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0c331018-e43b-4e1d-ba5e-a6ec7646df84",
+  "seed": 489032282,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:46:17+00:00",
+  "elapsed_s": 184.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.717,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.75,
+        "bbox": [
+          12,
+          5,
+          70,
+          85
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.806,
+        "bbox": [
+          11,
+          5,
+          75,
+          85
+        ],
+        "fill": 0.661,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.762,
+        "bbox": [
+          3,
+          3,
+          84,
+          82
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.717,
+        "bbox": [
+          18,
+          3,
+          73,
+          84
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.729,
+        "bbox": [
+          23,
+          4,
+          72,
+          84
+        ],
+        "fill": 0.506,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.751,
+        "bbox": [
+          15,
+          4,
+          81,
+          84
+        ],
+        "fill": 0.682,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.761,
+        "bbox": [
+          3,
+          3,
+          84,
+          82
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.795,
+        "bbox": [
+          11,
+          5,
+          70,
+          85
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      }
+    }
+  }
+}
