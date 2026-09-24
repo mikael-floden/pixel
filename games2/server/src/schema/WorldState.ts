@@ -53,6 +53,11 @@ export class Player extends Schema {
    *  everything still in it (the same rule the hit-slow factor follows). */
   inputQueue: { ax: number; ay: number; running: boolean; seq?: number; dt: number; sm: number; route?: boolean; ac?: number }[] = [];
   timeCredit = 0; // seconds of integration budget (accrues with real time)
+  /** A HOP'S REPLAY CREDIT (WorldRoom.joinHandedOff): seconds of integration
+   *  the body may spend on the inputs its client replays after a crossing,
+   *  on top of timeCredit and spent first; gone at hopCreditUntil. */
+  hopCredit = 0;
+  hopCreditUntil = 0;
   lastMoving = false;
   jumpUntil = 0; // ms timestamp: jump window ends
   jumpReadyAt = 0; // ms timestamp: earliest next jump (cooldown)

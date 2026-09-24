@@ -292,7 +292,27 @@ export function noRouteRetryMs(streak: number, roamPauseMs: number): number {
 }
 const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
 const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
-const HANDOFF_INPUT_CREDIT_S = 2; // integration credit granted to a handed-over body for the inputs it buffered
+/** A HOP'S REPLAY CREDIT IS SIZED TO THE PROOF AND SPENT BEFORE THE BUDGET.
+ *  The client replays every input after the seq the new room adopted, in one
+ *  burst on bind — the tail the old room never acked, a join's latency of
+ *  running (hundreds of ms on a phone, seconds on its tail). The movement
+ *  tick integrates a burst against `timeCredit`, which it clamps to
+ *  INPUT_TIME_SLACK (0.25 s) before reading the first input, so the 2 s
+ *  granted into timeCredit here was cut to 0.25 s before it could be spent —
+ *  dead since the per-tick refresh — and every replayed input past the first
+ *  0.25 s was integrated at a fraction of its dt and acked anyway: the body
+ *  fell short of the client's prediction by the rest of the join and
+ *  reconciled backwards, 0.3-1.9 cells lost for good (measured; a 1 s burst
+ *  lost 3.7 cells). `hopCredit` is a second purse: at most
+ *  HANDOFF_INPUT_CREDIT_S, sized to how old the HOP is when the body is
+ *  adopted (`now - hot.since`, zone:go to adoption: the join's own latency,
+ *  and the burst still to come is that long again) plus
+ *  HANDOFF_CREDIT_SLACK_S for tick and clock granularity, spent before
+ *  timeCredit, and void HANDOFF_CREDIT_TTL_MS after the adoption — the burst
+ *  lands on bind, so a purse that outlived it would be a speed hack. */
+const HANDOFF_INPUT_CREDIT_S = 2;
+const HANDOFF_CREDIT_SLACK_S = 0.5;
+const HANDOFF_CREDIT_TTL_MS = 3000;
 
 /* THE HAND-OFF SURVIVES A ROLLOUT (games-perf on the maintainer's order,
  * 2026-09-23: "I was teleported back to the top of the mountain"). Both of
@@ -362,6 +382,8 @@ interface HotState {
   from: number;
   /** Date.now() when it was written — a copy presented after HANDOFF_TTL_S is refused. */
   at?: number;
+  /** When the crossing was NOTICED (`startHandoff`): the age of the hop at adoption sizes its replay credit. */
+  since?: number;
   name: string;
   character: string;
   accountId: string;
@@ -1106,6 +1128,7 @@ export class WorldRoom extends Room<WorldState> {
       this.placeAtSpawn(player);
       player.inputQueue.length = 0;
       player.timeCredit = 0;
+      player.hopCredit = 0;
       player.jumpUntil = 0;
     });
 
@@ -1298,6 +1321,7 @@ export class WorldRoom extends Room<WorldState> {
       player.elev = te ?? (this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0);
       player.inputQueue.length = 0;
       player.timeCredit = 0;
+      player.hopCredit = 0;
       player.jumpUntil = 0;
       this.fallPend.delete(player.pid); // an ASSIGNED elevation ends the fall it was in
     });
@@ -1944,12 +1968,16 @@ export class WorldRoom extends Room<WorldState> {
       // claiming more integration time than actually elapsed.
       const terrain = this.terrain;
       player.timeCredit = Math.min(player.timeCredit + dt, INPUT_TIME_SLACK);
+      if (player.hopCredit > 0 && now >= player.hopCreditUntil) player.hopCredit = 0; // the replay burst has landed or never came
       let moving = player.lastMoving;
       let running = player.running;
       while (player.inputQueue.length) {
         const inp = player.inputQueue.shift()!;
-        const eff = Math.min(inp.dt, player.timeCredit);
-        player.timeCredit -= eff;
+        // The hop's purse first (HANDOFF_INPUT_CREDIT_S), then the real-time budget.
+        const eff = Math.min(inp.dt, player.hopCredit + player.timeCredit);
+        const fromHop = Math.min(eff, player.hopCredit);
+        player.hopCredit -= fromHop;
+        player.timeCredit -= eff - fromHop;
         let r;
         if (terrain) {
           // Free a body overlapping a solid's margin BEFORE integrating (the
@@ -2684,6 +2712,7 @@ export class WorldRoom extends Room<WorldState> {
     for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
     player.inputQueue.length = 0;
     player.timeCredit = 0;
+    player.hopCredit = 0;
   }
 
   /** A monster dies: start the die clip (the schema entry lingers so every
@@ -3408,6 +3437,7 @@ export class WorldRoom extends Room<WorldState> {
       pid,
       from: this.zoneId,
       at: Date.now(),
+      since: p.handoff?.at,
       name: p.name,
       character: p.character,
       accountId: p.accountId,
@@ -3544,12 +3574,21 @@ export class WorldRoom extends Room<WorldState> {
     player.ep = Math.min(player.epMax, Math.max(0, hot.ep));
     player.inv = hot.inv.map((s) => ({ item: s.item, n: s.n }));
     player.seq = hot.seq;
-    // The client buffered its inputs while it swapped rooms (a matchmake and
-    // a socket on a phone: hundreds of ms) and replays them the moment it is
-    // bound. Without credit for that gap the burst is throttled to
-    // INPUT_TIME_SLACK (0.25 s) and the body snaps back to the border, then
-    // catches up — the "laggy" crossing. Grant the gap up front.
-    player.timeCredit = HANDOFF_INPUT_CREDIT_S;
+    // The client replays, the moment it is bound, every input after the seq
+    // adopted here (a matchmake and a socket on a phone: hundreds of ms of
+    // them). Without credit for that gap the burst is throttled to
+    // INPUT_TIME_SLACK (0.25 s) and the body falls short of its prediction,
+    // then snaps back — the "laggy" crossing. The purse is sized to the gap
+    // (see HANDOFF_INPUT_CREDIT_S); the full burst allowance opens with it.
+    const now = Date.now();
+    // The burst still to come is the join's own length again (the client keeps
+    // feeding the OLD room until it binds, and replays that here), so the hop's
+    // age since the crossing was noticed is the proof its size rests on.
+    const since = typeof hot.since === "number" ? hot.since : hot.at;
+    const age = typeof since === "number" ? Math.max(0, now - since) / 1000 : HANDOFF_INPUT_CREDIT_S;
+    player.hopCredit = Math.min(HANDOFF_INPUT_CREDIT_S, age + HANDOFF_CREDIT_SLACK_S);
+    player.hopCreditUntil = now + HANDOFF_CREDIT_TTL_MS;
+    player.timeCredit = INPUT_TIME_SLACK;
     player.torch = hot.torch;
     player.lastHitAt = hot.lastHitAt;
     player.lastFallAt = hot.lastFallAt ?? -100000;

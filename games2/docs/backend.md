@@ -131,8 +131,19 @@ found; gate `server/test/lawsize.test.ts`).
   input budget — the body snapped back. Now inputs keep flowing to the OLD
   room (its body keeps walking, and the neighbours' ghost of it with it), the
   client keeps a log of what it sent and replays everything after the cut into
-  the new room on bind, and the new room grants `HANDOFF_INPUT_CREDIT_S` (2 s)
-  of integration credit for the burst.
+  the new room on bind, and the new room grants a purse for the burst:
+  `Player.hopCredit`, at most `HANDOFF_INPUT_CREDIT_S` (2 s), sized to the
+  hop's age at adoption (`now - hot.since`, zone:go to adoption — the burst
+  still to come is that long again) plus `HANDOFF_CREDIT_SLACK_S` (0.5 s),
+  spent before the real-time budget and void `HANDOFF_CREDIT_TTL_MS` (3 s)
+  later. (It was granted INTO `timeCredit`, which the movement tick clamps to
+  `INPUT_TIME_SLACK` (0.25 s) before reading the first input — dead since the
+  per-tick refresh — so every replayed input past the first 0.25 s was
+  integrated at a fraction of its dt and acked anyway: the body fell short of
+  its prediction by the rest of the join and reconciled backwards, 0.3-1.9
+  cells lost for good, 3.7 on a 1 s burst. `server/test/hopcredit.test.ts`: a
+  0.6 s burst after a 300 ms hop lands whole; the same burst 3.5 s later gets
+  the ordinary 0.25 s; a 2.5 s burst after a 3 s hop gets 2 s, the cap.)
   THE CUT IS WHERE THE BODY IS WHEN THE NEW ROOM TAKES IT, NOT WHERE IT WAS
   WHEN THE CROSSING WAS NOTICED (maintainer 2026-09-13: "Why does the player
   lag and sometimes teleport backwards when running from one zone to
