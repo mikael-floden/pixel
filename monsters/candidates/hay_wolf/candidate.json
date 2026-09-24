@@ -1,0 +1,151 @@
+{
+  "id": "hay_wolf",
+  "name": "Haywolf",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Made at a harvest to frighten crows. It learned hunger from the crows.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Lean wolf built from bound dry straw, twine wrapped round its legs and muzzle, hollow dark eye sockets, loose stalks trailing like fur, stalking pose.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hay_wolf/rotations/south.webp",
+    "south-east": "hay_wolf/rotations/south-east.webp",
+    "east": "hay_wolf/rotations/east.webp",
+    "north-east": "hay_wolf/rotations/north-east.webp",
+    "north": "hay_wolf/rotations/north.webp",
+    "north-west": "hay_wolf/rotations/north-west.webp",
+    "west": "hay_wolf/rotations/west.webp",
+    "south-west": "hay_wolf/rotations/south-west.webp"
+  },
+  "sheet": "hay_wolf/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1d2e5af6-ac83-4a38-ad6c-066e101d97ff",
+  "seed": 2081874574,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:04:42+00:00",
+  "elapsed_s": 1.8,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.834,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.834,
+        "bbox": [
+          1,
+          1,
+          83,
+          87
+        ],
+        "fill": 0.911,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.871,
+        "bbox": [
+          0,
+          2,
+          77,
+          85
+        ],
+        "fill": 0.825,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.859,
+        "bbox": [
+          0,
+          2,
+          84,
+          88
+        ],
+        "fill": 0.933,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.85,
+        "bbox": [
+          0,
+          1,
+          80,
+          88
+        ],
+        "fill": 0.899,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.847,
+        "bbox": [
+          0,
+          1,
+          79,
+          87
+        ],
+        "fill": 0.877,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.849,
+        "bbox": [
+          7,
+          2,
+          84,
+          88
+        ],
+        "fill": 0.855,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.854,
+        "bbox": [
+          4,
+          2,
+          86,
+          88
+        ],
+        "fill": 0.911,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.875,
+        "bbox": [
+          13,
+          2,
+          88,
+          87
+        ],
+        "fill": 0.823,
+        "touches_edge": true
+      }
+    }
+  }
+}

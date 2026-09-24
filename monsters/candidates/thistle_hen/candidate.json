@@ -1,0 +1,143 @@
+{
+  "id": "thistle_hen",
+  "name": "Thistlehen",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Nobody owns her. Every farm thinks she belongs to the next one.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Round hen made of purple thistle heads, spiky green leaf wings, a tiny black beak, wiry brown legs, a puffed defensive silhouette.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "thistle_hen/rotations/south.webp",
+    "south-east": "thistle_hen/rotations/south-east.webp",
+    "east": "thistle_hen/rotations/east.webp",
+    "north-east": "thistle_hen/rotations/north-east.webp",
+    "north": "thistle_hen/rotations/north.webp",
+    "north-west": "thistle_hen/rotations/north-west.webp",
+    "west": "thistle_hen/rotations/west.webp",
+    "south-west": "thistle_hen/rotations/south-west.webp"
+  },
+  "sheet": "thistle_hen/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "013bd8a7-31d7-447d-8992-a05c0c093680",
+  "seed": 1125844260,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:04:33+00:00",
+  "elapsed_s": 3.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.72,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.789,
+        "bbox": [
+          3,
+          4,
+          37,
+          37
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.792,
+        "bbox": [
+          5,
+          2,
+          32,
+          38
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.773,
+        "bbox": [
+          11,
+          2,
+          32,
+          38
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.76,
+        "bbox": [
+          6,
+          3,
+          32,
+          37
+        ],
+        "fill": 0.552,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.72,
+        "bbox": [
+          3,
+          2,
+          37,
+          35
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.77,
+        "bbox": [
+          7,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.768,
+        "bbox": [
+          8,
+          2,
+          29,
+          38
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.798,
+        "bbox": [
+          8,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      }
+    }
+  }
+}

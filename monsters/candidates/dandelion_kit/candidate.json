@@ -1,0 +1,141 @@
+{
+  "id": "dandelion_kit",
+  "name": "Puffkit",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Blow on it and it scatters, and a week later there are twelve.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Tiny fox-like kit with a body of white dandelion fluff, thin green stem legs, black bead eyes, a yellow flower tail, seeds drifting off its back.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "dandelion_kit/rotations/south.webp",
+    "south-east": "dandelion_kit/rotations/south-east.webp",
+    "east": "dandelion_kit/rotations/east.webp",
+    "north-east": "dandelion_kit/rotations/north-east.webp",
+    "north": "dandelion_kit/rotations/north.webp",
+    "north-west": "dandelion_kit/rotations/north-west.webp",
+    "west": "dandelion_kit/rotations/west.webp",
+    "south-west": "dandelion_kit/rotations/south-west.webp"
+  },
+  "sheet": "dandelion_kit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c76f413c-21e3-4a7e-bcd2-3a93f8cceeb7",
+  "seed": 887244962,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:00:26+00:00",
+  "elapsed_s": 900.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.673,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.721,
+        "bbox": [
+          8,
+          2,
+          36,
+          37
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.745,
+        "bbox": [
+          9,
+          2,
+          33,
+          36
+        ],
+        "fill": 0.51,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.693,
+        "bbox": [
+          1,
+          3,
+          36,
+          36
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.689,
+        "bbox": [
+          4,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.7,
+        "bbox": [
+          8,
+          4,
+          31,
+          36
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.673,
+        "bbox": [
+          8,
+          3,
+          32,
+          37
+        ],
+        "fill": 0.51,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.694,
+        "bbox": [
+          5,
+          5,
+          38,
+          37
+        ],
+        "fill": 0.66,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.72,
+        "bbox": [
+          3,
+          4,
+          37,
+          36
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      }
+    }
+  }
+}

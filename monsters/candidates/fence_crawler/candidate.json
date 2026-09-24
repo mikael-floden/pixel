@@ -1,0 +1,143 @@
+{
+  "id": "fence_crawler",
+  "name": "Fencecrawl",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The fence was put up to keep something out. It stopped choosing which side.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Long low creature made of a broken wooden fence, weathered grey planks for a spine, rusty nail teeth, four post-legs, a lolling head made from a gate latch.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fence_crawler/rotations/south.webp",
+    "south-east": "fence_crawler/rotations/south-east.webp",
+    "east": "fence_crawler/rotations/east.webp",
+    "north-east": "fence_crawler/rotations/north-east.webp",
+    "north": "fence_crawler/rotations/north.webp",
+    "north-west": "fence_crawler/rotations/north-west.webp",
+    "west": "fence_crawler/rotations/west.webp",
+    "south-west": "fence_crawler/rotations/south-west.webp"
+  },
+  "sheet": "fence_crawler/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4b26bc26-3044-42b8-9182-d2c0112fc48a",
+  "seed": 1736765754,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:04:51+00:00",
+  "elapsed_s": 2.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.743,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.819,
+        "bbox": [
+          11,
+          1,
+          68,
+          87
+        ],
+        "fill": 0.633,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.801,
+        "bbox": [
+          11,
+          2,
+          68,
+          85
+        ],
+        "fill": 0.611,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.794,
+        "bbox": [
+          8,
+          3,
+          81,
+          85
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.809,
+        "bbox": [
+          8,
+          3,
+          80,
+          87
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.814,
+        "bbox": [
+          16,
+          5,
+          73,
+          87
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.743,
+        "bbox": [
+          6,
+          2,
+          79,
+          87
+        ],
+        "fill": 0.801,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.802,
+        "bbox": [
+          5,
+          3,
+          81,
+          86
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.79,
+        "bbox": [
+          16,
+          2,
+          78,
+          86
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      }
+    }
+  }
+}
