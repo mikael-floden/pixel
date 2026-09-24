@@ -7679,9 +7679,20 @@ export class WorldScene extends Phaser.Scene {
       // cell wears (a ramp, a bump, nothing) and how high the feet are drawn.
       t3cell: (col: number, row: number, fresh = false) => {
         const c = this.t3 ? (fresh ? this.t3.cell(col, row) : this.t3cellOf(this.t3, col, row)) : null;
-        return c ? { level: c.level, kind: c.kind, ground: c.ground, slope: c.slope ?? null, art: c.art ? { kind: c.art.kind, h: c.art.h } : null } : null;
+        return c ? { level: c.level, kind: c.kind, ground: c.ground, dressed: c.dressed, plate: c.plate?.path ?? null, slope: c.slope ?? null, art: c.art ? { kind: c.art.kind, path: (c.art as { path?: string }).path, h: c.art.h, topOnly: c.art.topOnly, rise: (c.art as { rise?: number }).rise } : null, sx: c.sx, sy: c.sy, pasteY: c.pasteY } : null;
       },
       lift: () => this.avatars.get(this.myId)?.elev ?? null,
+      // THE OPS THE GROUND PASS DRAWS FOR ONE CELL, key by key, with whether
+      // each key is a registered texture — the truth of what lands on the cell.
+      t3ops: (col: number, row: number) => {
+        const t3 = this.t3;
+        const tex = this.t3tex;
+        if (!t3 || !tex || !this.world) return null;
+        const cell = this.t3cellOf(t3, col, row);
+        if (!cell) return null;
+        const ops = tex.opsForCell(cell).map((o) => ({ key: o.key, x: o.x, y: o.y, role: o.role, exists: this.textures.exists(o.key) }));
+        return { kind: cell.kind, level: cell.level, dressed: cell.dressed, sx: cell.sx, sy: cell.sy, pasteY: cell.pasteY, owed: this.t3dropOwed.has(row * this.world.width + col), ops };
+      },
       // What the resolver holds for a ground's slopes: how many bump and ramp
       // sets are approved, and whether the north-edge tile (12) of the first
       // of each is — the two numbers a "no ramp here" reads against.

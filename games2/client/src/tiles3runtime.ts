@@ -232,6 +232,22 @@ export class Tiles3World {
     const b = this.bounds;
     if (x < b.x0 || y < b.y0 || x >= b.x1 || y >= b.y1) return null;
     const t0 = now();
+    /* ONE EVALUATION OF THE BOUNDARY RULE, NOT TWO. A cell that wears a slope
+     * decided its boundary in `wangSurface` — the foot yielded to the slope
+     * and the slope became the tile's own side — and that decision lives on
+     * the cell. Asking `boundaryAt` again here, without those options, gave
+     * the passes the FOOT transition of every raise (a raise stands, by
+     * definition, in front of a higher cell), and they painted it over the
+     * slope on the ground and again as the occluder sprite: measured on
+     * 2026-09-24 at 297,252, the ground pass's ops were the slope raster and
+     * the sprite on top was `t3x:119|c:black_rock…`, the cliff foot, at the
+     * plain anchor — "not a single slope" on every terrace, twice over. */
+    const c = this.cell(x, y);
+    if (c?.slope && !c.slope.ramp) {
+      this.bill.boundaries++;
+      this.bill.boundaryMs += now() - t0;
+      return c.boundary ?? null;
+    }
     const r = this.tiles.boundaryAt(this.view, this.frame, this.gf, this.Lf, x, y)?.boundary ?? null;
     this.bill.boundaries++;
     this.bill.boundaryMs += now() - t0;

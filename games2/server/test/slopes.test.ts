@@ -9,7 +9,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
 import { buildBoundaryPixels, patternSheetPaths, patternSheets, slopeLift, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
-import { dressKey, surfaceY } from "../../client/src/tiles3runtime.js";
+import { dressKey, surfaceY, Tiles3World, viewFromParsed } from "../../client/src/tiles3runtime.js";
+import { parseWorld, ISO_GEOMETRY_MAPS3 } from "../../shared/src/index";
 // @ts-expect-error — plain .mjs helper shared with the build scripts
 import { imgRGBA } from "../../scripts/imagelib.mjs";
 
@@ -400,4 +401,28 @@ test("the occluder pass anchors a raise's cap where the ground pass paints it: `
   assert.equal(surfaceY(cell("field", raise)), 196, "a raised field cell's surface anchor rides up too");
   assert.equal(surfaceY(cell("field", cut)), 200);
   assert.equal(surfaceY(cell("field", undefined)), 200);
+});
+
+test("on the_game: the boundary the passes draw for a slope cell IS the cell's own — the foot yielded, the slope is its side — never a second evaluation", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  const t = resolver([], {}, true);
+  const parsed = parseWorld(JSON.parse(readFileSync(WORLD, "utf8")))!;
+  const view = viewFromParsed(parsed as never);
+  const frame = { x0: 0, y0: 0, x1: parsed.width, y1: parsed.height, ox: 0, oy: 0, pitch: ISO_GEOMETRY_MAPS3.lh, canvas: [1, 1] } as never;
+  const w = new Tiles3World({ view, tiles: t, frame, patterns: load("tiles/patterns/index.json") });
+  let slopes = 0, same = 0, foots = 0, wrong: string[] = [];
+  for (let y = 240; y < 262; y++) for (let x = 284; x < 304; x++) {
+    const c = w.cell(x, y);
+    if (!c?.slope || c.slope.ramp) continue;
+    slopes++;
+    const b = w.boundary(x, y);
+    const sig = (q: typeof b) => (q ? `${q.a}|${q.b}|${q.maskFrame}|${q.slope ? q.slope.side + q.slope.lift : "-"}|${q.plateA.path}|${q.plateB.path}` : "-");
+    if (sig(b) === sig(c.boundary ?? null)) same++;
+    else wrong.push(`${x},${y}: passes draw ${b ? "a boundary " + b.a + "/" + b.b : "nothing"} where the cell holds ${c.boundary ? c.boundary.a + "/" + c.boundary.b : "nothing"}`);
+    // The raw rule, asked without the cell's options, composes the cliff foot on a raise: that is what used to be drawn.
+    const raw = t.boundaryAt(view, frame as never, (a: number, bb: number) => view.groundAt(a, bb), (a: number, bb: number) => view.levelAt(a, bb), x, y)?.boundary ?? null;
+    if (raw && !c.boundary) foots++;
+  }
+  assert.deepEqual(wrong.slice(0, 5), [], `${wrong.length} of ${slopes} slope cells`);
+  assert.ok(slopes >= 30 && same === slopes, `${same} of ${slopes}`);
+  assert.ok(foots >= 5, `the raw rule would have composed a foot over ${foots} slopes here — the bug this pins`);
 });
