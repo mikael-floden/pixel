@@ -1,0 +1,140 @@
+{
+  "id": "barnacle_bear",
+  "name": "Barnabear",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It swam out to the wreck and came back covered in it.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Bear encrusted with white barnacles over dark wet fur, kelp in its claws, a lolling tongue, dripping.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "barnacle_bear/rotations/south.webp",
+    "south-east": "barnacle_bear/rotations/south-east.webp",
+    "east": "barnacle_bear/rotations/east.webp",
+    "north-east": "barnacle_bear/rotations/north-east.webp",
+    "north": "barnacle_bear/rotations/north.webp",
+    "north-west": "barnacle_bear/rotations/north-west.webp",
+    "west": "barnacle_bear/rotations/west.webp",
+    "south-west": "barnacle_bear/rotations/south-west.webp"
+  },
+  "sheet": "barnacle_bear/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "056436c5-70b2-4d60-ad08-595c1e85dee5",
+  "seed": 1565558366,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:07:34+00:00",
+  "elapsed_s": 187.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.533,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.533,
+        "bbox": [
+          11,
+          8,
+          204,
+          216
+        ],
+        "fill": 0.8,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.622,
+        "bbox": [
+          31,
+          7,
+          206,
+          218
+        ],
+        "fill": 0.736,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.625,
+        "bbox": [
+          52,
+          7,
+          184,
+          218
+        ],
+        "fill": 0.555,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.61,
+        "bbox": [
+          48,
+          5,
+          176,
+          216
+        ],
+        "fill": 0.538,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.58,
+        "bbox": [
+          22,
+          9,
+          206,
+          214
+        ],
+        "fill": 0.752,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.607,
+        "bbox": [
+          29,
+          5,
+          181,
+          217
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.629,
+        "bbox": [
+          34,
+          7,
+          169,
+          218
+        ],
+        "fill": 0.568,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.624,
+        "bbox": [
+          24,
+          8,
+          188,
+          218
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      }
+    }
+  }
+}
