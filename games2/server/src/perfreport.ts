@@ -79,6 +79,9 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* 24, not 12: n/p50/p90/p99/max plus the histogram (le17..gt100, mean)
      * and rafHz — 12 keys exactly, which is the cap-one-short trap again. */
     frames: flat(body.frames, 24, 100000),
+    /* THE PACER'S ROW (client pacing.ts, 2026-09-24): mode is a string, the
+     * rest numbers — `mixed`, 16 keys against 11 sent. */
+    pace: mixed(body.pace, 16),
     /* 64, not 40: 36 sections arrive since `preUpdate`/`hooks` (2026-09-19),
      * and `flat` keeps the first N in silence — the headroom is the point. */
     sections: flat(body.sections, 64, 100000),

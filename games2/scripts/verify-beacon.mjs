@@ -79,6 +79,8 @@ const rep = JSON.parse(out);
 // Every block the client sends, with the keys that must come through.
 const MUST = {
   frames: ["n", "p50", "p90", "p99", "max", "le17", "gt100", "mean", "rafHz"],
+  // The pacer's row (2026-09-24): `frames.p50` is 33 under a paced 30 and this block says why.
+  pace: ["mode", "paced", "lockedFrac", "hz", "tickHz", "locks", "run", "skipped", "work50", "work90", "workMax"],
   // `preUpdate`/`hooks`: the scene's own event listeners (Phaser's systems, the ambient mount), 2026-09-19.
   sections: ["render", "preUpdate", "hooks"],
   counts: ["occluders", "occMean", "dlMean", "litOccMean", "monActMean", "flushMean", "sceneryImgsMean", "glTexNew", "capSwitch", "longN", "glDraws", "glFillMpx", "glFbSw", "glClears", "rafLagMean"],

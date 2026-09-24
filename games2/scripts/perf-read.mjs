@@ -49,7 +49,8 @@ if (diff) {
   const metrics = [
     ["p50 ms", (r) => r.frames?.p50], ["p90 ms", (r) => r.frames?.p90], ["p99 ms", (r) => r.frames?.p99], ["max ms", (r) => r.frames?.max],
     ["frames >50 ms", (r) => (r.frames?.le100 ?? null) === null ? null : r.frames.le100 + r.frames.gt100],
-    ["rafHz", (r) => r.frames?.rafHz], ["render ms", (r) => r.sections?.render], ["gapBusy ms", (r) => r.sections?.gapBusy],
+    ["rafHz", (r) => r.frames?.rafHz], ["paced %", (r) => (r.pace ? Math.round((r.pace.lockedFrac ?? 0) * 100) : null)], ["step work p90", (r) => r.pace?.work90],
+    ["render ms", (r) => r.sections?.render], ["gapBusy ms", (r) => r.sections?.gapBusy],
     ["rebuildOccluders", (r) => r.sections?.rebuildOccluders], ["occCull", (r) => r.sections?.occCull], ["depthSort", (r) => r.sections?.depthSort],
     ["lighting", (r) => r.sections?.lighting], ["groundSlice", (r) => r.sections?.groundSlice], ["prefetch", (r) => r.sections?.prefetch],
     ["rtt p50", (r) => r.rtt?.p50], ["rtt p90", (r) => r.rtt?.p90], ["patchHz", (r) => r.rtt?.patchHz],
@@ -72,14 +73,16 @@ if (diff) {
 }
 
 console.log(`${rows.length} windows (file updated ${doc.updated_at})`);
-console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops", "posts", "lag", "loaf n:pre/raf/dom", "draws/fill/fb"].join(" | "));
+console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "pace", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops", "posts", "lag", "loaf n:pre/raf/dom", "draws/fill/fb"].join(" | "));
 for (const r of rows) {
   const fr = r.frames ?? {};
   const over50 = fr.le100 !== undefined ? fr.le100 + fr.gt100 : "-";
   const doing = r.run ? `${Math.round((r.run.moveFrac ?? 0) * 100)}%mv ${f(r.run.travelCells, 0)}c` : "-";
   console.log([
     (r.at ?? "").slice(5, 16), short(r.build), r.run?.sim || "-", r.run ? `${r.run.runId}/${r.run.winIdx}${r.run.why ? ":" + r.run.why : ""}` : "-", r.where ?? "-", f(r.secs, 0), doing,
-    f(fr.p50), f(fr.p90), f(fr.p99), f(fr.max, 0), over50, fr.rafHz ?? "-", top(r.sections),
+    f(fr.p50), f(fr.p90), f(fr.p99), f(fr.max, 0), over50, fr.rafHz ?? "-",
+    // the pacer (2026-09-24): mode, the share of the window paced, the step's own work p90 — a p50 of 33 with "auto 100%" is a steady 30, not a slow 60
+    r.pace ? `${r.pace.mode} ${Math.round((r.pace.lockedFrac ?? 0) * 100)}% w90 ${f(r.pace.work90, 0)}` : "-", top(r.sections),
     r.resolve ? `${f(r.resolve.ms, 0)}/${f(r.resolve.usPerCell, 0)}` : "-",
     r.input ? (r.input.avail ? `${f(r.input.delayP90, 0)}/${f(r.input.durMax, 0)}` : "n/a") : "-",
     r.rtt ? `${f(r.rtt.p50, 0)}/${f(r.rtt.p90, 0)}` : "-", r.rtt ? f(r.rtt.patchHz, 0) : "-", r.cpu ? f(r.cpu.scoreMs) : "-",

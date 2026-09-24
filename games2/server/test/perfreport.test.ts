@@ -21,6 +21,13 @@ test("the fields the beacon has always sent survive, clamped and rounded", () =>
   assert.deepEqual(r.counts, { occluders: 427 });
 });
 
+test("THE PACER'S ROW reaches the file: the mode string and every number", () => {
+  const pace = { mode: "auto", paced: 1, lockedFrac: 0.91, hz: 30, tickHz: 60, locks: 1, run: 902, skipped: 870, work50: 12.4, work90: 18.9, workMax: 61.2 };
+  const r = perfReport({ frames: { n: 60 }, pace }, AT);
+  assert.deepEqual(r.pace, pace);
+  assert.equal(perfReport({ frames: { n: 60 } }, AT).pace, null, "an older client sends none");
+});
+
 test("THE LIGHT BILL reaches the file: counts, switches and the device string all survive", () => {
   const r = perfReport(
     {
