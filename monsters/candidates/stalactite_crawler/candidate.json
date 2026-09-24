@@ -1,0 +1,157 @@
+{
+  "id": "stalactite_crawler",
+  "name": "Dripcrawl",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The cave ceiling is moving, slowly, and it is hungry.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Centipede-like creature of stalactite segments hanging from and crawling along the ceiling and rock.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stalactite_crawler/rotations/south.webp",
+    "south-east": "stalactite_crawler/rotations/south-east.webp",
+    "east": "stalactite_crawler/rotations/east.webp",
+    "north-east": "stalactite_crawler/rotations/north-east.webp",
+    "north": "stalactite_crawler/rotations/north.webp",
+    "north-west": "stalactite_crawler/rotations/north-west.webp",
+    "west": "stalactite_crawler/rotations/west.webp",
+    "south-west": "stalactite_crawler/rotations/south-west.webp"
+  },
+  "sheet": "stalactite_crawler/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e417f68f-4bc0-4fde-967d-ace6219edb88",
+  "seed": 10588963,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:45:36+00:00",
+  "elapsed_s": 269.1,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.695,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "south: content fills 100% — no margin",
+      "south-east: content touches the canvas edge (clipped)",
+      "south-east: content fills 100% — no margin",
+      "east: content touches the canvas edge (clipped)",
+      "east: content fills 100% — no margin",
+      "north-east: content touches the canvas edge (clipped)",
+      "north-east: content fills 100% — no margin",
+      "north: content touches the canvas edge (clipped)",
+      "north: content fills 100% — no margin",
+      "north-west: content touches the canvas edge (clipped)",
+      "north-west: content fills 100% — no margin",
+      "west: content touches the canvas edge (clipped)",
+      "west: content fills 100% — no margin",
+      "south-west: content touches the canvas edge (clipped)",
+      "south-west: content fills 100% — no margin"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.707,
+        "bbox": [
+          0,
+          0,
+          88,
+          88
+        ],
+        "fill": 1.0,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.751,
+        "bbox": [
+          0,
+          0,
+          88,
+          88
+        ],
+        "fill": 1.0,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.712,
+        "bbox": [
+          0,
+          0,
+          88,
+          88
+        ],
+        "fill": 1.0,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.707,
+        "bbox": [
+          0,
+          0,
+          88,
+          88
+        ],
+        "fill": 1.0,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.696,
+        "bbox": [
+          0,
+          0,
+          88,
+          88
+        ],
+        "fill": 1.0,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.707,
+        "bbox": [
+          0,
+          0,
+          88,
+          88
+        ],
+        "fill": 1.0,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.695,
+        "bbox": [
+          0,
+          0,
+          88,
+          88
+        ],
+        "fill": 1.0,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.747,
+        "bbox": [
+          0,
+          0,
+          88,
+          88
+        ],
+        "fill": 1.0,
+        "touches_edge": true
+      }
+    }
+  }
+}
