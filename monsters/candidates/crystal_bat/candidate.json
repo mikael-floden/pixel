@@ -1,0 +1,140 @@
+{
+  "id": "crystal_bat",
+  "name": "Gemwing",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Its wings ring like a glass when it flies.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Bat with wings of thin purple crystal, a body of dark stone, glowing violet eyes, hanging by crystal claws.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "crystal_bat/rotations/south.webp",
+    "south-east": "crystal_bat/rotations/south-east.webp",
+    "east": "crystal_bat/rotations/east.webp",
+    "north-east": "crystal_bat/rotations/north-east.webp",
+    "north": "crystal_bat/rotations/north.webp",
+    "north-west": "crystal_bat/rotations/north-west.webp",
+    "west": "crystal_bat/rotations/west.webp",
+    "south-west": "crystal_bat/rotations/south-west.webp"
+  },
+  "sheet": "crystal_bat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "56f73aa1-7f81-40c7-946e-06edd0739a31",
+  "seed": 1201369257,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:40:47+00:00",
+  "elapsed_s": 251.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.762,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.818,
+        "bbox": [
+          1,
+          5,
+          39,
+          35
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.818,
+        "bbox": [
+          5,
+          3,
+          35,
+          38
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.768,
+        "bbox": [
+          12,
+          3,
+          31,
+          37
+        ],
+        "fill": 0.404,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.79,
+        "bbox": [
+          3,
+          3,
+          36,
+          37
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.778,
+        "bbox": [
+          1,
+          5,
+          39,
+          35
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.796,
+        "bbox": [
+          5,
+          3,
+          36,
+          37
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.762,
+        "bbox": [
+          8,
+          3,
+          28,
+          37
+        ],
+        "fill": 0.425,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.818,
+        "bbox": [
+          5,
+          3,
+          35,
+          38
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      }
+    }
+  }
+}
