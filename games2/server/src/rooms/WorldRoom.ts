@@ -1353,6 +1353,7 @@ export class WorldRoom extends Room<WorldState> {
       player.hopCredit = 0;
       player.jumpUntil = 0;
       this.fallPend.delete(player.pid); // an ASSIGNED elevation ends the fall it was in
+      this.hopIfElsewhere(player, Date.now()); // a far teleport is a hop, from this handler
     });
 
     // Time-of-day is world state, and it RUNS: the server's world clock
@@ -2759,6 +2760,7 @@ export class WorldRoom extends Room<WorldState> {
     player.inputQueue.length = 0;
     player.timeCredit = 0;
     player.hopCredit = 0;
+    this.hopIfElsewhere(player, Date.now()); // the spawn may lie in another zone
   }
 
   /** A monster dies: start the die clip (the schema entry lingers so every
@@ -3213,11 +3215,37 @@ export class WorldRoom extends Room<WorldState> {
   private posOx = 0;
   private posOy = 0;
   private posQ = POS_Q_WHOLE;
+  /** THE WIRE NEVER SHOWS THE CLAMP. A position is int16 quarter-wu from the
+   *  room's corner (±8191.75 wu), and every body a room STEPS lies well
+   *  inside that — but a body a handler PUTS somewhere does not: a revive at
+   *  the spawn (zone 11) from the west column, or a far teleport, wrote the
+   *  target into this room's body, and `quantizePos` clamped it 77.5 cells
+   *  short of the truth for every patch until the hop landed (measured; the
+   *  relocation veil then marked its arrival on that snap and streamed the
+   *  wrong ground). The hop starts in the same handler now, and until it
+   *  lands the wire holds the LAST IN-RANGE position: the body stands where
+   *  it was rather than somewhere it never went. A body that has never had
+   *  an in-range position (a login whose save lies outside the spawn zone's
+   *  window) still clamps — there is nothing truer to hold. */
+  private posSynced = new WeakSet<object>();
   private syncPos(e: { x: number; y: number; px: number; py: number }) {
+    const nx = Math.round((e.x - this.posOx) * this.posQ);
+    const ny = Math.round((e.y - this.posOy) * this.posQ);
+    const inRange = nx >= -32768 && nx <= 32767 && ny >= -32768 && ny <= 32767;
+    if (!inRange && this.posSynced.has(e)) return; // hold the last in-range value
     const px = quantizePos(e.x, this.posOx, this.posQ);
     const py = quantizePos(e.y, this.posOy, this.posQ);
     if (e.px !== px) e.px = px;
     if (e.py !== py) e.py = py;
+    if (inRange) this.posSynced.add(e);
+  }
+
+  /** A body a handler PUT into another zone (a revive at the spawn, a
+   *  teleport) starts its hand-off NOW, not on the next tick's stepZones. */
+  private hopIfElsewhere(player: Player, now: number) {
+    if (this.zoneId === WHOLE_WORLD || !this.grid || player.handoff || !player.pid) return;
+    const z = zoneAt(this.grid, player.x, player.y);
+    if (z !== this.zoneId) this.startHandoff(player, player.pid, z, now);
   }
   /** Positions are written to the wire fields right before EVERY patch, so a
    *  position set outside the tick (a respawn, a teleport, a message handler)

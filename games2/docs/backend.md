@@ -455,6 +455,21 @@ WorldState.ts, the same library copy colyseus.js decodes with) and the load
 bot (inlined). Any map size fits: a zone is 99 cells and ghosts reach 36
 past its edge.
 
+**THE WIRE NEVER SHOWS THE CLAMP** (2026-09-24). A room can express ±8191.75
+wu around its corner — every body it steps, and not a body a handler PUTS far
+away: a revive at the spawn (zone 11) from the west column, or a far
+teleport, wrote the target into the old room's body and `quantizePos`
+clamped it 77.5 cells short of the truth for every patch until the hop
+landed, where the relocation veil marked its arrival on that snap and
+streamed the wrong ground (measured from code and the grid). `syncPos` holds
+the LAST IN-RANGE wire value while the truth would clamp (a body that never
+had one — a login whose save lies outside the spawn zone's window — still
+clamps: nothing truer to hold), `revivePlayer` and the teleport handler start
+the hand-off themselves (`hopIfElsewhere`, 2 ms after the request instead of
+the next tick's notice), and the client does not mark the veil's arrival on a
+snap while `zoneSwapping`: the new room's first state is the answer.
+`server/test/farhop.test.ts`.
+
 **Owner-only fields**: `seq` (the input ack), `slow` and `stamina` change
 every tick for every body and mean nothing to anyone but the body's own
 client. They carry `OWNER_VIEW_TAG` and reach only the view that added the

@@ -14299,7 +14299,12 @@ export class WorldScene extends Phaser.Scene {
         // THE RELOCATION VEIL'S ARRIVAL: the first snap of MY body after the
         // ask is the server's answer, and the hold counts paints from here
         // (an arrival the revive or the grace marked first is upgraded).
-        if (id === myId) this.markArrival(true);
+        // NOT while a zone swap is in flight: a respawn or teleport into
+        // another zone is a hop, and a snap the OLD room shows meanwhile is
+        // at best the last spot the body stood and at worst the int16 clamp
+        // of the wire — 77 cells short of the spawn from the west column
+        // (measured). The real answer is the new room's first state.
+        if (id === myId && !this.zoneSwapping) this.markArrival(true);
         if (id === myId && (this.trip || this.holdPointerId !== null)) {
           this.clearMoveTarget();
           this.dropHold();

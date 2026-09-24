@@ -36,7 +36,10 @@ Kubernetes). Rules here are present tense; the measurements land in
   cannot tell). A ghost is never stepped locally (no sim, no brain, no combat)
   and expires 1 s after its last snapshot. Interest applies to ghosts like
   anything else, so a player near a border sees across it through ONE socket.
-- **Hand-off.** When a player's position enters another zone, the home room
+- **Hand-off.** When a player's position enters another zone — by walking,
+  or put there by a revive at the spawn or a teleport, which start it from
+  their own handler and leave the wire on the last true spot until it lands
+  (docs/backend.md "The wire never shows the clamp") — the home room
   writes the player's hot state (`pos`, `elev`, `dir`, moving/running,
   hp/ep/level/xp, `inv`, the account id and record, `dirty`, the input `seq`,
   torch, no-aggro, the combat counters `actionSeq`/`hitSeq` — the client
