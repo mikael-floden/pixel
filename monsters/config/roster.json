@@ -346,6 +346,21 @@
       }
     },
     {
+      "id": "naga",
+      "kind": "character",
+      "pixellab_id": "6151a93a-f950-4b6f-a7eb-5e26f18083d0",
+      "name": "Coilblade",
+      "lore": "The temple in the swamp is hers and the swamp is the temple. Every stone step is guarded, and she is the steps.",
+      "renames": {
+        "custom-slither cycle in place, the serpent body FLEXES ra": "walk",
+        "custom-slither cycle, the whole serpe": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Strike - Quickly lunges forward and strikes once": "attack",
+        "custom-Strike - Quickly lunges forward and strikes once, ": "attack",
+        "custom-Death - Faints, collapses to t": "die"
+      }
+    },
+    {
       "id": "mountain_ram",
       "kind": "character",
       "pixellab_id": "b43be5e0-0c75-47c9-9b65-0ed0a9497864",
@@ -515,6 +530,20 @@
         "custom-Wing Slash - Snaps both leathery wings forward and": "attack",
         "custom-Wing Slash - Sweeps one wing forward and down in o": "attack",
         "custom-Death - The eye closes, the wi": "die"
+      }
+    },
+    {
+      "id": "lava_toad",
+      "kind": "character",
+      "pixellab_id": "36c75df5-bca7-4a50-b7de-d626849c2f4f",
+      "name": "Magmatoad",
+      "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire.",
+      "renames": {
+        "custom-hop loop, the toad crouches do": "walk",
+        "custom-hop loop, the toad crouches with ALL FOUR legs ben": "walk",
+        "custom-hop loop, the heavy toad crouc": "walk",
+        "custom-Strike - Quickly lunges forward and strikes once, ": "attack",
+        "custom-Death - Faints, collapses to t": "die"
       }
     },
     {

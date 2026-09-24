@@ -1,0 +1,683 @@
+{
+  "id": "lava_toad",
+  "name": "Magmatoad",
+  "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "36c75df5-bca7-4a50-b7de-d626849c2f4f",
+    "url": "https://www.pixellab.ai/create-character/36c75df5-bca7-4a50-b7de-d626849c2f4f",
+    "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac, no drop shadow on the ground, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 102,
+    "height": 96
+  },
+  "native_size": {
+    "width": 96,
+    "height": 96
+  },
+  "pad": {
+    "x": 3,
+    "y": 0
+  },
+  "sprite": "lava_toad/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "lava_toad/rotations/south.webp",
+    "west": "lava_toad/rotations/west.webp",
+    "east": "lava_toad/rotations/east.webp",
+    "north": "lava_toad/rotations/north.webp",
+    "south-east": "lava_toad/rotations/south-east.webp",
+    "north-east": "lava_toad/rotations/north-east.webp",
+    "north-west": "lava_toad/rotations/north-west.webp",
+    "south-west": "lava_toad/rotations/south-west.webp"
+  },
+  "animations": {
+    "die": {
+      "group_id": "bfc592fd-c538-4197-8638-e2bc0f72e028",
+      "source_name": "custom-Death - Faints, collapses to t",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "lava_toad/animations/die__east.webp",
+          "frame_paths": [
+            "lava_toad/animations/die/east/00.webp",
+            "lava_toad/animations/die/east/01.webp",
+            "lava_toad/animations/die/east/02.webp",
+            "lava_toad/animations/die/east/03.webp",
+            "lava_toad/animations/die/east/04.webp",
+            "lava_toad/animations/die/east/05.webp",
+            "lava_toad/animations/die/east/06.webp",
+            "lava_toad/animations/die/east/07.webp",
+            "lava_toad/animations/die/east/08.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 20:42:27 GMT",
+          "src_frames": 9,
+          "sub": "4a3843d3-c7d5-436a-aad1-a46ae4974d93"
+        },
+        "north": {
+          "frames": 9,
+          "strip": "lava_toad/animations/die__north.webp",
+          "frame_paths": [
+            "lava_toad/animations/die/north/00.webp",
+            "lava_toad/animations/die/north/01.webp",
+            "lava_toad/animations/die/north/02.webp",
+            "lava_toad/animations/die/north/03.webp",
+            "lava_toad/animations/die/north/04.webp",
+            "lava_toad/animations/die/north/05.webp",
+            "lava_toad/animations/die/north/06.webp",
+            "lava_toad/animations/die/north/07.webp",
+            "lava_toad/animations/die/north/08.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 20:51:45 GMT",
+          "src_frames": 9,
+          "sub": "e039a849-a302-49ee-b755-909fae1fb688"
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "lava_toad/animations/die__north-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/die/north-east/00.webp",
+            "lava_toad/animations/die/north-east/01.webp",
+            "lava_toad/animations/die/north-east/02.webp",
+            "lava_toad/animations/die/north-east/03.webp",
+            "lava_toad/animations/die/north-east/04.webp",
+            "lava_toad/animations/die/north-east/05.webp",
+            "lava_toad/animations/die/north-east/06.webp",
+            "lava_toad/animations/die/north-east/07.webp",
+            "lava_toad/animations/die/north-east/08.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:13:17 GMT",
+          "src_frames": 9,
+          "sub": "1a642178-2e1e-4a0b-95ad-166c331260a2"
+        },
+        "south": {
+          "frames": 9,
+          "strip": "lava_toad/animations/die__south.webp",
+          "frame_paths": [
+            "lava_toad/animations/die/south/00.webp",
+            "lava_toad/animations/die/south/01.webp",
+            "lava_toad/animations/die/south/02.webp",
+            "lava_toad/animations/die/south/03.webp",
+            "lava_toad/animations/die/south/04.webp",
+            "lava_toad/animations/die/south/05.webp",
+            "lava_toad/animations/die/south/06.webp",
+            "lava_toad/animations/die/south/07.webp",
+            "lava_toad/animations/die/south/08.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:13:18 GMT",
+          "src_frames": 9,
+          "sub": "511180e6-2715-44f3-84a9-e0e1088cff18"
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "lava_toad/animations/die__south-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/die/south-east/00.webp",
+            "lava_toad/animations/die/south-east/01.webp",
+            "lava_toad/animations/die/south-east/02.webp",
+            "lava_toad/animations/die/south-east/03.webp",
+            "lava_toad/animations/die/south-east/04.webp",
+            "lava_toad/animations/die/south-east/05.webp",
+            "lava_toad/animations/die/south-east/06.webp",
+            "lava_toad/animations/die/south-east/07.webp",
+            "lava_toad/animations/die/south-east/08.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 20:42:26 GMT",
+          "src_frames": 9,
+          "sub": "183ef170-b92c-46ff-992e-26921d55119e"
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "lava_toad/animations/die__south-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/die/south-west/00.webp",
+            "lava_toad/animations/die/south-west/01.webp",
+            "lava_toad/animations/die/south-west/02.webp",
+            "lava_toad/animations/die/south-west/03.webp",
+            "lava_toad/animations/die/south-west/04.webp",
+            "lava_toad/animations/die/south-west/05.webp",
+            "lava_toad/animations/die/south-west/06.webp",
+            "lava_toad/animations/die/south-west/07.webp",
+            "lava_toad/animations/die/south-west/08.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 9,
+          "strip": "lava_toad/animations/die__west.webp",
+          "frame_paths": [
+            "lava_toad/animations/die/west/00.webp",
+            "lava_toad/animations/die/west/01.webp",
+            "lava_toad/animations/die/west/02.webp",
+            "lava_toad/animations/die/west/03.webp",
+            "lava_toad/animations/die/west/04.webp",
+            "lava_toad/animations/die/west/05.webp",
+            "lava_toad/animations/die/west/06.webp",
+            "lava_toad/animations/die/west/07.webp",
+            "lava_toad/animations/die/west/08.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "lava_toad/animations/die__north-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/die/north-west/00.webp",
+            "lava_toad/animations/die/north-west/01.webp",
+            "lava_toad/animations/die/north-west/02.webp",
+            "lava_toad/animations/die/north-west/03.webp",
+            "lava_toad/animations/die/north-west/04.webp",
+            "lava_toad/animations/die/north-west/05.webp",
+            "lava_toad/animations/die/north-west/06.webp",
+            "lava_toad/animations/die/north-west/07.webp",
+            "lava_toad/animations/die/north-west/08.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "48710596-af05-4b78-a91d-648a9e1b6773",
+      "source_name": "custom-Strike - Quickly lunges forward and strikes once, ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "lava_toad/animations/attack__east.webp",
+          "frame_paths": [
+            "lava_toad/animations/attack/east/00.webp",
+            "lava_toad/animations/attack/east/01.webp",
+            "lava_toad/animations/attack/east/02.webp",
+            "lava_toad/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:13:21 GMT",
+          "src_frames": 4,
+          "sub": "aece5083-a694-450d-b62d-83e1a4637fc3"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "lava_toad/animations/attack__north.webp",
+          "frame_paths": [
+            "lava_toad/animations/attack/north/00.webp",
+            "lava_toad/animations/attack/north/01.webp",
+            "lava_toad/animations/attack/north/02.webp",
+            "lava_toad/animations/attack/north/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 19:02:22 GMT",
+          "src_frames": 4,
+          "sub": "859bd7a6-f6b0-42cd-b30d-7675e8048b9a"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "lava_toad/animations/attack__north-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/attack/north-east/00.webp",
+            "lava_toad/animations/attack/north-east/01.webp",
+            "lava_toad/animations/attack/north-east/02.webp",
+            "lava_toad/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 19:02:21 GMT",
+          "src_frames": 4,
+          "sub": "b68414f7-b46a-4eab-bc46-3fa76480fa1e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "lava_toad/animations/attack__south.webp",
+          "frame_paths": [
+            "lava_toad/animations/attack/south/00.webp",
+            "lava_toad/animations/attack/south/01.webp",
+            "lava_toad/animations/attack/south/02.webp",
+            "lava_toad/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:13:23 GMT",
+          "src_frames": 4,
+          "sub": "423a7a67-e9d3-4749-8fbd-607aa6f7deac"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "lava_toad/animations/attack__south-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/attack/south-east/00.webp",
+            "lava_toad/animations/attack/south-east/01.webp",
+            "lava_toad/animations/attack/south-east/02.webp",
+            "lava_toad/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 19:02:20 GMT",
+          "src_frames": 4,
+          "sub": "e0628e36-fc16-4e45-a2cc-af9227d4e0ee"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "lava_toad/animations/attack__south-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/attack/south-west/00.webp",
+            "lava_toad/animations/attack/south-west/01.webp",
+            "lava_toad/animations/attack/south-west/02.webp",
+            "lava_toad/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "lava_toad/animations/attack__west.webp",
+          "frame_paths": [
+            "lava_toad/animations/attack/west/00.webp",
+            "lava_toad/animations/attack/west/01.webp",
+            "lava_toad/animations/attack/west/02.webp",
+            "lava_toad/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "lava_toad/animations/attack__north-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/attack/north-west/00.webp",
+            "lava_toad/animations/attack/north-west/01.webp",
+            "lava_toad/animations/attack/north-west/02.webp",
+            "lava_toad/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "7f5af9d1-f2e1-4fc5-bfb5-f62f92303066",
+      "source_name": "custom-hop loop, the heavy toad crouc + custom-hop loop, the toad crouches do + custom-hop loop, the toad crouches with ALL FOUR legs ben",
+      "directions": {
+        "south": {
+          "frames": 6,
+          "strip": "lava_toad/animations/walk__south.webp",
+          "frame_paths": [
+            "lava_toad/animations/walk/south/00.webp",
+            "lava_toad/animations/walk/south/01.webp",
+            "lava_toad/animations/walk/south/02.webp",
+            "lava_toad/animations/walk/south/03.webp",
+            "lava_toad/animations/walk/south/04.webp",
+            "lava_toad/animations/walk/south/05.webp"
+          ],
+          "src_frames": 6,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/walk/south"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "lava_toad/animations/walk__south-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/walk/south-east/00.webp",
+            "lava_toad/animations/walk/south-east/01.webp",
+            "lava_toad/animations/walk/south-east/02.webp",
+            "lava_toad/animations/walk/south-east/03.webp",
+            "lava_toad/animations/walk/south-east/04.webp",
+            "lava_toad/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 20:56:31 GMT",
+          "src_frames": 6,
+          "sub": "cb7dde1e-bc60-4cb6-8937-26e0ee5fc91a"
+        },
+        "east": {
+          "frames": 7,
+          "strip": "lava_toad/animations/walk__east.webp",
+          "frame_paths": [
+            "lava_toad/animations/walk/east/00.webp",
+            "lava_toad/animations/walk/east/01.webp",
+            "lava_toad/animations/walk/east/02.webp",
+            "lava_toad/animations/walk/east/03.webp",
+            "lava_toad/animations/walk/east/04.webp",
+            "lava_toad/animations/walk/east/05.webp",
+            "lava_toad/animations/walk/east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:13:27 GMT",
+          "src_frames": 7,
+          "sub": "59e044dc-5220-4907-b961-812020c7dfcc"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "lava_toad/animations/walk__north-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/walk/north-east/00.webp",
+            "lava_toad/animations/walk/north-east/01.webp",
+            "lava_toad/animations/walk/north-east/02.webp",
+            "lava_toad/animations/walk/north-east/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 15:14:08 GMT",
+          "src_frames": 4,
+          "sub": "4bfcdec9-3ec7-4242-9c74-2ab54a8ce232"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "lava_toad/animations/walk__north.webp",
+          "frame_paths": [
+            "lava_toad/animations/walk/north/00.webp",
+            "lava_toad/animations/walk/north/01.webp",
+            "lava_toad/animations/walk/north/02.webp",
+            "lava_toad/animations/walk/north/03.webp",
+            "lava_toad/animations/walk/north/04.webp",
+            "lava_toad/animations/walk/north/05.webp"
+          ],
+          "src_frames": 6,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "lava_toad/animations/walk__north-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/walk/north-west/00.webp",
+            "lava_toad/animations/walk/north-west/01.webp",
+            "lava_toad/animations/walk/north-west/02.webp",
+            "lava_toad/animations/walk/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "lava_toad/animations/walk__west.webp",
+          "frame_paths": [
+            "lava_toad/animations/walk/west/00.webp",
+            "lava_toad/animations/walk/west/01.webp",
+            "lava_toad/animations/walk/west/02.webp",
+            "lava_toad/animations/walk/west/03.webp",
+            "lava_toad/animations/walk/west/04.webp",
+            "lava_toad/animations/walk/west/05.webp",
+            "lava_toad/animations/walk/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "lava_toad/animations/walk__south-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/walk/south-west/00.webp",
+            "lava_toad/animations/walk/south-west/01.webp",
+            "lava_toad/animations/walk/south-west/02.webp",
+            "lava_toad/animations/walk/south-west/03.webp",
+            "lava_toad/animations/walk/south-west/04.webp",
+            "lava_toad/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": null,
+      "source_name": "candidates/lava_toad (idle)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "lava_toad/animations/idle__south.webp",
+          "frame_paths": [
+            "lava_toad/animations/idle/south/00.webp",
+            "lava_toad/animations/idle/south/01.webp",
+            "lava_toad/animations/idle/south/02.webp",
+            "lava_toad/animations/idle/south/03.webp",
+            "lava_toad/animations/idle/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/idle/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "lava_toad/animations/idle__south-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/idle/south-east/00.webp",
+            "lava_toad/animations/idle/south-east/01.webp",
+            "lava_toad/animations/idle/south-east/02.webp",
+            "lava_toad/animations/idle/south-east/03.webp",
+            "lava_toad/animations/idle/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/idle/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "lava_toad/animations/idle__east.webp",
+          "frame_paths": [
+            "lava_toad/animations/idle/east/00.webp",
+            "lava_toad/animations/idle/east/01.webp",
+            "lava_toad/animations/idle/east/02.webp",
+            "lava_toad/animations/idle/east/03.webp",
+            "lava_toad/animations/idle/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/idle/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "lava_toad/animations/idle__north-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/idle/north-east/00.webp",
+            "lava_toad/animations/idle/north-east/01.webp",
+            "lava_toad/animations/idle/north-east/02.webp",
+            "lava_toad/animations/idle/north-east/03.webp",
+            "lava_toad/animations/idle/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/idle/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "lava_toad/animations/idle__north.webp",
+          "frame_paths": [
+            "lava_toad/animations/idle/north/00.webp",
+            "lava_toad/animations/idle/north/01.webp",
+            "lava_toad/animations/idle/north/02.webp",
+            "lava_toad/animations/idle/north/03.webp",
+            "lava_toad/animations/idle/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/idle/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "lava_toad/animations/idle__north-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/idle/north-west/00.webp",
+            "lava_toad/animations/idle/north-west/01.webp",
+            "lava_toad/animations/idle/north-west/02.webp",
+            "lava_toad/animations/idle/north-west/03.webp",
+            "lava_toad/animations/idle/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/idle/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "lava_toad/animations/idle__west.webp",
+          "frame_paths": [
+            "lava_toad/animations/idle/west/00.webp",
+            "lava_toad/animations/idle/west/01.webp",
+            "lava_toad/animations/idle/west/02.webp",
+            "lava_toad/animations/idle/west/03.webp",
+            "lava_toad/animations/idle/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/idle/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "lava_toad/animations/idle__south-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/idle/south-west/00.webp",
+            "lava_toad/animations/idle/south-west/01.webp",
+            "lava_toad/animations/idle/south-west/02.webp",
+            "lava_toad/animations/idle/south-west/03.webp",
+            "lava_toad/animations/idle/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/idle/south-west"
+        }
+      }
+    },
+    "angry": {
+      "group_id": null,
+      "source_name": "candidates/lava_toad (angry)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "lava_toad/animations/angry__south.webp",
+          "frame_paths": [
+            "lava_toad/animations/angry/south/00.webp",
+            "lava_toad/animations/angry/south/01.webp",
+            "lava_toad/animations/angry/south/02.webp",
+            "lava_toad/animations/angry/south/03.webp",
+            "lava_toad/animations/angry/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/angry/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "lava_toad/animations/angry__south-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/angry/south-east/00.webp",
+            "lava_toad/animations/angry/south-east/01.webp",
+            "lava_toad/animations/angry/south-east/02.webp",
+            "lava_toad/animations/angry/south-east/03.webp",
+            "lava_toad/animations/angry/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/angry/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "lava_toad/animations/angry__east.webp",
+          "frame_paths": [
+            "lava_toad/animations/angry/east/00.webp",
+            "lava_toad/animations/angry/east/01.webp",
+            "lava_toad/animations/angry/east/02.webp",
+            "lava_toad/animations/angry/east/03.webp",
+            "lava_toad/animations/angry/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/angry/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "lava_toad/animations/angry__north-east.webp",
+          "frame_paths": [
+            "lava_toad/animations/angry/north-east/00.webp",
+            "lava_toad/animations/angry/north-east/01.webp",
+            "lava_toad/animations/angry/north-east/02.webp",
+            "lava_toad/animations/angry/north-east/03.webp",
+            "lava_toad/animations/angry/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/angry/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "lava_toad/animations/angry__north.webp",
+          "frame_paths": [
+            "lava_toad/animations/angry/north/00.webp",
+            "lava_toad/animations/angry/north/01.webp",
+            "lava_toad/animations/angry/north/02.webp",
+            "lava_toad/animations/angry/north/03.webp",
+            "lava_toad/animations/angry/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/angry/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "lava_toad/animations/angry__north-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/angry/north-west/00.webp",
+            "lava_toad/animations/angry/north-west/01.webp",
+            "lava_toad/animations/angry/north-west/02.webp",
+            "lava_toad/animations/angry/north-west/03.webp",
+            "lava_toad/animations/angry/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/angry/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "lava_toad/animations/angry__west.webp",
+          "frame_paths": [
+            "lava_toad/animations/angry/west/00.webp",
+            "lava_toad/animations/angry/west/01.webp",
+            "lava_toad/animations/angry/west/02.webp",
+            "lava_toad/animations/angry/west/03.webp",
+            "lava_toad/animations/angry/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/angry/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "lava_toad/animations/angry__south-west.webp",
+          "frame_paths": [
+            "lava_toad/animations/angry/south-west/00.webp",
+            "lava_toad/animations/angry/south-west/01.webp",
+            "lava_toad/animations/angry/south-west/02.webp",
+            "lava_toad/animations/angry/south-west/03.webp",
+            "lava_toad/animations/angry/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/lava_toad/animations/angry/south-west"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      96,
+      96
+    ],
+    "pad": [
+      3,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 3,
+        "ext": 1
+      }
+    ]
+  }
+}

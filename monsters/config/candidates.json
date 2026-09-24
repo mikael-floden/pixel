@@ -51,23 +51,6 @@
       "lore": "It kept watch from the chapel eaves for centuries. When the last bell fell silent, it came down."
     },
     {
-      "id": "lava_toad",
-      "name": "Magmatoad",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 96,
-      "biome": [
-        "lava"
-      ],
-      "items": [],
-      "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac, no drop shadow on the ground.",
-      "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire.",
-      "walk_action": "hop loop, the toad crouches with ALL FOUR legs bent under it, then leaps with all four legs pushing off the ground at the same moment, all four feet clearly off the ground together at the top of the hop with the legs stretched out, then all four feet land together and the legs fold back under the body, moving in place, never one leg after the other and never a back-legs-only kick, seamless loop whose last frame leads straight back into the first, no turning",
-      "attack_action": "Ground Slam - Springs straight up off both back legs, hangs a moment at the top, then drops and slams down on both front hands, the rock under it cracking and a burst of embers thrown out sideways along the ground",
-      "attack_extreme": "Magma Slam - Leaps high off both legs and crashes down flat, the ground splitting in a bright orange crack under it and embers spraying outward"
-    },
-    {
       "id": "fox_spirit",
       "name": "Foxfire",
       "tier": "mid",
@@ -200,22 +183,6 @@
       "items": [],
       "prompt": "Fallen knight shown full body from head to feet, realistic proportions, black steel plate armor scored with old cuts, a closed great helm with a narrow slit, a tattered black surcoat with a defaced crest, a longsword held upright and a kite shield.",
       "lore": "He kept his oath after his lord broke it, and now the oath is all that is left of him."
-    },
-    {
-      "id": "naga",
-      "name": "Coilblade",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 128,
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Naga warrior with realistic proportions, a scaled serpent lower body coiled tightly beneath a humanoid torso, dark green scales with a pale belly, a hooded cobra-like head with yellow slit eyes, and a curved bronze blade held close.",
-      "lore": "The temple in the swamp is hers and the swamp is the temple. Every stone step is guarded, and she is the steps.",
-      "walk_action": "slither cycle in place, the serpent body FLEXES rather than slides: a wave starts behind the torso and travels backward down the tail to the tip, each coil pressing sideways against the ground and pushing the body along, the tail tip visibly whipping last, the torso held level and steady above it, the body NEVER moving as one rigid shape, seamless loop whose last frame leads straight back into the first, no turning"
     },
     {
       "id": "minotaur",
@@ -6288,6 +6255,55 @@
       "lore": "The nest was left before the bramble grew around it. It keeps the eggs warm out of habit and there is nothing inside them.",
       "items": [],
       "graduated_at": "2026-09-23T21:44:18+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "lava_toad",
+      "name": "Magmatoad",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "lava"
+      ],
+      "items": [],
+      "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac, no drop shadow on the ground.",
+      "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire.",
+      "walk_action": "hop loop, the toad crouches with ALL FOUR legs bent under it, then leaps with all four legs pushing off the ground at the same moment, all four feet clearly off the ground together at the top of the hop with the legs stretched out, then all four feet land together and the legs fold back under the body, moving in place, never one leg after the other and never a back-legs-only kick, seamless loop whose last frame leads straight back into the first, no turning",
+      "attack_action": "Ground Slam - Springs straight up off both back legs, hangs a moment at the top, then drops and slams down on both front hands, the rock under it cracking and a burst of embers thrown out sideways along the ground",
+      "attack_extreme": "Magma Slam - Leaps high off both legs and crashes down flat, the ground splitting in a bright orange crack under it and embers spraying outward",
+      "graduated_at": "2026-09-24T16:13:35+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "naga",
+      "name": "Coilblade",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 128,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Naga warrior with realistic proportions, a scaled serpent lower body coiled tightly beneath a humanoid torso, dark green scales with a pale belly, a hooded cobra-like head with yellow slit eyes, and a curved bronze blade held close.",
+      "lore": "The temple in the swamp is hers and the swamp is the temple. Every stone step is guarded, and she is the steps.",
+      "walk_action": "slither cycle in place, the serpent body FLEXES rather than slides: a wave starts behind the torso and travels backward down the tail to the tip, each coil pressing sideways against the ground and pushing the body along, the tail tip visibly whipping last, the torso held level and steady above it, the body NEVER moving as one rigid shape, seamless loop whose last frame leads straight back into the first, no turning",
+      "graduated_at": "2026-09-24T16:14:32+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

@@ -1,0 +1,745 @@
+{
+  "id": "naga",
+  "name": "Coilblade",
+  "lore": "The temple in the swamp is hers and the swamp is the temple. Every stone step is guarded, and she is the steps.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "6151a93a-f950-4b6f-a7eb-5e26f18083d0",
+    "url": "https://www.pixellab.ai/create-character/6151a93a-f950-4b6f-a7eb-5e26f18083d0",
+    "prompt": "Naga warrior with realistic proportions, a scaled serpent lower body coiled tightly beneath a humanoid torso, dark green scales with a pale belly, a hooded cobra-like head with yellow slit eyes, and a curved bronze blade held close, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 134,
+    "height": 128
+  },
+  "native_size": {
+    "width": 128,
+    "height": 128
+  },
+  "pad": {
+    "x": 3,
+    "y": 0
+  },
+  "sprite": "naga/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "naga/rotations/south.webp",
+    "west": "naga/rotations/west.webp",
+    "east": "naga/rotations/east.webp",
+    "north": "naga/rotations/north.webp",
+    "south-east": "naga/rotations/south-east.webp",
+    "north-east": "naga/rotations/north-east.webp",
+    "north-west": "naga/rotations/north-west.webp",
+    "south-west": "naga/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "333509b9-a39d-4971-aac7-a0a30dc6b53a",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "naga/animations/angry__east.webp",
+          "frame_paths": [
+            "naga/animations/angry/east/00.webp",
+            "naga/animations/angry/east/01.webp",
+            "naga/animations/angry/east/02.webp",
+            "naga/animations/angry/east/03.webp",
+            "naga/animations/angry/east/04.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 19:39:46 GMT",
+          "src_frames": 5,
+          "sub": "62a25d6b-96cb-4059-9b51-dc49ca36af95"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "naga/animations/angry__north.webp",
+          "frame_paths": [
+            "naga/animations/angry/north/00.webp",
+            "naga/animations/angry/north/01.webp",
+            "naga/animations/angry/north/02.webp",
+            "naga/animations/angry/north/03.webp",
+            "naga/animations/angry/north/04.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 19:39:47 GMT",
+          "src_frames": 5,
+          "sub": "8a0c25ad-9ac0-47c9-839f-deb9ed01ac8b"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "naga/animations/angry__north-east.webp",
+          "frame_paths": [
+            "naga/animations/angry/north-east/00.webp",
+            "naga/animations/angry/north-east/01.webp",
+            "naga/animations/angry/north-east/02.webp",
+            "naga/animations/angry/north-east/03.webp",
+            "naga/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 19:39:21 GMT",
+          "src_frames": 5,
+          "sub": "dc8d30ea-8ea6-42df-adc9-3affc35d9080"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "naga/animations/angry__south.webp",
+          "frame_paths": [
+            "naga/animations/angry/south/00.webp",
+            "naga/animations/angry/south/01.webp",
+            "naga/animations/angry/south/02.webp",
+            "naga/animations/angry/south/03.webp",
+            "naga/animations/angry/south/04.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:14:00 GMT",
+          "src_frames": 5,
+          "sub": "415fd7c7-67f7-4d8c-a37c-ba620951032b"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "naga/animations/angry__south-east.webp",
+          "frame_paths": [
+            "naga/animations/angry/south-east/00.webp",
+            "naga/animations/angry/south-east/01.webp",
+            "naga/animations/angry/south-east/02.webp",
+            "naga/animations/angry/south-east/03.webp",
+            "naga/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 19:39:45 GMT",
+          "src_frames": 5,
+          "sub": "a2150931-bd63-4718-9ab1-502b06a8934c"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "naga/animations/angry__south-west.webp",
+          "frame_paths": [
+            "naga/animations/angry/south-west/00.webp",
+            "naga/animations/angry/south-west/01.webp",
+            "naga/animations/angry/south-west/02.webp",
+            "naga/animations/angry/south-west/03.webp",
+            "naga/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "naga/animations/angry__west.webp",
+          "frame_paths": [
+            "naga/animations/angry/west/00.webp",
+            "naga/animations/angry/west/01.webp",
+            "naga/animations/angry/west/02.webp",
+            "naga/animations/angry/west/03.webp",
+            "naga/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "naga/animations/angry__north-west.webp",
+          "frame_paths": [
+            "naga/animations/angry/north-west/00.webp",
+            "naga/animations/angry/north-west/01.webp",
+            "naga/animations/angry/north-west/02.webp",
+            "naga/animations/angry/north-west/03.webp",
+            "naga/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "9c630203-f249-4cf5-b59b-a6666edb06e4",
+      "source_name": "custom-Death - Faints, collapses to t",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "naga/animations/die__east.webp",
+          "frame_paths": [
+            "naga/animations/die/east/00.webp",
+            "naga/animations/die/east/01.webp",
+            "naga/animations/die/east/02.webp",
+            "naga/animations/die/east/03.webp",
+            "naga/animations/die/east/04.webp",
+            "naga/animations/die/east/05.webp",
+            "naga/animations/die/east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:14:02 GMT",
+          "src_frames": 7,
+          "sub": "bfaa1f3e-6670-4ad4-9b95-716a4c9a8a32"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "naga/animations/die__north.webp",
+          "frame_paths": [
+            "naga/animations/die/north/00.webp",
+            "naga/animations/die/north/01.webp",
+            "naga/animations/die/north/02.webp",
+            "naga/animations/die/north/03.webp",
+            "naga/animations/die/north/04.webp",
+            "naga/animations/die/north/05.webp",
+            "naga/animations/die/north/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:14:04 GMT",
+          "src_frames": 7,
+          "sub": "2322157c-1b01-47c9-9354-074839050ad2"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "naga/animations/die__north-east.webp",
+          "frame_paths": [
+            "naga/animations/die/north-east/00.webp",
+            "naga/animations/die/north-east/01.webp",
+            "naga/animations/die/north-east/02.webp",
+            "naga/animations/die/north-east/03.webp",
+            "naga/animations/die/north-east/04.webp",
+            "naga/animations/die/north-east/05.webp",
+            "naga/animations/die/north-east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:14:05 GMT",
+          "src_frames": 7,
+          "sub": "09d7715f-afbf-404d-b7fb-8b86f0acc5df"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "naga/animations/die__south.webp",
+          "frame_paths": [
+            "naga/animations/die/south/00.webp",
+            "naga/animations/die/south/01.webp",
+            "naga/animations/die/south/02.webp",
+            "naga/animations/die/south/03.webp",
+            "naga/animations/die/south/04.webp",
+            "naga/animations/die/south/05.webp",
+            "naga/animations/die/south/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:14:06 GMT",
+          "src_frames": 7,
+          "sub": "7ad05ec1-cc95-433f-9ef5-542bdfd0e0ce"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "naga/animations/die__south-east.webp",
+          "frame_paths": [
+            "naga/animations/die/south-east/00.webp",
+            "naga/animations/die/south-east/01.webp",
+            "naga/animations/die/south-east/02.webp",
+            "naga/animations/die/south-east/03.webp",
+            "naga/animations/die/south-east/04.webp",
+            "naga/animations/die/south-east/05.webp",
+            "naga/animations/die/south-east/06.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 20:23:34 GMT",
+          "src_frames": 7,
+          "sub": "50545f8d-d9fe-47a0-80a7-012b728364f3"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "naga/animations/die__south-west.webp",
+          "frame_paths": [
+            "naga/animations/die/south-west/00.webp",
+            "naga/animations/die/south-west/01.webp",
+            "naga/animations/die/south-west/02.webp",
+            "naga/animations/die/south-west/03.webp",
+            "naga/animations/die/south-west/04.webp",
+            "naga/animations/die/south-west/05.webp",
+            "naga/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "naga/animations/die__west.webp",
+          "frame_paths": [
+            "naga/animations/die/west/00.webp",
+            "naga/animations/die/west/01.webp",
+            "naga/animations/die/west/02.webp",
+            "naga/animations/die/west/03.webp",
+            "naga/animations/die/west/04.webp",
+            "naga/animations/die/west/05.webp",
+            "naga/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "naga/animations/die__north-west.webp",
+          "frame_paths": [
+            "naga/animations/die/north-west/00.webp",
+            "naga/animations/die/north-west/01.webp",
+            "naga/animations/die/north-west/02.webp",
+            "naga/animations/die/north-west/03.webp",
+            "naga/animations/die/north-west/04.webp",
+            "naga/animations/die/north-west/05.webp",
+            "naga/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "f9355f9b-8e48-4591-aeb6-fc0e7ed48010",
+      "source_name": "custom-Strike - Quickly lunges forward and strikes once + custom-Strike - Quickly lunges forward and strikes once, ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "naga/animations/attack__east.webp",
+          "frame_paths": [
+            "naga/animations/attack/east/00.webp",
+            "naga/animations/attack/east/01.webp",
+            "naga/animations/attack/east/02.webp",
+            "naga/animations/attack/east/03.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 19:58:34 GMT",
+          "src_frames": 4,
+          "sub": "3c440597-03e9-453b-96d8-cfacdc90d67d"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "naga/animations/attack__north-east.webp",
+          "frame_paths": [
+            "naga/animations/attack/north-east/00.webp",
+            "naga/animations/attack/north-east/01.webp",
+            "naga/animations/attack/north-east/02.webp",
+            "naga/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 19:58:35 GMT",
+          "src_frames": 4,
+          "sub": "50daeb10-077a-4741-aea1-ba21cda22906"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "naga/animations/attack__south.webp",
+          "frame_paths": [
+            "naga/animations/attack/south/00.webp",
+            "naga/animations/attack/south/01.webp",
+            "naga/animations/attack/south/02.webp",
+            "naga/animations/attack/south/03.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 19:58:32 GMT",
+          "src_frames": 4,
+          "sub": "6aa637ae-0a3e-4d1b-b415-c570ffc58cee"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "naga/animations/attack__south-east.webp",
+          "frame_paths": [
+            "naga/animations/attack/south-east/00.webp",
+            "naga/animations/attack/south-east/01.webp",
+            "naga/animations/attack/south-east/02.webp",
+            "naga/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Tue, 22 Sep 2026 19:58:33 GMT",
+          "src_frames": 4,
+          "sub": "a871a3da-ff7b-4bf4-93f4-9413c6cb596c"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "naga/animations/attack__south-west.webp",
+          "frame_paths": [
+            "naga/animations/attack/south-west/00.webp",
+            "naga/animations/attack/south-west/01.webp",
+            "naga/animations/attack/south-west/02.webp",
+            "naga/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "naga/animations/attack__west.webp",
+          "frame_paths": [
+            "naga/animations/attack/west/00.webp",
+            "naga/animations/attack/west/01.webp",
+            "naga/animations/attack/west/02.webp",
+            "naga/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "naga/animations/attack__north-west.webp",
+          "frame_paths": [
+            "naga/animations/attack/north-west/00.webp",
+            "naga/animations/attack/north-west/01.webp",
+            "naga/animations/attack/north-west/02.webp",
+            "naga/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "naga/animations/attack__north.webp",
+          "frame_paths": [
+            "naga/animations/attack/north/00.webp",
+            "naga/animations/attack/north/01.webp",
+            "naga/animations/attack/north/02.webp",
+            "naga/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:14:12 GMT",
+          "src_frames": 4,
+          "sub": "8377ac70-4d83-49f5-a8ca-8594d304c9ac"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "4edc16e6-b256-4641-9053-ecd9dcaa325d",
+      "source_name": "custom-slither cycle in place, the serpent body FLEXES ra + custom-slither cycle, the whole serpe",
+      "directions": {
+        "south": {
+          "frames": 8,
+          "strip": "naga/animations/walk__south.webp",
+          "frame_paths": [
+            "naga/animations/walk/south/00.webp",
+            "naga/animations/walk/south/01.webp",
+            "naga/animations/walk/south/02.webp",
+            "naga/animations/walk/south/03.webp",
+            "naga/animations/walk/south/04.webp",
+            "naga/animations/walk/south/05.webp",
+            "naga/animations/walk/south/06.webp",
+            "naga/animations/walk/south/07.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:01:34 GMT",
+          "src_frames": 8,
+          "sub": "3683765f-fb88-4d3d-9757-a6cae4f7c300"
+        },
+        "south-east": {
+          "frames": 8,
+          "strip": "naga/animations/walk__south-east.webp",
+          "frame_paths": [
+            "naga/animations/walk/south-east/00.webp",
+            "naga/animations/walk/south-east/01.webp",
+            "naga/animations/walk/south-east/02.webp",
+            "naga/animations/walk/south-east/03.webp",
+            "naga/animations/walk/south-east/04.webp",
+            "naga/animations/walk/south-east/05.webp",
+            "naga/animations/walk/south-east/06.webp",
+            "naga/animations/walk/south-east/07.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:01:35 GMT",
+          "src_frames": 8,
+          "sub": "7a49550f-0561-4d83-92a0-dcbc687a485f"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "naga/animations/walk__east.webp",
+          "frame_paths": [
+            "naga/animations/walk/east/00.webp",
+            "naga/animations/walk/east/01.webp",
+            "naga/animations/walk/east/02.webp",
+            "naga/animations/walk/east/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:14:13 GMT",
+          "src_frames": 4,
+          "sub": "5c7b3687-ff22-443d-8b8e-841c9a393438"
+        },
+        "north-east": {
+          "frames": 8,
+          "strip": "naga/animations/walk__north-east.webp",
+          "frame_paths": [
+            "naga/animations/walk/north-east/00.webp",
+            "naga/animations/walk/north-east/01.webp",
+            "naga/animations/walk/north-east/02.webp",
+            "naga/animations/walk/north-east/03.webp",
+            "naga/animations/walk/north-east/04.webp",
+            "naga/animations/walk/north-east/05.webp",
+            "naga/animations/walk/north-east/06.webp",
+            "naga/animations/walk/north-east/07.webp"
+          ],
+          "lm": "Wed, 23 Sep 2026 21:01:36 GMT",
+          "src_frames": 8,
+          "sub": "1a9facc2-f8c5-4bbf-9301-57fdab6ee06c"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "naga/animations/walk__north.webp",
+          "frame_paths": [
+            "naga/animations/walk/north/00.webp",
+            "naga/animations/walk/north/01.webp",
+            "naga/animations/walk/north/02.webp",
+            "naga/animations/walk/north/03.webp",
+            "naga/animations/walk/north/04.webp",
+            "naga/animations/walk/north/05.webp"
+          ],
+          "src_frames": 6,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 8,
+          "strip": "naga/animations/walk__north-west.webp",
+          "frame_paths": [
+            "naga/animations/walk/north-west/00.webp",
+            "naga/animations/walk/north-west/01.webp",
+            "naga/animations/walk/north-west/02.webp",
+            "naga/animations/walk/north-west/03.webp",
+            "naga/animations/walk/north-west/04.webp",
+            "naga/animations/walk/north-west/05.webp",
+            "naga/animations/walk/north-west/06.webp",
+            "naga/animations/walk/north-west/07.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "naga/animations/walk__west.webp",
+          "frame_paths": [
+            "naga/animations/walk/west/00.webp",
+            "naga/animations/walk/west/01.webp",
+            "naga/animations/walk/west/02.webp",
+            "naga/animations/walk/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "south-west": {
+          "frames": 8,
+          "strip": "naga/animations/walk__south-west.webp",
+          "frame_paths": [
+            "naga/animations/walk/south-west/00.webp",
+            "naga/animations/walk/south-west/01.webp",
+            "naga/animations/walk/south-west/02.webp",
+            "naga/animations/walk/south-west/03.webp",
+            "naga/animations/walk/south-west/04.webp",
+            "naga/animations/walk/south-west/05.webp",
+            "naga/animations/walk/south-west/06.webp",
+            "naga/animations/walk/south-west/07.webp"
+          ],
+          "mirrored_from": "south-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": null,
+      "source_name": "candidates/naga (idle)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "naga/animations/idle__south.webp",
+          "frame_paths": [
+            "naga/animations/idle/south/00.webp",
+            "naga/animations/idle/south/01.webp",
+            "naga/animations/idle/south/02.webp",
+            "naga/animations/idle/south/03.webp",
+            "naga/animations/idle/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/idle/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "naga/animations/idle__south-east.webp",
+          "frame_paths": [
+            "naga/animations/idle/south-east/00.webp",
+            "naga/animations/idle/south-east/01.webp",
+            "naga/animations/idle/south-east/02.webp",
+            "naga/animations/idle/south-east/03.webp",
+            "naga/animations/idle/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/idle/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "naga/animations/idle__east.webp",
+          "frame_paths": [
+            "naga/animations/idle/east/00.webp",
+            "naga/animations/idle/east/01.webp",
+            "naga/animations/idle/east/02.webp",
+            "naga/animations/idle/east/03.webp",
+            "naga/animations/idle/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/idle/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "naga/animations/idle__north-east.webp",
+          "frame_paths": [
+            "naga/animations/idle/north-east/00.webp",
+            "naga/animations/idle/north-east/01.webp",
+            "naga/animations/idle/north-east/02.webp",
+            "naga/animations/idle/north-east/03.webp",
+            "naga/animations/idle/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/idle/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "naga/animations/idle__north.webp",
+          "frame_paths": [
+            "naga/animations/idle/north/00.webp",
+            "naga/animations/idle/north/01.webp",
+            "naga/animations/idle/north/02.webp",
+            "naga/animations/idle/north/03.webp",
+            "naga/animations/idle/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/idle/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "naga/animations/idle__north-west.webp",
+          "frame_paths": [
+            "naga/animations/idle/north-west/00.webp",
+            "naga/animations/idle/north-west/01.webp",
+            "naga/animations/idle/north-west/02.webp",
+            "naga/animations/idle/north-west/03.webp",
+            "naga/animations/idle/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/idle/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "naga/animations/idle__west.webp",
+          "frame_paths": [
+            "naga/animations/idle/west/00.webp",
+            "naga/animations/idle/west/01.webp",
+            "naga/animations/idle/west/02.webp",
+            "naga/animations/idle/west/03.webp",
+            "naga/animations/idle/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/idle/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "naga/animations/idle__south-west.webp",
+          "frame_paths": [
+            "naga/animations/idle/south-west/00.webp",
+            "naga/animations/idle/south-west/01.webp",
+            "naga/animations/idle/south-west/02.webp",
+            "naga/animations/idle/south-west/03.webp",
+            "naga/animations/idle/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/naga/animations/idle/south-west"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-Angry combat idle, frustrated ",
+      "key": "angry",
+      "direction": "south-east",
+      "takes": [
+        "840649aa-2456-4612-914a-f91a6c01bc01",
+        "a2150931-bd63-4718-9ab1-502b06a8934c"
+      ]
+    },
+    {
+      "animation": "custom-Angry combat idle, frustrated ",
+      "key": "angry",
+      "direction": "east",
+      "takes": [
+        "2e49dfb0-9d49-4053-9b55-a78b6593e266",
+        "62a25d6b-96cb-4059-9b51-dc49ca36af95"
+      ]
+    },
+    {
+      "animation": "custom-Angry combat idle, frustrated ",
+      "key": "angry",
+      "direction": "south",
+      "takes": [
+        "9fa3b7fc-8300-4065-8bac-a3e797ada7ba",
+        "415fd7c7-67f7-4d8c-a37c-ba620951032b"
+      ]
+    },
+    {
+      "animation": "custom-Angry combat idle, frustrated ",
+      "key": "angry",
+      "direction": "north-east",
+      "takes": [
+        "e4327ca8-b18e-4df4-8db4-b1125dfad94f",
+        "dc8d30ea-8ea6-42df-adc9-3affc35d9080"
+      ]
+    },
+    {
+      "animation": "custom-Angry combat idle, frustrated ",
+      "key": "angry",
+      "direction": "north",
+      "takes": [
+        "a2c05afe-5d76-4b7f-a515-1f763e29dcef",
+        "8a0c25ad-9ac0-47c9-839f-deb9ed01ac8b"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      128,
+      128
+    ],
+    "pad": [
+      3,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 5,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 8,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 8,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 5,
+        "ext": 1
+      }
+    ]
+  }
+}
