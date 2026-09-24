@@ -1,9 +1,9 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:02:03+00:00",
+  "updated_at": "2026-09-24T22:02:51+00:00",
   "health": "running",
-  "current": "CLAIMED (final pass) — his live candidate review keeps landing; recording bog_skull_stack, scree_lizard, snow_troll the same way as the five already shipped (animate.py approve --ids -> review=approved + APPROVED tag, index rebuilt). No entry cleared, no generation, $0.00. FILES: monsters/candidates/<those>/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT MINE, stated in the release: his loom_widow REJECTION (21:59:45Z), and anything he presses after this pass.",
+  "current": "CLAIMED (last pass of this sitting) — swamp_ape (22:01:54Z) + cairn_walker (22:02:14Z), approved r1, recorded the same way. FILES: monsters/candidates/{swamp_ape,cairn_walker}/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. After this I release: his review is still running live and anything he presses from 22:02:15Z on is UNCLAIMED and belongs to the next sitting or the monsters agent. His loom_widow rejection (21:59:45Z) is also left, see the release note.",
   "progress": {
     "unit": "his 21:56-22:00Z candidate approvals",
     "entries_taken": 5,
