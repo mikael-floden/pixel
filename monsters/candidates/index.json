@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-24T21:59:51+00:00",
+  "generated_at": "2026-09-24T22:01:29+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -26926,11 +26926,11 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-24T18:26:12+00:00",
-      "verdict": null,
+      "verdict": "approved",
       "graduation": {
         "state": "waiting",
         "takes": {},
-        "blocking": "design not approved"
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
       }
     },
     {
@@ -29635,11 +29635,11 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-24T18:31:23+00:00",
-      "verdict": null,
+      "verdict": "approved",
       "graduation": {
         "state": "waiting",
         "takes": {},
-        "blocking": "design not approved"
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
       }
     },
     {
@@ -30572,14 +30572,14 @@
           }
         }
       },
-      "review": "pending",
+      "review": "approved",
       "notes": null,
       "generated_at": "2026-09-24T20:54:24+00:00",
-      "verdict": null,
+      "verdict": "approved",
       "graduation": {
         "state": "waiting",
         "takes": {},
-        "blocking": "design not approved"
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
       }
     },
     {
@@ -39725,7 +39725,7 @@
           }
         }
       },
-      "review": "pending",
+      "review": "approved",
       "notes": null,
       "generated_at": "2026-09-24T21:04:28+00:00",
       "verdict": "approved",
@@ -40390,7 +40390,7 @@
           }
         }
       },
-      "review": "pending",
+      "review": "approved",
       "notes": null,
       "generated_at": "2026-09-24T20:36:17+00:00",
       "verdict": "approved",
@@ -41059,14 +41059,14 @@
           }
         }
       },
-      "review": "pending",
+      "review": "approved",
       "notes": null,
       "generated_at": "2026-09-24T20:40:54+00:00",
-      "verdict": null,
+      "verdict": "approved",
       "graduation": {
         "state": "waiting",
         "takes": {},
-        "blocking": "design not approved"
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
       }
     },
     {
@@ -44680,7 +44680,7 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-24T21:02:40+00:00",
-      "verdict": null,
+      "verdict": "rejected",
       "graduation": {
         "state": "waiting",
         "takes": {},
