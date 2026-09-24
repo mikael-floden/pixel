@@ -1,0 +1,141 @@
+{
+  "id": "leech_horse",
+  "name": "Leechhorse",
+  "tier": "evil",
+  "scale": "big",
+  "lore": "It was a horse. Now it is what drank the horse.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Horse-shaped mass of black leeches, a suckered mouth where the muzzle should be, no eyes, mane of writhing leeches.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "leech_horse/rotations/south.webp",
+    "south-east": "leech_horse/rotations/south-east.webp",
+    "east": "leech_horse/rotations/east.webp",
+    "north-east": "leech_horse/rotations/north-east.webp",
+    "north": "leech_horse/rotations/north.webp",
+    "north-west": "leech_horse/rotations/north-west.webp",
+    "west": "leech_horse/rotations/west.webp",
+    "south-west": "leech_horse/rotations/south-west.webp"
+  },
+  "sheet": "leech_horse/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "aa911512-80c7-48aa-8f14-7398116f3fe3",
+  "seed": 2038703974,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:01:09+00:00",
+  "elapsed_s": 219.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.512,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.588,
+        "bbox": [
+          74,
+          21,
+          148,
+          208
+        ],
+        "fill": 0.276,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.584,
+        "bbox": [
+          59,
+          23,
+          162,
+          211
+        ],
+        "fill": 0.386,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.591,
+        "bbox": [
+          24,
+          17,
+          195,
+          201
+        ],
+        "fill": 0.627,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.597,
+        "bbox": [
+          34,
+          12,
+          182,
+          211
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.569,
+        "bbox": [
+          79,
+          11,
+          143,
+          208
+        ],
+        "fill": 0.251,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.619,
+        "bbox": [
+          52,
+          12,
+          187,
+          210
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.589,
+        "bbox": [
+          25,
+          16,
+          202,
+          199
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.512,
+        "bbox": [
+          32,
+          17,
+          196,
+          206
+        ],
+        "fill": 0.618,
+        "touches_edge": false
+      }
+    }
+  }
+}
