@@ -1,17 +1,19 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T18:07:57+00:00",
+  "updated_at": "2026-09-24T18:21:38+00:00",
   "health": "running",
   "current": {
     "unit": "CLAIMED — TERRAIN BAKE chunk 1 (maintainer 2026-09-24: 'I'm fully sold ... Let's do the entire work! ... Test it with before and after images'): raised terrain (the occluder ops of a 16x16-cell chunk) drawn ONCE into a per-chunk atlas, one image per depth-row segment, so the frame draws hundreds of band images instead of 2,200-5,600 sprites (his 16:50 run: render 3.0 + depthSort 2.0 + occCull 1.0 ms/frame, 20 Mpx fill, 16,433 textures). Live path kept for cells that cannot bake (art streaming, indoor cut-away, edited) and as the A/B; depth per row unchanged, meta records unchanged (cover/lighting/shadows read them, not the images); pixel parity gated by screenshots live vs baked.",
-    "since": "2026-09-24T18:07:57+00:00",
+    "since": "2026-09-24T18:21:38+00:00",
     "files": [
-      "games2/client/src/terrainbake.ts (new: chunk registry, band packer, sliced bake, dirtying)",
+      "games2/client/src/terrainbake.ts (new)",
       "games2/server/test/terrainbake.test.ts (new)",
-      "games2/scripts/verify-bake.mjs (new: live vs baked screenshots, hash parity)",
+      "games2/scripts/verify-bake.mjs (new)",
+      "games2/client/src/scenes/WorldScene.ts (games released it 18:xx: the walk's emit sink, the drain/cull/cover hooks, the Settings/dev entry, __ml.bake/bakeParity, the beacon row)",
+      "games2/server/src/perfreport.ts (the `bake` row)",
+      "games2/scripts/verify-beacon.mjs",
       "games2/docs/perf.md",
-      "games2/CLAUDE.md",
-      "games2/client/src/scenes/WorldScene.ts — NOT YET: in flight on the games board (slopes unit); hook points wait for their release (request posted)"
+      "games2/CLAUDE.md"
     ]
   },
   "progress": {
