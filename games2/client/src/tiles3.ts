@@ -466,6 +466,9 @@ export interface PlateArt {
   stale: boolean;
   w: number;
   h: number;
+  /** A slope tile standing in for the plate (a composed boundary on a cell
+   *  that wears one, `wangSurface`): the set's rise, for the top-only mask. */
+  rise?: number;
 }
 
 /* -- the review matrix, the flats, the fades -------------------------------- */
@@ -1203,6 +1206,14 @@ export interface Tiles3Boundary {
    *  plate there drew the cell's raw diamond edge — a hard straight segment in
    *  the middle of an otherwise organic coastline. */
   folded: boolean;
+  /** THE SLOPE IN THE BOUNDARY (maintainer 2026-09-24: "slopes on every
+   *  single 1 level stair"): this cell wears a slope tile AND a same-plane
+   *  ground change, so its own side of the composed tile IS the slope tile
+   *  (`plateA`/`plateB` for `side`) and the other side is shifted `lift` rows
+   *  down inside the raster, which is drawn `lift` rows up (a raise), so the
+   *  other ground lands on the level and the mask curve stays where the
+   *  neighbours' is. `rise` extends the top-only mask (slopeTopOnly). */
+  slope?: { side: "a" | "b"; rise: number; lift: number };
   /** Only the top face of the composed tile is painted — a wall cap, a liquid. */
   topOnly?: boolean;
   /** TOP FACE ONLY *AND NOTHING IS DRAWN UNDER IT* — a liquid on the flat, which
@@ -2060,6 +2071,29 @@ export class Tiles3 {
   slopeSets(ground: string, ramp = false): SlopeSet[] {
     if (!this.slopeCache) {
       const by = new Map<string, SlopeSet[]>();
+      /* AN UNJUDGED GROUND FALLS BACK TO ITS FIRST COMPLETE SET (maintainer
+       * 2026-09-24, standing on a light_soil terrace: "I was hoping for slopes
+       * on every single 1 level stair!"): light_soil had 244 one-level rises
+       * and no verdict, so every road and shelf of it stayed a stair. The
+       * fallback set's tiles count unless he REJECTS them (`slopeApproved`);
+       * a verdict on any set of the ground retires the fallback. */
+      const fallback = new Map<string, SlopeSet>();
+      // A GAME rule (footBoundary, like the half step): the parity path keeps render3's approved-only pools.
+      for (const st of this.data.footBoundary ? (this.data.slopes?.sets ?? []) : []) {
+        if (!st.complete || (st.post_files?.length ?? 0) !== 16 || isRampSet(st)) continue; // bumps only: an incline stays his verdict
+        const key = `b|${st.ground}`;
+        const f = fallback.get(key);
+        if (!f || st.dir < f.dir) fallback.set(key, st);
+      }
+      const judged = new Set<string>();
+      for (const st of this.data.slopes?.sets ?? []) {
+        if (!st.complete || (st.post_files?.length ?? 0) !== 16) continue;
+        let any = false;
+        for (let i = 0; i < 16 && !any; i++) any = this.data.feedback?.[`${strip(st.dir)}/tile_${String(i).padStart(2, "0")}`]?.status === "approved";
+        if (any) judged.add(`${isRampSet(st) ? "r" : "b"}|${st.ground}`);
+      }
+      this.slopeFallback.clear();
+      for (const [key, st] of fallback) if (!judged.has(key)) this.slopeFallback.add(st.dir);
       for (const st of this.data.slopes?.sets ?? []) {
         if (!st.complete || (st.post_files?.length ?? 0) !== 16) continue;
         let any = false;
@@ -2079,9 +2113,13 @@ export class Tiles3 {
   }
 
   /** HIS VERDICT, PER TILE — verdicts are keyed `<set dir>/tile_NN`. */
+  /** The dirs standing in for an unjudged ground (see `slopeSets`). */
+  private slopeFallback = new Set<string>();
   slopeApproved(dir: string, index: number): boolean {
     const k = `${strip(dir)}/tile_${String(index).padStart(2, "0")}`;
-    return this.data.feedback?.[k]?.status === "approved";
+    const status = this.data.feedback?.[k]?.status;
+    if (status === "approved") return true;
+    return this.slopeFallback.has(dir) && status !== "rejected";
   }
 
   /** The graded tile for this corner bitmask. The SEED is chosen per CHUNK, so a
@@ -2203,6 +2241,22 @@ export class Tiles3 {
     return 0;
   }
 
+  /** THE SLOPE PICK UNDER THE GAME RULE: the raise's tile for `up`, the cut's
+   *  (index = the corners that stay) for `down`, null for neither. */
+  slopePickFor(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    ground: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): SlopePick | null {
+    const half = this.slopeHalfAt(g, L, ground, x, y, zl);
+    if (half.up) return this.slopeTile(ground, half.up, x, y);
+    if (half.down) return this.slopeTile(ground, 15 & ~half.down, x, y, false, true);
+    return null;
+  }
+
   bumpInclineFor(
     g: (x: number, y: number) => string | null,
     L: (x: number, y: number) => number,
@@ -2282,12 +2336,15 @@ export class Tiles3 {
     return up;
   }
 
-  /** A cell that CAN wear a slope tile: its ground has an approved set, its
-   *  whole 8-ring is that ground (a second ground composes a boundary tile,
-   *  which is the surface then), and no corner of it is raised ONLY by cells
-   *  two or more levels up — the exact-one and any-higher masks agree, the
+  /** A cell that CAN wear a slope tile: its ground has a set (approved, or
+   *  the unjudged fallback) and no corner of it is raised ONLY by cells two
+   *  or more levels up — the exact-one and any-higher masks agree, the
    *  bump's own test since 834b119e2b — so a cliff foot keeps its transition
-   *  (the contrast between "run up" and "jump"). Memoised per window. */
+   *  (the contrast between "run up" and "jump"). Another ground in the ring
+   *  is NO bar: on the plane it composes a boundary tile whose own side IS
+   *  the slope tile (`wangSurface`), off the plane it is not on this tile at
+   *  all (1,001 of the_game's one-level rises had one; every stair beside a
+   *  cliff or a shelf of another ground was a stair). Memoised per window. */
   private slopeElig = new Map<number, boolean>();
   slopeEligible(
     g: (x: number, y: number) => string | null,
@@ -2301,12 +2358,6 @@ export class Tiles3 {
     const hit = this.slopeElig.get(k);
     if (hit !== undefined) return hit;
     let ok = this.slopeSets(gr).length > 0;
-    for (let dy = -1; dy <= 1 && ok; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
-        if (!dx && !dy) continue;
-        if (g(x + dx, y + dy) !== gr) { ok = false; break; }
-      }
-    }
     if (ok) ok = this.slopeIndexAt(g, L, gr, x, y, zl) === this.slopeIndexAt(g, L, gr, x, y, zl, true);
     this.slopeElig.set(k, ok);
     return ok;
@@ -3017,6 +3068,24 @@ export class Tiles3 {
         plate: own.art,
         boundary: b.boundary,
       };
+      /* THE SLOPE IS THE OWN SIDE OF THE BOUNDARY (maintainer 2026-09-24:
+       * "slopes on every single 1 level stair"): a grass stair beside a stone
+       * stair composes a grass/stone tile on the plane, and the transition
+       * used to take the cell whole. Now its own side is the slope tile and
+       * the other ground is shifted `lift` rows down inside the raster
+       * (buildBoundaryPixels), drawn `lift` rows up — both on the level. */
+      if (this.data.footBoundary && ramp && !this.rampIndexFor(g, L, gr, x, y, zl)) {
+        const sl = this.slopePickFor(g, L, gr, x, y, zl);
+        if (sl) {
+          const slopeArt: PlateArt = { ...own.art, kind: "plate", path: sl.file, w: TILE, h: sl.h, rise: sl.rise };
+          if (b.ownSide === "b") b.boundary.plateB = slopeArt;
+          else b.boundary.plateA = slopeArt;
+          b.boundary.slope = { side: b.ownSide === "b" ? "b" : "a", rise: sl.rise, lift: sl.cut ? 0 : sl.rise };
+          srf.art = { kind: "plate", path: sl.file, w: TILE, h: sl.h, rise: sl.rise };
+          srf.plate = slopeArt;
+          srf.slope = sl;
+        }
+      }
       // His fourth switch: the transition tile itself may wear a fade.
       if (this.data.fadeTune?.onBoundary) {
         const fade = this.fadeFor(view, g, L, gr, x, y, zl);
@@ -3260,9 +3329,7 @@ export class Tiles3 {
          * the half level, the higher cell cuts its own down to it. The parity
          * path (footBoundary off, render3's rule set) keeps the any-higher
          * bump below; the change is posted to maps2. */
-        const half = this.slopeHalfAt(g, L, gr, x, y, zl);
-        if (half.up) sl = this.slopeTile(gr, half.up, x, y);
-        else if (half.down) sl = this.slopeTile(gr, 15 & ~half.down, x, y, false, true);
+        sl = this.slopePickFor(g, L, gr, x, y, zl);
       } else if (sidx) sl = this.slopeTile(gr, sidx, x, y);
     }
     if (sl) {

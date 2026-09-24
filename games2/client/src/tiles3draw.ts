@@ -235,9 +235,13 @@ export function composeBoundary(
   frame: number,
   plateA: Pixels,
   plateB: Pixels,
-  opts?: { seam?: boolean },
+  opts?: { seam?: boolean; maskShift?: number },
 ): Pixels {
   const { fw, fh, sil, tone } = sheets;
+  // A raise composite is drawn `maskShift` rows up, so its mask (and seam) is
+  // sampled `maskShift` rows up the sheet: the curve lands where the neighbours' is.
+  const ms = opts?.maskShift ?? 0;
+  const my = (y: number) => (y - ms < 0 ? 0 : y - ms >= fh ? fh - 1 : y - ms);
   for (const [name, p] of [
     ["a", plateA],
     ["b", plateB],
@@ -256,11 +260,11 @@ export function composeBoundary(
        * round-trips premultiplied and would zero it anyway — so zeroing here is
        * what the GPU sees, stated. */
       if (a === 0) continue;
-      const src = sheets.maskBit(frame, x, y) ? plateB.data : plateA.data;
+      const src = sheets.maskBit(frame, x, my(y)) ? plateB.data : plateA.data;
       let r = src[i * 4];
       let g = src[i * 4 + 1];
       let b = src[i * 4 + 2];
-      if (seam && sheets.borderBit(frame, x, y)) {
+      if (seam && sheets.borderBit(frame, x, my(y))) {
         r = rint(r * tone);
         g = rint(g * tone);
         b = rint(b * tone);
@@ -274,6 +278,15 @@ export function composeBoundary(
   return out;
 }
 
+/** The raster moved `n` rows down inside its own frame (the top `n` rows
+ *  empty, the bottom `n` lost — band rows a top-only pass drops anyway). */
+export function shiftDown(src: Pixels, n: number): Pixels {
+  const out = newPixels(src.w, src.h);
+  const rows = Math.max(0, Math.min(src.h, Math.round(n)));
+  out.data.set(src.data.subarray(0, (src.h - rows) * src.w * 4), rows * src.w * 4);
+  return out;
+}
+
 /** THE BOUNDARY RASTER FROM ITS TWO PLATE RASTERS — one function for BOTH
  *  threads (composeworker.ts composes with it, the factory composes with it),
  *  so a raster built off the frame thread is the raster this thread would
@@ -282,12 +295,23 @@ export function composeBoundary(
  *  boundary keeps its wall band capped to the surface — see `boundary()`. */
 export function buildBoundaryPixels(
   sheets: PatternSheets,
-  b: { maskFrame: number | null; topOnly?: boolean; noWall?: boolean },
+  b: { maskFrame: number | null; topOnly?: boolean; noWall?: boolean; slope?: { side: "a" | "b"; rise: number; lift: number } },
   a: Pixels,
   bb: Pixels,
   seam: boolean,
 ): Pixels {
-  const out = composeBoundary(sheets, b.maskFrame as number, a, bb, { seam });
+  /* THE SLOPE IN THE BOUNDARY (Tiles3Boundary.slope): the own side is the
+   * slope tile in its own frame; on a raise (`lift` > 0) the raster is drawn
+   * `lift` rows UP, so the OTHER side is shifted `lift` rows down here and the
+   * mask is sampled `lift` rows up — both land on the level. The top-only
+   * pass keeps the sunk rows (slopeTopOnly). */
+  const sl = b.slope;
+  if (sl?.lift) {
+    if (sl.side === "a") bb = shiftDown(bb, sl.lift);
+    else a = shiftDown(a, sl.lift);
+  }
+  const out = composeBoundary(sheets, b.maskFrame as number, a, bb, { seam, maskShift: sl?.lift ?? 0 });
+  if (sl && b.topOnly) return slopeTopOnly(sheets, out, sl.rise);
   /* EVERY RAISED TRANSITION TILE CARRIES THE MARGIN ROW, not only a liquid's
    * (maintainer 2026-09-18, the sand path and the terrace at 252,236 and
    * 270,257: "When I almost stand still the transition tile/boundary tile
@@ -970,6 +994,7 @@ export function boundaryKey(
   seam = true,
   topOnly = false,
   noWall = false,
+  lift = 0,
 ): string {
   /* `topOnly` IS PART OF THE KEY, because it is part of the PICTURE: a raised
    * boundary is masked to its 924-texel top face and a level-0 one carries the
@@ -982,7 +1007,7 @@ export function boundaryKey(
    * `|m` suffix that once told a liquid's margin apart is folded in, and
    * `noWall` no longer changes the picture or the name. */
   void noWall;
-  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top|m" : ""}`;
+  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top|m" : ""}${lift ? "|lift" + lift : ""}`;
 }
 
 /** A painted liquid diamond, keyed by the colour that IS its content. */
@@ -1014,6 +1039,7 @@ export function boundaryKeyFor(b: Tiles3Boundary, seam = true): string | null {
     seam,
     !!b.topOnly,
     !!b.noWall,
+    b.slope?.lift ?? 0,
   );
 }
 
@@ -1321,7 +1347,7 @@ export function deckOps(d: Tiles3DeckCell): Tiles3Blit[] {
 export function boundaryOp(b: Tiles3Boundary, seam = true): Tiles3Blit | null {
   const key = boundaryKeyFor(b, seam);
   if (!key) return null;
-  return { key, x: b.sx, y: b.sy, sx: 0, sy: 0, sw: b.w, sh: b.h, role: "boundary" };
+  return { key, x: b.sx, y: b.sy - (b.slope?.lift ?? 0), sx: 0, sy: 0, sw: b.w, sh: b.h, role: "boundary" };
 }
 
 function tileBlit(t: TileArt, x: number, y: number, role: Tiles3Blit["role"], h?: number): Tiles3Blit {
@@ -1419,9 +1445,11 @@ export interface ComposeSide {
   topOnly: boolean;
   url: string;
   wall: [number, number, number];
+  /** A slope tile's rise (PlateLike.rise): the top-only mask keeps its sunk rows. */
+  rise?: number;
 }
 export type ComposeJob =
-  | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide }
+  | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide; slope?: { side: "a" | "b"; rise: number; lift: number } }
   | { kind: "fade"; key: string; side: ComposeSide; top: [number, number, number] };
 
 /** Something that composes OFF THE FRAME THREAD (composeclient.ts). The
@@ -1603,7 +1631,7 @@ export class Tiles3Textures {
             const bb = this.platePixels(b.plateB, b.b);
             return a && bb ? buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false) : null;
           });
-        remote.compose({ kind: "boundary", key, frame: b.maskFrame as number, seam: this.o.seam !== false, topOnly: !!b.topOnly, noWall: !!b.noWall, a: this.side(b.plateA, b.a), b: this.side(b.plateB, b.b) });
+        remote.compose({ kind: "boundary", key, frame: b.maskFrame as number, seam: this.o.seam !== false, topOnly: !!b.topOnly, noWall: !!b.noWall, a: this.side(b.plateA, b.a), b: this.side(b.plateB, b.b), slope: b.slope });
       }
       return null;
     }
@@ -2313,7 +2341,7 @@ export class Tiles3Textures {
   }
 
   private side(art: PlateLike, ground: string): ComposeSide {
-    return { kind: art.kind, path: art.path, topOnly: !!art.topOnly, url: this.o.artUrl!(art.path), wall: this.wallRGB(ground) };
+    return { kind: art.kind, path: art.path, topOnly: !!art.topOnly, url: this.o.artUrl!(art.path), wall: this.wallRGB(ground), ...(art.rise ? { rise: art.rise } : {}) };
   }
 
   /** A raster the worker composed (composeclient.ts): registered like one

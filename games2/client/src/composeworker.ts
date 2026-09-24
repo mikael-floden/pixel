@@ -87,10 +87,10 @@ function decode(url: string): Promise<Pixels> {
 }
 
 function plate(side: ComposeSide): Promise<Pixels> {
-  const id = `${side.topOnly ? "t:" : ""}${side.kind === "conform" ? `c:${side.wall.join(",")}:` : "p:"}${side.path}`;
+  const id = `${side.topOnly ? "t:" : ""}${side.rise ? `r${side.rise}:` : ""}${side.kind === "conform" ? `c:${side.wall.join(",")}:` : "p:"}${side.path}`;
   let p = plates.get(id);
   if (!p) {
-    p = decode(side.url).then((src) => buildPlatePixels(sheets!, { kind: side.kind, path: side.path, topOnly: side.topOnly }, src, side.wall));
+    p = decode(side.url).then((src) => buildPlatePixels(sheets!, { kind: side.kind, path: side.path, topOnly: side.topOnly, rise: side.rise }, src, side.wall));
     plates.set(id, p);
     p.catch(() => plates.delete(id));
   }
@@ -127,7 +127,7 @@ async function compose(g: number, j: ComposeJob): Promise<void> {
       const [a, b] = await Promise.all([plate(j.a), plate(j.b)]);
       if (g !== gen) return;
       t0 = performance.now();
-      px = buildBoundaryPixels(sheets, { maskFrame: j.frame, topOnly: j.topOnly, noWall: j.noWall }, a, b, j.seam);
+      px = buildBoundaryPixels(sheets, { maskFrame: j.frame, topOnly: j.topOnly, noWall: j.noWall, slope: j.slope }, a, b, j.seam);
     }
     const data = px.data.buffer as ArrayBuffer;
     post({ type: "composed", gen: g, key: j.key, w: px.w, h: px.h, data, ms: performance.now() - t0 }, [data]);

@@ -565,8 +565,13 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   can cut into the ground or be extended outwards"). THE LIBRARY: 225 slope
   sets (`tiles/slopes/<ground>/<set>`, a Wang set on ELEVATION — bit set =
   that corner is on the plateau — approved tile by tile in the wiki's Slope
-  tab; 15 sets approved, one per ground, `light_soil` none: roads wear no
-  slope until he approves one). THE ART'S GEOMETRY, measured on every set:
+  tab; 15 sets approved, one per ground. AN UNJUDGED GROUND FALLS BACK TO ITS
+  FIRST COMPLETE BUMP SET, its tiles counting unless he rejects them, and a
+  verdict on any set of the ground retires the fallback — `light_soil` had
+  244 one-level rises and no verdict, and he stood on one: "I was hoping for
+  slopes on every single 1 level stair!"; a storey-height set never falls
+  back, and the parity path keeps render3's approved-only pools). THE ART'S
+  GEOMETRY, measured on every set:
   the plateau tops the 64x46 frame on the library diamond's own rows and the
   flat part is SUNK `elevation` rows under it (tile 15 tops at row 0, tile 0
   at row 4). Every published set is `elevation` 4 (his web-UI "terrain
@@ -574,9 +579,17 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   a 7 px face between them, and a set generated at 8 closes it (the rule
   reads `elevation`, nothing else changes). THE RULE (`slopeHalfAt`,
   decided PER CORNER so both sides agree): a cell is ELIGIBLE
-  (`slopeEligible`) when its ground has an approved set, its whole 8-ring is
-  that ground and no corner is raised only by cells two or more up (the
-  exact-one and any-higher masks agree). An eligible cell RAISES every
+  (`slopeEligible`) when its ground has a set and no corner is raised only
+  by cells two or more up (the exact-one and any-higher masks agree).
+  ANOTHER GROUND IN THE RING IS NO BAR: off the plane it is not on this tile
+  (`boundaryAt`'s rule); on the plane the cell composes its boundary tile
+  WITH THE SLOPE AS ITS OWN SIDE (`Tiles3Boundary.slope`: the other side is
+  shifted `lift` rows down inside the raster and the mask sampled `lift`
+  rows up, the raster drawn `lift` rows up, so both grounds and the curve
+  land on the level; keyed by `|lift`). Requiring a pure ring left 1,001 of
+  the_game's one-level rises as stairs — every grass stair beside a mud cliff
+  or a stone shelf — and light_soil's 244 had no set: 403 raises became
+  1,503 and 209 cuts 808. An eligible cell RAISES every
   corner a cell exactly one up touches (`up`, the bump's own mask): its tile
   hangs `rise` rows UP (`slopeLift`, tiles3draw), so the flat part lands on
   the level and the plateau meets the higher cell. An eligible cell CUTS a
@@ -599,9 +612,11 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   Movement is unchanged: `WALK_CLIMB` 1 walks a one-level step. The foot and
   the half rule are GAME rules (`footBoundary`; off in the parity fixture,
   which keeps the any-higher bump), so render3 parity is untouched; the rule
-  is posted to maps2. Measured on the_game (`slopes.test.ts`): 403 one-level
-  rises wear a raise, 209 cells cut, every cut corner has a raise under it
-  and no two plates at one level disagree on a corner. THE RAMP PATH STAYS
+  is posted to maps2. Measured on the_game (`slopes.test.ts`): 1,503 cells
+  raise, 808 cut, 479 of them inside a composed boundary, every cut corner
+  has a raise under it and no two plates at one level disagree on a corner;
+  left without a slope are 94 cliff feet and 164 rises whose only higher
+  same-ground cell sits at a corner a third ground shares. THE RAMP PATH STAYS
   for a storey-height set (`RAMP_MIN_PX` 12, `rampIndexFor`, kind `"ramp"`
   drawn raw in its taller frame, `rampTopOnly`); none is published.
   REJECTED: doubling the 4 px art in the renderer (the plateau's boundary is

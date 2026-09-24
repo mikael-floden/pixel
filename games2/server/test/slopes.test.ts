@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
-import { patternSheetPaths, patternSheets, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
+import { buildBoundaryPixels, patternSheetPaths, patternSheets, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
 // @ts-expect-error — plain .mjs helper shared with the build scripts
 import { imgRGBA } from "../../scripts/imagelib.mjs";
 
@@ -191,7 +191,7 @@ test("on the_game: the higher cell of a one-level rise CUTS down to the half lev
     if (!sl || sl.ramp) continue;
     if (sl.cut) {
       cuts++;
-      if (sl.cut !== sl.rise || sl.index === 15 || c.boundary) wrong.push(`${c.x},${c.y} cut ${sl.cut} rise ${sl.rise} index ${sl.index} boundary ${!!c.boundary}`);
+      if (sl.cut !== sl.rise || sl.index === 15) wrong.push(`${c.x},${c.y} cut ${sl.cut} rise ${sl.rise} index ${sl.index}`);
       // Every lowered corner meets a lower cell that raised it.
       for (let i = 0; i < 4; i++) {
         if (sl.index & (8 >> i)) continue;
@@ -301,4 +301,80 @@ test("the body's lift on a cut cell: rise x rampHeight(index) - cut drops from t
   assert.equal(lift(0.5, 0), 0);
   assert.equal(lift(0.5, 1), -cut);
   assert.equal(lift(0.5, 0.5), -cut / 2);
+});
+
+/* -- every stair (maintainer 2026-09-24: "slopes on every single 1 level stair") -- */
+
+test("an unjudged ground falls back to its first complete bump set; a rejected tile of it is refused; a ramp set never falls back", { skip }, () => {
+  const t = resolver([], {}, true);
+  assert.equal(resolver([], {}).slopeSets("light_soil").length, 0, "the parity path keeps render3's approved-only pools");
+  assert.equal(t.slopeSets("light_soil").length, 1, "light_soil (no verdict) has its fallback set");
+  const p = t.slopeTile("light_soil", 12, 0, 0);
+  assert.ok(p && p.dir.startsWith("tiles/slopes/light_soil/"), JSON.stringify(p));
+  // A verdict on any set of the ground retires the fallback: only approved tiles then.
+  const judged = resolver([], { [`${p!.dir}/tile_03`]: { status: "approved" } }, true);
+  assert.equal(judged.slopeSets("light_soil").length, 1);
+  assert.equal(judged.slopeTile("light_soil", 12, 0, 0), null, "an approved set is gated tile by tile");
+  assert.ok(judged.slopeTile("light_soil", 3, 0, 0));
+  // A rejected tile of the fallback is refused.
+  const rejected = resolver([], { [`${p!.dir}/tile_12`]: { status: "rejected" } }, true);
+  assert.equal(rejected.slopeTile("light_soil", 12, 0, 0), null);
+  assert.ok(rejected.slopeTile("light_soil", 10, 0, 0));
+  // An unjudged storey-height set is not a candidate.
+  assert.equal(resolver([RAMP], {}, true).slopeSets("grass", true).length, 0);
+});
+
+test("on the_game: a stair beside another ground on its plane wears the slope AS ITS SIDE of the composed boundary", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  const t = resolver([], {}, true);
+  const view = viewFromDoc(JSON.parse(readFileSync(WORLD, "utf8")));
+  const out = t.resolveWindow(view);
+  let both = 0, wrong: string[] = [];
+  for (const c of out.cells) {
+    if (!c.slope || !c.boundary || c.slope.ramp) continue;
+    both++;
+    const b = c.boundary;
+    const sl = b.slope;
+    if (!sl) { wrong.push(`${c.x},${c.y}: boundary without its slope`); continue; }
+    const own = sl.side === "a" ? b.plateA : b.plateB;
+    if (own.path !== c.slope.file || own.rise !== c.slope.rise) wrong.push(`${c.x},${c.y}: own side ${own.path} is not the slope ${c.slope.file}`);
+    if (sl.lift !== (c.slope.cut ? 0 : c.slope.rise)) wrong.push(`${c.x},${c.y}: lift ${sl.lift} for cut ${c.slope.cut}`);
+    if ((c.art as { path?: string } | undefined)?.path !== c.slope.file) wrong.push(`${c.x},${c.y}: the cell's own art is not the slope`);
+  }
+  assert.deepEqual(wrong.slice(0, 5), [], `${wrong.length} wrong of ${both}`);
+  assert.ok(both >= 300, `stairs beside another ground wear both (${both})`);
+  console.log(`slopes: ${both} cells wear a slope inside a composed boundary`);
+});
+
+test("buildBoundaryPixels with a slope: the other side is shifted `lift` rows down, the mask sampled `lift` rows up, the sunk rows kept", { skip }, () => {
+  const pat = load("tiles/patterns/index.json");
+  const paths = patternSheetPaths(pat);
+  const px = (rel: string): Pixels => { const i = imgRGBA(join(REPO, rel)) as { width: number; height: number; data: Uint8Array }; return { w: i.width, h: i.height, data: new Uint8ClampedArray(i.data) }; };
+  const sheets = patternSheets(pat, px(paths.silhouette), px(paths.masks), px(paths.border));
+  const solid = (r: number, g: number, b: number): Pixels => { const p = { w: sheets.fw, h: sheets.fh, data: new Uint8ClampedArray(sheets.fw * sheets.fh * 4) }; for (let i = 0; i < sheets.fw * sheets.fh; i++) { p.data[i * 4] = r; p.data[i * 4 + 1] = g; p.data[i * 4 + 2] = b; p.data[i * 4 + 3] = 255; } return p; };
+  const A = solid(200, 0, 0), B = solid(0, 0, 200);
+  const frame = 1; // any published mask frame with both sides present
+  const plain = buildBoundaryPixels(sheets, { maskFrame: frame, topOnly: true }, A, B, false);
+  const lifted = buildBoundaryPixels(sheets, { maskFrame: frame, topOnly: true, slope: { side: "a", rise: 4, lift: 4 } }, A, B, false);
+  const cut = buildBoundaryPixels(sheets, { maskFrame: frame, topOnly: true, slope: { side: "a", rise: 4, lift: 0 } }, A, B, false);
+  const at = (p: Pixels, x: number, y: number) => Array.from(p.data.subarray((y * p.w + x) * 4, (y * p.w + x) * 4 + 4));
+  // The cut composite is the plain composite with the sunk rows kept: identical inside the diamond.
+  let diff = 0, kept = 0;
+  for (let y = 0; y < sheets.fh; y++) for (let x = 0; x < sheets.fw; x++) {
+    const i = y * sheets.fw + x;
+    if (sheets.libTop[i]) { if (at(plain, x, y).join() !== at(cut, x, y).join()) diff++; }
+    else if (y < sheets.fh && cut.data[i * 4 + 3] > 0 && plain.data[i * 4 + 3] === 0) kept++;
+  }
+  assert.equal(diff, 0, "the cut composite matches the plain one inside the diamond");
+  assert.ok(kept > 20, `the sunk rows survive under the diamond (${kept})`);
+  // The lifted composite: where the plain one shows B at (x, y), the lifted one shows B at (x, y + 4) — the mask moved
+  // with the raster — and B's own pixels there come from B shifted down (a solid, so the same colour).
+  let moved = 0, missed = 0;
+  for (let y = 0; y + 4 < sheets.fh; y++) for (let x = 0; x < sheets.fw; x++) {
+    const i = y * sheets.fw + x;
+    if (!sheets.libTop[i] || !sheets.libTop[(y + 4) * sheets.fw + x]) continue;
+    const isB = at(plain, x, y)[2] === 200;
+    const liftedB = at(lifted, x, y + 4)[2] === 200;
+    if (isB === liftedB) moved++; else missed++;
+  }
+  assert.ok(missed < moved / 50, `the mask curve rides with the raster (${moved} agree, ${missed} do not)`);
 });
