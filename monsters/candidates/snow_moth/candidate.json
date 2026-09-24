@@ -1,0 +1,141 @@
+{
+  "id": "snow_moth",
+  "name": "Snowmoth",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It flies only when it is snowing and is mistaken for the snow.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "White moth with wings patterned like snowflakes, a furry white body, pale blue antennae, drifting.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snow_moth/rotations/south.webp",
+    "south-east": "snow_moth/rotations/south-east.webp",
+    "east": "snow_moth/rotations/east.webp",
+    "north-east": "snow_moth/rotations/north-east.webp",
+    "north": "snow_moth/rotations/north.webp",
+    "north-west": "snow_moth/rotations/north-west.webp",
+    "west": "snow_moth/rotations/west.webp",
+    "south-west": "snow_moth/rotations/south-west.webp"
+  },
+  "sheet": "snow_moth/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "27522536-09bd-4b11-be61-e02958dffe06",
+  "seed": 1926205339,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:28:41+00:00",
+  "elapsed_s": 1714.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.752,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.752,
+        "bbox": [
+          3,
+          5,
+          36,
+          35
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.787,
+        "bbox": [
+          4,
+          5,
+          30,
+          35
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.769,
+        "bbox": [
+          7,
+          4,
+          31,
+          35
+        ],
+        "fill": 0.465,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.812,
+        "bbox": [
+          6,
+          4,
+          32,
+          35
+        ],
+        "fill": 0.504,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.768,
+        "bbox": [
+          4,
+          5,
+          36,
+          35
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.805,
+        "bbox": [
+          8,
+          4,
+          34,
+          35
+        ],
+        "fill": 0.504,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.772,
+        "bbox": [
+          9,
+          4,
+          33,
+          35
+        ],
+        "fill": 0.465,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.794,
+        "bbox": [
+          10,
+          5,
+          36,
+          35
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      }
+    }
+  }
+}
