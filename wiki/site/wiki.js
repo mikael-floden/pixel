@@ -4743,6 +4743,22 @@ function creatureOwedAt(m) {
   return newest;
 }
 const needsReview = (m) => creatureOwed(m) > 0;
+/** Verdicts of his still standing against the art on screen: a redo asked or
+ *  a rejection, on a facing the agent has NOT regenerated since. */
+function creatureRedos(m) {
+  let n = 0;
+  for (const [st, anim] of Object.entries(m?.animations ?? {})) {
+    if (anim?.still) continue;
+    for (const dir of Object.keys(anim?.dirs ?? {})) {
+      const e = fb("monsters", `${m.path}#${st}#${dir}`);
+      if ((e.status === "redo" || e.status === "rejected") && !facetStale(m, st, dir, e)) n++;
+    }
+  }
+  return n;
+}
+/** How much animation a creature has: its facings across every real state. */
+const creatureFacings = (m) => Object.values(m?.animations ?? {})
+  .filter((a) => !a?.still).reduce((n, a) => n + Object.keys(a?.dirs ?? {}).length, 0);
 const MONSTER_SHADOWS = {
   all: { label: "all", title: "Every creature", hit: () => true },
   making: {
@@ -4794,7 +4810,9 @@ const shadowFilter = () => {
 function monsterSortMode() {
   let sort = "name";
   try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
-  return sort === "review" ? "name" : sort;   // the queue moved to the filter row; an old stored choice is by name
+  // "review" was this chip's first name; a stored choice keeps working.
+  if (sort === "review") sort = "queue";
+  return sort === "queue" && !state.admin ? "name" : sort;
 }
 function monsterSort(list) {
   const sort = monsterSortMode();
@@ -4808,6 +4826,32 @@ function monsterSort(list) {
     // for me, worst first" is the question this sort answers.
     threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
   };
+  /* HIS REVIEW ORDER, IN HIS WORDS (maintainer 2026-09-24: "The sort should
+   * first list if I have an animation to review. Then by failed already
+   * committed reviews. Then by number of animations (more animations sorted
+   * first)."). Three tiers, and it is a SORT so it composes with whatever
+   * filter is lit — inside "in the making" it puts the creature with a red
+   * walk where he can find it:
+   *   0 — owes him a verdict (an unjudged or regenerated-since facing);
+   *       newest art first inside the tier, the same key as the queue;
+   *   1 — nothing to judge, but a redo or rejection of his still standing
+   *       against the art: the agent's turn, most outstanding first;
+   *   2 — settled; the most animated first.
+   * Counted once per creature, not per comparison. */
+  if (sort === "queue") {
+    const key = new Map(list.map((m) => {
+      const owed = creatureOwed(m), redos = creatureRedos(m);
+      return [m.id, { tier: owed ? 0 : redos ? 1 : 2, at: owed ? creatureOwedAt(m) : "", redos, facings: creatureFacings(m) }];
+    }));
+    CMP.queue = (a, b) => {
+      const A = key.get(a.id), B = key.get(b.id);
+      return A.tier - B.tier
+        || (A.tier === 0 ? (B.at > A.at ? 1 : B.at < A.at ? -1 : 0) : 0)
+        || B.redos - A.redos
+        || B.facings - A.facings
+        || byName(a, b);
+    };
+  }
   const cmp = CMP[sort] ?? byName;
   // THE REVIEW QUEUE IS NEWEST ART FIRST, whatever sort chip is lit — the
   // chip only breaks ties inside one batch (same generated_at to the minute).
@@ -5194,6 +5238,7 @@ function viewMonsters() {
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
+      ...(state.admin ? [["queue", "review first", "The ones that owe you a verdict first (newest art on top), then the ones with a redo of yours still outstanding, then the most animated"]] : []),
     ], sort, () => route()),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.
@@ -6835,9 +6880,11 @@ function viewMonster(id) {
     // stage, with one line saying why the stage is empty and what a redo
     // here does.
     const absent = !m.animations?.[st]?.dirs?.[dir];
+    // Spread, never a bare null: replaceChildren(null, …) renders the word
+    // "null" above the stars (measured on Hornmaul, 2026-09-24).
     facetBox.replaceChildren(
-      absent ? h("p", { class: "muted facet-absent" },
-        `No ${stateLabel(st)} facing ${DIR_LABEL[dir] ?? dir} yet — every creature owes all eight. A redo here asks the monsters agent to generate it.`) : null,
+      ...(absent ? [h("p", { class: "muted facet-absent" },
+        `No ${stateLabel(st)} facing ${DIR_LABEL[dir] ?? dir} yet — every creature owes all eight. A redo here asks the monsters agent to generate it.`)] : []),
       feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),

@@ -260,8 +260,37 @@ ok(expOwed.length > 0 && expOwed.length < roster.length,
 sv = await shadowBar();
 ok(sv.chips.includes(`review needed ${expOwed.length}`),
   `"review needed" is a FILTER chip carrying the global count (${sv.chips.join(" | ")})`);
-ok(!(await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].some((x) => /review/.test(x.textContent)))),
-  "and not a sort — a sort composed with \"in the making\" read 0 on the batch that had just graduated out of it");
+ok(!(await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].some((x) => /review needed/.test(x.textContent)))),
+  "and the COUNT is not on a sort chip — per-filter it read 0 on the batch that had just graduated out of \"in the making\"");
+/* AND HIS ORDER IS A SORT (maintainer 2026-09-24: "The sort should first list
+ * if I have an animation to review. Then by failed already committed reviews.
+ * Then by number of animations (more animations sorted first)."). Three tiers,
+ * composing with any filter, derived from the same two files as the page. */
+const redosOf = (m) => {
+  let n = 0;
+  for (const [st, a] of Object.entries(m.animations ?? {})) {
+    if (a?.still) continue;
+    for (const dir of Object.keys(a?.dirs ?? {})) {
+      const e = FB[`${m.path}#${st}#${dir}`] ?? {};
+      if ((e.status === "redo" || e.status === "rejected") && !facetStale(m, st, dir, e)) n++;
+    }
+  }
+  return n;
+};
+const facingsOf = (m) => Object.values(m.animations ?? {}).filter((a) => !a?.still).reduce((n, a) => n + Object.keys(a?.dirs ?? {}).length, 0);
+const tierOf = (m) => owedOf(m).n ? 0 : redosOf(m) ? 1 : 2;
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => /review first/.test(x.textContent))?.click());
+await pa.waitForTimeout(1600);
+const qOrder = (await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].map((a) => a.getAttribute("href").split("/").pop())))
+  .map((id) => roster.find((m) => m.id === id)).filter(Boolean);
+const tiers = qOrder.map(tierOf);
+ok(qOrder.length === total && tiers.every((x, i) => i === 0 || tiers[i - 1] <= x) && new Set(tiers).size > 1,
+  `"review first" sorts the whole page into his three tiers (${[0, 1, 2].map((k) => `${tiers.filter((x) => x === k).length} tier ${k}`).join(", ")})`);
+const t1 = qOrder.filter((m) => tierOf(m) === 1).map(redosOf), t2 = qOrder.filter((m) => tierOf(m) === 2).map(facingsOf);
+ok(t1.every((x, i) => i === 0 || t1[i - 1] >= x), `outstanding redos most-first inside tier 1 (${t1.slice(0, 5).join(" ≥ ") || "none"})`);
+ok(t2.every((x, i) => i === 0 || t2[i - 1] >= x), `and the most animated first inside tier 2 (${t2.slice(0, 5).join(" ≥ ")}…)`);
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => /by name/.test(x.textContent))?.click());
+await pa.waitForTimeout(1000);
 await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /^review needed/.test(x.textContent))?.click());
 await pa.waitForTimeout(1600);
 sv = await shadowBar();
@@ -389,8 +418,8 @@ const pv = await p2.evaluate(() => ({
   sorts: [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].map((x) => x.textContent.trim()),
   sel: [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button.sel')].map((x) => x.textContent.trim()),
 }));
-ok(!pv.sorts.some((c) => /review needed/.test(c)) && pv.sel.join() === "by name",
-  `and no "review needed" sort, which reads verdicts they cannot see — it falls back to by name (${pv.sorts.join(" | ")}, on "${pv.sel.join()}")`);
+ok(!pv.sorts.some((c) => /review/.test(c)) && pv.sel.join() === "by name",
+  `and no "review first" sort, which reads verdicts they cannot see — it falls back to by name (${pv.sorts.join(" | ")}, on "${pv.sel.join()}")`);
 ok(pv.bar === 0 && pv.cards === shelf.length,
   `a player gets no filter and every finished creature, even with a stale admin preference stored (${pv.cards} of ${shelf.length}, ${pv.bar} bars)`);
 await ctx2.close();
