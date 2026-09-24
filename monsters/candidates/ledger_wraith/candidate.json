@@ -1,0 +1,142 @@
+{
+  "id": "ledger_wraith",
+  "name": "Ledgerwraith",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It counts what everyone owes, down to the last breath.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Grey clerk-figure made of pages of a ledger, ink for eyes, a quill for a finger, columns of numbers on its skin.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ledger_wraith/rotations/south.webp",
+    "south-east": "ledger_wraith/rotations/south-east.webp",
+    "east": "ledger_wraith/rotations/east.webp",
+    "north-east": "ledger_wraith/rotations/north-east.webp",
+    "north": "ledger_wraith/rotations/north.webp",
+    "north-west": "ledger_wraith/rotations/north-west.webp",
+    "west": "ledger_wraith/rotations/west.webp",
+    "south-west": "ledger_wraith/rotations/south-west.webp"
+  },
+  "sheet": "ledger_wraith/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "82f6a45e-c05a-48ad-95d4-bc888fcd20d2",
+  "seed": 809113972,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:39:22+00:00",
+  "elapsed_s": 250.2,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.774,
+    "reasons": [
+      "north: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.785,
+        "bbox": [
+          3,
+          3,
+          75,
+          86
+        ],
+        "fill": 0.772,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.853,
+        "bbox": [
+          9,
+          3,
+          72,
+          86
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.836,
+        "bbox": [
+          26,
+          4,
+          65,
+          87
+        ],
+        "fill": 0.418,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.778,
+        "bbox": [
+          21,
+          3,
+          73,
+          85
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.774,
+        "bbox": [
+          14,
+          2,
+          88,
+          83
+        ],
+        "fill": 0.774,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.795,
+        "bbox": [
+          17,
+          3,
+          79,
+          85
+        ],
+        "fill": 0.657,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.82,
+        "bbox": [
+          19,
+          4,
+          58,
+          87
+        ],
+        "fill": 0.418,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.855,
+        "bbox": [
+          14,
+          3,
+          68,
+          86
+        ],
+        "fill": 0.579,
+        "touches_edge": false
+      }
+    }
+  }
+}
