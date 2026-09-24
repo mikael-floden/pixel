@@ -1,0 +1,141 @@
+{
+  "id": "bog_bones_dog",
+  "name": "Bonecur",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Tied to its post and faithful long after the rope should have rotted.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Dog skeleton stained peat-brown, still tied by a rope to a stake it drags, jaw hanging, wagging a bare tail.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_bones_dog/rotations/south.webp",
+    "south-east": "bog_bones_dog/rotations/south-east.webp",
+    "east": "bog_bones_dog/rotations/east.webp",
+    "north-east": "bog_bones_dog/rotations/north-east.webp",
+    "north": "bog_bones_dog/rotations/north.webp",
+    "north-west": "bog_bones_dog/rotations/north-west.webp",
+    "west": "bog_bones_dog/rotations/west.webp",
+    "south-west": "bog_bones_dog/rotations/south-west.webp"
+  },
+  "sheet": "bog_bones_dog/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "50ec23a2-dfa1-42c6-80d4-5c0bcd388f56",
+  "seed": 90837352,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:39:09+00:00",
+  "elapsed_s": 259.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.789,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.86,
+        "bbox": [
+          24,
+          10,
+          70,
+          83
+        ],
+        "fill": 0.434,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.847,
+        "bbox": [
+          24,
+          8,
+          69,
+          84
+        ],
+        "fill": 0.442,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.851,
+        "bbox": [
+          6,
+          5,
+          87,
+          80
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.847,
+        "bbox": [
+          5,
+          3,
+          79,
+          82
+        ],
+        "fill": 0.755,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.852,
+        "bbox": [
+          29,
+          4,
+          63,
+          83
+        ],
+        "fill": 0.347,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.856,
+        "bbox": [
+          17,
+          3,
+          76,
+          84
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.861,
+        "bbox": [
+          1,
+          5,
+          87,
+          80
+        ],
+        "fill": 0.833,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.789,
+        "bbox": [
+          7,
+          6,
+          86,
+          83
+        ],
+        "fill": 0.786,
+        "touches_edge": false
+      }
+    }
+  }
+}
