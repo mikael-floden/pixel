@@ -1,0 +1,141 @@
+{
+  "id": "ice_swan",
+  "name": "Iceswan",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It sings once each winter, when the lake freezes.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Swan of clear blue ice, neck curved, wings raised, a black beak, light refracting through its body.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ice_swan/rotations/south.webp",
+    "south-east": "ice_swan/rotations/south-east.webp",
+    "east": "ice_swan/rotations/east.webp",
+    "north-east": "ice_swan/rotations/north-east.webp",
+    "north": "ice_swan/rotations/north.webp",
+    "north-west": "ice_swan/rotations/north-west.webp",
+    "west": "ice_swan/rotations/west.webp",
+    "south-west": "ice_swan/rotations/south-west.webp"
+  },
+  "sheet": "ice_swan/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1ed97cf9-68ef-45c6-8653-9d303429e0cc",
+  "seed": 1433867437,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:44:42+00:00",
+  "elapsed_s": 212.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.754,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.754,
+        "bbox": [
+          9,
+          4,
+          81,
+          83
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.825,
+        "bbox": [
+          14,
+          7,
+          69,
+          85
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.826,
+        "bbox": [
+          6,
+          5,
+          67,
+          86
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.784,
+        "bbox": [
+          12,
+          3,
+          73,
+          82
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.78,
+        "bbox": [
+          7,
+          2,
+          79,
+          82
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.795,
+        "bbox": [
+          17,
+          4,
+          78,
+          82
+        ],
+        "fill": 0.614,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.824,
+        "bbox": [
+          21,
+          6,
+          82,
+          86
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.822,
+        "bbox": [
+          20,
+          7,
+          75,
+          85
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      }
+    }
+  }
+}
