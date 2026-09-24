@@ -32,9 +32,17 @@ const statOf = (id) => ({ ...(T.defaults ?? {}), ...(T.monsters?.[id] ?? {}) });
 const aggro = (id) => Number(statOf(id).aggro_radius_wu ?? 0) > 0;
 const lvl = (id) => Number(statOf(id).level ?? 0);
 const roster = D.domains.monsters;
-const expectAggro = roster.filter((m) => aggro(m.id)).length;
+/* A PLAYER IS NOT SHOWN STAGING ART. `creatures()` hides every `pending`
+ * design from anyone who is not the Game Master, so the roster this first,
+ * logged-out pass may assert against is the SHELF — the finished creatures —
+ * not the whole library. (The gate read `roster` and went red at 86/147 the
+ * day "in the making" grew past a handful; an expectation that counts art the
+ * page is right not to draw is a false alarm, and a gate nobody believes is
+ * worse than no gate.) */
+const shelf = roster.filter((m) => !m.pending);
+const expectAggro = shelf.filter((m) => aggro(m.id)).length;
 console.log(`roster: ${roster.length} creatures, ${expectAggro} with an aggro radius above 0`);
-ok(expectAggro > 0 && expectAggro < roster.length,
+ok(expectAggro > 0 && expectAggro < shelf.length,
   "the roster has both kinds, so the two pills are actually distinguishable");
 
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
@@ -65,7 +73,7 @@ const read = () => p.evaluate(() => ({
 
 // ---- the mark ------------------------------------------------------------
 let v = await read();
-ok(v.cards.length === roster.length, `every creature is carded (${v.cards.length}/${roster.length})`);
+ok(v.cards.length === shelf.length, `every finished creature is carded (${v.cards.length}/${shelf.length}, ${roster.length - shelf.length} still in the making)`);
 const nameToId = new Map(roster.map((m) => [m.name, m.id]));
 // BOTH DIRECTIONS. A card must carry the mark when its live radius is above
 // zero and must NOT carry it otherwise — "absence is the calm" is only true if
@@ -77,7 +85,7 @@ const bad = v.cards.filter((c) => {
 });
 ok(bad.length === 0, `every card's mark matches its live aggro radius${bad.length ? ` — ${bad.slice(0, 4).map((c) => `${c.name}=${c.aggressive ? "aggressive" : "unmarked"}`).join(", ")}` : ""}`);
 const marked = v.cards.filter((c) => c.aggressive).length;
-ok(marked === expectAggro, `${expectAggro} marked aggressive, the other ${roster.length - expectAggro} left unmarked (${marked})`);
+ok(marked === expectAggro, `${expectAggro} marked aggressive, the other ${shelf.length - expectAggro} left unmarked (${marked})`);
 ok(!v.cards.some((c) => c.marks.includes("calm")),
   "and nothing on the overview says \"calm\" — the quiet ones are quiet");
 // The one mark that survived beside it: a creature in no world at all is a
@@ -88,7 +96,7 @@ const wrongSpawn = v.cards.filter((c) => {
   const id = nameToId.get(c.name); if (!id) return true;
   return c.marks.includes("not spawned") === spawned(id);
 });
-const unplaced = roster.filter((m) => !spawned(m.id)).length;
+const unplaced = shelf.filter((m) => !spawned(m.id)).length;
 ok(wrongSpawn.length === 0,
   `"not spawned" marks exactly the ${unplaced} creatures no world places${wrongSpawn.length ? ` — off on ${wrongSpawn.slice(0, 3).map((c) => c.name).join(", ")}` : ""}`);
 // RED — and GREEN where the word went, or half the claim would go unchecked.
@@ -198,11 +206,68 @@ const shadowBar = () => pa.evaluate(() => {
   };
 });
 let sv = await shadowBar();
-ok(sv.chips.length === 3 && /^all /.test(sv.chips[0]) && /^no shadow /.test(sv.chips[1]) && /^shadow set /.test(sv.chips[2]),
+/* CHIPS ARE FOUND BY LABEL, NEVER BY INDEX. This row grows — "in the making"
+ * and "complete" joined it on 2026-09-18 — and a positional read turns every
+ * addition into a red gate about something that is working. What must hold is
+ * that the queue chips are PRESENT and carry the LIVE counts. */
+const chipFor = (label) => sv.chips.find((c) => c.startsWith(`${label} `)) ?? "";
+ok(["all", "no shadow", "shadow set"].every((l) => chipFor(l)),
   `the admin gets a shadow filter — all / no shadow / shadow set (${sv.chips.join(" | ") || "no bar"})`);
-ok(sv.chips[1] === `no shadow ${expNone}` && sv.chips[2] === `shadow set ${setIds.length}`,
+ok(chipFor("no shadow") === `no shadow ${expNone}` && chipFor("shadow set") === `shadow set ${setIds.length}`,
   `and the counts come from the LIVE tuning doc, not a snapshot (${expNone} unset, ${setIds.length} set)`);
 ok(sv.sel.startsWith("all") && sv.cards === total, `it opens unfiltered (${sv.cards} of ${total}, on "${sv.sel}")`);
+
+/* ---- "REVIEW NEEDED" (maintainer 2026-09-24: "the monster-agent usually
+ * start with 10 monsters at a time and it's hard for me to find them … a sort
+ * only available for the admin that can sort by 'review needed'").
+ *
+ * The expectation is derived from the SAME two files the page reads — the
+ * roster's animations and his feedback doc — never from a number typed here,
+ * because the answer changes every time he approves a direction. Three claims:
+ * the chip counts what is actually owed, choosing it really does lift those
+ * creatures to the top, and a player never gets it even with the preference
+ * left in their storage by an admin session in the same browser. */
+const FB = (() => {
+  try { return JSON.parse(readFileSync(join(ROOT, "live/feedback/monsters.json"), "utf8")).entries ?? {}; }
+  catch { return {}; }
+})();
+const facetStale = (m, st, dir, e) => {
+  const hh = m?.animations?.[st]?.dirs?.[dir]?.h;
+  return !(!e.art || !hh) && e.art !== hh && e.art !== m.artHash;
+};
+const owedBy = (m) => {
+  let n = 0;
+  for (const [st, a] of Object.entries(m.animations ?? {})) {
+    if (a?.still) continue;                       // the base is looked at, not judged
+    for (const dir of Object.keys(a?.dirs ?? {})) {
+      const e = FB[`${m.path}#${st}#${dir}`] ?? {};
+      if ((e.status || e.rating) && !facetStale(m, st, dir, e)) continue;
+      n++;
+    }
+  }
+  return n;
+};
+const expOwed = roster.filter((m) => owedBy(m) > 0);
+ok(expOwed.length > 0 && expOwed.length < roster.length,
+  `the roster has both kinds, so the sort is actually distinguishable (${expOwed.length} owe a verdict, ${roster.length - expOwed.length} settled)`);
+const sortChips = () => pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].map((x) => x.textContent.trim()));
+const sc = await sortChips();
+ok(sc.includes(`review needed ${expOwed.length}`),
+  `the admin gets a "review needed" sort carrying the live count (${sc.join(" | ") || "no bar"})`);
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => /review needed/.test(x.textContent))?.click());
+await pa.waitForTimeout(1600);
+const topIds = await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].slice(0, 6).map((a) => a.getAttribute("href").split("/").pop()));
+const owedIds = new Set(expOwed.map((m) => m.id));
+ok(topIds.length > 0 && topIds.slice(0, Math.min(topIds.length, expOwed.length)).every((id) => owedIds.has(id)),
+  `and choosing it lifts the ones waiting on him to the top (${topIds.slice(0, 4).join(", ")})`);
+// FULLEST INBOX FIRST — the batch the agent has just finished animating owes
+// far more than a creature he stopped halfway through, and that is the one he
+// wants first.
+const topOwed = topIds.map((id) => owedBy(roster.find((m) => m.id === id) ?? {}));
+ok(topOwed.every((n, i) => i === 0 || topOwed[i - 1] >= n),
+  `and the fullest inbox first (${topOwed.join(" ≥ ")})`);
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => /by name/.test(x.textContent))?.click());
+await pa.waitForTimeout(1200);
 await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /no shadow/.test(x.textContent))?.click());
 await pa.waitForTimeout(1600);
 sv = await shadowBar();
@@ -227,15 +292,20 @@ await p2.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "a
 await p2.addInitScript(() => {
   localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
   localStorage.setItem("wiki-monster-shadow", "set");
+  localStorage.setItem("wiki-monster-sort", "review");
 });
 await p2.goto(`${W}#/monsters`, { waitUntil: "load" });
 await p2.waitForTimeout(2400);
 const pv = await p2.evaluate(() => ({
   bar: document.querySelectorAll('[data-bar="wiki-monster-shadow"]').length,
   cards: document.querySelectorAll(".showcase-card").length,
+  sorts: [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].map((x) => x.textContent.trim()),
+  sel: [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button.sel')].map((x) => x.textContent.trim()),
 }));
-ok(pv.bar === 0 && pv.cards === total,
-  `a player gets no filter and every creature, even with a stale admin preference stored (${pv.cards} of ${total}, ${pv.bar} bars)`);
+ok(!pv.sorts.some((c) => /review needed/.test(c)) && pv.sel.join() === "by name",
+  `and no "review needed" sort, which reads verdicts they cannot see — it falls back to by name (${pv.sorts.join(" | ")}, on "${pv.sel.join()}")`);
+ok(pv.bar === 0 && pv.cards === shelf.length,
+  `a player gets no filter and every finished creature, even with a stale admin preference stored (${pv.cards} of ${shelf.length}, ${pv.bar} bars)`);
 await ctx2.close();
 
 ok(errs.length === 0, `no page errors${errs.length ? `: ${errs[0]}` : ""}`);

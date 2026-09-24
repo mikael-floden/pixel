@@ -4631,6 +4631,40 @@ const creatureComplete = (m) => {
   if (!owed.length) return !m.pending;   // an old registry: fall back to the flag
   return owed.every((st) => Object.keys(m.animations?.[st]?.dirs ?? {}).length === 8);
 };
+/* WHICH CREATURES ARE ACTUALLY WAITING ON ME? (maintainer 2026-09-24: "When I
+ * review 'in the making' the monster-agent usually start with 10 monsters at a
+ * time and it's hard for me to find them. I think we need a sort only
+ * available for the admin that can sort by 'review needed'.")
+ *
+ * A creature owes him a look for every DIRECTION of every state that carries
+ * art carrying no verdict — the same arithmetic the state-row chips use
+ * (facetMark), so the sort and the chips can never disagree about what is
+ * settled. A verdict about art that has since been regenerated counts as owed
+ * again, because that is what facetStale means everywhere else in the wiki.
+ *
+ * The 8-direction BASE is not in the count: it is looked at, not judged (the
+ * facet row says so), and counting it would leave every creature owing eight
+ * forever — a queue that never empties is a queue nobody trusts.
+ *
+ * IT IS A SORT, NOT A FILTER, on purpose. He keeps "in the making" selected
+ * ("On old monsters I might not have approved everything, but that should be
+ * fine since I filter on 'in the making'") and the filter row is one choice at
+ * a time, so a filter would take that away from him. A sort composes with it —
+ * and the ‹ › pager walks the sorted order, so the batch the agent just
+ * dropped is the top of the page AND the next taps. */
+function creatureOwed(m) {
+  let owed = 0;
+  for (const [st, anim] of Object.entries(m?.animations ?? {})) {
+    if (anim?.still) continue;
+    for (const dir of Object.keys(anim?.dirs ?? {})) {
+      const e = fb("monsters", `${m.path}#${st}#${dir}`);
+      if ((e.status || e.rating) && !facetStale(m, st, dir, e)) continue;
+      owed++;
+    }
+  }
+  return owed;
+}
+const needsReview = (m) => creatureOwed(m) > 0;
 const MONSTER_SHADOWS = {
   all: { label: "all", title: "Every creature", hit: () => true },
   making: {
@@ -4675,13 +4709,27 @@ function monsterSort(list) {
   const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
   const byName = (a, b) => a.name.localeCompare(b.name);
   const lvl = (m) => Number(stat.get(m.id)?.level ?? 0);
+  // Counted once per creature, not once per comparison: a sort is O(n log n)
+  // calls and this walks five states of eight directions.
+  const owedBy = new Map(list.map((m) => [m.id, creatureOwed(m)]));
+  const owed = (m) => owedBy.get(m.id) ?? 0;
   const CMP = {
     name: byName,
     level: (a, b) => lvl(b) - lvl(a) || byName(a, b),
     // Aggressive first, and hardest first within each half — "what can come
     // for me, worst first" is the question this sort answers.
     threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
+    // The ones waiting on him first, the fullest inbox at the top — a batch the
+    // agent has just finished animating owes all eight of five states, an old
+    // creature he stopped halfway owes two. Everything settled falls below the
+    // fold in its usual alphabetical order, so the page still reads as a list
+    // of creatures rather than a scoreboard.
+    review: (a, b) => owed(b) - owed(a) || byName(a, b),
   };
+  // A sort only the Game Master has cannot survive a logout: the key persists
+  // in localStorage, and a player opening the page would otherwise get an
+  // order computed from verdicts they cannot see.
+  if (sort === "review" && !state.admin) sort = "name";
   return [...list].sort(CMP[sort] ?? byName);
 }
 /** The creatures the current filter keeps, in the order the overview shows
@@ -5008,6 +5056,7 @@ function viewMonsters() {
   // random to anyone looking at display names (Emberwing, Nightmule, Ashfiend…).
   let sort = "name";
   try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
+  if (sort === "review" && !state.admin) sort = "name";
   const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
   const mode = shadowFilter();
   const shown = list.filter((m) => MONSTER_SHADOWS[mode].hit(m));
@@ -5015,6 +5064,7 @@ function viewMonsters() {
   const nAggro = list.filter((m) => isAggressive(stat.get(m.id))).length;
   const nPending = list.filter((m) => m.pending).length;
   const nNone = list.filter((m) => !shadowRaw(m)).length;
+  const nOwed = state.admin ? shown.filter(needsReview).length : 0;
   return h("div", {},
     sectionHead("monsters"),
     creatureTabs("monsters"),
@@ -5025,6 +5075,16 @@ function viewMonsters() {
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
+      /* THE COUNT IS OF WHAT IS ON THIS PAGE, not of the whole library — the
+       * filter row below decides which creatures these are, so with "in the
+       * making" selected this chip reads as the size of exactly the job he
+       * came here to do. Hidden when nothing is owed (a dead button is not an
+       * option, same law as the shadow chips), but kept while it is the
+       * selected sort so finishing the queue shows him the 0 rather than
+       * yanking the control out from under his thumb. */
+      ...(state.admin && (nOwed || sort === "review")
+        ? [["review", `review needed ${nOwed}`, "Creatures with an animation direction you have not judged yet — the ones the agent has just finished, first"]]
+        : []),
     ], sort, () => route()),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.
