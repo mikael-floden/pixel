@@ -290,7 +290,7 @@ def rebuild_index(cfg):
 
 # --- generation --------------------------------------------------------------
 
-def generate_one(client, cfg, design, version, verbose=True):
+def generate_one(client, cfg, design, version, verbose=True, adopt=None):
     cid = design["id"]
     dflt = cfg.get("defaults", {})
     size = int(design["size"])
@@ -301,13 +301,17 @@ def generate_one(client, cfg, design, version, verbose=True):
     # Expression by tier (maintainer 2026-09-09: what sank five rejected bases
     # was execution, not concept — a derpy face on a sound design).
     suffix = (dflt.get("style_suffix") or {}).get(design.get("tier"), "")
-    pl_id, usage = client.create_character_v3(
-        description=design["prompt"].rstrip(".") + suffix, size=size,
-        view=design.get("view") or dflt.get("view", "low top-down"),
-        template_id=design.get("template_id") or "mannequin",
-        name=design["name"], seed=seed,
-        outline=design.get("outline") or dflt.get("outline"),
-        detail=design.get("detail") or dflt.get("detail"))
+    if adopt:
+        pl_id, usage = adopt, {"adopted": True}
+    else:
+        pl_id, usage = client.create_character_v3(
+            description=design["prompt"].rstrip(".") + suffix, size=size,
+            view=design.get("view") or dflt.get("view", "low top-down"),
+            template_id=design.get("template_id") or "mannequin",
+            name=design["name"], seed=seed,
+            outline=design.get("outline") or dflt.get("outline"),
+            detail=design.get("detail") or dflt.get("detail"),
+            job_timeout=2400)
     rots = client.character_rotations(pl_id)
     tag = dflt.get("candidate_tag", "MONSTER_CANDIDATE")
     client.set_character_tags(pl_id, [tag])
@@ -356,7 +360,30 @@ def cmd_generate(args):
         return
     client = PixelLabClient()
     client.require_key()
+    # A BASE THAT OUTLIVED OUR WAIT IS STILL FINISHED AND PAID FOR. PixelLab's
+    # queue ran past 15 minutes a job (2026-09-24) and the character completed
+    # after we gave up, left untagged on the account; generating again pays
+    # twice. So a design with no candidate on disk first adopts an UNTAGGED
+    # character on the account carrying its exact name — the newest one.
+    orphans = {}
+    try:
+        for it in client._list_all("characters"):
+            if not it.get("tags") and it.get("name"):
+                prev = orphans.get(it["name"])
+                if not prev or (it.get("created_at") or "") > (prev.get("created_at") or ""):
+                    orphans[it["name"]] = it
+    except PixelLabError as e:
+        print(f"  (orphan scan skipped: {e})")
     for design in todo:
+        orphan = None if args.redo else orphans.get(design["name"])
+        if orphan:
+            try:
+                print(f"  {design['id']}: adopting finished orphan {orphan['id']} — no new generation", flush=True)
+                generate_one(client, cfg, design, 1, adopt=orphan["id"])
+            except PixelLabError as e:
+                print(f"  {design['id']}: adopt FAILED — {e}", flush=True)
+            rebuild_index(cfg)
+            continue
         usd = client.usd_credits()
         if usd < args.min_usd:
             print(f"STOP: ${usd:.2f} credits left < floor ${args.min_usd:.2f}")
