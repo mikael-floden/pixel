@@ -1,0 +1,140 @@
+{
+  "id": "blind_mole_king",
+  "name": "Blindking",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It rules by touch, and it touches everything.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Huge pale mole with no eyes and enormous pink digging claws, a crown of pale crystals, whiskers twitching.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "blind_mole_king/rotations/south.webp",
+    "south-east": "blind_mole_king/rotations/south-east.webp",
+    "east": "blind_mole_king/rotations/east.webp",
+    "north-east": "blind_mole_king/rotations/north-east.webp",
+    "north": "blind_mole_king/rotations/north.webp",
+    "north-west": "blind_mole_king/rotations/north-west.webp",
+    "west": "blind_mole_king/rotations/west.webp",
+    "south-west": "blind_mole_king/rotations/south-west.webp"
+  },
+  "sheet": "blind_mole_king/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "80cb2210-4a46-4a88-ad96-11e43deaa9b0",
+  "seed": 268656392,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:31:08+00:00",
+  "elapsed_s": 227.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.716,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.75,
+        "bbox": [
+          5,
+          3,
+          83,
+          84
+        ],
+        "fill": 0.816,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.806,
+        "bbox": [
+          12,
+          3,
+          84,
+          86
+        ],
+        "fill": 0.772,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.776,
+        "bbox": [
+          3,
+          3,
+          79,
+          86
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.738,
+        "bbox": [
+          14,
+          3,
+          81,
+          85
+        ],
+        "fill": 0.709,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.716,
+        "bbox": [
+          9,
+          3,
+          78,
+          84
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.724,
+        "bbox": [
+          6,
+          3,
+          74,
+          84
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.749,
+        "bbox": [
+          11,
+          3,
+          84,
+          86
+        ],
+        "fill": 0.782,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.799,
+        "bbox": [
+          4,
+          3,
+          84,
+          86
+        ],
+        "fill": 0.857,
+        "touches_edge": false
+      }
+    }
+  }
+}
