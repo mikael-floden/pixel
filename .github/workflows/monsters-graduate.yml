@@ -79,9 +79,23 @@ jobs:
           ok=0
           for i in 1 2 3 4 5 6 7 8 9 10; do
             if git push origin main; then ok=1; break; fi
-            # never -X theirs: in a rebase that is the graduation's copy, and it
-            # would overwrite a verdict he saved seconds ago
-            git pull --rebase --autostash origin main || { git rebase --abort 2>/dev/null; sleep $((i*3)); continue; }
+            git fetch -q origin main
+            if ! git rebase origin/main; then
+              # HE SAVES REVIEWS WHILE THIS RUNS. His feedback file is never
+              # text-merged: take HIS copy (in a rebase, --ours is upstream) and
+              # re-derive what graduation does to it — carry his verdicts to the
+              # new creature pages — on top of his newest words. The candidate
+              # index is regenerable and is rebuilt from the tree, never merged.
+              git checkout --ours -- live/feedback/monsters.json monsters/candidates/index.json 2>/dev/null || true
+              python monsters/pipeline/verdicts.py settle --apply
+              python -c "import sys;sys.path.insert(0,'monsters/pipeline');import candidates as c;c.rebuild_index(c.load_cfg())"
+              git add live/feedback/monsters.json monsters/candidates/index.json
+              if [ -n "$(git diff --name-only --diff-filter=U)" ]; then
+                echo "::warning::conflict outside the feedback file and index: $(git diff --name-only --diff-filter=U)"
+                git rebase --abort; sleep $((i*3)); continue
+              fi
+              GIT_EDITOR=true git rebase --continue || { git rebase --abort; sleep $((i*3)); continue; }
+            fi
             sleep $((i*2))
           done
           [ "$ok" = 1 ] || { echo "::error::graduation could not be pushed after 10 tries"; exit 1; }
