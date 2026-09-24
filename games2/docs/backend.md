@@ -140,6 +140,18 @@ found; gate `server/test/lawsize.test.ts`).
   session `handed` so its leave holds no seat. A key that does not match, or
   was consumed, is an ordinary join under the session id. A hop nobody
   completes is forgotten after `HANDOFF_TIMEOUT_MS` and the body stays.
+  A SWAP IS NOT A JOIN, on the client (2026-09-24): the avatar loop keeps
+  predicting my body from its last record between the old room's
+  `handoff:done` and the bind (it returned without a body for 1-4 frames — a
+  freeze, then a lurch); `bindRoom(swap)` leaves time-of-day, aurora and the
+  ambient field where they are (an instant re-apply snapped a fade in
+  progress to its end at every line), gives the drop flood a one-patch quiet
+  window instead of 2 s, and the HUD ignores the re-sent backpack when it is
+  slot-for-slot the same (its rebuild cancelled a drag at every hop); every
+  message that is not an input goes through `sendRoom`, which holds it
+  during the swap and sends it to the new room on bind (chat, torch, a drop,
+  a backpack move, the aggro switch, a pickup, an engage — ~1.5 round trips
+  of them went to the room being left and were lost).
   THE HOP MUST NOT FREEZE THE BODY (maintainer 2026-09-09, playing with a
   friend: "the transition between zones is a bit laggy or buggy", and a
   teleport into a house): the first cut buffered the client's inputs while

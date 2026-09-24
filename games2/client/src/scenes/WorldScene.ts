@@ -1843,6 +1843,19 @@ export class WorldScene extends Phaser.Scene {
    *  the session id of my FIRST room, kept across every zone hand-off. Found
    *  by `player.sid === room.sessionId` on each bind, never by map key. */
   private myId = "";
+  /** MY LAST SERVER RECORD, kept through a zone swap: between the old room's
+   *  handoff:done (which deletes my body there) and the bind of the new room,
+   *  `state.players` has no entry for me, and the avatar loop used to return
+   *  without stepping my prediction — a freeze of 1-4 frames, then a lurch
+   *  (0-110 ms on his phone, up to 460 on a slow link). The record's last
+   *  values still hold, and predicting from them is exactly what the loop
+   *  would do had the patch not arrived yet. */
+  private myLast: any = null;
+  /** Messages that are not inputs, sent during a swap: chat, torch, a drop,
+   *  a backpack move, the aggro switch, a pickup, an engage. They used to go
+   *  to the room being left, ~1.5 round trips of them, and were lost. They
+   *  wait here and go to the new room on bind (sendRoom). */
+  private swapQueue: Array<[string, unknown]> = [];
   private zone = WHOLE_WORLD;
   private zonesCfg: ZoneCfg | null = null;
   private zoneSwapping = false;
@@ -5181,7 +5194,7 @@ export class WorldScene extends Phaser.Scene {
           this.nextChaseRepathAt = 0;
           // Tell the server NOW, not on arrival: the target persists while
           // moving and the sword-marked monster aggros as we close in.
-          this.room?.send("engage", { id: tgt.id });
+          this.sendRoom("engage", { id: tgt.id });
           this.nextEngageSendAt = this.time.now + 700;
         }
         return; // no hold armed: the walk-to is driven by driveCombatIntent
@@ -5261,7 +5274,7 @@ export class WorldScene extends Phaser.Scene {
     // Chat: Enter opens the input; while typing, Phaser keyboard is disabled so
     // movement keys don't leak through, and re-enabled when the box closes.
     this.chat = new ChatUI(
-      (text) => this.room?.send("chat", { text }),
+      (text) => this.sendRoom("chat", { text }),
       () => (this.input.keyboard!.enabled = true),
     );
     this.input.keyboard!.on("keydown-ENTER", () => {
@@ -5298,7 +5311,7 @@ export class WorldScene extends Phaser.Scene {
       onLogout: () => this.logout(),
       // The Chat page's bottom input sends through the SAME rate-limited path
       // as the on-screen chat box.
-      onChat: (text) => this.room?.send("chat", { text }),
+      onChat: (text) => this.sendRoom("chat", { text }),
       // Backpack drag-out: client coords -> canvas coords -> world point ->
       // the server's "drop" (which clamps to a short reach + standable
       // ground, so the client conversion only has to be roughly right).
@@ -5309,15 +5322,15 @@ export class WorldScene extends Phaser.Scene {
         const py = ((cy - rect.top) / Math.max(1, rect.height)) * this.scale.height;
         const wp = this.cameras.main.getWorldPoint(px, py);
         const g = this.pickGround(wp.x, wp.y);
-        if (g) this.room.send("drop", { slot, item, n, wx: g.x, wy: g.y });
-        else this.room.send("drop", { slot, item, n }); // void/solid target: at my feet
+        if (g) this.sendRoom("drop", { slot, item, n, wx: g.x, wy: g.y });
+        else this.sendRoom("drop", { slot, item, n }); // void/solid target: at my feet
       },
       // Backpack drag-to-swap (maintainer 2026-09-17): the HUD has already
       // swapped its grid; the server's `invmove` echo is the authority.
       onMoveItem: (from, to, item) => {
         this.invMoveLog.push({ from, to, item });
         if (this.invMoveLog.length > 32) this.invMoveLog.shift();
-        this.room?.send("invmove", { from, to, item });
+        this.sendRoom("invmove", { from, to, item });
       },
       // A HUD modal is up (the drop-quantity dialog): FREEZE the player —
       // "when this dialog is open the player can't walk" (maintainer
@@ -6152,7 +6165,7 @@ export class WorldScene extends Phaser.Scene {
         const av = id ? this.avatars.get(id) : undefined;
         return av ? av.character : null;
       },
-      say: (text: string) => this.room?.send("chat", { text }),
+      say: (text: string) => this.sendRoom("chat", { text }),
       // Chat-page QA: push a history line directly (bypassing the server), at an
       // optional controlled receive-time (ms epoch) so the day-divider + cap
       // logic can be verified deterministically. verify-chatpage.mjs drives this.
@@ -9621,7 +9634,7 @@ export class WorldScene extends Phaser.Scene {
       engage: (id?: string | null) => {
         if (id === null) {
           this.engagedId = null;
-          this.room?.send("engage", { id: null });
+          this.sendRoom("engage", { id: null });
           return null;
         }
         if (id) {
@@ -9792,11 +9805,25 @@ export class WorldScene extends Phaser.Scene {
   /** Wire a (re)joined room into the scene: state callbacks, messages, and
    * the dead-connection recovery. Called for the initial join and for every
    * in-place rejoin. */
+  /** Every message that is not an input goes through here: during a zone
+   *  swap it waits for the new room (see swapQueue). */
+  private sendRoom(type: string, msg?: unknown) {
+    if (this.zoneSwapping) {
+      this.swapQueue.push([type, msg]);
+      return;
+    }
+    this.room?.send(type, msg);
+  }
+
   private bindRoom(room: Room, swap = false) {
     // The state flood right after (re)bind replays every EXISTING ground drop
     // through drops.onAdd — inherited loot is scenery, not a drop happening,
     // so item.drop only fires for drops witnessed after this window.
-    this.joinQuietUntil = this.time.now + 1500;
+    // A SWAP IS NOT A JOIN: the flood is the neighbourhood the old room
+    // already drew (addDrop skips what is drawn), so the quiet window is one
+    // patch, not the 2 s a fresh field gets — a drop witnessed just after a
+    // hop sounds and tosses like any other.
+    this.joinQuietUntil = this.time.now + (swap ? 250 : 2000);
     this.room = room;
     this.connected = true;
     this.reconnectRetries = 0;
@@ -9827,7 +9854,16 @@ export class WorldScene extends Phaser.Scene {
     // apply, no log) and then on every change anyone triggers.
     let firstTimeSync = true;
     $(room.state).listen("timeIdx", (idx: number) => {
-      this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync);
+      // ON A SWAP THE CLOCK IS THE SAME WORLD CLOCK: the first sync of the
+      // new room re-states the phase this scene is already in (or, rarely,
+      // the one it moved to during the hop). An instant apply here snapped a
+      // fade in progress to its end at every line; the same phase is left
+      // exactly as it is, and a changed one fades as a change does.
+      if (firstTimeSync && swap && idx % TIME_PHASES.length === this.timeIdx) {
+        firstTimeSync = false;
+        return;
+      }
+      this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync && !swap);
       // The Settings button PRINTS the phase, and the world clock advances by
       // itself every 20-40s — so the label has to be re-read here or it keeps
       // whatever phase happened to be current when the page was last built
@@ -9860,11 +9896,11 @@ export class WorldScene extends Phaser.Scene {
     let firstAuroraSync = true;
     $(room.state).listen("aurora", (on: boolean) => {
       this.auroraOn = !!on;
-      if (firstAuroraSync) this.curAurora = on ? 1 : 0; // no roll-in on join
+      if (firstAuroraSync && !swap) this.curAurora = on ? 1 : 0; // no roll-in on join; a swap keeps a roll-in where it is
       else if (on) this.chat.addLog("—", "Northern lights dance over Nangijala.");
       firstAuroraSync = false;
     });
-    this.ambientSynced = false;
+    if (!swap) this.ambientSynced = false; // a swap keeps the field: the gloom must not snap at a line
     $(room.state).listen("ambient", (packed: string) => {
       this.ambientRoomSet = unpackAmbient(packed);
       this.applyAmbient();
@@ -10374,7 +10410,7 @@ export class WorldScene extends Phaser.Scene {
       // The little TOSS (maintainer: "thrown up from the ground", subtle):
       // freshly witnessed drops pop up a few px and settle; the join flood
       // (< 2s after bind) lands silent so a full field doesn't bounce at us.
-      if (this.time.now - this.roomBoundAt > 2000) {
+      if (this.time.now > this.joinQuietUntil) {
         const rest = y - 7;
         img.setY(y); // out of the ground…
         this.tweens.add({ targets: img, y: rest - 8, duration: 190, ease: "Quad.easeOut", yoyo: false,
@@ -10569,7 +10605,7 @@ export class WorldScene extends Phaser.Scene {
           !spot || !this.trip || Math.hypot(spot.x - me.fx, spot.y - me.fy) <= GRAB_ALIGN_WU;
         if (aligned && nowP >= this.nextPickupSendAt) {
           this.nextPickupSendAt = nowP + 400;
-          this.room.send("pickup", { id: this.pendingPickupId });
+          this.sendRoom("pickup", { id: this.pendingPickupId });
         }
         if (aligned && this.trip) this.clearMoveTarget(); // arrived: stand for the grab
       }
@@ -10586,7 +10622,7 @@ export class WorldScene extends Phaser.Scene {
     // this only guards against ordering/reconnect losses.
     if (now >= this.nextEngageSendAt) {
       this.nextEngageSendAt = now + 700;
-      this.room.send("engage", { id: this.engagedId });
+      this.sendRoom("engage", { id: this.engagedId });
     }
     const range = attackRange(PLAYER_BODY_RADIUS, mv.radius);
     const dist = Math.hypot(mv.fx - me.fx, mv.fy - me.fy);
@@ -11930,7 +11966,7 @@ export class WorldScene extends Phaser.Scene {
   private dropEngage() {
     if (!this.engagedId) return;
     this.engagedId = null;
-    this.room?.send("engage", { id: null });
+    this.sendRoom("engage", { id: null });
   }
 
   private toggleNoAggro(on = !this.noAggroOn) {
@@ -11938,7 +11974,7 @@ export class WorldScene extends Phaser.Scene {
     try {
       localStorage.setItem("ml-no-aggro", on ? "1" : "0");
     } catch {}
-    this.room?.send("noaggro", { on });
+    this.sendRoom("noaggro", { on });
     this.chat.addLog("—", `Aggro: ${on ? "DISABLED — nothing will jump you" : "back on"}`);
     return this.noAggroOn;
   }
@@ -12019,7 +12055,7 @@ export class WorldScene extends Phaser.Scene {
     this.pickupIntentUntil = this.time.now + 6000;
     if (bestD <= PICKUP_RADIUS_WU * 0.8) {
       this.nextPickupSendAt = this.time.now + 400;
-      this.room.send("pickup", { id: bestId });
+      this.sendRoom("pickup", { id: bestId });
     } else {
       const d = this.drops.get(bestId)!;
       this.walkToGrab(me, d.wx, d.wy);
@@ -13226,6 +13262,8 @@ export class WorldScene extends Phaser.Scene {
       }
       hop.replayed = replayed;
       this.zoneSwapping = false;
+      for (const [t, m] of this.swapQueue) next.send(t, m); // what was said or done during the swap
+      this.swapQueue.length = 0;
       from.leave(true);
       this.zoneHops++;
       if (this.zoneLinesOn) {
@@ -13249,6 +13287,8 @@ export class WorldScene extends Phaser.Scene {
       console.warn("[zones] hand-off join failed, staying:", e);
       note(`hand-off ${fromZone} \u2192 ${msg.zone} FAILED, staying in ${fromZone}: ${e instanceof Error ? e.message : String(e)}`);
       this.zoneSwapping = false;
+      for (const [t, m] of this.swapQueue) from.send(t, m); // still bound to the old room
+      this.swapQueue.length = 0;
     }
   }
   private mapLayersAt = 0; // next ensureMapLayers() poll (see the update loop)
@@ -13887,7 +13927,11 @@ export class WorldScene extends Phaser.Scene {
 
     this.ps();
     this.avatars.forEach((av, id) => {
-      const player = state.players.get(id) ?? state.ghosts?.get(id);
+      let player = state.players.get(id) ?? state.ghosts?.get(id);
+      if (id === myId) {
+        if (player) this.myLast = player;
+        else if (this.zoneSwapping) player = this.myLast; // between handoff:done and the bind: predict on, from the last record
+      }
       if (!player) return;
       /* THE AUTHORITATIVE POSITION JUMPED. Recorded for the beacon because
        * "the player was flying around like I don't know what" (maintainer
@@ -15335,7 +15379,7 @@ export class WorldScene extends Phaser.Scene {
    * own light + the switch), and the server broadcasts it to the world. */
   private toggleTorch() {
     this.torchOn = !this.torchOn;
-    this.room?.send("torch", { on: this.torchOn });
+    this.sendRoom("torch", { on: this.torchOn });
     this.chat.addLog("—", `My torch: ${this.torchOn ? "on" : "off"}`);
   }
 

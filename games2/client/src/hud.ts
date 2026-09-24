@@ -1761,7 +1761,15 @@ export class HudBar {
    * the oldest, and re-renders if the Chat tab is currently visible. */
   /** The server-owned backpack (targeted "inv" messages). Rerenders the grid. */
   setInventory(items: { item: string; n: number }[]) {
-    this.invItems = Array.isArray(items) ? items : [];
+    const next = Array.isArray(items) ? items : [];
+    // THE SAME BACKPACK IS NOT A REFRESH. A zone hop re-sends the backpack
+    // the body carried across (adoptPlayer's "inv"), and rebuilding the grid
+    // for it cancelled a drag in progress at every line. Slot for slot the
+    // same: nothing to draw, nothing to cancel. The first render is the
+    // grid's own (renderInventory at build), so an empty first message is
+    // covered too.
+    if (this.invRendered && next.length === this.invItems.length && next.every((s, i) => s.item === this.invItems[i]?.item && s.n === this.invItems[i]?.n)) return;
+    this.invItems = next;
     this.renderInventory();
   }
 
@@ -1770,9 +1778,11 @@ export class HudBar {
     return this.invItems.map((s) => ({ ...s }));
   }
 
+  private invRendered = false; // the grid has been drawn at least once (setInventory's same-backpack skip)
   private renderInventory() {
     const grid = this.invGrid;
     if (!grid) return;
+    this.invRendered = true;
     // An "inv" refresh can land MID-DRAG (auto-pickup on arrival, a join
     // refresh): rebuilding the grid detaches the captured cell, whose
     // pointerup can then never fire — cancel the gesture explicitly or the
