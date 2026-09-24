@@ -82,6 +82,9 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* THE PACER'S ROW (client pacing.ts, 2026-09-24): mode is a string, the
      * rest numbers — `mixed`, 16 keys against 11 sent. */
     pace: mixed(body.pace, 16),
+    /* THE TERRAIN BAKE'S ROW (client terrainbake.ts, 2026-09-24): 15 numbers
+     * sent against a cap of 24. */
+    bake: mixed(body.bake, 24),
     /* 64, not 40: 36 sections arrive since `preUpdate`/`hooks` (2026-09-19),
      * and `flat` keeps the first N in silence — the headroom is the point. */
     sections: flat(body.sections, 64, 100000),

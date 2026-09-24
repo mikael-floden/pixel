@@ -28,6 +28,13 @@ test("THE PACER'S ROW reaches the file: the mode string and every number", () =>
   assert.equal(perfReport({ frames: { n: 60 } }, AT).pace, null, "an older client sends none");
 });
 
+test("THE TERRAIN BAKE'S ROW reaches the file", () => {
+  const bake = { on: 1, chunks: 9, baked: 7, live: 1, waiting: 1, images: 212, atlases: 7, ms: 41.2, peakMs: 2.1, bakes: 3, evicted: 0, dirtied: 0, ops: 5120, opsMax: 2210, unbakeable: 0 };
+  const r = perfReport({ frames: { n: 60 }, bake }, AT);
+  assert.deepEqual(r.bake, bake);
+  assert.equal(perfReport({ frames: { n: 60 } }, AT).bake, null, "a client without the bake sends none");
+});
+
 test("THE LIGHT BILL reaches the file: counts, switches and the device string all survive", () => {
   const r = perfReport(
     {
