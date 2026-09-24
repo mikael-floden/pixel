@@ -1,0 +1,141 @@
+{
+  "id": "bog_baby",
+  "name": "Bogbaby",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It looks up at you. It will keep looking up at you.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Small chubby figure of dark peat with big round pale eyes, no mouth, stubby arms reaching up, water beading on its head.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_baby/rotations/south.webp",
+    "south-east": "bog_baby/rotations/south-east.webp",
+    "east": "bog_baby/rotations/east.webp",
+    "north-east": "bog_baby/rotations/north-east.webp",
+    "north": "bog_baby/rotations/north.webp",
+    "north-west": "bog_baby/rotations/north-west.webp",
+    "west": "bog_baby/rotations/west.webp",
+    "south-west": "bog_baby/rotations/south-west.webp"
+  },
+  "sheet": "bog_baby/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8d9d3a2a-21da-4800-b8b3-541d81cf6b68",
+  "seed": 1557412075,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:22:31+00:00",
+  "elapsed_s": 514.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.545,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.645,
+        "bbox": [
+          2,
+          5,
+          38,
+          35
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.639,
+        "bbox": [
+          6,
+          4,
+          35,
+          36
+        ],
+        "fill": 0.58,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.597,
+        "bbox": [
+          10,
+          4,
+          30,
+          36
+        ],
+        "fill": 0.4,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.545,
+        "bbox": [
+          6,
+          4,
+          34,
+          35
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.569,
+        "bbox": [
+          2,
+          5,
+          38,
+          35
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.555,
+        "bbox": [
+          5,
+          4,
+          34,
+          35
+        ],
+        "fill": 0.562,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.596,
+        "bbox": [
+          10,
+          4,
+          30,
+          36
+        ],
+        "fill": 0.4,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.635,
+        "bbox": [
+          5,
+          4,
+          34,
+          36
+        ],
+        "fill": 0.58,
+        "touches_edge": false
+      }
+    }
+  }
+}
