@@ -1,0 +1,141 @@
+{
+  "id": "frost_stag",
+  "name": "Froststag",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "When it sheds its antlers the lake freezes over.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "White stag with antlers of blue ice, frost in its coat, pale blue eyes, snow falling from its back as it moves.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frost_stag/rotations/south.webp",
+    "south-east": "frost_stag/rotations/south-east.webp",
+    "east": "frost_stag/rotations/east.webp",
+    "north-east": "frost_stag/rotations/north-east.webp",
+    "north": "frost_stag/rotations/north.webp",
+    "north-west": "frost_stag/rotations/north-west.webp",
+    "west": "frost_stag/rotations/west.webp",
+    "south-west": "frost_stag/rotations/south-west.webp"
+  },
+  "sheet": "frost_stag/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a9b31e26-e8e7-41dc-975e-86d2bd12ddfe",
+  "seed": 1491065238,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:55:31+00:00",
+  "elapsed_s": 298.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.656,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.754,
+        "bbox": [
+          63,
+          3,
+          176,
+          220
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.737,
+        "bbox": [
+          44,
+          4,
+          167,
+          220
+        ],
+        "fill": 0.529,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.734,
+        "bbox": [
+          46,
+          4,
+          189,
+          216
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.735,
+        "bbox": [
+          44,
+          5,
+          184,
+          213
+        ],
+        "fill": 0.58,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.763,
+        "bbox": [
+          38,
+          8,
+          160,
+          217
+        ],
+        "fill": 0.508,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.656,
+        "bbox": [
+          37,
+          7,
+          185,
+          217
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.734,
+        "bbox": [
+          30,
+          6,
+          180,
+          211
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.735,
+        "bbox": [
+          42,
+          5,
+          176,
+          219
+        ],
+        "fill": 0.572,
+        "touches_edge": false
+      }
+    }
+  }
+}
