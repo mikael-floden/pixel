@@ -1,0 +1,140 @@
+{
+  "id": "slate_serpent",
+  "name": "Slatecoil",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It sheds its slates on the roofs in the valley.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Serpent of overlapping flat slate plates, a wedge head, slit eyes of quartz, grinding as it moves.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "slate_serpent/rotations/south.webp",
+    "south-east": "slate_serpent/rotations/south-east.webp",
+    "east": "slate_serpent/rotations/east.webp",
+    "north-east": "slate_serpent/rotations/north-east.webp",
+    "north": "slate_serpent/rotations/north.webp",
+    "north-west": "slate_serpent/rotations/north-west.webp",
+    "west": "slate_serpent/rotations/west.webp",
+    "south-west": "slate_serpent/rotations/south-west.webp"
+  },
+  "sheet": "slate_serpent/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "50ae74b7-2018-44b3-b5ae-a38ec5441138",
+  "seed": 1061193914,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:39:09+00:00",
+  "elapsed_s": 251.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.763,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.763,
+        "bbox": [
+          4,
+          3,
+          85,
+          84
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.837,
+        "bbox": [
+          8,
+          4,
+          82,
+          85
+        ],
+        "fill": 0.774,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.816,
+        "bbox": [
+          11,
+          4,
+          82,
+          84
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.846,
+        "bbox": [
+          2,
+          6,
+          82,
+          82
+        ],
+        "fill": 0.785,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.827,
+        "bbox": [
+          3,
+          3,
+          82,
+          86
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.838,
+        "bbox": [
+          4,
+          3,
+          81,
+          85
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.824,
+        "bbox": [
+          4,
+          6,
+          86,
+          83
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.844,
+        "bbox": [
+          4,
+          3,
+          85,
+          84
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      }
+    }
+  }
+}
