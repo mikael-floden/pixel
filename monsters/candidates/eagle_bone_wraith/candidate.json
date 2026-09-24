@@ -1,0 +1,140 @@
+{
+  "id": "eagle_bone_wraith",
+  "name": "Bonewing",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The eagle died on the peak and never came down.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Huge skeletal eagle of grey bone with tattered grey feather remnants, glowing sockets, wings spread wide.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "eagle_bone_wraith/rotations/south.webp",
+    "south-east": "eagle_bone_wraith/rotations/south-east.webp",
+    "east": "eagle_bone_wraith/rotations/east.webp",
+    "north-east": "eagle_bone_wraith/rotations/north-east.webp",
+    "north": "eagle_bone_wraith/rotations/north.webp",
+    "north-west": "eagle_bone_wraith/rotations/north-west.webp",
+    "west": "eagle_bone_wraith/rotations/west.webp",
+    "south-west": "eagle_bone_wraith/rotations/south-west.webp"
+  },
+  "sheet": "eagle_bone_wraith/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a5d3dca3-548b-404a-b3e2-4ab56ab22926",
+  "seed": 702624037,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:03:15+00:00",
+  "elapsed_s": 217.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.568,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.568,
+        "bbox": [
+          4,
+          15,
+          220,
+          211
+        ],
+        "fill": 0.844,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.676,
+        "bbox": [
+          20,
+          11,
+          202,
+          214
+        ],
+        "fill": 0.736,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.639,
+        "bbox": [
+          61,
+          13,
+          157,
+          215
+        ],
+        "fill": 0.386,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.645,
+        "bbox": [
+          28,
+          12,
+          205,
+          206
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.627,
+        "bbox": [
+          8,
+          15,
+          216,
+          206
+        ],
+        "fill": 0.792,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.645,
+        "bbox": [
+          18,
+          12,
+          198,
+          206
+        ],
+        "fill": 0.696,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.64,
+        "bbox": [
+          66,
+          13,
+          164,
+          215
+        ],
+        "fill": 0.395,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.672,
+        "bbox": [
+          23,
+          11,
+          200,
+          214
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      }
+    }
+  }
+}
