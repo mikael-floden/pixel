@@ -110,11 +110,28 @@ found; gate `server/test/lawsize.test.ts`).
   what it no longer carries is dropped at once and a quiet owner's ghosts
   expire after `GHOST_TTL_MS` (1 s).
 - **The hand-off**: `stepZones` sees a body outside the rect, writes the hot
-  state (`HotState`: position, dir, hp/ep/level/xp, backpack, the account
-  record, seq, torch, no-aggro, `actionSeq`/`hitSeq` — mirrored by CHANGE on
-  the client, so a counter rebuilt from zero replayed the last hit at the
-  border; the client also re-seeds silently on any DECREASE) to `handoff:<world>:<pid>` with a 24-hex
-  one-shot key (TTL 10 s) and sends `zone:go`; the client joins the new zone
+  state (`HotState`: position, dir, moving/running, hp/ep/level/xp, backpack,
+  the account record, seq, torch, no-aggro, `actionSeq`/`hitSeq` — mirrored
+  by CHANGE on the client, so a counter rebuilt from zero replayed the last
+  hit at the border; the client also re-seeds silently on any DECREASE —
+  and, since 2026-09-24, THE REST OF THE BODY: the jump window and its
+  cooldown, the swing timer, the engaged monster, death with its respawn
+  clocks, a fall still in the air; every clock as REMAINING ms, re-based on
+  the receiver's clock, because an epoch from another process means nothing.
+  Without them a ledge climb at the line snapped back two storeys, a hop had
+  no swings for 150-800 ms, a death mid-join came back alive at 1 hp, and a
+  fall's damage was dropped; `server/test/bodycarry.test.ts`) to
+  `handoff:<world>:<pid>` with a 24-hex one-shot key (TTL 10 s) and sends
+  `zone:go`. A hop nobody completed in `HANDOFF_TIMEOUT_MS` (10 s) is
+  RE-SENT UNDER THE SAME KEY, not re-keyed (the client allows 15 s, and a
+  join still in flight with the old key found a document that no longer
+  matched and fell to the 10 s-stale copy or the store); only a body that
+  meanwhile walked elsewhere starts over. And a seat whose reconnection
+  grace runs out removes the body only while the pid is still that
+  session's: the same body can have come back through a hand-off under a
+  NEW session while the old seat waited (a link dropped mid-hop, the player
+  ran on and back), and the old seat's expiry deleted the live one. The
+  client joins the new zone
   `fresh` (no seat reclaim) with pid + key, binds it in SWAP mode (adds are
   idempotent, a reconcile removes what the new view lacks), replays the
   inputs it buffered meanwhile, then leaves the old room; the receiving room

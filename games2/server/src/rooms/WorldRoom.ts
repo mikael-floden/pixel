@@ -419,6 +419,23 @@ interface HotState {
    *  still restores during a rollout. */
   actionSeq?: number;
   hitSeq?: number;
+  /** THE REST OF THE BODY (2026-09-24; all optional so a hot state written by
+   *  the previous build still restores). Without these a crossing lost its
+   *  jump — a ledge climb at the line snapped back two storeys — swung at
+   *  nothing for 150-800 ms (nextSwingAt rebuilt at 0 is not the bug: the
+   *  engaged monster was), came back from a death mid-join at 1 hp, and
+   *  dropped a fall's pending damage. Every clock travels as REMAINING ms:
+   *  an epoch from another process's clock is meaningless. */
+  moving?: boolean;
+  running?: boolean;
+  jumpLeftMs?: number;
+  jumpReadyLeftMs?: number;
+  target?: string;
+  nextSwingLeftMs?: number;
+  dead?: boolean;
+  respawnLeftMs?: number;
+  deadUntilLeftMs?: number;
+  fall?: { dmg: number; leftMs: number };
 }
 interface MonsterXfer {
   kind: string; x: number; y: number; dir: string; moving: boolean; elev: number;
@@ -1842,6 +1859,17 @@ export class WorldRoom extends Room<WorldState> {
       } finally {
         this.reconnects.delete(client.sessionId);
       }
+    }
+    /* THE BODY MAY HAVE A NEWER SESSION BY NOW. While this seat waited, the
+     * same pid can have come back through a hand-off (a link dropped mid-hop,
+     * the player ran on into the neighbour and back within the grace): the
+     * adoption re-bound pid -> the NEW session, and the expiry of the OLD
+     * seat must not delete the body that session owns. Only my own binding
+     * is mine to remove. */
+    if (this.pidSid.get(pid) !== client.sessionId) {
+      this.seen.delete(client.sessionId);
+      this.sidPid.delete(client.sessionId);
+      return;
     }
     this.state.players.delete(pid);
     this.fallPend.delete(pid);
@@ -3365,8 +3393,17 @@ export class WorldRoom extends Room<WorldState> {
     //    never strands a body.
     this.state.players.forEach((p, pid) => {
       if (p.handoff) {
-        if (now - p.handoff.at > HANDOFF_TIMEOUT_MS) p.handoff = null;
-        else this.refreshHandoff(p, pid);
+        if (now - p.handoff.at > HANDOFF_TIMEOUT_MS) {
+          // NOBODY COMPLETED IT IN TIME. Re-keying here raced the client's
+          // own join, still in flight on a slow link with the OLD key (the
+          // client allows 15 s, this room 10): the bus document no longer
+          // matched, and the join fell to the signed copy — 10 s stale — or
+          // to the store. The same capability is sent again instead; a join
+          // that lands late still matches, and a client that gave up hops
+          // on the resend. A body that meanwhile walked elsewhere starts over.
+          if (zoneAt(grid, p.x, p.y) === p.handoff.to) this.resendHandoff(p, pid, now);
+          else p.handoff = null;
+        } else this.refreshHandoff(p, pid);
         return;
       }
       if (p.dead) return;
@@ -3426,6 +3463,27 @@ export class WorldRoom extends Room<WorldState> {
      * per crossing, the same count as before — it was written on adoption,
      * which that fallback never reaches. */
     this.savePlayer(p);
+    this.sendZoneGo(p, pid, client, to, key);
+  }
+
+  /** The hand-off nobody completed in HANDOFF_TIMEOUT_MS, sent again under
+   *  the same key (see stepZones). */
+  private resendHandoff(p: Player, pid: string, now: number) {
+    const h = p.handoff;
+    const sid = this.pidSid.get(pid);
+    const client = sid ? this.clients.find((c) => c.sessionId === sid) : undefined;
+    if (!h || !client) {
+      p.handoff = null;
+      return;
+    }
+    h.at = now;
+    console.log(`[zones] hand-off for ${pid} into zone ${h.to} not completed in ${HANDOFF_TIMEOUT_MS} ms: zone:go re-sent under the same key`);
+    this.sendZoneGo(p, pid, client, h.to, h.key);
+  }
+
+  /** The hot state to the bus under `key`, then `zone:go` (with the signed
+   *  copy) to the client. */
+  private sendZoneGo(p: Player, pid: string, client: Client, to: number, key: string) {
     const hot = this.hotStateFor(p, pid, key);
     const go = (extra: { hot?: string; sig?: string }) => client.send("zone:go", { zone: to, pid, key, seq: hot.seq, ...extra });
     void bus()
@@ -3450,12 +3508,24 @@ export class WorldRoom extends Room<WorldState> {
 
   /** The body as it stands RIGHT NOW, under the capability of this hand-off. */
   private hotStateFor(p: Player, pid: string, key: string): HotState {
+    const now = Date.now();
+    const fall = this.fallPend.get(pid);
     return {
       key,
       pid,
       from: this.zoneId,
-      at: Date.now(),
+      at: now,
       since: p.handoff?.at,
+      moving: p.moving,
+      running: p.running,
+      jumpLeftMs: Math.max(0, p.jumpUntil - now),
+      jumpReadyLeftMs: Math.max(0, p.jumpReadyAt - now),
+      target: p.target,
+      nextSwingLeftMs: Math.max(0, p.nextSwingAt - now),
+      dead: p.dead,
+      respawnLeftMs: Math.max(0, p.respawnAt - now),
+      deadUntilLeftMs: Math.max(0, p.deadUntil - now),
+      fall: fall ? { dmg: fall.dmg, leftMs: Math.max(0, fall.at - now) } : undefined,
       name: p.name,
       character: p.character,
       accountId: p.accountId,
@@ -3588,17 +3658,33 @@ export class WorldRoom extends Room<WorldState> {
     player.xp = hot.xp;
     player.hpMax = hpMaxFor(player.level);
     player.epMax = epMaxFor(player.level);
-    player.hp = Math.min(player.hpMax, Math.max(1, hot.hp));
+    const now = Date.now();
+    // A DEATH CROSSES AS A DEATH: the old room kept refreshing the hot state
+    // while the client joined, so a body killed mid-join arrives at 0 hp and
+    // dead, with its respawn clocks — not limping at 1 hp with the corpse
+    // still on the client's screen (the old max(1, hp) was for a save, which
+    // never holds a corpse; a hand-off does).
+    player.dead = !!hot.dead;
+    player.hp = player.dead ? 0 : Math.min(player.hpMax, Math.max(1, hot.hp));
+    player.respawnAt = player.dead ? now + (hot.respawnLeftMs ?? 0) : 0;
+    player.deadUntil = player.dead ? now + (hot.deadUntilLeftMs ?? 0) : 0;
     player.ep = Math.min(player.epMax, Math.max(0, hot.ep));
     player.inv = hot.inv.map((s) => ({ item: s.item, n: s.n }));
     player.seq = hot.seq;
+    // THE REST OF THE BODY, its clocks re-based on this room's now.
+    player.moving = player.lastMoving = !!hot.moving;
+    player.running = !!hot.running;
+    player.jumpUntil = hot.jumpLeftMs ? now + hot.jumpLeftMs : 0;
+    player.jumping = player.jumpUntil > now;
+    player.jumpReadyAt = now + (hot.jumpReadyLeftMs ?? 0);
+    player.target = typeof hot.target === "string" ? hot.target : "";
+    player.nextSwingAt = now + (hot.nextSwingLeftMs ?? 0);
     // The client replays, the moment it is bound, every input after the seq
     // adopted here (a matchmake and a socket on a phone: hundreds of ms of
     // them). Without credit for that gap the burst is throttled to
     // INPUT_TIME_SLACK (0.25 s) and the body falls short of its prediction,
     // then snaps back — the "laggy" crossing. The purse is sized to the gap
     // (see HANDOFF_INPUT_CREDIT_S); the full burst allowance opens with it.
-    const now = Date.now();
     // The burst still to come is the join's own length again (the client keeps
     // feeding the OLD room until it binds, and replays that here), so the hop's
     // age since the crossing was noticed is the proof its size rests on.
@@ -3619,6 +3705,8 @@ export class WorldRoom extends Room<WorldState> {
       return;
     }
     this.adoptPlayer(client, hot.pid, player, !!hot.noAggro);
+    // A fall still in the air lands here, on time.
+    if (hot.fall && hot.fall.dmg > 0) this.fallPend.set(hot.pid, { dmg: hot.fall.dmg, at: now + hot.fall.leftMs });
     // The crossing's one save was written by the old room in `startHandoff`,
     // so a link dropped mid-hop rejoins at the cut, and a hop that lands on a
     // new revision restores there too.

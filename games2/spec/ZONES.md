@@ -37,10 +37,13 @@ Kubernetes). Rules here are present tense; the measurements land in
   and expires 1 s after its last snapshot. Interest applies to ghosts like
   anything else, so a player near a border sees across it through ONE socket.
 - **Hand-off.** When a player's position enters another zone, the home room
-  writes the player's hot state (`pos`, `elev`, `dir`, hp/ep/level/xp, `inv`,
-  the account id and record, `dirty`, the input `seq`, torch, no-aggro, the
-  combat counters `actionSeq`/`hitSeq` — the client plays clips on their
-  CHANGE, so a body rebuilt from zero replayed its last hit at the border) to
+  writes the player's hot state (`pos`, `elev`, `dir`, moving/running,
+  hp/ep/level/xp, `inv`, the account id and record, `dirty`, the input `seq`,
+  torch, no-aggro, the combat counters `actionSeq`/`hitSeq` — the client
+  plays clips on their CHANGE, so a body rebuilt from zero replayed its last
+  hit at the border — the jump window and cooldown, the swing timer, the
+  engaged monster, death with its respawn clocks and a fall still in the
+  air, every clock as remaining ms: the WHOLE body, `bodycarry.test.ts`) to
   the bus key `handoff:<world>:<pid>` (10 s TTL) together with a 128-bit
   one-shot KEY minted for this crossing, keeps stepping the player — AND
   REWRITES THAT DOCUMENT EVERY TICK while the hand-off is in flight, so what is
