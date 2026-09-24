@@ -1,0 +1,140 @@
+{
+  "id": "deep_salamander",
+  "name": "Deepnewt",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "It came up from the deep water to see what light is.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Pink blind cave salamander walking upright, feathery red external gills, tiny legs, translucent.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "deep_salamander/rotations/south.webp",
+    "south-east": "deep_salamander/rotations/south-east.webp",
+    "east": "deep_salamander/rotations/east.webp",
+    "north-east": "deep_salamander/rotations/north-east.webp",
+    "north": "deep_salamander/rotations/north.webp",
+    "north-west": "deep_salamander/rotations/north-west.webp",
+    "west": "deep_salamander/rotations/west.webp",
+    "south-west": "deep_salamander/rotations/south-west.webp"
+  },
+  "sheet": "deep_salamander/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "893f8460-bb7f-489e-af70-765b6b603ce5",
+  "seed": 15226711,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:43:42+00:00",
+  "elapsed_s": 204.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.744,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.744,
+        "bbox": [
+          6,
+          8,
+          83,
+          82
+        ],
+        "fill": 0.736,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.816,
+        "bbox": [
+          5,
+          6,
+          80,
+          83
+        ],
+        "fill": 0.746,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.81,
+        "bbox": [
+          5,
+          4,
+          80,
+          82
+        ],
+        "fill": 0.755,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.8,
+        "bbox": [
+          17,
+          5,
+          71,
+          79
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.776,
+        "bbox": [
+          6,
+          7,
+          79,
+          80
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.802,
+        "bbox": [
+          9,
+          5,
+          83,
+          82
+        ],
+        "fill": 0.736,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.787,
+        "bbox": [
+          8,
+          5,
+          81,
+          83
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.821,
+        "bbox": [
+          11,
+          7,
+          71,
+          82
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      }
+    }
+  }
+}
