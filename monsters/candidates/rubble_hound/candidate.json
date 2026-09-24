@@ -1,0 +1,140 @@
+{
+  "id": "rubble_hound",
+  "name": "Rubblehound",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The ruined wall's watchdog, made of the wall.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Hound of loose grey rubble held together by red clay, gaps in its body, a jaw of jagged stones.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rubble_hound/rotations/south.webp",
+    "south-east": "rubble_hound/rotations/south-east.webp",
+    "east": "rubble_hound/rotations/east.webp",
+    "north-east": "rubble_hound/rotations/north-east.webp",
+    "north": "rubble_hound/rotations/north.webp",
+    "north-west": "rubble_hound/rotations/north-west.webp",
+    "west": "rubble_hound/rotations/west.webp",
+    "south-west": "rubble_hound/rotations/south-west.webp"
+  },
+  "sheet": "rubble_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3340759d-55c3-4d5b-8aba-99549ecbe930",
+  "seed": 1274437912,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:21:55+00:00",
+  "elapsed_s": 1622.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.731,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.731,
+        "bbox": [
+          2,
+          3,
+          85,
+          84
+        ],
+        "fill": 0.868,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.84,
+        "bbox": [
+          11,
+          3,
+          81,
+          86
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.837,
+        "bbox": [
+          9,
+          2,
+          79,
+          86
+        ],
+        "fill": 0.759,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.812,
+        "bbox": [
+          10,
+          1,
+          76,
+          85
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.781,
+        "bbox": [
+          3,
+          3,
+          85,
+          84
+        ],
+        "fill": 0.858,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.812,
+        "bbox": [
+          12,
+          1,
+          78,
+          85
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.825,
+        "bbox": [
+          10,
+          3,
+          79,
+          86
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.844,
+        "bbox": [
+          8,
+          3,
+          76,
+          86
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      }
+    }
+  }
+}
