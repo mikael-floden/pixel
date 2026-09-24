@@ -1,24 +1,22 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T19:31:40+00:00",
+  "updated_at": "2026-09-24T20:05:46+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED — TERRAIN BAKE cost fix + the edit tool (chunk 3). HIS 19:06 RUN ON c2f857aad7 (the bake on by default) WAS WORSE: frame p50 34-63 ms against 17-23 on the run before, `bakeStep` 7-10 ms a frame with 36-84 ms peaks, 170-390 framebuffers a window (maintainer: 'it lagged even more' / 'you are making the game worse'). 4974db996f made it opt-in (live 19:24). Root causes and the fix in flight: the bake walks composed art the live path had not asked for (now: only cells the live walk completed — `walkable`); a texture+framebuffer per bake (now: an atlas pool per size, cleared where drawn); re-walks per landed transition (now: coalesced to one per 5 s per chunk, retries 3-30 s); the budget was checked between chunks (now: 1 ms honoured per unit, phases walk/pack/draw/finish each deadline-checked, one bracket a frame, none on a ground-paint frame). Gate 51: parity 5/5 + the edit; unit peaks walk 0.2-3.2, draw <=1.7, end <=0.6, finish <=2 ms; gate 52 measures the phased version. LAW FROM HIS VERDICT: nothing turns on by default on his phone before a run of his with it on shows the frame shorter — every change opt-in behind a Dev switch, judged by his beacon.",
-    "since": "2026-09-24T19:31:40+00:00",
+    "unit": "CLAIMED — the steady milliseconds of his 16:50 run, in my domain, each opt-in behind a Dev switch until his run reads it shorter (his verdict 2026-09-24): (1) occCull: ~4,000 AABB tests a frame (0.5-1.3 ms) → a per-image re-test due by its distance to the view edge over the camera's top speed, reset on rebuild; (2) depthSort: Phaser's merge sort of the whole display list every frame a body moved (0.9-1.9 ms) → a full sort on rebuild frames only, binary re-insertion of the moved bodies otherwise, gated by an order-parity probe against StableSort (a same-depth flip is the 'buggy tiles' report; a rejected insertion sort of 2026-09-12 is why it is gated, not assumed); (3) the 616 ms full ground paint at 91,237 (his 19:07 window, 4 hops): name the trigger. FIRST: his two runs of the live build, bake off and bake on (Settings→Dev), pacing auto in both — the bake's atlases are VRAM (12-16 pages of 1024 resident at a cliff in the headless window) and its cost on his GPU is what the row's units will say.",
+    "since": "2026-09-24T20:05:46+00:00",
     "files": [
+      "games2/client/src/scenes/WorldScene.ts (cullOccluderSubmits, installDepthSort, the ground-paint triggers)",
       "games2/client/src/terrainbake.ts",
-      "games2/client/src/terrainbakecore.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/client/src/hud.ts (only if the dropdown needs a new row type — announced first)",
       "games2/scripts/verify-bake.mjs",
-      "games2/server/test/terrainbake.test.ts",
+      "games2/server/test/*.test.ts (new tests only)",
       "games2/docs/perf.md",
       "games2/CLAUDE.md"
     ]
   },
   "progress": {
     "runs_read": 47,
-    "units_shipped": 15
+    "units_shipped": 16
   },
   "budget_remaining": null,
   "notes": [
@@ -35,6 +33,10 @@
     {
       "at": "2026-09-24T19:31:40+00:00",
       "text": "THE BAKE MADE HIS PHONE SLOWER (19:06 run on c2f857aad7): the drawing got cheaper (draw calls 738-1,694 -> 253-799 a frame, ~1-2 ms) and the baking cost 7-10 ms a frame (36-84 ms peaks) — the resolver composing for whole chunks, a texture+framebuffer per bake, re-walks per landing. Headless gates check texels, not milliseconds; the phone decides. Opt-in since 4974db996f."
+    },
+    {
+      "at": "2026-09-24T20:05:46+00:00",
+      "text": "SHIPPED b0689a3ad5 — TERRAIN BAKE cost fix + THE EDIT TOOL (chunk 3), the bake still OPT-IN (`?bake=1`, Settings→Dev 'terrain bake'). The five rules that took the bake from 7-10 ms a frame (his 19:06 run) to under its budget per unit: the bake never asks for art (a cell is walked only when the live walk completed it); an atlas pool per size, cleared where drawn; ONE allocation a frame (a texture+framebuffer is the one unit that cannot be sliced — 17 ms inside the pack where the pool was cold), the pool warmed one atlas per idle frame (2x1024, 4x512, 4x256); refreshes coalesced (one re-walk per 5 s per chunk, retries 3-30 s); the 1 ms budget honoured per unit in five phases (walk, pack, prepare, draw, finish). The beacon's `bake` row names the worst unit of each kind and `peakSteady` (the worst frame that allocated nothing). GATE 55 (headless, rebased tree): parity identical 5/5 + the edit; steady peak 1.6-6.9 ms (walk <=6, pack <=4.6, draw <=3, end <=3.5, finish <=2.2); an allocation frame 5-85 ms in software GL, its own frame; 12-16 pages of 1024 resident at a cliff (VRAM). THE EDIT TOOL: Settings→Dev 'edit tile' cycles the grounds; 'place tile here' / 'dig here' / 'raise here' mutate the player's cell — terrain grid, resolver (region fill, set picks, transitions), ground repaint, occluder walk, the chunk dirtied and every standing bake refreshed; headless grass/4 → water/3 → grass/4 at the cliff, parity identical at each step. Client-side until the server learns edits (chunk 4, posted to games). HIS 16:50 RUN (no bake) READ AGAIN: the long frames are VSYNC MISSES (longWhy: wait, not task/gc; work a little over 16.7 ms then an idle wait to the next vsync), so every steady millisecond counts: hooks 2.5-3.5 ms/frame mean (ambient's — posted), render 1.8-3.3, repaintCells 1.5-2.5, depthSort 0.9-1.9 (Phaser's merge sort of a 4.8-10k display list), occCull 0.5-1.3, gapBusy 1.2-1.7. One 866 ms frame at 91,237 was a FULL ground paint (redrawGround 616 ms) in a window with 4 hops — trigger not yet named (indoor mask / hop)."
     }
   ],
   "requests": [
