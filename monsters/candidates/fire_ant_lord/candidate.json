@@ -1,0 +1,146 @@
+{
+  "id": "fire_ant_lord",
+  "name": "Antlord",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Its colony builds on the hot rock because no one else will.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Huge red-black ant standing on hind legs, glowing orange abdomen, mandibles like tongs, crown of cooled lava.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fire_ant_lord/rotations/south.webp",
+    "south-east": "fire_ant_lord/rotations/south-east.webp",
+    "east": "fire_ant_lord/rotations/east.webp",
+    "north-east": "fire_ant_lord/rotations/north-east.webp",
+    "north": "fire_ant_lord/rotations/north.webp",
+    "north-west": "fire_ant_lord/rotations/north-west.webp",
+    "west": "fire_ant_lord/rotations/west.webp",
+    "south-west": "fire_ant_lord/rotations/south-west.webp"
+  },
+  "sheet": "fire_ant_lord/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "47fe7342-59ab-4093-bc65-bc40bef9d19d",
+  "seed": 411950595,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:27:58+00:00",
+  "elapsed_s": 1430.7,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.832,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.842,
+        "bbox": [
+          3,
+          2,
+          85,
+          86
+        ],
+        "fill": 0.889,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.87,
+        "bbox": [
+          7,
+          5,
+          84,
+          88
+        ],
+        "fill": 0.825,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.865,
+        "bbox": [
+          9,
+          6,
+          73,
+          88
+        ],
+        "fill": 0.678,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.832,
+        "bbox": [
+          8,
+          2,
+          83,
+          87
+        ],
+        "fill": 0.823,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.844,
+        "bbox": [
+          3,
+          4,
+          85,
+          83
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.843,
+        "bbox": [
+          6,
+          3,
+          81,
+          87
+        ],
+        "fill": 0.814,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.855,
+        "bbox": [
+          14,
+          6,
+          79,
+          88
+        ],
+        "fill": 0.688,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.866,
+        "bbox": [
+          4,
+          5,
+          81,
+          88
+        ],
+        "fill": 0.825,
+        "touches_edge": true
+      }
+    }
+  }
+}
