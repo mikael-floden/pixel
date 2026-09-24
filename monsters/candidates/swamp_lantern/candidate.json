@@ -1,0 +1,143 @@
+{
+  "id": "swamp_lantern",
+  "name": "Bogtaper",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "A candle lit for the drowned that never went out.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Floating wax candle-figure with a green flame head, dripping tallow arms, no legs, hovering just above the water.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "swamp_lantern/rotations/south.webp",
+    "south-east": "swamp_lantern/rotations/south-east.webp",
+    "east": "swamp_lantern/rotations/east.webp",
+    "north-east": "swamp_lantern/rotations/north-east.webp",
+    "north": "swamp_lantern/rotations/north.webp",
+    "north-west": "swamp_lantern/rotations/north-west.webp",
+    "west": "swamp_lantern/rotations/west.webp",
+    "south-west": "swamp_lantern/rotations/south-west.webp"
+  },
+  "sheet": "swamp_lantern/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b86ec999-4f0a-4d51-8a0c-2fdcf15e0853",
+  "seed": 1280950707,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:13:40+00:00",
+  "elapsed_s": 1.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.714,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.74,
+        "bbox": [
+          5,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.733,
+        "bbox": [
+          8,
+          3,
+          32,
+          38
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.738,
+        "bbox": [
+          8,
+          3,
+          32,
+          38
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.723,
+        "bbox": [
+          8,
+          2,
+          32,
+          38
+        ],
+        "fill": 0.54,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.722,
+        "bbox": [
+          5,
+          3,
+          35,
+          38
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.714,
+        "bbox": [
+          8,
+          3,
+          32,
+          38
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.732,
+        "bbox": [
+          8,
+          3,
+          32,
+          38
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.738,
+        "bbox": [
+          8,
+          2,
+          32,
+          38
+        ],
+        "fill": 0.54,
+        "touches_edge": false
+      }
+    }
+  }
+}
