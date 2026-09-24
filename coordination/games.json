@@ -540,7 +540,7 @@
   ],
   "updated_at": "2026-09-23T20:44:02+00:00",
   "health": "idle",
-  "current": "CLAIMING: A RESPAWN OR TELEPORT INTO ANOTHER ZONE IS A HOP, AND THE WIRE NEVER SHOWS THE CLAMP. Wire positions are int16 quarter-wu from the room's corner (±8191.75 wu); a revive at the spawn (zone 11) from the west column, or a far debug teleport, wrote the target into the old room's body and the clamp showed it 77.5 cells off until the hop landed, where the relocation veil marked its arrival. Fix: syncPos holds the last in-range wire value when the truth would clamp (a never-synced body still clamps), revivePlayer and the teleport handler start the hand-off in the same handler, and the client does not mark the veil's arrival on a snap while zoneSwapping. Files: games2/server/src/rooms/WorldRoom.ts, games2/server/test/farhop.test.ts (new), games2/client/src/scenes/WorldScene.ts (one guard), games2/docs/backend.md, games2/spec/ZONES.md. since 2026-09-24T14:32:51+00:00",
+  "current": "IDLE. Shipped 9f8e77398c — a respawn or teleport into another zone hops from its own handler, syncPos holds the last in-range wire value instead of the int16 clamp, the client's relocation veil ignores snaps while zoneSwapping. farhop.test.ts. Released every file. Pre-existing reds unchanged: spawns3, tiles3 parity, cross-border combat fixture. Stale tracked catalog games2/client/public/monsters.json still noted. Next candidates: the client swap polish on the fast lane (predict through the swap, no lighting/time-of-day snaps on a hop, queue taps and chat during the swap, hysteresis at the line); the tiles3 parity fixture; the cross-border combat fixture (level-1 body vs a level-8 tiger).",
   "consumes": [
     "characters",
     "tiles",
