@@ -19,7 +19,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   DEFAULT_ZONE, EPISODE_S, LEGACY_INDEX, PRECIPITATION, WEATHER_EFFECTS, WEATHER_UNIVERSE,
-  compatible, conflictsOf, isCompatibleSet, packAmbient, rollAmbient, unpackAmbient,
+  compatible, conflictsOf, isCompatibleSet, packAmbient, rollAmbient, rollZoneSet, seededRnd, unpackAmbient,
 } from "@nangijala/shared";
 import { conflictClosure } from "../../ambient/runtime/types.js";
 import {
@@ -59,6 +59,10 @@ test("precipitation is one at a time; everything else pairs by the stated physic
   assert.equal(compatible("windy", "snow"), true, "a blizzard is allowed");
   // cloudy: cover goes with anything
   for (const x of WEATHER_UNIVERSE) assert.equal(compatible("cloudy", x), true, x);
+  // LEAVES FALL ON A DRY SKY (maintainer 2026-09-24: through rain a 13 px leaf
+  // is "a raindrop ... very big ... as if falling close to the camera")
+  for (const wet of ["drizzle", "rain", "heavyrain", "storm", "snow"]) assert.equal(compatible("leaves", wet), false, `leaves with ${wet}`);
+  for (const dry of ["cloudy", "mist", "windy", "thunder"]) assert.equal(compatible("leaves", dry), true, `leaves with ${dry}`);
 });
 
 test("a feature's `conflicts` is the matrix, and the runtime closure agrees", () => {
@@ -108,6 +112,26 @@ test("a conflict drops the EXTRA, never the precipitation the zone rolled", () =
   assert.ok(!set.includes("mist"), "mist cannot lie in heavy rain");
   assert.ok(set.includes("cloudy") && set.includes("thunder"));
   assert.ok(isCompatibleSet(set));
+});
+
+test("a zone that rolls leaves AND rain keeps the rain and loses the leaves — on the server, for every stream", () => {
+  // the woods carry leaves at 90; a wet window there must not rain fat slow
+  // leaves through the streaks (maintainer 2026-09-24). Independent draws
+  // are their own coin, so both come up together often — the matrix trims.
+  // the roller's own generator (mulberry32): makeRand's FIRST draw is
+  // seed*16807/2^31, tiny for small seeds, so every rain lottery would win
+  let both = 0, leavesAlone = 0, rainAlone = 0;
+  for (let i = 0; i < 400; i++) {
+    const rnd = seededRnd(1000 + i);
+    const set = rollZoneSet({ rain: 0.9, leaves: 0.9, cloudy: 0.5 }, [["drizzle", "rain", "heavyrain", "storm", "snow", "windy"]], rnd);
+    const r = set.includes("rain"), l = set.includes("leaves");
+    if (r && l) both++;
+    if (l && !r) leavesAlone++;
+    if (r && !l) rainAlone++;
+    assert.ok(isCompatibleSet(set), set.join(","));
+  }
+  assert.equal(both, 0, "leaves and rain in one window");
+  assert.ok(rainAlone > 200 && leavesAlone > 10, `rain ${rainAlone}, leaves alone ${leavesAlone}: the precipitation the zone rolled wins`);
 });
 
 test("the same random stream gives the same sky — every zone room must agree", () => {

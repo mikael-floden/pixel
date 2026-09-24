@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import { WEATHER_UNIVERSE, conflictsOf } from "@nangijala/shared";
+import { isRainy, isRough } from "../runtime/env";
 import { AmbientCtx, AmbientFeature, PHASE_EVENING, WEATHER_CLEAR } from "../runtime/types";
 
 // Falling autumn leaves — an EPISODE. Each leaf FALLS in the game-world
@@ -113,6 +115,9 @@ export function leavesFeature(): AmbientFeature {
   return {
     name: "leaves",
     preferred: { time: PHASE_EVENING, weather: WEATHER_CLEAR },
+    // the matrix (shared/ambient.ts): never beside a precipitation — so the
+    // server never rolls both for one zone and Settings greys the switch
+    conflicts: conflictsOf("leaves", WEATHER_UNIVERSE),
     weight(env) {
       // A touch more likely on a breezy (cloudy) day — wind shakes leaves down.
       return BASE_WEIGHT * (0.6 + 0.4 * env.cloud);
@@ -126,7 +131,17 @@ export function leavesFeature(): AmbientFeature {
     update(ctx, dt) {
       const view = ctx.view;
       const dts = Math.min(dt, 100) / 1000;
-      gain += ((active ? 1 : 0) - gain) * Math.min(1, (dt / 1600) * 3);
+      /* GONE IN RAIN, READ OFF THE WEATHER WHERE I STAND. Under zone control an
+       * episode is switched on whenever its zone is anywhere in VIEW (the
+       * director), so the matrix alone cannot keep a neighbouring zone's leaves
+       * out of the rain falling on my cell — this fade does, from env.active
+       * exactly as the dragonflies do. Why it matters (maintainer 2026-09-24):
+       * a leaf is 13 CSS px at alpha 0.95 falling slowly with a sway, a rain
+       * streak 2 px at 0.45, and under the night overlay the orange is a dark
+       * blob — through rain it read as "raindrops ... very big ... as if
+       * falling close to the camera". The 1.6 s ease is the fade. */
+      const dry = active && !isRainy(ctx.env) && !isRough(ctx.env);
+      gain += ((dry ? 1 : 0) - gain) * Math.min(1, (dt / 1600) * 3);
       // OUTDOOR GAIN: every effect here is outdoor weather/wildlife, so it must
       // stop the moment the player steps inside (runtime/outdoor.ts). Applied
       // AFTER the feature's own easing so it is not slowed by GAIN_TAU — the

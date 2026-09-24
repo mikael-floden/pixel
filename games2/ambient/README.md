@@ -396,8 +396,7 @@ them; folder isolation beats DRY here).
   **The mount's OWN parts are rows too, named with a leading `_`, mean per
   OCCURRENCE**: `_env` (the env sample + the field's refresh, per tick),
   `_gloom` (the gloom weights, the mist coverage and its 64x40 raster, per
-  tick), `_director` (the per-episode coverage, per tick — on the frame AFTER
-  the tick, never the same one) and `_frame` (the indoor read, the outdoor
+  tick), `_director` (the per-episode coverage, per tick — on the frame AFTER the tick while frames are fast, the same frame when the frame is already longer than the sample period; the cadence law above) and `_frame` (the indoor read, the outdoor
   gain, the overlay's step, per frame). The beacon carries them, and the
   field's counters, as the `ambient` block; each row's `t0`/`t1` are the
   bounds of its peak on performance.now(), and every bill is a mark on the
@@ -469,6 +468,21 @@ a cave ceiling, water, lava, a footfall, a bird. The roster, 34 effects:
 | ZONE-BOUND, **21** | the 8 weather rows (rain, drizzle, heavyrain, storm, snow, windy, mist, cloudy) · the 8 field effects (ants, bubbles, butterflies, crabs, fireflies, gnats, pollen, spiders) · the 5 episodes (bats, birds, leaves, sandstorm, thunder) |
 | GLOBAL, **12** | chimney, deepwater, drips, dust, embers, feathers, fish, foam, lava, moths, smoke, water — his list, verbatim |
 | OPEN, **1** | dragonflies — ungated on purpose while the zone data is wrong; see the entry under the field rule |
+
+**THE ENV TICK'S TWO HALVES SHARE A FRAME ONLY WHEN THE FRAME IS ALREADY LONGER
+THAN THE SAMPLE PERIOD** (`runtime/cadence.ts`, `ambientcadence.test.ts`).
+games-perf split the tick (2026-09-23) so the env sample, the field refresh
+and the gloom raster run on the tick's frame and the director waits for the
+next one — right for fast frames. Written as "the frame after, if it is not an
+env frame itself", it starved: on a client whose every frame is >= 100 ms (a
+software-GL harness; a phone inside a long-frame burst) every frame is an env
+frame, the director's turn never came, its tick count froze at boot and no
+episode — thunder, birds, bats, sandstorm, leaves — was ever switched on
+(measured: 24 director ticks in a whole gate run, a server-forced thunder
+never starting). Now the director takes the frame after while frames are
+fast and the same frame when the frame is already long, where its share is a
+rounding error. RULE FOR ANY "DO IT NEXT FRAME" DEFERRAL: ask what happens
+when every frame qualifies for the thing you are deferring behind.
 
 **EFFECTS ARE ON PER ZONE, AND A ZONE IS A PLACE ON THE MAP, NOT THE CELL I
 STAND ON** (maintainer 2026-09-20: "It should not suddenly start to snow. I
@@ -945,10 +959,20 @@ everything — the goal is many at once). The runtime makes it symmetric
 | `birds` ⟷ `bats` | day vs night sky creatures |
 | `fireflies` ⟷ `pollen` | day vs night floating motes |
 
-`water`, `thunder`, `sandstorm`, `leaves` are compatible with everything.
+`water`, `thunder`, `sandstorm` are compatible with everything.
 WEATHER'S CONFLICTS ARE THE MATRIX (`shared/src/ambient.ts`): precipitation one
 at a time; thunder with any rain but never snow; mist never in wind, heavy
-rain, storm or snow; windy never with storm; cloudy with anything.
+rain, storm or snow; windy never with storm; cloudy with anything; **leaves
+never with a precipitation** — and `leaves/` ALSO fades itself out on
+`isRainy`/`isRough` at my cell, because under zone control an episode is on
+whenever its zone is anywhere in VIEW, so the matrix alone cannot keep a
+neighbouring zone's leaves out of the rain falling where I stand. (Maintainer
+2026-09-24, since the zones: "raindrops ... sometimes very big ... as if
+falling close to the camera" — measured on his geometry a leaf is 13 CSS px
+at alpha 0.95 falling slowly with a sway, a rain streak 2 px at 0.45, and
+under the night overlay the orange is a dark blob: through rain a leaf IS a
+fat slow drop. Every sprite the sheet draws was measured first and is inside
+its texture; the culprit was the one thing that is not rain but falls.)
 (Rain "one-at-a-time" is the games agent's WEATHER system — a single index —
 not an ambient toggle.)
 

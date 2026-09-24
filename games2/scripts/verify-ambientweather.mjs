@@ -59,6 +59,16 @@ await page.evaluate(() => {
   window.__mlAmbient.auto(true);
 });
 
+/* THE SKY THE ARMS PIN IS THE WHOLE SKY only while the zone field does not
+ * rule (since 2026-09-20 the sheet is placed by the field, not by the pinned
+ * set): the room's sky forced empty un-rules the field for the whole run,
+ * and the server-set arm below forces its own sets on top. Released at the
+ * end. Measured before this: the spawn's rain zone drew 66 drops through a
+ * pinned clear sky and arms 1-2 were red. */
+await page.evaluate(() => window.__ml.worldAmbient([]));
+for (let i = 0; i < 20; i++) { if (!(await page.evaluate(() => window.__mlAmbient.zone().ruled))) break; await page.waitForTimeout(500); }
+await page.waitForTimeout(1500);
+
 /* ---- 1. six rows, one per weather ---------------------------------------- */
 const rows = await page.evaluate(() => window.__mlAmbient.list());
 const missing = WX.filter((n) => !rows.includes(n));
@@ -150,6 +160,49 @@ const cave = await page.evaluate(async () => {
 console.log(`roof: heavy rain drew ${outdoors} outdoors; in the cave indoor=${cave.indoor} drawn=${cave.drawn}`);
 if (!outdoors) fail("heavy rain drew nothing outdoors — the roof arm proves nothing");
 if (cave.indoor && cave.drawn > 0) fail(`rain is falling inside a cave (${cave.drawn} drops)`);
+
+/* ---- 5. LEAVES FALL ON A DRY SKY (maintainer 2026-09-24: "raindrops ...
+ * sometimes very big ... as if falling close to the camera" — a 13 px leaf
+ * through 2 px rain). Two locks: the matrix greys the switch in MANUAL, and
+ * the row fades itself out on the weather at my cell, which is the lock that
+ * holds across a zone boundary. */
+await page.evaluate(() => window.__ml.teleport(333, 237)); // back outdoors: arm 4 leaves the player in the cave, where no leaf can fall
+await page.waitForTimeout(4000);
+const leaf = await page.evaluate(async () => {
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const dbg = () => window.__mlAmbient.debug("leaves") ?? {};
+  for (let i = 0; i < 40 && !(window.__mlAmbient.outdoor().gain > 0.9); i++) await wait(250);
+  window.__mlAmbient.auto(false);
+  for (const e of window.__mlAmbient.list()) window.__mlAmbient.setEnabled(e, false);
+  window.__ml.weather(0, true);
+  // (a) the switch: rain on -> leaves refused, and the UI is told by whom
+  window.__mlAmbient.setEnabled("rain", true);
+  const refused = window.__mlAmbient.setEnabled("leaves", true);
+  const blocked = window.__mlAmbient.effects().find((e) => e.name === "leaves")?.blocked ?? null;
+  window.__mlAmbient.setEnabled("rain", false);
+  // (b) the fade: leaves forced on alone, then rain pinned at my cell
+  window.__mlAmbient.setEnabled("leaves", true);
+  let up = 0;
+  for (let i = 0; i < 60 && !(dbg().count > 0 && dbg().gain > 0.5); i++) await wait(250);
+  up = dbg().count;
+  window.__ml.weather(4, true); // rain where I stand
+  let downAt = -1;
+  const t0 = performance.now();
+  for (let i = 0; i < 80; i++) { if (dbg().count === 0) { downAt = Math.round(performance.now() - t0); break; } await wait(250); }
+  const down = dbg().count;
+  window.__ml.weather(0, true); // dry again
+  for (let i = 0; i < 60 && !(dbg().count > 0); i++) await wait(250);
+  const back = dbg().count;
+  window.__mlAmbient.setEnabled("leaves", false);
+  window.__mlAmbient.auto(true);
+  window.__ml.worldAmbient();
+  return { refused, blocked, up, down, downAt, back, outdoor: window.__mlAmbient.outdoor().gain };
+});
+console.log(`leaves: manual rain on -> enabling leaves returned ${JSON.stringify(leaf.refused)}, blocked by ${leaf.blocked}; forced alone ${leaf.up} leaves, rain pinned -> ${leaf.down} after ${leaf.downAt} ms, dry again -> ${leaf.back} (outdoor gain ${leaf.outdoor})`);
+if (leaf.refused?.ok !== false || leaf.blocked !== "rain") fail(`MANUAL let leaves on under rain (${JSON.stringify(leaf.refused)}, blocked by ${leaf.blocked})`);
+if (!(leaf.up > 0)) fail("a forced leaves row never got a leaf up — the fade arm proved nothing");
+if (leaf.down !== 0) fail(`leaves kept falling through rain at my cell: ${leaf.down} left`);
+if (!(leaf.back > 0)) fail("leaves did not return when the sky dried");
 
 await browser.close();
 if (failed) { console.error("verify-weather: FAILED"); process.exit(1); }

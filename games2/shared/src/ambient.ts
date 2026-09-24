@@ -44,11 +44,19 @@ export const PRECIPITATION: ReadonlySet<string> = new Set(["drizzle", "rain", "h
  *              washes it down, wind tears it, snow is another climate;
  *   windy    — blows through cloud, drizzle, rain, snow and thunder, but not
  *              mist (see above) and not storm, which carries its own gusts;
- *   cloudy   — is just cover, and goes with anything. */
+ *   cloudy   — is just cover, and goes with anything;
+ *   leaves   — the falling-leaves EPISODE wants a dry sky: a downpour pins
+ *              leaves to the branch and snow is another season. And the look
+ *              settles it (maintainer 2026-09-24, "raindrops ... sometimes
+ *              very big ... as if falling close to the camera", since the
+ *              zones): a leaf is 13 CSS px wide at alpha 0.95 falling slowly
+ *              with a sway, a rain streak 2 px at 0.45 — through rain, and
+ *              dark under the night overlay, a leaf IS a fat slow drop. */
 const FORBID: Readonly<Record<string, readonly string[]>> = {
   thunder: ["snow"],
   mist: ["heavyrain", "storm", "snow", "windy"],
   windy: ["storm"],
+  leaves: ["drizzle", "rain", "heavyrain", "storm", "snow"],
 };
 
 /** May these two be active at the same time? Symmetric. */
