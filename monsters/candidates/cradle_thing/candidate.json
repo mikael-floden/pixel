@@ -1,0 +1,140 @@
+{
+  "id": "cradle_thing",
+  "name": "Cradlething",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It rocks itself to sleep, and something in it wakes.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Empty wooden cradle rocking on its own that has grown thin wooden arms, a small shadow curled inside.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cradle_thing/rotations/south.webp",
+    "south-east": "cradle_thing/rotations/south-east.webp",
+    "east": "cradle_thing/rotations/east.webp",
+    "north-east": "cradle_thing/rotations/north-east.webp",
+    "north": "cradle_thing/rotations/north.webp",
+    "north-west": "cradle_thing/rotations/north-west.webp",
+    "west": "cradle_thing/rotations/west.webp",
+    "south-west": "cradle_thing/rotations/south-west.webp"
+  },
+  "sheet": "cradle_thing/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "65373b02-fb85-46ed-8056-fcc96038d648",
+  "seed": 155660725,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:53:28+00:00",
+  "elapsed_s": 243.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.783,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.865,
+        "bbox": [
+          19,
+          3,
+          69,
+          87
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.854,
+        "bbox": [
+          11,
+          3,
+          79,
+          86
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.828,
+        "bbox": [
+          10,
+          3,
+          80,
+          83
+        ],
+        "fill": 0.723,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.824,
+        "bbox": [
+          9,
+          4,
+          75,
+          85
+        ],
+        "fill": 0.69,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.832,
+        "bbox": [
+          20,
+          4,
+          66,
+          84
+        ],
+        "fill": 0.475,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.821,
+        "bbox": [
+          7,
+          5,
+          80,
+          85
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.833,
+        "bbox": [
+          8,
+          5,
+          79,
+          85
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.783,
+        "bbox": [
+          7,
+          2,
+          80,
+          84
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      }
+    }
+  }
+}
