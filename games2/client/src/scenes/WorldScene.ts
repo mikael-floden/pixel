@@ -225,6 +225,7 @@ import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type Reso
 import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
 import { detailEvery, detailRate, setDetailEvery } from "../detailrate";
 import { ensureDetailDial } from "../detaildial";
+import { slopeHeight, setSlopeHeight, nextSlopeHeight } from "../slopeheight";
 // ---- TILES 3.0 (maps3 worlds) -------------------------------------------
 // The resolver (what draws on this cell), the draw layer (the two pixel ops +
 // the texture factory), the streaming per-cell runtime, and scenery. All four
@@ -5706,6 +5707,18 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.night && this.night.testPattern === 5,
           state: () => (this.night?.testPattern === 5 ? "on" : "off"),
         },
+        /* SLOPE — how high the composed slope climbs (slopeheight.ts): 0% his
+         * published 4 px sets, 25/50/75% a ramp with a wall left above it,
+         * 100% a clean slope without stairs (maintainer 2026-09-24). */
+        {
+          label: "slope",
+          act: () => {
+            setSlopeHeight(nextSlopeHeight());
+            this.chat.addLog("—", `slope: ${slopeHeight()}%`);
+          },
+          get: () => slopeHeight() > 0,
+          state: () => `${slopeHeight()}%`,
+        },
         /* OVERLAYS — the same idea as the shadows switch, for the three
          * full-screen passes. The zigzag is NOT in the ground texture (exact
          * unlit palette census at his cell and zoom: zero wall-coloured
@@ -6013,6 +6026,9 @@ export class WorldScene extends Phaser.Scene {
     // whoever resolves cells, so the resolver is rebuilt on both threads and
     // the ground repainted.
     window.addEventListener("ml-detail-rate", reResolve);
+    // The slope switch (slopeheight.ts): the composed ramp's height is a
+    // resolver rule, so the same rebuild and repaint.
+    window.addEventListener("ml-slope-height", reResolve);
     // The lowered wall top's darkening (walltop.ts): the lid's key changes
     // with the percentage, so the ground is repainted the same way.
     t3SetCutLidDark(wallTopDark());
@@ -20241,6 +20257,7 @@ export class WorldScene extends Phaser.Scene {
     // the switch that could turn them off is gone).
     data.footBoundary = true;
     data.deckBoundary = true;
+    data.slopeHeight = slopeHeight() / 100; // his slope switch; "ml-slope-height" rebuilds the resolver
     const tiles = new Tiles3(data);
     const view = viewFromParsed(world);
     // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
@@ -20291,6 +20308,7 @@ export class WorldScene extends Phaser.Scene {
       fadeTune: fadeTune(),
       footBoundary: true,
       deckBoundary: true,
+      slopeHeight: slopeHeight() / 100,
     };
     this.t3worker.stop();
     this.t3workerBooted = true;
@@ -26480,7 +26498,7 @@ export class WorldScene extends Phaser.Scene {
     // 4 px on every published set) — the feet follow the art either way. On a
     // CUT cell the plate sits `cut` px below its level and `index` names the
     // corners that stay up, so the feet drop toward the lowered ones.
-    return rampHeight(sl.index, x / CELL_WU - col, y / CELL_WU - row) * (sl.ramp ? this.geom.lh : sl.rise) - (sl.cut ?? 0);
+    return rampHeight(sl.index, x / CELL_WU - col, y / CELL_WU - row) * sl.rise - (sl.cut ?? 0); // a ramp's rise IS its climb (a composed one its share of the storey)
   }
 
   private stepElevation(av: Avatar, target: number, dt: number): void {

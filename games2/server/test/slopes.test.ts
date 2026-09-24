@@ -7,9 +7,9 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
-import { buildBoundaryPixels, patternSheetPaths, patternSheets, slopeLift, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
-import { dressKey, surfaceY, Tiles3World, viewFromParsed } from "../../client/src/tiles3runtime.js";
+import { Tiles3, PLATE_H, RAMP_MIN_PX, SYNTHETIC_RAMP_DIR, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
+import { buildBoundaryPixels, buildRampPixels, patternSheetPaths, patternSheets, slopeLift, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
+import { cellArtPaths, dressKey, surfaceY, Tiles3World, viewFromParsed } from "../../client/src/tiles3runtime.js";
 import { parseWorld, ISO_GEOMETRY_MAPS3 } from "../../shared/src/index";
 // @ts-expect-error — plain .mjs helper shared with the build scripts
 import { imgRGBA } from "../../scripts/imagelib.mjs";
@@ -71,7 +71,7 @@ test("a set is a ramp from RAMP_MIN_PX up; every published set (elevation 4) is 
   assert.equal(sets.filter(isRampSet).length, 0, "no published set is a ramp yet — the storey-height sets are his generation");
 });
 
-function resolver(extraSets: object[], approvals: Record<string, { status: string }>, footBoundary = false, forget?: string) {
+function resolver(extraSets: object[], approvals: Record<string, { status: string }>, footBoundary = false, forget?: string, slopeHeight = 0) {
   const groundTypes = load("tiles/ground_types.json").grounds;
   const slopes = load("tiles/slopes/index.json");
   const live = load("live/feedback/tiles.json").entries as Record<string, { status: string }>;
@@ -94,6 +94,7 @@ function resolver(extraSets: object[], approvals: Record<string, { status: strin
     topOverrides: load("live/tuning/tile_tops.json").overrides,
     storeyPitch: 15,
     footBoundary,
+    slopeHeight,
     warn: () => {},
   } as ConstructorParameters<typeof Tiles3>[0]);
 }
@@ -425,4 +426,58 @@ test("on the_game: the boundary the passes draw for a slope cell IS the cell's o
   assert.deepEqual(wrong.slice(0, 5), [], `${wrong.length} of ${slopes} slope cells`);
   assert.ok(slopes >= 30 && same === slopes, `${same} of ${slopes}`);
   assert.ok(foots >= 5, `the raw rule would have composed a foot over ${foots} slopes here — the bug this pins`);
+});
+
+/* -- THE COMPOSED STOREY RAMP (maintainer 2026-09-24: "it doesn't stick up to make the 1 level step look less") -- */
+
+test("the game rule: every one-level rise of a ground with no published storey set wears a composed ramp built from its member plate", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  const t = resolver([], {}, true, undefined, 1);
+  assert.equal(t.slopeSets("grass", true).length, 1, "grass has its composed ramp set");
+  assert.equal(t.slopeSets("grass", true)[0].elevation, 15, "100%: the whole storey");
+  assert.equal(resolver([], {}, true, undefined, 0.5).slopeSets("grass", true)[0].elevation, 8, "50%: half of it, a wall left above");
+  assert.equal(resolver([], {}, true, undefined, 0.25).slopeSets("grass", true)[0].elevation, 4);
+  assert.ok(t.slopeSets("grass", true)[0].dir.startsWith(SYNTHETIC_RAMP_DIR + "/"));
+  assert.equal(resolver([], {}, true).slopeSets("grass", true).length, 0, "off, the half step stays");
+  assert.equal(resolver([], {}).slopeSets("grass", true).length, 0, "never on the parity path");
+  const view = viewFromDoc(JSON.parse(readFileSync(WORLD, "utf8")));
+  const out = t.resolveWindow(view);
+  const g = (x: number, y: number) => view.groundAt(x, y);
+  const L = (x: number, y: number) => view.levelAt(x, y);
+  let rises = 0, ramps = 0, wrong: string[] = [];
+  const paths = new Set<string>();
+  for (const c of out.cells) {
+    const gr = g(c.x, c.y)!; if (view.isLiquid(gr)) continue;
+    const one = t.slopeIndexAt(g, L, gr, c.x, c.y, c.level, true);
+    if (!one || one === 15) continue;
+    rises++;
+    const sl = c.slope, art = c.art as { kind: string; path: string; h: number; from?: string; mask?: number } | undefined;
+    if (!sl || !sl.ramp || !art || art.kind !== "ramp") { if (wrong.length < 5) wrong.push(`${c.x},${c.y} L${c.level} ${gr}: ${sl ? (sl.ramp ? "ramp but art " + art?.kind : "a bump") : "nothing"}`); continue; }
+    ramps++;
+    if (art.mask !== one || !art.from || !art.path.startsWith(SYNTHETIC_RAMP_DIR + "/") || art.h !== PLATE_H + 15) wrong.push(`${c.x},${c.y}: art ${JSON.stringify(art)} for mask ${one}`);
+    cellArtPaths(c, (p) => paths.add(p));
+  }
+  assert.deepEqual(wrong.slice(0, 5), [], `${wrong.length} wrong`);
+  assert.ok(ramps >= 1500 && ramps === rises, `${ramps} ramps on ${rises} one-level rises`);
+  assert.ok(![...paths].some((p) => p.startsWith(SYNTHETIC_RAMP_DIR + "/")), "the load list never names a virtual path");
+  assert.ok([...paths].some((p) => /^tiles\//.test(p)), "the load list names the plates the ramps are built from");
+  console.log(`slopes: ${ramps} composed ramps on the_game's ${rises} one-level rises`);
+});
+
+test("buildRampPixels: a raised corner's column tops out one storey higher, a flat corner's stays, no hole inside, the frame is 64 x 61", { skip }, () => {
+  const pat = load("tiles/patterns/index.json");
+  const paths = patternSheetPaths(pat);
+  const px = (rel: string): Pixels => { const i = imgRGBA(join(REPO, rel)) as { width: number; height: number; data: Uint8Array }; return { w: i.width, h: i.height, data: new Uint8ClampedArray(i.data) }; };
+  const sheets = patternSheets(pat, px(paths.silhouette), px(paths.masks), px(paths.border));
+  const plate = px("tiles/slopes/grass/a14_s02/post/" + load("tiles/slopes/index.json").sets.find((s: any) => s.dir === "tiles/slopes/grass/a14_s02").post_files[15]); // any 64x46 plate
+  const LH = 15;
+  const top = (p: Pixels, x: number) => { for (let y = 0; y < p.h; y++) if (p.data[(y * p.w + x) * 4 + 3] > 0) return y; return -1; };
+  const flat = buildRampPixels(sheets, plate, 0, LH);
+  const north = buildRampPixels(sheets, plate, 12, LH); // NW+NE raised: the back edge climbs
+  assert.equal(flat.w, 64); assert.equal(flat.h, 46 + LH);
+  assert.equal(top(flat, 32), top(plate, 32) + LH, "a flat ramp is the plate, LH rows down the frame");
+  assert.equal(top(north, 32), top(plate, 32), "the raised top vertex stands a storey higher");
+  // No transparent texel inside the lifted diamond of a raised column between its top and the flat plate's bottom row.
+  let holes = 0;
+  for (let x = 8; x < 56; x++) { const t0 = top(north, x); for (let y = t0; y < top(flat, x) + 12; y++) if (north.data[(y * 64 + x) * 4 + 3] === 0) holes++; }
+  assert.equal(holes, 0);
 });

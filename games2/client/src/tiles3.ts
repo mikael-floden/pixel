@@ -555,6 +555,20 @@ export interface SlopeSet {
   /** Index-aligned, 16 long, content-hashed: `<dir>/post/<post_files[i]>`. */
   post_files?: string[];
 }
+/** THE COMPOSED STOREY RAMP's stand-in set for one ground (tiles3draw
+ *  `buildRampPixels`): a game rule (footBoundary), present for every ground
+ *  that has no PUBLISHED storey-height set, so a one-level rise is an incline
+ *  the body walks up without new art. Its files are virtual. */
+export const SYNTHETIC_RAMP_DIR = "synthetic/ramp";
+export function syntheticRampSet(ground: string, lh: number): SlopeSet {
+  return {
+    schema: "tiles3/slopes@1", kind: "slope_set", ground, elevation: lh, n_tiles: 16, complete: true,
+    size: [TILE, PLATE_H + lh], dir: `${SYNTHETIC_RAMP_DIR}/${ground}`,
+    post_files: Array.from({ length: 16 }, (_, i) => `tile_${String(i).padStart(2, "0")}`),
+    synthetic: true,
+  } as SlopeSet;
+}
+
 export interface SlopesDoc {
   sets?: SlopeSet[];
 }
@@ -704,6 +718,12 @@ export interface Tiles3Data {
    *  per-cell one), so the transition matches the slab it sits in. Off
    *  (default) a slab is the single surface render3 draws. */
   deckBoundary?: boolean;
+  /** THE COMPOSED SLOPE'S HEIGHT, 0..1 of the storey (slopeheight.ts): every
+   *  one-level rise of a ground with no published storey-height set wears a
+   *  ramp composed from its member plate that climbs this share
+   *  (`syntheticRampSet`). 0 or absent keeps the published-set half step,
+   *  which the tests pin on its own. A game rule, with `footBoundary`. */
+  slopeHeight?: number;
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
   warn?: (message: string) => void;
@@ -900,7 +920,7 @@ export function columnY(f: Frame, x: number, y: number, storey: number): number 
  *  slab. It is a MASK, not a crop — the wall is a vertical extrusion under the
  *  diamond, so no source rectangle expresses it. */
 export type FieldArt =
-  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean; rise?: number }
+  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean; rise?: number; from?: string; mask?: number }
   | { kind: "liquid"; topRGB: [number, number, number]; w: number; h: number; topOnly?: boolean };
 
 /** GROUND PEOPLE WALK ON. Nothing grows where feet keep coming (maintainer
@@ -1015,7 +1035,7 @@ export interface FadePick {
 /** The resolved surface of one cell, before it is placed. `art` is what draws;
  *  the rest is the provenance a fixture and a gate check. */
 export interface Surface3 {
-  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; rise?: number };
+  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; rise?: number; from?: string; mask?: number };
   set?: number;
   memberIndex?: number;
   plate?: PlateArt;
@@ -2107,6 +2127,17 @@ export class Tiles3 {
         else by.set(key, [st]);
       }
       for (const list of by.values()) list.sort((a, b) => (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0));
+      /* THE COMPOSED STOREY RAMP for every ground with a plate and no published
+       * storey-height set — a game rule, like the half step (the parity path
+       * keeps render3's pools). */
+      const share = this.data.slopeHeight ?? 0;
+      if (this.data.footBoundary && share > 0) {
+        const rise = Math.max(1, Math.round((this.data.storeyPitch || 15) * Math.min(1, share)));
+        for (const ground of Object.keys(this.data.groundTypes ?? {})) {
+          if (LIQUID_TILE_GROUNDS.includes(ground) || by.has(`r|${ground}`)) continue;
+          by.set(`r|${ground}`, [syntheticRampSet(ground, rise)]);
+        }
+      }
       this.slopeCache = by;
     }
     return this.slopeCache.get(`${ramp ? "r" : "b"}|${ground}`) ?? [];
@@ -2116,6 +2147,7 @@ export class Tiles3 {
   /** The dirs standing in for an unjudged ground (see `slopeSets`). */
   private slopeFallback = new Set<string>();
   slopeApproved(dir: string, index: number): boolean {
+    if (dir.startsWith(SYNTHETIC_RAMP_DIR + "/")) return true; // the game's own composition, no verdict to wait for
     const k = `${strip(dir)}/tile_${String(index).padStart(2, "0")}`;
     const status = this.data.feedback?.[k]?.status;
     if (status === "approved") return true;
@@ -2139,14 +2171,16 @@ export class Tiles3 {
       const sets = this.slopeSets(ground, ramp).filter((st) => this.slopeApproved(st.dir, index));
       if (sets.length) {
         const st = sets[fnv1a(`slope|${ground}|${Math.floor(x / REGION_CHUNK)}|${Math.floor(y / REGION_CHUNK)}`) % sets.length];
-        const file = `${st.dir}/post/${(st.post_files as string[])[index]}`;
+        const synthetic = st.dir.startsWith(SYNTHETIC_RAMP_DIR + "/");
+        const file = synthetic ? `${st.dir}/${(st.post_files as string[])[index]}` : `${st.dir}/post/${(st.post_files as string[])[index]}`;
         // A ramp's frame is the set's published height (never shorter than the
         // plate); a bump's is the plate's, whatever the index says.
         const h = ramp ? Math.max(PLATE_H, st.size?.[1] ?? PLATE_H) : PLATE_H;
         /* A MIS-SIZED PUBLICATION FALLS BACK TO THE FLAT PLATE, never crashes: a
          * 30-row tile cannot be masked by the 46-row silhouette. */
         const rise = st.elevation ?? 4;
-        if (this.data.slopeGuard) {
+        if (synthetic) out = { index, dir: st.dir, file, ramp: true, h, rise, cut: 0 };
+        else if (this.data.slopeGuard) {
           if (this.data.slopeGuard(file, h)) out = { index, dir: st.dir, file, ramp, h, rise, cut: cut ? rise : 0 };
         } else {
           this.stats.unguardedSlopes++;
@@ -3053,8 +3087,12 @@ export class Tiles3 {
      * composes its boundary (a slope cell's ring is one ground). The foot is
      * a GAME rule (`Tiles3Data.footBoundary`, off in the parity fixture), so
      * render3 parity is untouched either way. */
-    const ramp = this.rampIndexFor(g, L, gr, x, y, zl) || this.slopeWorn(g, L, gr, x, y, zl);
-    const b = this.boundaryAt(view, frame, g, L, x, y, ramp ? { foot: false } : undefined);
+    const rampIdx = this.rampIndexFor(g, L, gr, x, y, zl);
+    const ramp = rampIdx || this.slopeWorn(g, L, gr, x, y, zl);
+    /* A RAMP WINS OVER A SAME-PLANE BOUNDARY: its frame is taller than the
+     * composer's, and a stair is a slope before it is a ground change
+     * (maintainer 2026-09-24: "slopes on every single 1 level stair"). */
+    const b = rampIdx ? null : this.boundaryAt(view, frame, g, L, x, y, ramp ? { foot: false } : undefined);
     if (b) {
       /* `art` names the cell's OWN half of the composed tile, so a draw layer
        * that has not composed the boundary yet paints something coherent under
@@ -3334,7 +3372,12 @@ export class Tiles3 {
     }
     if (sl) {
       out.slope = sl;
-      out.art = sl.ramp ? { kind: "ramp", path: sl.file, w: TILE, h: sl.h } : { kind: "plate", path: sl.file, w: TILE, h: sl.h, rise: sl.rise };
+      if (sl.ramp && sl.dir.startsWith(SYNTHETIC_RAMP_DIR + "/")) {
+        // Unique per member plate AND mask: the key of a composed texture is its content.
+        const path = `${sl.dir}/${String(sl.index).padStart(2, "0")}/${p.art.path}`;
+        out.art = { kind: "ramp", path, w: TILE, h: sl.h, from: p.art.path, mask: sl.index };
+        out.slope = { ...sl, file: path };
+      } else out.art = sl.ramp ? { kind: "ramp", path: sl.file, w: TILE, h: sl.h } : { kind: "plate", path: sl.file, w: TILE, h: sl.h, rise: sl.rise };
     }
 
     const fade = this.fadeFor(view, g, L, gr, x, y, zl);

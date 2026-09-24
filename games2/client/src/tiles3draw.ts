@@ -635,6 +635,102 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
   return out;
 }
 
+/** THE COMPOSED STOREY RAMP — a one-level incline built from the ground's own
+ *  plate (maintainer 2026-09-24, on the 4 px sets: "it doesn't stick up to
+ *  make the 1 level step look less"; 2026-09-19: "Think how Zelda - a link to
+ *  the past created slopes Link could run upwards without needing to jump").
+ *  Every published set is a 4 px terrace on a 15 px storey, a hairline at
+ *  play scale, and the sets are not pixel copies of one another so a lifted
+ *  half step cannot be cut out of them. This composes the incline instead:
+ *  the plate's top face lifted by the bilinear blend of the corner bits
+ *  (`rampHeight` — NW 8, NE 4, SW 2, SE 1, a raised corner one storey up),
+ *  row for row so the texture stretches by duplication and never blurs, a
+ *  faint shade down the incline so it reads as a slope, the plate's own band
+ *  texture painted under the raised lower edges as the ramp's side face, and
+ *  the plate's band below as on any plate. Frame 64 x (46 + lh), the plate's
+ *  bottom row at the bottom: the surface op hangs it `lh` rows up, the body's
+ *  lift follows `rampHeight * lh`. A published storey-height set replaces
+ *  it the day one exists (tiles3 `slopeSets`, ramps first). */
+export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: number, lh: number): Pixels {
+  const { fw, fh } = sheets;
+  const src = plate.w === fw && plate.h === fh ? plate : cropToArt(plate, fw, fh);
+  const H = fh + lh;
+  const out = newPixels(fw, H);
+  const o = out.data;
+  const d = src.data;
+  const nw = (mask >> 3) & 1, ne = (mask >> 2) & 1, sw = (mask >> 1) & 1, se = mask & 1;
+  const TOP = 2 * DY + 1; // the diamond's rows, 0..28
+  const uv = (x: number, y: number): [number, number] => {
+    const a = (x + 0.5 - DX) / DX;
+    const b = (y + 0.5) / DY;
+    return [(a + b) / 2, (b - a) / 2];
+  };
+  const lowest = new Int16Array(fw).fill(-1);
+  const flatBottom = new Int16Array(fw).fill(-1);
+  const painted: number[][] = Array.from({ length: fw }, () => []);
+  const used = new Uint8Array(fw * fh); // plate texels the incline consumed; the rest is band
+  for (let y = 0; y < TOP; y++) {
+    for (let x = 0; x < fw; x++) {
+      const i = y * fw + x;
+      if (d[i * 4 + 3] === 0) continue;
+      const [u, v] = uv(x, y);
+      if (u < 0 || u > 1 || v < 0 || v > 1) continue;
+      used[i] = 1;
+      flatBottom[x] = y;
+      const h = (1 - u) * (1 - v) * nw + u * (1 - v) * ne + (1 - u) * v * sw + u * v * se;
+      const yy = y + lh - Math.round(lh * h);
+      const j = (yy * fw + x) * 4;
+      const sh = 1 - 0.18 * (1 - h);
+      o[j] = Math.round(d[i * 4] * sh);
+      o[j + 1] = Math.round(d[i * 4 + 1] * (0.92 + 0.08 * h));
+      o[j + 2] = Math.round(d[i * 4 + 2] * sh);
+      o[j + 3] = 255;
+      painted[x].push(yy);
+      if (yy > lowest[x]) lowest[x] = yy;
+    }
+  }
+  // Rows the lift opened inside a column are the pixel above, repeated: a stretch, never a hole.
+  for (let x = 0; x < fw; x++) {
+    const rows = painted[x].sort((a, b) => a - b);
+    for (let k = 1; k < rows.length; k++) {
+      for (let yy = rows[k - 1] + 1; yy < rows[k]; yy++) {
+        const j = (yy * fw + x) * 4;
+        if (o[j + 3] !== 0) continue;
+        const from = (rows[k - 1] * fw + x) * 4;
+        o[j] = o[from]; o[j + 1] = o[from + 1]; o[j + 2] = o[from + 2]; o[j + 3] = 255;
+      }
+    }
+  }
+  // The side face under a raised lower edge: the plate's own band texture, down to where the flat plate's face began.
+  for (let x = 0; x < fw; x++) {
+    if (lowest[x] < 0 || flatBottom[x] < 0) continue;
+    const band: number[] = [];
+    for (let y = TOP; y < fh; y++) if (d[(y * fw + x) * 4 + 3] !== 0) band.push(y);
+    if (!band.length) continue;
+    let k = 0;
+    for (let yy = lowest[x] + 1; yy <= flatBottom[x] + lh; yy++, k++) {
+      const j = (yy * fw + x) * 4;
+      if (o[j + 3] !== 0) continue;
+      const from = (band[k % band.length] * fw + x) * 4;
+      o[j] = d[from]; o[j + 1] = d[from + 1]; o[j + 2] = d[from + 2]; o[j + 3] = 255;
+    }
+  }
+  // The plate's own band below, as on every plate (masked off on a raised cell by
+  // rampTopOnly): every texel the incline did not consume — near the diamond's
+  // tips the band begins above row 29, so this is by texel, not by row.
+  for (let y = 0; y < fh; y++) {
+    for (let x = 0; x < fw; x++) {
+      const k = y * fw + x;
+      if (used[k]) continue;
+      const i = k * 4;
+      const j = ((y + lh) * fw + x) * 4;
+      if (d[i + 3] === 0 || o[j + 3] !== 0) continue;
+      o[j] = d[i]; o[j + 1] = d[i + 1]; o[j + 2] = d[i + 2]; o[j + 3] = d[i + 3];
+    }
+  }
+  return out;
+}
+
 /** A RAMP, TOP FACE ONLY: the rows above the plate frame (the rise) are kept
  *  whole, and inside the frame the library's top-face silhouette applies row
  *  for row — so the lifted top and the wall painted under a raised front edge
@@ -957,6 +1053,11 @@ export interface PlateLike {
    *  up (`slopeTopOnly`) — the library silhouette alone clipped every raised
    *  corner off at every level above 0. Part of the picture, so in the key. */
   rise?: number;
+  /** A COMPOSED RAMP (`buildRampPixels`): the member plate it is built from and
+   *  its corner mask. The path is virtual (`synthetic/ramp/…`), unique per
+   *  member and mask, and is the texture key; nothing is loaded for it. */
+  from?: string;
+  mask?: number;
 }
 
 /** THE CONTENT IDENTITY OF ONE PLATE — what actually went into its pixels, and
@@ -964,6 +1065,9 @@ export interface PlateLike {
  *  clean plate is fully identified by its path; a CONFORMED plate is identified
  *  by its path AND its ground, because the ground supplies the wall colour and
  *  the same art conformed for two grounds is two different rasters. */
+/** The storey a composed ramp climbs when its art names no frame height. */
+const ISO_LH_FALLBACK = 15;
+
 export function plateSourceId(art: PlateLike, ground: string): string {
   const id = art.kind === "conform" ? `c:${ground}:${art.path}` : `p:${art.path}`;
   return art.topOnly ? `t:${id}` : id;
@@ -1808,6 +1912,17 @@ export class Tiles3Textures {
      * incline off at the diamond's top vertex — the rise is exactly what lies
      * outside that frame. The published file is the picture. */
     if (art.kind === "ramp") {
+      /* A COMPOSED RAMP is built from its member plate under its own virtual
+       * key; the raw file branch below is a PUBLISHED storey-height set. */
+      if (art.from) {
+        const built = this.ensureHit(key) ?? this.ensure(key, () => {
+          const src = this.sourcePixels(artKey(art.from as string));
+          if (!src) return null;
+          const ramp = buildRampPixels(this.o.sheets, src, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK));
+          return art.topOnly ? rampTopOnly(this.o.sheets, ramp) : ramp;
+        });
+        return built;
+      }
       if (!art.topOnly) return this.o.textures.exists(key) ? key : null;
       /* ON A WALL CELL the ramp goes on the cap TOP FACE ONLY, like any
        * surface: its rise (the rows above the plate frame) and its lifted

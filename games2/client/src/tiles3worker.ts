@@ -61,6 +61,7 @@ export interface WorkerInit {
   fadeTune?: Tiles3Data["fadeTune"];
   footBoundary?: boolean;
   deckBoundary?: boolean;
+  slopeHeight?: number;
 }
 export interface WorkerResolve {
   type: "resolve";
@@ -122,6 +123,7 @@ async function init(msg: WorkerInit): Promise<void> {
   if (msg.fadeTune) data.fadeTune = msg.fadeTune;
   if (msg.footBoundary !== undefined) data.footBoundary = msg.footBoundary;
   if (msg.deckBoundary !== undefined) data.deckBoundary = msg.deckBoundary;
+  if (msg.slopeHeight !== undefined) data.slopeHeight = msg.slopeHeight;
   const view = viewFromParsed(parsed as never);
   /* THE REGION FLOOD FILL — 38 ms over the_game on the dev host, and the single
    * biggest lump of the main thread's own world load. Here it is free. */

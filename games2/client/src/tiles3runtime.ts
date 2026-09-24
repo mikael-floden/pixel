@@ -670,7 +670,7 @@ export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void, lid = t
    * A liquid never reaches this arm (it is always a field cell) and paints its
    * diamond from a colour, not a file. */
   if (cell.art && cell.art.kind !== "liquid" && (cell.kind === "field" || cell.dressed))
-    out(cell.art.path);
+    out(cell.art.from ?? cell.art.path); // a composed ramp names the plate it is built from; its own path is virtual
   /* AND THE FADE'S OWN FILE. A fade is an OVERLAY now, not the cell's art, so
    * nothing else names it — and this one function feeds both the streaming
    * loader and scripts/tiles3closure.ts, which decides what enters the image.
@@ -777,7 +777,7 @@ export function dressKey(t3: Tiles3Textures, cell: Tiles3Cell): { key: string; x
   // anchor the ground pass paints it at. Without it this sprite landed on top
   // of the ground texture at the plain anchor, the sunk picture over the
   // raised one, and no slope ever showed on a terrace (2026-09-24).
-  return key ? { key, x: cell.sx, y: (cell.pasteY ?? cell.sy) - slopeLift(cell) } : null;
+  return key ? { key, x: cell.sx, y: (cell.pasteY ?? cell.sy) - Math.max(0, art.h - PLATE_H) - slopeLift(cell) } : null; // a ramp's taller frame hangs above the plate's
 }
 
 /** WHERE `surfaceKey`'S RASTER IS PASTED, and the reason this function exists.

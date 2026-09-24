@@ -105,6 +105,7 @@ export class ResolveWorker {
     fadeTune?: Tiles3Data["fadeTune"];
     footBoundary?: boolean;
     deckBoundary?: boolean;
+    slopeHeight?: number;
   }): void {
     this.gen++;
     this.pending.clear();
