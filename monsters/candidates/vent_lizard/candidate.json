@@ -1,0 +1,141 @@
+{
+  "id": "vent_lizard",
+  "name": "Ventlizard",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It basks on the vents and breathes the steam out again.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Lizard of red-black scales with vents along its back that puff steam, a frilled neck of orange membrane.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "vent_lizard/rotations/south.webp",
+    "south-east": "vent_lizard/rotations/south-east.webp",
+    "east": "vent_lizard/rotations/east.webp",
+    "north-east": "vent_lizard/rotations/north-east.webp",
+    "north": "vent_lizard/rotations/north.webp",
+    "north-west": "vent_lizard/rotations/north-west.webp",
+    "west": "vent_lizard/rotations/west.webp",
+    "south-west": "vent_lizard/rotations/south-west.webp"
+  },
+  "sheet": "vent_lizard/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "bad0242e-73cb-4e40-82c0-752342c27afb",
+  "seed": 1595890838,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:33:14+00:00",
+  "elapsed_s": 225.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.79,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.854,
+        "bbox": [
+          14,
+          5,
+          76,
+          85
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.852,
+        "bbox": [
+          7,
+          4,
+          77,
+          87
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.841,
+        "bbox": [
+          2,
+          2,
+          82,
+          86
+        ],
+        "fill": 0.868,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.818,
+        "bbox": [
+          3,
+          2,
+          77,
+          84
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.815,
+        "bbox": [
+          13,
+          3,
+          73,
+          79
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.821,
+        "bbox": [
+          4,
+          2,
+          85,
+          86
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.839,
+        "bbox": [
+          1,
+          3,
+          86,
+          86
+        ],
+        "fill": 0.911,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.79,
+        "bbox": [
+          7,
+          3,
+          85,
+          85
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      }
+    }
+  }
+}
