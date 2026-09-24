@@ -1,0 +1,140 @@
+{
+  "id": "sea_glass_sprite",
+  "name": "Glassprite",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Every broken bottle the sea polished became a little of it.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Tiny figure of frosted green and blue sea glass, sunlight glowing through it, no face, hovering.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "sea_glass_sprite/rotations/south.webp",
+    "south-east": "sea_glass_sprite/rotations/south-east.webp",
+    "east": "sea_glass_sprite/rotations/east.webp",
+    "north-east": "sea_glass_sprite/rotations/north-east.webp",
+    "north": "sea_glass_sprite/rotations/north.webp",
+    "north-west": "sea_glass_sprite/rotations/north-west.webp",
+    "west": "sea_glass_sprite/rotations/west.webp",
+    "south-west": "sea_glass_sprite/rotations/south-west.webp"
+  },
+  "sheet": "sea_glass_sprite/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ff45c3d4-0a90-4841-87a0-9abd3af0cac4",
+  "seed": 1354209123,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:40:54+00:00",
+  "elapsed_s": 210.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.775,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.828,
+        "bbox": [
+          9,
+          3,
+          31,
+          37
+        ],
+        "fill": 0.468,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.845,
+        "bbox": [
+          11,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.383,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.835,
+        "bbox": [
+          11,
+          3,
+          28,
+          37
+        ],
+        "fill": 0.361,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.775,
+        "bbox": [
+          11,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.383,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.788,
+        "bbox": [
+          9,
+          3,
+          31,
+          36
+        ],
+        "fill": 0.454,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.782,
+        "bbox": [
+          11,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.383,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.796,
+        "bbox": [
+          12,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.361,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.834,
+        "bbox": [
+          11,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.383,
+        "touches_edge": false
+      }
+    }
+  }
+}
