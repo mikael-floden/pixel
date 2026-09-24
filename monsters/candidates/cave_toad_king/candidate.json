@@ -1,0 +1,140 @@
+{
+  "id": "cave_toad_king",
+  "name": "Cavetoad",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It has never seen the sun and rules everything that has not.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Pale white cave toad, blind, milky eyes, translucent skin showing organs, a crown of stalactite spikes.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cave_toad_king/rotations/south.webp",
+    "south-east": "cave_toad_king/rotations/south-east.webp",
+    "east": "cave_toad_king/rotations/east.webp",
+    "north-east": "cave_toad_king/rotations/north-east.webp",
+    "north": "cave_toad_king/rotations/north.webp",
+    "north-west": "cave_toad_king/rotations/north-west.webp",
+    "west": "cave_toad_king/rotations/west.webp",
+    "south-west": "cave_toad_king/rotations/south-west.webp"
+  },
+  "sheet": "cave_toad_king/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "097bffc3-331c-458c-91fb-b187a67cee26",
+  "seed": 212440209,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:13:44+00:00",
+  "elapsed_s": 234.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.568,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.568,
+        "bbox": [
+          19,
+          13,
+          204,
+          211
+        ],
+        "fill": 0.73,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.702,
+        "bbox": [
+          23,
+          17,
+          196,
+          211
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.701,
+        "bbox": [
+          21,
+          14,
+          194,
+          211
+        ],
+        "fill": 0.679,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.702,
+        "bbox": [
+          24,
+          9,
+          189,
+          210
+        ],
+        "fill": 0.661,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.682,
+        "bbox": [
+          22,
+          9,
+          194,
+          204
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.689,
+        "bbox": [
+          33,
+          9,
+          204,
+          204
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.694,
+        "bbox": [
+          29,
+          10,
+          202,
+          209
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.7,
+        "bbox": [
+          27,
+          16,
+          199,
+          211
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      }
+    }
+  }
+}
