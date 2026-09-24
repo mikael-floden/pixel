@@ -1,0 +1,141 @@
+{
+  "id": "swamp_ape",
+  "name": "Fen Ape",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Something large lives where the fen is deepest, and this is it.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Huge dark-furred ape dripping with green water, weed on its shoulders, a wide flat face, long arms, knuckle-walking.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "swamp_ape/rotations/south.webp",
+    "south-east": "swamp_ape/rotations/south-east.webp",
+    "east": "swamp_ape/rotations/east.webp",
+    "north-east": "swamp_ape/rotations/north-east.webp",
+    "north": "swamp_ape/rotations/north.webp",
+    "north-west": "swamp_ape/rotations/north-west.webp",
+    "west": "swamp_ape/rotations/west.webp",
+    "south-west": "swamp_ape/rotations/south-west.webp"
+  },
+  "sheet": "swamp_ape/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "33685a71-8cce-442b-8d25-7bce8de9a91c",
+  "seed": 572085861,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:59:20+00:00",
+  "elapsed_s": 263.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.572,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.572,
+        "bbox": [
+          20,
+          15,
+          204,
+          208
+        ],
+        "fill": 0.708,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.686,
+        "bbox": [
+          34,
+          15,
+          188,
+          212
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.704,
+        "bbox": [
+          65,
+          12,
+          160,
+          213
+        ],
+        "fill": 0.381,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.645,
+        "bbox": [
+          52,
+          12,
+          184,
+          211
+        ],
+        "fill": 0.524,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.641,
+        "bbox": [
+          26,
+          12,
+          199,
+          208
+        ],
+        "fill": 0.676,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.636,
+        "bbox": [
+          38,
+          12,
+          177,
+          212
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.698,
+        "bbox": [
+          64,
+          12,
+          153,
+          213
+        ],
+        "fill": 0.357,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.675,
+        "bbox": [
+          39,
+          15,
+          187,
+          212
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      }
+    }
+  }
+}
