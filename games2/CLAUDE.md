@@ -221,9 +221,9 @@ THERE)
 - ONE world, never instances (maintainer). Zones are rooms
   (`config/zones.json`; no entry = one room), ONE per zone per process; a
   border is crossed by a HAND-OFF over the bus and, signed, through the
-  client (`takeHandoffCopy`: a hop that lands on another process keeps its
-  body), and what a client sees across
-  it are GHOSTS in their own maps, which no server loop steps or fights.
+  client (`takeHandoffCopy`: a hop onto another process keeps its body);
+  what a client sees across it are GHOSTS, which no server loop steps or
+  fights. Only a room NOBODY IS NEAR idles (`WAKE_WU`; maintainer 2026-09-24).
 - A client receives only what is within `INTEREST_WU` of itself (a `StateView`
   per client); THE JOIN SNAPSHOT IS A WHOLE VIEW, what a crossing binds on;
   gate `verify-zonehop.mjs`.
@@ -233,9 +233,8 @@ THERE)
 - Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else
   the in-process fake, same async contract). Writes are the Firestore
   bill: a save on leave, death, level-up, the dirty flush (a 2-cell walk
-  dirties), at the start of a hand-off (a hop onto a new revision
-  restores from it — `rollouthop.test.ts`) and, AWAITED, on shutdown
-  (`rolloutsave.test.ts`).
+  dirties), at a hand-off's start (`rollouthop.test.ts`) and, AWAITED, on
+  shutdown (`rolloutsave.test.ts`).
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns, no monsters.

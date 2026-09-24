@@ -273,12 +273,28 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   stamping 1,335 scenery pieces was 850 MB rss for 16 rooms — over the 512
   MiB Cloud Run instance; shared, 400 MB (dev, tsx) and the 16 rooms warm in
   0.9 s. The instance is 1 GiB now (deploy workflow) for headroom.
-- **An empty room runs its sim every `IDLE_DIVISOR` (4) ticks** with the
-  accumulated dt (the clock still moves every tick; edge snapshots keep
-  flowing at the slower rate). Idle with 16 warm rooms was ~20% of a core (the monster brains; zone 6
-  with 63 monsters ticks 2 ms p50); with the divisor it is 10%, 386 MB. A client
-  brings the full rate back on its first tick (`/api/stats` reports `simHz`
-  per room; gate `server/test/idle.test.ts`).
+- **An empty room NOBODY IS NEAR runs its sim every `IDLE_DIVISOR` (4) ticks**
+  with the accumulated dt (the clock still moves every tick; edge snapshots
+  keep flowing at the slower rate). Idle with 16 warm rooms was ~20% of a core
+  (the monster brains; zone 6 with 63 monsters ticks 2 ms p50); with the
+  divisor it is 10%, 386 MB. A client brings the full rate back on its first
+  tick (`/api/stats` reports `simHz` per room; gate `server/test/idle.test.ts`).
+- **A ROOM A PLAYER CAN SEE INTO, OR IS ABOUT TO, RUNS AT 20 Hz** (`WAKE_WU`,
+  maintainer decision 2026-09-24: "the game feels the same regardless if
+  another player is in that other zone or not ... speed up the zones around
+  me a bit before a player can see into it"). A room with a client names on
+  its edge snapshot (`wake`) every neighbour one of its players stands within
+  `WAKE_WU` of — the ghost band plus `WAKE_LOOKAHEAD_S` (1 s) of running, 42
+  cells — and a named room leaves the idle gate for `WAKE_HOLD_MS` (1 s) past
+  the last snapshot naming it. So a neighbour is awake while the player is
+  still outside its ghost band, the diagonal wakes at a corner, and a room
+  nobody is near idles as before. Measured (`server/test/wakeband.test.ts`,
+  `ghostrate.test.ts`): 40 cells from the line the neighbour sims at 20 Hz,
+  at a corner all three do, 1.5 s after walking away 4.7-5.3 Hz again; a
+  watched neighbour's edge rate 19.8 Hz against 20 in his own room — the
+  local:ghost ratio is 1.0x, from 4.1x. (Costs the full sim for up to 3 rooms
+  per player at an edge, 8 at a corner: ~+1 to +7 points of a core for three
+  rooms on the_game's brains. This reverses the "NOT taken" below.)
 - **A GHOST IS CHASED AT THE RATE ITS POSITIONS ARRIVE, not at a constant**
   (maintainer 2026-09-22: "I still feel the monsters in my own zone to way way
   smoother vs monsters in a neighbouring zone"). Measured
@@ -303,9 +319,9 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
     answer. It renders one arrival interval in the past, so a ghost would sit
     ~430 ms behind the truth and you would swing at where it used to be —
     and cross-border combat is a thing (`spec/ZONES.md`).
-  - NOT taken, and this is what still separates 4.1x from 1x: un-idling a room
-    whose neighbour has players. That is the only way to make a ghost's SOURCE
-    20 Hz, and it costs the full sim for up to 8 rooms.
+  - TAKEN 2026-09-24, and it is what closed 4.1x to 1.0x: un-idling a room a
+    player is about to see into (the wake band, above). The only way to make
+    a ghost's SOURCE 20 Hz; the ease then comes out at exactly the local 12.
 - **A JOIN BURST IS A LIMIT OF ITS OWN**: 400 bots joining one zone within
   10 s from two processes on a box already at 100% CPU expired 65 seat
   reservations ("seat reservation expired"), 100 joins failed, and every

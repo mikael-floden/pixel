@@ -230,13 +230,30 @@ const EDGE_TICKS = 1;
 const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
 /** How long a ghost created BY A HAND-OFF is spared the "this snapshot no
  *  longer carries it" sweep. It must outlast the destination's slowest edge
- *  interval — IDLE_DIVISOR(4) x EDGE_TICKS(2) = 400 ms, the rate EVERY
- *  neighbour runs at when one player is online — and stay under GHOST_TTL_MS,
+ *  interval — IDLE_DIVISOR(4) x EDGE_TICKS(2) = 400 ms, a room nobody is near
+ *  (a watched one is at 20 Hz: WAKE_WU) — and stay under GHOST_TTL_MS,
  *  which is the backstop if the destination never confirms at all. Without it
  *  a snapshot the destination COMPUTED BEFORE the transfer arrived deletes the
  *  overlap ghost on landing and the hole is back: invisible under the
  *  in-process bus, real the day REDIS_URL is set. */
 const HANDOFF_GHOST_GRACE_MS = 600;
+/** A ROOM SOMEONE CAN SEE INTO, OR IS ABOUT TO, RUNS AT THE FULL RATE
+ *  (maintainer 2026-09-24: "the game feels the same regardless if another
+ *  player is in that other zone or not ... speed up the zones around me a bit
+ *  before a player can see into it"). An empty room sims inside the idle gate
+ *  (IDLE_DIVISOR, 4.9 Hz), and that was the SOURCE rate of every ghost a
+ *  client saw across a line: a monster next door moved in 200 ms steps and
+ *  lagged its truth by half a cell, while the same monster in your own zone
+ *  moved at 20 Hz. A room with a client tells each neighbour, on its edge
+ *  snapshot, whether one of its players stands within WAKE_WU of that
+ *  neighbour's rectangle — the interest rim plus WAKE_LOOKAHEAD_S of running,
+ *  so the room is awake BEFORE the rim reaches its line — and a room so named
+ *  leaves the idle gate for WAKE_HOLD_MS past the last snapshot naming it.
+ *  Costs the full sim for up to 3 rooms per player at an edge, 8 at a corner;
+ *  reverses backend.md's "NOT taken" by maintainer decision. */
+const WAKE_LOOKAHEAD_S = 1;
+const WAKE_WU = GHOST_BAND_WU + RUN_SPEED * PLAYER_SPEED_DEFAULT * WAKE_LOOKAHEAD_S;
+const WAKE_HOLD_MS = 1000; // an awake neighbour names this room every 50 ms; a lost message or two must not idle it
 /** A MONSTER THE MAP HAS BOXED IN MUST NOT COST THE SERVER ANYTHING.
  *
  *  A roam plan that finds NO route is the DEAREST search there is: A* only
@@ -422,6 +439,8 @@ interface EdgeSnapshot {
     hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number; tsid: string;
   }>;
   drops: Array<{ id: string; item: string; x: number; y: number; elev: number }>;
+  /** Neighbours one of this room's players stands within WAKE_WU of (see WAKE_WU). */
+  wake?: number[];
 }
 
 /** games2/config/zones.json: the zone grid per world, read once. A world
@@ -454,8 +473,9 @@ export function resetZonesConfig(): void {
  *  max per room plus process CPU and event-loop lag, so a load run reads the
  *  server's own numbers instead of guessing from the client side. */
 const TICK_RING = 200;
-/** AN EMPTY ROOM TICKS ITS BRAINS SLOWER: with nobody connected, the sim
- *  (monster brains, combat, zones, interest) runs every IDLE_DIVISOR-th tick
+/** AN EMPTY ROOM NOBODY IS NEAR TICKS ITS BRAINS SLOWER: with nobody connected
+ *  and no neighbour's player within WAKE_WU (`wakeUntil`), the sim (monster
+ *  brains, combat, zones, interest) runs every IDLE_DIVISOR-th tick
  *  with the accumulated dt — 5 Hz at the 20 Hz tick. The clock still advances
  *  every tick (it is cheap and shared), edge snapshots keep flowing at the
  *  slower rate (a neighbour's client eases ghosts at rate 12 anyway).
@@ -931,8 +951,10 @@ export class WorldRoom extends Room<WorldState> {
       }),
     );
     if (this.zoneId !== WHOLE_WORLD && this.grid) {
-      for (const n of zoneNeighbours(this.grid, this.zoneId))
+      for (const n of zoneNeighbours(this.grid, this.zoneId)) {
         this.unsubs.push(bus().subscribe(this.chan.edge(n), (m: EdgeSnapshot) => this.onEdgeSnapshot(m)));
+        this.neighbourRects.push([n, zoneRect(this.grid, n)]);
+      }
       this.unsubs.push(bus().subscribe(this.chan.ctl(this.zoneId), (m: CtlMessage) => this.onCtl(m)));
     }
     // Live tuning (live/tuning/* on GitHub main, held by the live store):
@@ -1868,7 +1890,7 @@ export class WorldRoom extends Room<WorldState> {
 
     // AN EMPTY ROOM runs the sim every IDLE_DIVISOR-th tick with the dt it
     // skipped (the clock above still moved every tick).
-    if (this.clients.length === 0) {
+    if (this.clients.length === 0 && Date.now() >= this.wakeUntil) {
       this.idleDt += dt;
       if (++this.idleTick < IDLE_DIVISOR) return;
       dt = this.idleDt;
@@ -3192,6 +3214,12 @@ export class WorldRoom extends Room<WorldState> {
     this.syncPos(player);
     this.state.players.set(pid, player);
     this.attachView(client, player);
+    // EVERY WATCHER SEES THE BODY IN THE SAME PATCH THAT DROPS ITS GHOST. A
+    // crosser was in their views as a ghost; the player is a new entity and
+    // enters a view only through the pass, and the next scheduled one was up
+    // to INTEREST_TICKS (200 ms) away — a blink at the line for everyone
+    // watching (measured 0-200 ms). One full pass here, synchronously.
+    this.stepInterest();
     // The backpack is PRIVATE — targeted message, never schema-synced.
     client.send("inv", { items: player.inv });
     // PRESENCE is keyed by ACCOUNT (a person), never by pid (a session):
@@ -3547,6 +3575,27 @@ export class WorldRoom extends Room<WorldState> {
       const p = this.state.players.get(m.pid);
       if (!p?.handoff) return;
       const sid = this.pidSid.get(m.pid);
+      // THE BODY BECOMES ITS OWN GHOST IN THE PATCH THAT DELETES IT, as a
+      // handed-over monster does (onCtl): the new owner's snapshot
+      // refreshes this ghost from here on, and HANDOFF_GHOST_GRACE_MS spares
+      // it from a snapshot computed before the adoption. Without it every
+      // watcher in this room lost the crosser for 100-250 ms and got a
+      // re-created sprite back (measured). The crosser's own client holds
+      // no player here any more, and stepInterest skips such a client, so
+      // it never sees its own ghost (the reconcile would run against a body
+      // with no seq).
+      if (!this.state.ghosts.has(m.pid)) {
+        const g = new Player();
+        g.name = p.name; g.character = p.character; g.x = p.x; g.y = p.y; g.dir = p.dir; g.moving = p.moving;
+        g.running = p.running; g.elev = p.elev; g.jumping = p.jumping; g.swimming = p.swimming; g.torch = p.torch;
+        g.level = p.level; g.hp = p.hp; g.hpMax = p.hpMax; g.dead = p.dead; g.slow = p.slow; g.action = p.action;
+        g.actionSeq = p.actionSeq; g.hitSeq = p.hitSeq; g.sid = ""; g.pid = m.pid; g.lastSeen = now;
+        g.ghostNoAggro = this.noAggro.has(m.pid);
+        this.syncPos(g);
+        this.state.ghosts.set(m.pid, g);
+        this.ghostOwner.set(m.pid, p.handoff.to);
+        this.handedGhostAt.set(m.pid, now);
+      }
       this.state.players.delete(m.pid);
       this.fallPend.delete(m.pid);
       if (sid) {
@@ -3555,6 +3604,7 @@ export class WorldRoom extends Room<WorldState> {
       }
       this.noAggro.delete(m.pid);
       this.chess?.onPlayerLeave(m.pid);
+      this.stepInterest(); // the ghost into every watcher's view NOW, in the same patch as the delete
       // The client leaves this room itself once it is bound to the new one;
       // its onLeave finds `handed` and touches nothing.
     } else if (m.type === "monster:xfer") {
@@ -3741,16 +3791,31 @@ export class WorldRoom extends Room<WorldState> {
       if (!inBand(g.x, g.y)) return;
       msg.drops.push({ id, item: g.item, x: g.x, y: g.y, elev: g.elev });
     });
-    if (msg.players.length || msg.monsters.length || msg.drops.length || this.edgeSent) {
-      this.edgeSent = msg.players.length + msg.monsters.length + msg.drops.length > 0;
+    // Who this room's players are about to see into (WAKE_WU): a named
+    // neighbour leaves its idle gate. Only bodies a client owns count, and
+    // all of `state.players` are.
+    if (this.clients.length) {
+      for (const [n, nrect] of this.neighbourRects) {
+        let near = false;
+        this.state.players.forEach((p) => { if (!near && distToRect(nrect, p.x, p.y) <= WAKE_WU) near = true; });
+        if (near) (msg.wake ??= []).push(n);
+      }
+    }
+    if (msg.players.length || msg.monsters.length || msg.drops.length || msg.wake?.length || this.edgeSent) {
+      this.edgeSent = msg.players.length + msg.monsters.length + msg.drops.length + (msg.wake?.length ?? 0) > 0;
       void bus().publish(this.chan.edge(this.zoneId), msg);
     }
   }
   private edgeSent = false;
+  /** Each neighbour's rectangle, once (publishEdge asks every sim tick). */
+  private neighbourRects: Array<[number, Rect]> = [];
+  /** Until when a neighbour's snapshot keeps this room out of the idle gate. */
+  private wakeUntil = 0;
 
   private onEdgeSnapshot(m: EdgeSnapshot) {
     if (!m || typeof m.from !== "number" || !this.rect) return;
     const now = Date.now();
+    if (Array.isArray(m.wake) && m.wake.includes(this.zoneId)) this.wakeUntil = now + WAKE_HOLD_MS;
     const rect = this.rect;
     const keep = new Set<string>();
     const near = (x: number, y: number) => distToRect(rect, x, y) <= GHOST_BAND_WU;
@@ -3768,6 +3833,7 @@ export class WorldRoom extends Room<WorldState> {
       this.syncPos(g);
       if (fresh) this.state.ghosts.set(p.id, g);
       this.ghostOwner.set(p.id, m.from);
+      this.handedGhostAt.delete(p.id); // the new owner has confirmed it
     }
     for (const d of m.monsters ?? []) {
       if (!near(d.x, d.y) || this.state.monsters.has(d.id)) continue;

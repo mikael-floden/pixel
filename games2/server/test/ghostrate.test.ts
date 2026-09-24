@@ -12,6 +12,11 @@
 // at IDLE_DIVISOR-rate, 4.9 Hz measured. With EDGE_TICKS at 2 it then
 // published every OTHER step: 2.33 Hz, half of what it had already worked out.
 //
+// Since the wake band (wakeband.test.ts) a room he can SEE INTO is not idle at
+// all — it sims at 20 Hz while he is near its line — so the ghost's source
+// rate equals his own room's, and this test measures that; a room nobody is
+// near still idles, and that is measured too.
+//
 // THE INVARIANT THIS GATES: an idle room's edge rate equals its SIM rate. Not
 // a target frequency — a statement that the band carries every position the
 // room computed, because dropping one is pure loss. It is the cheap half of
@@ -22,11 +27,11 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { createServer } from "http";
-import { Server } from "@colyseus/core";
+import { Server, matchMaker } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
 import { ROOM_NAME, CELL_WU, zoneGrid, zoneRect } from "@nangijala/shared";
-import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
+import { WorldRoom, perfStats, resetWorldClocks } from "../src/rooms/WorldRoom.js";
 import { FakeBus, useBus, bus } from "../src/bus.js";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -52,9 +57,13 @@ test("an idle room publishes every position it computes, not every other one", a
     const cB = new Client(`ws://localhost:${port}`);
     const rB: any = await cB.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Warmer", character: "default_girl" });
     await settle(800);
-    await rB.leave();                        // zone 1 is now warm + EMPTY = idle
+    await rB.leave();                        // zone 1 is now warm + EMPTY
+    // Zone 3, the diagonal, is warm and empty too — and 150+ cells from the
+    // watcher, so nothing wakes it: the one truly idle neighbour here.
+    const far = await matchMaker.createRoom(ROOM_NAME, { ...base, zone: 3 });
     rA.send("teleport", { x: BORDER_X - 6 * CELL_WU, y: zoneRect(GRID, 0).y0 + 40 * CELL_WU });
     await settle(1200);
+    perfStats(); // reset the window
 
     let idleEdges = 0, busyEdges = 0;
     const u1 = bus().subscribe(`zone:the_game:1:edge`, () => { idleEdges++; });
@@ -65,25 +74,30 @@ test("an idle room publishes every position it computes, not every other one", a
     const secs = (Date.now() - t0) / 1000;
     u1(); u2();
 
-    console.log(`[ghostrate] zone 1 (IDLE, no client)  edge snapshots: ${idleEdges} in ${secs.toFixed(1)}s = ${(idleEdges / secs).toFixed(2)} Hz   <- his ghosts`);
+    const farHz = perfStats().rooms.find((r) => r.id === far.roomId)!.simHz;
+    console.log(`[ghostrate] zone 1 (WATCHED: he stands 6 cells from its line, no client) edge snapshots: ${idleEdges} in ${secs.toFixed(1)}s = ${(idleEdges / secs).toFixed(2)} Hz   <- his ghosts`);
     console.log(`[ghostrate] zone 0 (BUSY, he is in it) edge snapshots: ${busyEdges} in ${secs.toFixed(1)}s = ${(busyEdges / secs).toFixed(2)} Hz`);
+    console.log(`[ghostrate] zone 3 (IDLE, nobody near it) sim ${farHz} Hz`);
     console.log(`[ghostrate] a LOCAL monster arrives at the colyseus patch rate = 20 Hz`);
     console.log(`[ghostrate] RATIO local:ghost = ${(20 / Math.max(0.01, idleEdges / secs)).toFixed(1)}x`);
 
-    const idleHz = idleEdges / secs;
+    const watchedHz = idleEdges / secs;
     const busyHz = busyEdges / secs;
-    // An idle room sims at 20 Hz / IDLE_DIVISOR(4) = 5 Hz, so its edge rate IS
-    // its sim rate. 4.0 is the floor with slack for a loaded runner; at
-    // EDGE_TICKS = 2 this measured 2.33 and would fail outright.
-    assert.ok(idleHz >= 4.0, `an idle room should publish at its ~5 Hz sim rate, measured ${idleHz.toFixed(2)} Hz`);
-    assert.ok(idleHz <= 6.0, `...and cannot exceed it — ${idleHz.toFixed(2)} Hz means the idle gate is not holding`);
+    // A ROOM HE CAN SEE INTO IS AWAKE (WAKE_WU, wakeband.test.ts): with him 6
+    // cells from its line, zone 1 sims at the full 20 Hz although nobody is
+    // in it, and its edge rate IS its sim rate (EDGE_TICKS = 1) — so his
+    // ghosts arrive at the rate a local monster does. Before the wake band
+    // this measured 4.9 Hz (the idle gate), and 2.33 at EDGE_TICKS = 2.
+    assert.ok(watchedHz >= 16.0, `a room he can see into should publish at ~20 Hz, measured ${watchedHz.toFixed(2)} Hz`);
     // A room with a client in it sims at the full 20 Hz, so the same rule puts
     // its band out at 20 Hz.
     assert.ok(busyHz >= 16.0, `a busy room should publish at ~20 Hz, measured ${busyHz.toFixed(2)} Hz`);
-    // The gap he can feel. It cannot reach 1 without un-idling the neighbour,
-    // which costs real CPU; this records where it actually stands so a future
-    // regression to 8.6x is visible rather than felt.
-    assert.ok(20 / idleHz <= 5.0, `local:ghost ratio ${(20 / idleHz).toFixed(1)}x is worse than the 4.1x measured when this shipped`);
+    // A room NOBODY is near still idles: the wake band is a band, not "every
+    // neighbour of a room with a client".
+    assert.ok(farHz >= 3.5 && farHz <= 7, `a room nobody is near idles at ~5 Hz, measured ${farHz} Hz`);
+    // The gap he could feel, recorded so a regression to 4.1x or 8.6x is
+    // visible rather than felt.
+    assert.ok(20 / watchedHz <= 1.3, `local:ghost ratio ${(20 / watchedHz).toFixed(2)}x — the source of a ghost he can see is no longer slower than his own room`);
   } finally {
     await gameServer.gracefullyShutdown(false);
   }

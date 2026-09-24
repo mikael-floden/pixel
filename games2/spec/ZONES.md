@@ -79,8 +79,9 @@ Kubernetes). Rules here are present tense; the measurements land in
   - **Delete-then-wait was 496 ms of invisibility.** The watcher lost the
     monster the tick it was handed over, and got it back only when the
     destination next broadcast its border band — `publishEdge` sits inside the
-    idle gate, so `IDLE_DIVISOR`(4) x `EDGE_TICKS`(2) = **400 ms** for any room
-    with no client in it, which is EVERY neighbour when one player is online.
+    idle gate, so `IDLE_DIVISOR`(4) x `EDGE_TICKS`(2) = **400 ms** for a room
+    nobody is near (200 ms since `EDGE_TICKS` = 1; a room a player is about
+    to see into is not idle at all — `WAKE_WU`, docs/backend.md).
   - **A new entity is invisible until `view.add`**, so leaving it to the next
     interest tick only traded 400 ms of hole for `INTEREST_TICKS` = 200 ms.
     Measured on the return leg with the send side already fixed: 95 ms. A tick
@@ -93,6 +94,14 @@ Kubernetes). Rules here are present tense; the measurements land in
     invisible under the in-process bus, real the day `REDIS_URL` is set.
   - It fails CLOSED: if the destination never confirms, `GHOST_TTL_MS` expires
     the ghost, which is the old behaviour, not a monster that cannot be killed.
+  - **A crossing PLAYER gets the same two things** (`playerghost.test.ts`):
+    `handoff:done` turns the body into its own ghost in the patch that deletes
+    it (owner: the destination; spared by the grace), and `adoptPlayer` runs
+    the whole room's interest pass, so every watcher of the new room takes the
+    body in the patch that drops its ghost. Measured: a watcher in the old
+    room was without the crosser 154 ms and got a re-created sprite; 0 ms now
+    on both sides. The crosser's own client holds no player in the old room
+    and the pass skips such a client, so it never sees its own ghost.
   - It is NOT a performance bug and no hardware touches it (maintainer asked
     directly after the 2 vCPU / 2 GiB bump): measured on production the same
     hour, all 16 rooms at `simHz` 4.9 with a worst tick of 9.21 ms against a
