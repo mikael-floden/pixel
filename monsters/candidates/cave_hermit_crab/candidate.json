@@ -1,0 +1,140 @@
+{
+  "id": "cave_hermit_crab",
+  "name": "Rockhermit",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It lives in a geode and will not share the view.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Pale hermit crab in a shell of a hollowed geode showing purple crystals inside, white legs, black eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cave_hermit_crab/rotations/south.webp",
+    "south-east": "cave_hermit_crab/rotations/south-east.webp",
+    "east": "cave_hermit_crab/rotations/east.webp",
+    "north-east": "cave_hermit_crab/rotations/north-east.webp",
+    "north": "cave_hermit_crab/rotations/north.webp",
+    "north-west": "cave_hermit_crab/rotations/north-west.webp",
+    "west": "cave_hermit_crab/rotations/west.webp",
+    "south-west": "cave_hermit_crab/rotations/south-west.webp"
+  },
+  "sheet": "cave_hermit_crab/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5fab5df2-b124-4dc7-8948-bd8b11578b5e",
+  "seed": 2074009802,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:49:43+00:00",
+  "elapsed_s": 239.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.653,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.779,
+        "bbox": [
+          7,
+          5,
+          81,
+          84
+        ],
+        "fill": 0.755,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.833,
+        "bbox": [
+          12,
+          5,
+          79,
+          83
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.777,
+        "bbox": [
+          11,
+          3,
+          78,
+          82
+        ],
+        "fill": 0.683,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.727,
+        "bbox": [
+          10,
+          5,
+          79,
+          82
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.653,
+        "bbox": [
+          9,
+          6,
+          79,
+          74
+        ],
+        "fill": 0.615,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.724,
+        "bbox": [
+          8,
+          6,
+          78,
+          82
+        ],
+        "fill": 0.687,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.758,
+        "bbox": [
+          9,
+          3,
+          77,
+          82
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.823,
+        "bbox": [
+          10,
+          5,
+          76,
+          83
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      }
+    }
+  }
+}
