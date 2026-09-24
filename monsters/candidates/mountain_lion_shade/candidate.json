@@ -1,0 +1,143 @@
+{
+  "id": "mountain_lion_shade",
+  "name": "Cragshade",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "You only see it when it wants you to.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Grey mountain lion with a coat like stone dust, eyes of pale light, moving as if half made of the rock behind it.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "cat",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mountain_lion_shade/rotations/south.webp",
+    "south-east": "mountain_lion_shade/rotations/south-east.webp",
+    "east": "mountain_lion_shade/rotations/east.webp",
+    "north-east": "mountain_lion_shade/rotations/north-east.webp",
+    "north": "mountain_lion_shade/rotations/north.webp",
+    "north-west": "mountain_lion_shade/rotations/north-west.webp",
+    "west": "mountain_lion_shade/rotations/west.webp",
+    "south-west": "mountain_lion_shade/rotations/south-west.webp"
+  },
+  "sheet": "mountain_lion_shade/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fcb5d947-5584-47de-bde0-e3913a1a486f",
+  "seed": 413434385,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:29:49+00:00",
+  "elapsed_s": 1560.7,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.735,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.735,
+        "bbox": [
+          2,
+          6,
+          71,
+          86
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          0,
+          6,
+          84,
+          83
+        ],
+        "fill": 0.835,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.784,
+        "bbox": [
+          6,
+          6,
+          87,
+          82
+        ],
+        "fill": 0.795,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.765,
+        "bbox": [
+          21,
+          2,
+          73,
+          84
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.752,
+        "bbox": [
+          22,
+          3,
+          77,
+          83
+        ],
+        "fill": 0.568,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.75,
+        "bbox": [
+          6,
+          3,
+          87,
+          82
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.78,
+        "bbox": [
+          2,
+          6,
+          88,
+          81
+        ],
+        "fill": 0.833,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.81,
+        "bbox": [
+          18,
+          6,
+          71,
+          86
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      }
+    }
+  }
+}
