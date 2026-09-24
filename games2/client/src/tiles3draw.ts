@@ -651,9 +651,15 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
  *  bottom row at the bottom: the surface op hangs it `lh` rows up, the body's
  *  lift follows `rampHeight * lh`. A published storey-height set replaces
  *  it the day one exists (tiles3 `slopeSets`, ramps first). */
-export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: number, lh: number): Pixels {
+export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: number, lh: number, bandSrc?: Pixels): Pixels {
   const { fw, fh } = sheets;
   const src = plate.w === fw && plate.h === fh ? plate : cropToArt(plate, fw, fh);
+  /* THE TOP FACE COMES FROM THE CONFORMED PLATE (`plate`, the same raster the
+   * flat cell beside it draws), THE SIDE FACE AND BAND FROM THE ART'S OWN
+   * BAND (`bandSrc`, the raw member): a conformed band is one flat palette
+   * colour, and his rule is no solid-colour slope. */
+  const band = bandSrc ? (bandSrc.w === fw && bandSrc.h === fh ? bandSrc : cropToArt(bandSrc, fw, fh)) : src;
+  const bd = band.data;
   const H = fh + lh;
   const out = newPixels(fw, H);
   const o = out.data;
@@ -680,9 +686,15 @@ export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: numb
       const h = (1 - u) * (1 - v) * nw + u * (1 - v) * ne + (1 - u) * v * sw + u * v * se;
       const yy = y + lh - Math.round(lh * h);
       const j = (yy * fw + x) * 4;
-      const sh = 1 - 0.18 * (1 - h);
+      /* A FAINT SHADE IN THE MIDDLE OF THE INCLINE ONLY: 1.0 at both ends, so
+       * the ramp meets the flat plate below and the plateau above with no
+       * tone step (the old foot-dark shade stepped 0.81 against every flat
+       * cell in front). The sun and torch light the slope; this only keeps
+       * a long incline from reading as a flat sheet. */
+      const mid = 4 * h * (1 - h);
+      const sh = 1 - 0.07 * mid;
       o[j] = Math.round(d[i * 4] * sh);
-      o[j + 1] = Math.round(d[i * 4 + 1] * (0.92 + 0.08 * h));
+      o[j + 1] = Math.round(d[i * 4 + 1] * (1 - 0.03 * mid));
       o[j + 2] = Math.round(d[i * 4 + 2] * sh);
       o[j + 3] = 255;
       painted[x].push(yy);
@@ -704,15 +716,15 @@ export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: numb
   // The side face under a raised lower edge: the plate's own band texture, down to where the flat plate's face began.
   for (let x = 0; x < fw; x++) {
     if (lowest[x] < 0 || flatBottom[x] < 0) continue;
-    const band: number[] = [];
-    for (let y = TOP; y < fh; y++) if (d[(y * fw + x) * 4 + 3] !== 0) band.push(y);
-    if (!band.length) continue;
+    const rows: number[] = [];
+    for (let y = TOP; y < fh; y++) if (bd[(y * fw + x) * 4 + 3] !== 0) rows.push(y);
+    if (!rows.length) continue;
     let k = 0;
     for (let yy = lowest[x] + 1; yy <= flatBottom[x] + lh; yy++, k++) {
       const j = (yy * fw + x) * 4;
       if (o[j + 3] !== 0) continue;
-      const from = (band[k % band.length] * fw + x) * 4;
-      o[j] = d[from]; o[j + 1] = d[from + 1]; o[j + 2] = d[from + 2]; o[j + 3] = 255;
+      const from = (rows[k % rows.length] * fw + x) * 4;
+      o[j] = bd[from]; o[j + 1] = bd[from + 1]; o[j + 2] = bd[from + 2]; o[j + 3] = 255;
     }
   }
   // The plate's own band below, as on every plate (masked off on a raised cell by
@@ -724,8 +736,8 @@ export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: numb
       if (used[k]) continue;
       const i = k * 4;
       const j = ((y + lh) * fw + x) * 4;
-      if (d[i + 3] === 0 || o[j + 3] !== 0) continue;
-      o[j] = d[i]; o[j + 1] = d[i + 1]; o[j + 2] = d[i + 2]; o[j + 3] = d[i + 3];
+      if (bd[i + 3] === 0 || o[j + 3] !== 0) continue;
+      o[j] = bd[i]; o[j + 1] = bd[i + 1]; o[j + 2] = bd[i + 2]; o[j + 3] = bd[i + 3];
     }
   }
   return out;
@@ -1057,6 +1069,9 @@ export interface PlateLike {
    *  its corner mask. The path is virtual (`synthetic/ramp/…`), unique per
    *  member and mask, and is the texture key; nothing is loaded for it. */
   from?: string;
+  /** The member plate's own kind: a `conform` source is conformed before the
+   *  ramp is built from it, exactly as its flat plate is. */
+  fromKind?: string;
   mask?: number;
 }
 
@@ -1930,7 +1945,9 @@ export class Tiles3Textures {
         const built = this.ensureHit(key) ?? this.ensure(key, () => {
           const src = this.sourcePixels(artKey(art.from as string));
           if (!src) return null;
-          const ramp = buildRampPixels(this.o.sheets, src, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK));
+          // The top face from the plate the flat cell draws (conformed when its member is), the band from the art.
+          const top = art.fromKind === "conform" ? buildPlatePixels(this.o.sheets, { kind: "conform", path: art.from as string }, src, this.wallRGB(ground)) : src;
+          const ramp = buildRampPixels(this.o.sheets, top, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK), src);
           return art.topOnly ? rampTopOnly(this.o.sheets, ramp) : ramp;
         });
         return built;

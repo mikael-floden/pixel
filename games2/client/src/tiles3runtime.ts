@@ -243,7 +243,12 @@ export class Tiles3World {
      * the sprite on top was `t3x:119|c:black_rock…`, the cliff foot, at the
      * plain anchor — "not a single slope" on every terrace, twice over. */
     const c = this.cell(x, y);
-    if (c?.slope && !c.slope.ramp) {
+    /* RAMPS TOO. The composed ramp's cell decided "a ramp wins over a
+     * boundary, the foot yields" (wangSurface); re-asking here handed 1,078
+     * of the_game's 1,714 ramp cells the cliff-foot transition back — the
+     * black_rock / grey_stone / light_soil diamonds painted over the ramp,
+     * and on 530 level-0 cells instead of it (2026-09-24, measured). */
+    if (c?.slope) {
       this.bill.boundaries++;
       this.bill.boundaryMs += now() - t0;
       return c.boundary ?? null;

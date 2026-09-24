@@ -563,7 +563,7 @@ export const SYNTHETIC_RAMP_DIR = "synthetic/ramp";
 export function syntheticRampSet(ground: string, lh: number): SlopeSet {
   return {
     schema: "tiles3/slopes@1", kind: "slope_set", ground, elevation: lh, n_tiles: 16, complete: true,
-    size: [TILE, PLATE_H + lh], dir: `${SYNTHETIC_RAMP_DIR}/${ground}`,
+    size: [TILE, PLATE_H + lh], dir: `${SYNTHETIC_RAMP_DIR}/${ground}/h${lh}`, // the height is in the path, so in every texture key (cache law)
     post_files: Array.from({ length: 16 }, (_, i) => `tile_${String(i).padStart(2, "0")}`),
     synthetic: true,
   } as SlopeSet;
@@ -920,7 +920,7 @@ export function columnY(f: Frame, x: number, y: number, storey: number): number 
  *  slab. It is a MASK, not a crop — the wall is a vertical extrusion under the
  *  diamond, so no source rectangle expresses it. */
 export type FieldArt =
-  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean; rise?: number; from?: string; mask?: number }
+  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean; rise?: number; from?: string; fromKind?: string; mask?: number }
   | { kind: "liquid"; topRGB: [number, number, number]; w: number; h: number; topOnly?: boolean };
 
 /** GROUND PEOPLE WALK ON. Nothing grows where feet keep coming (maintainer
@@ -1035,7 +1035,7 @@ export interface FadePick {
 /** The resolved surface of one cell, before it is placed. `art` is what draws;
  *  the rest is the provenance a fixture and a gate check. */
 export interface Surface3 {
-  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; rise?: number; from?: string; mask?: number };
+  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; rise?: number; from?: string; fromKind?: string; mask?: number };
   set?: number;
   memberIndex?: number;
   plate?: PlateArt;
@@ -2260,6 +2260,15 @@ export class Tiles3 {
   /** THE SLOPE THIS CELL WEARS UNDER THE GAME RULE, as a non-zero mask (the
    *  raise's corners, or the cut's lowered ones), or 0 — what the foot yields
    *  to in `wangSurface`. The parity path answers with `bumpInclineFor`. */
+  /** THE COMPOSED RAMP IS ON (his slope switch above 0%, a game rule): the
+   *  published half step — its raise AND its cut — is off, because a cut
+   *  beside a full ramp sank the top of every staircase 4 px (715 corners on
+   *  the_game, measured 2026-09-24) and a raise under a ramp is a second
+   *  picture of the same rise. */
+  rampsOn(): boolean {
+    return !!this.data.footBoundary && (this.data.slopeHeight ?? 0) > 0;
+  }
+
   slopeWorn(
     g: (x: number, y: number) => string | null,
     L: (x: number, y: number) => number,
@@ -2269,6 +2278,7 @@ export class Tiles3 {
     zl: number,
   ): number {
     if (!this.data.footBoundary) return this.bumpInclineFor(g, L, ground, x, y, zl);
+    if (this.rampsOn()) return 0;
     const half = this.slopeHalfAt(g, L, ground, x, y, zl);
     if (half.up) return this.slopeTile(ground, half.up, x, y) ? half.up : 0;
     if (half.down) return this.slopeTile(ground, 15 & ~half.down, x, y, false, true) ? half.down : 0;
@@ -3367,7 +3377,7 @@ export class Tiles3 {
          * the half level, the higher cell cuts its own down to it. The parity
          * path (footBoundary off, render3's rule set) keeps the any-higher
          * bump below; the change is posted to maps2. */
-        sl = this.slopePickFor(g, L, gr, x, y, zl);
+        sl = this.rampsOn() ? null : this.slopePickFor(g, L, gr, x, y, zl);
       } else if (sidx) sl = this.slopeTile(gr, sidx, x, y);
     }
     if (sl) {
@@ -3375,12 +3385,14 @@ export class Tiles3 {
       if (sl.ramp && sl.dir.startsWith(SYNTHETIC_RAMP_DIR + "/")) {
         // Unique per member plate AND mask: the key of a composed texture is its content.
         const path = `${sl.dir}/${String(sl.index).padStart(2, "0")}/${p.art.path}`;
-        out.art = { kind: "ramp", path, w: TILE, h: sl.h, from: p.art.path, mask: sl.index };
+        out.art = { kind: "ramp", path, w: TILE, h: sl.h, from: p.art.path, fromKind: p.art.kind, mask: sl.index };
         out.slope = { ...sl, file: path };
       } else out.art = sl.ramp ? { kind: "ramp", path: sl.file, w: TILE, h: sl.h } : { kind: "plate", path: sl.file, w: TILE, h: sl.h, rise: sl.rise };
     }
 
-    const fade = this.fadeFor(view, g, L, gr, x, y, zl);
+    // A COMPOSED RAMP WEARS NO FADE: the fade is a flat overlay at the level,
+    // and on a ramp it floated off the lifted surface (177 cells, 2026-09-24).
+    const fade = sl?.ramp ? undefined : this.fadeFor(view, g, L, gr, x, y, zl);
     if (fade) {
       out.fade = fade;
       return out;

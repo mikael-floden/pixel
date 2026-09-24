@@ -23172,7 +23172,24 @@ export class WorldScene extends Phaser.Scene {
          * does this now. The exposed-face rule still governs the FACE COURSES
          * below — those are art, and drawing a band with nothing in front of it
          * is the row of ticks that rule exists to prevent. */
-        if (cell.kind !== "wall" && cell.level <= 0) return;
+        if (cell.kind !== "wall" && cell.level <= 0) {
+          /* A LEVEL-0 RAMP IS RE-ISSUED TOO. Its raised edge climbs into the
+           * band where the higher cell's cap sprite paints that cell's face,
+           * and with no sprite of its own the face landed over it: the bottom
+           * step of every staircase stayed a step (185 level-0 ramps on
+           * the_game, 2026-09-24). Drawn after the higher cell (its row is
+           * further down), top 0 in the meta so it never covers a body. */
+          const art = cell.art;
+          if (cell.slope?.ramp && art && art.kind !== "liquid") {
+            const k = this.t3Try(`occ ramp ${col},${row}`, () => tex.plate(art, cell.ground), null);
+            const ry = t3SurfaceY(cell);
+            if (k && ry !== null && columnShows(cell.sx, ry, by + tileSize)) {
+              emit(k, cell.sx, ry, "cap");
+              metaPush({ col, row, top: 0, solid: false, depth: oDepth, stand: 0, x0: bx, x1: bx + tileSize, y0: ry, y1: by + tileSize });
+            }
+          }
+          return;
+        }
         const topKey = t3SurfaceKey(tex, this.t3tm, cell);
         const mid = t3FaceKey(this.t3tm, cell);
         const fk = mid ?? topKey;

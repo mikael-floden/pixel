@@ -481,3 +481,52 @@ test("buildRampPixels: a raised corner's column tops out one storey higher, a fl
   for (let x = 8; x < 56; x++) { const t0 = top(north, x); for (let y = t0; y < top(flat, x) + 12; y++) if (north.data[(y * 64 + x) * 4 + 3] === 0) holes++; }
   assert.equal(holes, 0);
 });
+
+/* -- the composed ramp's fixes (2026-09-24, "Why don't you fix the slope instead?") -- */
+
+test("with the composed ramp on: the passes draw every ramp cell's own boundary, no half-step cut remains, no fade rides a ramp, and the height is in the key", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  const t = resolver([], {}, true, undefined, 1);
+  const parsed = parseWorld(JSON.parse(readFileSync(WORLD, "utf8")))!;
+  const view = viewFromParsed(parsed as never);
+  const frame = { x0: 0, y0: 0, x1: parsed.width, y1: parsed.height, ox: 0, oy: 0, pitch: ISO_GEOMETRY_MAPS3.lh, canvas: [1, 1] } as never;
+  const w = new Tiles3World({ view, tiles: t, frame, patterns: load("tiles/patterns/index.json") });
+  let ramps = 0, footBack = 0, cuts = 0, fades = 0, noH = 0;
+  for (let y = 0; y < parsed.height; y++) for (let x = 0; x < parsed.width; x++) {
+    const c = w.cell(x, y);
+    if (!c) continue;
+    if (c.slope?.cut) cuts++;
+    if (!c.slope?.ramp) continue;
+    ramps++;
+    if (w.boundary(x, y) !== (c.boundary ?? null)) footBack++;
+    if (c.fade) fades++;
+    const path = (c.art as { path?: string } | undefined)?.path ?? "";
+    if (!/\/h15\//.test(path)) noH++;
+  }
+  assert.ok(ramps >= 1500, `${ramps} ramps`);
+  assert.equal(footBack, 0, "the passes get back a boundary the ramp cell did not resolve (the cliff-foot diamonds)");
+  assert.equal(cuts, 0, "a half-step cut beside a full ramp sinks the top of the staircase");
+  assert.equal(fades, 0, "a flat fade floats off a lifted ramp");
+  assert.equal(noH, 0, "the ramp's height must be in its path, so in its texture key");
+  const half = resolver([], {}, true, undefined, 0.5);
+  const v2 = viewFromDoc(JSON.parse(readFileSync(WORLD, "utf8")));
+  const o2 = half.resolveWindow(v2);
+  const hp = o2.cells.find((c) => c.slope?.ramp)?.art as { path?: string } | undefined;
+  assert.ok(hp && /\/h8\//.test(hp.path ?? ""), `50% keys its ramps h8: ${hp?.path}`);
+});
+
+test("buildRampPixels: no tone step where the incline meets the flat plate — the foot and the crest keep the plate's own colours", { skip }, () => {
+  const pat = load("tiles/patterns/index.json");
+  const paths = patternSheetPaths(pat);
+  const px = (rel: string): Pixels => { const i = imgRGBA(join(REPO, rel)) as { width: number; height: number; data: Uint8Array }; return { w: i.width, h: i.height, data: new Uint8ClampedArray(i.data) }; };
+  const sheets = patternSheets(pat, px(paths.silhouette), px(paths.masks), px(paths.border));
+  const plate = px("tiles/slopes/grass/a14_s02/post/" + load("tiles/slopes/index.json").sets.find((s: any) => s.dir === "tiles/slopes/grass/a14_s02").post_files[15]);
+  const flat = buildRampPixels(sheets, plate, 0, 15);
+  // Mask 0 is the plate itself, 15 rows down the frame: every top-face texel keeps its colour exactly.
+  let diff = 0;
+  for (let y = 0; y < 29; y++) for (let x = 0; x < 64; x++) {
+    const i = (y * 64 + x) * 4, j = ((y + 15) * 64 + x) * 4;
+    if (plate.data[i + 3] === 0) continue;
+    if (plate.data[i] !== flat.data[j] || plate.data[i + 1] !== flat.data[j + 1] || plate.data[i + 2] !== flat.data[j + 2]) diff++;
+  }
+  assert.equal(diff, 0);
+});
