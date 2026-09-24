@@ -1,0 +1,141 @@
+{
+  "id": "lava_crab",
+  "name": "Lavacrab",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The shore of the lava field is its beach.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Black crab with a shell of cooled lava crust, glowing orange in the cracks, red pincers, smoke from its joints.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "lava_crab/rotations/south.webp",
+    "south-east": "lava_crab/rotations/south-east.webp",
+    "east": "lava_crab/rotations/east.webp",
+    "north-east": "lava_crab/rotations/north-east.webp",
+    "north": "lava_crab/rotations/north.webp",
+    "north-west": "lava_crab/rotations/north-west.webp",
+    "west": "lava_crab/rotations/west.webp",
+    "south-west": "lava_crab/rotations/south-west.webp"
+  },
+  "sheet": "lava_crab/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "07e22363-ec06-43a4-b729-186699125675",
+  "seed": 856689287,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:32:04+00:00",
+  "elapsed_s": 240.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.736,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.736,
+        "bbox": [
+          4,
+          10,
+          84,
+          76
+        ],
+        "fill": 0.682,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.812,
+        "bbox": [
+          7,
+          8,
+          84,
+          79
+        ],
+        "fill": 0.706,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.798,
+        "bbox": [
+          4,
+          10,
+          84,
+          76
+        ],
+        "fill": 0.682,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.791,
+        "bbox": [
+          6,
+          8,
+          81,
+          79
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.781,
+        "bbox": [
+          8,
+          15,
+          81,
+          76
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.795,
+        "bbox": [
+          5,
+          8,
+          83,
+          80
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.8,
+        "bbox": [
+          4,
+          10,
+          84,
+          76
+        ],
+        "fill": 0.682,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.812,
+        "bbox": [
+          4,
+          8,
+          82,
+          79
+        ],
+        "fill": 0.715,
+        "touches_edge": false
+      }
+    }
+  }
+}
