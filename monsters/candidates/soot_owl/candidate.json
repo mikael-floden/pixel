@@ -1,0 +1,141 @@
+{
+  "id": "soot_owl",
+  "name": "Sootowl",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It nests in chimneys and watches the fire.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Owl of black soot with two burning orange eyes, feathers that crumble into ash at the edges, silent.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "soot_owl/rotations/south.webp",
+    "south-east": "soot_owl/rotations/south-east.webp",
+    "east": "soot_owl/rotations/east.webp",
+    "north-east": "soot_owl/rotations/north-east.webp",
+    "north": "soot_owl/rotations/north.webp",
+    "north-west": "soot_owl/rotations/north-west.webp",
+    "west": "soot_owl/rotations/west.webp",
+    "south-west": "soot_owl/rotations/south-west.webp"
+  },
+  "sheet": "soot_owl/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d9563d9d-1771-4332-8c0e-3dcb50f1e3a1",
+  "seed": 269608261,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:29:34+00:00",
+  "elapsed_s": 1358.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.686,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.69,
+        "bbox": [
+          15,
+          4,
+          73,
+          85
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.81,
+        "bbox": [
+          15,
+          3,
+          70,
+          86
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.789,
+        "bbox": [
+          14,
+          3,
+          72,
+          86
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.733,
+        "bbox": [
+          17,
+          2,
+          69,
+          82
+        ],
+        "fill": 0.537,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.686,
+        "bbox": [
+          18,
+          4,
+          70,
+          83
+        ],
+        "fill": 0.53,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.738,
+        "bbox": [
+          23,
+          2,
+          71,
+          82
+        ],
+        "fill": 0.496,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.785,
+        "bbox": [
+          22,
+          3,
+          74,
+          86
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.802,
+        "bbox": [
+          18,
+          3,
+          73,
+          86
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      }
+    }
+  }
+}
