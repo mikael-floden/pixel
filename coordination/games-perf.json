@@ -1,20 +1,15 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T21:54:29+00:00",
+  "updated_at": "2026-09-24T22:05:48+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED — REPAINT ONLY WHAT CAN BE SEEN SOON (his 21:13 run: cell repaints the recurring ground cost). Headless (probe-repaint.mjs): 92% of the cells a landing or a drain repainted were off the camera's view; the ground texture is ~14x the screen. A landed/owed/flipped cell is repainted when its column is within 256 px of the view, else parked (t3stale) and repainted when the camera comes near, forgotten when it leaves the texture, cleared by a full paint; whole-texture probes (groundHash/Snapshot/Snap) flush parked cells first. Headless: landing+drain repaints ~180 -> ~9 on the same walks, stale cells on screen 0 of 96 samples. Switch ?groundlazy=0 / Settings→Dev 'ground: repaint only near'.",
-    "since": "2026-09-24T21:54:29+00:00",
-    "files": [
-      "games2/client/src/scenes/WorldScene.ts (the landing repaint, t3drainTick, repaintIndoorFlip, probes)",
-      "games2/scripts/probe-repaint.mjs",
-      "games2/docs/perf.md",
-      "games2/CLAUDE.md"
-    ]
+    "unit": "IDLE after 500fb2ddd2 (deploying). Waiting for his next run; an ultracode investigation (read-only) is running.",
+    "since": "2026-09-24T22:05:48+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
-    "units_shipped": 18
+    "units_shipped": 19
   },
   "budget_remaining": null,
   "notes": [
@@ -40,6 +35,10 @@
     {
       "at": "2026-09-24T21:41:38+00:00",
       "text": "SHIPPED 44d6405713 — A CELL REPAINT IS THE CELL'S SIZE. His 21:13 run on 310bbf0439 (after 410d19f944): ground work dominated 1,367 of ~1,900 long frames; repaintCells 6-14 ms a frame MEAN, 350-780 repaint runs a window at ~13 ms each, 278-3,637 landed cells carried past the budget per window. A landed/owed cell repainted a rect from the world's highest storey (40 x 15 px) down; a batch was 12 cells by column (a screen diagonal). Now the rect starts at the cell's own top (level, decks, +1 storey, - T3_TOP_Y - lh - T3_TILE) and a batch stays in one 8x8-lattice screen block. Headless: mean rect 194x686 -> 141x302, cells walked 675 -> 338, draws 1,667 -> 813; extent check 1,000/1,000 cells paint nothing above the sized rect; groundbracket green. ?groundrect=0 / Settings→Dev 'ground: tight repaint'. Also in his 21:13 run: hooks (ambient) 5-16 ms/frame, 'unattributed' dominant in 1,268 long frames, taps: gapBusy 110-184 ms with repath 52-90 ms (games' nav, posted 09-23)."
+    },
+    {
+      "at": "2026-09-24T22:05:48+00:00",
+      "text": "SHIPPED 500fb2ddd2 — REPAINT ONLY WHAT CAN BE SEEN SOON: a landed/owed/flipped cell farther than 256 px from the view is parked (t3stale) and repainted when the camera comes near, forgotten when it leaves the texture; groundHash/Snapshot/Snap flush parked cells first. Headless, two A/Bs that disagree — honest: cells repainted -18%, runs about equal (the first A/B's 184 -> 12 did not reproduce); parked cells on screen 0/96 samples. verify-cave, verify-wallband, verify-groundbracket green. ?groundlazy=0."
     }
   ],
   "requests": [
