@@ -1,0 +1,143 @@
+{
+  "id": "fen_knight",
+  "name": "Fenknight",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He rode into the fen to end it. The fen is still here.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Knight in rusted armour green with algae, helmet full of mud, a snapped lance, reeds growing through the joints, dragging one leg.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fen_knight/rotations/south.webp",
+    "south-east": "fen_knight/rotations/south-east.webp",
+    "east": "fen_knight/rotations/east.webp",
+    "north-east": "fen_knight/rotations/north-east.webp",
+    "north": "fen_knight/rotations/north.webp",
+    "north-west": "fen_knight/rotations/north-west.webp",
+    "west": "fen_knight/rotations/west.webp",
+    "south-west": "fen_knight/rotations/south-west.webp"
+  },
+  "sheet": "fen_knight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "11c51a3b-9a47-4025-a6d6-238985e1d6fe",
+  "seed": 134092429,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:13:41+00:00",
+  "elapsed_s": 1.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.844,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.848,
+        "bbox": [
+          3,
+          3,
+          74,
+          85
+        ],
+        "fill": 0.752,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.867,
+        "bbox": [
+          18,
+          2,
+          68,
+          86
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.867,
+        "bbox": [
+          23,
+          2,
+          64,
+          87
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.857,
+        "bbox": [
+          19,
+          2,
+          83,
+          85
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.861,
+        "bbox": [
+          16,
+          2,
+          85,
+          85
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.844,
+        "bbox": [
+          19,
+          2,
+          67,
+          86
+        ],
+        "fill": 0.521,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.851,
+        "bbox": [
+          13,
+          3,
+          64,
+          87
+        ],
+        "fill": 0.553,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.863,
+        "bbox": [
+          1,
+          4,
+          72,
+          87
+        ],
+        "fill": 0.761,
+        "touches_edge": false
+      }
+    }
+  }
+}
