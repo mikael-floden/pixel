@@ -1,0 +1,141 @@
+{
+  "id": "obsidian_hawk",
+  "name": "Blackhawk",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Its feathers cut the wind, and the hand that catches it.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Hawk of black obsidian glass, sharp-edged wings that catch orange light, red eyes, perched with wings half open.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "obsidian_hawk/rotations/south.webp",
+    "south-east": "obsidian_hawk/rotations/south-east.webp",
+    "east": "obsidian_hawk/rotations/east.webp",
+    "north-east": "obsidian_hawk/rotations/north-east.webp",
+    "north": "obsidian_hawk/rotations/north.webp",
+    "north-west": "obsidian_hawk/rotations/north-west.webp",
+    "west": "obsidian_hawk/rotations/west.webp",
+    "south-west": "obsidian_hawk/rotations/south-west.webp"
+  },
+  "sheet": "obsidian_hawk/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c2f55780-dc9b-42d8-9c49-f95ce141b5c7",
+  "seed": 1441535174,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:31:59+00:00",
+  "elapsed_s": 188.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.721,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.721,
+        "bbox": [
+          2,
+          6,
+          86,
+          83
+        ],
+        "fill": 0.835,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.798,
+        "bbox": [
+          12,
+          5,
+          77,
+          85
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.808,
+        "bbox": [
+          18,
+          4,
+          72,
+          85
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.787,
+        "bbox": [
+          13,
+          4,
+          79,
+          82
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.771,
+        "bbox": [
+          2,
+          5,
+          86,
+          81
+        ],
+        "fill": 0.824,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.778,
+        "bbox": [
+          10,
+          4,
+          75,
+          82
+        ],
+        "fill": 0.655,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.806,
+        "bbox": [
+          15,
+          4,
+          70,
+          85
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.803,
+        "bbox": [
+          11,
+          5,
+          77,
+          85
+        ],
+        "fill": 0.682,
+        "touches_edge": false
+      }
+    }
+  }
+}
