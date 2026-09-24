@@ -1092,9 +1092,16 @@ function terrainBakeOn(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("bake");
     if (q === "0" || q === "1") localStorage.setItem("ml-bake", q);
-    return localStorage.getItem("ml-bake") !== "0";
+    /* OFF BY DEFAULT (maintainer 2026-09-24 19:10, his run on c2f857aad7:
+     * "it lagged even more" — frame p50 34-63 ms against 17-23 the run
+     * before, `bakeStep` 7-10 ms a frame with 36-84 ms peaks, 170-390
+     * framebuffers created a window): the chunk walks composed art the live
+     * path had not asked for yet and re-walked on every landing, and every
+     * bake allocated a texture. Opt in with `?bake=1` / the Dev button until
+     * the bake costs what it promised. */
+    return localStorage.getItem("ml-bake") === "1";
   } catch {
-    return true;
+    return false;
   }
 }
 const NO_IMAGES: Phaser.GameObjects.Image[] = [];
