@@ -508,42 +508,41 @@
       "directions": {
         "south": {
           "status": "warn",
-          "step_mean": 0.1339,
-          "step_max": 0.1552,
-          "drift": 5.53,
-          "loop": 0.3152,
-          "loop_ratio": 2.35,
-          "travel": 1.61,
-          "pin": 0.936,
+          "step_mean": 0.0796,
+          "step_max": 0.099,
+          "drift": 0.73,
+          "loop": 0.1111,
+          "loop_ratio": 1.4,
+          "travel": 0.61,
+          "pin": 0.882,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 1.006,
+          "end_area": 1.017,
           "end_iou": null,
           "canvas": [
             160,
             160
           ],
           "reasons": [
-            "drifts 5.5 px — eyeball it",
-            "last→first hand-off 2.4× a step — eyeball the loop"
+            "motion 0.080 outside the calm band 0.1–0.4 — eyeball it"
           ],
-          "sub": "2f58fe0d-07ac-4220-a950-a0721e9a6645",
-          "group": "5556f8c9-0926-4691-8cce-59b159edfbb2",
+          "sub": "4da7c397-137b-4519-b90b-1c420b62715d",
+          "group": "7df99a6f-98c9-4b81-8155-e9fc500cf406",
           "takes": 1,
-          "version": 3,
+          "version": 4,
           "mirrored": false,
-          "mode": "v3",
-          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "mode": "pro",
+          "action": "walk loop seen head-on, full walk cycle in place, the near leg swings forward and plants while the far leg pushes off behind, the legs clearly crossing past each other, the massive shoulders rocking side to side and the head dipping with each step, hooves lifting off the ground, seamless loop whose last frame leads straight back into the first, no turning",
           "intensity": 0,
           "rolls": 1,
           "frames": 4,
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-23T21:03:03+00:00"
+          "generated_at": "2026-09-24T19:43:14+00:00"
         },
         "south-east": {
           "status": "pass",
