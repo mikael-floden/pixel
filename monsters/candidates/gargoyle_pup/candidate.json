@@ -1,0 +1,140 @@
+{
+  "id": "gargoyle_pup",
+  "name": "Gargpup",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It fell off a church and is still looking for the roof.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Small stone gargoyle puppy with bat wings, a snub snout, stone tongue out, chipped ear, sitting.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "gargoyle_pup/rotations/south.webp",
+    "south-east": "gargoyle_pup/rotations/south-east.webp",
+    "east": "gargoyle_pup/rotations/east.webp",
+    "north-east": "gargoyle_pup/rotations/north-east.webp",
+    "north": "gargoyle_pup/rotations/north.webp",
+    "north-west": "gargoyle_pup/rotations/north-west.webp",
+    "west": "gargoyle_pup/rotations/west.webp",
+    "south-west": "gargoyle_pup/rotations/south-west.webp"
+  },
+  "sheet": "gargoyle_pup/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d8655d85-77d2-4a53-bbbd-413bddec7dae",
+  "seed": 2005245562,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:22:29+00:00",
+  "elapsed_s": 1885.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.658,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.718,
+        "bbox": [
+          2,
+          3,
+          38,
+          38
+        ],
+        "fill": 0.787,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.741,
+        "bbox": [
+          4,
+          2,
+          32,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.735,
+        "bbox": [
+          5,
+          2,
+          33,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.683,
+        "bbox": [
+          5,
+          2,
+          32,
+          38
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.658,
+        "bbox": [
+          2,
+          3,
+          38,
+          38
+        ],
+        "fill": 0.787,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.692,
+        "bbox": [
+          8,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.744,
+        "bbox": [
+          7,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.735,
+        "bbox": [
+          8,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      }
+    }
+  }
+}
