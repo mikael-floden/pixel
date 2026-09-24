@@ -136,7 +136,10 @@ export class ZoneField {
    *  whole samples — the overlap is copied and only the new edge is looked
    *  up (a still camera looks nothing up; a walking one ~40 samples a tick,
    *  not 2,560). */
-  private rasterMemo: { name: string; cols: number; rows: number; stepX: number; stepY: number; x: number; y: number; gen: number; raw: Uint8Array; known: Uint8Array; cc: Int16Array; rr: Int16Array; ref: Uint8Array | null } | null = null;
+  private rasterMemo: { name: string; cols: number; rows: number; stepX: number; stepY: number; x: number; y: number; gen: number; stale: number; b: RasterBufs } | null = null;
+  /** The memo's twin: the buffers the next raster builds into, then the two
+   *  swap — a tick allocates nothing but the copy it hands out. */
+  private rasterScratch: RasterBufs | null = null;
   private readonly feather: number;
   stats = { picks: 0, resolves: 0, refreshes: 0, pruned: 0 };
 
@@ -266,11 +269,15 @@ export class ZoneField {
       const c1 = Math.ceil(b.x1) + reach;
       const r0 = Math.floor(b.y0) - reach - 1;
       const r1 = Math.ceil(b.y1) + reach;
-      for (let k = 0; k < m.known.length; k++) {
-        if (m.known[k] !== 1) continue;
-        const c = m.cc[k];
-        const r = m.rr[k];
-        if (c >= c0 && c <= c1 && r >= r0 && r <= r1) m.known[k] = RASTER_STALE;
+      const b0 = m.b;
+      for (let k = 0; k < b0.known.length; k++) {
+        if (b0.known[k] !== 1) continue;
+        const c = b0.cc[k];
+        const r = b0.rr[k];
+        if (c >= c0 && c <= c1 && r >= r0 && r <= r1) {
+          b0.known[k] = RASTER_STALE;
+          m.stale++;
+        }
       }
     }
   }
@@ -442,6 +449,13 @@ export class ZoneField {
     if (!this.ruled) return 1;
     const p = this.cellAt(isoX, isoY);
     if (!p) return 0;
+    return this.weightOf(this.nameIndex(name), name, p);
+  }
+
+  /** The bilinear over the four blurred cells around a pick — `weightAt`
+   *  after its own `cellAt`, so a caller with the pick in hand pays no
+   *  second one. */
+  private weightOf(ni: number, name: string, p: ZonePick): number {
     // bilinear between cell CENTRES: the point's offset from its cell's centre
     const u = p.fx - 0.5;
     const v = p.fy - 0.5;
@@ -449,7 +463,6 @@ export class ZoneField {
     const r0 = v < 0 ? p.row - 1 : p.row;
     const t = u < 0 ? u + 1 : u;
     const s = v < 0 ? v + 1 : v;
-    const ni = this.nameIndex(name);
     const top = this.blurIn(ni, name, c0, r0, p.lvl) * (1 - t) + this.blurIn(ni, name, c0 + 1, r0, p.lvl) * t;
     const bot = this.blurIn(ni, name, c0, r0 + 1, p.lvl) * (1 - t) + this.blurIn(ni, name, c0 + 1, r0 + 1, p.lvl) * t;
     return top * (1 - s) + bot * s;
@@ -458,56 +471,111 @@ export class ZoneField {
   /** The effect's presence over a view rectangle (iso px), sampled on a grid:
    *  `any` gates a feature on when its zone is anywhere on screen, `mean` is
    *  the share of the view it covers (what a sheet scales its count by). */
+  /* COVERAGE IS ASKED ONCE PER TICK PER EFFECT, ALL WITH THE SAME VIEW (the
+   * director per episode, the mount for the mist, weather and the placers
+   * for theirs): the view's samples are picked once and kept with their
+   * cell box, and an effect none of whose zones' boxes reach that box reads
+   * 0 without a weight looked up (games-perf Task 2, 2026-09-24: `_director`
+   * 0.9-1.7 ms a tick and a 104 ms peak — 48 samples x ~12 episodes x a
+   * pick and four blurs, nearly all of them for effects with no zone in
+   * sight). Keyed on the view's numbers and the field's generation, epoch
+   * and version, so a re-roll or a hop answers fresh. */
+  private covView = { x: NaN, y: NaN, width: NaN, height: NaN, gen: -1, epoch: -1, version: -1 };
+  private covSamples: (ZonePick | null)[] = [];
+  private covBox = { c0: 0, c1: -1, r0: 0, r1: -1 };
+  private covCache = new Map<string, ZoneCoverage>();
+  private zonesOf = new Map<string, ZoneBox[]>();
+  private zonesOfKey = "";
+
   coverage(name: string, view: { x: number; y: number; width: number; height: number }): ZoneCoverage {
     if (!this.ruled) return { any: true, mean: 1, max: 1, n: 0 };
-    let sum = 0;
-    let max = 0;
-    let n = 0;
-    for (let j = 0; j < COVER_ROWS; j++)
-      for (let i = 0; i < COVER_COLS; i++) {
-        const x = view.x + view.width * ((i + 0.5) / COVER_COLS);
-        const y = view.y + view.height * ((j + 0.5) / COVER_ROWS);
-        const w = this.weightAt(name, x, y);
-        sum += w;
-        if (w > max) max = w;
-        n++;
-      }
-    return { any: max > 0.001, mean: n ? sum / n : 0, max, n };
+    const v = this.covView;
+    if (v.x !== view.x || v.y !== view.y || v.width !== view.width || v.height !== view.height || v.gen !== this.docGen || v.epoch !== this.epoch || v.version !== this.version) {
+      v.x = view.x;
+      v.y = view.y;
+      v.width = view.width;
+      v.height = view.height;
+      v.gen = this.docGen;
+      v.epoch = this.epoch;
+      v.version = this.version;
+      this.covCache.clear();
+      const out = this.covSamples;
+      out.length = 0;
+      let c0 = Infinity, c1 = -Infinity, r0 = Infinity, r1 = -Infinity;
+      for (let j = 0; j < COVER_ROWS; j++)
+        for (let i = 0; i < COVER_COLS; i++) {
+          const x = view.x + view.width * ((i + 0.5) / COVER_COLS);
+          const y = view.y + view.height * ((j + 0.5) / COVER_ROWS);
+          const p = this.cellAt(x, y);
+          out.push(p);
+          if (!p) continue;
+          if (p.col < c0) c0 = p.col;
+          if (p.col > c1) c1 = p.col;
+          if (p.row < r0) r0 = p.row;
+          if (p.row > r1) r1 = p.row;
+        }
+      this.covBox = { c0, c1, r0, r1 };
+    }
+    const hit = this.covCache.get(name);
+    if (hit) return hit;
+    const cov = this.coverageOf(name);
+    this.covCache.set(name, cov);
+    return cov;
   }
 
-  /** THE FIELD OVER A RECTANGLE, AS BYTES: `cols` x `rows` samples at the
-   *  centres of a grid over `rect` (iso px), row 0 at the top, 255 = fully
-   *  on. A shader multiplies its effect by this (the mist banks, unit 2 of
-   *  the boundaries), reading it bilinearly between samples, so the raster is
-   *  coarse — half a cell per sample is more than the three-cell ramp needs.
-   *  All 255 where zones do not rule. */
+  private coverageOf(name: string): ZoneCoverage {
+    const n = COVER_COLS * COVER_ROWS;
+    const { c0, c1, r0, r1 } = this.covBox;
+    const reach = this.feather + 1; // a sample's blur reads the cells within the feather of its bilinear corners
+    let near = false;
+    if (c0 <= c1)
+      for (const b of this.boxesOf(name))
+        if (c1 >= Math.floor(b.x0) - reach - 1 && c0 <= Math.ceil(b.x1) + reach && r1 >= Math.floor(b.y0) - reach - 1 && r0 <= Math.ceil(b.y1) + reach) {
+          near = true;
+          break;
+        }
+    if (!near) return { any: false, mean: 0, max: 0, n };
+    let sum = 0;
+    let max = 0;
+    const ni = this.nameIndex(name);
+    for (const p of this.covSamples) {
+      if (!p) continue;
+      const w = this.weightOf(ni, name, p);
+      sum += w;
+      if (w > max) max = w;
+    }
+    return { any: max > 0.001, mean: sum / n, max, n };
+  }
+
+  /** The boxes of the zones whose window lists an effect, by effect —
+   *  rebuilt when the table or the doc changes. */
+  private boxesOf(name: string): ZoneBox[] {
+    const key = `${this.docGen}/${this.version}`;
+    if (this.zonesOfKey !== key) {
+      this.zonesOfKey = key;
+      this.zonesOf.clear();
+      for (const b of this.boxes) {
+        const list = this.table.get(b.z.id);
+        if (!list) continue;
+        for (const nm of list.split(",")) {
+          if (!nm) continue;
+          let arr = this.zonesOf.get(nm);
+          if (!arr) this.zonesOf.set(nm, (arr = []));
+          arr.push(b);
+        }
+      }
+    }
+    return this.zonesOf.get(name) ?? [];
+  }
+
   raster(name: string, rect: { x: number; y: number; width: number; height: number }, cols: number, rows: number, refOut?: Uint8Array): Uint8Array {
-    const out = new Uint8Array(cols * rows);
-    /* `refOut`, when given, is filled in THE SAME WALK with the floor level
-     * each sample pools on (runtime/zonefloor.ts, packed at REF_SCALE). A
-     * second pass of its own would repeat every cellAt and every owner test
-     * this one already does — the cost the overlap memo below exists to
-     * remove — so the floor rides along with the mask instead. */
+    const n = cols * rows;
     if (refOut) refOut.fill(0);
-    if (!this.ruled) { out.fill(255); return out; }
-    /* A SAMPLE THE PICKER CANNOT PLACE IS UNKNOWN, NOT ZERO. weightAt answers
-     * 0 where no cell lies under the drawn point — right for a particle
-     * asking "am I in the zone", a LIE in a raster: sky over a ridge, and the
-     * cliff faces at a level boundary, punched 0-holes straight through the
-     * middle of a zone. Measured deep inside the south-eastern green, holes
-     * pulled the fade down to 0.892 where it should be whole. So they are
-     * filled from their known neighbours instead (four passes, which closes
-     * anything up to ~2 cells across); whatever is still unknown stays 0, and
-     * the mist pass never reads it — it paints only where its march FOUND a
-     * surface, which is the same test that failed the pick. */
-    const known = new Uint8Array(cols * rows);
-    const cc = new Int16Array(cols * rows);
-    const rr = new Int16Array(cols * rows);
-    /* THE OVERLAP WITH THE LAST RASTER IS COPIED. Sample i of this rect is
-     * sample i+di of the last one when the rect moved by whole steps (the
-     * mount snaps it so), so only the samples that entered the rect are
-     * looked up; the fill passes below run on the whole grid either way and
-     * give the bytes a full computation would. */
+    if (!this.ruled) {
+      const out = new Uint8Array(n);
+      out.fill(255);
+      return out;
+    }
     const stepX = rect.width / cols;
     const stepY = rect.height / rows;
     const m = this.rasterMemo;
@@ -523,69 +591,101 @@ export class ZoneField {
         Math.abs(di) < cols &&
         Math.abs(dj) < rows;
     }
-    for (let j = 0; j < rows; j++)
-      for (let i = 0; i < cols; i++) {
-        const k = j * cols + i;
-        if (reuse) {
-          const si = i + di;
-          const sj = j + dj;
-          if (si >= 0 && si < cols && sj >= 0 && sj < rows) {
-            const sk = sj * cols + si;
-            if (m!.known[sk] !== RASTER_STALE) {
-              out[k] = m!.raw[sk];
-              known[k] = m!.known[sk];
-              cc[k] = m!.cc[sk];
-              rr[k] = m!.rr[sk];
-              if (refOut) refOut[k] = m!.ref ? m!.ref[sk] : 0;
-              continue;
-            }
-          }
-        }
-        const x = rect.x + rect.width * ((i + 0.5) / cols);
-        const y = rect.y + rect.height * ((j + 0.5) / rows);
-        const p = this.cellAt(x, y);
-        if (p) {
-          out[k] = Math.round(255 * this.weightAt(name, x, y));
-          known[k] = 1;
-          cc[k] = p.col;
-          rr[k] = p.row;
-          if (refOut) refOut[k] = packRef(this.floorAt(name, p.col, p.row, p.lvl));
-        }
-      }
-    this.rasterMemo = { name, cols, rows, stepX, stepY, x: rect.x, y: rect.y, gen: this.docGen, raw: out.slice(), known: known.slice(), cc, rr, ref: refOut ? refOut.slice() : null };
-    for (let pass = 0; pass < 4; pass++) {
-      let filled = 0;
-      const was = known.slice();
-      for (let j = 0; j < rows; j++)
-        for (let i = 0; i < cols; i++) {
-          const k = j * cols + i;
-          if (was[k]) continue;
-          let sum = 0, n = 0;
-          if (i > 0 && was[k - 1]) { sum += out[k - 1]; n++; }
-          if (i < cols - 1 && was[k + 1]) { sum += out[k + 1]; n++; }
-          if (j > 0 && was[k - cols]) { sum += out[k - cols]; n++; }
-          if (j < rows - 1 && was[k + cols]) { sum += out[k + cols]; n++; }
-          if (n) {
-            out[k] = Math.round(sum / n);
-            /* THE FLOOR IS FILLED FROM ITS NEIGHBOURS TOO. An unknown sample
-             * left at 0 is a hole at SEA LEVEL punched through the middle of a
-             * raised zone — the fog would drop out over exactly the cliff
-             * faces and ridge-sky the mask's own fill exists to close. */
-            if (refOut) {
-              let rs = 0, rn = 0;
-              if (i > 0 && was[k - 1]) { rs += refOut[k - 1]; rn++; }
-              if (i < cols - 1 && was[k + 1]) { rs += refOut[k + 1]; rn++; }
-              if (j > 0 && was[k - cols]) { rs += refOut[k - cols]; rn++; }
-              if (j < rows - 1 && was[k + cols]) { rs += refOut[k + cols]; rn++; }
-              if (rn) refOut[k] = Math.round(rs / rn);
-            }
-            known[k] = 1;
-            filled++;
-          }
-        }
-      if (!filled) break;
+    /* THE SAME LATTICE WINDOW AND NOTHING STALE: the last answer, copied. A
+     * standing camera pays a memcpy a tick (games-perf Task 2, 2026-09-24:
+     * the memo hit still walked all 2,560 samples, allocated six arrays and
+     * ran four fill passes over the whole grid — `_gloom:raster` 2.2-3.3 ms
+     * a tick on his phone with nothing to look up). */
+    if (reuse && di === 0 && dj === 0 && m!.stale === 0) {
+      if (refOut) refOut.set(m!.b.filledRef);
+      return m!.b.filled.slice();
     }
-    return out;
+    let bufs = this.rasterScratch;
+    if (!bufs || bufs.raw.length !== n) bufs = rasterBufs(n);
+    this.rasterScratch = null;
+    const { raw, known, cc, rr, ref, fk, filled, filledRef } = bufs;
+    raw.fill(0);
+    known.fill(0);
+    ref.fill(0);
+    const look = (k: number, i: number, j: number): void => {
+      const x = rect.x + rect.width * ((i + 0.5) / cols);
+      const y = rect.y + rect.height * ((j + 0.5) / rows);
+      const p = this.cellAt(x, y);
+      if (!p) return;
+      raw[k] = Math.round(255 * this.weightAt(name, x, y));
+      known[k] = 1;
+      cc[k] = p.col;
+      rr[k] = p.row;
+      ref[k] = packRef(this.floorAt(name, p.col, p.row, p.lvl));
+    };
+    if (reuse) {
+      /* THE OVERLAP IS COPIED A ROW AT A TIME (source column i+di, row j+dj);
+       * only the edge that entered is looked up — a walking camera ~40-100
+       * samples a tick, not 2,560. */
+      const mb = m!.b;
+      const i0 = Math.max(0, -di);
+      const i1 = Math.min(cols, cols - di);
+      const j0 = Math.max(0, -dj);
+      const j1 = Math.min(rows, rows - dj);
+      for (let j = 0; j < rows; j++) {
+        if (j >= j0 && j < j1 && i1 > i0) {
+          const dst = j * cols + i0;
+          const src = (j + dj) * cols + i0 + di;
+          const len = i1 - i0;
+          raw.set(mb.raw.subarray(src, src + len), dst);
+          known.set(mb.known.subarray(src, src + len), dst);
+          cc.set(mb.cc.subarray(src, src + len), dst);
+          rr.set(mb.rr.subarray(src, src + len), dst);
+          ref.set(mb.ref.subarray(src, src + len), dst);
+          for (let i = 0; i < i0; i++) look(j * cols + i, i, j);
+          for (let i = i1; i < cols; i++) look(j * cols + i, i, j);
+        } else for (let i = 0; i < cols; i++) look(j * cols + i, i, j);
+      }
+      // the samples a re-roll marked (staleRaster): looked up again, in place
+      if (m!.stale)
+        for (let k = 0; k < n; k++)
+          if (known[k] === RASTER_STALE) {
+            known[k] = 0;
+            const i = k % cols;
+            look(k, i, (k - i) / cols);
+          }
+    } else for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) look(j * cols + i, i, j);
+    /* THE FILL, over the unknown samples alone (off the map: none in the
+     * interior, a strip at a map edge): four passes of the average of the
+     * known neighbours, each pass reading the flags the previous one left,
+     * so the bytes equal the whole-grid passes they replace. */
+    filled.set(raw);
+    filledRef.set(ref);
+    fk.set(known);
+    let pending: number[] = [];
+    for (let k = 0; k < n; k++) if (!known[k]) pending.push(k);
+    for (let pass = 0; pass < 4 && pending.length; pass++) {
+      const next: number[] = [];
+      const done: number[] = [];
+      for (const k of pending) {
+        const i = k % cols;
+        let sum = 0;
+        let rs = 0;
+        let cnt = 0;
+        if (i > 0 && fk[k - 1]) { sum += filled[k - 1]; rs += filledRef[k - 1]; cnt++; }
+        if (i < cols - 1 && fk[k + 1]) { sum += filled[k + 1]; rs += filledRef[k + 1]; cnt++; }
+        if (k >= cols && fk[k - cols]) { sum += filled[k - cols]; rs += filledRef[k - cols]; cnt++; }
+        if (k + cols < n && fk[k + cols]) { sum += filled[k + cols]; rs += filledRef[k + cols]; cnt++; }
+        if (cnt) done.push(k, Math.round(sum / cnt), Math.round(rs / cnt));
+        else next.push(k);
+      }
+      for (let q = 0; q < done.length; q += 3) {
+        filled[done[q]] = done[q + 1];
+        filledRef[done[q]] = done[q + 2];
+        fk[done[q]] = 1;
+      }
+      pending = next;
+    }
+    const prev = this.rasterMemo;
+    this.rasterMemo = { name, cols, rows, stepX, stepY, x: rect.x, y: rect.y, gen: this.docGen, stale: 0, b: bufs };
+    if (prev && prev.b.raw.length === n) this.rasterScratch = prev.b;
+    if (refOut) refOut.set(filledRef);
+    return filled.slice();
   }
 
   debug() {
@@ -610,6 +710,14 @@ type BlurRec = { v: number; zones: readonly string[]; epoch: number };
 type ZoneBox = { z: AmbientZone; x0: number; y0: number; x1: number; y1: number };
 /** A raster memo sample a re-roll may have changed: looked up again, not copied. */
 const RASTER_STALE = 2;
+/** One raster's buffers: the samples as looked up (`raw`, `known` 1 = a
+ *  sample, RASTER_STALE = a sample a re-roll invalidated, `cc`/`rr` its cell,
+ *  `ref` its floor) and the answer handed out (`filled`/`filledRef`, the
+ *  unknown samples filled from their neighbours; `fk` the fill's own flags). */
+type RasterBufs = { raw: Uint8Array; known: Uint8Array; fk: Uint8Array; cc: Int16Array; rr: Int16Array; ref: Uint8Array; filled: Uint8Array; filledRef: Uint8Array };
+function rasterBufs(n: number): RasterBufs {
+  return { raw: new Uint8Array(n), known: new Uint8Array(n), fk: new Uint8Array(n), cc: new Int16Array(n), rr: new Int16Array(n), ref: new Uint8Array(n), filled: new Uint8Array(n), filledRef: new Uint8Array(n) };
+}
 
 /** A picker bucket as ONE NUMBER: bucket columns and rows within ±2^20 (a
  *  bucket is 16 px). A cell as one number: col and row within ±2048 (a world

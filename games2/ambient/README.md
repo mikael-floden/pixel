@@ -423,9 +423,21 @@ them; folder isolation beats DRY here).
   mask is a little coarser than the ideal (16 wu at rest, 22 running); the
   feather is a cell, so it still resolves. Measured on the_game's 96 zones
   (median 77 vertices, one of 708; a desktop core, his phone is 3-5x
-  slower): a cold cell 173 -> 34 µs, a walking tick's raster + coverage
-  18.4 -> 2.5 ms, a standing one 5.3 -> 0.09 ms, the memo drop's worst
-  tick 377 -> 76 ms and now only the first.)
+  slower): a cold cell 173 -> 34 µs, the memo drop's worst tick 377 -> 76
+  ms and now only the first.)
+  THE TICK COSTS A BOUNDED AMOUNT (games-perf Task 2, 2026-09-24): a memo
+  hit that moved by no step returns the last FILLED answer as a copy — it
+  used to walk all 2,560 samples, allocate six arrays and run four fill
+  passes over the whole grid (`_gloom:raster` 2.2-3.3 ms a tick on his
+  phone with nothing to look up); a window that moved copies the overlap a
+  row at a time and looks up its edge alone; the fill runs over the unknown
+  (off-map) samples from a list, none in the interior; the memo and its
+  twin swap, so a tick allocates only the copy it hands out. `coverage`
+  picks the view's 48 samples ONCE per tick for every effect that asks and
+  reads 0, without a weight, for an effect none of whose zones' boxes reach
+  them (the director asked per episode: 48 x ~12 x a pick and four blurs,
+  `_director` 0.9-1.7 ms a tick and a 104 ms peak). Desktop, 96 zones: a
+  standing raster 0.107 -> 0.002 ms, twelve coverages 0.24 -> 0.12.
 
 ## The zone boundary — every effect respects it, spatially
 

@@ -380,6 +380,20 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   headless box's speed, not the code: there the hop joins in 2.5-3.5 s and
   its 3 s watch records 2-4 frames on main with nothing changed, where his
   phone joins in 204-243 ms and records 68-121 — games' gate.)
+- **THE AMBIENT TICK COSTS A BOUNDED AMOUNT** (Task 2 of his order,
+  games-perf 2026-09-24). His 14:01 run, ~9 ticks a second: `_gloom` 2.8-4.2
+  ms PER TICK (raster 2.2-3.3, field 0.5-0.7, mask 0.2) and `_director`
+  0.9-1.7 (peak 104) — a 4-6 ms bump every fifth frame on top of `hooks`'
+  3.5-7.4 ms/frame. The raster's memo hit still walked every lattice sample,
+  allocated six arrays and ran four whole-grid fill passes; the director
+  asked coverage per episode, each a pick and four blurs per sample. Now a
+  standing camera's raster is a copy of the last filled answer, a moved
+  window copies its overlap by rows and looks up its edge, the fill runs
+  over the off-map samples alone, and coverage picks the view once per tick
+  and reads 0 for an effect with no zone box in reach (`zonefield.ts`,
+  law and numbers in `ambient/README.md`). Next in the ambient line: the
+  per-effect scan peaks (foam 9-13 ms every 450 ms, windy 11.7, water 9.8,
+  dragonflies 8.3) spread over frames.
 - **THE WALK IS INCREMENTAL TOO** (`rebuildOccluders` full vs step,
   `tiles3Occluders(..., only)`, 2026-09-12). The pool kept the IMAGES; the
   walk that decided them still visited every cell of the window — ~2,700 on

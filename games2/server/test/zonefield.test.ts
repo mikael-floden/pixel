@@ -474,3 +474,82 @@ test("the memos are bounded on a long walk, and what was just asked is still the
   assert.equal(f.debug().resolves, r0);
   assert.equal(picks, p0);
 });
+
+// ── THE TICK COSTS A BOUNDED AMOUNT (games-perf Task 2, 2026-09-24) ──────────
+
+/** A flat world with an EDGE: beyond `size` cells there is no cell at all, so
+ *  the raster has samples to fill from their neighbours. */
+const bounded = (size: number) => (x: number, y: number): ZonePick | null => {
+  const p = flat()(x, y);
+  return p.col < 0 || p.row < 0 || p.col >= size || p.row >= size ? null : p;
+};
+
+test("a lattice window that moved by whole steps equals a cold raster byte for byte — the overlap copied, the edge looked up, the off-map samples filled", () => {
+  const s: ZoneSource = { doc: doc(), packed: "wet=rain,gnats;dry=gnats;deep=drips", roomSky: false };
+  const f = new ZoneField(() => s, bounded(64) as unknown as ReturnType<typeof flat>);
+  f.refresh();
+  const cols = 32, rows = 16;
+  // half a cell per sample; the window reaches past the world's east edge (col 64) so a strip is off the map
+  const rect0 = { x: 40 * CELL_WU, y: 8 * CELL_WU, width: 16 * CELL_WU, height: 8 * CELL_WU };
+  const ref0 = new Uint8Array(cols * rows);
+  const a = f.raster("gnats", rect0, cols, rows, ref0);
+  const picks0 = f.stats.picks;
+  const r0 = f.debug().resolves;
+  for (const [dx, dy] of [[1, 0], [0, 1], [-2, 1], [3, -2], [0, 0]]) {
+    const rect = { ...rect0, x: rect0.x + dx * (CELL_WU / 2), y: rect0.y + dy * (CELL_WU / 2) };
+    const ref = new Uint8Array(cols * rows);
+    const warm = f.raster("gnats", rect, cols, rows, ref);
+    const { f: cold } = field({});
+    const coldF = new ZoneField(() => s, bounded(64) as unknown as ReturnType<typeof flat>);
+    coldF.refresh();
+    const cref = new Uint8Array(cols * rows);
+    assert.deepEqual([...warm], [...coldF.raster("gnats", rect, cols, rows, cref)], `bytes at shift ${dx},${dy}`);
+    assert.deepEqual([...ref], [...cref], `floor refs at shift ${dx},${dy}`);
+    void cold;
+  }
+  // the walk looked up only the edges: far fewer resolves than five cold rasters would need
+  assert.ok(f.debug().resolves - r0 < cols * rows, `edge lookups only (${f.debug().resolves - r0} resolves for five shifted windows of ${cols * rows})`);
+  assert.ok(f.stats.picks - picks0 < cols * rows, "and only the samples that entered were picked");
+  assert.ok(a.length === cols * rows);
+});
+
+test("a standing camera pays a copy: the same lattice window answers without a pick or a resolve, floor refs included", () => {
+  const { f } = field({});
+  const cols = 64, rows = 40;
+  const rect = { x: 0, y: 0, width: 48 * CELL_WU, height: 30 * CELL_WU };
+  const ref1 = new Uint8Array(cols * rows);
+  const a = f.raster("gnats", rect, cols, rows, ref1);
+  const picks = f.stats.picks;
+  const resolves = f.debug().resolves;
+  const ref2 = new Uint8Array(cols * rows);
+  const b = f.raster("gnats", rect, cols, rows, ref2);
+  assert.deepEqual([...b], [...a]);
+  assert.deepEqual([...ref2], [...ref1], "the floor refs ride the memo too");
+  assert.equal(f.stats.picks, picks, "no sample picked");
+  assert.equal(f.debug().resolves, resolves, "no cell resolved");
+  assert.notEqual(a, b, "still a copy of its own");
+});
+
+test("coverage: an effect with no zone within reach of the view reads 0 without a cell resolved, the same view answers from the cache, and a re-rolled table clears it", () => {
+  const { f, s } = field({});
+  // the view over the wet zone (cols 10-20, rows 10-20): rain and gnats are there, drips only in the pit at rows 30-40
+  const view = { x: 8 * CELL_WU, y: 8 * CELL_WU, width: 14 * CELL_WU, height: 14 * CELL_WU };
+  const rain = f.coverage("rain", view);
+  assert.ok(rain.any && rain.max === 1, "rain covers the view");
+  const r0 = f.debug().resolves;
+  const p0 = f.stats.picks;
+  const drips = f.coverage("drips", view);
+  assert.equal(drips.any, false);
+  assert.equal(drips.max, 0);
+  assert.equal(f.debug().resolves, r0, "no cell resolved for an effect with no zone in sight");
+  assert.equal(f.stats.picks, p0, "and no sample picked again: the view's samples are shared");
+  assert.equal(f.coverage("rain", view), rain, "the same view and table: the cached answer");
+  s.packed = "wet=gnats;dry=gnats;deep=drips"; // rain rolled off in the wet zone
+  assert.equal(f.refresh(), true);
+  const after = f.coverage("rain", view);
+  assert.notEqual(after, rain, "a new table is a new answer");
+  assert.equal(after.any, false, "rain is off now");
+  // a view elsewhere is its own answer
+  const far = f.coverage("gnats", { ...view, x: 50 * CELL_WU, y: 50 * CELL_WU });
+  assert.equal(far.any, false);
+});
