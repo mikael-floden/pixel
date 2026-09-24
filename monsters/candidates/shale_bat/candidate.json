@@ -1,0 +1,140 @@
+{
+  "id": "shale_bat",
+  "name": "Shalebat",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It sleeps flat against the rock and nobody finds it.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Bat with wings of thin grey shale that crack at the edges, a flat stone face, hanging from a shard of rock it carries.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shale_bat/rotations/south.webp",
+    "south-east": "shale_bat/rotations/south-east.webp",
+    "east": "shale_bat/rotations/east.webp",
+    "north-east": "shale_bat/rotations/north-east.webp",
+    "north": "shale_bat/rotations/north.webp",
+    "north-west": "shale_bat/rotations/north-west.webp",
+    "west": "shale_bat/rotations/west.webp",
+    "south-west": "shale_bat/rotations/south-west.webp"
+  },
+  "sheet": "shale_bat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c6edac9b-cdc7-4363-a09e-f9f39a17e621",
+  "seed": 260485378,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:41:37+00:00",
+  "elapsed_s": 233.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.725,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.766,
+        "bbox": [
+          1,
+          4,
+          39,
+          36
+        ],
+        "fill": 0.76,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.786,
+        "bbox": [
+          6,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.595,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.726,
+        "bbox": [
+          13,
+          3,
+          27,
+          37
+        ],
+        "fill": 0.297,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.778,
+        "bbox": [
+          5,
+          3,
+          32,
+          37
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.725,
+        "bbox": [
+          1,
+          4,
+          39,
+          36
+        ],
+        "fill": 0.76,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.764,
+        "bbox": [
+          7,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.732,
+        "bbox": [
+          13,
+          3,
+          27,
+          37
+        ],
+        "fill": 0.297,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.805,
+        "bbox": [
+          7,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.595,
+        "touches_edge": false
+      }
+    }
+  }
+}
