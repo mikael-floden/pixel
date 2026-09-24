@@ -1,0 +1,141 @@
+{
+  "id": "seed_pod_walker",
+  "name": "Podwalker",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It walks until it finds good ground, then it splits.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Tall thin walker made of a dry split seed pod on stilt legs, black seeds visible inside like eyes, brown papery skin, two hooked leaf arms.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "seed_pod_walker/rotations/south.webp",
+    "south-east": "seed_pod_walker/rotations/south-east.webp",
+    "east": "seed_pod_walker/rotations/east.webp",
+    "north-east": "seed_pod_walker/rotations/north-east.webp",
+    "north": "seed_pod_walker/rotations/north.webp",
+    "north-west": "seed_pod_walker/rotations/north-west.webp",
+    "west": "seed_pod_walker/rotations/west.webp",
+    "south-west": "seed_pod_walker/rotations/south-west.webp"
+  },
+  "sheet": "seed_pod_walker/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c55aed63-dba9-47b7-a4aa-135f47f36b8a",
+  "seed": 1180597258,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:20:59+00:00",
+  "elapsed_s": 854.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.726,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.726,
+        "bbox": [
+          9,
+          3,
+          79,
+          85
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.817,
+        "bbox": [
+          17,
+          3,
+          70,
+          87
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.768,
+        "bbox": [
+          29,
+          3,
+          63,
+          86
+        ],
+        "fill": 0.364,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.749,
+        "bbox": [
+          18,
+          3,
+          71,
+          85
+        ],
+        "fill": 0.561,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.731,
+        "bbox": [
+          10,
+          3,
+          78,
+          84
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.741,
+        "bbox": [
+          18,
+          3,
+          70,
+          85
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.756,
+        "bbox": [
+          25,
+          4,
+          60,
+          86
+        ],
+        "fill": 0.371,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.822,
+        "bbox": [
+          17,
+          4,
+          72,
+          87
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      }
+    }
+  }
+}

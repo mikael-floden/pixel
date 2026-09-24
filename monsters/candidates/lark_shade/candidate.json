@@ -1,0 +1,141 @@
+{
+  "id": "lark_shade",
+  "name": "Larkshade",
+  "tier": "evil",
+  "scale": "small",
+  "lore": "It sings at dawn in a voice that is not its own.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Small songbird of pure black shadow with a bright white open beak, no eyes, wings fraying into smoke at the tips, perched upright.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "lark_shade/rotations/south.webp",
+    "south-east": "lark_shade/rotations/south-east.webp",
+    "east": "lark_shade/rotations/east.webp",
+    "north-east": "lark_shade/rotations/north-east.webp",
+    "north": "lark_shade/rotations/north.webp",
+    "north-west": "lark_shade/rotations/north-west.webp",
+    "west": "lark_shade/rotations/west.webp",
+    "south-west": "lark_shade/rotations/south-west.webp"
+  },
+  "sheet": "lark_shade/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b1db2e8b-eaa4-40ba-a0bd-2dc66beaa122",
+  "seed": 843825132,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:17:41+00:00",
+  "elapsed_s": 642.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.686,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.765,
+        "bbox": [
+          2,
+          4,
+          38,
+          36
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.753,
+        "bbox": [
+          4,
+          5,
+          35,
+          36
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.709,
+        "bbox": [
+          3,
+          5,
+          36,
+          35
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.691,
+        "bbox": [
+          5,
+          4,
+          34,
+          36
+        ],
+        "fill": 0.58,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.716,
+        "bbox": [
+          2,
+          4,
+          38,
+          36
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.686,
+        "bbox": [
+          6,
+          3,
+          34,
+          36
+        ],
+        "fill": 0.578,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.694,
+        "bbox": [
+          4,
+          5,
+          37,
+          35
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.743,
+        "bbox": [
+          4,
+          5,
+          36,
+          36
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      }
+    }
+  }
+}

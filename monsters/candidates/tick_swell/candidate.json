@@ -1,0 +1,143 @@
+{
+  "id": "tick_swell",
+  "name": "Tickswell",
+  "tier": "mid",
+  "scale": "small",
+  "lore": "It drank from something that was not a dog.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Bloated grey-brown tick the size of a dog, eight thin hooked legs, a tiny head, skin stretched shiny and tight, slow heavy gait.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "tick_swell/rotations/south.webp",
+    "south-east": "tick_swell/rotations/south-east.webp",
+    "east": "tick_swell/rotations/east.webp",
+    "north-east": "tick_swell/rotations/north-east.webp",
+    "north": "tick_swell/rotations/north.webp",
+    "north-west": "tick_swell/rotations/north-west.webp",
+    "west": "tick_swell/rotations/west.webp",
+    "south-west": "tick_swell/rotations/south-west.webp"
+  },
+  "sheet": "tick_swell/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "466dea49-dde9-43e7-bf7d-ecae6d9b75eb",
+  "seed": 1917062612,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:17:18+00:00",
+  "elapsed_s": 590.4,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.637,
+    "reasons": [
+      "west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.73,
+        "bbox": [
+          2,
+          6,
+          38,
+          34
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.716,
+        "bbox": [
+          2,
+          6,
+          38,
+          35
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.673,
+        "bbox": [
+          3,
+          8,
+          36,
+          34
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.65,
+        "bbox": [
+          2,
+          8,
+          36,
+          34
+        ],
+        "fill": 0.552,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.674,
+        "bbox": [
+          3,
+          6,
+          37,
+          32
+        ],
+        "fill": 0.552,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.649,
+        "bbox": [
+          4,
+          8,
+          38,
+          34
+        ],
+        "fill": 0.552,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.637,
+        "bbox": [
+          0,
+          1,
+          37,
+          34
+        ],
+        "fill": 0.763,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.719,
+        "bbox": [
+          2,
+          6,
+          38,
+          35
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      }
+    }
+  }
+}

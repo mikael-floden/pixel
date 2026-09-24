@@ -1,0 +1,141 @@
+{
+  "id": "badger_brute",
+  "name": "Sett Brute",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It dug the old roads up because it wanted the stones.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Huge muscled badger on two legs, black and white striped head, a broken cart-wheel on one arm as a shield, thick claws, snarling.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "badger_brute/rotations/south.webp",
+    "south-east": "badger_brute/rotations/south-east.webp",
+    "east": "badger_brute/rotations/east.webp",
+    "north-east": "badger_brute/rotations/north-east.webp",
+    "north": "badger_brute/rotations/north.webp",
+    "north-west": "badger_brute/rotations/north-west.webp",
+    "west": "badger_brute/rotations/west.webp",
+    "south-west": "badger_brute/rotations/south-west.webp"
+  },
+  "sheet": "badger_brute/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c941a8e4-c7c2-40b7-95f2-35057705cf62",
+  "seed": 1943423097,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:19:10+00:00",
+  "elapsed_s": 713.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.669,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.687,
+        "bbox": [
+          4,
+          6,
+          86,
+          85
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.781,
+        "bbox": [
+          10,
+          5,
+          81,
+          85
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.76,
+        "bbox": [
+          10,
+          4,
+          75,
+          86
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.694,
+        "bbox": [
+          8,
+          4,
+          76,
+          85
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.669,
+        "bbox": [
+          3,
+          5,
+          82,
+          85
+        ],
+        "fill": 0.816,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.735,
+        "bbox": [
+          7,
+          4,
+          78,
+          85
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.781,
+        "bbox": [
+          12,
+          4,
+          77,
+          86
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.784,
+        "bbox": [
+          9,
+          5,
+          81,
+          85
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-24T17:07:20+00:00",
+  "generated_at": "2026-09-24T17:21:00+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 142,
+  "count": 146,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -19263,6 +19263,544 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-24T17:00:26+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "seed_pod_walker",
+      "name": "Podwalker",
+      "tier": "mid",
+      "lore": "It walks until it finds good ground, then it splits.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "c55aed63-dba9-47b7-a4aa-135f47f36b8a",
+      "version": 1,
+      "sheet": "seed_pod_walker/sheet.webp",
+      "rotations": {
+        "south": "seed_pod_walker/rotations/south.webp",
+        "south-east": "seed_pod_walker/rotations/south-east.webp",
+        "east": "seed_pod_walker/rotations/east.webp",
+        "north-east": "seed_pod_walker/rotations/north-east.webp",
+        "north": "seed_pod_walker/rotations/north.webp",
+        "north-west": "seed_pod_walker/rotations/north-west.webp",
+        "west": "seed_pod_walker/rotations/west.webp",
+        "south-west": "seed_pod_walker/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.726,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.726,
+            "bbox": [
+              9,
+              3,
+              79,
+              85
+            ],
+            "fill": 0.741,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.817,
+            "bbox": [
+              17,
+              3,
+              70,
+              87
+            ],
+            "fill": 0.575,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.768,
+            "bbox": [
+              29,
+              3,
+              63,
+              86
+            ],
+            "fill": 0.364,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.749,
+            "bbox": [
+              18,
+              3,
+              71,
+              85
+            ],
+            "fill": 0.561,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.731,
+            "bbox": [
+              10,
+              3,
+              78,
+              84
+            ],
+            "fill": 0.711,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.741,
+            "bbox": [
+              18,
+              3,
+              70,
+              85
+            ],
+            "fill": 0.551,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.756,
+            "bbox": [
+              25,
+              4,
+              60,
+              86
+            ],
+            "fill": 0.371,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.822,
+            "bbox": [
+              17,
+              4,
+              72,
+              87
+            ],
+            "fill": 0.589,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:20:59+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "lark_shade",
+      "name": "Larkshade",
+      "tier": "evil",
+      "lore": "It sings at dawn in a voice that is not its own.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "b1db2e8b-eaa4-40ba-a0bd-2dc66beaa122",
+      "version": 1,
+      "sheet": "lark_shade/sheet.webp",
+      "rotations": {
+        "south": "lark_shade/rotations/south.webp",
+        "south-east": "lark_shade/rotations/south-east.webp",
+        "east": "lark_shade/rotations/east.webp",
+        "north-east": "lark_shade/rotations/north-east.webp",
+        "north": "lark_shade/rotations/north.webp",
+        "north-west": "lark_shade/rotations/north-west.webp",
+        "west": "lark_shade/rotations/west.webp",
+        "south-west": "lark_shade/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.686,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.765,
+            "bbox": [
+              2,
+              4,
+              38,
+              36
+            ],
+            "fill": 0.72,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.753,
+            "bbox": [
+              4,
+              5,
+              35,
+              36
+            ],
+            "fill": 0.601,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.709,
+            "bbox": [
+              3,
+              5,
+              36,
+              35
+            ],
+            "fill": 0.619,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.691,
+            "bbox": [
+              5,
+              4,
+              34,
+              36
+            ],
+            "fill": 0.58,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.716,
+            "bbox": [
+              2,
+              4,
+              38,
+              36
+            ],
+            "fill": 0.72,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.686,
+            "bbox": [
+              6,
+              3,
+              34,
+              36
+            ],
+            "fill": 0.578,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.694,
+            "bbox": [
+              4,
+              5,
+              37,
+              35
+            ],
+            "fill": 0.619,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.743,
+            "bbox": [
+              4,
+              5,
+              36,
+              36
+            ],
+            "fill": 0.62,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:17:41+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "badger_brute",
+      "name": "Sett Brute",
+      "tier": "mid",
+      "lore": "It dug the old roads up because it wanted the stones.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "c941a8e4-c7c2-40b7-95f2-35057705cf62",
+      "version": 1,
+      "sheet": "badger_brute/sheet.webp",
+      "rotations": {
+        "south": "badger_brute/rotations/south.webp",
+        "south-east": "badger_brute/rotations/south-east.webp",
+        "east": "badger_brute/rotations/east.webp",
+        "north-east": "badger_brute/rotations/north-east.webp",
+        "north": "badger_brute/rotations/north.webp",
+        "north-west": "badger_brute/rotations/north-west.webp",
+        "west": "badger_brute/rotations/west.webp",
+        "south-west": "badger_brute/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.669,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.687,
+            "bbox": [
+              4,
+              6,
+              86,
+              85
+            ],
+            "fill": 0.837,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.781,
+            "bbox": [
+              10,
+              5,
+              81,
+              85
+            ],
+            "fill": 0.733,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.76,
+            "bbox": [
+              10,
+              4,
+              75,
+              86
+            ],
+            "fill": 0.688,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.694,
+            "bbox": [
+              8,
+              4,
+              76,
+              85
+            ],
+            "fill": 0.711,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.669,
+            "bbox": [
+              3,
+              5,
+              82,
+              85
+            ],
+            "fill": 0.816,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.735,
+            "bbox": [
+              7,
+              4,
+              78,
+              85
+            ],
+            "fill": 0.743,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.781,
+            "bbox": [
+              12,
+              4,
+              77,
+              86
+            ],
+            "fill": 0.688,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.784,
+            "bbox": [
+              9,
+              5,
+              81,
+              85
+            ],
+            "fill": 0.744,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:19:10+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "tick_swell",
+      "name": "Tickswell",
+      "tier": "mid",
+      "lore": "It drank from something that was not a dog.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "466dea49-dde9-43e7-bf7d-ecae6d9b75eb",
+      "version": 1,
+      "sheet": "tick_swell/sheet.webp",
+      "rotations": {
+        "south": "tick_swell/rotations/south.webp",
+        "south-east": "tick_swell/rotations/south-east.webp",
+        "east": "tick_swell/rotations/east.webp",
+        "north-east": "tick_swell/rotations/north-east.webp",
+        "north": "tick_swell/rotations/north.webp",
+        "north-west": "tick_swell/rotations/north-west.webp",
+        "west": "tick_swell/rotations/west.webp",
+        "south-west": "tick_swell/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.637,
+        "reasons": [
+          "west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.73,
+            "bbox": [
+              2,
+              6,
+              38,
+              34
+            ],
+            "fill": 0.63,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.716,
+            "bbox": [
+              2,
+              6,
+              38,
+              35
+            ],
+            "fill": 0.652,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.673,
+            "bbox": [
+              3,
+              8,
+              36,
+              34
+            ],
+            "fill": 0.536,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.65,
+            "bbox": [
+              2,
+              8,
+              36,
+              34
+            ],
+            "fill": 0.552,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.674,
+            "bbox": [
+              3,
+              6,
+              37,
+              32
+            ],
+            "fill": 0.552,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.649,
+            "bbox": [
+              4,
+              8,
+              38,
+              34
+            ],
+            "fill": 0.552,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.637,
+            "bbox": [
+              0,
+              1,
+              37,
+              34
+            ],
+            "fill": 0.763,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.719,
+            "bbox": [
+              2,
+              6,
+              38,
+              35
+            ],
+            "fill": 0.652,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:17:18+00:00",
       "verdict": null,
       "graduation": {
         "state": "waiting",
