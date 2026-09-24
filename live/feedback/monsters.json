@@ -8978,8 +8978,8 @@
     },
     "monsters/sand_scorpling": {
       "status": "approved",
-      "rating": 1,
-      "updated_at": "2026-09-22T13:38:11.151Z"
+      "rating": 3,
+      "updated_at": "2026-09-24T19:39:16.415Z"
     },
     "monsters/sand_scorpling#idle#south": {
       "status": "approved",
@@ -12486,7 +12486,35 @@
       "rating": 1,
       "art": "1a161177db5a99ef",
       "updated_at": "2026-09-24T19:38:38.460Z"
+    },
+    "monsters/sand_scorpling#attack#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "35913711312c251a",
+      "updated_at": "2026-09-24T19:38:57.654Z"
+    },
+    "monsters/sand_scorpling#attack#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "9292cb95cf580a31",
+      "updated_at": "2026-09-24T19:39:06.113Z"
+    },
+    "monsters/sand_scorpling#attack#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "29926ab67bf0d550",
+      "updated_at": "2026-09-24T19:39:11.607Z"
+    },
+    "monsters/sand_scorpling#attack#north-east": {
+      "status": "redo",
+      "art": "10b7d8abc00f14a8",
+      "updated_at": "2026-09-24T19:39:13.091Z"
+    },
+    "monsters/sand_scorpling#attack#north-west": {
+      "status": "redo",
+      "art": "1e2759305a8f7b1e",
+      "updated_at": "2026-09-24T19:39:14.127Z"
     }
   },
-  "updated_at": "2026-09-24T19:38:38.099Z"
+  "updated_at": "2026-09-24T19:39:15.755Z"
 }
