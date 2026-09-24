@@ -1,0 +1,143 @@
+{
+  "id": "mud_mask",
+  "name": "Mudmask",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It smiles from the mud. The mud does not.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Man-shaped column of wet brown mud wearing a cracked white smiling mask, arms dripping, no feet, gliding through the marsh.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mud_mask/rotations/south.webp",
+    "south-east": "mud_mask/rotations/south-east.webp",
+    "east": "mud_mask/rotations/east.webp",
+    "north-east": "mud_mask/rotations/north-east.webp",
+    "north": "mud_mask/rotations/north.webp",
+    "north-west": "mud_mask/rotations/north-west.webp",
+    "west": "mud_mask/rotations/west.webp",
+    "south-west": "mud_mask/rotations/south-west.webp"
+  },
+  "sheet": "mud_mask/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ff65771a-8533-465f-af3c-3e6cd9cb4ea9",
+  "seed": 401977350,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:12:55+00:00",
+  "elapsed_s": 1.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.725,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.725,
+        "bbox": [
+          14,
+          3,
+          74,
+          85
+        ],
+        "fill": 0.635,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.789,
+        "bbox": [
+          17,
+          4,
+          69,
+          85
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.77,
+        "bbox": [
+          25,
+          3,
+          65,
+          85
+        ],
+        "fill": 0.424,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.731,
+        "bbox": [
+          20,
+          3,
+          66,
+          85
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.732,
+        "bbox": [
+          16,
+          3,
+          72,
+          85
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.738,
+        "bbox": [
+          22,
+          3,
+          69,
+          85
+        ],
+        "fill": 0.498,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.782,
+        "bbox": [
+          22,
+          3,
+          62,
+          85
+        ],
+        "fill": 0.424,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.781,
+        "bbox": [
+          19,
+          4,
+          71,
+          85
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      }
+    }
+  }
+}
