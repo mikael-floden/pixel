@@ -1,0 +1,143 @@
+{
+  "id": "hay_golem",
+  "name": "Bale Golem",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Stacked too high one summer and it did not want to come down.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Huge square hay bale with thick straw arms and legs, baling twine cut into its surface like veins, a dark gap where a face should be.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hay_golem/rotations/south.webp",
+    "south-east": "hay_golem/rotations/south-east.webp",
+    "east": "hay_golem/rotations/east.webp",
+    "north-east": "hay_golem/rotations/north-east.webp",
+    "north": "hay_golem/rotations/north.webp",
+    "north-west": "hay_golem/rotations/north-west.webp",
+    "west": "hay_golem/rotations/west.webp",
+    "south-west": "hay_golem/rotations/south-west.webp"
+  },
+  "sheet": "hay_golem/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b7ca9dc8-7861-4132-b091-c11109ed474c",
+  "seed": 576292596,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T20:48:10+00:00",
+  "elapsed_s": 2.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.678,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.678,
+        "bbox": [
+          14,
+          12,
+          209,
+          212
+        ],
+        "fill": 0.777,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.755,
+        "bbox": [
+          21,
+          10,
+          200,
+          216
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.751,
+        "bbox": [
+          51,
+          8,
+          168,
+          217
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.745,
+        "bbox": [
+          26,
+          9,
+          195,
+          208
+        ],
+        "fill": 0.67,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.72,
+        "bbox": [
+          13,
+          9,
+          209,
+          204
+        ],
+        "fill": 0.762,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          28,
+          10,
+          198,
+          209
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.763,
+        "bbox": [
+          62,
+          8,
+          167,
+          217
+        ],
+        "fill": 0.437,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.755,
+        "bbox": [
+          28,
+          7,
+          198,
+          216
+        ],
+        "fill": 0.708,
+        "touches_edge": false
+      }
+    }
+  }
+}
