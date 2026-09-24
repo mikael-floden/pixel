@@ -1,0 +1,143 @@
+{
+  "id": "pollen_bull",
+  "name": "Pollenbull",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "A whole spring's bloom in the shape of a bull, and it sneezes.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Bull of solid yellow pollen, every step shedding a cloud, red-orange eyes, horns thick with gold dust, sneeze-cracks along its flanks.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pollen_bull/rotations/south.webp",
+    "south-east": "pollen_bull/rotations/south-east.webp",
+    "east": "pollen_bull/rotations/east.webp",
+    "north-east": "pollen_bull/rotations/north-east.webp",
+    "north": "pollen_bull/rotations/north.webp",
+    "north-west": "pollen_bull/rotations/north-west.webp",
+    "west": "pollen_bull/rotations/west.webp",
+    "south-west": "pollen_bull/rotations/south-west.webp"
+  },
+  "sheet": "pollen_bull/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0eedcc1b-a12d-4590-9282-b56bb66683f3",
+  "seed": 555432370,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T20:47:19+00:00",
+  "elapsed_s": 1.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.586,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.586,
+        "bbox": [
+          33,
+          8,
+          182,
+          211
+        ],
+        "fill": 0.603,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.659,
+        "bbox": [
+          32,
+          7,
+          183,
+          216
+        ],
+        "fill": 0.629,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.678,
+        "bbox": [
+          32,
+          6,
+          184,
+          216
+        ],
+        "fill": 0.636,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.645,
+        "bbox": [
+          33,
+          7,
+          183,
+          213
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.617,
+        "bbox": [
+          43,
+          8,
+          179,
+          211
+        ],
+        "fill": 0.55,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.635,
+        "bbox": [
+          50,
+          7,
+          164,
+          212
+        ],
+        "fill": 0.466,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.68,
+        "bbox": [
+          54,
+          6,
+          171,
+          216
+        ],
+        "fill": 0.49,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.656,
+        "bbox": [
+          45,
+          8,
+          172,
+          216
+        ],
+        "fill": 0.526,
+        "touches_edge": false
+      }
+    }
+  }
+}
