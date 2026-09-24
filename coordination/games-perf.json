@@ -1,15 +1,15 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T20:56:36+00:00",
+  "updated_at": "2026-09-24T21:41:38+00:00",
   "health": "running",
   "current": {
-    "unit": "IDLE after 410d19f944 (the band-pass cuts, live pending). Waiting for his next run: the verdict is sectionsPeak for groundSlice and repaintCells, and the >50 ms frame count. Next candidates in his worst frames: the first resolve of cells in a band (16-20 ms), litCoverSurf spikes (197 ms once), depthSort spikes (34 ms once).",
-    "since": "2026-09-24T20:56:36+00:00",
+    "unit": "IDLE after 44d6405713 (deploying). An ultracode investigation of what the player would feel is running (read-only). Next on its result and his next run.",
+    "since": "2026-09-24T21:41:38+00:00",
     "files": []
   },
   "progress": {
     "runs_read": 47,
-    "units_shipped": 17
+    "units_shipped": 18
   },
   "budget_remaining": null,
   "notes": [
@@ -31,6 +31,10 @@
     {
       "at": "2026-09-24T20:56:36+00:00",
       "text": "SHIPPED 410d19f944 — A GROUND BAND PASS DOES ONLY THE BAND'S WORK (his verdict 2026-09-24: the worst frames are the problem, not the average). His 16:50 run: groundSlice 12-28 ms and repaintCells 17-65 ms PEAKS in every window. Headless at 229,256 a 289x492 slice walked ~825 cells for ~135 in its rect, made ~3,500 ops (~1,700 thrown away by the clip) and built 5-23 ms of plates on the frame thread. Now: (1) the tight band — only cells whose column reaches the rect are resolved and walked (verify-groundbracket tightCmp/cellsTightCmp: identical, 5/5 + 5/5); (2) plates on the compose worker inside band passes and the ring (a `plate` job; verify-compose audit diff 0 over 834 rasters); (3) a worker landing drains the owed cells (the loader's idle edge never saw it — a deferred plate would have stood as a hole in loaded ground). Worst slice 48 → 25 ms, all slices 154 → 80 ms at his worst spot. ON by default; Settings→Dev 'ground: tight band' / 'ground: plates off-thread', ?groundtight=0 / ?grounddefer=0. LEFT in the worst slices: the first resolve of cells, 16-20 ms (resolve worker off by his 09-08 verdict). Other worst-frame causes in his 16:50 run, not touched: litCoverSurf 197 ms (one 283 ms frame), depthSort 34 + render 48 (one 130 ms frame), gapBusy 33."
+    },
+    {
+      "at": "2026-09-24T21:41:38+00:00",
+      "text": "SHIPPED 44d6405713 — A CELL REPAINT IS THE CELL'S SIZE. His 21:13 run on 310bbf0439 (after 410d19f944): ground work dominated 1,367 of ~1,900 long frames; repaintCells 6-14 ms a frame MEAN, 350-780 repaint runs a window at ~13 ms each, 278-3,637 landed cells carried past the budget per window. A landed/owed cell repainted a rect from the world's highest storey (40 x 15 px) down; a batch was 12 cells by column (a screen diagonal). Now the rect starts at the cell's own top (level, decks, +1 storey, - T3_TOP_Y - lh - T3_TILE) and a batch stays in one 8x8-lattice screen block. Headless: mean rect 194x686 -> 141x302, cells walked 675 -> 338, draws 1,667 -> 813; extent check 1,000/1,000 cells paint nothing above the sized rect; groundbracket green. ?groundrect=0 / Settings→Dev 'ground: tight repaint'. Also in his 21:13 run: hooks (ambient) 5-16 ms/frame, 'unattributed' dominant in 1,268 long frames, taps: gapBusy 110-184 ms with repath 52-90 ms (games' nav, posted 09-23)."
     }
   ],
   "requests": [
