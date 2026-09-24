@@ -1,0 +1,140 @@
+{
+  "id": "cormorant_shade",
+  "name": "Cormshade",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It dries its wings on the rock where the lighthouse keeper fell.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Black cormorant with wings spread to dry, but made of shadow, a white hooked beak, eyes like wet stones.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cormorant_shade/rotations/south.webp",
+    "south-east": "cormorant_shade/rotations/south-east.webp",
+    "east": "cormorant_shade/rotations/east.webp",
+    "north-east": "cormorant_shade/rotations/north-east.webp",
+    "north": "cormorant_shade/rotations/north.webp",
+    "north-west": "cormorant_shade/rotations/north-west.webp",
+    "west": "cormorant_shade/rotations/west.webp",
+    "south-west": "cormorant_shade/rotations/south-west.webp"
+  },
+  "sheet": "cormorant_shade/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "22b4099e-f9e4-4700-8262-1622f543586c",
+  "seed": 1645869955,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:40:05+00:00",
+  "elapsed_s": 203.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.686,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.686,
+        "bbox": [
+          3,
+          7,
+          85,
+          81
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.749,
+        "bbox": [
+          13,
+          8,
+          77,
+          84
+        ],
+        "fill": 0.628,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.763,
+        "bbox": [
+          7,
+          5,
+          70,
+          84
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.808,
+        "bbox": [
+          11,
+          5,
+          77,
+          78
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.819,
+        "bbox": [
+          3,
+          5,
+          85,
+          80
+        ],
+        "fill": 0.794,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.801,
+        "bbox": [
+          11,
+          5,
+          76,
+          78
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.759,
+        "bbox": [
+          17,
+          5,
+          79,
+          84
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.74,
+        "bbox": [
+          11,
+          8,
+          75,
+          84
+        ],
+        "fill": 0.628,
+        "touches_edge": false
+      }
+    }
+  }
+}
