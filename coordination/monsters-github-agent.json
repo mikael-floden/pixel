@@ -1,16 +1,15 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:19:44+00:00",
-  "health": "idle",
-  "current": "NOTHING TAKEN — his monsters/plume_brawler#attack#north redo (22:12:06Z, no note) is REAL open work but the files are held in flight by the ORIGINAL agent, which is mid-project on exactly this facing. Holding no files, cleared nothing, generated nothing, $0.00.",
+  "updated_at": "2026-09-24T22:26:30+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 22:21:07–22:23:22Z candidate-approval burst, the eight still 'pending' on disk: avalanche_hare_swarm, cave_hermit_crab, fire_ant_lord, ore_beetle, bog_ghost_light, reed_giant, rustle, seed_pod_walker (all monsters/candidates/<id>, approved r1). Derived from the filesystem (candidate.json review vs live/feedback), not from the sweep's diff row; on NO other board — coordination/monsters.json holds ember_kit/minotaur/sand_scorpling/plume_brawler, monsters-assistant holds nothing. FILES: monsters/candidates/{avalanche_hare_swarm,cave_hermit_crab,fire_ant_lord,ore_beetle,bog_ghost_light,reed_giant,rustle,seed_pod_walker}/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT live/feedback/monsters.json — an approval is never cleared (review-contract law 2). No generation: an approved base earns five states, but that is the domain's batched unit and cannot finish in one foreground tool call.",
   "progress": {
-    "unit": "his 22:12Z plume_brawler attack#north redo — verified, yielded",
-    "entries_taken": 0,
+    "unit": "recording his 22:21-22:23Z approval burst (8 candidates)",
+    "entries_taken": 8,
     "entries_cleared": 0,
     "generations": 0,
-    "usd_spent": 0.0,
-    "dangling_verdicts": 0
+    "usd_spent": 0.0
   },
   "budget_remaining": "PixelLab USD ~$7.09 (floor $5) — this sitting spent $0.00",
   "notes": [
