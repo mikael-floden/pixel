@@ -1,0 +1,140 @@
+{
+  "id": "mudflat_hag",
+  "name": "Flathag",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The tide goes out and she is lying there, waiting.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Flat wide old woman of grey mudflat clay, worm holes over her body, a cockle shell for each eye, dripping.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mudflat_hag/rotations/south.webp",
+    "south-east": "mudflat_hag/rotations/south-east.webp",
+    "east": "mudflat_hag/rotations/east.webp",
+    "north-east": "mudflat_hag/rotations/north-east.webp",
+    "north": "mudflat_hag/rotations/north.webp",
+    "north-west": "mudflat_hag/rotations/north-west.webp",
+    "west": "mudflat_hag/rotations/west.webp",
+    "south-west": "mudflat_hag/rotations/south-west.webp"
+  },
+  "sheet": "mudflat_hag/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "def9d516-9a26-4840-bfd3-4da5902386cf",
+  "seed": 1148557183,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:45:26+00:00",
+  "elapsed_s": 193.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.777,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.777,
+        "bbox": [
+          13,
+          2,
+          76,
+          85
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.861,
+        "bbox": [
+          18,
+          2,
+          74,
+          86
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.856,
+        "bbox": [
+          13,
+          4,
+          70,
+          85
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.804,
+        "bbox": [
+          19,
+          5,
+          70,
+          84
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.804,
+        "bbox": [
+          12,
+          5,
+          76,
+          83
+        ],
+        "fill": 0.645,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.809,
+        "bbox": [
+          17,
+          5,
+          69,
+          84
+        ],
+        "fill": 0.53,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.842,
+        "bbox": [
+          18,
+          4,
+          75,
+          85
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.863,
+        "bbox": [
+          14,
+          2,
+          70,
+          86
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      }
+    }
+  }
+}
