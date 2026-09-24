@@ -242,4 +242,6 @@ their lines and numbers would otherwise float over the game view.
   border through one; the second socket exists only for the seconds of a
   hand-off).
 - Saving on a timer (writes are the Firestore bill; save on leave, death,
-  level-up and inventory change).
+  level-up, inventory change and once at the start of a hand-off — the
+  in-process bus dies with its instance, so that save is what a hop that
+  lands on a new revision restores from).

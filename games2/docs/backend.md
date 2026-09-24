@@ -350,22 +350,37 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   room's own monsters). A dead body's respawn and the water sanctuary are the
   home room's as before.
 
-## Where you are is saved (2026-09-23)
+## Where you are is saved (2026-09-24)
 
 A player's position is written on leave, death, level-up, the 30 s dirty
-flush AND on graceful shutdown, where every player of every room is written
-and the writes AWAITED before the match-maker disconnects anyone
-(`Server.onBeforeShutdown` in `index.ts` → `saveEveryPlayer`; Colyseus runs
-it on SIGTERM, which is how Cloud Run replaces the instance on every push).
-A walk of `MOVE_SAVE_WU` (2 cells) from the last write marks the player
-`dirty` too, so the flush covers a crash the hook never sees. (Position rode
-along with progression only — a leave, a death, a ding — and the leave save
-was fire-and-forget under a dying process, so a player who only walked was
-restored to the account's last write: the maintainer ran forty cells from
-spawn, a rollout replaced the instance under him, the client rejoined and
-"BANG I was teleported back to the spawn area". Not "save every tick" — one
-write per moving player per 30 s window is the whole cost, and the
-shutdown save is what makes the rollout invisible. `rolloutsave.test.ts`.)
+flush (a walk of `MOVE_SAVE_WU`, 2 cells, from the last write marks the
+player `dirty`), AT THE START OF EVERY HAND-OFF, and on graceful shutdown,
+where every player of every room is written and the writes AWAITED before the
+match-maker disconnects anyone (`Server.onBeforeShutdown` in `index.ts` →
+`saveEveryPlayer`; Colyseus runs it on SIGTERM, which is how Cloud Run
+replaces the instance on every push).
+
+The hand-off save is the FLOOR under the deploy teleport. The bus is
+in-process, so the hand-off document lives in the instance that wrote it, and
+a crossing whose join lands on the NEW revision (`--no-session-affinity`; the
+old process is still alive, so the shutdown save has not run) finds none.
+The signed copy in `zone:go` is the first answer ("The hand-off survives a
+rollout", above); when it cannot be honoured — a phone still on a bundle that
+carries no copy, a copy past `HANDOFF_TTL_S`, the secret claim failing — the
+room logs the player in from the account's last write, which used to be
+wherever they last left, died or flushed: the maintainer crossed a line 5-12
+min after a deploy and "BANG I was teleported back to the spawn area" — 5 of
+~291 hops in his telemetry, 25-131 cells each, every one within minutes of a
+deploy. `startHandoff` saves the body at the cut, not awaited, so that
+fallback restores within a cell of where the line was crossed, and it
+publishes NO arrival star. The write count is unchanged — the save moved from
+adoption, which a fallback never reaches, to the start. (`rollouthop.test.ts`;
+the shutdown save, `rolloutsave.test.ts`, covers the player the shutdown
+itself cuts. Not "save every tick" — one write per moving player per 30 s
+window plus one per crossing is the whole cost.) The client narrates every
+hop in chat while the "zone borders" overlay is on — go, bind timings,
+KEPT / COLD / LOST, sprites removed in view, the body's move at the swap —
+which is how a crossing bug is read off a phone.
 
 ## Positions on the wire (2026-09-09)
 

@@ -71,6 +71,10 @@ test("a hop whose document is not on this bus adopts the client's signed copy; a
     const go = new Promise<{ zone: number; pid: string; key: string; seq: number; hot?: string; sig?: string }>((res) => rA.onMessage("zone:go", res));
     rA.send("teleport", { x: BORDER_X + 2 * CELL_WU, y });
     const msg = await go;
+    // zone:go is sent from the tick that noticed the teleport, BEFORE that
+    // tick's patch reaches this client: read the position after the patch
+    // (measured: without the wait `atGo` is the parking spot, 160 wu off).
+    await new Promise((r) => setTimeout(r, 60));
     const atGo = { x: rA.state.players.get(pidA).x, y: rA.state.players.get(pidA).y };
     assert.equal(msg.zone, 1);
     assert.equal(msg.pid, pidA);

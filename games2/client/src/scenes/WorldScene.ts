@@ -13089,6 +13089,18 @@ export class WorldScene extends Phaser.Scene {
     if (this.room !== from || this.zoneSwapping) return;
     if (typeof msg?.zone !== "number" || typeof msg.pid !== "string" || typeof msg.key !== "string") return;
     const fromSeq = typeof msg.seq === "number" ? msg.seq : Infinity;
+    const fromZone = this.zone;
+    /* THE CROSSING NARRATES ITSELF IN CHAT WHILE "zone borders" IS ON
+     * (maintainer 2026-09-24: "I would still like to know in the chat what
+     * happens when a handover like this starts and ends so I more easily can
+     * find bugs"): the go, the bind with its timings and whether the hot
+     * state was KEPT or LOST (a hop that lands on a new revision restores
+     * from the save instead — the deploy teleport), how far the body moved
+     * at the swap, and a failed join. Nothing when the overlay is off. */
+    const note = (text: string) => { if (this.zoneLinesOn) this.hud?.pushChat("zones", text); };
+    note(`hand-off ${fromZone} \u2192 ${msg.zone} at seq ${Number.isFinite(fromSeq) ? fromSeq : "?"}`);
+    const meBefore = this.avatars.get(this.myId)?.sprite;
+    const before = meBefore ? { x: meBefore.x, y: meBefore.y } : null;
     this.zoneSwapping = true;
     this.zoneWatch = [];
     this.zoneWatchT0 = this.time.now;
@@ -13216,8 +13228,26 @@ export class WorldScene extends Phaser.Scene {
       this.zoneSwapping = false;
       from.leave(true);
       this.zoneHops++;
+      if (this.zoneLinesOn) {
+        const what = hop.cold
+          ? `COLD: the room adopted the body at seq 0, replayed nothing`
+          : adopted
+            ? `hot state KEPT at seq ${hop.baseSeq} (+${hop.behind} past go), replayed ${replayed}`
+            : `hot state LOST \u2014 no document and no valid copy, restored from the save at the cut, replayed ${replayed} from seq ${Number.isFinite(fromSeq) ? fromSeq : "?"}`;
+        note(`zone ${msg.zone} bound: join ${hop.joinMs} ms, state ${hop.stateMs}, ${what}` + (hop.removed.inView ? `, ${hop.removed.inView} sprite(s) removed in view` : ""));
+        // The felt jump: the body's drawn spot a moment after the swap against
+        // the one it had when zone:go arrived, minus nothing — a runner covers
+        // ground meanwhile, so read this beside the join time.
+        this.time.delayedCall(80, () => {
+          const me = this.avatars.get(this.myId)?.sprite;
+          if (!me || !before) return;
+          const d = Math.hypot(me.x - before.x, me.y - before.y) / CELL_WU;
+          note(`zone ${msg.zone}: body ${d.toFixed(2)} cells from its zone:go spot 80 ms after the bind`);
+        });
+      }
     } catch (e) {
       console.warn("[zones] hand-off join failed, staying:", e);
+      note(`hand-off ${fromZone} \u2192 ${msg.zone} FAILED, staying in ${fromZone}: ${e instanceof Error ? e.message : String(e)}`);
       this.zoneSwapping = false;
     }
   }

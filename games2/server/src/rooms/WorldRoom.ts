@@ -486,12 +486,15 @@ const liveRooms = new Set<WorldRoom>();
  *  this is the belt for a crash it never reaches (SIGKILL, OOM), bounding
  *  the loss to the 30 s flush at one write per moving player per window. */
 const MOVE_SAVE_WU = 2 * CELL_WU;
-/** POSITIONS SURVIVE A ROLLOUT. Cloud Run replaces the instance on every
- *  push (~88 a day); Colyseus' graceful shutdown disconnects every client,
- *  whose onLeave fires a save the process may exit under. The server's
- *  onBeforeShutdown callback (index.ts) awaits this FIRST — every player of
- *  every room, dirty or not — so the write has landed before the client is
- *  cut and rejoins the new instance, which reads it back. */
+/** THE SHUTDOWN SAVE. Cloud Run replaces the instance on every push (~88 a
+ *  day); Colyseus' graceful shutdown disconnects every client, whose onLeave
+ *  fires a save the process may exit under. The server's onBeforeShutdown
+ *  callback (index.ts) awaits this FIRST — every player of every room, dirty
+ *  or not — so the write has landed before a client is cut and rejoins the
+ *  new instance. It covers the player the SHUTDOWN cuts; it does not cover a
+ *  player who hops while the new revision is already taking joins (the old
+ *  process is still alive and has saved nothing) — that one is covered by
+ *  the save in `startHandoff`. */
 export async function saveEveryPlayer(): Promise<number> {
   const writes: Promise<void>[] = [];
   for (const room of liveRooms) writes.push(...room.saveAll());
@@ -1613,6 +1616,11 @@ export class WorldRoom extends Room<WorldState> {
       if (typeof options.t0 === "number") console.log(`[zones] hand-off onJoin for ${hot.pid} into zone ${this.zoneId}: +${Date.now() - options.t0} ms after zone:go`);
       return this.joinHandedOff(client, hot);
     }
+    // A HOP THAT ADOPTS NOTHING — no document on this bus and no copy this
+    // room honours (below) — comes back through the ordinary login, from the
+    // store, where `startHandoff` wrote the cut. It is NOT an arrival: no
+    // shooting star and no chime for a player who only crossed a line.
+    const lostHop = typeof options.pid === "string" && typeof options.handoff === "string";
     const player = new Player();
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
@@ -1720,8 +1728,9 @@ export class WorldRoom extends Room<WorldState> {
     // The backpack is PRIVATE — targeted message, never schema-synced.
     client.send("inv", { items: player.inv });
     // Every arrival in Nangijala is announced by a shooting star crossing
-    // the sky — the same streak for every player in the world.
-    this.publishEvent("star", { name: player.name });
+    // the sky — the same streak for every player in the world. A crossing
+    // that lost its hand-off is not an arrival.
+    if (!lostHop) this.publishEvent("star", { name: player.name });
   }
 
   /** A DROPPED LINK IS NOT A DEPARTURE — the seat is held open (2026-09-04,
@@ -3329,6 +3338,19 @@ export class WorldRoom extends Room<WorldState> {
     if (!client) return;
     const key = randomBytes(16).toString("hex"); // 128 bits: the capability for ONE join
     p.handoff = { to, key, at: now };
+    /* THE CUT SPOT IS IN THE STORE BEFORE THE CLIENT CAN JOIN ANYWHERE. A hop
+     * whose join lands on a NEW REVISION finds no document on that process's
+     * bus; it adopts the signed copy the client carries (`takeHandoffCopy`),
+     * and when that cannot be honoured either — a phone still running a
+     * bundle that carries none, a copy past HANDOFF_TTL_S, the secret claim
+     * failing — the ordinary join restores the account's last write. That
+     * write used to be wherever they last left, died or flushed, up to 30 s
+     * and 131 cells back (maintainer 2026-09-23: "BANG I was teleported back
+     * to the spawn area"). Written here, not awaited, the last write IS the
+     * cut, so the floor under the copy is one cell, not a minute. One write
+     * per crossing, the same count as before — it was written on adoption,
+     * which that fallback never reaches. */
+    this.savePlayer(p);
     const hot = this.hotStateFor(p, pid, key);
     const go = (extra: { hot?: string; sig?: string }) => client.send("zone:go", { zone: to, pid, key, seq: hot.seq, ...extra });
     void bus()
@@ -3512,11 +3534,9 @@ export class WorldRoom extends Room<WorldState> {
       return;
     }
     this.adoptPlayer(client, hot.pid, player, !!hot.noAggro);
-    // The old room saved nothing for this body and this room would not
-    // until its flush or the leave: a link dropped mid-hop that fails its
-    // seat reclaim then rejoins from the LAST SAVED spot — minutes old, in a
-    // house it left long ago. One write per crossing keeps the spot current.
-    this.savePlayer(player);
+    // The crossing's one save was written by the old room in `startHandoff`,
+    // so a link dropped mid-hop rejoins at the cut, and a hop that lands on a
+    // new revision restores there too.
     void bus().publish(this.chan.ctl(hot.from), { type: "handoff:done", pid: hot.pid } satisfies CtlMessage);
   }
 

@@ -217,7 +217,7 @@ push, no PRs unless asked.
 
 **Backend for 10k** (`docs/backend.md`, `spec/ZONES.md` — the wire, the
 stable player key, the warm-room table, the view API and their traps live
-THERE; read before touching the netcode)
+THERE)
 - ONE world, never instances (maintainer). Zones are rooms
   (`config/zones.json`; no entry = one room), ONE per zone per process; a
   border is crossed by a HAND-OFF over the bus and, signed, through the
@@ -233,8 +233,9 @@ THERE; read before touching the netcode)
 - Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else
   the in-process fake, same async contract). Writes are the Firestore
   bill: a save on leave, death, level-up, the dirty flush (a 2-cell walk
-  dirties) and, AWAITED, on shutdown — a rollout never sends a player back
-  to spawn (`rolloutsave.test.ts`).
+  dirties), at the start of a hand-off (a hop onto a new revision
+  restores from it — `rollouthop.test.ts`) and, AWAITED, on shutdown
+  (`rolloutsave.test.ts`).
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns, no monsters.
