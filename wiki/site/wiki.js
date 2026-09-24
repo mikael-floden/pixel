@@ -812,7 +812,20 @@ function verdictWidget(domain, id, { onchange, onStarChange = onchange, reject =
       } }, st === "rejected" ? pastTense(reject) : reject),
       redo ? h("button", { class: `redo-btn${st === "redo" ? " redo" : ""}`, title: redo.title ?? "Keep this, and ask for another variant of it",
         "aria-pressed": st === "redo" ? "true" : "false",
-        onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "redo" ? null : "redo", ...(stamp ?? {}) }); render(); onchange?.(); } },
+        // A REDO THAT REPLACES THE ART CLEARS ITS RATING (maintainer
+        // 2026-09-24: "When I click on redo asked on a monster direction
+        // animation - that should clear the rating as well"). The stars rated
+        // a take that is about to be regenerated, so they would outlive it —
+        // the same reason a removal clears them. Opt-in per row: a scenery
+        // redo keeps the piece and asks for a variant beside it.
+        onclick: (e) => {
+          e.stopPropagation();
+          const on = st === "redo";
+          setFb(domain, id, { status: on ? null : "redo", ...(!on && redo.clearsRating ? { rating: null } : {}), ...(stamp ?? {}) });
+          render();
+          if (!on && redo.clearsRating) for (const el of fbPeers(domain, id, "stars")) el.__render?.();
+          onchange?.();
+        } },
         st === "redo" ? (redo.doneText ?? "↻ redo asked") : (redo.label ?? "↻ redo")) : null,
       gone ? h("span", { class: "pill warn", title: "You judged this state before the art was regenerated, so the verdict is about a picture that no longer exists — judge the one on screen and it counts again." }, "regenerated since — judge again") : null,
     ].filter(Boolean));
@@ -6804,8 +6817,8 @@ function viewMonster(id) {
       rejectTitle: `Slated for removal — clear it here; this row only asks for redos now`,
       rejectedLabel: "slated for removal",
       redo: absent
-        ? { label: "↻ redo", title: `Ask the monsters agent to generate ${stateLabel(st)} facing ${dir} — it does not exist yet, and the creature cannot ship without all eight.`, doneLabel: "generation requested" }
-        : { label: "↻ redo", title: `Ask the monsters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted. If this state can never be made right, remove the whole creature instead — it must not ship without it.`, doneLabel: "another take requested" },
+        ? { clearsRating: true, label: "↻ redo", title: `Ask the monsters agent to generate ${stateLabel(st)} facing ${dir} — it does not exist yet, and the creature cannot ship without all eight.`, doneLabel: "generation requested" }
+        : { clearsRating: true, label: "↻ redo", title: `Ask the monsters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted. If this state can never be made right, remove the whole creature instead — it must not ship without it.`, doneLabel: "another take requested" },
     }));
   };
   player.onFacetChange = renderFacet;
