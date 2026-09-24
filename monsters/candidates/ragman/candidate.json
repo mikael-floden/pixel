@@ -1,0 +1,142 @@
+{
+  "id": "ragman",
+  "name": "Ragman",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He takes old clothes, and the people still in them.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Tall figure of layered rags in every faded colour, a hood with no face inside, dragging a sack of cloth.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ragman/rotations/south.webp",
+    "south-east": "ragman/rotations/south-east.webp",
+    "east": "ragman/rotations/east.webp",
+    "north-east": "ragman/rotations/north-east.webp",
+    "north": "ragman/rotations/north.webp",
+    "north-west": "ragman/rotations/north-west.webp",
+    "west": "ragman/rotations/west.webp",
+    "south-west": "ragman/rotations/south-west.webp"
+  },
+  "sheet": "ragman/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ca3eda35-92e1-44bb-a4b8-9ebec0910288",
+  "seed": 545935862,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:54:08+00:00",
+  "elapsed_s": 257.4,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.769,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.769,
+        "bbox": [
+          6,
+          2,
+          81,
+          86
+        ],
+        "fill": 0.814,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.83,
+        "bbox": [
+          17,
+          2,
+          78,
+          88
+        ],
+        "fill": 0.677,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.811,
+        "bbox": [
+          28,
+          2,
+          64,
+          86
+        ],
+        "fill": 0.39,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.794,
+        "bbox": [
+          18,
+          2,
+          74,
+          85
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.797,
+        "bbox": [
+          7,
+          2,
+          82,
+          84
+        ],
+        "fill": 0.794,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.789,
+        "bbox": [
+          13,
+          2,
+          71,
+          84
+        ],
+        "fill": 0.614,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.818,
+        "bbox": [
+          28,
+          2,
+          59,
+          86
+        ],
+        "fill": 0.336,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.832,
+        "bbox": [
+          14,
+          2,
+          67,
+          87
+        ],
+        "fill": 0.582,
+        "touches_edge": false
+      }
+    }
+  }
+}
