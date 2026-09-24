@@ -1,0 +1,140 @@
+{
+  "id": "kelp_hound",
+  "name": "Kelphound",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "After a storm it is on the beach, and so are the footprints.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Dog of tangled brown kelp, bladders along its back, dripping, a wide dark mouth of weed.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "kelp_hound/rotations/south.webp",
+    "south-east": "kelp_hound/rotations/south-east.webp",
+    "east": "kelp_hound/rotations/east.webp",
+    "north-east": "kelp_hound/rotations/north-east.webp",
+    "north": "kelp_hound/rotations/north.webp",
+    "north-west": "kelp_hound/rotations/north-west.webp",
+    "west": "kelp_hound/rotations/west.webp",
+    "south-west": "kelp_hound/rotations/south-west.webp"
+  },
+  "sheet": "kelp_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "052f934c-c303-4422-b16d-e24f609b77b9",
+  "seed": 1640840099,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:37:08+00:00",
+  "elapsed_s": 225.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.724,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.819,
+        "bbox": [
+          18,
+          5,
+          68,
+          83
+        ],
+        "fill": 0.504,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.81,
+        "bbox": [
+          14,
+          5,
+          79,
+          85
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.804,
+        "bbox": [
+          4,
+          6,
+          87,
+          81
+        ],
+        "fill": 0.804,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.776,
+        "bbox": [
+          5,
+          3,
+          78,
+          85
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.768,
+        "bbox": [
+          23,
+          4,
+          68,
+          83
+        ],
+        "fill": 0.459,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.753,
+        "bbox": [
+          9,
+          3,
+          85,
+          85
+        ],
+        "fill": 0.805,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.815,
+        "bbox": [
+          1,
+          8,
+          87,
+          83
+        ],
+        "fill": 0.833,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.724,
+        "bbox": [
+          4,
+          5,
+          84,
+          85
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      }
+    }
+  }
+}
