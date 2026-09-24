@@ -1,0 +1,141 @@
+{
+  "id": "mire_lantern_bearer",
+  "name": "Lampbearer",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He still lights the way across for a ferry that sank.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Drowned man in a sodden coat holding a lantern with a blue flame high, water pouring endlessly from his sleeves.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mire_lantern_bearer/rotations/south.webp",
+    "south-east": "mire_lantern_bearer/rotations/south-east.webp",
+    "east": "mire_lantern_bearer/rotations/east.webp",
+    "north-east": "mire_lantern_bearer/rotations/north-east.webp",
+    "north": "mire_lantern_bearer/rotations/north.webp",
+    "north-west": "mire_lantern_bearer/rotations/north-west.webp",
+    "west": "mire_lantern_bearer/rotations/west.webp",
+    "south-west": "mire_lantern_bearer/rotations/south-west.webp"
+  },
+  "sheet": "mire_lantern_bearer/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d0098d3f-e713-41f1-bb53-6b4b31e61096",
+  "seed": 1597249499,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:30:36+00:00",
+  "elapsed_s": 582.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.766,
+        "bbox": [
+          14,
+          2,
+          73,
+          86
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          24,
+          2,
+          69,
+          87
+        ],
+        "fill": 0.494,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.784,
+        "bbox": [
+          27,
+          2,
+          60,
+          87
+        ],
+        "fill": 0.362,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.739,
+        "bbox": [
+          22,
+          1,
+          73,
+          86
+        ],
+        "fill": 0.56,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.73,
+        "bbox": [
+          15,
+          1,
+          72,
+          85
+        ],
+        "fill": 0.618,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.736,
+        "bbox": [
+          18,
+          1,
+          65,
+          86
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.78,
+        "bbox": [
+          30,
+          2,
+          60,
+          87
+        ],
+        "fill": 0.329,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.82,
+        "bbox": [
+          14,
+          2,
+          65,
+          87
+        ],
+        "fill": 0.56,
+        "touches_edge": false
+      }
+    }
+  }
+}
