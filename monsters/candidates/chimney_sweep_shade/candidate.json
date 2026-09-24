@@ -1,0 +1,140 @@
+{
+  "id": "chimney_sweep_shade",
+  "name": "Sootsweep",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He went up the chimney and the soot kept him.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Soot-black boy with brushes for hands and a top hat, white eyes, leaving black hand prints, silent.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "chimney_sweep_shade/rotations/south.webp",
+    "south-east": "chimney_sweep_shade/rotations/south-east.webp",
+    "east": "chimney_sweep_shade/rotations/east.webp",
+    "north-east": "chimney_sweep_shade/rotations/north-east.webp",
+    "north": "chimney_sweep_shade/rotations/north.webp",
+    "north-west": "chimney_sweep_shade/rotations/north-west.webp",
+    "west": "chimney_sweep_shade/rotations/west.webp",
+    "south-west": "chimney_sweep_shade/rotations/south-west.webp"
+  },
+  "sheet": "chimney_sweep_shade/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4247bb2f-c326-41e5-8463-0c24b673bd56",
+  "seed": 480233091,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:52:41+00:00",
+  "elapsed_s": 213.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.656,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.707,
+        "bbox": [
+          3,
+          3,
+          84,
+          85
+        ],
+        "fill": 0.858,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.749,
+        "bbox": [
+          24,
+          3,
+          81,
+          86
+        ],
+        "fill": 0.611,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.706,
+        "bbox": [
+          26,
+          3,
+          65,
+          85
+        ],
+        "fill": 0.413,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.691,
+        "bbox": [
+          17,
+          3,
+          83,
+          84
+        ],
+        "fill": 0.69,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.656,
+        "bbox": [
+          5,
+          2,
+          87,
+          83
+        ],
+        "fill": 0.858,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.682,
+        "bbox": [
+          7,
+          3,
+          74,
+          84
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.691,
+        "bbox": [
+          25,
+          3,
+          63,
+          85
+        ],
+        "fill": 0.402,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.771,
+        "bbox": [
+          7,
+          3,
+          66,
+          86
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      }
+    }
+  }
+}
