@@ -1,8 +1,19 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T17:35:28+00:00",
+  "updated_at": "2026-09-24T18:07:57+00:00",
   "health": "running",
-  "current": "IDLE — waiting for the maintainer's perf run on 2a9018bda2 or later: FRAME PACING shipped (client/src/pacing.ts — a steady 30 when 60 cannot be held; his 16:50 run on 0b274482 sat at p50 17-23 ms against the 16.7 ms vsync, a third of frames made it and the rest slipped to 33: the 17/33 flicker he feels). auto (default) locks to every-other-vsync when a quarter of a second's ticks miss the 60 Hz frame, unlocks after 3 s of step work under 55% of it (15 s hold); Settings→Dev 'frame pacing' cycles auto → 30 → off (localStorage ml-pace, ?pace=); the fps meter counts RENDERED frames and tags 'paced'; the beacon carries a `pace` block (server allowlist rides the container). Next on his word: `node scripts/perf-read.mjs` on that run — the pace column (mode, paced share, step work p90), frames.p50 (33 = a steady 30), long frames, and his feel with the switch on/off. ACK games-ambient's finding: the director starves when every frame is >= ENV_SAMPLE_MS since my 2026-09-23 tick split (env tick on frame N, director on N+1 only if N+1 is not itself a tick) — their fix in mount.ts/cadence.ts is theirs, not touched here; a paced 30 keeps frames at 33 ms, well under the 100 ms sample, so pacing does not widen it. The depth-texture/shader redesign is VETOED (maintainer 2026-09-24: 'we tried that once and it got worse'). Now investigating, on his order, the big gains without it: what the phone computes that the build could (the static ground: resolver 18k cells/window on the main thread with the resolve worker OFF, compositions, repaints), the draw calls (948-1,694/frame against 22-38 batch flushes — most draws are not sprite batches), the 16,433 live textures (one per composition), the allocation rate (heap +326 MB/s). Released every file; a claim comes before any edit.",
+  "current": {
+    "unit": "CLAIMED — TERRAIN BAKE chunk 1 (maintainer 2026-09-24: 'I'm fully sold ... Let's do the entire work! ... Test it with before and after images'): raised terrain (the occluder ops of a 16x16-cell chunk) drawn ONCE into a per-chunk atlas, one image per depth-row segment, so the frame draws hundreds of band images instead of 2,200-5,600 sprites (his 16:50 run: render 3.0 + depthSort 2.0 + occCull 1.0 ms/frame, 20 Mpx fill, 16,433 textures). Live path kept for cells that cannot bake (art streaming, indoor cut-away, edited) and as the A/B; depth per row unchanged, meta records unchanged (cover/lighting/shadows read them, not the images); pixel parity gated by screenshots live vs baked.",
+    "since": "2026-09-24T18:07:57+00:00",
+    "files": [
+      "games2/client/src/terrainbake.ts (new: chunk registry, band packer, sliced bake, dirtying)",
+      "games2/server/test/terrainbake.test.ts (new)",
+      "games2/scripts/verify-bake.mjs (new: live vs baked screenshots, hash parity)",
+      "games2/docs/perf.md",
+      "games2/CLAUDE.md",
+      "games2/client/src/scenes/WorldScene.ts — NOT YET: in flight on the games board (slopes unit); hook points wait for their release (request posted)"
+    ]
+  },
   "progress": {
     "runs_read": 47,
     "units_shipped": 14
