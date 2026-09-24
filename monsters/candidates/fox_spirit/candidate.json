@@ -1384,40 +1384,43 @@
           "generated_at": "2026-09-23T21:22:19+00:00"
         },
         "north": {
-          "status": "pass",
-          "step_mean": 0.4815,
-          "step_max": 0.6914,
-          "drift": 7.42,
-          "loop": 0.0893,
-          "loop_ratio": 0.19,
-          "travel": 8.35,
-          "pin": 0.911,
+          "status": "warn",
+          "step_mean": 0.4978,
+          "step_max": 0.6426,
+          "drift": 10.9,
+          "loop": 0.0603,
+          "loop_ratio": 0.12,
+          "travel": 6.61,
+          "pin": 0.966,
           "pad": 0,
-          "flash": 0.012,
-          "peak": 0.673,
-          "reach": 0.302,
-          "turn": 0,
-          "end_area": 0.965,
+          "flash": 0.007,
+          "peak": 0.6519,
+          "reach": 0.116,
+          "turn": 3,
+          "end_area": 1.024,
           "end_iou": null,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
-          "sub": "b78210a6-db36-4d41-938f-6e72dcf61241",
-          "group": "cf02c840-1730-4ac0-89bf-98ce9ba96ac7",
+          "reasons": [
+            "MANUAL (agent, 2026-09-24): reach 0.12 cannot see this attack — a three-tailed fox's tails sweep INSIDE its own silhouette, so new-pixels-outside-the-outline measures nothing while the clip plainly rears and whips all three flame tails over its back. Eyeballed the strip: body intact through all four frames, no smear, no baked text. The take he pressed redo on smeared the whole fox into a diagonal streak on frame 3."
+          ],
+          "sub": "2570e9ec-c09d-45fb-8a1f-dba763ae4cf7",
+          "group": "4e729ce8-4b28-4e6c-8986-503f26d23dac",
           "takes": 1,
-          "version": 2,
+          "version": 5,
           "mirrored": false,
           "mode": "pro",
-          "action": "Strike - Quickly lunges forward and strikes once",
+          "action": "Tail Flare - Rears back onto its hind legs and whips all three flame-tipped tails forward over its head in one hard arc, blue fire streaming off them, then drops back down, a big aggressive swing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 4,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-23T21:22:20+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-24T16:42:23+00:00",
+          "manual": true
         },
         "south-west": {
           "status": "warn",
@@ -1537,7 +1540,7 @@
           "source": "north-east"
         }
       },
-      "action": "Strike - Quickly lunges forward and strikes once",
+      "action": "Tail Flare - Rears back onto its hind legs and whips all three flame-tipped tails forward over its head in one hard arc, blue fire streaming off them, then drops back down",
       "frame_paths": {
         "south": [
           "fox_spirit/animations/attack/south/00.webp",
