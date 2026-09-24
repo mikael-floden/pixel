@@ -1,0 +1,140 @@
+{
+  "id": "mountain_hermit",
+  "name": "Cragfather",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "He climbed the mountain to be alone and became part of it.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Ancient bearded man with skin like grey stone, a robe of lichen, a staff of petrified wood, feet fused to the ground.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mountain_hermit/rotations/south.webp",
+    "south-east": "mountain_hermit/rotations/south-east.webp",
+    "east": "mountain_hermit/rotations/east.webp",
+    "north-east": "mountain_hermit/rotations/north-east.webp",
+    "north": "mountain_hermit/rotations/north.webp",
+    "north-west": "mountain_hermit/rotations/north-west.webp",
+    "west": "mountain_hermit/rotations/west.webp",
+    "south-west": "mountain_hermit/rotations/south-west.webp"
+  },
+  "sheet": "mountain_hermit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "688e42ac-a675-42bc-9253-e5ff6f176ae6",
+  "seed": 1385912909,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:02:42+00:00",
+  "elapsed_s": 1961.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.792,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.792,
+        "bbox": [
+          5,
+          4,
+          81,
+          84
+        ],
+        "fill": 0.785,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.832,
+        "bbox": [
+          10,
+          6,
+          79,
+          85
+        ],
+        "fill": 0.704,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.811,
+        "bbox": [
+          9,
+          6,
+          69,
+          85
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.796,
+        "bbox": [
+          13,
+          6,
+          82,
+          83
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.809,
+        "bbox": [
+          8,
+          4,
+          82,
+          82
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.804,
+        "bbox": [
+          18,
+          3,
+          68,
+          83
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.838,
+        "bbox": [
+          17,
+          4,
+          78,
+          85
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.847,
+        "bbox": [
+          8,
+          4,
+          78,
+          85
+        ],
+        "fill": 0.732,
+        "touches_edge": false
+      }
+    }
+  }
+}
