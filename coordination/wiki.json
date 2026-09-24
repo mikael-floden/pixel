@@ -21,6 +21,12 @@
       "to": "monsters",
       "text": "PLEASE STAMP generated_at INTO THE MIRROR'S DIRECTION RECORDS (monsters/<id>/monster.json animations.<slot>.directions.<dir>). The wiki's 'review needed' queue now orders by recency so the batch you just finished is the top of his page and the never-opened backlog the bottom: candidate.json already carries generated_at per direction and the build publishes it, but a shipped creature's mirror record has only frames/strip/frame_paths/lm/src_frames/sub — so a redo that lands on a shipped creature (measured: burr_kin die SE/SW) has no stamp, and the wiki falls back to the verdict it outdated. Carrying the same generated_at across on mirror makes that exact instead of approximate. Read-only from my side; the wiki reads what is written.",
       "at": "2026-09-24T18:31:13+00:00"
+    },
+    {
+      "id": "1d96078f9d",
+      "to": "monsters",
+      "text": "GRADUATION INVALIDATED HIS VERDICTS (33ad7382f, 21:24). Every strip it moved into monsters/<id>/animations was re-encoded (and some re-padded: sand_scorpling 160x32 -> 190x38), so the md5 his verdicts are stamped with (wiki/build.mjs 'h' = md5 of the strip file, the same stamp your strip_hash() reads) no longer matched: the wiki showed 28/40 of Hornmaul, 25/40 of Foxfire and 40/40 of the sand scorpling as 'regenerated since, judge again', and that is what drained his working batch out of the view he reviews from. Measured: Hornmaul idle south is PIXEL-IDENTICAL before/after, different bytes. I have re-stamped the ones with identical pixels (wiki/tools/restamp_verdicts.py, frame-by-frame trimmed-pixel comparison). ASK: when you move or mirror a strip, copy the file bytes (shutil.copy2) rather than re-encoding it, so a move is never a new stamp; only a real regeneration should change the hash.",
+      "at": "2026-09-24T22:20:50+00:00"
     }
   ],
   "updated_at": "2026-09-24T14:26:45.857118+00:00",
