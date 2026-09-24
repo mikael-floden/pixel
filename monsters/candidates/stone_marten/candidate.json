@@ -1,0 +1,140 @@
+{
+  "id": "stone_marten",
+  "name": "Stonemarten",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Quick as a dropped pebble and harder to catch.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Sleek grey marten with a coat of fine gravel, a pale throat patch of chalk, bright black eyes, arched back.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "cat",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stone_marten/rotations/south.webp",
+    "south-east": "stone_marten/rotations/south-east.webp",
+    "east": "stone_marten/rotations/east.webp",
+    "north-east": "stone_marten/rotations/north-east.webp",
+    "north": "stone_marten/rotations/north.webp",
+    "north-west": "stone_marten/rotations/north-west.webp",
+    "west": "stone_marten/rotations/west.webp",
+    "south-west": "stone_marten/rotations/south-west.webp"
+  },
+  "sheet": "stone_marten/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b18d0263-1d8d-4f5b-958f-f399d9f26fff",
+  "seed": 1661490860,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:04:44+00:00",
+  "elapsed_s": 1881.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.632,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.749,
+        "bbox": [
+          10,
+          3,
+          30,
+          37
+        ],
+        "fill": 0.425,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.726,
+        "bbox": [
+          7,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.632,
+        "bbox": [
+          2,
+          5,
+          38,
+          36
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.638,
+        "bbox": [
+          7,
+          4,
+          34,
+          37
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.652,
+        "bbox": [
+          10,
+          4,
+          30,
+          37
+        ],
+        "fill": 0.412,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.665,
+        "bbox": [
+          6,
+          4,
+          34,
+          37
+        ],
+        "fill": 0.578,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.662,
+        "bbox": [
+          2,
+          5,
+          38,
+          36
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.735,
+        "bbox": [
+          7,
+          3,
+          32,
+          37
+        ],
+        "fill": 0.531,
+        "touches_edge": false
+      }
+    }
+  }
+}
