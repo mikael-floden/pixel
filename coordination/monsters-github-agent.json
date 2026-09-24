@@ -1,12 +1,12 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:08:04+00:00",
+  "updated_at": "2026-09-24T22:08:40+00:00",
   "health": "running",
-  "current": "harvest_thing SHIPPED (review=approved + APPROVED tag, index rebuilt). NOW CLAIMED — the rest of his same 22:03:52-22:05:07Z approval burst, unrecorded and on no board (the previous sitting's cutoff was 22:03:08Z): monsters/candidates/{shell_maiden,ice_worm,midge_cloud,rot_log,grass_serpent}, all approved rating 1. Same command, tags only, no generation. FILES: monsters/candidates/{shell_maiden,ice_worm,midge_cloud,rot_log,grass_serpent}/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT TAKEN: monsters/candidates/loom_widow (rejected 21:59:45Z) — a removal, and monsters-candidates.yml is generating over the 200 v3 bases right now, which is the one time reconcile must not rewrite config/candidates.json.",
+  "current": "harvest_thing SHIPPED (review=approved + APPROVED tag, index rebuilt). NOW CLAIMED — the rest of his same 22:03:52-22:05:07Z approval burst, unrecorded and on no board (the previous sitting's cutoff was 22:03:08Z): monsters/candidates/{ash_giant,shell_maiden,ice_worm,midge_cloud,rot_log,grass_serpent,hay_golem}, all approved rating 1 (ash_giant 22:03:26Z was pressed 23s before the previous sitting wrote, and missed; hay_golem 22:07:22Z arrived in the feedback commit that landed while I worked). Same command, tags only, no generation. FILES: monsters/candidates/{ash_giant,shell_maiden,ice_worm,midge_cloud,rot_log,grass_serpent,hay_golem}/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT TAKEN: monsters/candidates/loom_widow (rejected 21:59:45Z) — a removal, and monsters-candidates.yml is generating over the 200 v3 bases right now, which is the one time reconcile must not rewrite config/candidates.json.",
   "progress": {
     "unit": "his 22:03:52-22:05:07Z candidate review — approvals recorded",
-    "entries_taken": 6,
+    "entries_taken": 8,
     "entries_cleared": 0,
     "generations": 0,
     "usd_spent": 0.0
