@@ -616,7 +616,15 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   raise, 808 cut, 479 of them inside a composed boundary, every cut corner
   has a raise under it and no two plates at one level disagree on a corner;
   left without a slope are 94 cliff feet and 164 rises whose only higher
-  same-ground cell sits at a corner a third ground shares. THE RAMP PATH STAYS
+  same-ground cell sits at a corner a third ground shares. THE IMAGE SHIPS
+  EVERY COMPLETE SLOPE SET OF EVERY GROUND THE WORLD USES (`tiles3closure.ts`,
+  with the game's `footBoundary`/`deckBoundary` on): the closure used to
+  enumerate the parity path's picks, so production answered 404 for every
+  file the game's rule asked for that the parity rule had not — a cut's flat
+  tile, a light_soil set — the cap op was dropped and the wall's own flat top
+  showed, "not a single slope" on a terrace the resolver had dressed
+  (2026-09-24). His verdicts are live, so the set he approves between two
+  deploys is already there. THE RAMP PATH STAYS
   for a storey-height set (`RAMP_MIN_PX` 12, `rampIndexFor`, kind `"ramp"`
   drawn raw in its taller frame, `rampTopOnly`); none is published.
   REJECTED: doubling the 4 px art in the renderer (the plateau's boundary is

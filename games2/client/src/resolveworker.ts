@@ -16,6 +16,7 @@
  * thread resolves that cell itself on the frame that needs it, which is what it
  * does today with no worker at all.
  */
+import type { Tiles3Data } from "./tiles3.js";
 import type { Frame } from "./tiles3";
 import { gapBill, gapOn } from "./gapledger";
 import type { Tiles3DocKey } from "./tiles3runtime";
@@ -100,6 +101,10 @@ export class ResolveWorker {
     pitch: number;
     /** The details dial (detailrate.ts): the worker rolls the same rate. */
     detailRate?: number;
+    /** The game rules the main thread's resolver runs (tiles3worker WorkerInit). */
+    fadeTune?: Tiles3Data["fadeTune"];
+    footBoundary?: boolean;
+    deckBoundary?: boolean;
   }): void {
     this.gen++;
     this.pending.clear();

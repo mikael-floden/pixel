@@ -32,7 +32,15 @@ test("the tiles3 art closure of every published worlds3 world resolves completel
     assert.ok(c.docs.includes(d), `boot document ${d}`);
   // A CLOSURE, not the domain: tiles/ is ~400 MB. If this trips, the resolver
   // started naming whole trees and the image would carry them.
-  assert.ok(c.art.length > 0 && c.art.length < 5000, `${c.art.length} files`);
+  assert.ok(c.art.length > 0 && c.art.length < 8000, `${c.art.length} files`);
+  // THE GAME'S RULES, NOT THE PARITY PATH (2026-09-24, production answered 404 for every
+  // slope file the game's rule picked that the parity rule had not): a cut's flat tile
+  // is in the closure, and so is every tile of every complete bump set of a ground the
+  // world uses — his verdicts are live, and a set approved between two deploys must not 404.
+  assert.ok(c.art.includes("tiles/slopes/grass/a14_s02/post/tile_00.0baf3959.webp"), "the cut's flat grass tile ships");
+  const grassSets = new Set(c.art.filter((p) => p.startsWith("tiles/slopes/grass/")).map((p) => p.split("/")[3]));
+  assert.ok(grassSets.size >= 10, `every complete grass slope set ships (${grassSets.size})`);
+  assert.ok(c.art.some((p) => p.startsWith("tiles/slopes/light_soil/")), "light_soil's slope sets ship");
   assert.ok(c.bytes < 25e6, `${(c.bytes / 1e6).toFixed(1)} MB of art`);
   assert.deepEqual(tiles3ArtClosure(REPO, worlds).art, c.art, "deterministic");
   console.log(`  ship-tiles3: ${worlds.join(", ")} → ${c.art.length} art files, ${(c.bytes / 1e6).toFixed(2)} MB, ${c.docs.length} documents`);

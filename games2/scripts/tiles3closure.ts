@@ -12,7 +12,7 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { parseWorld, ISO_GEOMETRY_MAPS3 } from "../shared/src/index";
-import { Tiles3 } from "../client/src/tiles3";
+import { Tiles3, isRampSet } from "../client/src/tiles3";
 import type { Frame } from "../client/src/tiles3";
 import {
   Tiles3World,
@@ -66,7 +66,21 @@ export function tiles3ArtClosure(root: string, worldNames: readonly string[]): T
   }
   const data = tiles3DataFrom(docs, ISO_GEOMETRY_MAPS3.lh, (m) => warnings.push(m));
   if (!data) throw new Error("tiles3: no ground_types/patterns under " + root);
+  /* THE GAME'S OWN RULES, as WorldScene sets them on its resolver (the foot,
+   * the deck lid, and with the foot the slope on both sides of a rise and the
+   * unjudged-ground fallback). Without them this enumerated the parity path's
+   * picks: measured on production 2026-09-24, every slope file the game's
+   * rule asked for that the parity rule had not (a cut's flat tile, a
+   * light_soil set) answered 404, the cap op was dropped, and the wall's own
+   * flat top showed — "not a single slope" on a terrace the resolver dressed. */
+  data.footBoundary = true;
+  data.deckBoundary = true;
   const tiles = new Tiles3(data);
+  /* EVERY COMPLETE SLOPE SET OF EVERY GROUND THE WORLD USES SHIPS, not only
+   * the tiles today's verdicts pick: his verdicts are the LIVE channel, read
+   * without a redeploy, and a set he approves at 19:00 must not 404 until the
+   * next container. 15 seeds x 16 tiles per ground, ~2.6 MB for the_game. */
+  const groundsSeen = new Set<string>();
   const paths = new Set<string>();
   const out = (p: string | undefined | null) => {
     if (p) paths.add(p);
@@ -100,6 +114,7 @@ export function tiles3ArtClosure(root: string, worldNames: readonly string[]): T
           try {
             const cell = t3.cell(c, r);
             if (cell) {
+              groundsSeen.add(cell.ground);
               cellArtPaths(cell, out);
               // The mid storey a cut-away draws in place of the stack tile
               // (cellBlits): named here too, so a cut never finds a hole.
@@ -130,6 +145,10 @@ export function tiles3ArtClosure(root: string, worldNames: readonly string[]): T
       }
     }
     worlds.push(w);
+  }
+  for (const st of data.slopes?.sets ?? []) {
+    if (!groundsSeen.has(st.ground) || !st.complete || (st.post_files?.length ?? 0) !== 16 || isRampSet(st)) continue;
+    for (const f of st.post_files as string[]) out(`${st.dir}/post/${f}`);
   }
   const art = [...paths].sort();
   const missing: string[] = [];

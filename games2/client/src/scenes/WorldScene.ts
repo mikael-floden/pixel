@@ -20044,6 +20044,9 @@ export class WorldScene extends Phaser.Scene {
       frame: this.tiles3Frame(),
       pitch: this.geom.lh,
       detailRate: detailRate(),
+      fadeTune: fadeTune(),
+      footBoundary: true,
+      deckBoundary: true,
     };
     this.t3worker.stop();
     this.t3workerBooted = true;

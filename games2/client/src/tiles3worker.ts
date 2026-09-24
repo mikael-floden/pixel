@@ -28,6 +28,7 @@
  * painted. A late answer costs nothing — the main thread resolves that cell
  * itself, exactly as it does today. That is what makes this safe to try.
  */
+import type { Tiles3Data } from "./tiles3.js";
 import { parseWorld } from "@nangijala/shared";
 import { Tiles3, type Frame } from "./tiles3";
 import {
@@ -53,6 +54,13 @@ export interface WorkerInit {
   pitch: number;
   /** The details dial (detailrate.ts) — the same rate the main thread rolls. */
   detailRate?: number;
+  /** THE GAME RULES THE MAIN THREAD SETS ON ITS RESOLVER, and the worker must
+   *  too, or the two disagree on every cell the rules touch (the foot, the
+   *  slope on both sides of a rise, the fade dials): the worker ran the parity
+   *  path until 2026-09-24. */
+  fadeTune?: Tiles3Data["fadeTune"];
+  footBoundary?: boolean;
+  deckBoundary?: boolean;
 }
 export interface WorkerResolve {
   type: "resolve";
@@ -111,6 +119,9 @@ async function init(msg: WorkerInit): Promise<void> {
   const data = tiles3DataFrom(docs, msg.pitch, () => {});
   if (!data) throw new Error("no ground_types/patterns — the resolver cannot be built");
   if (msg.detailRate !== undefined) data.detailRate = msg.detailRate;
+  if (msg.fadeTune) data.fadeTune = msg.fadeTune;
+  if (msg.footBoundary !== undefined) data.footBoundary = msg.footBoundary;
+  if (msg.deckBoundary !== undefined) data.deckBoundary = msg.deckBoundary;
   const view = viewFromParsed(parsed as never);
   /* THE REGION FLOOD FILL — 38 ms over the_game on the dev host, and the single
    * biggest lump of the main thread's own world load. Here it is free. */
