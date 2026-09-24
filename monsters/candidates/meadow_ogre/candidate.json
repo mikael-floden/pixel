@@ -1,0 +1,141 @@
+{
+  "id": "meadow_ogre",
+  "name": "Sodfist",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Cut from the common land the year it was fenced, and it wants it back.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Broad ogre made of stacked turf sods, grass growing from its shoulders and head like hair, dark earth cracks for a mouth, huge flat fists, small blue flowers on its arms.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "meadow_ogre/rotations/south.webp",
+    "south-east": "meadow_ogre/rotations/south-east.webp",
+    "east": "meadow_ogre/rotations/east.webp",
+    "north-east": "meadow_ogre/rotations/north-east.webp",
+    "north": "meadow_ogre/rotations/north.webp",
+    "north-west": "meadow_ogre/rotations/north-west.webp",
+    "west": "meadow_ogre/rotations/west.webp",
+    "south-west": "meadow_ogre/rotations/south-west.webp"
+  },
+  "sheet": "meadow_ogre/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c49f8668-463a-411b-a332-c80e56425dc3",
+  "seed": 1949316050,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:27:47+00:00",
+  "elapsed_s": 865.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.559,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.559,
+        "bbox": [
+          17,
+          8,
+          205,
+          217
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.62,
+        "bbox": [
+          26,
+          8,
+          201,
+          219
+        ],
+        "fill": 0.736,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.636,
+        "bbox": [
+          59,
+          6,
+          167,
+          220
+        ],
+        "fill": 0.461,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.6,
+        "bbox": [
+          40,
+          5,
+          185,
+          217
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.607,
+        "bbox": [
+          16,
+          4,
+          208,
+          212
+        ],
+        "fill": 0.796,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.597,
+        "bbox": [
+          37,
+          5,
+          186,
+          217
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.64,
+        "bbox": [
+          62,
+          6,
+          153,
+          219
+        ],
+        "fill": 0.386,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.615,
+        "bbox": [
+          33,
+          8,
+          187,
+          220
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      }
+    }
+  }
+}

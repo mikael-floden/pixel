@@ -1,0 +1,141 @@
+{
+  "id": "grass_serpent",
+  "name": "Bladewind",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "You hear it before you see it, and you never see it.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Long serpent whose scales are overlapping green grass blades, pale yellow belly, a seed-head rattle on the tail, small amber eyes, raised S-curve.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "grass_serpent/rotations/south.webp",
+    "south-east": "grass_serpent/rotations/south-east.webp",
+    "east": "grass_serpent/rotations/east.webp",
+    "north-east": "grass_serpent/rotations/north-east.webp",
+    "north": "grass_serpent/rotations/north.webp",
+    "north-west": "grass_serpent/rotations/north-west.webp",
+    "west": "grass_serpent/rotations/west.webp",
+    "south-west": "grass_serpent/rotations/south-west.webp"
+  },
+  "sheet": "grass_serpent/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "211402c1-57a2-421f-969b-2af3f6d801e5",
+  "seed": 974205917,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:28:38+00:00",
+  "elapsed_s": 930.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.775,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.775,
+        "bbox": [
+          7,
+          3,
+          83,
+          84
+        ],
+        "fill": 0.795,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.857,
+        "bbox": [
+          6,
+          3,
+          78,
+          85
+        ],
+        "fill": 0.762,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.866,
+        "bbox": [
+          6,
+          4,
+          72,
+          85
+        ],
+        "fill": 0.69,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.863,
+        "bbox": [
+          5,
+          3,
+          73,
+          83
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.856,
+        "bbox": [
+          5,
+          4,
+          82,
+          80
+        ],
+        "fill": 0.756,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.867,
+        "bbox": [
+          15,
+          3,
+          82,
+          84
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.849,
+        "bbox": [
+          17,
+          4,
+          72,
+          85
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.85,
+        "bbox": [
+          8,
+          3,
+          83,
+          84
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      }
+    }
+  }
+}

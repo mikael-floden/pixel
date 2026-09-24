@@ -1,0 +1,149 @@
+{
+  "id": "scythe_hare",
+  "name": "Scythehare",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It runs ahead of the mowers every year and one year it turned round.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Tall gaunt hare with ears shaped like two rusted scythe blades, grey-brown fur, long bony hind legs, red eyes, hunched ready to bolt.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "scythe_hare/rotations/south.webp",
+    "south-east": "scythe_hare/rotations/south-east.webp",
+    "east": "scythe_hare/rotations/east.webp",
+    "north-east": "scythe_hare/rotations/north-east.webp",
+    "north": "scythe_hare/rotations/north.webp",
+    "north-west": "scythe_hare/rotations/north-west.webp",
+    "west": "scythe_hare/rotations/west.webp",
+    "south-west": "scythe_hare/rotations/south-west.webp"
+  },
+  "sheet": "scythe_hare/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8d42f23a-ee1e-4871-aa3f-c3eb54239e66",
+  "seed": 772437559,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:27:40+00:00",
+  "elapsed_s": 861.3,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.765,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.765,
+        "bbox": [
+          3,
+          1,
+          85,
+          87
+        ],
+        "fill": 0.911,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.817,
+        "bbox": [
+          5,
+          1,
+          74,
+          88
+        ],
+        "fill": 0.775,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.824,
+        "bbox": [
+          12,
+          0,
+          82,
+          88
+        ],
+        "fill": 0.795,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.796,
+        "bbox": [
+          7,
+          0,
+          76,
+          88
+        ],
+        "fill": 0.784,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.796,
+        "bbox": [
+          3,
+          0,
+          85,
+          85
+        ],
+        "fill": 0.9,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.798,
+        "bbox": [
+          13,
+          0,
+          80,
+          88
+        ],
+        "fill": 0.761,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.818,
+        "bbox": [
+          5,
+          0,
+          78,
+          88
+        ],
+        "fill": 0.83,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.826,
+        "bbox": [
+          16,
+          1,
+          85,
+          88
+        ],
+        "fill": 0.775,
+        "touches_edge": true
+      }
+    }
+  }
+}
