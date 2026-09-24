@@ -1,11 +1,16 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T21:41:38+00:00",
+  "updated_at": "2026-09-24T21:54:29+00:00",
   "health": "running",
   "current": {
-    "unit": "IDLE after 44d6405713 (deploying). An ultracode investigation of what the player would feel is running (read-only). Next on its result and his next run.",
-    "since": "2026-09-24T21:41:38+00:00",
-    "files": []
+    "unit": "CLAIMED — REPAINT ONLY WHAT CAN BE SEEN SOON (his 21:13 run: cell repaints the recurring ground cost). Headless (probe-repaint.mjs): 92% of the cells a landing or a drain repainted were off the camera's view; the ground texture is ~14x the screen. A landed/owed/flipped cell is repainted when its column is within 256 px of the view, else parked (t3stale) and repainted when the camera comes near, forgotten when it leaves the texture, cleared by a full paint; whole-texture probes (groundHash/Snapshot/Snap) flush parked cells first. Headless: landing+drain repaints ~180 -> ~9 on the same walks, stale cells on screen 0 of 96 samples. Switch ?groundlazy=0 / Settings→Dev 'ground: repaint only near'.",
+    "since": "2026-09-24T21:54:29+00:00",
+    "files": [
+      "games2/client/src/scenes/WorldScene.ts (the landing repaint, t3drainTick, repaintIndoorFlip, probes)",
+      "games2/scripts/probe-repaint.mjs",
+      "games2/docs/perf.md",
+      "games2/CLAUDE.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
