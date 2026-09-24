@@ -1,0 +1,140 @@
+{
+  "id": "stone_circle_spirit",
+  "name": "Ringwarden",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The ring was built to hold it. It carries the ring now.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Tall grey figure of stacked standing stones in a ring shape with a hollow centre, a faint blue light inside, no face.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stone_circle_spirit/rotations/south.webp",
+    "south-east": "stone_circle_spirit/rotations/south-east.webp",
+    "east": "stone_circle_spirit/rotations/east.webp",
+    "north-east": "stone_circle_spirit/rotations/north-east.webp",
+    "north": "stone_circle_spirit/rotations/north.webp",
+    "north-west": "stone_circle_spirit/rotations/north-west.webp",
+    "west": "stone_circle_spirit/rotations/west.webp",
+    "south-west": "stone_circle_spirit/rotations/south-west.webp"
+  },
+  "sheet": "stone_circle_spirit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c712aa73-6440-4480-b4d2-886868eadd2e",
+  "seed": 2000079062,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:54:58+00:00",
+  "elapsed_s": 163.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.594,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.594,
+        "bbox": [
+          51,
+          16,
+          173,
+          207
+        ],
+        "fill": 0.464,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.701,
+        "bbox": [
+          59,
+          17,
+          170,
+          212
+        ],
+        "fill": 0.431,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.69,
+        "bbox": [
+          84,
+          15,
+          149,
+          213
+        ],
+        "fill": 0.256,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.649,
+        "bbox": [
+          62,
+          11,
+          162,
+          207
+        ],
+        "fill": 0.391,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.649,
+        "bbox": [
+          53,
+          11,
+          170,
+          204
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.657,
+        "bbox": [
+          63,
+          11,
+          161,
+          207
+        ],
+        "fill": 0.383,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.694,
+        "bbox": [
+          79,
+          14,
+          138,
+          213
+        ],
+        "fill": 0.234,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.686,
+        "bbox": [
+          54,
+          17,
+          167,
+          212
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      }
+    }
+  }
+}
