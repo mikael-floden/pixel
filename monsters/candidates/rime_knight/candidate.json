@@ -1,0 +1,144 @@
+{
+  "id": "rime_knight",
+  "name": "Rimeknight",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He stood his watch on the pass through one winter too many.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Knight in armour completely sheathed in ice, a frozen visor, a sword of ice, snow piling on its shoulders.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rime_knight/rotations/south.webp",
+    "south-east": "rime_knight/rotations/south-east.webp",
+    "east": "rime_knight/rotations/east.webp",
+    "north-east": "rime_knight/rotations/north-east.webp",
+    "north": "rime_knight/rotations/north.webp",
+    "north-west": "rime_knight/rotations/north-west.webp",
+    "west": "rime_knight/rotations/west.webp",
+    "south-west": "rime_knight/rotations/south-west.webp"
+  },
+  "sheet": "rime_knight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1d016fd0-9276-4fa6-be82-1666a2a827ad",
+  "seed": 1349352111,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:42:42+00:00",
+  "elapsed_s": 266.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.701,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.828,
+        "bbox": [
+          13,
+          5,
+          73,
+          86
+        ],
+        "fill": 0.628,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.857,
+        "bbox": [
+          17,
+          6,
+          71,
+          88
+        ],
+        "fill": 0.572,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.849,
+        "bbox": [
+          20,
+          3,
+          77,
+          87
+        ],
+        "fill": 0.618,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.744,
+        "bbox": [
+          17,
+          3,
+          76,
+          87
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.701,
+        "bbox": [
+          15,
+          3,
+          77,
+          85
+        ],
+        "fill": 0.657,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.761,
+        "bbox": [
+          10,
+          3,
+          71,
+          87
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.86,
+        "bbox": [
+          9,
+          3,
+          67,
+          86
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.856,
+        "bbox": [
+          20,
+          5,
+          72,
+          88
+        ],
+        "fill": 0.557,
+        "touches_edge": true
+      }
+    }
+  }
+}
