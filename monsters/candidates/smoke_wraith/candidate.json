@@ -1,0 +1,144 @@
+{
+  "id": "smoke_wraith",
+  "name": "Smokewraith",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It rises from every fire that was put out too late.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Tall figure of thick grey smoke with two orange ember eyes, arms trailing into wisps, no legs.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "smoke_wraith/rotations/south.webp",
+    "south-east": "smoke_wraith/rotations/south-east.webp",
+    "east": "smoke_wraith/rotations/east.webp",
+    "north-east": "smoke_wraith/rotations/north-east.webp",
+    "north": "smoke_wraith/rotations/north.webp",
+    "north-west": "smoke_wraith/rotations/north-west.webp",
+    "west": "smoke_wraith/rotations/west.webp",
+    "south-west": "smoke_wraith/rotations/south-west.webp"
+  },
+  "sheet": "smoke_wraith/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c3dbeecf-cbd3-46ac-b005-80cdad880696",
+  "seed": 1761634895,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:32:37+00:00",
+  "elapsed_s": 252.6,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.769,
+    "reasons": [
+      "north-east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.769,
+        "bbox": [
+          3,
+          2,
+          84,
+          86
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.851,
+        "bbox": [
+          12,
+          2,
+          78,
+          87
+        ],
+        "fill": 0.724,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.851,
+        "bbox": [
+          28,
+          1,
+          68,
+          87
+        ],
+        "fill": 0.444,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.792,
+        "bbox": [
+          13,
+          0,
+          73,
+          85
+        ],
+        "fill": 0.659,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.795,
+        "bbox": [
+          4,
+          2,
+          85,
+          84
+        ],
+        "fill": 0.858,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.803,
+        "bbox": [
+          15,
+          0,
+          75,
+          85
+        ],
+        "fill": 0.659,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.847,
+        "bbox": [
+          20,
+          1,
+          60,
+          87
+        ],
+        "fill": 0.444,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.852,
+        "bbox": [
+          9,
+          2,
+          77,
+          87
+        ],
+        "fill": 0.746,
+        "touches_edge": false
+      }
+    }
+  }
+}
