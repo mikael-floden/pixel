@@ -1,0 +1,143 @@
+{
+  "id": "ram_skull_shade",
+  "name": "Ramshade",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It guards a flock of skulls on the high pasture.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Ghostly ram made only of a bleached skull with curled horns and a body of grey mist, four faint legs.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ram_skull_shade/rotations/south.webp",
+    "south-east": "ram_skull_shade/rotations/south-east.webp",
+    "east": "ram_skull_shade/rotations/east.webp",
+    "north-east": "ram_skull_shade/rotations/north-east.webp",
+    "north": "ram_skull_shade/rotations/north.webp",
+    "north-west": "ram_skull_shade/rotations/north-west.webp",
+    "west": "ram_skull_shade/rotations/west.webp",
+    "south-west": "ram_skull_shade/rotations/south-west.webp"
+  },
+  "sheet": "ram_skull_shade/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "40bfb91d-ccaf-48b5-aded-4aafa96a9016",
+  "seed": 1929252645,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:34:37+00:00",
+  "elapsed_s": 442.3,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.812,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.812,
+        "bbox": [
+          8,
+          1,
+          80,
+          86
+        ],
+        "fill": 0.79,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.856,
+        "bbox": [
+          8,
+          2,
+          71,
+          88
+        ],
+        "fill": 0.7,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.852,
+        "bbox": [
+          14,
+          2,
+          63,
+          87
+        ],
+        "fill": 0.538,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.832,
+        "bbox": [
+          9,
+          1,
+          70,
+          83
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.834,
+        "bbox": [
+          8,
+          3,
+          81,
+          82
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.832,
+        "bbox": [
+          19,
+          1,
+          77,
+          83
+        ],
+        "fill": 0.614,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.845,
+        "bbox": [
+          25,
+          1,
+          78,
+          87
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.859,
+        "bbox": [
+          15,
+          2,
+          82,
+          88
+        ],
+        "fill": 0.744,
+        "touches_edge": true
+      }
+    }
+  }
+}
