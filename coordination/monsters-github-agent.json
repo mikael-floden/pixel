@@ -1,12 +1,12 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:06:53+00:00",
+  "updated_at": "2026-09-24T22:08:04+00:00",
   "health": "running",
-  "current": "CLAIMED — his 22:04:55Z candidate approval: monsters/candidates/harvest_thing (approved, rating 1, new). Recording the approval on the design (review=approved + APPROVED tag, tags are free) and rebuilding the candidate index. No animation generation in this sitting. FILES: monsters/candidates/harvest_thing/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. Nothing in live/feedback/monsters.json is cleared — an approval is never cleared (review-contract law 2).",
+  "current": "harvest_thing SHIPPED (review=approved + APPROVED tag, index rebuilt). NOW CLAIMED — the rest of his same 22:03:52-22:05:07Z approval burst, unrecorded and on no board (the previous sitting's cutoff was 22:03:08Z): monsters/candidates/{shell_maiden,ice_worm,midge_cloud,rot_log,grass_serpent}, all approved rating 1. Same command, tags only, no generation. FILES: monsters/candidates/{shell_maiden,ice_worm,midge_cloud,rot_log,grass_serpent}/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT TAKEN: monsters/candidates/loom_widow (rejected 21:59:45Z) — a removal, and monsters-candidates.yml is generating over the 200 v3 bases right now, which is the one time reconcile must not rewrite config/candidates.json.",
   "progress": {
-    "unit": "his 22:04:55Z candidate review — approval recorded",
-    "entries_taken": 1,
+    "unit": "his 22:03:52-22:05:07Z candidate review — approvals recorded",
+    "entries_taken": 6,
     "entries_cleared": 0,
     "generations": 0,
     "usd_spent": 0.0
