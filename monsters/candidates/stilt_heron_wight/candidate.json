@@ -1,0 +1,141 @@
+{
+  "id": "stilt_heron_wight",
+  "name": "Stiltwight",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It fishes for things that are not fish.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Skeletal grey heron twice a man's height, long bone legs, ragged feathers, glowing pale eyes, beak open.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stilt_heron_wight/rotations/south.webp",
+    "south-east": "stilt_heron_wight/rotations/south-east.webp",
+    "east": "stilt_heron_wight/rotations/east.webp",
+    "north-east": "stilt_heron_wight/rotations/north-east.webp",
+    "north": "stilt_heron_wight/rotations/north.webp",
+    "north-west": "stilt_heron_wight/rotations/north-west.webp",
+    "west": "stilt_heron_wight/rotations/west.webp",
+    "south-west": "stilt_heron_wight/rotations/south-west.webp"
+  },
+  "sheet": "stilt_heron_wight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a1501e46-7687-4e3a-9986-e98a1cf764a3",
+  "seed": 1924739789,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:22:31+00:00",
+  "elapsed_s": 516.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.754,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.809,
+        "bbox": [
+          22,
+          3,
+          66,
+          80
+        ],
+        "fill": 0.438,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.839,
+        "bbox": [
+          10,
+          4,
+          74,
+          83
+        ],
+        "fill": 0.653,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.866,
+        "bbox": [
+          5,
+          4,
+          82,
+          86
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.853,
+        "bbox": [
+          12,
+          3,
+          74,
+          86
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.847,
+        "bbox": [
+          21,
+          2,
+          65,
+          82
+        ],
+        "fill": 0.455,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.754,
+        "bbox": [
+          9,
+          3,
+          79,
+          86
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.863,
+        "bbox": [
+          5,
+          4,
+          82,
+          87
+        ],
+        "fill": 0.825,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.842,
+        "bbox": [
+          14,
+          3,
+          72,
+          83
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      }
+    }
+  }
+}
