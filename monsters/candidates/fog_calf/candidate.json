@@ -1,0 +1,143 @@
+{
+  "id": "fog_calf",
+  "name": "Fogcalf",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Follow it into the mist and the mist follows you back.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Small calf-shape of thick white fog with dark spots where eyes and nose would be, legs vanishing into mist.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fog_calf/rotations/south.webp",
+    "south-east": "fog_calf/rotations/south-east.webp",
+    "east": "fog_calf/rotations/east.webp",
+    "north-east": "fog_calf/rotations/north-east.webp",
+    "north": "fog_calf/rotations/north.webp",
+    "north-west": "fog_calf/rotations/north-west.webp",
+    "west": "fog_calf/rotations/west.webp",
+    "south-west": "fog_calf/rotations/south-west.webp"
+  },
+  "sheet": "fog_calf/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3c93a6e8-eb63-4334-91ed-d2f1131f9f97",
+  "seed": 2100345205,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:27:06+00:00",
+  "elapsed_s": 409.3,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.665,
+    "reasons": [
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.698,
+        "bbox": [
+          3,
+          2,
+          38,
+          39
+        ],
+        "fill": 0.809,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.719,
+        "bbox": [
+          7,
+          2,
+          36,
+          39
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.665,
+        "bbox": [
+          1,
+          1,
+          38,
+          38
+        ],
+        "fill": 0.856,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.674,
+        "bbox": [
+          2,
+          1,
+          35,
+          39
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.713,
+        "bbox": [
+          7,
+          2,
+          33,
+          39
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.711,
+        "bbox": [
+          6,
+          1,
+          34,
+          39
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.666,
+        "bbox": [
+          2,
+          1,
+          39,
+          38
+        ],
+        "fill": 0.856,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.72,
+        "bbox": [
+          3,
+          2,
+          40,
+          39
+        ],
+        "fill": 0.856,
+        "touches_edge": true
+      }
+    }
+  }
+}
