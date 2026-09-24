@@ -63,7 +63,7 @@
   ],
   "updated_at": "2026-09-23T20:44:02+00:00",
   "health": "idle",
-  "current": "CLAIMING: THE CLIENT SWAP POLISH (zones, fast lane). A hop's room swap is treated as a fresh join: the avatar loop returns without my body for the frames between handoff:done and the bind (a freeze then a lurch, 0-110 ms on his phone, up to 460 on a slow link), bindRoom restarts time-of-day/aurora/ambient (a fade in progress snaps to its end), mutes drop sounds for 1.5-2 s, and the re-sent backpack rebuilds the grid and cancels a drag; chat/torch/drop/backpack/noaggro/pickup/engage sent during the ~1.5 RTT swap are lost. Fix: predict from the last own record while zoneSwapping; a swap keeps the lighting state and the drop window; setInventory ignores an identical backpack; non-input messages queue during the swap and flush on bind. Files: games2/client/src/scenes/WorldScene.ts, games2/client/src/hud.ts, games2/docs/backend.md. since 2026-09-24T15:15:52+00:00",
+  "current": "IDLE. Shipped d2f406cf57 — the client swap polish (fast lane): my body predicts through the swap, time-of-day/aurora/ambient keep their state on a hop, the drop quiet window is one patch on a swap, an identical backpack does not rebuild the grid, non-input messages queue during the swap (sendRoom). verify-zonehop OK. Released every file. Zones left: two cells of hysteresis at the line (a ZONES.md ownership change — needs the maintainer's yes); make-before-break; cross-border combat polish (flee slow across the line is his call); the combat/tiles3 fixtures; the stale monsters catalog. Pre-existing reds unchanged: spawns3, tiles3 parity, cross-border combat fixture.",
   "consumes": [
     "characters",
     "tiles",
