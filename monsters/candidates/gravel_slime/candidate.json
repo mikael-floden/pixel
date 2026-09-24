@@ -1,0 +1,140 @@
+{
+  "id": "gravel_slime",
+  "name": "Gritslime",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It swallows the road a little at a time.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Grey translucent slime full of embedded gravel and pebbles, a heavy sagging body, two dark pebble eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "gravel_slime/rotations/south.webp",
+    "south-east": "gravel_slime/rotations/south-east.webp",
+    "east": "gravel_slime/rotations/east.webp",
+    "north-east": "gravel_slime/rotations/north-east.webp",
+    "north": "gravel_slime/rotations/north.webp",
+    "north-west": "gravel_slime/rotations/north-west.webp",
+    "west": "gravel_slime/rotations/west.webp",
+    "south-west": "gravel_slime/rotations/south-west.webp"
+  },
+  "sheet": "gravel_slime/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2a532b7b-0114-4be4-a267-d50d06d68e6d",
+  "seed": 2003021227,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:38:06+00:00",
+  "elapsed_s": 204.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.803,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.803,
+        "bbox": [
+          8,
+          6,
+          80,
+          84
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.85,
+        "bbox": [
+          13,
+          6,
+          74,
+          85
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.869,
+        "bbox": [
+          24,
+          5,
+          64,
+          85
+        ],
+        "fill": 0.413,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.81,
+        "bbox": [
+          14,
+          3,
+          74,
+          84
+        ],
+        "fill": 0.628,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.805,
+        "bbox": [
+          8,
+          3,
+          79,
+          83
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.811,
+        "bbox": [
+          14,
+          3,
+          73,
+          84
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.865,
+        "bbox": [
+          24,
+          5,
+          63,
+          85
+        ],
+        "fill": 0.403,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.859,
+        "bbox": [
+          15,
+          6,
+          75,
+          85
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      }
+    }
+  }
+}
