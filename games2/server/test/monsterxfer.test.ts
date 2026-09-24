@@ -140,6 +140,10 @@ test("a monster crosses a line with its walk and its fight", async (t) => {
     //    shove). Zone 1 holds its prey only as a ghost.
     {
       const m = S0.state.monsters.get(id);
+      // The prey does not die under the bites this arm takes to play out (with
+      // the slack at the line the hunter fights from zone 1 for a while before
+      // it is a cell back into zone 0): a dead victim ends any hunt, rightly.
+      { const prey = S0.state.players.get(pid); prey.hp = prey.hpMax = 100000; }
       m.x = BX + 3 * CELL_WU; m.y = y;
       m.targetSid = pid; m.mstate = "chase"; m.provoked = true; m.tsid = pid;
       m.chaseOx = m.x; m.chaseOy = m.y;
@@ -157,10 +161,15 @@ test("a monster crosses a line with its walk and its fight", async (t) => {
       console.log(`    hunting a ghost: owners seen ${[...res.owners].join(",")}, largest step between 10 ms samples ${res.maxStep.toFixed(1)} wu over ${res.samples} samples`);
       assert.ok(res.maxStep < 2 * CELL_WU, `no snap home (largest step ${res.maxStep.toFixed(0)} wu; the old code jumped 181-398)`);
       assert.ok(res.last && res.last.x < arrivedX - 3, `it walks toward its prey (x ${arrivedX.toFixed(0)} -> ${res.last?.x.toFixed(0)})`);
-      // It is slow, and 3 cells is a while: it comes back over the line with
-      // the hunt intact, and zone 0 owns it again.
-      await waitFor(() => S0.state.monsters.has(id), 10000, "back in zone 0");
-      assert.equal(S0.state.monsters.get(id).targetSid, pid, "with the hunt intact on the way back");
+      // With the slack at the line (HANDOFF_HYST_WU) the hunter fights from
+      // wherever it stands — a cell into zone 0 hands it back, in reach of its
+      // prey from inside zone 1's band it stays zone 1's and bites across the
+      // line as cross-border combat does. Either way the hunt holds and the
+      // bites land.
+      await waitFor(() => S0.state.players.get(pid).hp < 100000, 10000, "the hunter bites its prey from wherever it stands");
+      const owner = S0.state.monsters.has(id) ? S0 : S1;
+      assert.equal(owner.state.monsters.get(id).targetSid, pid, "with the hunt intact");
+      console.log(`    the fight went on from zone ${owner === S0 ? 0 : 1}: prey hp ${S0.state.players.get(pid).hp} of 100000`);
     }
     r.leave();
   } finally {

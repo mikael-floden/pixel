@@ -109,7 +109,9 @@ found; gate `server/test/lawsize.test.ts`).
   ITS rect and skips ids it owns; a snapshot is that zone's whole band, so
   what it no longer carries is dropped at once and a quiet owner's ghosts
   expire after `GHOST_TTL_MS` (1 s).
-- **The hand-off**: `stepZones` sees a body outside the rect, writes the hot
+- **The hand-off**: `stepZones` sees a body `HANDOFF_HYST_WU` (2 cells) past
+  the rect (a monster `MONSTER_HYST_WU`, 1 cell; spec/ZONES.md "Ownership":
+  the slack that stops hops chaining along a line), writes the hot
   state (`HotState`: position, dir, moving/running, hp/ep/level/xp, backpack,
   the account record, seq, torch, no-aggro, `actionSeq`/`hitSeq` — mirrored
   by CHANGE on the client, so a counter rebuilt from zero replayed the last

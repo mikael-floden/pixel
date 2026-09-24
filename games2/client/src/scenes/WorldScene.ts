@@ -13236,6 +13236,10 @@ export class WorldScene extends Phaser.Scene {
       this.zone = msg.zone;
       this.bindRoom(next, true);
       hop.boundMs = Math.round(performance.now() - t0);
+      // The crossing watch always covers the second AFTER the bind — where a
+      // flicker would show — even when a slow join ate its window (a headless
+      // gate box joins in 2-3 s; a phone in 250 ms).
+      this.zoneWatchUntil = Math.max(this.zoneWatchUntil, this.time.now + 1000);
       /* THE RECONCILE COUNTS WHAT IT DROPS (`__ml.zone().lastHop.removed`):
        * the join snapshot carries the whole neighbourhood (WorldRoom.attachView
        * runs the interest pass for the joiner), so on a crossing this removes

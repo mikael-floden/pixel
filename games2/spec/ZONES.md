@@ -14,7 +14,16 @@ Kubernetes). Rules here are present tense; the measurements land in
   Rooms are spread over processes; today every room runs in the one process
   we deploy, and nothing in the code knows the difference.
 - **Ownership.** Every entity (player, monster, ground item) belongs to
-  exactly one room: the zone containing its position. Ids are stable and
+  exactly one room: the zone containing its position — WITH SLACK (maintainer
+  2026-09-24). A player is handed over once it stands `HANDOFF_HYST_WU` (2
+  cells) outside its room's rectangle, a monster once `MONSTER_HYST_WU` (1
+  cell) outside, and the owning room keeps a body that lingers in that band;
+  a bounce needs the band twice over. (Flipping at the line chained hops:
+  25-35% of the maintainer's hops came within 3 s of the previous one, up to
+  7 in 30 s. The band stays under `GHOST_BAND_WU - INTEREST_WU`, 4 cells, so
+  a body in it still sees its whole radius through the neighbour's ghosts;
+  the wire and the ghost band already carry a body outside its rect.
+  `hysteresis.test.ts`.) Ids are stable and
   world-unique — a player is keyed by a `pid` minted at first join (its
   `sid` is a synced field, so a client finds itself by `sid === room.sessionId`),
   a monster or drop by `z<zone>:<n>`.
@@ -36,7 +45,7 @@ Kubernetes). Rules here are present tense; the measurements land in
   cannot tell). A ghost is never stepped locally (no sim, no brain, no combat)
   and expires 1 s after its last snapshot. Interest applies to ghosts like
   anything else, so a player near a border sees across it through ONE socket.
-- **Hand-off.** When a player's position enters another zone — by walking,
+- **Hand-off.** When a player stands two cells into another zone — by walking,
   or put there by a revive at the spawn or a teleport, which start it from
   their own handler and leave the wire on the last true spot until it lands
   (docs/backend.md "The wire never shows the clamp") — the home room
@@ -74,8 +83,8 @@ Kubernetes). Rules here are present tense; the measurements land in
   adopts from the copy: same body, same seq. Honoured only with a valid
   signature, this pid and key, an age within the TTL and the account the
   client's own claim resolves to; anything else is the ordinary join.
-- **Monsters cross too, AND THE HAND-OFF OVERLAPS.** A monster whose position
-  leaves its rect is transferred with its full brain state (`monster:xfer`):
+- **Monsters cross too, AND THE HAND-OFF OVERLAPS.** A monster a cell past
+  its rect is transferred with its full brain state (`monster:xfer`):
   the roam goal and its trip (re-planned on arrival), the pause, attack and
   scan deadlines as remaining ms, and the hunt — kept whenever the victim is
   a player or a ghost of the new room, with a short grace for one mirrored

@@ -78,7 +78,7 @@ test("watchers on both sides hold the crosser, as player or ghost, through every
         }
       })();
       const go = new Promise<{ pid: string; key: string }>((res) => R.onMessage("zone:go", (m: any) => { if (m?.zone === 1) res(m); }));
-      R.send("teleport", { x: BX + 1 * CELL_WU, y });
+      R.send("teleport", { x: BX + 3 * CELL_WU, y }); // past the two cells of slack (HANDOFF_HYST_WU)
       const msg = await go;
       const R2: any = await new Client(`ws://localhost:${port}`).joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "R", character: "default_boy", pid: msg.pid, handoff: msg.key });
       await waitFor(() => R2.state.players.get(pid)?.sid === R2.sessionId, 8000, "adopted in zone 1");

@@ -257,7 +257,25 @@ const WAKE_WU = GHOST_BAND_WU + RUN_SPEED * PLAYER_SPEED_DEFAULT * WAKE_LOOKAHEA
  *  yet waits this long for the owner's next edge snapshot (50 ms from a room
  *  the wake band keeps at 20 Hz) or the adoption before it is called off. */
 const XFER_HUNT_GRACE_MS = 400;
-const WAKE_HOLD_MS = 1000; // an awake neighbour names this room every 50 ms; a lost message or two must not idle it
+const WAKE_HOLD_MS = 1000;
+/** TWO CELLS OF SLACK AT THE LINE (maintainer 2026-09-24). Ownership used to
+ *  flip the instant a body crossed, so running or fighting along a line
+ *  chained hops: 25-35% of his hops came within 3 s of the previous one, up
+ *  to 7 in 30 s, each a new socket, a replay and a swap. A player is handed
+ *  over once it stands HANDOFF_HYST_WU outside its room's rectangle, a
+ *  monster once MONSTER_HYST_WU outside, and the room that owns a body keeps
+ *  it while it lingers in that band — so a bounce needs the band twice over,
+ *  4 cells of travel. `distToRect` is the Chebyshev distance to the
+ *  rectangle, so a corner is one crossing into the diagonal room, not two;
+ *  it counts one unit more past the far edges (x1/y1 are exclusive) than
+ *  past the near ones, so the test is "at least the band", which lands on
+ *  exactly two cells on both sides.
+ *  The band must stay under GHOST_BAND_WU - INTEREST_WU (4 cells): a body 2
+ *  cells past the line still sees its whole interest radius through the
+ *  neighbour's ghost band. The wire and the ghost band already carry a body
+ *  standing outside its rect (`publishEdge`'s inBand). */
+const HANDOFF_HYST_WU = 2 * CELL_WU;
+const MONSTER_HYST_WU = 1 * CELL_WU; // an awake neighbour names this room every 50 ms; a lost message or two must not idle it
 /** A MONSTER THE MAP HAS BOXED IN MUST NOT COST THE SERVER ANYTHING.
  *
  *  A roam plan that finds NO route is the DEAREST search there is: A* only
@@ -3244,6 +3262,7 @@ export class WorldRoom extends Room<WorldState> {
    *  teleport) starts its hand-off NOW, not on the next tick's stepZones. */
   private hopIfElsewhere(player: Player, now: number) {
     if (this.zoneId === WHOLE_WORLD || !this.grid || player.handoff || !player.pid) return;
+    if (!this.rect || distToRect(this.rect, player.x, player.y) < HANDOFF_HYST_WU) return; // within the slack: still mine
     const z = zoneAt(this.grid, player.x, player.y);
     if (z !== this.zoneId) this.startHandoff(player, player.pid, z, now);
   }
@@ -3416,6 +3435,7 @@ export class WorldRoom extends Room<WorldState> {
 
   private stepZones(now: number) {
     const grid = this.grid!;
+    const rect = this.rect!;
     // 1. Players that crossed into another zone are handed over; a hand-off
     //    nobody completed is dropped after HANDOFF_TIMEOUT_MS so a failed hop
     //    never strands a body.
@@ -3435,6 +3455,7 @@ export class WorldRoom extends Room<WorldState> {
         return;
       }
       if (p.dead) return;
+      if (distToRect(rect, p.x, p.y) < HANDOFF_HYST_WU) return; // within the slack: still mine (HANDOFF_HYST_WU)
       const z = zoneAt(grid, p.x, p.y);
       if (z !== this.zoneId) this.startHandoff(p, pid, z, now);
     });
@@ -3442,6 +3463,7 @@ export class WorldRoom extends Room<WorldState> {
     const xfer: Array<[string, number]> = [];
     this.state.monsters.forEach((m, id) => {
       if (m.mstate === "die") return;
+      if (distToRect(rect, m.x, m.y) < MONSTER_HYST_WU) return; // within the slack: still mine (MONSTER_HYST_WU)
       const z = zoneAt(grid, m.x, m.y);
       if (z !== this.zoneId) xfer.push([id, z]);
     });
