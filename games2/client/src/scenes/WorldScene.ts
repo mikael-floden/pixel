@@ -153,6 +153,7 @@ import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledge
 import { tlArm, tlMark, tlTake, tlCompact, clock0, type Mark } from "../perftimeline";
 import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
+import { TerrainBake, bakeParity, type BakeHost, type BakeSink } from "../terrainbake";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -1082,6 +1083,21 @@ function groundScissorOn(): boolean {
     return true;
   }
 }
+
+/** THE TERRAIN BAKE (terrainbake.ts): raised terrain drawn once per chunk into
+ *  a band atlas instead of thousands of sprites a frame. Remembered in
+ *  `ml-bake`, set by `?bake=0|1`, Settings→Dev "terrain bake" and
+ *  `__ml.bake(on)`; `verify-bake.mjs` holds the two ways to the same texels. */
+function terrainBakeOn(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("bake");
+    if (q === "0" || q === "1") localStorage.setItem("ml-bake", q);
+    return localStorage.getItem("ml-bake") !== "0";
+  } catch {
+    return true;
+  }
+}
+const NO_IMAGES: Phaser.GameObjects.Image[] = [];
 
 function setGroundScissor(on: boolean): void {
   try {
@@ -2501,6 +2517,76 @@ export class WorldScene extends Phaser.Scene {
     return this.gpuStr;
   }
 
+  /** The terrain bake, created once the world is a maps3 one on WebGL — the
+   *  host it reads the scene through is the whole coupling (terrainbake.ts). */
+  private bakeEnsure(): void {
+    if (this.bake || !this.maps3 || !this.world || this.game.renderer.type !== Phaser.WEBGL) return;
+    const world = this.world;
+    const host: BakeHost = {
+      scene: this,
+      worldW: world.width,
+      worldH: world.height,
+      baseDepth: (v) => this.iso.oy + v * this.geom.dy + this.geom.dy,
+      eps: OCC_DEPTH_EPS,
+      walkCell: (col, row, sink) => this.bakeWalkCell(col, row, sink),
+      sizeOf: (key) => {
+        if (!this.textures.exists(key)) return null;
+        const f = this.textures.get(key).get();
+        return { w: f.width, h: f.height };
+      },
+      onChunk: (cells, baked) => this.bakeOnChunk(cells, baked),
+      masked: () => !!this.indoorMask,
+    };
+    this.bakeHost = host;
+    this.bake = new TerrainBake(host);
+    this.bake.setEnabled(terrainBakeOn());
+  }
+
+  /** ONE cell's terrain ops into the bake's sink: the same walk the live path
+   *  runs, with no view cull, no mask, no pool and no incremental state. */
+  private bakeWalkCell(col: number, row: number, sink: BakeSink): void {
+    if (!this.world) return;
+    this.bakeSink = sink;
+    try {
+      this.tiles3Occluders(0, 0, 0, 0, null, null, this.indoorTop, () => true, () => true, new Set([row * this.world.width + col]));
+    } finally {
+      this.bakeSink = null;
+    }
+  }
+
+  /** A chunk became baked (its cells' live images go now) or live again (its
+   *  cells are re-walked by the next rebuild, which the flags below force). */
+  private bakeOnChunk(cells: number[], baked: boolean): void {
+    if (baked) {
+      const gone: Phaser.GameObjects.Image[] = [];
+      for (const k of cells) {
+        const b = this.occNext.get(k);
+        if (!b) continue;
+        for (const im of b) gone.push(im);
+        this.occNext.delete(k);
+      }
+      if (gone.length) this.destroyBatch(gone);
+    } else {
+      for (const k of cells) if (this.occCellState.has(k)) this.bakeRewalk.add(k);
+    }
+    this.bakeSetChanged = true;
+  }
+
+  private toggleTerrainBake(): void {
+    const on = !terrainBakeOn();
+    try { localStorage.setItem("ml-bake", on ? "1" : "0"); } catch { /* private mode */ }
+    this.bakeEnsure();
+    this.bake?.setEnabled(on);
+  }
+
+  private bakeLabel(): string {
+    if (!this.bake) return terrainBakeOn() ? "on (no world yet)" : "off";
+    if (!this.bake.on) return "off";
+    const st = this.bake.states();
+    const baked = st.filter((c) => c.state === "baked").length;
+    return `on: ${baked}/${st.length} chunks, ${this.bake.images.length} images${this.indoorMask ? " (indoors: live)" : ""}`;
+  }
+
   private toggleFpsMeter(): void {
     if (fpsBadgeOn()) {
       unmountFpsBadge();
@@ -2781,6 +2867,9 @@ export class WorldScene extends Phaser.Scene {
        * of it, the display's own rate and the step's work inside the callback
        * — `frames.p50` is 33 under a paced 30 and this says why. */
       pace: paceTake(),
+      /* THE TERRAIN BAKE'S ROW (terrainbake.ts): chunks baked/live/waiting,
+       * band images, atlases, the window's bake ms and peak, bakes, evictions. */
+      bake: this.bake ? this.bake.take() : null,
       sections: perFrame,
       sectionsPeak,
       // HEAP GROWTH BY SECTION, KB PER FRAME (the dozen largest) — the
@@ -4654,6 +4743,17 @@ export class WorldScene extends Phaser.Scene {
    * exists only for the A/B in `__ml.occRebuild`. */
   private occPool = new Map<number, Phaser.GameObjects.Image[]>();
   private occNext = new Map<number, Phaser.GameObjects.Image[]>();
+  /** THE TERRAIN BAKE (terrainbake.ts). `bakeSink` is set for the duration of a
+   *  bake walk: the walk then records ops instead of creating images and
+   *  touches no incremental state. `bakeRewalk` holds cells whose chunk went
+   *  live (dropped, edited, indoors) and need their live images back;
+   *  `bakeSetChanged` says the band-image set changed since the last rebuild
+   *  (the cull lists and the cover index follow). */
+  private bake: TerrainBake | null = null;
+  private bakeHost: BakeHost | null = null;
+  private bakeSink: BakeSink | null = null;
+  private bakeRewalk = new Set<number>();
+  private bakeSetChanged = false;
   /** Row stride for the pool's cell key — the world's width, so `row*stride+col`
    *  is unique per cell. Set at the top of every rebuild. */
   private occStride = 1;
@@ -5720,6 +5820,15 @@ export class WorldScene extends Phaser.Scene {
           get: () => pacedNow(),
           state: () => paceLabel(),
         },
+        /* THE TERRAIN BAKE (terrainbake.ts; maintainer 2026-09-24: "Let's do
+         * the entire work"): raised terrain drawn once per chunk into a band
+         * atlas. On/off is the A/B — off is today's sprites. */
+        {
+          label: "terrain bake",
+          act: () => this.toggleTerrainBake(),
+          get: () => !!this.bake?.on,
+          state: () => this.bakeLabel(),
+        },
       ],
     });
     mountPageFrame();
@@ -5827,6 +5936,24 @@ export class WorldScene extends Phaser.Scene {
       pace: () => ({ mode: paceMode(), paced: pacedNow(), label: paceLabel() }),
       paceCycle: () => paceCycle(),
       paceTake: () => paceTake(),
+      /** The terrain bake (terrainbake.ts): switch, chunk states, the texel parity, the beacon row. */
+      bake: (on?: boolean) => {
+        if (on !== undefined) {
+          try { localStorage.setItem("ml-bake", on ? "1" : "0"); } catch { /* private mode */ }
+          this.bakeEnsure();
+          this.bake?.setEnabled(on);
+        }
+        return this.bake ? { on: this.bake.on, enabled: this.bake.enabled, images: this.bake.images.length, states: this.bake.states() } : null;
+      },
+      bakeStates: () => this.bake?.states() ?? [],
+      bakeTake: () => this.bake?.take() ?? null,
+      bakeParity: (png?: boolean) => {
+        if (!this.bake || !this.bakeHost) return { ok: false, error: "no bake" };
+        const v = this.cameras.main.worldView;
+        return bakeParity(this.bake, this.bakeHost, { x: v.x, y: v.y, width: v.width, height: v.height }, !!png);
+      },
+      /** Live occluder sprites against band images — what the bake removes. */
+      bakeCount: () => ({ live: this.occluders.length, bands: this.bake?.images.length ?? 0, displayList: this.children.length }),
       liveTuning: () => liveTuningSnapshot(),
       // Live feed for the HUD Map tab (hud.ts polls per rAF): the current world
       // id + grid size (cells) and the LOCAL player's SMOOTH predicted cell —
@@ -11106,6 +11233,7 @@ export class WorldScene extends Phaser.Scene {
         }
     };
     for (const im of this.occluders) add(im);
+    if (this.bake) for (const im of this.bake.images) add(im); // the band images cover exactly as their ops did
     /* SCENERY TOO. A tree is a prop that happens to sit off the grid, and a
      * body walking behind one must be covered by it exactly as by a boulder. */
     for (const im of this.sceneryImgs) add(im);
@@ -14003,6 +14131,11 @@ export class WorldScene extends Phaser.Scene {
     this.ps();
     this.rebuildOccluders();
     this.pe("rebuildOccluders");
+    if (this.bake) {
+      this.ps();
+      this.bake.step();
+      this.pe("bakeStep");
+    }
     this.ps();
     this.cullOccluderSubmits();
     this.pe("occCull");
@@ -21549,6 +21682,8 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     if (!ready.length) return;
+    // A baked chunk whose cell just got its transition re-walks (terrainbake.ts refresh).
+    if (this.bake) for (const idx of ready) this.bake.refresh(idx % world.width, Math.floor(idx / world.width));
     // Its own section: with the compose worker this is where landed rasters
     // reach the ground, and the phone's beacon must be able to name it.
     this.ps();
@@ -22451,8 +22586,9 @@ export class WorldScene extends Phaser.Scene {
       const u = col - row;
       const idx = row * world.width + col;
       const st = { partial: false, incomplete: false };
-      this.occCellState.set(idx, st);
+      if (!this.bakeSink) this.occCellState.set(idx, st);
       const metaPush = (m: (typeof this.occluderMeta)[number]) => {
+        if (this.bakeSink) return; // a bake walk records ops, never meta
         let arr = this.occMetaByCell.get(idx);
         if (!arr) this.occMetaByCell.set(idx, (arr = []));
         arr.push(m);
@@ -22481,7 +22617,9 @@ export class WorldScene extends Phaser.Scene {
       walkCell();
       if (tex.droppedOps !== d0 || tex.plateRawFallbacks !== r0 || tex.stats.missing !== m0 || tex.stats.deferred !== f0)
         st.incomplete = true;
-      if (st.incomplete) this.occIncomplete.add(idx);
+      if (this.bakeSink) {
+        if (st.incomplete) this.bakeSink.incomplete();
+      } else if (st.incomplete) this.occIncomplete.add(idx);
       else this.occIncomplete.delete(idx);
     };
     let walkCell = () => {};
@@ -22493,6 +22631,16 @@ export class WorldScene extends Phaser.Scene {
         const by = this.iso.oy + v * dy;
         const oDepth = by + dy;
         const occCut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
+        /* THE EMIT SINK (terrainbake.ts): a bake walk records the op; a cell a
+         * baked chunk draws creates no image (its meta still lands below, and
+         * the depth rule and the cover lines read that); the rest is the live
+         * path, unchanged. */
+        const sink = this.bakeSink;
+        const baked = !sink && !!this.bake?.owns(col, row);
+        const emit = (k: string, x: number, y: number, role: string): void => {
+          if (sink) sink.op(k, x, y, role);
+          else if (!baked) this.occTint(this.occImage(k, x, y, oDepth, col, row), role);
+        };
 
         // A deck slab floating ABOVE its base must occlude whoever walks under
         // it. Same rule as world@2: skip it entirely on a constrained column.
@@ -22539,7 +22687,7 @@ export class WorldScene extends Phaser.Scene {
                 st.partial = true;
                 continue;
               }
-              this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck");
+              emit(op.key, bx, op.y, "deck");
             }
             metaPush({
               col, row, top: d.level, solid: false, depth: oDepth, stand: d.level,
@@ -22609,7 +22757,7 @@ export class WorldScene extends Phaser.Scene {
           const own = t3FaceOwnKey(cell, lvl);
           if (own && !this.t3tm.exists(own)) st.incomplete = true;
           const faceArt = t3FaceKeyAt(this.t3tm, cell, lvl) ?? fk;
-          this.occTint(this.occImage(faceArt, bx, by - lvl * lh, oDepth, col, row), "face");
+          emit(faceArt, bx, by - lvl * lh, "face");
         }
         /* THE CAP IS PASTED WHERE THE GROUND PASS PASTES IT. A surface is a
          * 64x46 plate anchored at the cell's own `sy`; a wall course is 64x64
@@ -22641,9 +22789,9 @@ export class WorldScene extends Phaser.Scene {
           // cell is walked again when it lands — the last face a full walk
           // found that the incremental set lacked (three at the cave mouth).
           if (topL < cell.level && capSurface === null && !mid && cell.wall?.mid.path) st.incomplete = true;
-          this.occTint(this.occImage(capKey, capX, capY, oDepth, col, row), "cap");
+          emit(capKey, capX, capY, "cap");
           if (lid && capSurface === null)
-            this.occTint(this.occImage(lid, cell.sx, (cell.pasteY ?? cell.sy) + (cell.level - topL) * lh, oDepth, col, row), "cap");
+            emit(lid, cell.sx, (cell.pasteY ?? cell.sy) + (cell.level - topL) * lh, "cap");
           /* AND THE SET SURFACE OVER A DRESSED WALL'S CAP — the second image
            * the ground pass paints on such a cell (`cellOps`: stack, then the
            * surface at its own anchor). A review course's top is one flat
@@ -22653,7 +22801,7 @@ export class WorldScene extends Phaser.Scene {
            * See `dressKey`. Full-height columns only, like everything below. */
           if (topL === cell.level) {
             const dk = this.t3Try(`occ dress ${col},${row}`, () => t3DressKey(tex, cell), null);
-            if (dk) this.occTint(this.occImage(dk.key, dk.x, dk.y, oDepth, col, row), "cap");
+            if (dk) emit(dk.key, dk.x, dk.y, "cap");
           }
           /* THE CAP WEARS ITS TRANSITION HERE TOO — and not doing so is the
            * whole of "the transition only works on level 0" (maintainer, for
@@ -22689,7 +22837,7 @@ export class WorldScene extends Phaser.Scene {
             const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
             // `obop` carries the boundary's own absolute paste point (the same
             // one the ground pass blits it at) — never re-derive it here.
-            if (obop) this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary");
+            if (obop) emit(obop.key, obop.x, obop.y, "boundary");
           }
           /* AND THE CAP WEARS ITS FADE AND ITS WALL-FOOT BAND, for exactly the
            * reason it wears its transition: the ground pass paints them into
@@ -22707,7 +22855,7 @@ export class WorldScene extends Phaser.Scene {
             const extra = this.t3Try(`occ overlay ${col},${row}`, () => tex.overlayOps(cell), null);
             if (extra)
               for (const op of extra)
-                this.occTint(this.occImage(op.key, op.x, op.y, oDepth, col, row), op.role);
+                emit(op.key, op.x, op.y, op.role);
           }
         } else {
           culled++;
@@ -22723,7 +22871,7 @@ export class WorldScene extends Phaser.Scene {
                 st.partial = true;
                 continue;
               }
-              this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck");
+              emit(op.key, bx, op.y, "deck");
             }
         metaPush({
           col, row, top: topL, solid: false, depth: oDepth,
@@ -25389,7 +25537,7 @@ export class WorldScene extends Phaser.Scene {
   private cullRect: ViewRect = { x: 0, y: 0, width: 0, height: 0 };
 
   private get cullLists(): Phaser.GameObjects.Image[][] {
-    return [this.occluders, this.sceneryImgs, this.sceneryRoofedImgs, this.sceneryAboveCutImgs];
+    return [this.occluders, this.bake ? this.bake.images : NO_IMAGES, this.sceneryImgs, this.sceneryRoofedImgs, this.sceneryAboveCutImgs];
   }
   /** The lists the view cull walks when the proximity cull owns the occluders. */
   private get sceneryCullLists(): Phaser.GameObjects.Image[][] {
@@ -25438,7 +25586,7 @@ export class WorldScene extends Phaser.Scene {
     const maskNow = this.indoorMask;
     const cutsNow = maskNow ? this.indoorCut : null;
     const cutChanged = !!this.occWin && (this.occWinMask !== maskNow || this.occWinCuts !== cutsNow);
-    if (!moved && !this.occRelanded && !cutChanged) return;
+    if (!moved && !this.occRelanded && !cutChanged && !this.bakeRewalk.size && !this.bakeSetChanged) return;
     if (moved) this.lastOccl = { x: ccx, y: ccy };
     const tDestroy = performance.now();
     this.occReused = 0;
@@ -25466,6 +25614,12 @@ export class WorldScene extends Phaser.Scene {
     const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
     const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
     const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
+    // The terrain bake wants this window's chunks; indoors it stands down.
+    this.bakeEnsure();
+    if (this.bake) {
+      this.bake.suspend(!!mask);
+      this.bake.want(u0, u1, v0, v1);
+    }
     // VIEW CULL (perf 2026-07-31). The scan window above is deliberately huge:
     // its bottom carries `maxLevel * lh` (640px on the_island2) because a tall
     // column's ART rises from a footprint far below the screen, so those cells
@@ -25502,6 +25656,11 @@ export class WorldScene extends Phaser.Scene {
       ix + tileSize >= cx0 && ix <= cx1 && iyBot >= cy0 && iyTop <= cy1;
     if (!this.maps3) {
       this.destroyBatch(this.occluders.concat(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img]))));
+      this.bake?.destroy();
+      this.bake = null;
+      this.bakeHost = null;
+      this.bakeRewalk.clear();
+      this.bakeSetChanged = false;
       this.occPool.clear();
       this.occNext.clear();
       this.occMetaByCell.clear();
@@ -25623,6 +25782,12 @@ export class WorldScene extends Phaser.Scene {
       this.destroyBatch(gone);
       // Cells to WALK: entered, culled last time, or still streaming.
       const rewalk = new Set<number>();
+      // Cells whose chunk went live again (the bake dropped it) get their images back.
+      for (const k of this.bakeRewalk) {
+        const [u, v] = cellUV(k);
+        if (inWin(u, v, cur)) rewalk.add(k);
+      }
+      this.bakeRewalk.clear();
       /* A LANDING WALKS THE INCOMPLETE CELLS, read off `occIncomplete` (Task
        * 1) — the same cells the window scan used to find by testing every
        * cell of the window per batch. A step or a cut walks the window as
@@ -25676,7 +25841,8 @@ export class WorldScene extends Phaser.Scene {
     const leftover: Phaser.GameObjects.Image[] = [];
     for (const arr of this.occPool.values()) for (const im of arr) leftover.push(im);
     this.occPool.clear();
-    const setChanged = full || this.occCreated > 0 || leftover.length > 0;
+    const setChanged = full || this.occCreated > 0 || leftover.length > 0 || this.bakeSetChanged;
+    this.bakeSetChanged = false;
     if (setChanged) {
       // The flat views every consumer reads (the per-frame cull, the cover
       // index, the beacon, the depth rule), from the per-cell buckets.

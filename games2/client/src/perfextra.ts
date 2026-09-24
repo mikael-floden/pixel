@@ -131,7 +131,7 @@ export function triFillPx(view: ArrayLike<number>, vertexCount: number, stride: 
  *  the gap spent waiting for the compositor (GPU-bound when it dominates). */
 const SECTION_GROUPS: Record<string, string> = {
   redrawGround: "ground", repaintCells: "ground", groundSlice: "ground", landRepaint: "ground",
-  rebuildOccluders: "occ", occWalkInc: "occ", occCull: "occ", occNear: "occ", coverIndex: "occ", rebuildScenery: "occ", sceneryDepth: "occ",
+  rebuildOccluders: "occ", occWalkInc: "occ", occCull: "occ", occNear: "occ", coverIndex: "occ", rebuildScenery: "occ", sceneryDepth: "occ", bakeStep: "occ",
   lighting: "light", litPass: "light", litObjects: "light", litCoverSurf: "light", litPick: "light", litAtmo: "light", litWeather: "light", litShapeJobs: "light",
   avatarLoop: "sim", monsterLoop: "sim", stepNpcs: "sim", overlays: "sim", prefetch: "sim", artTick: "sim",
   render: "render", depthSort: "render",

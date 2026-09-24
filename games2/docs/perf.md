@@ -416,6 +416,59 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   counts the frames the game RENDERED (from the pacer) and tags "paced";
   a hitch is three vsyncs or more (over 45 ms — 50.0 is exactly three and
   straddled the old "over 50").
+- **THE TERRAIN BAKE: RAISED TERRAIN IS DRAWN ONCE PER CHUNK, NOT ONCE PER
+  SPRITE PER FRAME** (maintainer 2026-09-24: "I'm fully sold ... Let's do the
+  entire work ... without changing the look and feel!"; `client/src/
+  terrainbake.ts`, the pure parts in `terrainbakecore.ts` +
+  `terrainbake.test.ts`, the gate `verify-bake.mjs`). His 16:50 run on
+  0b274482: 2,200-5,600 occluder sprites in a 4,000-10,000-object display
+  list, re-sorted (depthSort 2.0 ms), re-culled (occCull 1.0) and
+  re-submitted (most of render 3.0) every frame, 18-27 Mpx of fill a frame
+  (stacked courses overlap and a tiler pays for every quad), 16,433 live
+  textures. The invariant that makes the bake exact: every occluder image on
+  one diagonal row shares one base depth and the row's images are ordered
+  inside an epsilon band no body enters, so a row's images composited once
+  in that order and drawn as ONE quad at the row's depth sort, cover
+  (coverDrawOccluders reads bounds, depth, texture) and light (the night
+  shader resolves surfaces per pixel from world data) exactly as before;
+  premultiplied "over" is associative. An 8x8-cell chunk (16 overflowed two
+  1024^2 pages at the mountain: 31 segments, 448 ops) is walked with the
+  live walk's own body (`bakeSink`: ops recorded at the floor of their
+  position — the sprite's roundPixels floor — no images, no incremental
+  state, no meta), its ops grouped into depth-row SEGMENTS (split at a gap,
+  at the u%128 slot wrap, and at the atlas width), shelf-packed into the
+  smallest atlas that takes them (256/512/1024^2, one capture-pool entry
+  each; two 1024 pages at most), drawn in slices under `BAKE_MS` 2 with the
+  ground's scissored end-draw, then one Image per segment stands and the
+  cells' live images go (`bakeOnChunk`); the live walk emits no image for a
+  cell a baked chunk owns (`emit` in tiles3Occluders) and still records its
+  meta. Atlas names carry a generation (`bake:<cx>,<cy>:<gen>:<page>`): a
+  re-bake is a NEW texture drawn beside the standing one, the old goes
+  after the new images stand. LIVE, NOT BAKED: a cell whose art is
+  streaming (`incomplete`) draws live INSIDE its baked chunk and the chunk
+  re-walks after `BAKE_RETRY_MS` (backing off to 30 s) and re-bakes when
+  its ops changed (an order-sensitive signature); a cell whose transition
+  landed later (`t3landBoundaries`' repair) marks the chunk `stale` for
+  the same re-walk, bands standing meanwhile — the live path shows that
+  cell stale too until it re-enters the window; a sparse chunk (under 2 ops
+  a segment: a village) is not worth an atlas; the indoor cut-away
+  (`suspend`: the mask rewrites columns per room — every chunk drops to
+  live indoors and bakes again outdoors); an edited cell (`dirty(col,row)`:
+  its chunks draw live from the next rebuild and re-bake); an overflow; the
+  switch off (`ml-bake`, `?bake=0`, Settings→Dev "terrain bake" — today's
+  sprites, the A/B). Resident atlases are capped (`BAKE_MAX_ATLASES` 24) by
+  last use; chunks bake nearest the window's centre first. MEASURED
+  (headless, 412x732): the cliff top 258,217 draws 2,517 sprites as 1,037
+  band images and none live; the mountain 277,269 826 as 583; a village
+  chunk stays live. The gate
+  draws the baked chunks' ops DIRECTLY in the live order and their band
+  images into two view-sized textures and compares texels (`__ml.
+  bakeParity`); it also writes the before/after screenshots. Nothing is
+  rebuilt at deploy: the bake runs on the phone from the world and art that
+  ship today, and an edit is data. TRAP: the emit closure's own
+  `occTint(occImage(...))` matches the regex that rewrote the eight emission
+  sites — rewrite before inserting. Beacon row `bake` (chunks baked/live/
+  waiting, images, atlases, ms, peak, bakes, evictions, dirtied, ops).
 - **FRAME PACING: A STEADY 30 WHEN 60 CANNOT BE HELD** (maintainer
   2026-09-24, "The FPS is not stable! Think outside the box";
   `client/src/pacing.ts`, `pacing.test.ts`). His 16:50 run on 0b274482:

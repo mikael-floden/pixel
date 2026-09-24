@@ -26,7 +26,7 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 | `docs/tiles3-rendering.md` | tiles3 resolver, draw ops, plates, transitions, seams, fades, decks, wall feet, parity |
 | `docs/scenery.md` | sizing, hitboxes, animation, wall windows, indoor furniture, flat pieces, fog |
 | `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts, drops |
-| `docs/perf.md` | ground RT (scroll, slices, repaints, prefetch, compose), pooled occluders, capture, art queue, beacon |
+| `docs/perf.md` | ground RT, occluders, terrain bake, art queue, pacing, beacon |
 | `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, dodge, swimming, gait, camera |
 | `docs/monsters-combat.md` | spawn zones, shadows, gait, brain, escape, loot, backpack, levelling, death, NPCs |
 | `docs/lighting.md` | night shader + CPU twins, light slots, scenery light and shadow, fog, sun, time, weather, indoor ambient |
@@ -103,9 +103,9 @@ push, no PRs unless asked.
   before a monster of it exists, its fight art raised when a fight starts,
   scenery animations last. Decoded on a worker, uploaded in bands
   (`artworker.ts`; boxes, alpha and pixels on demand). THREE NEVERS (each a
-  decode or a pipeline drain per strip on the phone): `texImage2D` an
-  `<img>` for streamed art, measure a streamed image's pixels on the frame
-  thread, read a banded texture back in the frame.
+  decode or drain per strip): `texImage2D` an `<img>` for streamed art,
+  measure a streamed image's pixels on the frame thread, read a banded
+  texture back in the frame.
 - A DynamicTexture BRACKET is the GPU cost (a capture clear + blit): an
   erase is the object's own ERASE blend inside the pass; the capture binds
   the rows in use (`coverRaster`).
@@ -155,15 +155,15 @@ push, no PRs unless asked.
 - The capture pool is ALWAYS ON: no draw bracket may resize Phaser's capture
   target (that re-allocation WAS the new-area lag).
 - The ground scrolls, paints in slices, repaints landed cells (budgeted); a
-  full paint in play is sliced (`queueFullGroundSlices`); compositions
-  budgeted (`GROUND_COMPOSE_MS` 2); pixel-identical to a full paint
-  (`__ml.groundHash`); a landing walks `occIncomplete`. A tab-in poisons
-  the latch; `?ground=legacy` bisects.
-- Pacing (`pacing.ts`): a steady 30 when 60 is not held (auto/30/60 in
-  Settings→Dev).
+  full paint in play is sliced; compositions budgeted; pixel-identical to
+  a full paint (`__ml.groundHash`); a landing walks `occIncomplete`. A
+  tab-in poisons the latch; `?ground=legacy` bisects.
+- Pacing (`pacing.ts`): a steady 30 when 60 is not held. Terrain bake
+  (`terrainbake.ts`): raised terrain drawn once per chunk as bands, live
+  where streaming/indoors/edited; parity gated (`verify-bake.mjs`).
 - The beacon: `sections` are window means, `counts` snapshots (never
-  correlate); allowlisted server-side (`verify-beacon.mjs`);
-  `perf-read.mjs` reads a run.
+  correlate); allowlisted server-side (`verify-beacon.mjs`; `perf-read.mjs`
+  reads runs).
 
 **Movement** (`docs/movement.md`)
 - Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the
