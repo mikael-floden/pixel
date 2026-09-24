@@ -1,0 +1,141 @@
+{
+  "id": "newt_shaman",
+  "name": "Newtshaman",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It reads the weather in frog bones and is usually right.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Orange-bellied newt standing upright, a necklace of tiny bones, a mud-daubed face, holding a reed staff with a frog skull.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "newt_shaman/rotations/south.webp",
+    "south-east": "newt_shaman/rotations/south-east.webp",
+    "east": "newt_shaman/rotations/east.webp",
+    "north-east": "newt_shaman/rotations/north-east.webp",
+    "north": "newt_shaman/rotations/north.webp",
+    "north-west": "newt_shaman/rotations/north-west.webp",
+    "west": "newt_shaman/rotations/west.webp",
+    "south-west": "newt_shaman/rotations/south-west.webp"
+  },
+  "sheet": "newt_shaman/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2b70113a-71a8-4fcd-abda-66c917762c78",
+  "seed": 2121277926,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:20:47+00:00",
+  "elapsed_s": 427.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.736,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.782,
+        "bbox": [
+          1,
+          5,
+          38,
+          35
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.79,
+        "bbox": [
+          8,
+          4,
+          31,
+          36
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.769,
+        "bbox": [
+          3,
+          4,
+          29,
+          37
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.771,
+        "bbox": [
+          2,
+          4,
+          39,
+          36
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.751,
+        "bbox": [
+          6,
+          4,
+          39,
+          35
+        ],
+        "fill": 0.639,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.781,
+        "bbox": [
+          7,
+          3,
+          32,
+          36
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.736,
+        "bbox": [
+          10,
+          3,
+          38,
+          37
+        ],
+        "fill": 0.595,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.79,
+        "bbox": [
+          1,
+          4,
+          38,
+          36
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      }
+    }
+  }
+}
