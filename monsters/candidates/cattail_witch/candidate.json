@@ -1,0 +1,145 @@
+{
+  "id": "cattail_witch",
+  "name": "Cattailhag",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "She sheds seeds in autumn and in spring there are more of her.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Hunched figure whose head is a brown cattail seed head, robes of green reed leaves, long dripping fingers.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cattail_witch/rotations/south.webp",
+    "south-east": "cattail_witch/rotations/south-east.webp",
+    "east": "cattail_witch/rotations/east.webp",
+    "north-east": "cattail_witch/rotations/north-east.webp",
+    "north": "cattail_witch/rotations/north.webp",
+    "north-west": "cattail_witch/rotations/north-west.webp",
+    "west": "cattail_witch/rotations/west.webp",
+    "south-west": "cattail_witch/rotations/south-west.webp"
+  },
+  "sheet": "cattail_witch/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9e8e9994-d24c-430b-8bce-064f0cc88f20",
+  "seed": 2036897521,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:30:06+00:00",
+  "elapsed_s": 437.0,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.773,
+    "reasons": [
+      "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.778,
+        "bbox": [
+          7,
+          2,
+          80,
+          86
+        ],
+        "fill": 0.792,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.835,
+        "bbox": [
+          10,
+          2,
+          75,
+          87
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.807,
+        "bbox": [
+          11,
+          1,
+          65,
+          87
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.795,
+        "bbox": [
+          13,
+          0,
+          73,
+          86
+        ],
+        "fill": 0.666,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.773,
+        "bbox": [
+          9,
+          0,
+          76,
+          85
+        ],
+        "fill": 0.735,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.785,
+        "bbox": [
+          14,
+          0,
+          74,
+          86
+        ],
+        "fill": 0.666,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.809,
+        "bbox": [
+          23,
+          1,
+          76,
+          87
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.837,
+        "bbox": [
+          14,
+          2,
+          78,
+          87
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      }
+    }
+  }
+}
