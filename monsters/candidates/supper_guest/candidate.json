@@ -1,0 +1,140 @@
+{
+  "id": "supper_guest",
+  "name": "Supperguest",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He has been waiting to be seated for a very long time, and he is very patient.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Well-dressed figure in an old dinner coat with a placid smiling mask, hands folded, a napkin, waiting to be seated.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "supper_guest/rotations/south.webp",
+    "south-east": "supper_guest/rotations/south-east.webp",
+    "east": "supper_guest/rotations/east.webp",
+    "north-east": "supper_guest/rotations/north-east.webp",
+    "north": "supper_guest/rotations/north.webp",
+    "north-west": "supper_guest/rotations/north-west.webp",
+    "west": "supper_guest/rotations/west.webp",
+    "south-west": "supper_guest/rotations/south-west.webp"
+  },
+  "sheet": "supper_guest/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4e4fbc03-05b4-4e02-875e-085c8a4556b7",
+  "seed": 695970061,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:57:18+00:00",
+  "elapsed_s": 179.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.677,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.796,
+        "bbox": [
+          23,
+          3,
+          67,
+          85
+        ],
+        "fill": 0.466,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.805,
+        "bbox": [
+          27,
+          3,
+          64,
+          87
+        ],
+        "fill": 0.401,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.769,
+        "bbox": [
+          29,
+          4,
+          65,
+          86
+        ],
+        "fill": 0.381,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.701,
+        "bbox": [
+          26,
+          3,
+          63,
+          85
+        ],
+        "fill": 0.392,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.677,
+        "bbox": [
+          23,
+          2,
+          66,
+          84
+        ],
+        "fill": 0.455,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.687,
+        "bbox": [
+          26,
+          4,
+          62,
+          85
+        ],
+        "fill": 0.377,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.767,
+        "bbox": [
+          25,
+          4,
+          60,
+          86
+        ],
+        "fill": 0.371,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.793,
+        "bbox": [
+          26,
+          3,
+          63,
+          87
+        ],
+        "fill": 0.401,
+        "touches_edge": false
+      }
+    }
+  }
+}
