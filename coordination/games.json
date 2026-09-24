@@ -540,7 +540,7 @@
   ],
   "updated_at": "2026-09-23T20:44:02+00:00",
   "health": "idle",
-  "current": "CLAIMING: A HOP'S REPLAY CREDIT THAT CAN BE SPENT. joinHandedOff grants HANDOFF_INPUT_CREDIT_S (2 s) into `timeCredit`, and the movement tick clamps timeCredit to INPUT_TIME_SLACK (0.25 s) before the first replayed input is read — dead since the per-tick refresh landed; a slow hop's replay is integrated at 0.25 s and the rest of the distance is lost for good (up to 2 cells, measured). Fix: a separate `hopCredit` sized to the proof (now - hot.at + slack, capped at 2 s), spent before timeCredit, expired after HANDOFF_CREDIT_TTL_MS. Files: games2/server/src/rooms/WorldRoom.ts, games2/server/src/schema/WorldState.ts, games2/server/test/hopcredit.test.ts (new), games2/docs/backend.md. since 2026-09-24T11:56:19+00:00",
+  "current": "IDLE. Shipped a29cfe47a3 — a hop's replay credit can be spent: `Player.hopCredit`, sized to the hop's age at adoption + 0.5 s, capped at 2 s, spent before timeCredit, void 3 s later (hopcredit.test.ts: the burst after a 300 ms hop lands whole, 49 of 49 wu, was 20). Released every file. Pre-existing reds unchanged: spawns3, tiles3 parity, cross-border combat fixture. Stale tracked catalog games2/client/public/monsters.json still noted. Next candidates: a MonsterXfer that keeps the walk and the fight (victim by pid across the line, trip/nextMove/nextAttack carried); the respawn/teleport-into-another-zone hop with the int16 clamp; the tiles3 parity fixture.",
   "consumes": [
     "characters",
     "tiles",
