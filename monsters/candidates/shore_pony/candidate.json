@@ -1,0 +1,144 @@
+{
+  "id": "shore_pony",
+  "name": "Shorepony",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "It came ashore from a wreck and nobody claimed it.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Shaggy grey pony with a mane of dripping kelp and hooves of black stone, salt on its coat, sad eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shore_pony/rotations/south.webp",
+    "south-east": "shore_pony/rotations/south-east.webp",
+    "east": "shore_pony/rotations/east.webp",
+    "north-east": "shore_pony/rotations/north-east.webp",
+    "north": "shore_pony/rotations/north.webp",
+    "north-west": "shore_pony/rotations/north-west.webp",
+    "west": "shore_pony/rotations/west.webp",
+    "south-west": "shore_pony/rotations/south-west.webp"
+  },
+  "sheet": "shore_pony/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c2250c5e-e099-4020-95c8-dadc496e9938",
+  "seed": 701410166,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:41:49+00:00",
+  "elapsed_s": 274.2,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.681,
+    "reasons": [
+      "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.82,
+        "bbox": [
+          15,
+          6,
+          67,
+          86
+        ],
+        "fill": 0.537,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.807,
+        "bbox": [
+          20,
+          4,
+          75,
+          86
+        ],
+        "fill": 0.582,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.799,
+        "bbox": [
+          4,
+          2,
+          84,
+          82
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.77,
+        "bbox": [
+          15,
+          0,
+          80,
+          87
+        ],
+        "fill": 0.73,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.789,
+        "bbox": [
+          27,
+          2,
+          67,
+          88
+        ],
+        "fill": 0.444,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.755,
+        "bbox": [
+          12,
+          1,
+          84,
+          84
+        ],
+        "fill": 0.772,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.796,
+        "bbox": [
+          5,
+          1,
+          88,
+          83
+        ],
+        "fill": 0.879,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.681,
+        "bbox": [
+          4,
+          3,
+          84,
+          86
+        ],
+        "fill": 0.857,
+        "touches_edge": false
+      }
+    }
+  }
+}
