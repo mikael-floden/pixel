@@ -1,0 +1,140 @@
+{
+  "id": "gull_wight",
+  "name": "Gullwight",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It steals the eyes of anything the tide leaves.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Grey gull the size of a man with hollow dark eyes, tattered feathers, a beak stained black, standing on one leg.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "gull_wight/rotations/south.webp",
+    "south-east": "gull_wight/rotations/south-east.webp",
+    "east": "gull_wight/rotations/east.webp",
+    "north-east": "gull_wight/rotations/north-east.webp",
+    "north": "gull_wight/rotations/north.webp",
+    "north-west": "gull_wight/rotations/north-west.webp",
+    "west": "gull_wight/rotations/west.webp",
+    "south-west": "gull_wight/rotations/south-west.webp"
+  },
+  "sheet": "gull_wight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0411e50a-786e-4cba-aeab-4c833614e43b",
+  "seed": 502340048,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:37:05+00:00",
+  "elapsed_s": 198.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.704,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.704,
+        "bbox": [
+          9,
+          3,
+          78,
+          85
+        ],
+        "fill": 0.731,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.811,
+        "bbox": [
+          5,
+          4,
+          71,
+          86
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.816,
+        "bbox": [
+          4,
+          5,
+          73,
+          85
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.763,
+        "bbox": [
+          14,
+          3,
+          71,
+          82
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.73,
+        "bbox": [
+          12,
+          3,
+          77,
+          86
+        ],
+        "fill": 0.697,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.766,
+        "bbox": [
+          16,
+          3,
+          76,
+          82
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.804,
+        "bbox": [
+          15,
+          5,
+          84,
+          81
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.804,
+        "bbox": [
+          17,
+          4,
+          83,
+          84
+        ],
+        "fill": 0.682,
+        "touches_edge": false
+      }
+    }
+  }
+}
