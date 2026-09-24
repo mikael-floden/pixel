@@ -1,0 +1,141 @@
+{
+  "id": "wind_hound",
+  "name": "Gustcur",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It comes before a storm and leaves with the roof.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Lean hound made of swirling pale wind and loose grass, only a dark snout and two eyes solid, body trailing off into streaks behind it.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "wind_hound/rotations/south.webp",
+    "south-east": "wind_hound/rotations/south-east.webp",
+    "east": "wind_hound/rotations/east.webp",
+    "north-east": "wind_hound/rotations/north-east.webp",
+    "north": "wind_hound/rotations/north.webp",
+    "north-west": "wind_hound/rotations/north-west.webp",
+    "west": "wind_hound/rotations/west.webp",
+    "south-west": "wind_hound/rotations/south-west.webp"
+  },
+  "sheet": "wind_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e12890d2-a6f5-4dba-b1e9-cf49905ce3fa",
+  "seed": 1012134224,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:23:28+00:00",
+  "elapsed_s": 952.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.769,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.816,
+        "bbox": [
+          13,
+          2,
+          73,
+          86
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.804,
+        "bbox": [
+          3,
+          2,
+          83,
+          84
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.844,
+        "bbox": [
+          4,
+          4,
+          85,
+          85
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.769,
+        "bbox": [
+          6,
+          4,
+          83,
+          86
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.886,
+        "bbox": [
+          11,
+          3,
+          74,
+          86
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.845,
+        "bbox": [
+          9,
+          3,
+          78,
+          85
+        ],
+        "fill": 0.731,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.824,
+        "bbox": [
+          3,
+          3,
+          84,
+          84
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.815,
+        "bbox": [
+          3,
+          2,
+          75,
+          86
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      }
+    }
+  }
+}

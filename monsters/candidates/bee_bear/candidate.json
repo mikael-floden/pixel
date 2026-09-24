@@ -1,0 +1,141 @@
+{
+  "id": "bee_bear",
+  "name": "Combmaw",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The hive moved into it while it slept and neither of them minded.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Chunky brown bear with a honeycomb exposed across its chest and belly, dripping amber honey, a swarm of yellow dots round its head, sticky paws.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bee_bear/rotations/south.webp",
+    "south-east": "bee_bear/rotations/south-east.webp",
+    "east": "bee_bear/rotations/east.webp",
+    "north-east": "bee_bear/rotations/north-east.webp",
+    "north": "bee_bear/rotations/north.webp",
+    "north-west": "bee_bear/rotations/north-west.webp",
+    "west": "bee_bear/rotations/west.webp",
+    "south-west": "bee_bear/rotations/south-west.webp"
+  },
+  "sheet": "bee_bear/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fb13baad-4b84-4381-8216-0a1578af1d76",
+  "seed": 1848655715,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:26:44+00:00",
+  "elapsed_s": 807.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.614,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.657,
+        "bbox": [
+          9,
+          4,
+          80,
+          85
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.775,
+        "bbox": [
+          16,
+          2,
+          73,
+          87
+        ],
+        "fill": 0.626,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.741,
+        "bbox": [
+          19,
+          2,
+          71,
+          85
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.654,
+        "bbox": [
+          17,
+          2,
+          73,
+          84
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.614,
+        "bbox": [
+          9,
+          3,
+          79,
+          83
+        ],
+        "fill": 0.723,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.654,
+        "bbox": [
+          15,
+          2,
+          72,
+          84
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.748,
+        "bbox": [
+          17,
+          2,
+          69,
+          85
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.766,
+        "bbox": [
+          15,
+          2,
+          71,
+          87
+        ],
+        "fill": 0.615,
+        "touches_edge": false
+      }
+    }
+  }
+}

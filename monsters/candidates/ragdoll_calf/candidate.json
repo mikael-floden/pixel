@@ -1,0 +1,141 @@
+{
+  "id": "ragdoll_calf",
+  "name": "Ragcalf",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "A child made it for a calf that died. It still waits by the gate.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Young calf stitched from patchwork sacking, button eyes, straw poking from torn seams, wobbly legs, a bell of tin on a rope collar.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ragdoll_calf/rotations/south.webp",
+    "south-east": "ragdoll_calf/rotations/south-east.webp",
+    "east": "ragdoll_calf/rotations/east.webp",
+    "north-east": "ragdoll_calf/rotations/north-east.webp",
+    "north": "ragdoll_calf/rotations/north.webp",
+    "north-west": "ragdoll_calf/rotations/north-west.webp",
+    "west": "ragdoll_calf/rotations/west.webp",
+    "south-west": "ragdoll_calf/rotations/south-west.webp"
+  },
+  "sheet": "ragdoll_calf/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "27f88c25-7b10-4f30-a48a-7f408ca8930d",
+  "seed": 882351670,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:23:48+00:00",
+  "elapsed_s": 1029.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.758,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.758,
+        "bbox": [
+          11,
+          4,
+          80,
+          86
+        ],
+        "fill": 0.731,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.835,
+        "bbox": [
+          22,
+          4,
+          80,
+          86
+        ],
+        "fill": 0.614,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.782,
+        "bbox": [
+          11,
+          3,
+          83,
+          85
+        ],
+        "fill": 0.762,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.769,
+        "bbox": [
+          5,
+          3,
+          79,
+          83
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.789,
+        "bbox": [
+          17,
+          3,
+          73,
+          85
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.775,
+        "bbox": [
+          14,
+          3,
+          71,
+          85
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.773,
+        "bbox": [
+          5,
+          3,
+          81,
+          83
+        ],
+        "fill": 0.785,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.801,
+        "bbox": [
+          9,
+          3,
+          83,
+          86
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      }
+    }
+  }
+}

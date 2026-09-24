@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-24T17:21:48+00:00",
+  "generated_at": "2026-09-24T17:26:45+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 146,
+  "count": 153,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -19271,6 +19271,408 @@
       }
     },
     {
+      "id": "mole_lord",
+      "name": "Molelord",
+      "tier": "mid",
+      "lore": "It rules everything under the field and is very tired of the field.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "7727b9b2-90a1-4573-8f60-60573a98953d",
+      "version": 1,
+      "sheet": "mole_lord/sheet.webp",
+      "rotations": {
+        "south": "mole_lord/rotations/south.webp",
+        "south-east": "mole_lord/rotations/south-east.webp",
+        "east": "mole_lord/rotations/east.webp",
+        "north-east": "mole_lord/rotations/north-east.webp",
+        "north": "mole_lord/rotations/north.webp",
+        "north-west": "mole_lord/rotations/north-west.webp",
+        "west": "mole_lord/rotations/west.webp",
+        "south-west": "mole_lord/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.726,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.733,
+            "bbox": [
+              3,
+              6,
+              83,
+              83
+            ],
+            "fill": 0.795,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.787,
+            "bbox": [
+              14,
+              6,
+              82,
+              84
+            ],
+            "fill": 0.685,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.726,
+            "bbox": [
+              7,
+              6,
+              65,
+              83
+            ],
+            "fill": 0.577,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.736,
+            "bbox": [
+              13,
+              6,
+              83,
+              82
+            ],
+            "fill": 0.687,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.736,
+            "bbox": [
+              5,
+              7,
+              85,
+              84
+            ],
+            "fill": 0.795,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.733,
+            "bbox": [
+              10,
+              4,
+              75,
+              82
+            ],
+            "fill": 0.655,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.732,
+            "bbox": [
+              23,
+              4,
+              81,
+              84
+            ],
+            "fill": 0.599,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.78,
+            "bbox": [
+              5,
+              6,
+              77,
+              84
+            ],
+            "fill": 0.725,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:26:03+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "bee_bear",
+      "name": "Combmaw",
+      "tier": "mid",
+      "lore": "The hive moved into it while it slept and neither of them minded.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "fb13baad-4b84-4381-8216-0a1578af1d76",
+      "version": 1,
+      "sheet": "bee_bear/sheet.webp",
+      "rotations": {
+        "south": "bee_bear/rotations/south.webp",
+        "south-east": "bee_bear/rotations/south-east.webp",
+        "east": "bee_bear/rotations/east.webp",
+        "north-east": "bee_bear/rotations/north-east.webp",
+        "north": "bee_bear/rotations/north.webp",
+        "north-west": "bee_bear/rotations/north-west.webp",
+        "west": "bee_bear/rotations/west.webp",
+        "south-west": "bee_bear/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.614,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.657,
+            "bbox": [
+              9,
+              4,
+              80,
+              85
+            ],
+            "fill": 0.743,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.775,
+            "bbox": [
+              16,
+              2,
+              73,
+              87
+            ],
+            "fill": 0.626,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.741,
+            "bbox": [
+              19,
+              2,
+              71,
+              85
+            ],
+            "fill": 0.557,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.654,
+            "bbox": [
+              17,
+              2,
+              73,
+              84
+            ],
+            "fill": 0.593,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.614,
+            "bbox": [
+              9,
+              3,
+              79,
+              83
+            ],
+            "fill": 0.723,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.654,
+            "bbox": [
+              15,
+              2,
+              72,
+              84
+            ],
+            "fill": 0.604,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.748,
+            "bbox": [
+              17,
+              2,
+              69,
+              85
+            ],
+            "fill": 0.557,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.766,
+            "bbox": [
+              15,
+              2,
+              71,
+              87
+            ],
+            "fill": 0.615,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:26:44+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "ragdoll_calf",
+      "name": "Ragcalf",
+      "tier": "cute",
+      "lore": "A child made it for a calf that died. It still waits by the gate.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "27f88c25-7b10-4f30-a48a-7f408ca8930d",
+      "version": 1,
+      "sheet": "ragdoll_calf/sheet.webp",
+      "rotations": {
+        "south": "ragdoll_calf/rotations/south.webp",
+        "south-east": "ragdoll_calf/rotations/south-east.webp",
+        "east": "ragdoll_calf/rotations/east.webp",
+        "north-east": "ragdoll_calf/rotations/north-east.webp",
+        "north": "ragdoll_calf/rotations/north.webp",
+        "north-west": "ragdoll_calf/rotations/north-west.webp",
+        "west": "ragdoll_calf/rotations/west.webp",
+        "south-west": "ragdoll_calf/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.758,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.758,
+            "bbox": [
+              11,
+              4,
+              80,
+              86
+            ],
+            "fill": 0.731,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.835,
+            "bbox": [
+              22,
+              4,
+              80,
+              86
+            ],
+            "fill": 0.614,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.782,
+            "bbox": [
+              11,
+              3,
+              83,
+              85
+            ],
+            "fill": 0.762,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.769,
+            "bbox": [
+              5,
+              3,
+              79,
+              83
+            ],
+            "fill": 0.764,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.789,
+            "bbox": [
+              17,
+              3,
+              73,
+              85
+            ],
+            "fill": 0.593,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.775,
+            "bbox": [
+              14,
+              3,
+              71,
+              85
+            ],
+            "fill": 0.604,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.773,
+            "bbox": [
+              5,
+              3,
+              81,
+              83
+            ],
+            "fill": 0.785,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.801,
+            "bbox": [
+              9,
+              3,
+              83,
+              86
+            ],
+            "fill": 0.793,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:23:48+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "seed_pod_walker",
       "name": "Podwalker",
       "tier": "mid",
@@ -19405,6 +19807,140 @@
       }
     },
     {
+      "id": "pasture_wight",
+      "name": "Pasturewight",
+      "tier": "evil",
+      "lore": "He counts a flock that has not been there for a hundred years.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "acb69620-9807-4550-9d81-2ecc1d2bfc55",
+      "version": 1,
+      "sheet": "pasture_wight/sheet.webp",
+      "rotations": {
+        "south": "pasture_wight/rotations/south.webp",
+        "south-east": "pasture_wight/rotations/south-east.webp",
+        "east": "pasture_wight/rotations/east.webp",
+        "north-east": "pasture_wight/rotations/north-east.webp",
+        "north": "pasture_wight/rotations/north.webp",
+        "north-west": "pasture_wight/rotations/north-west.webp",
+        "west": "pasture_wight/rotations/west.webp",
+        "south-west": "pasture_wight/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.73,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.781,
+            "bbox": [
+              6,
+              6,
+              75,
+              85
+            ],
+            "fill": 0.704,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.815,
+            "bbox": [
+              16,
+              7,
+              75,
+              87
+            ],
+            "fill": 0.61,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.797,
+            "bbox": [
+              18,
+              5,
+              69,
+              86
+            ],
+            "fill": 0.533,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.753,
+            "bbox": [
+              15,
+              7,
+              75,
+              86
+            ],
+            "fill": 0.612,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.73,
+            "bbox": [
+              13,
+              6,
+              82,
+              86
+            ],
+            "fill": 0.713,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.734,
+            "bbox": [
+              15,
+              3,
+              72,
+              86
+            ],
+            "fill": 0.611,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.791,
+            "bbox": [
+              19,
+              2,
+              69,
+              86
+            ],
+            "fill": 0.542,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.818,
+            "bbox": [
+              11,
+              5,
+              73,
+              86
+            ],
+            "fill": 0.649,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:25:04+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "lark_shade",
       "name": "Larkshade",
       "tier": "evil",
@@ -19531,6 +20067,274 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-24T17:17:41+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "grub_king",
+      "name": "Grubking",
+      "tier": "mid",
+      "lore": "Every root in the valley has a mouthful missing.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "21fe799d-088b-437f-a007-07f2cd8378c7",
+      "version": 1,
+      "sheet": "grub_king/sheet.webp",
+      "rotations": {
+        "south": "grub_king/rotations/south.webp",
+        "south-east": "grub_king/rotations/south-east.webp",
+        "east": "grub_king/rotations/east.webp",
+        "north-east": "grub_king/rotations/north-east.webp",
+        "north": "grub_king/rotations/north.webp",
+        "north-west": "grub_king/rotations/north-west.webp",
+        "west": "grub_king/rotations/west.webp",
+        "south-west": "grub_king/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.787,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.845,
+            "bbox": [
+              16,
+              9,
+              71,
+              76
+            ],
+            "fill": 0.476,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.836,
+            "bbox": [
+              5,
+              10,
+              83,
+              78
+            ],
+            "fill": 0.685,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.821,
+            "bbox": [
+              5,
+              7,
+              82,
+              77
+            ],
+            "fill": 0.696,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.817,
+            "bbox": [
+              10,
+              6,
+              74,
+              79
+            ],
+            "fill": 0.603,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.854,
+            "bbox": [
+              13,
+              6,
+              74,
+              80
+            ],
+            "fill": 0.583,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.805,
+            "bbox": [
+              5,
+              7,
+              81,
+              79
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.84,
+            "bbox": [
+              3,
+              9,
+              86,
+              77
+            ],
+            "fill": 0.729,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.787,
+            "bbox": [
+              9,
+              9,
+              83,
+              77
+            ],
+            "fill": 0.65,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:24:44+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "wheat_maiden",
+      "name": "Sheafmaid",
+      "tier": "evil",
+      "lore": "Walk into the last sheaf and she is standing in it.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "912d8cad-976e-4231-b4bb-4772f0113bd3",
+      "version": 1,
+      "sheet": "wheat_maiden/sheet.webp",
+      "rotations": {
+        "south": "wheat_maiden/rotations/south.webp",
+        "south-east": "wheat_maiden/rotations/south-east.webp",
+        "east": "wheat_maiden/rotations/east.webp",
+        "north-east": "wheat_maiden/rotations/north-east.webp",
+        "north": "wheat_maiden/rotations/north.webp",
+        "north-west": "wheat_maiden/rotations/north-west.webp",
+        "west": "wheat_maiden/rotations/west.webp",
+        "south-west": "wheat_maiden/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.842,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.842,
+            "bbox": [
+              1,
+              4,
+              87,
+              85
+            ],
+            "fill": 0.9,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.886,
+            "bbox": [
+              15,
+              3,
+              83,
+              86
+            ],
+            "fill": 0.729,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.868,
+            "bbox": [
+              25,
+              3,
+              68,
+              86
+            ],
+            "fill": 0.461,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.873,
+            "bbox": [
+              15,
+              3,
+              81,
+              84
+            ],
+            "fill": 0.69,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.865,
+            "bbox": [
+              1,
+              4,
+              87,
+              83
+            ],
+            "fill": 0.877,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.882,
+            "bbox": [
+              6,
+              3,
+              73,
+              84
+            ],
+            "fill": 0.701,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.863,
+            "bbox": [
+              21,
+              3,
+              63,
+              86
+            ],
+            "fill": 0.45,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.884,
+            "bbox": [
+              6,
+              3,
+              72,
+              86
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:24:47+00:00",
       "verdict": null,
       "graduation": {
         "state": "waiting",
@@ -19801,6 +20605,140 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-24T17:17:18+00:00",
+      "verdict": null,
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "wind_hound",
+      "name": "Gustcur",
+      "tier": "mid",
+      "lore": "It comes before a storm and leaves with the roof.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "dog",
+      "scale": "standard",
+      "pixellab_id": "e12890d2-a6f5-4dba-b1e9-cf49905ce3fa",
+      "version": 1,
+      "sheet": "wind_hound/sheet.webp",
+      "rotations": {
+        "south": "wind_hound/rotations/south.webp",
+        "south-east": "wind_hound/rotations/south-east.webp",
+        "east": "wind_hound/rotations/east.webp",
+        "north-east": "wind_hound/rotations/north-east.webp",
+        "north": "wind_hound/rotations/north.webp",
+        "north-west": "wind_hound/rotations/north-west.webp",
+        "west": "wind_hound/rotations/west.webp",
+        "south-west": "wind_hound/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.769,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.816,
+            "bbox": [
+              13,
+              2,
+              73,
+              86
+            ],
+            "fill": 0.651,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.804,
+            "bbox": [
+              3,
+              2,
+              83,
+              84
+            ],
+            "fill": 0.847,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.844,
+            "bbox": [
+              4,
+              4,
+              85,
+              85
+            ],
+            "fill": 0.847,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.769,
+            "bbox": [
+              6,
+              4,
+              83,
+              86
+            ],
+            "fill": 0.815,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.886,
+            "bbox": [
+              11,
+              3,
+              74,
+              86
+            ],
+            "fill": 0.675,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.845,
+            "bbox": [
+              9,
+              3,
+              78,
+              85
+            ],
+            "fill": 0.731,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.824,
+            "bbox": [
+              3,
+              3,
+              84,
+              84
+            ],
+            "fill": 0.847,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.815,
+            "bbox": [
+              3,
+              2,
+              75,
+              86
+            ],
+            "fill": 0.781,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-24T17:23:28+00:00",
       "verdict": null,
       "graduation": {
         "state": "waiting",

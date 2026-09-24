@@ -1,0 +1,141 @@
+{
+  "id": "grub_king",
+  "name": "Grubking",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Every root in the valley has a mouthful missing.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Enormous pale white grub with a segmented body, a crown of golden wheat ears, tiny stubby legs, a wet pink mouth, dragging itself forward.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "grub_king/rotations/south.webp",
+    "south-east": "grub_king/rotations/south-east.webp",
+    "east": "grub_king/rotations/east.webp",
+    "north-east": "grub_king/rotations/north-east.webp",
+    "north": "grub_king/rotations/north.webp",
+    "north-west": "grub_king/rotations/north-west.webp",
+    "west": "grub_king/rotations/west.webp",
+    "south-west": "grub_king/rotations/south-west.webp"
+  },
+  "sheet": "grub_king/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "21fe799d-088b-437f-a007-07f2cd8378c7",
+  "seed": 1214009433,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:24:44+00:00",
+  "elapsed_s": 1061.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.787,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.845,
+        "bbox": [
+          16,
+          9,
+          71,
+          76
+        ],
+        "fill": 0.476,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.836,
+        "bbox": [
+          5,
+          10,
+          83,
+          78
+        ],
+        "fill": 0.685,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.821,
+        "bbox": [
+          5,
+          7,
+          82,
+          77
+        ],
+        "fill": 0.696,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.817,
+        "bbox": [
+          10,
+          6,
+          74,
+          79
+        ],
+        "fill": 0.603,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.854,
+        "bbox": [
+          13,
+          6,
+          74,
+          80
+        ],
+        "fill": 0.583,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.805,
+        "bbox": [
+          5,
+          7,
+          81,
+          79
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.84,
+        "bbox": [
+          3,
+          9,
+          86,
+          77
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.787,
+        "bbox": [
+          9,
+          9,
+          83,
+          77
+        ],
+        "fill": 0.65,
+        "touches_edge": false
+      }
+    }
+  }
+}

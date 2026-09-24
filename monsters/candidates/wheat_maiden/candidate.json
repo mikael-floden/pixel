@@ -1,0 +1,141 @@
+{
+  "id": "wheat_maiden",
+  "name": "Sheafmaid",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Walk into the last sheaf and she is standing in it.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Slender figure woven entirely of golden wheat stalks, a face of empty dark space under a wide straw hat, arms ending in sheaf bundles.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "wheat_maiden/rotations/south.webp",
+    "south-east": "wheat_maiden/rotations/south-east.webp",
+    "east": "wheat_maiden/rotations/east.webp",
+    "north-east": "wheat_maiden/rotations/north-east.webp",
+    "north": "wheat_maiden/rotations/north.webp",
+    "north-west": "wheat_maiden/rotations/north-west.webp",
+    "west": "wheat_maiden/rotations/west.webp",
+    "south-west": "wheat_maiden/rotations/south-west.webp"
+  },
+  "sheet": "wheat_maiden/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "912d8cad-976e-4231-b4bb-4772f0113bd3",
+  "seed": 1687139965,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:24:47+00:00",
+  "elapsed_s": 1056.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.842,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.842,
+        "bbox": [
+          1,
+          4,
+          87,
+          85
+        ],
+        "fill": 0.9,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.886,
+        "bbox": [
+          15,
+          3,
+          83,
+          86
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.868,
+        "bbox": [
+          25,
+          3,
+          68,
+          86
+        ],
+        "fill": 0.461,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.873,
+        "bbox": [
+          15,
+          3,
+          81,
+          84
+        ],
+        "fill": 0.69,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.865,
+        "bbox": [
+          1,
+          4,
+          87,
+          83
+        ],
+        "fill": 0.877,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.882,
+        "bbox": [
+          6,
+          3,
+          73,
+          84
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.863,
+        "bbox": [
+          21,
+          3,
+          63,
+          86
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.884,
+        "bbox": [
+          6,
+          3,
+          72,
+          86
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      }
+    }
+  }
+}

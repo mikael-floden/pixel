@@ -1,0 +1,141 @@
+{
+  "id": "pasture_wight",
+  "name": "Pasturewight",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He counts a flock that has not been there for a hundred years.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Faded translucent shepherd in a long coat, hunched over a crook, green ghost-light face, boots sunk into the grass, sheep-bones circling its feet.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pasture_wight/rotations/south.webp",
+    "south-east": "pasture_wight/rotations/south-east.webp",
+    "east": "pasture_wight/rotations/east.webp",
+    "north-east": "pasture_wight/rotations/north-east.webp",
+    "north": "pasture_wight/rotations/north.webp",
+    "north-west": "pasture_wight/rotations/north-west.webp",
+    "west": "pasture_wight/rotations/west.webp",
+    "south-west": "pasture_wight/rotations/south-west.webp"
+  },
+  "sheet": "pasture_wight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "acb69620-9807-4550-9d81-2ecc1d2bfc55",
+  "seed": 1170973080,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:25:04+00:00",
+  "elapsed_s": 1093.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.781,
+        "bbox": [
+          6,
+          6,
+          75,
+          85
+        ],
+        "fill": 0.704,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.815,
+        "bbox": [
+          16,
+          7,
+          75,
+          87
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.797,
+        "bbox": [
+          18,
+          5,
+          69,
+          86
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.753,
+        "bbox": [
+          15,
+          7,
+          75,
+          86
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.73,
+        "bbox": [
+          13,
+          6,
+          82,
+          86
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.734,
+        "bbox": [
+          15,
+          3,
+          72,
+          86
+        ],
+        "fill": 0.611,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.791,
+        "bbox": [
+          19,
+          2,
+          69,
+          86
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.818,
+        "bbox": [
+          11,
+          5,
+          73,
+          86
+        ],
+        "fill": 0.649,
+        "touches_edge": false
+      }
+    }
+  }
+}
