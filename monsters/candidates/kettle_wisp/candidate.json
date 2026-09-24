@@ -1,0 +1,140 @@
+{
+  "id": "kettle_wisp",
+  "name": "Kettlewisp",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It whistles when someone is coming.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Small black iron kettle floating on a cloud of its own steam, a whistling spout mouth, two steam arms.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "kettle_wisp/rotations/south.webp",
+    "south-east": "kettle_wisp/rotations/south-east.webp",
+    "east": "kettle_wisp/rotations/east.webp",
+    "north-east": "kettle_wisp/rotations/north-east.webp",
+    "north": "kettle_wisp/rotations/north.webp",
+    "north-west": "kettle_wisp/rotations/north-west.webp",
+    "west": "kettle_wisp/rotations/west.webp",
+    "south-west": "kettle_wisp/rotations/south-west.webp"
+  },
+  "sheet": "kettle_wisp/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7f6f9705-ee32-4804-a9a3-191346c3702d",
+  "seed": 1797442163,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:48:59+00:00",
+  "elapsed_s": 187.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.634,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.692,
+        "bbox": [
+          3,
+          4,
+          37,
+          35
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.687,
+        "bbox": [
+          6,
+          7,
+          35,
+          35
+        ],
+        "fill": 0.507,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.651,
+        "bbox": [
+          7,
+          4,
+          34,
+          36
+        ],
+        "fill": 0.54,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.653,
+        "bbox": [
+          7,
+          5,
+          34,
+          35
+        ],
+        "fill": 0.506,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.634,
+        "bbox": [
+          3,
+          8,
+          37,
+          35
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.668,
+        "bbox": [
+          4,
+          5,
+          33,
+          35
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.655,
+        "bbox": [
+          6,
+          4,
+          33,
+          36
+        ],
+        "fill": 0.54,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.679,
+        "bbox": [
+          6,
+          6,
+          34,
+          35
+        ],
+        "fill": 0.507,
+        "touches_edge": false
+      }
+    }
+  }
+}
