@@ -1,0 +1,141 @@
+{
+  "id": "rime_hare",
+  "name": "Rimehare",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It is out in the first frost and gone by the thaw.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "White hare with a coat of hoarfrost crystals, blue-white ears, pink eyes, breath frozen around its nose.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rime_hare/rotations/south.webp",
+    "south-east": "rime_hare/rotations/south-east.webp",
+    "east": "rime_hare/rotations/east.webp",
+    "north-east": "rime_hare/rotations/north-east.webp",
+    "north": "rime_hare/rotations/north.webp",
+    "north-west": "rime_hare/rotations/north-west.webp",
+    "west": "rime_hare/rotations/west.webp",
+    "south-west": "rime_hare/rotations/south-west.webp"
+  },
+  "sheet": "rime_hare/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3365918d-2fde-45e6-83b3-2b523d87e0fa",
+  "seed": 1401556759,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:40:59+00:00",
+  "elapsed_s": 160.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.719,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.784,
+        "bbox": [
+          2,
+          3,
+          38,
+          38
+        ],
+        "fill": 0.787,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.775,
+        "bbox": [
+          4,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.742,
+        "bbox": [
+          2,
+          2,
+          37,
+          37
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.738,
+        "bbox": [
+          5,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.731,
+        "bbox": [
+          2,
+          3,
+          37,
+          37
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.719,
+        "bbox": [
+          5,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.746,
+        "bbox": [
+          3,
+          2,
+          38,
+          37
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.772,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      }
+    }
+  }
+}
