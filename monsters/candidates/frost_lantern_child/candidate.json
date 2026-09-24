@@ -1,0 +1,141 @@
+{
+  "id": "frost_lantern_child",
+  "name": "Frostchild",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It lights the way to the farm that burned.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Small child-shaped figure of snow holding a lantern with a cold blue flame, a knitted red scarf the only colour.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frost_lantern_child/rotations/south.webp",
+    "south-east": "frost_lantern_child/rotations/south-east.webp",
+    "east": "frost_lantern_child/rotations/east.webp",
+    "north-east": "frost_lantern_child/rotations/north-east.webp",
+    "north": "frost_lantern_child/rotations/north.webp",
+    "north-west": "frost_lantern_child/rotations/north-west.webp",
+    "west": "frost_lantern_child/rotations/west.webp",
+    "south-west": "frost_lantern_child/rotations/south-west.webp"
+  },
+  "sheet": "frost_lantern_child/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b39c5259-96dd-4926-b328-0bb3f3fcce84",
+  "seed": 512160640,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:29:57+00:00",
+  "elapsed_s": 1700.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.715,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.75,
+        "bbox": [
+          12,
+          5,
+          29,
+          35
+        ],
+        "fill": 0.319,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.739,
+        "bbox": [
+          8,
+          5,
+          32,
+          35
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.731,
+        "bbox": [
+          6,
+          5,
+          33,
+          35
+        ],
+        "fill": 0.506,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.718,
+        "bbox": [
+          10,
+          5,
+          29,
+          35
+        ],
+        "fill": 0.356,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.76,
+        "bbox": [
+          11,
+          5,
+          28,
+          35
+        ],
+        "fill": 0.319,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.715,
+        "bbox": [
+          7,
+          5,
+          31,
+          35
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.721,
+        "bbox": [
+          7,
+          5,
+          34,
+          35
+        ],
+        "fill": 0.506,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.753,
+        "bbox": [
+          10,
+          5,
+          31,
+          35
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      }
+    }
+  }
+}
