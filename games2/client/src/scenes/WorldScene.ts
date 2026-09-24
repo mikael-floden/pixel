@@ -4542,18 +4542,6 @@ export class WorldScene extends Phaser.Scene {
    *  GROUND_NEAR_PX; it is forgotten when it leaves the texture or a full
    *  paint covers it. `?groundlazy=0` / Settings→Dev. */
   private groundLazyOn = groundFlagOn("groundlazy", "ml-groundlazy");
-  /** ONE GROUND JOB A FRAME (his 21:13 run: 64 of the 192 worst recorded frames
-   *  stacked a landing cell repaint, median 25 ms, AND a band slice, median
-   *  19.6 ms, median frame 122 ms). The paint check was read AFTER the landing
-   *  repaint, so a landing never counted as having painted, and the drain's
-   *  group ran with no check at all. Now a landing that painted stands the
-   *  slice, the drain group and the bake down; when a slice and a landing
-   *  both wait they take turns (`groundTurn`). Scheduling only: the same work,
-   *  the same pixels, spread over frames. `?groundonejob=0` / Settings→Dev. */
-  private groundOneJobOn = groundFlagOn("groundonejob", "ml-groundonejob");
-  private groundTurn: "landing" | "slice" = "landing";
-  /** Frames that ran 2+ ground jobs (landing repaint, band slice, drain group), and all frames with one. */
-  private groundJobStats = { frames: 0, stacked: 0 };
   private t3stale = new Set<number>();
   private t3staleScan = { x: NaN, y: NaN, frame: -1000 };
   private t3staleStats = { parked: 0, promoted: 0, dropped: 0 };
@@ -6015,15 +6003,6 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.groundRectOn,
           state: () => (this.groundRectOn ? "on" : "off"),
-        },
-        {
-          label: "ground: one job a frame",
-          act: () => {
-            this.groundOneJobOn = !this.groundOneJobOn;
-            localStorage.setItem("ml-groundonejob", this.groundOneJobOn ? "1" : "0");
-          },
-          get: () => this.groundOneJobOn,
-          state: () => (this.groundOneJobOn ? "on" : "off"),
         },
         {
           label: "ground: repaint only near",
@@ -8023,16 +8002,6 @@ export class WorldScene extends Phaser.Scene {
       },
       /** Repaint only near the view (A/B), and the parked cells: how many, and how many
        *  of them the camera sees RIGHT NOW (must be 0 but for a frame of travel). */
-      groundOneJob: (on?: boolean) => {
-        if (typeof on === "boolean") this.groundOneJobOn = on;
-        return this.groundOneJobOn;
-      },
-      /** Frames with ground jobs, and how many stacked 2+ (cleared on read); plus what still waits. */
-      groundJobs: () => {
-        const r = { ...this.groundJobStats, sliceQ: this.groundSliceQ.length, dirty: this.groundDirtyCells.length, drainQ: this.t3drainQueue.length };
-        this.groundJobStats = { frames: 0, stacked: 0 };
-        return r;
-      },
       groundLazy: (on?: boolean) => {
         if (typeof on === "boolean") this.groundLazyOn = on;
         return this.groundLazyOn;
@@ -14350,7 +14319,6 @@ export class WorldScene extends Phaser.Scene {
     this.t3tex?.armCompose(this.streamingHeld ? Infinity : (this.composeMsOverride ?? GROUND_COMPOSE_MS));
     // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
     if (!this.repaintGroundPending) this.t3promoteStale();
-    let landingPainted = false;
     if (this.repaintGroundPending) {
       this.repaintGroundPending = false;
       this.repaintGroundPartial = false; // the full paint covers the landed cells
@@ -14359,11 +14327,8 @@ export class WorldScene extends Phaser.Scene {
       // In slices when there is a picture to paint over (queueFullGroundSlices); else the next latch paints in full.
       if (!this.queueFullGroundSlices()) this.lastGround = { x: NaN, y: NaN };
       this.repaintStats.groundRuns++;
-    } else if (this.repaintGroundPartial && this.groundOneJobOn && this.groundSliceQ.length && this.groundTurn === "slice") {
-      // The band's turn: the landed cells wait a frame (repaintGroundPartial stays set).
     } else if (this.repaintGroundPartial) {
       this.repaintGroundPartial = false;
-      const runs0 = this.groundCellStats.runs;
       const dirty = this.t3keepNear(this.groundDirtyCells);
       this.groundDirtyCells = [];
       this.ps();
@@ -14407,8 +14372,6 @@ export class WorldScene extends Phaser.Scene {
       }
       this.pe("repaintCells");
       this.repaintStats.groundRuns++;
-      landingPainted = this.groundCellStats.runs !== runs0;
-      if (landingPainted) this.groundTurn = "slice";
     }
     if (this.repaintOccPending) {
       this.repaintOccPending = false;
@@ -14529,14 +14492,12 @@ export class WorldScene extends Phaser.Scene {
       this.groundSliceStats.runs + this.repaintStats.groundRuns + this.groundFullRuns;
     this.redrawGround();
     this.groundRedrewThisFrame =
-      this.groundSliceStats.runs + this.repaintStats.groundRuns + this.groundFullRuns !== groundBefore ||
-      (this.groundOneJobOn && landingPainted);
+      this.groundSliceStats.runs + this.repaintStats.groundRuns + this.groundFullRuns !== groundBefore;
     this.pe("redrawGround");
     if (!this.groundRedrewThisFrame) {
       this.ps();
       this.t3drainSlices(); // as much of the exposed band as one bracket affords
       this.pe("groundSlice");
-      if (this.groundDrainedThisFrame) this.groundTurn = "landing";
     }
     this.ps();
     this.rebuildOccluders();
@@ -14567,14 +14528,7 @@ export class WorldScene extends Phaser.Scene {
     this.pe("prefetch");
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
-    // The drain's group is one more ground job: not on a frame that already painted one.
-    const drainQ0 = this.t3drainQueue.length;
-    if (!this.groundOneJobOn || !(this.groundRedrewThisFrame || this.groundDrainedThisFrame)) this.t3drainTick();
-    {
-      const jobs = (landingPainted ? 1 : 0) + (this.groundDrainedThisFrame ? 1 : 0) + (this.t3drainQueue.length !== drainQ0 ? 1 : 0);
-      if (jobs) this.groundJobStats.frames++;
-      if (jobs > 1) this.groundJobStats.stacked++;
-    }
+    this.t3drainTick();
     // Its own section: the queue's banded uploads (texSubImage2D, artworker.ts)
     // and the frame's texture creations are what it does, and they used to
     // land in the unattributed `gapBusy`.

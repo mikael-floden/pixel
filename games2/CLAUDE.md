@@ -155,11 +155,11 @@ push, no PRs unless asked.
 - The capture pool is ALWAYS ON: no draw bracket may resize Phaser's capture
   target (that re-allocation WAS the new-area lag).
 - The ground scrolls, paints in slices, repaints landed cells (budgeted,
-  cell-sized, near the view; far ones park); one ground job a frame; a full
-  paint in play is sliced; compositions budgeted; a band walks only cells
-  reaching it, builds no plate; = a full paint (`__ml.groundHash` flushes
-  the parked); a landing walks `occIncomplete`. A tab-in poisons the latch;
-  `?ground=legacy` bisects.
+  cell-sized, near the view; far ones park); a full paint in play is
+  sliced; compositions budgeted; a band walks only cells reaching it,
+  builds no plate; pixel-identical to a full paint (`__ml.groundHash`
+  flushes the parked); a landing walks `occIncomplete`. A tab-in poisons
+  the latch; `?ground=legacy` bisects.
 - Pacing (`pacing.ts`): a steady 30 when 60 is not held. The terrain
   bake is OPT-IN.
 - The beacon: `sections` are window means, `counts` snapshots (never

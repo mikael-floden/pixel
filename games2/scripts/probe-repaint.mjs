@@ -20,37 +20,6 @@ const spots = process.argv.includes("--spot") ? [process.argv[process.argv.index
 let extentBad = 0;
 const modeDefer = process.argv.includes("--defer");
 const modeLazy = process.argv.includes("--lazy");
-if (process.argv.includes("--onejob")) {
-  // ONE GROUND JOB A FRAME: the same walks with the rule off and on — frames that stacked 2+ ground jobs,
-  // and what is still waiting at the end (nothing may starve).
-  for (const [label, v] of [["one job a frame OFF", "0"], ["one job a frame ON", "1"]]) {
-    const ctx = await browser.newContext({ viewport: { width: 412, height: 732 }, serviceWorkers: "block" });
-    const page = await ctx.newPage();
-    await page.addInitScript((x) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "B" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-groundonejob", x); }, v);
-    await page.goto(origin + "/", { waitUntil: "commit" });
-    await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 180000, polling: 100 });
-    let frames = 0, stacked = 0;
-    for (const [sx, sy] of spots) {
-      await page.evaluate(([x, y]) => window.__ml.teleport(x, y), [sx, sy]);
-      await sleep(3000);
-      await page.evaluate(() => window.__ml.groundJobs());
-      for (let i = 1; i <= 20; i++) {
-        await page.evaluate(([x, y]) => window.__ml.teleport(x, y), [sx + i * 1.0, sy + i * 0.5]);
-        await sleep(400);
-      }
-      const j = await page.evaluate(() => window.__ml.groundJobs());
-      frames += j.frames; stacked += j.stacked;
-      await sleep(4000);
-      const settled = await page.evaluate(() => window.__ml.groundJobs());
-      console.log(`${label} ${sx},${sy}: ground-job frames ${j.frames}, stacked ${j.stacked} | 4 s later still waiting: slices ${settled.sliceQ}, landed cells ${settled.dirty}, drain ${settled.drainQ}`);
-    }
-    console.log(`TOTAL ${label}: ${frames} frames with ground work, ${stacked} stacked 2+ jobs (${(100 * stacked / Math.max(1, frames)).toFixed(0)}%)`);
-    await ctx.close();
-  }
-  await browser.close();
-  stop();
-  process.exit(0);
-}
 if (process.argv.includes("--extent")) {
   // THE WIDE EXTENT CHECK: many places (towns with roofs, bridges, cliffs, stairs, caves), slopes off and on.
   const places = [[441, 364], [447, 371], [297, 252], [262, 66], [277, 269], [258, 217], [230, 230], [176, 288], [96, 244], [335, 238]];
