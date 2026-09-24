@@ -1,0 +1,146 @@
+{
+  "id": "lava_toad_child",
+  "name": "Cinderpole",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It will be a magma toad one day, if it lives that long.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Tadpole-like creature of black rock with a glowing orange belly and a long tail of smoke, two stubby legs.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "lava_toad_child/rotations/south.webp",
+    "south-east": "lava_toad_child/rotations/south-east.webp",
+    "east": "lava_toad_child/rotations/east.webp",
+    "north-east": "lava_toad_child/rotations/north-east.webp",
+    "north": "lava_toad_child/rotations/north.webp",
+    "north-west": "lava_toad_child/rotations/north-west.webp",
+    "west": "lava_toad_child/rotations/west.webp",
+    "south-west": "lava_toad_child/rotations/south-west.webp"
+  },
+  "sheet": "lava_toad_child/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3805dc97-5640-4ec7-a1c7-81e97d62b12c",
+  "seed": 183951525,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T21:43:03+00:00",
+  "elapsed_s": 6.9,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.573,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.712,
+        "bbox": [
+          3,
+          1,
+          38,
+          38
+        ],
+        "fill": 0.809,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.721,
+        "bbox": [
+          7,
+          0,
+          35,
+          39
+        ],
+        "fill": 0.682,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.67,
+        "bbox": [
+          3,
+          0,
+          37,
+          38
+        ],
+        "fill": 0.807,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.664,
+        "bbox": [
+          2,
+          2,
+          37,
+          37
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.573,
+        "bbox": [
+          4,
+          4,
+          35,
+          35
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.663,
+        "bbox": [
+          5,
+          6,
+          34,
+          36
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.669,
+        "bbox": [
+          3,
+          4,
+          38,
+          38
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.724,
+        "bbox": [
+          3,
+          2,
+          38,
+          39
+        ],
+        "fill": 0.809,
+        "touches_edge": false
+      }
+    }
+  }
+}
