@@ -547,6 +547,19 @@
       }
     },
     {
+      "id": "fox_spirit",
+      "kind": "character",
+      "pixellab_id": "bf268569-1fe1-4af7-b0ee-f45b1f4b9735",
+      "name": "Foxfire",
+      "lore": "Three tails, three lies, and one truth it will tell you for a price you will not like.",
+      "renames": {
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Tail Flare - Rears back onto its hind legs and whi": "attack",
+        "custom-Strike - Quickly lunges forward and strikes once": "attack",
+        "custom-Death - Faints, collapses to t": "die"
+      }
+    },
+    {
       "id": "cobra",
       "kind": "character",
       "pixellab_id": "45be20e3-f240-458f-ab35-811670257508",

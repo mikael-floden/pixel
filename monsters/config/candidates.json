@@ -51,23 +51,6 @@
       "lore": "It kept watch from the chapel eaves for centuries. When the last bell fell silent, it came down."
     },
     {
-      "id": "fox_spirit",
-      "name": "Foxfire",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "dog",
-      "size": 96,
-      "biome": [
-        "grass",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Fantasy fox spirit with pale cream fur, three bushy tails tipped with blue flame curled around its body, glowing blue eyes, red markings on its face, and small blue flames floating around it.",
-      "lore": "Three tails, three lies, and one truth it will tell you for a price you will not like.",
-      "attack_action": "Tail Flare - Rears back onto its hind legs and whips all three flame-tipped tails forward over its head in one hard arc, blue fire streaming off them, then drops back down",
-      "attack_extreme": "Foxfire Burst - Throws its whole body up with the three tails snapping forward together, blue flame erupting off them in a wide spray"
-    },
-    {
       "id": "fawn_spirit",
       "name": "Dapplekin",
       "tier": "cute",
@@ -9431,6 +9414,31 @@
       "lore": "The temple in the swamp is hers and the swamp is the temple. Every stone step is guarded, and she is the steps.",
       "walk_action": "slither cycle in place, the serpent body FLEXES rather than slides: a wave starts behind the torso and travels backward down the tail to the tip, each coil pressing sideways against the ground and pushing the body along, the tail tip visibly whipping last, the torso held level and steady above it, the body NEVER moving as one rigid shape, seamless loop whose last frame leads straight back into the first, no turning",
       "graduated_at": "2026-09-24T16:14:32+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "fox_spirit",
+      "name": "Foxfire",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "dog",
+      "size": 96,
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Fantasy fox spirit with pale cream fur, three bushy tails tipped with blue flame curled around its body, glowing blue eyes, red markings on its face, and small blue flames floating around it.",
+      "lore": "Three tails, three lies, and one truth it will tell you for a price you will not like.",
+      "attack_action": "Tail Flare - Rears back onto its hind legs and whips all three flame-tipped tails forward over its head in one hard arc, blue fire streaming off them, then drops back down",
+      "attack_extreme": "Foxfire Burst - Throws its whole body up with the three tails snapping forward together, blue flame erupting off them in a wide spray",
+      "graduated_at": "2026-09-24T19:38:18+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

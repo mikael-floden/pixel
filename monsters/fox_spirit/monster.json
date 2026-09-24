@@ -1,0 +1,638 @@
+{
+  "id": "fox_spirit",
+  "name": "Foxfire",
+  "lore": "Three tails, three lies, and one truth it will tell you for a price you will not like.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "bf268569-1fe1-4af7-b0ee-f45b1f4b9735",
+    "url": "https://www.pixellab.ai/create-character/bf268569-1fe1-4af7-b0ee-f45b1f4b9735",
+    "prompt": "Fantasy fox spirit with pale cream fur, three bushy tails tipped with blue flame curled around its body, glowing blue eyes, red markings on its face, and small blue flames floating around it, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 96,
+    "height": 96
+  },
+  "native_size": {
+    "width": 96,
+    "height": 96
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "fox_spirit/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "fox_spirit/rotations/south.webp",
+    "west": "fox_spirit/rotations/west.webp",
+    "east": "fox_spirit/rotations/east.webp",
+    "north": "fox_spirit/rotations/north.webp",
+    "south-east": "fox_spirit/rotations/south-east.webp",
+    "north-east": "fox_spirit/rotations/north-east.webp",
+    "north-west": "fox_spirit/rotations/north-west.webp",
+    "south-west": "fox_spirit/rotations/south-west.webp"
+  },
+  "animations": {
+    "die": {
+      "group_id": "bb166202-891f-4a18-94ea-ff5495f124e8",
+      "source_name": "custom-Death - Faints, collapses to t",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "fox_spirit/animations/die__east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/die/east/00.webp",
+            "fox_spirit/animations/die/east/01.webp",
+            "fox_spirit/animations/die/east/02.webp",
+            "fox_spirit/animations/die/east/03.webp",
+            "fox_spirit/animations/die/east/04.webp",
+            "fox_spirit/animations/die/east/05.webp",
+            "fox_spirit/animations/die/east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:18:16 GMT",
+          "src_frames": 7,
+          "sub": "8cf50e72-603d-46a8-a069-4c01653b8f21"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "fox_spirit/animations/die__north.webp",
+          "frame_paths": [
+            "fox_spirit/animations/die/north/00.webp",
+            "fox_spirit/animations/die/north/01.webp",
+            "fox_spirit/animations/die/north/02.webp",
+            "fox_spirit/animations/die/north/03.webp",
+            "fox_spirit/animations/die/north/04.webp",
+            "fox_spirit/animations/die/north/05.webp",
+            "fox_spirit/animations/die/north/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:56:01 GMT",
+          "src_frames": 7,
+          "sub": "5d6de907-36e0-4c30-9089-6e2ab4a34ee9"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "fox_spirit/animations/die__north-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/die/north-east/00.webp",
+            "fox_spirit/animations/die/north-east/01.webp",
+            "fox_spirit/animations/die/north-east/02.webp",
+            "fox_spirit/animations/die/north-east/03.webp",
+            "fox_spirit/animations/die/north-east/04.webp",
+            "fox_spirit/animations/die/north-east/05.webp",
+            "fox_spirit/animations/die/north-east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:56:04 GMT",
+          "src_frames": 7,
+          "sub": "aee7aa88-ed36-4321-983b-ddb04f087636"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "fox_spirit/animations/die__south.webp",
+          "frame_paths": [
+            "fox_spirit/animations/die/south/00.webp",
+            "fox_spirit/animations/die/south/01.webp",
+            "fox_spirit/animations/die/south/02.webp",
+            "fox_spirit/animations/die/south/03.webp",
+            "fox_spirit/animations/die/south/04.webp",
+            "fox_spirit/animations/die/south/05.webp",
+            "fox_spirit/animations/die/south/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:18:27 GMT",
+          "src_frames": 7,
+          "sub": "9282284a-e0aa-4022-ac14-2efdd5a5e43a"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "fox_spirit/animations/die__south-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/die/south-east/00.webp",
+            "fox_spirit/animations/die/south-east/01.webp",
+            "fox_spirit/animations/die/south-east/02.webp",
+            "fox_spirit/animations/die/south-east/03.webp",
+            "fox_spirit/animations/die/south-east/04.webp",
+            "fox_spirit/animations/die/south-east/05.webp",
+            "fox_spirit/animations/die/south-east/06.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:56:07 GMT",
+          "src_frames": 7,
+          "sub": "bc27e0ff-dd84-464a-8f89-d6b54bca0f3c"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "fox_spirit/animations/die__south-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/die/south-west/00.webp",
+            "fox_spirit/animations/die/south-west/01.webp",
+            "fox_spirit/animations/die/south-west/02.webp",
+            "fox_spirit/animations/die/south-west/03.webp",
+            "fox_spirit/animations/die/south-west/04.webp",
+            "fox_spirit/animations/die/south-west/05.webp",
+            "fox_spirit/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "fox_spirit/animations/die__west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/die/west/00.webp",
+            "fox_spirit/animations/die/west/01.webp",
+            "fox_spirit/animations/die/west/02.webp",
+            "fox_spirit/animations/die/west/03.webp",
+            "fox_spirit/animations/die/west/04.webp",
+            "fox_spirit/animations/die/west/05.webp",
+            "fox_spirit/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "fox_spirit/animations/die__north-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/die/north-west/00.webp",
+            "fox_spirit/animations/die/north-west/01.webp",
+            "fox_spirit/animations/die/north-west/02.webp",
+            "fox_spirit/animations/die/north-west/03.webp",
+            "fox_spirit/animations/die/north-west/04.webp",
+            "fox_spirit/animations/die/north-west/05.webp",
+            "fox_spirit/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "b62f401c-2a77-46ea-8a4a-b01eea8a72a7",
+      "source_name": "custom-Strike - Quickly lunges forward and strikes once + custom-Tail Flare - Rears back onto its hind legs and whi",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/attack__east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/attack/east/00.webp",
+            "fox_spirit/animations/attack/east/01.webp",
+            "fox_spirit/animations/attack/east/02.webp",
+            "fox_spirit/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:56:10 GMT",
+          "src_frames": 4,
+          "sub": "111d0250-a629-4d7c-a9e5-e6f8155850af"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/attack__north-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/attack/north-east/00.webp",
+            "fox_spirit/animations/attack/north-east/01.webp",
+            "fox_spirit/animations/attack/north-east/02.webp",
+            "fox_spirit/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:56:12 GMT",
+          "src_frames": 4,
+          "sub": "e0716259-4a9b-49ad-b8db-ead6464636dc"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/attack__south.webp",
+          "frame_paths": [
+            "fox_spirit/animations/attack/south/00.webp",
+            "fox_spirit/animations/attack/south/01.webp",
+            "fox_spirit/animations/attack/south/02.webp",
+            "fox_spirit/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:56:13 GMT",
+          "src_frames": 4,
+          "sub": "a4e894bb-9221-457d-a211-7cbae3b16b5d"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/attack__south-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/attack/south-east/00.webp",
+            "fox_spirit/animations/attack/south-east/01.webp",
+            "fox_spirit/animations/attack/south-east/02.webp",
+            "fox_spirit/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:56:17 GMT",
+          "src_frames": 4,
+          "sub": "788caa77-7e90-44e7-8e23-9004b08b8797"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/attack__south-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/attack/south-west/00.webp",
+            "fox_spirit/animations/attack/south-west/01.webp",
+            "fox_spirit/animations/attack/south-west/02.webp",
+            "fox_spirit/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/attack__west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/attack/west/00.webp",
+            "fox_spirit/animations/attack/west/01.webp",
+            "fox_spirit/animations/attack/west/02.webp",
+            "fox_spirit/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/attack__north-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/attack/north-west/00.webp",
+            "fox_spirit/animations/attack/north-west/01.webp",
+            "fox_spirit/animations/attack/north-west/02.webp",
+            "fox_spirit/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/attack__north.webp",
+          "frame_paths": [
+            "fox_spirit/animations/attack/north/00.webp",
+            "fox_spirit/animations/attack/north/01.webp",
+            "fox_spirit/animations/attack/north/02.webp",
+            "fox_spirit/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 16:42:23 GMT",
+          "src_frames": 4,
+          "sub": "2570e9ec-c09d-45fb-8a1f-dba763ae4cf7"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "8666d803-5101-4222-bf7c-7dad748a1b4c",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/walk__south.webp",
+          "frame_paths": [
+            "fox_spirit/animations/walk/south/00.webp",
+            "fox_spirit/animations/walk/south/01.webp",
+            "fox_spirit/animations/walk/south/02.webp",
+            "fox_spirit/animations/walk/south/03.webp",
+            "fox_spirit/animations/walk/south/04.webp"
+          ],
+          "lm": "Thu, 24 Sep 2026 18:56:19 GMT",
+          "src_frames": 5,
+          "sub": "b10b97bd-4079-481c-a7a6-86c1a46a5bbb"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/walk__south-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/walk/south-east/00.webp",
+            "fox_spirit/animations/walk/south-east/01.webp",
+            "fox_spirit/animations/walk/south-east/02.webp",
+            "fox_spirit/animations/walk/south-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/walk/south-east"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/walk__east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/walk/east/00.webp",
+            "fox_spirit/animations/walk/east/01.webp",
+            "fox_spirit/animations/walk/east/02.webp",
+            "fox_spirit/animations/walk/east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/walk/east"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/walk__north-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/walk/north-east/00.webp",
+            "fox_spirit/animations/walk/north-east/01.webp",
+            "fox_spirit/animations/walk/north-east/02.webp",
+            "fox_spirit/animations/walk/north-east/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/walk/north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/walk__north.webp",
+          "frame_paths": [
+            "fox_spirit/animations/walk/north/00.webp",
+            "fox_spirit/animations/walk/north/01.webp",
+            "fox_spirit/animations/walk/north/02.webp",
+            "fox_spirit/animations/walk/north/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/walk/north"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/walk__north-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/walk/north-west/00.webp",
+            "fox_spirit/animations/walk/north-west/01.webp",
+            "fox_spirit/animations/walk/north-west/02.webp",
+            "fox_spirit/animations/walk/north-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/walk/north-west"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/walk__west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/walk/west/00.webp",
+            "fox_spirit/animations/walk/west/01.webp",
+            "fox_spirit/animations/walk/west/02.webp",
+            "fox_spirit/animations/walk/west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/walk/west"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "fox_spirit/animations/walk__south-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/walk/south-west/00.webp",
+            "fox_spirit/animations/walk/south-west/01.webp",
+            "fox_spirit/animations/walk/south-west/02.webp",
+            "fox_spirit/animations/walk/south-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/walk/south-west"
+        }
+      }
+    },
+    "idle": {
+      "group_id": null,
+      "source_name": "candidates/fox_spirit (idle)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/idle__south.webp",
+          "frame_paths": [
+            "fox_spirit/animations/idle/south/00.webp",
+            "fox_spirit/animations/idle/south/01.webp",
+            "fox_spirit/animations/idle/south/02.webp",
+            "fox_spirit/animations/idle/south/03.webp",
+            "fox_spirit/animations/idle/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/idle/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/idle__south-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/idle/south-east/00.webp",
+            "fox_spirit/animations/idle/south-east/01.webp",
+            "fox_spirit/animations/idle/south-east/02.webp",
+            "fox_spirit/animations/idle/south-east/03.webp",
+            "fox_spirit/animations/idle/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/idle/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/idle__east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/idle/east/00.webp",
+            "fox_spirit/animations/idle/east/01.webp",
+            "fox_spirit/animations/idle/east/02.webp",
+            "fox_spirit/animations/idle/east/03.webp",
+            "fox_spirit/animations/idle/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/idle/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/idle__north-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/idle/north-east/00.webp",
+            "fox_spirit/animations/idle/north-east/01.webp",
+            "fox_spirit/animations/idle/north-east/02.webp",
+            "fox_spirit/animations/idle/north-east/03.webp",
+            "fox_spirit/animations/idle/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/idle/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/idle__north.webp",
+          "frame_paths": [
+            "fox_spirit/animations/idle/north/00.webp",
+            "fox_spirit/animations/idle/north/01.webp",
+            "fox_spirit/animations/idle/north/02.webp",
+            "fox_spirit/animations/idle/north/03.webp",
+            "fox_spirit/animations/idle/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/idle/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/idle__north-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/idle/north-west/00.webp",
+            "fox_spirit/animations/idle/north-west/01.webp",
+            "fox_spirit/animations/idle/north-west/02.webp",
+            "fox_spirit/animations/idle/north-west/03.webp",
+            "fox_spirit/animations/idle/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/idle/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/idle__west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/idle/west/00.webp",
+            "fox_spirit/animations/idle/west/01.webp",
+            "fox_spirit/animations/idle/west/02.webp",
+            "fox_spirit/animations/idle/west/03.webp",
+            "fox_spirit/animations/idle/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/idle/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/idle__south-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/idle/south-west/00.webp",
+            "fox_spirit/animations/idle/south-west/01.webp",
+            "fox_spirit/animations/idle/south-west/02.webp",
+            "fox_spirit/animations/idle/south-west/03.webp",
+            "fox_spirit/animations/idle/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/idle/south-west"
+        }
+      }
+    },
+    "angry": {
+      "group_id": null,
+      "source_name": "candidates/fox_spirit (angry)",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/angry__south.webp",
+          "frame_paths": [
+            "fox_spirit/animations/angry/south/00.webp",
+            "fox_spirit/animations/angry/south/01.webp",
+            "fox_spirit/animations/angry/south/02.webp",
+            "fox_spirit/animations/angry/south/03.webp",
+            "fox_spirit/animations/angry/south/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/angry/south"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/angry__south-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/angry/south-east/00.webp",
+            "fox_spirit/animations/angry/south-east/01.webp",
+            "fox_spirit/animations/angry/south-east/02.webp",
+            "fox_spirit/animations/angry/south-east/03.webp",
+            "fox_spirit/animations/angry/south-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/angry/south-east"
+        },
+        "east": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/angry__east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/angry/east/00.webp",
+            "fox_spirit/animations/angry/east/01.webp",
+            "fox_spirit/animations/angry/east/02.webp",
+            "fox_spirit/animations/angry/east/03.webp",
+            "fox_spirit/animations/angry/east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/angry/east"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/angry__north-east.webp",
+          "frame_paths": [
+            "fox_spirit/animations/angry/north-east/00.webp",
+            "fox_spirit/animations/angry/north-east/01.webp",
+            "fox_spirit/animations/angry/north-east/02.webp",
+            "fox_spirit/animations/angry/north-east/03.webp",
+            "fox_spirit/animations/angry/north-east/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/angry/north-east"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/angry__north.webp",
+          "frame_paths": [
+            "fox_spirit/animations/angry/north/00.webp",
+            "fox_spirit/animations/angry/north/01.webp",
+            "fox_spirit/animations/angry/north/02.webp",
+            "fox_spirit/animations/angry/north/03.webp",
+            "fox_spirit/animations/angry/north/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/angry/north"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/angry__north-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/angry/north-west/00.webp",
+            "fox_spirit/animations/angry/north-west/01.webp",
+            "fox_spirit/animations/angry/north-west/02.webp",
+            "fox_spirit/animations/angry/north-west/03.webp",
+            "fox_spirit/animations/angry/north-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/angry/north-west"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/angry__west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/angry/west/00.webp",
+            "fox_spirit/animations/angry/west/01.webp",
+            "fox_spirit/animations/angry/west/02.webp",
+            "fox_spirit/animations/angry/west/03.webp",
+            "fox_spirit/animations/angry/west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/angry/west"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "fox_spirit/animations/angry__south-west.webp",
+          "frame_paths": [
+            "fox_spirit/animations/angry/south-west/00.webp",
+            "fox_spirit/animations/angry/south-west/01.webp",
+            "fox_spirit/animations/angry/south-west/02.webp",
+            "fox_spirit/animations/angry/south-west/03.webp",
+            "fox_spirit/animations/angry/south-west/04.webp"
+          ],
+          "src_frames": 5,
+          "sub": null,
+          "refilled_from": "candidates/fox_spirit/animations/angry/south-west"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}
