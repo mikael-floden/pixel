@@ -1,0 +1,141 @@
+{
+  "id": "coal_golem",
+  "name": "Coalgolem",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Dug out of the mine and lit, and it will not go back down.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Blocky golem of black coal lumps with a furnace glowing orange in its chest, smoke from its shoulders, small orange eyes.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "coal_golem/rotations/south.webp",
+    "south-east": "coal_golem/rotations/south-east.webp",
+    "east": "coal_golem/rotations/east.webp",
+    "north-east": "coal_golem/rotations/north-east.webp",
+    "north": "coal_golem/rotations/north.webp",
+    "north-west": "coal_golem/rotations/north-west.webp",
+    "west": "coal_golem/rotations/west.webp",
+    "south-west": "coal_golem/rotations/south-west.webp"
+  },
+  "sheet": "coal_golem/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0860922c-13f6-4036-8eb6-065d8e275132",
+  "seed": 1356731306,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:57:58+00:00",
+  "elapsed_s": 171.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.578,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.581,
+        "bbox": [
+          25,
+          13,
+          199,
+          213
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.667,
+        "bbox": [
+          39,
+          13,
+          187,
+          221
+        ],
+        "fill": 0.614,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.662,
+        "bbox": [
+          67,
+          9,
+          152,
+          221
+        ],
+        "fill": 0.359,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.599,
+        "bbox": [
+          48,
+          4,
+          180,
+          218
+        ],
+        "fill": 0.563,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.578,
+        "bbox": [
+          30,
+          3,
+          192,
+          211
+        ],
+        "fill": 0.672,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.598,
+        "bbox": [
+          45,
+          5,
+          176,
+          218
+        ],
+        "fill": 0.556,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.655,
+        "bbox": [
+          79,
+          9,
+          151,
+          222
+        ],
+        "fill": 0.306,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.656,
+        "bbox": [
+          37,
+          12,
+          181,
+          221
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      }
+    }
+  }
+}
