@@ -540,7 +540,7 @@
   ],
   "updated_at": "2026-09-23T20:44:02+00:00",
   "health": "idle",
-  "current": "CLAIMING: THE DEPLOY TELEPORT STOPGAP — a hop that lands on a new revision finds no hot state and falls back to an ordinary login. The hop's save moves to startHandoff (the cut spot is in the store before the client can join anywhere), the fallback skips the arrival star and logs itself, and the client announces every hand-off's start/end/fallback in chat while 'zone borders' is on. Files: games2/server/src/rooms/WorldRoom.ts, games2/server/test/rollouthop.test.ts (new), games2/client/src/scenes/WorldScene.ts (zoneGo only), games2/docs/backend.md ('Where you are is saved'), games2/CLAUDE.md (the Firestore-bill law line), games2/spec/ZONES.md (the saving line). since 2026-09-24T07:13:10+00:00",
+  "current": "IDLE. Shipped 7cdef4eb99 — the cut spot is saved when a hand-off starts (the floor under the signed copy: a hop that adopts nothing restores within a cell, not 30 s back), a fallback join publishes no star, and the client narrates every hop in chat while 'zone borders' is on (go / bind KEPT-COLD-LOST with timings / body move at the swap / failed join). Fixed the race in handoffcross.test.ts (5/5 red on main). Released every file. Noted: `npm run test -w server` regenerates games2/client/public/monsters.json with a 3017-line delta against the tracked catalog (monsters/ moved on: seed_husk -> thorn_knot etc.) — the catalog on main is stale; a manifest push is a unit of its own. Next: rooms someone can see into stay at 20 Hz (maintainer 2026-09-24 wants it, with a look-ahead ring so a zone is awake BEFORE a player can see into it); then the tiles3 parity fixture (red on main).",
   "consumes": [
     "characters",
     "tiles",
