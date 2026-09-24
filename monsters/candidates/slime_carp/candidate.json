@@ -1,0 +1,141 @@
+{
+  "id": "slime_carp",
+  "name": "Slimecarp",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The oldest fish in the pond decided the pond was too small.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fat grey carp walking on stubby fin-legs, coated in clear slime, whiskers, a wide sucking mouth, dull silver scales.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "slime_carp/rotations/south.webp",
+    "south-east": "slime_carp/rotations/south-east.webp",
+    "east": "slime_carp/rotations/east.webp",
+    "north-east": "slime_carp/rotations/north-east.webp",
+    "north": "slime_carp/rotations/north.webp",
+    "north-west": "slime_carp/rotations/north-west.webp",
+    "west": "slime_carp/rotations/west.webp",
+    "south-west": "slime_carp/rotations/south-west.webp"
+  },
+  "sheet": "slime_carp/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a381f3f5-a26d-4ae2-bc1a-f92b98920879",
+  "seed": 553406981,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:26:02+00:00",
+  "elapsed_s": 711.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.785,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.865,
+        "bbox": [
+          13,
+          4,
+          76,
+          82
+        ],
+        "fill": 0.635,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.856,
+        "bbox": [
+          14,
+          4,
+          86,
+          85
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.86,
+        "bbox": [
+          4,
+          4,
+          85,
+          84
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.86,
+        "bbox": [
+          3,
+          5,
+          81,
+          83
+        ],
+        "fill": 0.786,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.831,
+        "bbox": [
+          13,
+          5,
+          73,
+          84
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.858,
+        "bbox": [
+          6,
+          4,
+          85,
+          83
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.87,
+        "bbox": [
+          1,
+          4,
+          86,
+          84
+        ],
+        "fill": 0.878,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.785,
+        "bbox": [
+          3,
+          4,
+          84,
+          83
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      }
+    }
+  }
+}
