@@ -333,6 +333,53 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   pool is drained at the next rebuild. The pool holds TEXTURE OBJECTS across
   rebuilds, so tiles3's `limit: 0` cache must stay unbounded, or an eviction
   must clear the pool too.
+- **A LANDING COSTS A BOUNDED AMOUNT PER FRAME** (Task 1, games-perf on the
+  maintainer's order, 2026-09-24: "still laggy ... not a smooth stable FPS").
+  His 14:01 run: the long frames were the art-streaming frames — 516 on the
+  occluder group (27 s of a 160 s run), 299 on the ground group; every
+  terrain batch (13-42 a window) re-walked EVERY incomplete cell of the
+  window, then rebuilt the scenery and the cover index in full
+  (`rebuildOccluders` 10-47 ms, `rebuildScenery` 6-21, `coverIndex` 3-7),
+  and repainted every landed cell in one pass (`repaintCells` 29-79 ms).
+  Three bounds: (1) a landing walks THE INCOMPLETE CELLS read off a set the
+  walk keeps (`occIncomplete`: a cell enters when its walk left it
+  incomplete, leaves when a walk completes it or it leaves the window) and
+  never scans the window for them — the same cells as before, wherever
+  their file came from (a plate the ground pass never asked for, a
+  neighbour's, a sheet), at the cost of those cells alone; a step or a cut
+  walks the window as before. (Not the cells a landed FILE fed, from
+  `t3missing`: the ground pass registers only the cells it paints, and the
+  occluder window reaches `maxLevel*lh` below the ground texture — a tall
+  column whose footprint is below the screen would have kept its missing
+  top until the next 96 px step.) (2) A terrain landing leaves the scenery
+  alone — placements, lit copies and lights depend on the camera and the
+  scenery art, not on a plate that streamed in — so `rebuildScenery` and the
+  destroy of the lit copies it recreates run on a step, a cut, a full walk
+  or a scenery/manifest landing (`occSceneryDue`); with nothing created and
+  nothing left over the occluder set is the set it was (the flat views, the
+  near index and the cover index stand), and the cover index is rebuilt
+  when either set changed. The scenery's own depth records RIDE ALONG in
+  `occluderMeta` when the scenery is not rebuilt (`sceneryMeta`: the flat
+  list is rebuilt from the cells' buckets and only rebuildScenery pushes
+  them — the first terrain batch after a teleport dropped every bed a body
+  sorts against, and the body drew under the one in front of it,
+  verify-scenerysort's fifth spot), and a landing whose walk added or
+  dropped records re-resolves the drawn pieces' depths alone
+  (`resolveSceneryDepths`, section `sceneryDepth`, from the anchors — the
+  pieces resolve against each other's DRAWN depth): the lift over the floor
+  tile in front of a bed is read off the terrain records, and an incomplete
+  cell has none until its art lands. (3) The landing repaint paints column-sorted
+  chunks of `GROUND_REPAINT_CHUNK` cells (narrow bands: the rects stay
+  small, the total area is the split pass's) until `GROUND_REPAINT_MS` (5)
+  has gone and carries the rest (beacon counts `cellRuns`/`cellCarried` per
+  window) — the same
+  pixels a frame or two later; a chunk that poisons the latch ends the
+  carry. Gates: verify-occinc (the incremental set equals a full rebuild),
+  verify-scenerysort, verify-indoorscenery, verify-scenerycover,
+  verify-lit-order, verify-beacon. (verify-zonehop's 5-frame floor is a
+  headless box's speed, not the code: there the hop joins in 2.5-3.5 s and
+  its 3 s watch records 2-4 frames on main with nothing changed, where his
+  phone joins in 204-243 ms and records 68-121 — games' gate.)
 - **THE WALK IS INCREMENTAL TOO** (`rebuildOccluders` full vs step,
   `tiles3Occluders(..., only)`, 2026-09-12). The pool kept the IMAGES; the
   walk that decided them still visited every cell of the window — ~2,700 on

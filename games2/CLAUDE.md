@@ -154,13 +154,13 @@ push, no PRs unless asked.
 **Perf** (`docs/perf.md`)
 - The capture pool is ALWAYS ON: no draw bracket may resize Phaser's capture
   target (that re-allocation WAS the new-area lag).
-- The ground scrolls, paints in slices, repaints landed cells only,
-  prefetches ahead, budgets compositions (`GROUND_COMPOSE_MS` 2, boundaries
-  only) — each pixel-identical to a forced full paint (`__ml.groundHash`). A
-  tab-in poisons the latch. Keep the drop drain's repaint. `?ground=legacy`
-  bisects.
-- The beacon: `sections` are window means, `counts` snapshots — never
-  correlate them; the server side is an allowlist (`verify-beacon.mjs`);
+- The ground scrolls, paints in slices, repaints landed cells (budgeted),
+  prefetches, budgets compositions (`GROUND_COMPOSE_MS` 2, boundaries only)
+  — each pixel-identical to a full paint (`__ml.groundHash`); a landing's
+  occluder walk is the incomplete set (`occIncomplete`), no scan. A tab-in
+  poisons the latch. Keep the drop drain's repaint. `?ground=legacy` bisects.
+- The beacon: `sections` are window means, `counts` snapshots (never
+  correlate them); allowlisted server-side (`verify-beacon.mjs`);
   `perf-read.mjs` reads a run.
 
 **Movement** (`docs/movement.md`)
@@ -220,9 +220,8 @@ stable player key, the warm-room table, the view API and their traps live
 THERE)
 - ONE world, never instances (maintainer). Zones are rooms
   (`config/zones.json`; no entry = one room), ONE per zone per process; a
-  border is crossed by a HAND-OFF over the bus and, signed, through the
-  client (`takeHandoffCopy`: a hop onto another process keeps its body);
-  what a client sees across it are GHOSTS, which no server loop steps or
+  border is crossed by a HAND-OFF over the bus (and, signed, through the
+  client: `takeHandoffCopy`); what a client sees across it are GHOSTS, which no server loop steps or
   fights. Only a room NOBODY IS NEAR idles (`WAKE_WU`; maintainer 2026-09-24).
 - A client receives only what is within `INTEREST_WU` of itself (a `StateView`
   per client); THE JOIN SNAPSHOT IS A WHOLE VIEW, what a crossing binds on;

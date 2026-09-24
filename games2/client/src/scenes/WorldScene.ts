@@ -1215,6 +1215,14 @@ const GROUND_RING_MS = 2;
 type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number; ocBase?: number; ocNear?: number };
 
 const GROUND_COMPOSE_MS = 2;
+/* TASK 1 (games-perf on the maintainer's order, 2026-09-24: "still laggy ...
+ * not a smooth stable FPS"): ART LANDING COSTS A BOUNDED AMOUNT PER FRAME.
+ * A landing's cell repaint paints chunks of GROUND_REPAINT_CHUNK cells (sorted
+ * by column, so a chunk is a narrow band) until GROUND_REPAINT_MS has gone,
+ * and carries the rest to the next frame — the same pixels, a frame later.
+ * His 14:01 run: `repaintCells` 29-79 ms in one frame on every batch. */
+const GROUND_REPAINT_MS = 5;
+const GROUND_REPAINT_CHUNK = 12;
 /** ONE COMPOSITION IS AN ATOM, AND ON HIS PHONE IT IS ~13 ms.
  *
  *  Measured: with GROUND_RING_MS already in force, `prefetch` still cost 15.64
@@ -2611,11 +2619,15 @@ export class WorldScene extends Phaser.Scene {
      * baselines must advance in step with it or a skipped window (too short,
      * or the player never moved) would be double-counted into the next one. */
     const prevFull = this.perfPrevFullPaints;
+    const prevCellRuns = this.perfPrevCellRuns;
+    const prevCarried = this.perfPrevCellCarried;
     const prevDrain = this.perfPrevDrains;
     const prevDefer = this.perfPrevDeferred;
     const prevCtx = this.perfPrevCtxRestores;
     this.perfPrevCtxRestores = this.ctxRestores;
     this.perfPrevFullPaints = this.groundFullRuns;
+    this.perfPrevCellRuns = this.groundCellStats.runs;
+    this.perfPrevCellCarried = this.groundCellStats.carried;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
     // The resolver's, the ambient effects' and the fade textures' bills advance
@@ -2935,6 +2947,10 @@ export class WorldScene extends Phaser.Scene {
          * whether it happens on his phone at all. */
         ctxRestores: this.ctxRestores - prevCtx,
         fullPaints: this.groundFullRuns - prevFull,
+        // THE LANDING REPAINT UNDER ITS BUDGET (Task 1): runs this window, and the
+        // landed cells a run carried to a later frame (GROUND_REPAINT_MS).
+        cellRuns: this.groundCellStats.runs - prevCellRuns,
+        cellCarried: this.groundCellStats.carried - prevCarried,
         drains: this.repaintStats.drains - prevDrain,
         drainsDeferred: this.repaintStats.drainsDeferred - prevDefer,
       },
@@ -3590,6 +3606,8 @@ export class WorldScene extends Phaser.Scene {
       () => this.perfOn,
     );
     this.perfPrevFullPaints = this.groundFullRuns;
+    this.perfPrevCellRuns = this.groundCellStats.runs;
+    this.perfPrevCellCarried = this.groundCellStats.carried;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
     this.perfPrevCtxRestores = this.ctxRestores;
@@ -4024,6 +4042,8 @@ export class WorldScene extends Phaser.Scene {
   /** Event Timing entries over 16 ms this window — see `inputSummary`. */
   private perfInputEntries: { name: string; startTime: number; processingStart: number; duration: number }[] = [];
   private perfPrevFullPaints = 0;
+  private perfPrevCellRuns = 0; // per-cell landing repaints this window (Task 1)
+  private perfPrevCellCarried = 0; // landed cells carried to a later frame by the budget
   private perfPrevCtxRestores = 0;
   /** Ground repaints forced by a context restore or a tab-in — see
    *  hookContextRestore. Reported per window by the beacon. */
@@ -4424,7 +4444,7 @@ export class WorldScene extends Phaser.Scene {
   /** When the boot hold's readiness condition first became true — see
    *  hideLoadingWhenTerrainIsUp. 0 while not ready. */
   private holdReadySince = 0;
-  private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0, split: 0 };
+  private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0, split: 0, carried: 0 };
   /** DEV: the last landing repaint's stamp rect and grown clip rect. */
   private groundLastRect: unknown = null;
   /** DIAGNOSTIC ring: the last scrolls' (prevAx, prevAy, ax, ay, sx, sy). */
@@ -4565,6 +4585,38 @@ export class WorldScene extends Phaser.Scene {
   private occMetaByCell = new Map<number, (typeof this.occluderMeta)[number][]>();
   private occCellState = new Map<number, { partial: boolean; incomplete: boolean }>();
   private occRelanded = false;
+  /* TASK 1 (2026-09-24): a landing walks THE INCOMPLETE CELLS, read off this
+   * set — never a scan of the window for them. His 14:01 run tested every
+   * one of ~2,700 cells per terrain batch (13-42 batches a window) to find
+   * the incomplete few, then rebuilt the scenery and the cover index in full
+   * (the census: 516 long frames on the occluder group). The set is kept by
+   * the walk itself (a cell enters when its walk left it incomplete, leaves
+   * when a walk completes it or it leaves the window), so a landing's walk is
+   * exactly the old one's — every incomplete cell, wherever its file came
+   * from (a plate the ground pass never asked for, a neighbour's, a sheet) —
+   * at the cost of those cells alone. `occSceneryDue`: a scenery or manifest
+   * landing wants rebuildScenery; a terrain landing never does — placements,
+   * lit copies and lights depend on the camera and the scenery art, not on a
+   * plate that streamed in. */
+  private occIncomplete = new Set<number>();
+  private occSceneryDue = false;
+  /* THE SCENERY'S OWN DEPTH RECORDS STAY ACROSS A LANDING that rebuilt no
+   * scenery (Task 1): the flat `occluderMeta` is rebuilt from the cells'
+   * buckets, and only rebuildScenery pushes these — the first terrain batch
+   * after a teleport dropped every bed a body sorts against, and the body
+   * drew under the one in front of it (verify-scenerysort's fifth spot).
+   * `occMetaPushed`/dropped count the records a walk changed: a landing that
+   * changed any re-resolves the drawn pieces' depths (resolveSceneryDepths) —
+   * the lift over the floor tile in front of a piece is read off the terrain
+   * records, and an incomplete cell has none until its art lands. */
+  private sceneryMeta: (typeof this.occluderMeta)[number][] = [];
+  private occMetaPushed = 0;
+  private scnResolve: {
+    img: Phaser.GameObjects.Image;
+    meta: WorldScene["occluderMeta"][number] | null;
+    lo: WorldScene["litOccluders"][number] | null;
+    hbX: number; hbY: number; hbDepth: number; eps: number; lvl: number; fx: number; fy: number;
+  }[] = [];
   private occIncOn = true;
   private occIncStats = { steps: 0, walked: 0 };
   private occForceStep = false; // occIncCheck: one step at the camera's exact spot
@@ -8730,7 +8782,10 @@ export class WorldScene extends Phaser.Scene {
           extraMeta: extraMeta.length,
           sampleMissing: missingImgs.slice(0, 3),
           // WHY a missing image is missing: the live walk's record of its cell.
-          missingCells: missingLoose.slice(0, 6).map((k) => {
+          // From the FULL records (`parts` reads six trailing fields; a loose
+          // record has four, and reading one as full named the image's y as
+          // its cell and every state as null).
+          missingCells: missingImgs.filter((k) => missingSet.has(loose(k))).slice(0, 6).map((k) => {
             const q = parts(k);
             const [c, r] = q.cell.split(",").map(Number);
             const idx = r * (this.world?.width ?? 1) + c;
@@ -13741,7 +13796,29 @@ export class WorldScene extends Phaser.Scene {
       const dirty = this.groundDirtyCells;
       this.groundDirtyCells = [];
       this.ps();
-      this.repaintTiles3Cells(dirty);
+      /* UNDER A BUDGET (Task 1, 2026-09-24): the landed cells are painted in
+       * column-sorted chunks — a chunk is a narrow band, so the rects stay
+       * small and the total area painted is the split pass's — until
+       * GROUND_REPAINT_MS has gone; the rest is carried to the next frame.
+       * The pixels are the same, a frame or two later, and the frame is not
+       * the 29-79 ms his run paid for a batch. A chunk that poisons the
+       * latch (one cell too wide) ends the carry: the full paint covers all. */
+      const W = this.world?.width ?? 1;
+      dirty.sort((a, b) => (a % W) - (b % W) || a - b);
+      const t0 = performance.now();
+      let at = 0;
+      while (at < dirty.length) {
+        const chunk = dirty.slice(at, at + GROUND_REPAINT_CHUNK);
+        at += chunk.length;
+        this.repaintTiles3Cells(chunk);
+        if (Number.isNaN(this.lastGround.x)) { at = dirty.length; break; }
+        if (at < dirty.length && performance.now() - t0 >= GROUND_REPAINT_MS) break;
+      }
+      if (at < dirty.length) {
+        for (let i = at; i < dirty.length; i++) this.groundDirtyCells.push(dirty[i]);
+        this.groundCellStats.carried += dirty.length - at;
+        this.repaintGroundPartial = true;
+      }
       this.pe("repaintCells");
       this.repaintStats.groundRuns++;
     }
@@ -18980,6 +19057,8 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     if (kind === "terrain") this.repaintGroundPending = true;
+    // Task 1: a scenery or manifest landing is what rebuilds the scenery.
+    if (kind !== "terrain") this.occSceneryDue = true;
     this.repaintOccPending = true;
   }
 
@@ -22283,6 +22362,7 @@ export class WorldScene extends Phaser.Scene {
         let arr = this.occMetaByCell.get(idx);
         if (!arr) this.occMetaByCell.set(idx, (arr = []));
         arr.push(m);
+        this.occMetaPushed++;
       };
       walkCell = () => walkBody(col, row, st, metaPush);
       /* THE TIE-BREAK IS THE CELL'S PLACE ON ITS DIAGONAL, not a running
@@ -22307,6 +22387,8 @@ export class WorldScene extends Phaser.Scene {
       walkCell();
       if (tex.droppedOps !== d0 || tex.plateRawFallbacks !== r0 || tex.stats.missing !== m0 || tex.stats.deferred !== f0)
         st.incomplete = true;
+      if (st.incomplete) this.occIncomplete.add(idx);
+      else this.occIncomplete.delete(idx);
     };
     let walkCell = () => {};
     const walkBody = (col: number, row: number, st: { partial: boolean; incomplete: boolean }, metaPush: (m: (typeof this.occluderMeta)[number]) => void): void => {
@@ -23379,6 +23461,48 @@ export class WorldScene extends Phaser.Scene {
     this.destroyBatch(left);
   }
 
+  /** THE SECOND PASS OF rebuildScenery ON ITS OWN (Task 1, 2026-09-24): every
+   *  drawn piece's depth and cover line through the shared rule, against the
+   *  occluder records as they stand. rebuildScenery runs it; a landing whose
+   *  walk changed the terrain records without rebuilding the scenery runs it
+   *  again (rebuildOccluders' tail) — the lift over the floor tile in front of
+   *  a bed is read off those records, and an incomplete cell has none until
+   *  its art lands. The pieces resolve against each other's DRAWN depth
+   *  (`drawDepth`), so a second pass starts from the anchors, as the first
+   *  did, or the order it ran in would compound. */
+  private resolveSceneryDepths(): void {
+    const resolve = this.scnResolve;
+    for (const r of resolve) if (r.meta) r.meta.drawDepth = undefined;
+    for (const r of this.scnResolve) {
+      const d = this.resolveDrawDepth(
+        // cx0/cx1: the piece's FOOTPRINT span, not its canopy — only terrain
+        // over what it stands on may crop its lit copy (see DepthCtx.cover column).
+        /* ...AND IT MAY NOT LIFT PAST ITS OWN ART (DepthCtx.liftMax). Keyed on
+         * its footprint centre, a long piece's art box overlaps floor tiles
+         * two and three diagonals forward, and the blanket 35 px carried a bed
+         * from its centre to its feet line — where it outranked a player
+         * standing in front of it (maintainer 2026-09-14). Its art's bottom is
+         * the last ground it actually covers. */
+        { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy, cx0: r.meta?.x0, cx1: r.meta?.x1,
+          liftMax: r.meta?.ay1 !== undefined ? r.meta.ay1 - (r.hbDepth - 0.5) : undefined,
+          coverFrontOnly: !!r.lo?.roofed },
+        r.lvl,
+        r.meta,
+      );
+      r.img.setDepth(d.depth + r.eps); // the record's own tie-breaking epsilon, not read back off the image
+      if (r.meta) r.meta.drawDepth = d.depth; // the anchor line in `depth` stays put
+      if (r.lo) {
+        r.lo.pd = d.depth;
+        /* A ROOFED PIECE TAKES A COVER LINE ONLY FROM A COLUMN IN FRONT OF IT
+         * (DepthCtx.coverFrontOnly): the wall it stands against never crops
+         * its copy, the lowered wall it stands behind does. */
+        r.lo.cover = d.coverY ?? Infinity;
+        r.lo.img.setDepth(litDepth(d.depth));
+        r.lo.fog?.setDepth(litDepth(d.depth));
+      }
+    }
+  }
+
   private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
     this.scnRebuilds++;
     /* THE CURRENT SET BECOMES THE POOL (see `scnImage`). Whatever this rebuild
@@ -23397,6 +23521,7 @@ export class WorldScene extends Phaser.Scene {
     this.scnReused = 0;
     this.scnCreated = 0;
     this.sceneryImgs = [];
+    this.sceneryMeta = [];
     this.sceneryRoofedImgs = [];
     this.sceneryAboveCutImgs = [];
     this.sceneryCoverRecs = [];
@@ -23458,12 +23583,7 @@ export class WorldScene extends Phaser.Scene {
     let drawn = 0;
     let roofedDrawn = 0;
     /* Pieces awaiting the SHARED depth/cover resolve (second pass, below). */
-    const resolve: {
-      img: Phaser.GameObjects.Image;
-      meta: WorldScene["occluderMeta"][number] | null;
-      lo: WorldScene["litOccluders"][number] | null;
-      hbX: number; hbY: number; hbDepth: number; lvl: number; fx: number; fy: number;
-    }[] = []; // indoor furniture the cut let through — see roofCutAwayAt
+    const resolve: WorldScene["scnResolve"] = []; // indoor furniture the cut let through — see roofCutAwayAt
     for (const p of idx.query(reach)) {
       const piece = pieces.get(p.piece);
       if (piece === undefined) {
@@ -23883,7 +24003,10 @@ export class WorldScene extends Phaser.Scene {
         ax1: fit.x + fit.w,
         ay1: fit.y + fit.h,
       };
-      if (meta) this.occluderMeta.push(meta);
+      if (meta) {
+        this.occluderMeta.push(meta);
+        this.sceneryMeta.push(meta);
+      }
       if (onWall) this.registerSceneryWall(p, piece, st, img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null, baseH, rect);
       if (!flat && !onWall)
         resolve.push({
@@ -23893,6 +24016,7 @@ export class WorldScene extends Phaser.Scene {
           hbX,
           hbY,
           hbDepth,
+          eps: img.depth - hbDepth, // this rebuild's tie-breaking epsilon — see resolveSceneryDepths
           /* THE SURFACE IT STANDS ON. `lvl` is what the shared depth rule
            * lifts the piece by and what decides which terrain COVERS it, and
            * reading the cell's terrain level put a chimney on the house FLOOR
@@ -23921,34 +24045,8 @@ export class WorldScene extends Phaser.Scene {
      * where the cover line comes from, so a piece's lit copy is cropped by the
      * same test that crops a body's. Its own record is excluded or it would
      * read itself as covering itself. */
-    for (const r of resolve) {
-      const d = this.resolveDrawDepth(
-        // cx0/cx1: the piece's FOOTPRINT span, not its canopy — only terrain
-        // over what it stands on may crop its lit copy (see DepthCtx.cover column).
-        /* ...AND IT MAY NOT LIFT PAST ITS OWN ART (DepthCtx.liftMax). Keyed on
-         * its footprint centre, a long piece's art box overlaps floor tiles
-         * two and three diagonals forward, and the blanket 35 px carried a bed
-         * from its centre to its feet line — where it outranked a player
-         * standing in front of it (maintainer 2026-09-14). Its art's bottom is
-         * the last ground it actually covers. */
-        { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy, cx0: r.meta?.x0, cx1: r.meta?.x1,
-          liftMax: r.meta?.ay1 !== undefined ? r.meta.ay1 - (r.hbDepth - 0.5) : undefined,
-          coverFrontOnly: !!r.lo?.roofed },
-        r.lvl,
-        r.meta,
-      );
-      r.img.setDepth(d.depth + (r.img.depth - r.hbDepth)); // keep this rebuild's tie-breaking epsilon
-      if (r.meta) r.meta.drawDepth = d.depth; // the anchor line in `depth` stays put
-      if (r.lo) {
-        r.lo.pd = d.depth;
-        /* A ROOFED PIECE TAKES A COVER LINE ONLY FROM A COLUMN IN FRONT OF IT
-         * (DepthCtx.coverFrontOnly): the wall it stands against never crops
-         * its copy, the lowered wall it stands behind does. */
-        r.lo.cover = d.coverY ?? Infinity;
-        r.lo.img.setDepth(litDepth(d.depth));
-        r.lo.fog?.setDepth(litDepth(d.depth));
-      }
-    }
+    this.scnResolve = resolve;
+    this.resolveSceneryDepths();
     this.t3stats.scenery = drawn;
     this.sceneryRoofedDrawn = roofedDrawn;
     this.scnDrain();
@@ -25251,6 +25349,8 @@ export class WorldScene extends Phaser.Scene {
     const tDestroy = performance.now();
     this.occReused = 0;
     this.occCreated = 0;
+    this.occMetaPushed = 0;
+    let occMetaDropped = 0;
 
     // ONE mask, TWO consumers — the ground RT and this pass are independent
     // renderings of the same terrain, and deriving the verdict twice guarantees
@@ -25312,10 +25412,13 @@ export class WorldScene extends Phaser.Scene {
       this.occNext.clear();
       this.occMetaByCell.clear();
       this.occCellState.clear();
+      this.occIncomplete.clear();
       this.occWin = null;
       this.litOccluders = [];
       this.occluders = [];
       this.occluderMeta = [];
+      this.sceneryMeta = [];
+      this.scnResolve = [];
       this.emissiveLights = [];
       this.occDestroyMs = performance.now() - tDestroy;
       return;
@@ -25355,11 +25458,20 @@ export class WorldScene extends Phaser.Scene {
       if (this.occWinCuts) for (const k of this.occWinCuts.keys()) add(k);
       if (cuts) for (const k of cuts.keys()) add(k);
     }
-    // LIT COPIES ARE OUTSIDE THE POOL — rebuildScenery recreates them in
-    // creation order every pass (that order is what keeps their ties right).
-    this.destroyBatch(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img])));
-    this.litOccluders = [];
-    this.emissiveLights = [];
+    /* A TERRAIN LANDING LEAVES THE SCENERY ALONE (Task 1, 2026-09-24): its
+     * placements, lit copies and lights depend on the camera and the scenery
+     * art, not on a plate that streamed in. rebuildScenery runs on a step, a
+     * cut, a full walk or a scenery/manifest landing — and the lit copies,
+     * which it recreates, are destroyed only then. */
+    const sceneryDue = full || moved || cutChanged || this.occSceneryDue;
+    this.occSceneryDue = false;
+    if (sceneryDue) {
+      // LIT COPIES ARE OUTSIDE THE POOL — rebuildScenery recreates them in
+      // creation order every pass (that order is what keeps their ties right).
+      this.destroyBatch(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img])));
+      this.litOccluders = [];
+      this.emissiveLights = [];
+    }
     if (full) {
       /* THE CURRENT SET BECOMES THE POOL. Every maps3 occluder is created by
        * occImage and therefore lives in occNext; what this rebuild does not
@@ -25383,6 +25495,7 @@ export class WorldScene extends Phaser.Scene {
       this.occNext = new Map();
       this.occMetaByCell.clear();
       this.occCellState.clear();
+      this.occIncomplete.clear();
       this.ps();
       this.occCulled = this.tiles3Occluders(u0, u1, v0, v1, mask, cuts, top, shows, columnShows);
       this.pe("occWalkFull");
@@ -25408,24 +25521,37 @@ export class WorldScene extends Phaser.Scene {
       }
       for (const k of [...this.occCellState.keys()]) {
         const [u, v] = cellUV(k);
-        if (!inWin(u, v, cur)) this.occCellState.delete(k);
+        if (!inWin(u, v, cur)) {
+          this.occCellState.delete(k);
+          this.occIncomplete.delete(k);
+        }
       }
       this.destroyBatch(gone);
       // Cells to WALK: entered, culled last time, or still streaming.
       const rewalk = new Set<number>();
-      for (let v = v0; v <= v1; v++)
-        for (let u = u0; u <= u1; u++) {
-          if ((u + v) & 1) continue;
-          const col = (u + v) / 2;
-          const row = (v - u) / 2;
-          if (col < 0 || row < 0 || col >= W || row >= this.world.height) continue;
-          const k = row * W + col;
-          if (!moved && !this.occRelanded && !flip) continue;
-          const st = this.occCellState.get(k);
-          const entered = !inWin(u, v, prev) || !st;
-          if (flip?.has(k)) rewalk.add(k);
-          else if (moved ? entered || st!.partial || st!.incomplete : st?.incomplete) rewalk.add(k);
+      /* A LANDING WALKS THE INCOMPLETE CELLS, read off `occIncomplete` (Task
+       * 1) — the same cells the window scan used to find by testing every
+       * cell of the window per batch. A step or a cut walks the window as
+       * before. The set is copied first: the walk edits it. */
+      if (!moved && !flip) {
+        for (const k of this.occIncomplete) {
+          const [u, v] = cellUV(k);
+          if (inWin(u, v, cur)) rewalk.add(k);
         }
+      } else
+        for (let v = v0; v <= v1; v++)
+          for (let u = u0; u <= u1; u++) {
+            if ((u + v) & 1) continue;
+            const col = (u + v) / 2;
+            const row = (v - u) / 2;
+            if (col < 0 || row < 0 || col >= W || row >= this.world.height) continue;
+            const k = row * W + col;
+            if (!moved && !this.occRelanded && !flip) continue;
+            const st = this.occCellState.get(k);
+            const entered = !inWin(u, v, prev) || !st;
+            if (flip?.has(k)) rewalk.add(k);
+            else if (moved ? entered || st!.partial || st!.incomplete : st?.incomplete) rewalk.add(k);
+          }
       // Their images become the pool (occImage reuses the unchanged ones),
       // their meta is rebuilt by the walk.
       for (const k of rewalk) {
@@ -25434,7 +25560,7 @@ export class WorldScene extends Phaser.Scene {
           this.occPool.set(k, b);
           this.occNext.delete(k);
         }
-        this.occMetaByCell.delete(k);
+        if (this.occMetaByCell.delete(k)) occMetaDropped++;
       }
       this.occIncStats.steps++;
       this.occIncStats.walked += rewalk.size;
@@ -25447,24 +25573,49 @@ export class WorldScene extends Phaser.Scene {
     this.occWinTop = top;
     this.occWinCuts = cuts;
     this.occRelanded = false;
-    // The flat views every consumer reads (the per-frame cull, the cover
-    // index, the beacon, the depth rule), from the per-cell buckets.
-    const flatI: Phaser.GameObjects.Image[] = [];
-    for (const b of this.occNext.values()) for (const im of b) flatI.push(im);
-    this.occluders = flatI;
-    this.occNearIndex();
+    /* WHAT THE POOL DID NOT GIVE BACK is what actually left the window (or,
+     * on an incremental step, what a re-walked cell no longer draws) — counted
+     * FIRST (Task 1): with nothing created and nothing left over, the set is
+     * the set it was, and the flat views, the near index and the cover index
+     * stand. A landing whose art changed no image (a pool hit for every
+     * re-walked cell) costs its walk and nothing else. */
+    const leftover: Phaser.GameObjects.Image[] = [];
+    for (const arr of this.occPool.values()) for (const im of arr) leftover.push(im);
+    this.occPool.clear();
+    const setChanged = full || this.occCreated > 0 || leftover.length > 0;
+    if (setChanged) {
+      // The flat views every consumer reads (the per-frame cull, the cover
+      // index, the beacon, the depth rule), from the per-cell buckets.
+      const flatI: Phaser.GameObjects.Image[] = [];
+      for (const b of this.occNext.values()) for (const im of b) flatI.push(im);
+      this.occluders = flatI;
+      this.occNearIndex();
+    }
+    // The meta is rebuilt by every walked cell, so the flat record follows
+    // any walk (cheap: one push per record).
     const flatM: (typeof this.occluderMeta)[number][] = [];
     for (const arr of this.occMetaByCell.values()) for (const m of arr) flatM.push(m);
     this.occluderMeta = flatM;
+    // The scenery's records ride along when the scenery is not rebuilt — see sceneryMeta.
+    if (!sceneryDue) for (const m of this.sceneryMeta) flatM.push(m);
+    const metaChanged = this.occMetaPushed > 0 || occMetaDropped > 0;
     this.occDestroyMs = performance.now() - tDestroy;
-    this.occSeq = OCC_SEQ_SCENERY;
-    this.ps();
-    this.rebuildScenery(cam);
-    this.pe("rebuildScenery");
-    // No glow field: tiles2/emission.json is a tiles2 product and a v3 world
-    // references none of it. An empty stamp list is what the night pipeline
-    // already does for a world with no emissive art.
-    this.glowStamps = [];
+    if (sceneryDue) {
+      this.occSeq = OCC_SEQ_SCENERY;
+      this.ps();
+      this.rebuildScenery(cam);
+      this.pe("rebuildScenery");
+      // No glow field: tiles2/emission.json is a tiles2 product and a v3 world
+      // references none of it. An empty stamp list is what the night pipeline
+      // already does for a world with no emissive art.
+      this.glowStamps = [];
+    } else if (metaChanged) {
+      // The records under the drawn pieces changed: their depths follow, the
+      // pieces themselves stand (see resolveSceneryDepths).
+      this.ps();
+      this.resolveSceneryDepths();
+      this.pe("sceneryDepth");
+    }
     /* THE COVER INDEX, which this early return skipped on EVERY maps3 world.
      * It is the last line of the maps2 path for a reason: the occluder images
      * have just been destroyed and recreated, so this is the one moment their
@@ -25473,15 +25624,14 @@ export class WorldScene extends Phaser.Scene {
      * COVERED, and the pixel-exact lit copy drew over every wall and roof in
      * the world — the player standing on top of a house he was behind. The
      * depth sort was right the whole time; the second copy was not. */
-    this.ps();
-    this.rebuildCoverIndex();
-    this.pe("coverIndex");
-    // WHAT THE POOL DID NOT GIVE BACK is what actually left the window (or,
-    // on an incremental step, what a re-walked cell no longer draws).
+    // The cover index holds the occluder AND scenery images: rebuilt when
+    // either set changed (Task 1), never on a no-op landing.
+    if (setChanged || sceneryDue) {
+      this.ps();
+      this.rebuildCoverIndex();
+      this.pe("coverIndex");
+    }
     const tLeft = performance.now();
-    const leftover: Phaser.GameObjects.Image[] = [];
-    for (const arr of this.occPool.values()) for (const im of arr) leftover.push(im);
-    this.occPool.clear();
     this.destroyBatch(leftover);
     this.occDestroyMs += performance.now() - tLeft;
   }
