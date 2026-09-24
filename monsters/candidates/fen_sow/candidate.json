@@ -1,0 +1,146 @@
+{
+  "id": "fen_sow",
+  "name": "Fensow",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Her piglets are the mud of the fen and there are always more.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Huge pale sow with a string of tiny piglets made of mud following in a line behind her, small eyes, dripping ears.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fen_sow/rotations/south.webp",
+    "south-east": "fen_sow/rotations/south-east.webp",
+    "east": "fen_sow/rotations/east.webp",
+    "north-east": "fen_sow/rotations/north-east.webp",
+    "north": "fen_sow/rotations/north.webp",
+    "north-west": "fen_sow/rotations/north-west.webp",
+    "west": "fen_sow/rotations/west.webp",
+    "south-west": "fen_sow/rotations/south-west.webp"
+  },
+  "sheet": "fen_sow/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "21aeae11-4cfd-4b97-aa25-7bc8cb790793",
+  "seed": 1476414119,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:03:24+00:00",
+  "elapsed_s": 2056.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.727,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.727,
+        "bbox": [
+          2,
+          9,
+          87,
+          87
+        ],
+        "fill": 0.856,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.798,
+        "bbox": [
+          0,
+          7,
+          88,
+          86
+        ],
+        "fill": 0.898,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.766,
+        "bbox": [
+          0,
+          2,
+          83,
+          83
+        ],
+        "fill": 0.868,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.768,
+        "bbox": [
+          19,
+          2,
+          84,
+          86
+        ],
+        "fill": 0.705,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.762,
+        "bbox": [
+          16,
+          2,
+          84,
+          83
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.742,
+        "bbox": [
+          3,
+          2,
+          88,
+          81
+        ],
+        "fill": 0.867,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.779,
+        "bbox": [
+          0,
+          6,
+          87,
+          81
+        ],
+        "fill": 0.843,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.824,
+        "bbox": [
+          4,
+          8,
+          70,
+          84
+        ],
+        "fill": 0.648,
+        "touches_edge": false
+      }
+    }
+  }
+}
