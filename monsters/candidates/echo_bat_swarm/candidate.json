@@ -1,0 +1,140 @@
+{
+  "id": "echo_bat_swarm",
+  "name": "Echocloud",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "They see with sound and they have heard you.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Swarm of dark bats forming a rough spiral shape, pale sonar ripples drawn around them, many tiny eyes.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "echo_bat_swarm/rotations/south.webp",
+    "south-east": "echo_bat_swarm/rotations/south-east.webp",
+    "east": "echo_bat_swarm/rotations/east.webp",
+    "north-east": "echo_bat_swarm/rotations/north-east.webp",
+    "north": "echo_bat_swarm/rotations/north.webp",
+    "north-west": "echo_bat_swarm/rotations/north-west.webp",
+    "west": "echo_bat_swarm/rotations/west.webp",
+    "south-west": "echo_bat_swarm/rotations/south-west.webp"
+  },
+  "sheet": "echo_bat_swarm/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7f16b360-1fbb-456b-8bdf-67b0206f2cbb",
+  "seed": 603108811,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:44:00+00:00",
+  "elapsed_s": 166.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.675,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.675,
+        "bbox": [
+          7,
+          5,
+          32,
+          37
+        ],
+        "fill": 0.5,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.731,
+        "bbox": [
+          9,
+          4,
+          31,
+          37
+        ],
+        "fill": 0.454,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.733,
+        "bbox": [
+          13,
+          3,
+          28,
+          37
+        ],
+        "fill": 0.319,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.703,
+        "bbox": [
+          10,
+          3,
+          31,
+          37
+        ],
+        "fill": 0.446,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.689,
+        "bbox": [
+          7,
+          4,
+          33,
+          36
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.702,
+        "bbox": [
+          9,
+          3,
+          30,
+          37
+        ],
+        "fill": 0.446,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.714,
+        "bbox": [
+          12,
+          3,
+          27,
+          37
+        ],
+        "fill": 0.319,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.734,
+        "bbox": [
+          9,
+          4,
+          30,
+          37
+        ],
+        "fill": 0.433,
+        "touches_edge": false
+      }
+    }
+  }
+}
