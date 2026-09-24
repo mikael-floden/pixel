@@ -1,0 +1,140 @@
+{
+  "id": "crag_ape",
+  "name": "Crag Ape",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It throws the mountain at you, one piece at a time.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Grey stone-skinned ape with slabs of rock on its shoulders and back, long arms, a heavy jaw, knuckles of granite.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "crag_ape/rotations/south.webp",
+    "south-east": "crag_ape/rotations/south-east.webp",
+    "east": "crag_ape/rotations/east.webp",
+    "north-east": "crag_ape/rotations/north-east.webp",
+    "north": "crag_ape/rotations/north.webp",
+    "north-west": "crag_ape/rotations/north-west.webp",
+    "west": "crag_ape/rotations/west.webp",
+    "south-west": "crag_ape/rotations/south-west.webp"
+  },
+  "sheet": "crag_ape/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "256077e9-feb5-4b94-b248-bb3f6f5d3ef1",
+  "seed": 593704038,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:04:51+00:00",
+  "elapsed_s": 212.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.56,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.56,
+        "bbox": [
+          24,
+          11,
+          199,
+          212
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.66,
+        "bbox": [
+          40,
+          14,
+          189,
+          218
+        ],
+        "fill": 0.606,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.652,
+        "bbox": [
+          70,
+          12,
+          156,
+          217
+        ],
+        "fill": 0.351,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.578,
+        "bbox": [
+          47,
+          10,
+          189,
+          212
+        ],
+        "fill": 0.572,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.562,
+        "bbox": [
+          28,
+          10,
+          194,
+          211
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.573,
+        "bbox": [
+          34,
+          10,
+          178,
+          212
+        ],
+        "fill": 0.58,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.651,
+        "bbox": [
+          71,
+          12,
+          151,
+          217
+        ],
+        "fill": 0.327,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.653,
+        "bbox": [
+          35,
+          14,
+          183,
+          218
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      }
+    }
+  }
+}
