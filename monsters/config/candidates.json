@@ -2106,6 +2106,3131 @@
       "prompt": "Fantasy silverfish seen from above, a tapered body of overlapping metallic silver scales, three long tail filaments, two long antennae, and small dark eyes.",
       "lore": "It lives in the dark behind the skirting and is gone the instant a lamp is lit.",
       "items": []
+    },
+    {
+      "id": "clover_ram",
+      "name": "Cloverram",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Stocky meadow ram with a coat of tight green clover instead of wool, short curled horns of pale wood, black hooves, a single white four-leaf clover on its brow, calm heavy stance.",
+      "lore": "It grazes where the old barrows are and the grass there grows back greener.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "thistle_hen",
+      "name": "Thistlehen",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Round hen made of purple thistle heads, spiky green leaf wings, a tiny black beak, wiry brown legs, a puffed defensive silhouette.",
+      "lore": "Nobody owns her. Every farm thinks she belongs to the next one.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "hay_wolf",
+      "name": "Haywolf",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Lean wolf built from bound dry straw, twine wrapped round its legs and muzzle, hollow dark eye sockets, loose stalks trailing like fur, stalking pose.",
+      "lore": "Made at a harvest to frighten crows. It learned hunger from the crows.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "fence_crawler",
+      "name": "Fencecrawl",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Long low creature made of a broken wooden fence, weathered grey planks for a spine, rusty nail teeth, four post-legs, a lolling head made from a gate latch.",
+      "lore": "The fence was put up to keep something out. It stopped choosing which side.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "dandelion_kit",
+      "name": "Puffkit",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "dog",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Tiny fox-like kit with a body of white dandelion fluff, thin green stem legs, black bead eyes, a yellow flower tail, seeds drifting off its back.",
+      "lore": "Blow on it and it scatters, and a week later there are twelve.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mole_lord",
+      "name": "Molelord",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Fat velvet-black mole standing upright wearing a crown of packed soil and pebbles, huge pink spade claws, tiny eyes, a wormy sceptre.",
+      "lore": "It rules everything under the field and is very tired of the field.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "grass_serpent",
+      "name": "Bladewind",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Long serpent whose scales are overlapping green grass blades, pale yellow belly, a seed-head rattle on the tail, small amber eyes, raised S-curve.",
+      "lore": "You hear it before you see it, and you never see it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "scythe_hare",
+      "name": "Scythehare",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Tall gaunt hare with ears shaped like two rusted scythe blades, grey-brown fur, long bony hind legs, red eyes, hunched ready to bolt.",
+      "lore": "It runs ahead of the mowers every year and one year it turned round.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "meadow_ogre",
+      "name": "Sodfist",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Broad ogre made of stacked turf sods, grass growing from its shoulders and head like hair, dark earth cracks for a mouth, huge flat fists, small blue flowers on its arms.",
+      "lore": "Cut from the common land the year it was fenced, and it wants it back.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "bee_bear",
+      "name": "Combmaw",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Chunky brown bear with a honeycomb exposed across its chest and belly, dripping amber honey, a swarm of yellow dots round its head, sticky paws.",
+      "lore": "The hive moved into it while it slept and neither of them minded.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cricket_knight",
+      "name": "Chirpknight",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Upright green cricket in tiny scraps of leather armour, a grass-blade lance, long folded jumping legs, a helmet made from an acorn cap.",
+      "lore": "It swore an oath to a queen who was a beetle, and keeps it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ragdoll_calf",
+      "name": "Ragcalf",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Young calf stitched from patchwork sacking, button eyes, straw poking from torn seams, wobbly legs, a bell of tin on a rope collar.",
+      "lore": "A child made it for a calf that died. It still waits by the gate.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "seed_pod_walker",
+      "name": "Podwalker",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Tall thin walker made of a dry split seed pod on stilt legs, black seeds visible inside like eyes, brown papery skin, two hooked leaf arms.",
+      "lore": "It walks until it finds good ground, then it splits.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "pasture_wight",
+      "name": "Pasturewight",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Faded translucent shepherd in a long coat, hunched over a crook, green ghost-light face, boots sunk into the grass, sheep-bones circling its feet.",
+      "lore": "He counts a flock that has not been there for a hundred years.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "lark_shade",
+      "name": "Larkshade",
+      "tier": "evil",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Small songbird of pure black shadow with a bright white open beak, no eyes, wings fraying into smoke at the tips, perched upright.",
+      "lore": "It sings at dawn in a voice that is not its own.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "grub_king",
+      "name": "Grubking",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Enormous pale white grub with a segmented body, a crown of golden wheat ears, tiny stubby legs, a wet pink mouth, dragging itself forward.",
+      "lore": "Every root in the valley has a mouthful missing.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "wheat_maiden",
+      "name": "Sheafmaid",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Slender figure woven entirely of golden wheat stalks, a face of empty dark space under a wide straw hat, arms ending in sheaf bundles.",
+      "lore": "Walk into the last sheaf and she is standing in it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "badger_brute",
+      "name": "Sett Brute",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Huge muscled badger on two legs, black and white striped head, a broken cart-wheel on one arm as a shield, thick claws, snarling.",
+      "lore": "It dug the old roads up because it wanted the stones.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ladybird_tank",
+      "name": "Spotshell",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Round red ladybird with seven black spots, six sturdy legs, a domed shell like a shield, tiny black head with white cheeks, heavy waddling pose.",
+      "lore": "Children count its spots. It counts the children.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "hedge_maw",
+      "name": "Hedgemaw",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Long hedge of dense dark green privet that has grown a cavernous mouth of thorny branches, small red berry eyes along its top, root-feet.",
+      "lore": "Every lane in the parish runs past it once.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "tick_swell",
+      "name": "Tickswell",
+      "tier": "mid",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Bloated grey-brown tick the size of a dog, eight thin hooked legs, a tiny head, skin stretched shiny and tight, slow heavy gait.",
+      "lore": "It drank from something that was not a dog.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "wind_hound",
+      "name": "Gustcur",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Lean hound made of swirling pale wind and loose grass, only a dark snout and two eyes solid, body trailing off into streaks behind it.",
+      "lore": "It comes before a storm and leaves with the roof.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "milk_cow_husk",
+      "name": "Husk Cow",
+      "tier": "evil",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Cow reduced to a dry brown hide stretched over a skeleton, empty udder, horns intact, black hollow eyes, still chewing, standing patiently.",
+      "lore": "She is still waiting to be milked, and she will wait.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "clay_piper",
+      "name": "Claypiper",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Little brown clay figure of a piper with a cracked glazed surface, playing a reed flute, painted cheeks, stubby legs, glowing eye-holes.",
+      "lore": "Found in a potter's kiln with the tune already in it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "poppy_lich",
+      "name": "Poppylich",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Gaunt skeletal figure in a tattered black robe with bright red poppies growing out of every joint and its eye sockets, holding a seed-head staff.",
+      "lore": "Where it walks the field forgets it was ever a battlefield, almost.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "grass_golem",
+      "name": "Turfgolem",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Hulking man-shape of rolled turf and packed soil, roots dangling from its underside, a crown of white daisies, moss-green eyes, arms like logs.",
+      "lore": "The meadow stood up. It will lie down again when it is left alone.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "rook_lantern",
+      "name": "Rooklamp",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Black rook carrying a small iron lantern in its beak that lights its face from below, ragged feathers, one glowing orange eye, hopping.",
+      "lore": "It carries a light for someone who is not coming back.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "fallow_stag_shade",
+      "name": "Fallowshade",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "horse",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Pale fallow deer with spotted coat fading into translucence at the legs, antlers of bare white bone, gentle empty eyes, standing still.",
+      "lore": "The last deer of the old forest, still walking the forest's edge.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "harvest_thing",
+      "name": "Harvestman",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Tall scarecrow-like giant with an impossibly long thin body, a sack head with a stitched smile, spindly arms holding two rusted sickles.",
+      "lore": "It comes the night the last field is cut. Nobody cuts the last field.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "earthworm_knot",
+      "name": "Wormknot",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Writhing knot of thick pink earthworms bound into a rough body with two clumps for arms, wet and shining, soil crumbs falling from it.",
+      "lore": "After rain it rises, and after sun it is gone.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "milkweed_moth",
+      "name": "Silkmoth",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Soft grey-white moth with wings patterned like torn silk, furry body, feathered antennae, a faint pale glow, wings half open.",
+      "lore": "It lays its eggs in the linen chest and in nothing else.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "plough_ox",
+      "name": "Ploughox",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Massive black ox still yoked to a broken iron plough that drags behind it, red eyes, cracked hooves, breath steaming, lowered horns.",
+      "lore": "It pulled the first furrow in this land and never let the plough go.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "nettle_witch",
+      "name": "Nettlewitch",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Hunched old woman whose robes and hair are made of stinging nettle leaves, green-black skin, long fingers, a basket of dark leaves on her back.",
+      "lore": "She sells soup. Nobody asks what is in it twice.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "shrew_pack",
+      "name": "Shrewpack",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Cluster of six tiny brown shrews moving as one clump, many black eyes and pink noses pointing in all directions, a single tangled tail.",
+      "lore": "One shrew is harmless. There is never one.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cornflower_wisp",
+      "name": "Bluewisp",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Floating knot of blue cornflower petals around a soft white light, thin stem tendrils hanging down, no face.",
+      "lore": "It leads lost children home, or to somewhere that feels like home.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "hay_golem",
+      "name": "Bale Golem",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Huge square hay bale with thick straw arms and legs, baling twine cut into its surface like veins, a dark gap where a face should be.",
+      "lore": "Stacked too high one summer and it did not want to come down.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "glutton_toad",
+      "name": "Gluttoad",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Enormously fat brown toad with a belly dragging on the ground, warty skin, a mouth wide enough for a sheep, tiny gold eyes.",
+      "lore": "It ate the pond, then the frogs, then the man who came to look.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "feather_snake",
+      "name": "Plumecoil",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Serpent covered in soft brown and white feathers instead of scales, a bird-like head with a hooked beak, a fanned feather tail.",
+      "lore": "Half bird, half snake, and hated by both.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "sheep_dog_ghost",
+      "name": "Ghost Collie",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Translucent blue-white collie, long ghost fur, still herding, mouth open in a silent bark, paws not quite touching the ground.",
+      "lore": "It still brings the sheep in. They are just not sheep any more.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "rustle",
+      "name": "Rustle",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Barely-there creature of shivering grass blades with two dark eyes, no clear body, moves as a patch of grass moving against the wind.",
+      "lore": "The grass moving the wrong way is the only warning.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "goat_priest",
+      "name": "Goatpriest",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Upright grey goat in a ragged priest's cassock, curled horns, rectangular pupils, holding a bell, chewing a page of a book.",
+      "lore": "It preaches from the book it is eating, one page a day.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "orchard_wretch",
+      "name": "Applewretch",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Bent creature made of gnarled apple wood with rotting red apples for a head and shoulders, wasps around it, twig fingers, sweet-sick stains.",
+      "lore": "The orchard was left to rot, and it got up.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "hare_drum",
+      "name": "Drumhare",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "White hare with a small leather drum strapped to its belly, thumping it with its hind foot, wild eyes, ears straight up.",
+      "lore": "It drums the alarm for the warren and sometimes for no reason at all.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "pollen_bull",
+      "name": "Pollenbull",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Bull of solid yellow pollen, every step shedding a cloud, red-orange eyes, horns thick with gold dust, sneeze-cracks along its flanks.",
+      "lore": "A whole spring's bloom in the shape of a bull, and it sneezes.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "crow_scarer",
+      "name": "Crowscarer",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "A crow the size of a man wearing a torn scarecrow coat and hat, perched on its own pole which it carries, straw sticking from its wings.",
+      "lore": "The crows took the scarecrow's job and its coat.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "bog_lantern_fish",
+      "name": "Peatglow",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Small dark fish walking on four fin-legs, a glowing green lure on a stalk over its head, needle teeth, mud on its belly.",
+      "lore": "Walkers follow its light into the bog. It follows them home.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "reed_giant",
+      "name": "Reedgiant",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Very tall thin giant made of bundled reeds, a bulrush head, arms like sagging reed mats, feet lost in the water, swaying.",
+      "lore": "The reeds grew tall enough to remember being a man.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mire_ox",
+      "name": "Mireox",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Black ox sunk to the chest in bog, only head, shoulders and horns above the water, dripping weed, calm white eyes, moving slowly.",
+      "lore": "It sank a hundred years ago and has been walking out ever since.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "leech_mother",
+      "name": "Leechmother",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Bloated black leech with a ring of dozens of tiny leeches attached to her flanks, a round sucker mouth, glistening, rearing up.",
+      "lore": "Every leech in the fen is hers and comes when she calls.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "swamp_lantern",
+      "name": "Bogtaper",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Floating wax candle-figure with a green flame head, dripping tallow arms, no legs, hovering just above the water.",
+      "lore": "A candle lit for the drowned that never went out.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "fen_knight",
+      "name": "Fenknight",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Knight in rusted armour green with algae, helmet full of mud, a snapped lance, reeds growing through the joints, dragging one leg.",
+      "lore": "He rode into the fen to end it. The fen is still here.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "moss_hound",
+      "name": "Mosshound",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Hound covered in thick soft green moss instead of fur, tiny white flowers on its back, black wet nose, mossy ears dripping.",
+      "lore": "The moss took the dog and kept its manners.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "stilt_heron_wight",
+      "name": "Stiltwight",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Skeletal grey heron twice a man's height, long bone legs, ragged feathers, glowing pale eyes, beak open.",
+      "lore": "It fishes for things that are not fish.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "bog_baby",
+      "name": "Bogbaby",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Small chubby figure of dark peat with big round pale eyes, no mouth, stubby arms reaching up, water beading on its head.",
+      "lore": "It looks up at you. It will keep looking up at you.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mud_mask",
+      "name": "Mudmask",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Man-shaped column of wet brown mud wearing a cracked white smiling mask, arms dripping, no feet, gliding through the marsh.",
+      "lore": "It smiles from the mud. The mud does not.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "dragonfly_lord",
+      "name": "Skimlord",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Huge blue-green dragonfly standing upright on four legs, two front legs held like arms, four clear wings, jewel eyes.",
+      "lore": "It rules the reed beds for one summer and demands the summer be long.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "rot_log",
+      "name": "Rotlog",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fallen rotten log with a mouth of splintered bark, orange fungus shelves for eyes, wet black insides, moving on root-stubs.",
+      "lore": "It was a bridge. It fell in. It has not stopped falling.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "marsh_widow",
+      "name": "Marshwidow",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Tall thin woman in a black veil and dress soaked and dripping, hands white and bloated, standing in ankle-deep water, still.",
+      "lore": "She waits for a man who went out on the ice.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "bog_hog",
+      "name": "Boghog",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Bristled black boar caked in dried mud, tusks green with slime, small red eyes, a snorting lowered head.",
+      "lore": "Nothing roots deeper, and nothing smells worse.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "newt_shaman",
+      "name": "Newtshaman",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Orange-bellied newt standing upright, a necklace of tiny bones, a mud-daubed face, holding a reed staff with a frog skull.",
+      "lore": "It reads the weather in frog bones and is usually right.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "midge_cloud",
+      "name": "Midgecloud",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Dense grey cloud of tiny midges shaped roughly like a hunched man, two darker patches for eyes, edges constantly shifting.",
+      "lore": "It is a man in the same way a crowd is a man.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "water_lily_lurker",
+      "name": "Lilylurker",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Broad green lily pad with a pink flower on top, underneath a hanging mass of pale tentacles and one large yellow eye.",
+      "lore": "The prettiest flower on the pond.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "peat_wolf",
+      "name": "Peatwolf",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Wolf made of layered black peat, cracked and crumbling at the edges, red ember eyes, crumbs falling as it walks.",
+      "lore": "Cut from the bank and stacked to dry, and it walked off the stack.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "sunk_church_bell",
+      "name": "Bellwraith",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Huge cracked bronze bell risen from the bog on tangled roots, a hollow dark interior with a swinging bone clapper, moss and rust.",
+      "lore": "It rings for services held under the water.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "crane_fly_hag",
+      "name": "Cranehag",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Impossibly thin old woman with six long thin cranefly legs, dragonfly wings on her back, a small human face, grey rags.",
+      "lore": "She taps on windows in autumn, all six hands at once.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "bog_skull_stack",
+      "name": "Skullstack",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Column of mud-brown animal skulls stacked and fused, a rib cage for arms, walking on two thigh-bone legs.",
+      "lore": "Everything the bog ever kept, stood up in a row.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "slime_carp",
+      "name": "Slimecarp",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fat grey carp walking on stubby fin-legs, coated in clear slime, whiskers, a wide sucking mouth, dull silver scales.",
+      "lore": "The oldest fish in the pond decided the pond was too small.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "fog_calf",
+      "name": "Fogcalf",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Small calf-shape of thick white fog with dark spots where eyes and nose would be, legs vanishing into mist.",
+      "lore": "Follow it into the mist and the mist follows you back.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cattail_witch",
+      "name": "Cattailhag",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Hunched figure whose head is a brown cattail seed head, robes of green reed leaves, long dripping fingers.",
+      "lore": "She sheds seeds in autumn and in spring there are more of her.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mire_crab_king",
+      "name": "Mirecrab",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Massive flat mud-brown crab with a crown of snapped reeds, a mossy shell, two uneven pincers, stalk eyes.",
+      "lore": "It holds the ford, and everyone who crosses pays.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "snail_hermit",
+      "name": "Snailhermit",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Old bearded man wearing a giant snail shell as a house, only head and arms out, a wooden bowl, slime trail.",
+      "lore": "He left the village forty years ago and has gone about three miles.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "eel_knot",
+      "name": "Eelknot",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Ball of black eels tangled together into a rough body with several heads poking out, glistening, moving on trailing eel-legs.",
+      "lore": "The eels in the drain wound themselves together one winter.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "bog_ghost_light",
+      "name": "Fenflame",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Pale blue-green flame with a faint face inside it, hovering, a tail of vapour, drifting sideways.",
+      "lore": "It flickers where someone lost their way.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "swamp_ape",
+      "name": "Fen Ape",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Huge dark-furred ape dripping with green water, weed on its shoulders, a wide flat face, long arms, knuckle-walking.",
+      "lore": "Something large lives where the fen is deepest, and this is it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "moss_tortoise",
+      "name": "Mosshell",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Enormous tortoise whose shell is a small hill of moss and ferns with a birch sapling growing from it, wrinkled grey head.",
+      "lore": "People have lived on its back without knowing.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "reed_pipe_player",
+      "name": "Reedpiper",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Thin green figure of woven reeds with a bird skull head, playing a set of reed pipes, water dripping from its feet.",
+      "lore": "Its tune carries across the fen and the fen follows it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "leech_horse",
+      "name": "Leechhorse",
+      "tier": "evil",
+      "scale": "big",
+      "size": 224,
+      "template_id": "horse",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Horse-shaped mass of black leeches, a suckered mouth where the muzzle should be, no eyes, mane of writhing leeches.",
+      "lore": "It was a horse. Now it is what drank the horse.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "marsh_orb",
+      "name": "Marshorb",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Perfect sphere of swirling brown bog water hovering above the ground, small bubbles inside, a tiny pale fish visible within.",
+      "lore": "It holds a piece of the bog and keeps it tidy.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "stag_beetle_lord",
+      "name": "Pincerlord",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Huge black stag beetle standing on hind legs, enormous antler-mandibles, armoured shell, small red eyes.",
+      "lore": "It fights for the fallen oak and it always wins the oak.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "turf_cutter",
+      "name": "Turfcutter",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Squat man of dark peat carrying a rusted turf spade, a flat wide-brimmed hat of moss, a face of cracked earth.",
+      "lore": "He still cuts turf in a bog that was drained before he was born.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "swamp_lantern_moth",
+      "name": "Bogmoth",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Large brown moth with two glowing green eye-spots on its wings, a furry body, long antennae, wings spread.",
+      "lore": "Its eyes are painted on. Nobody believes it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "fen_sow",
+      "name": "Fensow",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Huge pale sow with a string of tiny piglets made of mud following in a line behind her, small eyes, dripping ears.",
+      "lore": "Her piglets are the mud of the fen and there are always more.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mire_lantern_bearer",
+      "name": "Lampbearer",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Drowned man in a sodden coat holding a lantern with a blue flame high, water pouring endlessly from his sleeves.",
+      "lore": "He still lights the way across for a ferry that sank.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "sedge_lion",
+      "name": "Sedgelion",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "cat",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Lion made of tall sedge grass, a mane of brown seed heads, green eyes, paws of packed mud, crouching.",
+      "lore": "The tall grass hid it until the grass was it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "bog_bones_dog",
+      "name": "Bonecur",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Dog skeleton stained peat-brown, still tied by a rope to a stake it drags, jaw hanging, wagging a bare tail.",
+      "lore": "Tied to its post and faithful long after the rope should have rotted.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "scree_lizard",
+      "name": "Screeback",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Grey lizard with a back covered in loose stone flakes that rattle, a wide flat head, yellow eyes, clinging low.",
+      "lore": "Every loose stone on the slope is a warning it gives.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cairn_walker",
+      "name": "Cairnwalker",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Tall pile of balanced grey stones that has grown two long stone arms, a small top stone for a head, moving slowly.",
+      "lore": "Every traveller who passed added a stone. It noticed.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "granite_hawk",
+      "name": "Granitehawk",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Hawk carved of speckled grey granite, wings spread, chipped beak, hollow eyes, dust falling as it moves.",
+      "lore": "Carved on a gatepost, it came down to hunt when the gate fell.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ram_skull_shade",
+      "name": "Ramshade",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Ghostly ram made only of a bleached skull with curled horns and a body of grey mist, four faint legs.",
+      "lore": "It guards a flock of skulls on the high pasture.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "flint_imp",
+      "name": "Flintimp",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Small angular imp of black flint with sharp edges, a spark in each eye, claws that strike sparks on the rock.",
+      "lore": "Strike it and it strikes back, sparks first.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mountain_hermit",
+      "name": "Cragfather",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Ancient bearded man with skin like grey stone, a robe of lichen, a staff of petrified wood, feet fused to the ground.",
+      "lore": "He climbed the mountain to be alone and became part of it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "slate_serpent",
+      "name": "Slatecoil",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Serpent of overlapping flat slate plates, a wedge head, slit eyes of quartz, grinding as it moves.",
+      "lore": "It sheds its slates on the roofs in the valley.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "boulder_toad",
+      "name": "Boulderoad",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Enormous grey toad indistinguishable from a boulder until its yellow eyes open, moss on its back, a crevice mouth.",
+      "lore": "The track goes round a boulder. The boulder moves.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "quartz_wolf",
+      "name": "Quartzwolf",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Wolf of translucent white quartz with rose veins, sharp crystalline fur, faintly glowing eyes.",
+      "lore": "It runs with the moon and glows when the moon is full.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "rockfall_giant",
+      "name": "Rockfall",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Giant made of a tumble of boulders barely holding together, gaps between stones showing dark, two eyes of glowing ore.",
+      "lore": "The avalanche that never quite finished falling.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "chough_flock",
+      "name": "Choughflock",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Tight cluster of black choughs with red beaks and legs moving as one wheeling mass, many red eyes.",
+      "lore": "They laugh at climbers from the cliff and the cliff laughs with them.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ledge_goat",
+      "name": "Ledgegoat",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Shaggy grey mountain goat with horns grown into a full ring, standing on two legs on a fragment of ledge it carries.",
+      "lore": "It carries its ledge because it trusts no other.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "stone_mask_ghost",
+      "name": "Maskstone",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Grey stone figure with a carved smiling face that is only a mask, cracks behind it show empty dark, arms of rubble.",
+      "lore": "The mask smiles. Nothing behind it smiles back.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "echo_thing",
+      "name": "Echo",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Faint grey doubled silhouette of a human shape, two overlapping outlines slightly out of step, no face.",
+      "lore": "It says your name after you do, a little too late.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "crag_spider",
+      "name": "Cragspider",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Grey spider with a body like a rounded stone and legs of angular rock, pale eyes, spinning a web of grit.",
+      "lore": "Its web is spun from the dust of the hill and catches birds.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mountain_lion_shade",
+      "name": "Cragshade",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "cat",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Grey mountain lion with a coat like stone dust, eyes of pale light, moving as if half made of the rock behind it.",
+      "lore": "You only see it when it wants you to.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ore_beetle",
+      "name": "Orebeetle",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Heavy beetle whose shell is raw iron ore with copper-green streaks, six iron legs, glowing orange under the shell.",
+      "lore": "Miners follow it to the seam. The seam follows it too.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "gargoyle_pup",
+      "name": "Gargpup",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "dog",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Small stone gargoyle puppy with bat wings, a snub snout, stone tongue out, chipped ear, sitting.",
+      "lore": "It fell off a church and is still looking for the roof.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cliff_widow",
+      "name": "Cliffwidow",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Grey-cloaked woman standing on the edge of a rock she carries, hair of loose grey scree, face turned away.",
+      "lore": "She stands at the edge and waits for the sea to give something back.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "pillar_saint",
+      "name": "Pillarsaint",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Eroded statue of a robed saint on a short pillar, features worn smooth, one hand raised, moving with the pillar as its legs.",
+      "lore": "Nobody remembers his name. He remembers all of yours.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "stone_marten",
+      "name": "Stonemarten",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "cat",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Sleek grey marten with a coat of fine gravel, a pale throat patch of chalk, bright black eyes, arched back.",
+      "lore": "Quick as a dropped pebble and harder to catch.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "rubble_hound",
+      "name": "Rubblehound",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Hound of loose grey rubble held together by red clay, gaps in its body, a jaw of jagged stones.",
+      "lore": "The ruined wall's watchdog, made of the wall.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "eagle_bone_wraith",
+      "name": "Bonewing",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Huge skeletal eagle of grey bone with tattered grey feather remnants, glowing sockets, wings spread wide.",
+      "lore": "The eagle died on the peak and never came down.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mountain_yak_ghost",
+      "name": "Yakshade",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Ghostly white-grey yak with an enormous shaggy coat trailing to nothing, long horns, calm faint eyes.",
+      "lore": "It carried loads over the pass for a hundred years and still does.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "gravel_slime",
+      "name": "Gritslime",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Grey translucent slime full of embedded gravel and pebbles, a heavy sagging body, two dark pebble eyes.",
+      "lore": "It swallows the road a little at a time.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "crag_ape",
+      "name": "Crag Ape",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Grey stone-skinned ape with slabs of rock on its shoulders and back, long arms, a heavy jaw, knuckles of granite.",
+      "lore": "It throws the mountain at you, one piece at a time.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "shale_bat",
+      "name": "Shalebat",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Bat with wings of thin grey shale that crack at the edges, a flat stone face, hanging from a shard of rock it carries.",
+      "lore": "It sleeps flat against the rock and nobody finds it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "stone_circle_spirit",
+      "name": "Ringwarden",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Tall grey figure of stacked standing stones in a ring shape with a hollow centre, a faint blue light inside, no face.",
+      "lore": "The ring was built to hold it. It carries the ring now.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "rime_hare",
+      "name": "Rimehare",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "White hare with a coat of hoarfrost crystals, blue-white ears, pink eyes, breath frozen around its nose.",
+      "lore": "It is out in the first frost and gone by the thaw.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "snow_crone",
+      "name": "Snowcrone",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Hunched old woman of packed snow with a black twig broom, coal eyes, a shawl of ice, leaving no footprints.",
+      "lore": "She sweeps the snow into your tracks so nobody follows you home.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "frost_stag",
+      "name": "Froststag",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "horse",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "White stag with antlers of blue ice, frost in its coat, pale blue eyes, snow falling from its back as it moves.",
+      "lore": "When it sheds its antlers the lake freezes over.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ice_shard_wolf",
+      "name": "Shardwolf",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Wolf of jagged blue ice shards, fur made of icicles, a frozen snarl, white eyes.",
+      "lore": "The pack that froze on the ridge still hunts together.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "drift_walker",
+      "name": "Driftwalk",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Tall figure of blown snow with no clear face, a long trailing white cloak of drift, arms of wind-packed snow.",
+      "lore": "The blizzard has a shape if you stand very still.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "snow_owl_wight",
+      "name": "Owlwight",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "White owl with hollow dark eyes and frost on its feathers, wings spread, a faint blue glow inside its chest.",
+      "lore": "It watches over the frozen and it has good eyes.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "frozen_fisherman",
+      "name": "Icefisher",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Man frozen solid in a sitting position with a fishing rod, blue-white skin, still moving stiffly, ice cracking with each step.",
+      "lore": "He waited too long for a bite. He is still waiting.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ice_worm",
+      "name": "Iceworm",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Long pale worm of translucent ice, segmented, a ring of frost teeth, blue veins visible inside.",
+      "lore": "It tunnels through the glacier and the glacier lets it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "snow_bear_cub",
+      "name": "Snowcub",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Round white bear cub with frost tips on its fur, black nose, blue eyes, sitting up with paws raised.",
+      "lore": "Its mother is near. Its mother is always near.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "rime_knight",
+      "name": "Rimeknight",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Knight in armour completely sheathed in ice, a frozen visor, a sword of ice, snow piling on its shoulders.",
+      "lore": "He stood his watch on the pass through one winter too many.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "sleigh_horse_ghost",
+      "name": "Sleighshade",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "horse",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Ghost of a grey draught horse still in harness, dragging a broken sleigh runner, breath of frost, eyes white.",
+      "lore": "The mail sleigh went through the ice. The horse still brings the letters.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "avalanche_hare_swarm",
+      "name": "Whitecrowd",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Dense swarm of white hares tumbling together as one rolling white mass, many pink eyes and black nose-tips.",
+      "lore": "When the snow slides, the hares come down with it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "hoar_spider",
+      "name": "Hoarspider",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "White spider with legs of frost crystals, a body like a snowball, black eyes, a web of ice threads.",
+      "lore": "Its web is the frost on the window.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "frost_lantern_child",
+      "name": "Frostchild",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "mannequin",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Small child-shaped figure of snow holding a lantern with a cold blue flame, a knitted red scarf the only colour.",
+      "lore": "It lights the way to the farm that burned.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "snow_troll",
+      "name": "Snowtroll",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Hulking troll of grey-white packed snow with rocks embedded like warts, icicle teeth, tiny dark eyes, a huge belly.",
+      "lore": "Built by children, and it did not want to melt.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ice_swan",
+      "name": "Iceswan",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Swan of clear blue ice, neck curved, wings raised, a black beak, light refracting through its body.",
+      "lore": "It sings once each winter, when the lake freezes.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "frost_bitten_dog",
+      "name": "Bittendog",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Thin grey dog with frostbite-black ears and paws, ribs showing, frost on its muzzle, loyal tired eyes.",
+      "lore": "It waits outside the door for a master who went into the snow.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "snow_moth",
+      "name": "Snowmoth",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "White moth with wings patterned like snowflakes, a furry white body, pale blue antennae, drifting.",
+      "lore": "It flies only when it is snowing and is mistaken for the snow.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "glacier_ox",
+      "name": "Glacierox",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Ox of solid blue-white glacier ice with rocks trapped inside, cracks glowing pale blue, horns of clear ice.",
+      "lore": "It walks as fast as the glacier, and it is not in a hurry.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "rime_reaper",
+      "name": "Rimereaper",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Tall gaunt figure in a frost-white robe holding a scythe of ice, a face of blue shadow, snow falling only around it.",
+      "lore": "It harvests the ones the cold was always going to take.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "white_fox_mask",
+      "name": "Foxmask",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "White fox standing upright wearing a smiling white mask over an empty face, a red ribbon, elegant stillness.",
+      "lore": "It bows politely before it bites.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "snow_bunting_swarm",
+      "name": "Buntingcloud",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Whirling cloud of small white and brown snow buntings, a loose ball shape with many black eyes.",
+      "lore": "A flurry that flies against the wind.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ash_wolf",
+      "name": "Ashwolf",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Wolf of grey ash with cracks of orange ember showing through, smoke rising from its back, red eyes.",
+      "lore": "It runs through the burnt forest and the forest does not burn again.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "lava_crab",
+      "name": "Lavacrab",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Black crab with a shell of cooled lava crust, glowing orange in the cracks, red pincers, smoke from its joints.",
+      "lore": "The shore of the lava field is its beach.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cinder_hare",
+      "name": "Cinderhare",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Small hare of black cinder with ember-orange ears and eyes, leaving tiny sparks as it hops.",
+      "lore": "It hops over the hot rock as if it were snow.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "magma_serpent",
+      "name": "Magmacoil",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Huge serpent of black crust over bright orange molten rock, a head of jagged basalt, glowing throat.",
+      "lore": "It swims through the lava the way an eel swims through mud.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "soot_owl",
+      "name": "Sootowl",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Owl of black soot with two burning orange eyes, feathers that crumble into ash at the edges, silent.",
+      "lore": "It nests in chimneys and watches the fire.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ember_ram",
+      "name": "Emberram",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Black ram with horns of glowing orange-red rock, a coat of charred wool, smoke curling from its nostrils.",
+      "lore": "It butts the rock until the rock catches fire.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "slag_hound",
+      "name": "Slaghound",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Hound of grey slag with a glowing red seam along its spine, a jaw of black glass, dripping molten drool.",
+      "lore": "The smithy's dog, left too long by the forge.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ash_giant",
+      "name": "Ashgiant",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Giant of compacted grey ash that sheds clouds as it moves, orange fissures across its chest, a featureless face with two ember eyes.",
+      "lore": "The ash of a whole village, still standing where the village stood.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "fire_ant_lord",
+      "name": "Antlord",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Huge red-black ant standing on hind legs, glowing orange abdomen, mandibles like tongs, crown of cooled lava.",
+      "lore": "Its colony builds on the hot rock because no one else will.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "obsidian_hawk",
+      "name": "Blackhawk",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Hawk of black obsidian glass, sharp-edged wings that catch orange light, red eyes, perched with wings half open.",
+      "lore": "Its feathers cut the wind, and the hand that catches it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "lava_toad_child",
+      "name": "Cinderpole",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Tadpole-like creature of black rock with a glowing orange belly and a long tail of smoke, two stubby legs.",
+      "lore": "It will be a magma toad one day, if it lives that long.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "brimstone_goat",
+      "name": "Brimgoat",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Yellow-grey goat crusted with sulphur, horns dripping yellow crystals, yellow eyes, a smell you can see as haze.",
+      "lore": "The smell of it arrives a day before it does.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "coal_golem",
+      "name": "Coalgolem",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Blocky golem of black coal lumps with a furnace glowing orange in its chest, smoke from its shoulders, small orange eyes.",
+      "lore": "Dug out of the mine and lit, and it will not go back down.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ember_bat_swarm",
+      "name": "Sparkswarm",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Loose swarm of tiny bats made of glowing sparks, forming a rough flying shape, trailing embers.",
+      "lore": "Sparks that fly upward and do not go out.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "vent_lizard",
+      "name": "Ventlizard",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Lizard of red-black scales with vents along its back that puff steam, a frilled neck of orange membrane.",
+      "lore": "It basks on the vents and breathes the steam out again.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "lava_hermit_crab",
+      "name": "Slaghermit",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Hermit crab of orange-red flesh living in a shell of hollow black pumice, glowing eyes on stalks.",
+      "lore": "It found an empty stone and moved in.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "smoke_wraith",
+      "name": "Smokewraith",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Tall figure of thick grey smoke with two orange ember eyes, arms trailing into wisps, no legs.",
+      "lore": "It rises from every fire that was put out too late.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "forge_hound",
+      "name": "Forgehound",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Iron-grey dog of riveted metal plates heated cherry-red at the joints, a coal-fire mouth, clanking gait.",
+      "lore": "It guards a forge that has been cold for a century.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "driftwood_dog",
+      "name": "Driftdog",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Dog built of bleached grey driftwood pieces, barnacles for eyes, a rope tail, sand falling from its joints.",
+      "lore": "It fetches whatever the sea throws up and brings it to your door.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "shell_maiden",
+      "name": "Shellmaid",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Slender figure with a body of overlapping pale shells, a face hidden inside a large conch, pearl eyes.",
+      "lore": "She sings in the conch and every sailor hears his mother.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "gull_wight",
+      "name": "Gullwight",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Grey gull the size of a man with hollow dark eyes, tattered feathers, a beak stained black, standing on one leg.",
+      "lore": "It steals the eyes of anything the tide leaves.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "salt_lion",
+      "name": "Saltlion",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "cat",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Lion crusted in white salt crystals, a mane of dried salt, cracked skin, pale eyes, moving stiffly.",
+      "lore": "It came out of the salt pans and never got the salt off.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "tide_pool_thing",
+      "name": "Poolthing",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Small creature made of a tide pool's contents: anemones, a starfish arm, a crab claw, a snail eye, moving as one clump.",
+      "lore": "Everything in the pool agreed to be one thing for a while.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "kelp_hound",
+      "name": "Kelphound",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Dog of tangled brown kelp, bladders along its back, dripping, a wide dark mouth of weed.",
+      "lore": "After a storm it is on the beach, and so are the footprints.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "net_wraith",
+      "name": "Netwraith",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Ghostly figure tangled in old fishing net, rotted rope trailing, fish bones caught in the mesh, faint blue glow.",
+      "lore": "Caught in the net he was mending. He is still mending it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "sand_dollar_golem",
+      "name": "Dollargolem",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Bulky golem of packed wet sand studded with sand dollars, a shell face, seawater seeping from its joints.",
+      "lore": "The beach stood up and brought its money.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "crab_priest",
+      "name": "Crabpriest",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Upright red crab in a robe of woven sea grass, holding a staff with a lantern of a glowing jellyfish, small black eyes.",
+      "lore": "It preaches the tide, and the tide listens.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "beach_ghost_horse",
+      "name": "Surfhorse",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "horse",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "White horse made of sea foam and spray, mane of breaking waves, galloping, dissolving and reforming at the legs.",
+      "lore": "The waves come in as horses on stormy nights. One stays.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "barnacle_bear",
+      "name": "Barnabear",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Bear encrusted with white barnacles over dark wet fur, kelp in its claws, a lolling tongue, dripping.",
+      "lore": "It swam out to the wreck and came back covered in it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "wreck_rat",
+      "name": "Wreckrat",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Fat grey rat wearing a fragment of ship's timber as a shell, a rusted nail as a sword, sea water in its whiskers.",
+      "lore": "The last one off the ship, and it took the ship with it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "starfish_walker",
+      "name": "Starwalker",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Five-armed orange starfish standing upright on two arms, the others held like arms, a single central dark eye.",
+      "lore": "It walked out of the sea on two of its arms and kept the other three.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "drowned_bell_ringer",
+      "name": "Bellringer",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Drowned man in a monk's habit dragging a small bronze bell on a chain, water pouring from his hood.",
+      "lore": "He rings for the ships that did not come home.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "shore_pony",
+      "name": "Shorepony",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "horse",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Shaggy grey pony with a mane of dripping kelp and hooves of black stone, salt on its coat, sad eyes.",
+      "lore": "It came ashore from a wreck and nobody claimed it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "urchin_king",
+      "name": "Spineking",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Enormous black sea urchin on short spiky legs, purple spines, a glowing orange mouth underneath, a crown of shells.",
+      "lore": "Every urchin on the reef bows to it, painfully.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "oyster_maw",
+      "name": "Oystermaw",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Giant grey oyster shell open on a pink interior full of teeth, a pearl eye, moving on a thick foot of flesh.",
+      "lore": "Its pearl is the size of a man's head, and it is not for sale.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "sea_glass_sprite",
+      "name": "Glassprite",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Tiny figure of frosted green and blue sea glass, sunlight glowing through it, no face, hovering.",
+      "lore": "Every broken bottle the sea polished became a little of it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mudflat_hag",
+      "name": "Flathag",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Flat wide old woman of grey mudflat clay, worm holes over her body, a cockle shell for each eye, dripping.",
+      "lore": "The tide goes out and she is lying there, waiting.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cormorant_shade",
+      "name": "Cormshade",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Black cormorant with wings spread to dry, but made of shadow, a white hooked beak, eyes like wet stones.",
+      "lore": "It dries its wings on the rock where the lighthouse keeper fell.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "kelp_kraken_child",
+      "name": "Kelpling",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Small octopus of brown kelp fronds with bladder eyes, walking on eight weedy arms, a bulb head.",
+      "lore": "The kraken sends its children ashore to learn the land.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "shipwreck_golem",
+      "name": "Wreckgolem",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Golem of broken ship timbers, a figurehead's face for a head, rope tendons, an anchor for one arm.",
+      "lore": "The ship broke on the rocks and the rocks could not keep it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cave_toad_king",
+      "name": "Cavetoad",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Pale white cave toad, blind, milky eyes, translucent skin showing organs, a crown of stalactite spikes.",
+      "lore": "It has never seen the sun and rules everything that has not.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "crystal_bat",
+      "name": "Gemwing",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Bat with wings of thin purple crystal, a body of dark stone, glowing violet eyes, hanging by crystal claws.",
+      "lore": "Its wings ring like a glass when it flies.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "blind_mole_king",
+      "name": "Blindking",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Huge pale mole with no eyes and enormous pink digging claws, a crown of pale crystals, whiskers twitching.",
+      "lore": "It rules by touch, and it touches everything.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "drip_ghost",
+      "name": "Dripghost",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Faint figure of constant water drips, a shape held only by falling water, glowing faintly blue.",
+      "lore": "The cave has been dripping for a thousand years into the shape of a man.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cave_lion_bones",
+      "name": "Cavelion",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "cat",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Skeleton of a great cave lion, bones yellowed, fangs intact, a faint red glow inside the ribcage, prowling.",
+      "lore": "The last of the great lions, still hunting in the dark.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "glow_worm_mass",
+      "name": "Wormglow",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Hanging mass of glowing blue-green worm threads gathered into a rough body shape, no face, drifting.",
+      "lore": "Look up in the cave and the stars are looking down.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "stalactite_crawler",
+      "name": "Dripcrawl",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Centipede-like creature of stalactite segments hanging from and crawling along the ceiling and rock.",
+      "lore": "The cave ceiling is moving, slowly, and it is hungry.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cave_hermit_crab",
+      "name": "Rockhermit",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Pale hermit crab in a shell of a hollowed geode showing purple crystals inside, white legs, black eyes.",
+      "lore": "It lives in a geode and will not share the view.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "deep_salamander",
+      "name": "Deepnewt",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Pink blind cave salamander walking upright, feathery red external gills, tiny legs, translucent.",
+      "lore": "It came up from the deep water to see what light is.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "echo_bat_swarm",
+      "name": "Echocloud",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Swarm of dark bats forming a rough spiral shape, pale sonar ripples drawn around them, many tiny eyes.",
+      "lore": "They see with sound and they have heard you.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "crystal_hound",
+      "name": "Gemhound",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Dog of dark rock with purple crystal spines along its back, crystal fangs, glowing violet eyes.",
+      "lore": "It guards the crystal seam for a miner long gone.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cave_painter",
+      "name": "Ochrehand",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Faint figure of red ochre and charcoal stepped out of a cave wall, flat like a painting, one hand raised.",
+      "lore": "The oldest painting in the cave stepped off the wall.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "hearth_hound",
+      "name": "Hearthhound",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Dog of iron and glowing coals curled by an invisible fire, ash-grey fur, orange embers in its chest, warm eyes.",
+      "lore": "It keeps the fire warm for a family that moved away.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "chair_spider",
+      "name": "Chairspider",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Old wooden dining chair that has grown six extra spindle legs and a cushioned head with two button eyes.",
+      "lore": "Nobody sits in the chair at the end of the table.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "kettle_wisp",
+      "name": "Kettlewisp",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Small black iron kettle floating on a cloud of its own steam, a whistling spout mouth, two steam arms.",
+      "lore": "It whistles when someone is coming.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ragman",
+      "name": "Ragman",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Tall figure of layered rags in every faded colour, a hood with no face inside, dragging a sack of cloth.",
+      "lore": "He takes old clothes, and the people still in them.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "mirror_shade",
+      "name": "Mirrorshade",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Figure of silvered glass showing a reversed reflection of the room, cracks across its chest, no true face.",
+      "lore": "It steps out of the glass when the room is empty.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "doll_watcher",
+      "name": "Dollwatch",
+      "tier": "evil",
+      "scale": "small",
+      "size": 40,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Porcelain doll with cracked cheeks, one glass eye missing, a faded blue dress, standing perfectly still.",
+      "lore": "It is never where you left it.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "broom_wight",
+      "name": "Broomwight",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Old birch broom with a face in its handle and bristles for a skirt, sweeping constantly, dust cloud around it.",
+      "lore": "It sweeps the house every night for a mistress who died.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "ledger_wraith",
+      "name": "Ledgerwraith",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Grey clerk-figure made of pages of a ledger, ink for eyes, a quill for a finger, columns of numbers on its skin.",
+      "lore": "It counts what everyone owes, down to the last breath.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "cradle_thing",
+      "name": "Cradlething",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Empty wooden cradle rocking on its own that has grown thin wooden arms, a small shadow curled inside.",
+      "lore": "It rocks itself to sleep, and something in it wakes.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "clock_hound",
+      "name": "Clockhound",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "dog",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Dog with a body of a brass mantel clock, a pendulum tail, cog ears, hands for a face spinning fast.",
+      "lore": "It chases the hour round the house.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "loom_widow",
+      "name": "Loomwidow",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Tall old woman fused with a wooden loom, threads running from her fingers, a half-woven shroud on the frame.",
+      "lore": "She weaves the shroud for whoever comes next.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "chimney_sweep_shade",
+      "name": "Sootsweep",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Soot-black boy with brushes for hands and a top hat, white eyes, leaving black hand prints, silent.",
+      "lore": "He went up the chimney and the soot kept him.",
+      "items": [],
+      "batch": "v3"
+    },
+    {
+      "id": "supper_guest",
+      "name": "Supperguest",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Well-dressed figure in an old dinner coat with a placid smiling mask, hands folded, a napkin, waiting to be seated.",
+      "lore": "He has been waiting to be seated for a very long time, and he is very patient.",
+      "items": [],
+      "batch": "v3"
     }
   ],
   "retired": [
