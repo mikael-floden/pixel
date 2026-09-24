@@ -1,0 +1,146 @@
+{
+  "id": "plough_ox",
+  "name": "Ploughox",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It pulled the first furrow in this land and never let the plough go.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Massive black ox still yoked to a broken iron plough that drags behind it, red eyes, cracked hooves, breath steaming, lowered horns.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "plough_ox/rotations/south.webp",
+    "south-east": "plough_ox/rotations/south-east.webp",
+    "east": "plough_ox/rotations/east.webp",
+    "north-east": "plough_ox/rotations/north-east.webp",
+    "north": "plough_ox/rotations/north.webp",
+    "north-west": "plough_ox/rotations/north-west.webp",
+    "west": "plough_ox/rotations/west.webp",
+    "south-west": "plough_ox/rotations/south-west.webp"
+  },
+  "sheet": "plough_ox/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5925f965-e7ec-42c9-80f4-b7f68f16b43a",
+  "seed": 881352162,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:54+00:00",
+  "elapsed_s": 1.3,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.577,
+    "reasons": [
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.646,
+        "bbox": [
+          20,
+          10,
+          173,
+          204
+        ],
+        "fill": 0.592,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.632,
+        "bbox": [
+          21,
+          29,
+          203,
+          208
+        ],
+        "fill": 0.649,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.609,
+        "bbox": [
+          0,
+          26,
+          217,
+          196
+        ],
+        "fill": 0.735,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.605,
+        "bbox": [
+          0,
+          22,
+          212,
+          206
+        ],
+        "fill": 0.777,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.619,
+        "bbox": [
+          32,
+          23,
+          163,
+          206
+        ],
+        "fill": 0.478,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.623,
+        "bbox": [
+          12,
+          22,
+          200,
+          203
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.639,
+        "bbox": [
+          3,
+          24,
+          220,
+          200
+        ],
+        "fill": 0.761,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.577,
+        "bbox": [
+          9,
+          12,
+          215,
+          205
+        ],
+        "fill": 0.792,
+        "touches_edge": false
+      }
+    }
+  }
+}

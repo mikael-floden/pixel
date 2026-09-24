@@ -1,0 +1,143 @@
+{
+  "id": "grass_golem",
+  "name": "Turfgolem",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The meadow stood up. It will lie down again when it is left alone.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Hulking man-shape of rolled turf and packed soil, roots dangling from its underside, a crown of white daisies, moss-green eyes, arms like logs.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "grass_golem/rotations/south.webp",
+    "south-east": "grass_golem/rotations/south-east.webp",
+    "east": "grass_golem/rotations/east.webp",
+    "north-east": "grass_golem/rotations/north-east.webp",
+    "north": "grass_golem/rotations/north.webp",
+    "north-west": "grass_golem/rotations/north-west.webp",
+    "west": "grass_golem/rotations/west.webp",
+    "south-west": "grass_golem/rotations/south-west.webp"
+  },
+  "sheet": "grass_golem/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2a4b56eb-2ec9-4ccb-9111-affac9b237af",
+  "seed": 1201537576,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:50+00:00",
+  "elapsed_s": 1.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.601,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.601,
+        "bbox": [
+          36,
+          6,
+          186,
+          217
+        ],
+        "fill": 0.631,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.656,
+        "bbox": [
+          45,
+          7,
+          175,
+          221
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.648,
+        "bbox": [
+          68,
+          6,
+          146,
+          220
+        ],
+        "fill": 0.333,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.613,
+        "bbox": [
+          55,
+          7,
+          169,
+          215
+        ],
+        "fill": 0.473,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.606,
+        "bbox": [
+          41,
+          5,
+          183,
+          215
+        ],
+        "fill": 0.594,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.606,
+        "bbox": [
+          53,
+          7,
+          167,
+          215
+        ],
+        "fill": 0.473,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.662,
+        "bbox": [
+          74,
+          6,
+          152,
+          220
+        ],
+        "fill": 0.333,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.651,
+        "bbox": [
+          46,
+          6,
+          178,
+          221
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      }
+    }
+  }
+}

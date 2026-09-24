@@ -1,0 +1,143 @@
+{
+  "id": "cricket_knight",
+  "name": "Chirpknight",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It swore an oath to a queen who was a beetle, and keeps it.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Upright green cricket in tiny scraps of leather armour, a grass-blade lance, long folded jumping legs, a helmet made from an acorn cap.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cricket_knight/rotations/south.webp",
+    "south-east": "cricket_knight/rotations/south-east.webp",
+    "east": "cricket_knight/rotations/east.webp",
+    "north-east": "cricket_knight/rotations/north-east.webp",
+    "north": "cricket_knight/rotations/north.webp",
+    "north-west": "cricket_knight/rotations/north-west.webp",
+    "west": "cricket_knight/rotations/west.webp",
+    "south-west": "cricket_knight/rotations/south-west.webp"
+  },
+  "sheet": "cricket_knight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b3d62d46-70bc-4cb4-ad93-b59272fb5d52",
+  "seed": 1985560333,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:25+00:00",
+  "elapsed_s": 1.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.764,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.828,
+        "bbox": [
+          1,
+          1,
+          39,
+          39
+        ],
+        "fill": 0.902,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.823,
+        "bbox": [
+          5,
+          2,
+          37,
+          39
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.794,
+        "bbox": [
+          4,
+          2,
+          33,
+          39
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.815,
+        "bbox": [
+          2,
+          1,
+          37,
+          39
+        ],
+        "fill": 0.831,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.764,
+        "bbox": [
+          2,
+          1,
+          39,
+          39
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.826,
+        "bbox": [
+          4,
+          1,
+          36,
+          39
+        ],
+        "fill": 0.76,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.79,
+        "bbox": [
+          6,
+          1,
+          36,
+          39
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.813,
+        "bbox": [
+          5,
+          1,
+          37,
+          39
+        ],
+        "fill": 0.76,
+        "touches_edge": false
+      }
+    }
+  }
+}

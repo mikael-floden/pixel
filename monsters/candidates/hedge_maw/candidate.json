@@ -1,0 +1,143 @@
+{
+  "id": "hedge_maw",
+  "name": "Hedgemaw",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Every lane in the parish runs past it once.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Long hedge of dense dark green privet that has grown a cavernous mouth of thorny branches, small red berry eyes along its top, root-feet.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hedge_maw/rotations/south.webp",
+    "south-east": "hedge_maw/rotations/south-east.webp",
+    "east": "hedge_maw/rotations/east.webp",
+    "north-east": "hedge_maw/rotations/north-east.webp",
+    "north": "hedge_maw/rotations/north.webp",
+    "north-west": "hedge_maw/rotations/north-west.webp",
+    "west": "hedge_maw/rotations/west.webp",
+    "south-west": "hedge_maw/rotations/south-west.webp"
+  },
+  "sheet": "hedge_maw/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "932a6149-3aae-43f3-997c-39528029820d",
+  "seed": 1040710997,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:41+00:00",
+  "elapsed_s": 2.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.621,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.621,
+        "bbox": [
+          43,
+          7,
+          180,
+          215
+        ],
+        "fill": 0.568,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.676,
+        "bbox": [
+          48,
+          4,
+          162,
+          218
+        ],
+        "fill": 0.486,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.678,
+        "bbox": [
+          70,
+          4,
+          154,
+          221
+        ],
+        "fill": 0.363,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.634,
+        "bbox": [
+          60,
+          2,
+          158,
+          214
+        ],
+        "fill": 0.414,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.647,
+        "bbox": [
+          44,
+          5,
+          178,
+          213
+        ],
+        "fill": 0.555,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.645,
+        "bbox": [
+          65,
+          2,
+          164,
+          214
+        ],
+        "fill": 0.418,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.676,
+        "bbox": [
+          69,
+          4,
+          150,
+          221
+        ],
+        "fill": 0.35,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.669,
+        "bbox": [
+          62,
+          4,
+          175,
+          218
+        ],
+        "fill": 0.482,
+        "touches_edge": false
+      }
+    }
+  }
+}

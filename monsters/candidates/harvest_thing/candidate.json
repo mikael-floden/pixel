@@ -1,0 +1,141 @@
+{
+  "id": "harvest_thing",
+  "name": "Harvestman",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It comes the night the last field is cut. Nobody cuts the last field.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Tall scarecrow-like giant with an impossibly long thin body, a sack head with a stitched smile, spindly arms holding two rusted sickles.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "harvest_thing/rotations/south.webp",
+    "south-east": "harvest_thing/rotations/south-east.webp",
+    "east": "harvest_thing/rotations/east.webp",
+    "north-east": "harvest_thing/rotations/north-east.webp",
+    "north": "harvest_thing/rotations/north.webp",
+    "north-west": "harvest_thing/rotations/north-west.webp",
+    "west": "harvest_thing/rotations/west.webp",
+    "south-west": "harvest_thing/rotations/south-west.webp"
+  },
+  "sheet": "harvest_thing/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "836dfdc8-3d75-4bdf-9645-8748b6016cfb",
+  "seed": 2001267816,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:30:35+00:00",
+  "elapsed_s": 772.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.6,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.6,
+        "bbox": [
+          26,
+          8,
+          198,
+          216
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.675,
+        "bbox": [
+          62,
+          8,
+          180,
+          219
+        ],
+        "fill": 0.496,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.653,
+        "bbox": [
+          72,
+          11,
+          143,
+          218
+        ],
+        "fill": 0.293,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.63,
+        "bbox": [
+          60,
+          8,
+          190,
+          215
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.643,
+        "bbox": [
+          21,
+          8,
+          199,
+          216
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.635,
+        "bbox": [
+          36,
+          8,
+          156,
+          215
+        ],
+        "fill": 0.495,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.649,
+        "bbox": [
+          76,
+          11,
+          148,
+          218
+        ],
+        "fill": 0.297,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.673,
+        "bbox": [
+          38,
+          10,
+          166,
+          219
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      }
+    }
+  }
+}

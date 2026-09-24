@@ -1,0 +1,143 @@
+{
+  "id": "poppy_lich",
+  "name": "Poppylich",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Where it walks the field forgets it was ever a battlefield, almost.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Gaunt skeletal figure in a tattered black robe with bright red poppies growing out of every joint and its eye sockets, holding a seed-head staff.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "poppy_lich/rotations/south.webp",
+    "south-east": "poppy_lich/rotations/south-east.webp",
+    "east": "poppy_lich/rotations/east.webp",
+    "north-east": "poppy_lich/rotations/north-east.webp",
+    "north": "poppy_lich/rotations/north.webp",
+    "north-west": "poppy_lich/rotations/north-west.webp",
+    "west": "poppy_lich/rotations/west.webp",
+    "south-west": "poppy_lich/rotations/south-west.webp"
+  },
+  "sheet": "poppy_lich/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7157047d-6006-4fc3-bb16-093a3913209d",
+  "seed": 1971429006,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:42+00:00",
+  "elapsed_s": 1.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.71,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.768,
+        "bbox": [
+          10,
+          3,
+          75,
+          85
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.788,
+        "bbox": [
+          21,
+          4,
+          71,
+          86
+        ],
+        "fill": 0.529,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.774,
+        "bbox": [
+          20,
+          4,
+          58,
+          86
+        ],
+        "fill": 0.402,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.719,
+        "bbox": [
+          16,
+          4,
+          71,
+          86
+        ],
+        "fill": 0.582,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.711,
+        "bbox": [
+          14,
+          3,
+          78,
+          85
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.71,
+        "bbox": [
+          19,
+          2,
+          69,
+          86
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.772,
+        "bbox": [
+          31,
+          2,
+          66,
+          86
+        ],
+        "fill": 0.38,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.798,
+        "bbox": [
+          17,
+          2,
+          71,
+          86
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      }
+    }
+  }
+}

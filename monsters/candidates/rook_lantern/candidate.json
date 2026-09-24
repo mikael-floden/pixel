@@ -1,0 +1,143 @@
+{
+  "id": "rook_lantern",
+  "name": "Rooklamp",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It carries a light for someone who is not coming back.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Black rook carrying a small iron lantern in its beak that lights its face from below, ragged feathers, one glowing orange eye, hopping.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rook_lantern/rotations/south.webp",
+    "south-east": "rook_lantern/rotations/south-east.webp",
+    "east": "rook_lantern/rotations/east.webp",
+    "north-east": "rook_lantern/rotations/north-east.webp",
+    "north": "rook_lantern/rotations/north.webp",
+    "north-west": "rook_lantern/rotations/north-west.webp",
+    "west": "rook_lantern/rotations/west.webp",
+    "south-west": "rook_lantern/rotations/south-west.webp"
+  },
+  "sheet": "rook_lantern/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "143d731c-ebd7-41b8-a045-74e2cbf1172d",
+  "seed": 1683331416,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:52+00:00",
+  "elapsed_s": 1.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.66,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.768,
+        "bbox": [
+          3,
+          4,
+          37,
+          37
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.781,
+        "bbox": [
+          4,
+          3,
+          33,
+          37
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.757,
+        "bbox": [
+          7,
+          3,
+          32,
+          37
+        ],
+        "fill": 0.531,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.705,
+        "bbox": [
+          6,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.662,
+        "bbox": [
+          5,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.66,
+        "bbox": [
+          7,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.769,
+        "bbox": [
+          5,
+          3,
+          33,
+          37
+        ],
+        "fill": 0.595,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.765,
+        "bbox": [
+          5,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      }
+    }
+  }
+}

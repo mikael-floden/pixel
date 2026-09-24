@@ -1,0 +1,143 @@
+{
+  "id": "reed_giant",
+  "name": "Reedgiant",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The reeds grew tall enough to remember being a man.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Very tall thin giant made of bundled reeds, a bulrush head, arms like sagging reed mats, feet lost in the water, swaying.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "reed_giant/rotations/south.webp",
+    "south-east": "reed_giant/rotations/south-east.webp",
+    "east": "reed_giant/rotations/east.webp",
+    "north-east": "reed_giant/rotations/north-east.webp",
+    "north": "reed_giant/rotations/north.webp",
+    "north-west": "reed_giant/rotations/north-west.webp",
+    "west": "reed_giant/rotations/west.webp",
+    "south-west": "reed_giant/rotations/south-west.webp"
+  },
+  "sheet": "reed_giant/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0ea199f6-ed0b-43b1-97fa-531fe0a088e7",
+  "seed": 1979299842,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:56:18+00:00",
+  "elapsed_s": 1.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.779,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.779,
+        "bbox": [
+          51,
+          6,
+          183,
+          218
+        ],
+        "fill": 0.558,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.821,
+        "bbox": [
+          58,
+          8,
+          166,
+          221
+        ],
+        "fill": 0.458,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.813,
+        "bbox": [
+          34,
+          7,
+          147,
+          219
+        ],
+        "fill": 0.477,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.796,
+        "bbox": [
+          46,
+          6,
+          159,
+          213
+        ],
+        "fill": 0.466,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.801,
+        "bbox": [
+          27,
+          4,
+          170,
+          209
+        ],
+        "fill": 0.584,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.804,
+        "bbox": [
+          43,
+          5,
+          176,
+          213
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.804,
+        "bbox": [
+          76,
+          6,
+          188,
+          220
+        ],
+        "fill": 0.478,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.821,
+        "bbox": [
+          66,
+          6,
+          185,
+          220
+        ],
+        "fill": 0.508,
+        "touches_edge": false
+      }
+    }
+  }
+}

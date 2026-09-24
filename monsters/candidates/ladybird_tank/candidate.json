@@ -1,0 +1,143 @@
+{
+  "id": "ladybird_tank",
+  "name": "Spotshell",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Children count its spots. It counts the children.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Round red ladybird with seven black spots, six sturdy legs, a domed shell like a shield, tiny black head with white cheeks, heavy waddling pose.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ladybird_tank/rotations/south.webp",
+    "south-east": "ladybird_tank/rotations/south-east.webp",
+    "east": "ladybird_tank/rotations/east.webp",
+    "north-east": "ladybird_tank/rotations/north-east.webp",
+    "north": "ladybird_tank/rotations/north.webp",
+    "north-west": "ladybird_tank/rotations/north-west.webp",
+    "west": "ladybird_tank/rotations/west.webp",
+    "south-west": "ladybird_tank/rotations/south-west.webp"
+  },
+  "sheet": "ladybird_tank/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b5c356ef-7fe3-4d9b-93a7-8cdf59dd1058",
+  "seed": 556133607,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:27+00:00",
+  "elapsed_s": 1.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.512,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.525,
+        "bbox": [
+          4,
+          4,
+          36,
+          35
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.526,
+        "bbox": [
+          4,
+          4,
+          36,
+          36
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.519,
+        "bbox": [
+          3,
+          5,
+          36,
+          36
+        ],
+        "fill": 0.639,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.55,
+        "bbox": [
+          4,
+          6,
+          35,
+          36
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.512,
+        "bbox": [
+          5,
+          4,
+          35,
+          34
+        ],
+        "fill": 0.562,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.521,
+        "bbox": [
+          5,
+          6,
+          36,
+          36
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.525,
+        "bbox": [
+          4,
+          5,
+          37,
+          36
+        ],
+        "fill": 0.639,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.556,
+        "bbox": [
+          4,
+          4,
+          36,
+          36
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      }
+    }
+  }
+}

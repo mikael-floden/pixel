@@ -1,0 +1,141 @@
+{
+  "id": "goat_priest",
+  "name": "Goatpriest",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It preaches from the book it is eating, one page a day.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Upright grey goat in a ragged priest's cassock, curled horns, rectangular pupils, holding a bell, chewing a page of a book.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "goat_priest/rotations/south.webp",
+    "south-east": "goat_priest/rotations/south-east.webp",
+    "east": "goat_priest/rotations/east.webp",
+    "north-east": "goat_priest/rotations/north-east.webp",
+    "north": "goat_priest/rotations/north.webp",
+    "north-west": "goat_priest/rotations/north-west.webp",
+    "west": "goat_priest/rotations/west.webp",
+    "south-west": "goat_priest/rotations/south-west.webp"
+  },
+  "sheet": "goat_priest/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b30aaa14-4fc7-45e1-bab9-fd5d8cbb8b2b",
+  "seed": 663903913,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:31:11+00:00",
+  "elapsed_s": 831.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.724,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.729,
+        "bbox": [
+          13,
+          3,
+          74,
+          85
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.819,
+        "bbox": [
+          20,
+          2,
+          74,
+          86
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.797,
+        "bbox": [
+          23,
+          3,
+          73,
+          86
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.768,
+        "bbox": [
+          18,
+          3,
+          76,
+          85
+        ],
+        "fill": 0.614,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.724,
+        "bbox": [
+          15,
+          5,
+          73,
+          83
+        ],
+        "fill": 0.584,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          12,
+          3,
+          69,
+          85
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.79,
+        "bbox": [
+          15,
+          3,
+          64,
+          86
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.811,
+        "bbox": [
+          11,
+          2,
+          69,
+          86
+        ],
+        "fill": 0.629,
+        "touches_edge": false
+      }
+    }
+  }
+}

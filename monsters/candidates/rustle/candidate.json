@@ -1,0 +1,141 @@
+{
+  "id": "rustle",
+  "name": "Rustle",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "The grass moving the wrong way is the only warning.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Barely-there creature of shivering grass blades with two dark eyes, no clear body, moves as a patch of grass moving against the wind.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rustle/rotations/south.webp",
+    "south-east": "rustle/rotations/south-east.webp",
+    "east": "rustle/rotations/east.webp",
+    "north-east": "rustle/rotations/north-east.webp",
+    "north": "rustle/rotations/north.webp",
+    "north-west": "rustle/rotations/north-west.webp",
+    "west": "rustle/rotations/west.webp",
+    "south-west": "rustle/rotations/south-west.webp"
+  },
+  "sheet": "rustle/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "aeb38382-ee8d-4a53-a7cb-b01f3442c000",
+  "seed": 1084409369,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:34:51+00:00",
+  "elapsed_s": 746.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.708,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.716,
+        "bbox": [
+          6,
+          4,
+          34,
+          35
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.736,
+        "bbox": [
+          6,
+          4,
+          31,
+          36
+        ],
+        "fill": 0.5,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.733,
+        "bbox": [
+          5,
+          4,
+          31,
+          36
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.73,
+        "bbox": [
+          8,
+          3,
+          31,
+          36
+        ],
+        "fill": 0.474,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.723,
+        "bbox": [
+          6,
+          4,
+          34,
+          35
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.708,
+        "bbox": [
+          10,
+          4,
+          33,
+          36
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.73,
+        "bbox": [
+          9,
+          4,
+          35,
+          36
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.751,
+        "bbox": [
+          8,
+          4,
+          33,
+          36
+        ],
+        "fill": 0.5,
+        "touches_edge": false
+      }
+    }
+  }
+}

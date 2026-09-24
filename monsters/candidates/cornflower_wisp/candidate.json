@@ -1,0 +1,143 @@
+{
+  "id": "cornflower_wisp",
+  "name": "Bluewisp",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It leads lost children home, or to somewhere that feels like home.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Floating knot of blue cornflower petals around a soft white light, thin stem tendrils hanging down, no face.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cornflower_wisp/rotations/south.webp",
+    "south-east": "cornflower_wisp/rotations/south-east.webp",
+    "east": "cornflower_wisp/rotations/east.webp",
+    "north-east": "cornflower_wisp/rotations/north-east.webp",
+    "north": "cornflower_wisp/rotations/north.webp",
+    "north-west": "cornflower_wisp/rotations/north-west.webp",
+    "west": "cornflower_wisp/rotations/west.webp",
+    "south-west": "cornflower_wisp/rotations/south-west.webp"
+  },
+  "sheet": "cornflower_wisp/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7cd8a3a0-1e5e-4d58-a6e1-71d28f4f67d8",
+  "seed": 1922078670,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:56:25+00:00",
+  "elapsed_s": 1.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.714,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.714,
+        "bbox": [
+          10,
+          3,
+          30,
+          37
+        ],
+        "fill": 0.425,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.805,
+        "bbox": [
+          11,
+          4,
+          28,
+          37
+        ],
+        "fill": 0.351,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.756,
+        "bbox": [
+          12,
+          4,
+          24,
+          37
+        ],
+        "fill": 0.247,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.782,
+        "bbox": [
+          11,
+          3,
+          28,
+          36
+        ],
+        "fill": 0.351,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.764,
+        "bbox": [
+          11,
+          4,
+          29,
+          37
+        ],
+        "fill": 0.371,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.772,
+        "bbox": [
+          13,
+          4,
+          27,
+          36
+        ],
+        "fill": 0.28,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.736,
+        "bbox": [
+          16,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.276,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.792,
+        "bbox": [
+          12,
+          4,
+          29,
+          37
+        ],
+        "fill": 0.351,
+        "touches_edge": false
+      }
+    }
+  }
+}

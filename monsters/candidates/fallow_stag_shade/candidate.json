@@ -1,0 +1,149 @@
+{
+  "id": "fallow_stag_shade",
+  "name": "Fallowshade",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The last deer of the old forest, still walking the forest's edge.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Pale fallow deer with spotted coat fading into translucence at the legs, antlers of bare white bone, gentle empty eyes, standing still.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fallow_stag_shade/rotations/south.webp",
+    "south-east": "fallow_stag_shade/rotations/south-east.webp",
+    "east": "fallow_stag_shade/rotations/east.webp",
+    "north-east": "fallow_stag_shade/rotations/north-east.webp",
+    "north": "fallow_stag_shade/rotations/north.webp",
+    "north-west": "fallow_stag_shade/rotations/north-west.webp",
+    "west": "fallow_stag_shade/rotations/west.webp",
+    "south-west": "fallow_stag_shade/rotations/south-west.webp"
+  },
+  "sheet": "fallow_stag_shade/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4bed5f3a-d638-486f-bbe2-1b481afd57c6",
+  "seed": 1239511149,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:52+00:00",
+  "elapsed_s": 1.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.745,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.745,
+        "bbox": [
+          18,
+          0,
+          69,
+          87
+        ],
+        "fill": 0.573,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.786,
+        "bbox": [
+          13,
+          0,
+          71,
+          86
+        ],
+        "fill": 0.644,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.766,
+        "bbox": [
+          11,
+          1,
+          79,
+          85
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.761,
+        "bbox": [
+          23,
+          0,
+          67,
+          87
+        ],
+        "fill": 0.494,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.774,
+        "bbox": [
+          21,
+          1,
+          65,
+          87
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.763,
+        "bbox": [
+          17,
+          0,
+          70,
+          86
+        ],
+        "fill": 0.589,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.753,
+        "bbox": [
+          8,
+          1,
+          76,
+          84
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.794,
+        "bbox": [
+          19,
+          0,
+          68,
+          87
+        ],
+        "fill": 0.55,
+        "touches_edge": true
+      }
+    }
+  }
+}

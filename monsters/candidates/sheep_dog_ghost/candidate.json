@@ -1,0 +1,141 @@
+{
+  "id": "sheep_dog_ghost",
+  "name": "Ghost Collie",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "It still brings the sheep in. They are just not sheep any more.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Translucent blue-white collie, long ghost fur, still herding, mouth open in a silent bark, paws not quite touching the ground.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "sheep_dog_ghost/rotations/south.webp",
+    "south-east": "sheep_dog_ghost/rotations/south-east.webp",
+    "east": "sheep_dog_ghost/rotations/east.webp",
+    "north-east": "sheep_dog_ghost/rotations/north-east.webp",
+    "north": "sheep_dog_ghost/rotations/north.webp",
+    "north-west": "sheep_dog_ghost/rotations/north-west.webp",
+    "west": "sheep_dog_ghost/rotations/west.webp",
+    "south-west": "sheep_dog_ghost/rotations/south-west.webp"
+  },
+  "sheet": "sheep_dog_ghost/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e42b5e97-3103-4741-81c5-55c2ff6ba227",
+  "seed": 287425887,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:32:41+00:00",
+  "elapsed_s": 810.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.702,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.711,
+        "bbox": [
+          13,
+          4,
+          79,
+          86
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.765,
+        "bbox": [
+          9,
+          4,
+          74,
+          85
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.736,
+        "bbox": [
+          4,
+          3,
+          82,
+          83
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.709,
+        "bbox": [
+          12,
+          1,
+          73,
+          85
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.723,
+        "bbox": [
+          22,
+          2,
+          64,
+          84
+        ],
+        "fill": 0.445,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.702,
+        "bbox": [
+          13,
+          1,
+          78,
+          85
+        ],
+        "fill": 0.705,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.741,
+        "bbox": [
+          5,
+          3,
+          84,
+          83
+        ],
+        "fill": 0.816,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.767,
+        "bbox": [
+          14,
+          4,
+          79,
+          85
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      }
+    }
+  }
+}

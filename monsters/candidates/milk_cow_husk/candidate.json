@@ -1,0 +1,141 @@
+{
+  "id": "milk_cow_husk",
+  "name": "Husk Cow",
+  "tier": "evil",
+  "scale": "big",
+  "lore": "She is still waiting to be milked, and she will wait.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Cow reduced to a dry brown hide stretched over a skeleton, empty udder, horns intact, black hollow eyes, still chewing, standing patiently.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "milk_cow_husk/rotations/south.webp",
+    "south-east": "milk_cow_husk/rotations/south-east.webp",
+    "east": "milk_cow_husk/rotations/east.webp",
+    "north-east": "milk_cow_husk/rotations/north-east.webp",
+    "north": "milk_cow_husk/rotations/north.webp",
+    "north-west": "milk_cow_husk/rotations/north-west.webp",
+    "west": "milk_cow_husk/rotations/west.webp",
+    "south-west": "milk_cow_husk/rotations/south-west.webp"
+  },
+  "sheet": "milk_cow_husk/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a850716a-93d0-479b-993f-d83c1c1be692",
+  "seed": 683360976,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T17:32:42+00:00",
+  "elapsed_s": 702.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.598,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.598,
+        "bbox": [
+          31,
+          10,
+          193,
+          214
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.676,
+        "bbox": [
+          47,
+          11,
+          171,
+          216
+        ],
+        "fill": 0.507,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.669,
+        "bbox": [
+          51,
+          10,
+          206,
+          215
+        ],
+        "fill": 0.633,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.643,
+        "bbox": [
+          26,
+          8,
+          205,
+          210
+        ],
+        "fill": 0.721,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.679,
+        "bbox": [
+          25,
+          12,
+          184,
+          216
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.669,
+        "bbox": [
+          52,
+          13,
+          168,
+          216
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.657,
+        "bbox": [
+          17,
+          9,
+          202,
+          215
+        ],
+        "fill": 0.76,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.664,
+        "bbox": [
+          16,
+          10,
+          200,
+          213
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      }
+    }
+  }
+}

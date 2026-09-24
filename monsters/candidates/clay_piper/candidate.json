@@ -1,0 +1,143 @@
+{
+  "id": "clay_piper",
+  "name": "Claypiper",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Found in a potter's kiln with the tune already in it.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Little brown clay figure of a piper with a cracked glazed surface, playing a reed flute, painted cheeks, stubby legs, glowing eye-holes.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "clay_piper/rotations/south.webp",
+    "south-east": "clay_piper/rotations/south-east.webp",
+    "east": "clay_piper/rotations/east.webp",
+    "north-east": "clay_piper/rotations/north-east.webp",
+    "north": "clay_piper/rotations/north.webp",
+    "north-west": "clay_piper/rotations/north-west.webp",
+    "west": "clay_piper/rotations/west.webp",
+    "south-west": "clay_piper/rotations/south-west.webp"
+  },
+  "sheet": "clay_piper/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "96e136c4-0537-41b6-b4de-e21d5775e51d",
+  "seed": 252117975,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:55:38+00:00",
+  "elapsed_s": 1.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.705,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.741,
+        "bbox": [
+          11,
+          3,
+          30,
+          37
+        ],
+        "fill": 0.404,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.778,
+        "bbox": [
+          10,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.404,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.728,
+        "bbox": [
+          9,
+          3,
+          33,
+          37
+        ],
+        "fill": 0.51,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.705,
+        "bbox": [
+          10,
+          3,
+          31,
+          37
+        ],
+        "fill": 0.446,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.728,
+        "bbox": [
+          10,
+          3,
+          30,
+          36
+        ],
+        "fill": 0.412,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.723,
+        "bbox": [
+          9,
+          3,
+          30,
+          37
+        ],
+        "fill": 0.446,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.73,
+        "bbox": [
+          7,
+          3,
+          31,
+          37
+        ],
+        "fill": 0.51,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.791,
+        "bbox": [
+          11,
+          3,
+          30,
+          37
+        ],
+        "fill": 0.404,
+        "touches_edge": false
+      }
+    }
+  }
+}

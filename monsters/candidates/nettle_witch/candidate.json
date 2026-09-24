@@ -1,0 +1,143 @@
+{
+  "id": "nettle_witch",
+  "name": "Nettlewitch",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "She sells soup. Nobody asks what is in it twice.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Hunched old woman whose robes and hair are made of stinging nettle leaves, green-black skin, long fingers, a basket of dark leaves on her back.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "nettle_witch/rotations/south.webp",
+    "south-east": "nettle_witch/rotations/south-east.webp",
+    "east": "nettle_witch/rotations/east.webp",
+    "north-east": "nettle_witch/rotations/north-east.webp",
+    "north": "nettle_witch/rotations/north.webp",
+    "north-west": "nettle_witch/rotations/north-west.webp",
+    "west": "nettle_witch/rotations/west.webp",
+    "south-west": "nettle_witch/rotations/south-west.webp"
+  },
+  "sheet": "nettle_witch/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ea20eb6c-226c-4ca6-a375-f50ae5396da7",
+  "seed": 1682302165,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T17:56:16+00:00",
+  "elapsed_s": 1.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.758,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.758,
+        "bbox": [
+          10,
+          1,
+          78,
+          86
+        ],
+        "fill": 0.746,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.828,
+        "bbox": [
+          10,
+          2,
+          74,
+          87
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.811,
+        "bbox": [
+          6,
+          2,
+          67,
+          87
+        ],
+        "fill": 0.67,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.785,
+        "bbox": [
+          7,
+          2,
+          71,
+          85
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.775,
+        "bbox": [
+          12,
+          3,
+          75,
+          84
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.779,
+        "bbox": [
+          16,
+          2,
+          80,
+          85
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.804,
+        "bbox": [
+          20,
+          2,
+          82,
+          87
+        ],
+        "fill": 0.681,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.822,
+        "bbox": [
+          16,
+          2,
+          79,
+          87
+        ],
+        "fill": 0.692,
+        "touches_edge": false
+      }
+    }
+  }
+}
