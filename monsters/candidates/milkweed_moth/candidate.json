@@ -1,0 +1,146 @@
+{
+  "id": "milkweed_moth",
+  "name": "Silkmoth",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It lays its eggs in the linen chest and in nothing else.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Soft grey-white moth with wings patterned like torn silk, furry body, feathered antennae, a faint pale glow, wings half open.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "milkweed_moth/rotations/south.webp",
+    "south-east": "milkweed_moth/rotations/south-east.webp",
+    "east": "milkweed_moth/rotations/east.webp",
+    "north-east": "milkweed_moth/rotations/north-east.webp",
+    "north": "milkweed_moth/rotations/north.webp",
+    "north-west": "milkweed_moth/rotations/north-west.webp",
+    "west": "milkweed_moth/rotations/west.webp",
+    "south-west": "milkweed_moth/rotations/south-west.webp"
+  },
+  "sheet": "milkweed_moth/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d8b09d35-eb28-4d29-9502-43c38e81e97e",
+  "seed": 213694028,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:12:50+00:00",
+  "elapsed_s": 2.7,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.789,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.789,
+        "bbox": [
+          0,
+          8,
+          40,
+          32
+        ],
+        "fill": 0.6,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.846,
+        "bbox": [
+          2,
+          4,
+          33,
+          32
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.833,
+        "bbox": [
+          9,
+          4,
+          30,
+          33
+        ],
+        "fill": 0.381,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.829,
+        "bbox": [
+          3,
+          7,
+          35,
+          33
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.824,
+        "bbox": [
+          0,
+          9,
+          40,
+          31
+        ],
+        "fill": 0.55,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.855,
+        "bbox": [
+          7,
+          7,
+          36,
+          33
+        ],
+        "fill": 0.471,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.818,
+        "bbox": [
+          10,
+          4,
+          33,
+          33
+        ],
+        "fill": 0.417,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.834,
+        "bbox": [
+          7,
+          4,
+          38,
+          32
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      }
+    }
+  }
+}
