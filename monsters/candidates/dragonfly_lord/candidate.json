@@ -1,0 +1,141 @@
+{
+  "id": "dragonfly_lord",
+  "name": "Skimlord",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It rules the reed beds for one summer and demands the summer be long.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Huge blue-green dragonfly standing upright on four legs, two front legs held like arms, four clear wings, jewel eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "dragonfly_lord/rotations/south.webp",
+    "south-east": "dragonfly_lord/rotations/south-east.webp",
+    "east": "dragonfly_lord/rotations/east.webp",
+    "north-east": "dragonfly_lord/rotations/north-east.webp",
+    "north": "dragonfly_lord/rotations/north.webp",
+    "north-west": "dragonfly_lord/rotations/north-west.webp",
+    "west": "dragonfly_lord/rotations/west.webp",
+    "south-west": "dragonfly_lord/rotations/south-west.webp"
+  },
+  "sheet": "dragonfly_lord/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "16010f8d-4f88-4644-8890-a3d96eb81c4a",
+  "seed": 1273546257,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:21:43+00:00",
+  "elapsed_s": 525.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.836,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.836,
+        "bbox": [
+          2,
+          3,
+          86,
+          84
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.88,
+        "bbox": [
+          5,
+          4,
+          69,
+          85
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.874,
+        "bbox": [
+          11,
+          3,
+          75,
+          83
+        ],
+        "fill": 0.661,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.862,
+        "bbox": [
+          12,
+          6,
+          73,
+          79
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.891,
+        "bbox": [
+          3,
+          11,
+          85,
+          72
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.875,
+        "bbox": [
+          15,
+          6,
+          75,
+          78
+        ],
+        "fill": 0.558,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.877,
+        "bbox": [
+          13,
+          3,
+          79,
+          83
+        ],
+        "fill": 0.682,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.877,
+        "bbox": [
+          19,
+          4,
+          83,
+          85
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      }
+    }
+  }
+}
