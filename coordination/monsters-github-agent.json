@@ -1,16 +1,15 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:09:28+00:00",
-  "health": "idle",
-  "current": "idle — holding no files. Eight of his candidate approvals recorded (review=approved + APPROVED tag on PixelLab, candidate index rebuilt), nothing cleared, nothing generated, $0.00 — tagging is free, no generation call was made.",
+  "updated_at": "2026-09-24T22:12:00+00:00",
+  "health": "running",
+  "current": "CLAIMED — the two candidate approvals of his 22:0xZ burst that are STILL unrecorded on disk: monsters/candidates/magma_serpent (approved r1, 22:02:42Z) and monsters/candidates/orchard_wretch (approved r1, 22:09:58Z). My assigned verdict, monsters/candidates/hay_golem (approved r1, 22:07:22Z), was ALREADY recorded on main by da8fc3320 (candidate.json review=approved 22:08:49Z, index row approved) — consumed, nothing to redo. Recording the two with animate.py approve --ids (review=approved + APPROVED tag, tagging is free) and rebuilding the candidate index. No animation generation this sitting. FILES: monsters/candidates/magma_serpent/candidate.json, monsters/candidates/orchard_wretch/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. live/feedback/monsters.json NOT touched — an approval is never cleared (review-contract law 2).",
   "progress": {
-    "unit": "his 22:03:26-22:07:22Z candidate approval burst — approvals recorded",
-    "entries_taken": 8,
+    "unit": "his 22:02-22:10Z approvals — the two the burst missed",
+    "entries_taken": 2,
     "entries_cleared": 0,
     "generations": 0,
-    "usd_spent": 0.0,
-    "left_open": "monsters/candidates/loom_widow (rejected 21:59:45Z) — a removal, left unclaimed for the next sitting; and anything he pressed after 22:07:22Z"
+    "usd_spent": 0.0
   },
   "budget_remaining": "PixelLab USD ~$7.09 (floor $5) — this sitting spent $0.00",
   "notes": [
