@@ -1,0 +1,140 @@
+{
+  "id": "ore_beetle",
+  "name": "Orebeetle",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Miners follow it to the seam. The seam follows it too.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Heavy beetle whose shell is raw iron ore with copper-green streaks, six iron legs, glowing orange under the shell.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ore_beetle/rotations/south.webp",
+    "south-east": "ore_beetle/rotations/south-east.webp",
+    "east": "ore_beetle/rotations/east.webp",
+    "north-east": "ore_beetle/rotations/north-east.webp",
+    "north": "ore_beetle/rotations/north.webp",
+    "north-west": "ore_beetle/rotations/north-west.webp",
+    "west": "ore_beetle/rotations/west.webp",
+    "south-west": "ore_beetle/rotations/south-west.webp"
+  },
+  "sheet": "ore_beetle/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f483beea-5b93-4745-9a2b-dc961e58082c",
+  "seed": 1975826724,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:08:32+00:00",
+  "elapsed_s": 2253.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.771,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.771,
+        "bbox": [
+          4,
+          10,
+          84,
+          82
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.821,
+        "bbox": [
+          8,
+          11,
+          84,
+          83
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.816,
+        "bbox": [
+          6,
+          19,
+          84,
+          77
+        ],
+        "fill": 0.584,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.773,
+        "bbox": [
+          10,
+          11,
+          83,
+          72
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.778,
+        "bbox": [
+          7,
+          10,
+          82,
+          69
+        ],
+        "fill": 0.571,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.771,
+        "bbox": [
+          10,
+          11,
+          79,
+          72
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.81,
+        "bbox": [
+          4,
+          19,
+          82,
+          77
+        ],
+        "fill": 0.584,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.832,
+        "bbox": [
+          4,
+          11,
+          80,
+          83
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      }
+    }
+  }
+}
