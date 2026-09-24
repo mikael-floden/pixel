@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient",
-  "updated_at": "2026-09-24T16:20:19.579983+00:00",
+  "updated_at": "2026-09-24T16:40:19.649903+00:00",
   "health": "running",
-  "current": "CLAIMED — A GIANT RAIN DROP (maintainer 2026-09-24: \"Sometimes now when I walk around in the world I can see a rain drop being very big and extremely close to the camera. This looks weird, ugly and dumb.\"). Read the sheet first: nothing in layer.ts/precip.ts can scale a drop past ~3x its 1x7 texture (rain setScale(1, scaleY<=1.4); a splash ring tops out at 2.95x of 11 px; wisps are 22x1 at alpha 0.13), and no other feature registers an fx-* texture. So it is being REPRODUCED, not reasoned about: force each precipitation, walk the camera by tapAt, and catch every sprite in the weather bands whose drawn bounds exceed what its texture allows. FILES (candidates until the culprit is caught): games2/ambient/weather/layer.ts, games2/ambient/weather/precip.ts, a gate arm in games2/scripts/verify-ambientweather.mjs, coordination/games-ambient.json.",
+  "current": "CLAIMED, NOT REPRODUCED — the giant rain drop (maintainer 2026-09-24: \"a rain drop being very big and extremely close to the camera ... weird, ugly and dumb\"). Measured live and ruled out: every fx-* sprite across all six precipitations on desktop AND his phone geometry stays inside its texture (rain <=4x10, splash <=32x16, wisp 22x1, leaf 4x4, snow 2x2); the splash is byte-identical to weatherfx.ts; a WebGL context lose+restore under forced rain brings every drop back correct (no __MISSING); drips are 1x1/2x2, fish rings 30 px on lakes, leaves <=13x15 orange, no camera-glued sprite in ambient; no other agent shipped a lens/droplet effect. LIVE SUSPECT: the landing ripple (~35 CSS px on his screen, ~25 on screen at once, popping beside the avatar), unchanged in size but seen far more since weather went zone-driven. Asked him for a screenshot and two questions (ring on the ground vs blob in the air; raining or clear). Files unchanged so far.",
   "progress": {
     "features": 14,
     "fields": 9,
