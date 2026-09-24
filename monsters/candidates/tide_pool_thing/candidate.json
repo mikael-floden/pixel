@@ -1,0 +1,142 @@
+{
+  "id": "tide_pool_thing",
+  "name": "Poolthing",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Everything in the pool agreed to be one thing for a while.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Small creature made of a tide pool's contents: anemones, a starfish arm, a crab claw, a snail eye, moving as one clump.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "tide_pool_thing/rotations/south.webp",
+    "south-east": "tide_pool_thing/rotations/south-east.webp",
+    "east": "tide_pool_thing/rotations/east.webp",
+    "north-east": "tide_pool_thing/rotations/north-east.webp",
+    "north": "tide_pool_thing/rotations/north.webp",
+    "north-west": "tide_pool_thing/rotations/north-west.webp",
+    "west": "tide_pool_thing/rotations/west.webp",
+    "south-west": "tide_pool_thing/rotations/south-west.webp"
+  },
+  "sheet": "tide_pool_thing/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "866ba351-b5b9-43c2-8b1b-98d93b3554ba",
+  "seed": 570222185,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T20:35:36+00:00",
+  "elapsed_s": 1.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.737,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.777,
+        "bbox": [
+          7,
+          6,
+          33,
+          33
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.808,
+        "bbox": [
+          7,
+          7,
+          31,
+          34
+        ],
+        "fill": 0.405,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.79,
+        "bbox": [
+          7,
+          6,
+          30,
+          34
+        ],
+        "fill": 0.403,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.766,
+        "bbox": [
+          7,
+          6,
+          30,
+          33
+        ],
+        "fill": 0.388,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.737,
+        "bbox": [
+          7,
+          7,
+          33,
+          33
+        ],
+        "fill": 0.422,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.755,
+        "bbox": [
+          9,
+          6,
+          33,
+          33
+        ],
+        "fill": 0.405,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.787,
+        "bbox": [
+          10,
+          6,
+          33,
+          34
+        ],
+        "fill": 0.403,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.798,
+        "bbox": [
+          10,
+          6,
+          33,
+          34
+        ],
+        "fill": 0.403,
+        "touches_edge": false
+      }
+    }
+  }
+}
