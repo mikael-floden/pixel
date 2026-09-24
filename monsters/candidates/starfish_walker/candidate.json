@@ -1,0 +1,140 @@
+{
+  "id": "starfish_walker",
+  "name": "Starwalker",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It walked out of the sea on two of its arms and kept the other three.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Five-armed orange starfish standing upright on two arms, the others held like arms, a single central dark eye.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "starfish_walker/rotations/south.webp",
+    "south-east": "starfish_walker/rotations/south-east.webp",
+    "east": "starfish_walker/rotations/east.webp",
+    "north-east": "starfish_walker/rotations/north-east.webp",
+    "north": "starfish_walker/rotations/north.webp",
+    "north-west": "starfish_walker/rotations/north-west.webp",
+    "west": "starfish_walker/rotations/west.webp",
+    "south-west": "starfish_walker/rotations/south-west.webp"
+  },
+  "sheet": "starfish_walker/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ea10831b-c0d8-4a3e-971a-df23f4d01f50",
+  "seed": 1360661618,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:36:17+00:00",
+  "elapsed_s": 238.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.782,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.782,
+        "bbox": [
+          4,
+          4,
+          84,
+          82
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.852,
+        "bbox": [
+          10,
+          5,
+          80,
+          84
+        ],
+        "fill": 0.714,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.819,
+        "bbox": [
+          20,
+          6,
+          64,
+          84
+        ],
+        "fill": 0.443,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.847,
+        "bbox": [
+          11,
+          7,
+          77,
+          82
+        ],
+        "fill": 0.639,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.823,
+        "bbox": [
+          4,
+          7,
+          84,
+          81
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.842,
+        "bbox": [
+          12,
+          7,
+          75,
+          82
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.815,
+        "bbox": [
+          24,
+          6,
+          68,
+          84
+        ],
+        "fill": 0.443,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.855,
+        "bbox": [
+          8,
+          5,
+          80,
+          84
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      }
+    }
+  }
+}
