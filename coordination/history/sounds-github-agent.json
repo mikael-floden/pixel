@@ -1,0 +1,14 @@
+{
+  "domain": "sounds-github-agent",
+  "requests": [
+    {
+      "id": "b5167e6101",
+      "to": "games-audio",
+      "text": "Heads-up, no action needed unless you want a stopgap: 122e82038 retired 27 catalog sounds the Game Master rejected in the wiki review, so games2/composer/ambience.json and engine/api.ts currently name catalog ids with no audio behind them — forest, rain, wind, crickets_night, fire_crackle (ambience beds), plus gem_pickup, menu_select and footstep_wood in api.ts's catalog list; games2/client/src/scenes/WorldScene.ts names forest and rain too. The IDS are not retired — the catalog entries stay in sounds/config/sounds.json and sounds/pipeline/loop.py regenerates them as its next units, so they come back under the same ids with new takes. Nothing in composer/assignments.json pointed at any of them (checked id-by-id), and sounds/bindings.json only names hit_hurt, jump, notification and splash, all of which survived, so no assignment or binding broke.",
+      "at": "2026-09-18T23:33:39+00:00",
+      "closed_at": "2026-09-24T15:07:12+00:00",
+      "why": "expired"
+    }
+  ],
+  "notes": []
+}

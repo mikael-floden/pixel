@@ -162,14 +162,19 @@ all. Schema:
   "progress": { "monsters_complete": 57 },
   "budget_remaining": 8900,                     // PixelLab generations left (shared pool)
   "notes": ["free-form status"],
-  "requests": [ { "to": "maps2", "text": "...", "at": "..." } ]
+  "requests": [ { "id": "3f9a1c02b7", "to": "maps2", "text": "...", "at": "..." } ],
+  "handled": [ { "id": "…", "from": "tiles", "at": "…", "text": "…" } ]  // requests TO me that I closed
 }
 ```
 
-`notes`/`requests` persist across heartbeats; the other fields refresh each
-unit. `updated_at` staler than ~2h ⇒ that agent is down. (Some boards carry
-extra `notes_to_*` arrays and legacy free-form string requests — `board.py
-inbox` tolerates both.)
+The other fields refresh each unit; `updated_at` staler than ~2h ⇒ that
+agent is down. **A BOARD DOES NOT GROW** (maintainer 2026-09-24: the first
+read has a budget). `board.py` prunes the caller's own board on every
+command: closed or expired requests, and notes beyond the last 10 or 16 KB
+(every `notes*` list), move to `coordination/history/<board>.json` — the
+past, readable when it matters, in nobody's first read. Every board ≤ 48 KB
+and every inbox ≤ 16 KB, gated by `coordination/check_firstread.py` in the
+games2 suite. (Legacy free-form string requests are history.)
 
 ## Messaging (agents talk DIRECTLY — no human relay)
 
@@ -177,16 +182,26 @@ The git repo is the message bus: async and durable, so it works even though
 each agent only wakes when its Routine fires (latency ≈ one cycle). CLI:
 
 ```bash
-python coordination/board.py inbox <you>                      # MANDATORY at start of EVERY run
-python coordination/board.py post <you> --to <them> --text "..."
-python coordination/board.py note <you> --text "ack: ..."     # after acting, so the asker sees it
+python coordination/board.py inbox <you>          # MANDATORY at start of EVERY run: OPEN requests to you + fleet health
+python coordination/board.py show <partner>       # a board compactly: current, health, last notes, open requests
+python coordination/board.py req <id>             # one request in full (the inbox prints a 300-char headline)
+python coordination/board.py post <you> --to <them> --text "..."   # only when THEY must act; an FYI is a `note`
+python coordination/board.py done <you> <id>      # after acting: the request leaves the inbox for good
+python coordination/board.py note <you> --text "..."
 ```
 
+**A REQUEST HAS A LIFECYCLE.** It is open from `post` until the receiver
+runs `done`, or until it is 7 days old; the inbox prints open requests only.
+(Before: every request ever addressed to a domain was printed on every run
+of every agent — 314 KB, ~80k tokens, for games — because nothing was ever
+closed.) `done` records the close on the RECEIVER's own board (`handled`),
+never on the sender's file; the sender's board archives it on its next run.
 Handle requests addressed to you **before** generating. A request to the
 domain is visible to the agent AND its assistant: claim it on your board
-before implementing, consume/ack it in the same unit, and treat one claimed
-or acked on either board as consumed — a stale request re-applied later
-overwrites newer decisions.
+before implementing, `done` it in the same unit, and treat one claimed or
+done on either board as consumed — a stale request re-applied later
+overwrites newer decisions. Never `cat` a board or a history file into your
+context to "skim" it: `show` and `req` exist so the first read stays small.
 
 ## Shared PixelLab budget
 
@@ -225,8 +240,11 @@ everything.
 
 ## TL;DR for a new agent
 
-1. Read this file + `CLAUDE.md`; run `board.py inbox <you>`; read your
-   partner's board (`<agent>` ⇄ `<agent>-assistant`).
+1. Read this file + `CLAUDE.md`; run `board.py inbox <you>` and `board.py
+   show <partner>` (`<agent>` ⇄ `<agent>-assistant`). The first read is
+   budgeted (`coordination/check_firstread.py`): law files ≤ 20 KB, boards
+   ≤ 48 KB, inboxes ≤ 16 KB, a domain README ≤ 24 KB or shrinking — a
+   README over it moves its measurements to `<domain>/docs/`.
 2. Work only under your domain dir; write only your own board file; claim
    the unit and its files there BEFORE editing.
 3. Copy `characters2/pipeline/pixellab_client.py` as your API-client start.

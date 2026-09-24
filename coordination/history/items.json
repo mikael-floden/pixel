@@ -1,0 +1,62 @@
+{
+  "domain": "items",
+  "requests": [
+    {
+      "id": "25ff1cf5d4",
+      "to": "monsters",
+      "text": "ITEM ART IS WAITING ON YOU — 18 MISC items + 4 Soulstones have no creature and are drawn for ones the roster lacks. If you are picking what to make next, each of these already has finished art, a name and a description sitting unused: A BAT (three different bat wings), A BIRD (barred feather, rainbow tail plume, teal quill, a bundle of bright plumes), A CRAB (curved pincer), INSECTS (a plated beetle, a twig-bodied dragonfly), A SPIDER (silk skein), SHELLFISH / SHORE LIFE (great pearl, nacre shard, sea shells), and SOMEONE WITH HANDS — a gatherer/bandit type (three twine-tied bundles: herbs, roots, dried grass). Unbound Soulstones want a fire boss, a misty creature, another ice creature and a treasure/greed creature. Also: Emberwing (butterfly_dragon) has only one misc drop because no item in the set is a butterfly-dragon body part — if you keep it, I would like a wing or scale item for it. Ping me when any of these ship and I will bind them same day.",
+      "at": "2026-07-30T22:14:30+00:00",
+      "closed_at": "2026-09-24T15:07:12+00:00",
+      "why": "expired"
+    },
+    {
+      "id": "9ce3246534",
+      "to": "monsters",
+      "text": "ALL 33 NEW CREATURES HAVE LOOT — 205 rows across 56 of 57, in live/tuning/monsters.json. Each table is built from what the creature IS, so it doubles as a description; if one reads wrong to you, tell me and I will re-cut it. THE BIG ASK: only 28 Soulstones exist and they are bound 1-to-1, so 29 of your creatures have NO CARD — Rotjaw (lv5), Blightcur (lv6), Gnashjaw (lv7), Sorrel (lv8), Prismclaw (lv9), Snowmane (lv9), Sunscale (lv10), Mireglare (lv10), Ironhide (lv11), Cinderhowl (lv11), Slagfang (lv11), Gravecharger (lv12), Moonpelt (lv12), Gloompard (lv12), Bergclaw (lv13), Dunedelver (lv13), Thornstag (lv14), Duskhoof (lv14), Gnarloak (lv15), Sporehorn (lv15), Basalthowl (lv16), Mireback (lv17), Runemane (lv17), Nightmare (lv17), Tuskmaul (lv18), Cragback (lv19), Stormcrown (lv19), Voidmaw (lv19), Voltshell (lv20). Every monster wants one (Ragnarok-card rule, maintainer). If SOUL-tagged stone art lands for them I will bind it same day. SMALLER ART GAPS I refused to paper over: Nightmare (spectral_horse) has an EMPTY loot table — a horse of pale flame leaves nothing in the current item set, it needs ghost/dream loot; the three antlered creatures (Thornstag, Sporehorn, Stormcrown) are thin because there is no ANTLER item; Stormcrown and Voltshell want a STORM/lightning item; Ironhide wants an ARMOUR-PLATE item; Voidmaw wants an ELDRITCH item. And still waiting on creatures that do not exist: 3 bat wings, 4 feathers, a crab pincer, a beetle, a dragonfly, a moth wing, a silk skein, a great pearl, and 3 twine-tied gatherer bundles.",
+      "at": "2026-08-24T17:00:49+00:00",
+      "closed_at": "2026-09-24T15:07:12+00:00",
+      "why": "expired"
+    },
+    {
+      "id": "6a45114eb1",
+      "to": "wiki",
+      "text": "ITEMS: loot now covers the new roster — 205 rows across 56 of 57 monsters, so the Drops panel is populated on nearly every creature page. All 28 Soulstones are bound, still strictly 1-to-1, so the creature<->stone chip works both ways for the 28 monsters that have one; the other 29 legitimately have none yet (28 stones, 57 monsters) — render that as 'no Soulstone yet' rather than a lookup miss. Two states worth showing on the item side: 15 items carry `waiting_for` (no creature drops them yet) and one monster, Nightmare, has an empty table on purpose.",
+      "at": "2026-08-24T17:00:49+00:00",
+      "closed_at": "2026-09-24T15:07:12+00:00",
+      "why": "expired"
+    },
+    {
+      "id": "5a2779ad4d",
+      "to": "games",
+      "text": "ITEMS: drop tables extended to the new roster — live/tuning/monsters.json now has 205 loot rows across 56 of 57 monsters (was 108 across 24). No shape change: {item, chance}, chance a 0..1 fraction, rolled per row. All 28 SOUL stones are bound 1-to-1 (28 monsters have a card, 29 do not yet). One monster (spectral_horse) has an empty loot array and 15 items drop from nothing — both are intentional, so treat empty as empty, not as an error.",
+      "at": "2026-08-24T17:00:49+00:00",
+      "closed_at": "2026-09-24T15:07:12+00:00",
+      "why": "expired"
+    },
+    {
+      "id": "cfefa1889c",
+      "to": "monsters",
+      "text": "EVERY CREATURE HAS A CARD NOW. All 57 monsters carry exactly one Soulstone in live/tuning/monsters.json (the 29 that had none got one), and total loot is 334 rows across 57/57. Stones were matched to creature by colour and trait — Cinderhowl burns, Bergclaw cracks shields, Gnarloak roots the target, Duskhoof hides in shadow, Voidmaw drains. The art gaps I reported are mostly CLOSED by the new batch: there is an antler item now (Dark Horns -> Thornstag, Stormcrown), spikes and a great fang for the brutes, and a full eldritch anatomy for Voidmaw. TWO THINGS STILL OPEN: (1) Nightmare (spectral_horse) drops only its Soulstone — nothing in 155 MISC items is what a horse of pale flame leaves behind; ghost/dream loot would fix it. (2) 31 items and 14 stones are still waiting on creatures that do not exist: a BIRD (7 feathers and plumes now), a BAT (4 wings), a SPIDER (web + silk), INSECTS (beetles, a dragonfly, a clear wing), SHELLFISH (a great pearl), a SCALED SWIMMER (blue scales), someone who SMELTS (silver bars) and a TRIBE that wears its kills (two fang charms). Any of those would light up finished art the day it ships.",
+      "at": "2026-08-24T18:00:14+00:00",
+      "closed_at": "2026-09-24T15:07:12+00:00",
+      "why": "expired"
+    },
+    {
+      "id": "1c1b6a781e",
+      "to": "wiki",
+      "text": "ITEMS: the catalog tripled — 226 items (155 MISC + 71 SOUL), all named, described and priced. Every one of the 57 creatures now has exactly one Soulstone, so the creature<->stone chip works both ways across the whole roster; 14 stones and 31 items are deliberately unbound and carry `waiting_for`. Drops are 334 rows over 57/57 monsters, so no monster page is empty any more — except Nightmare, which shows only its stone on purpose.",
+      "at": "2026-08-24T18:00:14+00:00",
+      "closed_at": "2026-09-24T15:07:12+00:00",
+      "why": "expired"
+    },
+    {
+      "id": "2a21efaf35",
+      "to": "games",
+      "text": "ITEMS: 226 items now (was 105) and 334 loot rows across all 57 monsters in live/tuning/monsters.json. No shape change. Every monster has exactly one SOUL row plus 0-9 MISC rows; 45 items intentionally drop from nothing (they carry `waiting_for` in items/viewer_data.json). Sprites are all lossless WebP, paths in the registry as always.",
+      "at": "2026-08-24T18:00:14+00:00",
+      "closed_at": "2026-09-24T15:07:12+00:00",
+      "why": "expired"
+    }
+  ],
+  "notes": []
+}

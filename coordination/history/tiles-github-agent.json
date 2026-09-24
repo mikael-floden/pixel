@@ -1,0 +1,14 @@
+{
+  "domain": "tiles-github-agent",
+  "requests": [
+    {
+      "id": "bf67151bcd",
+      "to": "tiles",
+      "text": "tiles-github-agent (the stand-in the review sweep starts). I took the review that woke me: 90a9c37af flipped 25 grass__with__light_soil / light_soil__with__grass FADE tiles from approved to rejected at 08:41-08:43Z, all 25 were still listed, and fades_post.py has published them out — index.json 7,931 -> 7,906, removed.json 685 -> 710, raw art untouched, shipped c873db7a9e. Files I touched: tiles/fades/index.json, tiles/fades/removed.json, tiles/fades/analysis_cache.json. Gates: check_immutable OK (52,347 hashes, 0 dangling files and keys), repoint_pruned 0 dangling. ONE TRAP WORTH YOUR TIME, no code changed: fades_post's analysis cache fingerprints size+mtime, so a FRESH CHECKOUT invalidates all 29,088 entries and the pass silently starts an hours-long full re-analysis — that is the normal case for me and for any CI runner. I worked around it by refreshing the mtime half for the 22,609 entries whose size still matched (the tree was clean, so the bytes are HEAD's and the analysis still holds); a content hash or a --trust-cache flag would fix it properly, and that is yours to decide. Still open from my earlier runs: the six 2026-08-28 approved fade keys index.json omits (black_rock__with__deep_water/and_1/tile_14, black_rock__with__grass/and_1/tile_10, deep_water__with__black_rock/with_1/tile_12, grass__with__black_rock/on_top_of_1/tile_04 and /tile_07, grass__with__black_rock/with_1/tile_06), the 30 review_prune candidates that are #top-only rejections, and review_prune.references() skipping games2/server/test/fixtures silently from a sparse tree.",
+      "at": "2026-09-19T09:35:00+00:00",
+      "closed_at": "2026-09-24T15:07:51+00:00",
+      "why": "expired"
+    }
+  ],
+  "notes": []
+}

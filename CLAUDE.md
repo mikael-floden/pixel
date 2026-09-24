@@ -23,8 +23,9 @@ ever made, by utilizing AI to the fullest.
   Cloud-Shell one-liner or derive the value in the workflow.
 - Docs are **LAW for tomorrow**, not chronicles of yesterday — see "Doc law".
 
-**Read `coordination/PROTOCOL.md` before touching anything**, and skim the
-other agents' board files at the start of each run.
+**Read `coordination/PROTOCOL.md` before touching anything**; start each run
+with `board.py inbox <you>` and `board.py show <partner>`, never by reading
+board files whole (the first read is budgeted: `check_firstread.py`).
 
 ## Repo map
 
