@@ -1,0 +1,97 @@
+name: monsters animate
+
+# ANIMATE ONE STATE FOR A LIST OF CANDIDATES, WHERE A RESTART CANNOT KILL IT
+# (2026-09-24: an idle for the 32 v3 candidates he approved, so they move to
+# "in the making"). Same shape as monsters-candidates.yml: parallel shards, one
+# monster per animate call, each committed the moment it lands into its own
+# folder (disjoint, so shards never conflict), and a final job that rebuilds
+# the candidate index once. The shard count is kept low so his redos always
+# find a free PixelLab slot (the account allows 26 jobs at once).
+
+on:
+  workflow_dispatch:
+    inputs:
+      state:
+        description: "state to animate (idle, walk, angry, attack, die)"
+        default: "idle"
+      ids:
+        description: "space- or comma-separated candidate ids"
+        required: true
+      shards:
+        description: "parallel shards"
+        default: "6"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monsters-animate
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.p.outputs.matrix }}
+    steps:
+      - id: p
+        run: |
+          python3 -c "import json;print('matrix='+json.dumps({'shard':list(range(int('${{ inputs.shards }}')))}))" >> "$GITHUB_OUTPUT"
+
+  animate:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 1 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt
+      - name: Animate this shard, committing each monster as it lands
+        env:
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+        run: |
+          [ -n "$PIXELLAB_API_KEY" ] || { echo "::warning::no PIXELLAB_API_KEY"; exit 0; }
+          git config user.name "pixel-monsters-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          sleep $(( ${{ matrix.shard }} * 8 ))
+          ids=$(python3 -c "
+          ids='${{ inputs.ids }}'.replace(',', ' ').split()
+          n,k=int('${{ inputs.shards }}'),int('${{ matrix.shard }}')
+          print(' '.join(ids[k::n]))")
+          echo "shard ${{ matrix.shard }}: $ids"
+          for id in $ids; do
+            python -u monsters/pipeline/animate.py ${{ inputs.state }} --only "$id" --min-usd 0.50 || true
+            git add "monsters/candidates/$id" 2>/dev/null || true
+            git diff --cached --quiet && { echo "  $id: nothing landed"; continue; }
+            git commit -q -m "monsters: ${{ inputs.state }} for $id"
+            git checkout -q -- monsters/candidates/index.json live/feedback/monsters.json 2>/dev/null || true
+            for i in 1 2 3 4 5 6 7 8; do
+              git pull -q --rebase origin main && git push -q origin HEAD:main && break
+              git rebase --abort 2>/dev/null; sleep $(( i * 5 ))
+            done
+          done
+
+  finish:
+    needs: animate
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 1 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt
+      - name: Rebuild the candidate index once, then push
+        run: |
+          git config user.name "pixel-monsters-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python3 -c "import sys;sys.path.insert(0,'monsters/pipeline');import candidates as c;c.rebuild_index(c.load_cfg())"
+          git add monsters/candidates/index.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "monsters: candidate index rebuilt after the ${{ inputs.state }} run"
+          for i in 1 2 3 4 5 6; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
