@@ -1,0 +1,141 @@
+{
+  "id": "ice_worm",
+  "name": "Iceworm",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It tunnels through the glacier and the glacier lets it.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Long pale worm of translucent ice, segmented, a ring of frost teeth, blue veins visible inside.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ice_worm/rotations/south.webp",
+    "south-east": "ice_worm/rotations/south-east.webp",
+    "east": "ice_worm/rotations/east.webp",
+    "north-east": "ice_worm/rotations/north-east.webp",
+    "north": "ice_worm/rotations/north.webp",
+    "north-west": "ice_worm/rotations/north-west.webp",
+    "west": "ice_worm/rotations/west.webp",
+    "south-west": "ice_worm/rotations/south-west.webp"
+  },
+  "sheet": "ice_worm/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "236dbb51-48bc-4e36-bfae-16053b96fd42",
+  "seed": 2068378356,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T19:06:46+00:00",
+  "elapsed_s": 2000.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.787,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.812,
+        "bbox": [
+          7,
+          4,
+          81,
+          84
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.849,
+        "bbox": [
+          16,
+          5,
+          79,
+          85
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.851,
+        "bbox": [
+          28,
+          3,
+          67,
+          86
+        ],
+        "fill": 0.418,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.8,
+        "bbox": [
+          18,
+          2,
+          76,
+          83
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.787,
+        "bbox": [
+          8,
+          2,
+          80,
+          82
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.796,
+        "bbox": [
+          13,
+          2,
+          70,
+          83
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.85,
+        "bbox": [
+          22,
+          3,
+          61,
+          86
+        ],
+        "fill": 0.418,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.86,
+        "bbox": [
+          9,
+          4,
+          74,
+          85
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      }
+    }
+  }
+}
