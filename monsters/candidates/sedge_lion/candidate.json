@@ -1,0 +1,141 @@
+{
+  "id": "sedge_lion",
+  "name": "Sedgelion",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The tall grass hid it until the grass was it.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Lion made of tall sedge grass, a mane of brown seed heads, green eyes, paws of packed mud, crouching.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "cat",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "sedge_lion/rotations/south.webp",
+    "south-east": "sedge_lion/rotations/south-east.webp",
+    "east": "sedge_lion/rotations/east.webp",
+    "north-east": "sedge_lion/rotations/north-east.webp",
+    "north": "sedge_lion/rotations/north.webp",
+    "north-west": "sedge_lion/rotations/north-west.webp",
+    "west": "sedge_lion/rotations/west.webp",
+    "south-west": "sedge_lion/rotations/south-west.webp"
+  },
+  "sheet": "sedge_lion/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "47dc6f48-6db0-4898-b96b-cdc4bf76612d",
+  "seed": 1397634113,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:52:05+00:00",
+  "elapsed_s": 214.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.54,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.54,
+        "bbox": [
+          26,
+          6,
+          176,
+          216
+        ],
+        "fill": 0.628,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.65,
+        "bbox": [
+          8,
+          9,
+          185,
+          216
+        ],
+        "fill": 0.73,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.621,
+        "bbox": [
+          9,
+          8,
+          202,
+          211
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.616,
+        "bbox": [
+          43,
+          8,
+          183,
+          211
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.574,
+        "bbox": [
+          49,
+          8,
+          185,
+          210
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.602,
+        "bbox": [
+          36,
+          8,
+          212,
+          211
+        ],
+        "fill": 0.712,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.632,
+        "bbox": [
+          19,
+          8,
+          214,
+          211
+        ],
+        "fill": 0.789,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.655,
+        "bbox": [
+          37,
+          10,
+          181,
+          216
+        ],
+        "fill": 0.591,
+        "touches_edge": false
+      }
+    }
+  }
+}
