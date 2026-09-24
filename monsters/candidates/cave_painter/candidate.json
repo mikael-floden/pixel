@@ -1,0 +1,143 @@
+{
+  "id": "cave_painter",
+  "name": "Ochrehand",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The oldest painting in the cave stepped off the wall.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Faint figure of red ochre and charcoal stepped out of a cave wall, flat like a painting, one hand raised.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cave_painter/rotations/south.webp",
+    "south-east": "cave_painter/rotations/south-east.webp",
+    "east": "cave_painter/rotations/east.webp",
+    "north-east": "cave_painter/rotations/north-east.webp",
+    "north": "cave_painter/rotations/north.webp",
+    "north-west": "cave_painter/rotations/north-west.webp",
+    "west": "cave_painter/rotations/west.webp",
+    "south-west": "cave_painter/rotations/south-west.webp"
+  },
+  "sheet": "cave_painter/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "eb5cbafa-3fb1-4278-888f-310df259c141",
+  "seed": 2089299495,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:35:01+00:00",
+  "elapsed_s": 223.9,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.678,
+    "reasons": [
+      "east: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.732,
+        "bbox": [
+          2,
+          6,
+          86,
+          85
+        ],
+        "fill": 0.857,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.812,
+        "bbox": [
+          4,
+          5,
+          84,
+          87
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.79,
+        "bbox": [
+          14,
+          3,
+          73,
+          88
+        ],
+        "fill": 0.648,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.73,
+        "bbox": [
+          4,
+          1,
+          77,
+          86
+        ],
+        "fill": 0.801,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.678,
+        "bbox": [
+          2,
+          2,
+          86,
+          82
+        ],
+        "fill": 0.868,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.722,
+        "bbox": [
+          4,
+          6,
+          84,
+          85
+        ],
+        "fill": 0.816,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.763,
+        "bbox": [
+          15,
+          9,
+          73,
+          88
+        ],
+        "fill": 0.592,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.805,
+        "bbox": [
+          12,
+          10,
+          84,
+          87
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      }
+    }
+  }
+}
