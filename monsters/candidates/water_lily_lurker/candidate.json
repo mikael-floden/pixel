@@ -1,0 +1,146 @@
+{
+  "id": "water_lily_lurker",
+  "name": "Lilylurker",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The prettiest flower on the pond.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Broad green lily pad with a pink flower on top, underneath a hanging mass of pale tentacles and one large yellow eye.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "water_lily_lurker/rotations/south.webp",
+    "south-east": "water_lily_lurker/rotations/south-east.webp",
+    "east": "water_lily_lurker/rotations/east.webp",
+    "north-east": "water_lily_lurker/rotations/north-east.webp",
+    "north": "water_lily_lurker/rotations/north.webp",
+    "north-west": "water_lily_lurker/rotations/north-west.webp",
+    "west": "water_lily_lurker/rotations/west.webp",
+    "south-west": "water_lily_lurker/rotations/south-west.webp"
+  },
+  "sheet": "water_lily_lurker/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "69c3d425-ea57-4d93-a1fb-8184657c9329",
+  "seed": 1132959274,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:28:57+00:00",
+  "elapsed_s": 912.1,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.753,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.753,
+        "bbox": [
+          3,
+          1,
+          82,
+          87
+        ],
+        "fill": 0.877,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.794,
+        "bbox": [
+          2,
+          2,
+          82,
+          88
+        ],
+        "fill": 0.888,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.782,
+        "bbox": [
+          4,
+          3,
+          82,
+          88
+        ],
+        "fill": 0.856,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.779,
+        "bbox": [
+          7,
+          2,
+          81,
+          86
+        ],
+        "fill": 0.803,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.781,
+        "bbox": [
+          6,
+          3,
+          81,
+          86
+        ],
+        "fill": 0.804,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.784,
+        "bbox": [
+          7,
+          2,
+          83,
+          86
+        ],
+        "fill": 0.824,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.796,
+        "bbox": [
+          6,
+          3,
+          83,
+          88
+        ],
+        "fill": 0.845,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.808,
+        "bbox": [
+          6,
+          2,
+          83,
+          88
+        ],
+        "fill": 0.855,
+        "touches_edge": true
+      }
+    }
+  }
+}
