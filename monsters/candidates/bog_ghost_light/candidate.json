@@ -1,0 +1,141 @@
+{
+  "id": "bog_ghost_light",
+  "name": "Fenflame",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It flickers where someone lost their way.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Pale blue-green flame with a faint face inside it, hovering, a tail of vapour, drifting sideways.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_ghost_light/rotations/south.webp",
+    "south-east": "bog_ghost_light/rotations/south-east.webp",
+    "east": "bog_ghost_light/rotations/east.webp",
+    "north-east": "bog_ghost_light/rotations/north-east.webp",
+    "north": "bog_ghost_light/rotations/north.webp",
+    "north-west": "bog_ghost_light/rotations/north-west.webp",
+    "west": "bog_ghost_light/rotations/west.webp",
+    "south-west": "bog_ghost_light/rotations/south-west.webp"
+  },
+  "sheet": "bog_ghost_light/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "13a945a2-fd65-40f3-9d2b-fe7228f39672",
+  "seed": 1017523303,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:27:43+00:00",
+  "elapsed_s": 349.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.667,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.676,
+        "bbox": [
+          7,
+          2,
+          34,
+          38
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.725,
+        "bbox": [
+          9,
+          3,
+          30,
+          38
+        ],
+        "fill": 0.459,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.687,
+        "bbox": [
+          4,
+          2,
+          31,
+          38
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.702,
+        "bbox": [
+          4,
+          2,
+          32,
+          37
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.668,
+        "bbox": [
+          9,
+          1,
+          32,
+          37
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.705,
+        "bbox": [
+          9,
+          1,
+          30,
+          37
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.667,
+        "bbox": [
+          8,
+          4,
+          35,
+          37
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.704,
+        "bbox": [
+          8,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      }
+    }
+  }
+}
