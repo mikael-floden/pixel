@@ -579,7 +579,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   storey with the x-over-y wall left above it, 100% a clean slope with no
   wall (his ask, 2026-09-24: "make one that is 25% higher, 50% higher, 75%
   higher and 100% higher ... you need to use the base tile set"); the
-  default is 100%, "ml-slope-height" rebuilds the resolver on both threads.
+  default is 0% until the composed ramp stops drawing stepped shadows,
+  leftover faces and stretched texture (his verdict on 100%, 2026-09-24:
+  "Still looks so bad and buggy!"); "ml-slope-height" rebuilds the resolver
+  on both threads.
   A game rule (`footBoundary`; `slopeHeight` 0 or the parity path keeps
   render3's pools). THE PICK (`rampIndexFor`): every corner a cell
   exactly one level up touches, never a full plateau top; a published

@@ -5,11 +5,14 @@
  *  'base tile set' when creating this artificial slopes"). 0 keeps his
  *  published 4 px sets (the half step); 25..100 compose a ramp from the cell's
  *  own member plate (tiles3draw `buildRampPixels`) that climbs that share of
- *  the 15 px storey, the wall above it what is left. Owned here like
+ *  the 15 px storey, the wall above it what is left. THE DEFAULT IS 0: the
+ *  composed ramp still draws stepped shadows, leftover faces and stretched
+ *  texture (maintainer 2026-09-24: "Still looks so bad and buggy!"), so it
+ *  stays opt-in until its redesign lands. Owned here like
  *  detailrate.ts: "ml-slope-height" rebuilds the resolver on both threads.
  *  Node-safe: no DOM at module scope. */
 export const SLOPE_HEIGHTS = [0, 25, 50, 75, 100] as const;
-export const SLOPE_HEIGHT_DEFAULT = 100;
+export const SLOPE_HEIGHT_DEFAULT = 0;
 const KEY = "ml-slope-height";
 
 const g = globalThis as unknown as {
