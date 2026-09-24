@@ -1,0 +1,143 @@
+{
+  "id": "bog_lantern_fish",
+  "name": "Peatglow",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Walkers follow its light into the bog. It follows them home.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Small dark fish walking on four fin-legs, a glowing green lure on a stalk over its head, needle teeth, mud on its belly.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_lantern_fish/rotations/south.webp",
+    "south-east": "bog_lantern_fish/rotations/south-east.webp",
+    "east": "bog_lantern_fish/rotations/east.webp",
+    "north-east": "bog_lantern_fish/rotations/north-east.webp",
+    "north": "bog_lantern_fish/rotations/north.webp",
+    "north-west": "bog_lantern_fish/rotations/north-west.webp",
+    "west": "bog_lantern_fish/rotations/west.webp",
+    "south-west": "bog_lantern_fish/rotations/south-west.webp"
+  },
+  "sheet": "bog_lantern_fish/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3ebbfedb-6e38-48f8-974b-c62581f9da22",
+  "seed": 1235377037,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:13:23+00:00",
+  "elapsed_s": 1.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.712,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.801,
+        "bbox": [
+          5,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.744,
+        "bbox": [
+          5,
+          4,
+          34,
+          37
+        ],
+        "fill": 0.598,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.745,
+        "bbox": [
+          3,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.746,
+        "bbox": [
+          6,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.595,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.712,
+        "bbox": [
+          8,
+          3,
+          32,
+          37
+        ],
+        "fill": 0.51,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.724,
+        "bbox": [
+          7,
+          3,
+          34,
+          37
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.737,
+        "bbox": [
+          4,
+          3,
+          37,
+          37
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.807,
+        "bbox": [
+          6,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      }
+    }
+  }
+}
