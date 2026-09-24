@@ -4765,20 +4765,6 @@ function creatureRedos(m) {
   }
   return n;
 }
-/** When the agent last worked on this creature: its newest facing's stamp, or
- *  a redo of his it is still answering, whichever is later. "" = no stamp. */
-function creatureActivity(m) {
-  let at = "";
-  for (const [st, anim] of Object.entries(m?.animations ?? {})) {
-    if (anim?.still) continue;
-    for (const [dir, clip] of Object.entries(anim?.dirs ?? {})) {
-      if (clip?.at && clip.at > at) at = clip.at;
-      const e = fb("monsters", `${m.path}#${st}#${dir}`);
-      if (e.status === "redo" && e.updated_at && e.updated_at > at) at = e.updated_at;
-    }
-  }
-  return at;
-}
 /** How much animation a creature has: its facings across every real state. */
 const creatureFacings = (m) => Object.values(m?.animations ?? {})
   .filter((a) => !a?.still).reduce((n, a) => n + Object.keys(a?.dirs ?? {}).length, 0);
@@ -4861,28 +4847,21 @@ function monsterSort(list) {
    *       against the art: the agent's turn, most outstanding first;
    *   2 — settled; the most animated first.
    * Counted once per creature, not per comparison. */
-  /* …AND ABOVE ALL, THE BATCH BEING WORKED ON (maintainer 2026-09-24, on the
-   * tiers: "The idea is for me to see the 10 monsters we are working on
-   * currently first"). The tiers alone put the never-opened backlog —
-   * unstamped, 40 facings each — above the five creatures the agent touched
-   * today. So the FIRST key is when the agent last worked on the creature:
-   * its newest facing's generated_at, or a redo of his it is answering.
-   * Measured: Foxfire, Cinderkit, the sand scorpling, Plumefist, Hornmaul —
-   * the only ones with all six states, all within the day — come first, then
-   * the batch before them. His three tiers break ties inside a moment, and
-   * order everything with no stamp at all. */
+  /* HIS ORDER, EXACTLY (maintainer 2026-09-24, after two rounds of my own
+   * keys: "First: Does any monster have a frame not reviewed? Second: Does
+   * any monster have a frame where the review is pending? Third: List
+   * monsters with most animations first."). Three tiers — an unjudged (or
+   * regenerated-since) facing; else a redo of his still pending; else the
+   * rest — and INSIDE every tier the most animated first, then by name.
+   * No recency key: it reordered his tiers and he could not predict it. */
   if (sort === "queue") {
-    const key = new Map(list.map((m) => {
-      const owed = creatureOwed(m), redos = creatureRedos(m);
-      return [m.id, { act: creatureActivity(m), tier: owed ? 0 : redos ? 1 : 2, redos, facings: creatureFacings(m) }];
-    }));
+    const key = new Map(list.map((m) => [m.id, {
+      tier: creatureOwed(m) ? 0 : creatureRedos(m) ? 1 : 2,
+      facings: creatureFacings(m),
+    }]));
     CMP.queue = (a, b) => {
       const A = key.get(a.id), B = key.get(b.id);
-      return (B.act > A.act ? 1 : B.act < A.act ? -1 : 0)
-        || A.tier - B.tier
-        || B.redos - A.redos
-        || B.facings - A.facings
-        || byName(a, b);
+      return A.tier - B.tier || B.facings - A.facings || byName(a, b);
     };
   }
   const cmp = CMP[sort] ?? byName;
@@ -5273,7 +5252,7 @@ function viewMonsters() {
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
-      ...(state.admin ? [["queue", "review first", "The creatures the agent is working on right now first (newest art or your waiting redo), then: owes you a verdict, redo outstanding, most animated"]] : []),
+      ...(state.admin ? [["queue", "review first", "First the ones with a direction you have not reviewed, then the ones with a redo pending, then the rest — most animations first inside each"]] : []),
     ], sort, () => route(), { wrap: true }),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.

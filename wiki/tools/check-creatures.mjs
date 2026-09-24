@@ -292,30 +292,14 @@ await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-s
 await pa.waitForTimeout(1600);
 const qOrder = (await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].map((a) => a.getAttribute("href").split("/").pop())))
   .map((id) => roster.find((m) => m.id === id)).filter(Boolean);
-/* THE BATCH BEING WORKED ON FIRST ("The idea is for me to see the 10
- * monsters we are working on currently first"): the first key is the
- * agent's last touch — newest facing stamp, or a redo of his it answers —
- * then his three tiers, which alone order everything unstamped. */
-const actOf = (m) => {
-  let at = "";
-  for (const [st, a] of Object.entries(m.animations ?? {})) {
-    if (a?.still) continue;
-    for (const [dir, c] of Object.entries(a?.dirs ?? {})) {
-      if (c?.at && c.at > at) at = c.at;
-      const e = FB[`${m.path}#${st}#${dir}`] ?? {};
-      if (e.status === "redo" && e.updated_at && e.updated_at > at) at = e.updated_at;
-    }
-  }
-  return at;
-};
-const acts = qOrder.map(actOf);
-ok(qOrder.length === total && acts.every((a, i) => i === 0 || acts[i - 1] >= a) && acts[0],
-  `"review first" puts the batch being worked on first, newest touch on top (${qOrder.slice(0, 5).map((m) => m.id).join(", ")})`);
-const unst = qOrder.filter((m) => !actOf(m)), tiers = unst.map(tierOf);
-ok(tiers.every((x, i) => i === 0 || tiers[i - 1] <= x),
-  `and his three tiers order everything with no stamp (${[0, 1, 2].map((k) => `${tiers.filter((x) => x === k).length} tier ${k}`).join(", ")})`);
-const t2 = unst.filter((m) => tierOf(m) === 2).map(facingsOf);
-ok(t2.every((x, i) => i === 0 || t2[i - 1] >= x), `and the most animated first among the settled (${t2.slice(0, 5).join(" ≥ ")}…)`);
+/* HIS ORDER, EXACTLY: unreviewed facing → redo pending → the rest, most
+ * animated first inside each tier. */
+const tiers = qOrder.map(tierOf);
+ok(qOrder.length === total && tiers.every((x, i) => i === 0 || tiers[i - 1] <= x) && new Set(tiers).size > 1,
+  `"review first" sorts into his three tiers (${[0, 1, 2].map((k) => `${tiers.filter((x) => x === k).length} tier ${k + 1}`).join(", ")})`);
+const inTier = (k) => qOrder.filter((m) => tierOf(m) === k).map(facingsOf);
+ok([0, 1, 2].every((k) => inTier(k).every((x, i, arr) => i === 0 || arr[i - 1] >= x)),
+  `and the most animations first inside every tier (tier 1: ${inTier(0).slice(0, 5).join(" ≥ ")}…)`);
 /* AND ‹ › FOLLOWS THAT SORT inside "in the making", even as he judges
  * (maintainer 2026-09-24: "The next monster once I click on a monster doesn't
  * follow the same sort"). The page's order is frozen for the walk. */
