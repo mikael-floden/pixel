@@ -1,0 +1,140 @@
+{
+  "id": "shell_maiden",
+  "name": "Shellmaid",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "She sings in the conch and every sailor hears his mother.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Slender figure with a body of overlapping pale shells, a face hidden inside a large conch, pearl eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shell_maiden/rotations/south.webp",
+    "south-east": "shell_maiden/rotations/south-east.webp",
+    "east": "shell_maiden/rotations/east.webp",
+    "north-east": "shell_maiden/rotations/north-east.webp",
+    "north": "shell_maiden/rotations/north.webp",
+    "north-west": "shell_maiden/rotations/north-west.webp",
+    "west": "shell_maiden/rotations/west.webp",
+    "south-west": "shell_maiden/rotations/south-west.webp"
+  },
+  "sheet": "shell_maiden/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c6312b2f-67f7-47fb-827e-e825ddbf03a6",
+  "seed": 1684666238,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:23:36+00:00",
+  "elapsed_s": 1052.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.847,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.847,
+        "bbox": [
+          16,
+          2,
+          72,
+          86
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.89,
+        "bbox": [
+          22,
+          2,
+          69,
+          87
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.896,
+        "bbox": [
+          29,
+          1,
+          59,
+          87
+        ],
+        "fill": 0.333,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.856,
+        "bbox": [
+          22,
+          2,
+          65,
+          87
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.864,
+        "bbox": [
+          17,
+          2,
+          71,
+          85
+        ],
+        "fill": 0.579,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.861,
+        "bbox": [
+          22,
+          1,
+          65,
+          87
+        ],
+        "fill": 0.478,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.875,
+        "bbox": [
+          28,
+          1,
+          59,
+          87
+        ],
+        "fill": 0.344,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.891,
+        "bbox": [
+          19,
+          1,
+          65,
+          87
+        ],
+        "fill": 0.511,
+        "touches_edge": false
+      }
+    }
+  }
+}
