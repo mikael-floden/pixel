@@ -1,0 +1,142 @@
+{
+  "id": "scree_lizard",
+  "name": "Screeback",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Every loose stone on the slope is a warning it gives.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Grey lizard with a back covered in loose stone flakes that rattle, a wide flat head, yellow eyes, clinging low.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "scree_lizard/rotations/south.webp",
+    "south-east": "scree_lizard/rotations/south-east.webp",
+    "east": "scree_lizard/rotations/east.webp",
+    "north-east": "scree_lizard/rotations/north-east.webp",
+    "north": "scree_lizard/rotations/north.webp",
+    "north-west": "scree_lizard/rotations/north-west.webp",
+    "west": "scree_lizard/rotations/west.webp",
+    "south-west": "scree_lizard/rotations/south-west.webp"
+  },
+  "sheet": "scree_lizard/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5519a538-a35c-4de3-81b3-2021575e5b74",
+  "seed": 2077875173,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:31:23+00:00",
+  "elapsed_s": 302.0,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.691,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.691,
+        "bbox": [
+          2,
+          2,
+          86,
+          85
+        ],
+        "fill": 0.9,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.83,
+        "bbox": [
+          0,
+          2,
+          84,
+          87
+        ],
+        "fill": 0.922,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.801,
+        "bbox": [
+          7,
+          2,
+          84,
+          86
+        ],
+        "fill": 0.835,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.778,
+        "bbox": [
+          11,
+          4,
+          80,
+          84
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.734,
+        "bbox": [
+          4,
+          5,
+          83,
+          82
+        ],
+        "fill": 0.786,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.766,
+        "bbox": [
+          9,
+          4,
+          85,
+          85
+        ],
+        "fill": 0.795,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.787,
+        "bbox": [
+          4,
+          4,
+          84,
+          86
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.835,
+        "bbox": [
+          4,
+          4,
+          76,
+          87
+        ],
+        "fill": 0.772,
+        "touches_edge": false
+      }
+    }
+  }
+}
