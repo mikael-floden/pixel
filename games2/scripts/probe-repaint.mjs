@@ -20,6 +20,34 @@ const spots = process.argv.includes("--spot") ? [process.argv[process.argv.index
 let extentBad = 0;
 const modeDefer = process.argv.includes("--defer");
 const modeLazy = process.argv.includes("--lazy");
+if (process.argv.includes("--foam")) {
+  // THE SWIM FOAM BAKE: cross his loop's stream (151-179, 126.6) with the canvas path and the byte path,
+  // in fresh pages; then bake the same foam both ways and compare the GPU texels.
+  for (const [label, v] of [["foam canvas", "0"], ["foam bytes", "1"]]) {
+    const ctx = await browser.newContext({ viewport: { width: 412, height: 732 }, serviceWorkers: "block" });
+    const page = await ctx.newPage();
+    await page.addInitScript((x) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "B" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-foambytes", x); }, v);
+    await page.goto(origin + "/", { waitUntil: "commit" });
+    await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 180000, polling: 100 });
+    await page.evaluate(() => window.__ml.teleport(150, 126.6));
+    await sleep(6000);
+    await page.evaluate(() => window.__ml.foamBytes());
+    for (let x = 151; x <= 179; x += 0.5) {
+      await page.evaluate((xx) => window.__ml.teleport(xx, 126.6), x);
+      await sleep(250);
+    }
+    const st = await page.evaluate(() => window.__ml.foamBytes());
+    console.log(`${label}: ${st.bakes} foam bakes, ${st.ms.toFixed(1)} ms total, mean ${(st.ms / Math.max(1, st.bakes)).toFixed(2)} ms, worst ${st.maxMs.toFixed(2)} ms (switch ${st.on})`);
+    if (v === "1") {
+      const par = await page.evaluate(() => window.__ml.foamParity());
+      console.log(`  parity: ${JSON.stringify(par).slice(0, 500)}`);
+    }
+    await ctx.close();
+  }
+  await browser.close();
+  stop();
+  process.exit(0);
+}
 if (process.argv.includes("--extent")) {
   // THE WIDE EXTENT CHECK: many places (towns with roofs, bridges, cliffs, stairs, caves), slopes off and on.
   const places = [[441, 364], [447, 371], [297, 252], [262, 66], [277, 269], [258, 217], [230, 230], [176, 288], [96, 244], [335, 238]];

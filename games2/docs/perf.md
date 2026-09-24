@@ -480,6 +480,25 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   "ground: repaint only near". ALSO MEASURED: plates on the worker (410d19f944)
   add ~30% repaint runs (the drain repaints the cells whose plate dropped);
   near-only makes most of those park.
+- **THE SWIM FOAM BAKES INTO BYTES, NOT A CANVAS** (`foamTexture`,
+  2026-09-24; found by the investigation's skeptic-verified candidate, 2 of 3).
+  Every new foam key (frame x depth x tilt; a crossing of his loop's stepped
+  stream at 151-179,126.6 misses about one a frame for 1.5 s) built a canvas
+  with no `willReadFrequently`, a 2D context and a Phaser CanvasTexture, whose
+  constructor reads the whole canvas back — a wait for everything the GPU has
+  queued. His beacon matched foam bakes (`texFam` "f:") one to one with
+  20-130 ms `avatarLoop` frames in every build that crossed water: 16 of the
+  106 frames over 50 ms and 5 of the 9 over 100 ms in his best run. Now the
+  crest's pixels are written into a byte buffer (3 px a column, each written
+  once, alpha = the canvas's byte) and uploaded by `addUint8Array`, the
+  terrain's own path. MEASURED headless (`probe-repaint.mjs --foam`, crossing
+  that stream): canvas 11 bakes, mean 618 ms, worst 1,290 ms; bytes 25 bakes,
+  mean 0.2 ms, worst 0.5 ms. `__ml.foamParity()`: 163 texels of a 112x112 bake
+  differ by 1 (premultiply rounding of the translucent crest), the rest equal.
+  `__ml.foamBytes()` reads the bakes' cost; `?foambytes=0` restores the
+  canvas. Not converted: `ringTextureFor` already asks `willReadFrequently` (a
+  CPU canvas, its read-back a memcpy); `bodyatlas` is not wired; `flippedKey`
+  has no caller.
 - **REJECTED 2026-09-24: "one ground job a frame"** (58da4b2202, reverted the
   same hour). It stood the band slice and the drain group down on a frame whose
   landing repaint had painted (his 21:13 run: 64 of 192 worst frames stacked a

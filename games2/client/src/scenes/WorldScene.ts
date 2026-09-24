@@ -4542,6 +4542,20 @@ export class WorldScene extends Phaser.Scene {
    *  GROUND_NEAR_PX; it is forgotten when it leaves the texture or a full
    *  paint covers it. `?groundlazy=0` / Settings→Dev. */
   private groundLazyOn = groundFlagOn("groundlazy", "ml-groundlazy");
+  /** THE SWIM FOAM BAKES INTO BYTES, NOT A CANVAS (2026-09-24). Every new foam
+   *  key (frame x depth x tilt: a crossing of his loop's stepped stream at
+   *  151-179,126.6 misses ~1 a frame for 1.5 s) built a <canvas>, a 2D context
+   *  and a Phaser CanvasTexture, whose constructor reads the whole canvas back
+   *  (getImageData) — his beacon matched these bakes one to one with 20-130 ms
+   *  avatarLoop frames in every build that crossed water (16 of 106 frames over
+   *  50 ms and 5 of 9 over 100 ms in his best run). The terrain paid the same
+   *  path until addRaw (tiles3draw: 91-97% of a composition). The crest is 3 px
+   *  a column, each pixel written once, so the bytes are the canvas's pixels;
+   *  `?foambytes=0` / `__ml.foamBytes(false)` restores the canvas. */
+  private foamBytesOn = groundFlagOn("foambytes", "ml-foambytes");
+  private foamStats = { bakes: 0, ms: 0, maxMs: 0 };
+  private foamProbeN: number | undefined;
+  private foamLastArgs: [Phaser.GameObjects.Sprite, { lx: number; ly: number; rx: number; ry: number }, number, number, number, { min: number; max: number }] | null = null;
   private t3stale = new Set<number>();
   private t3staleScan = { x: NaN, y: NaN, frame: -1000 };
   private t3staleStats = { parked: 0, promoted: 0, dropped: 0 };
@@ -8002,6 +8016,43 @@ export class WorldScene extends Phaser.Scene {
       },
       /** Repaint only near the view (A/B), and the parked cells: how many, and how many
        *  of them the camera sees RIGHT NOW (must be 0 but for a frame of travel). */
+      /** The swim foam's bake path (A/B) and its cost this session (cleared on read). */
+      foamBytes: (on?: boolean) => {
+        if (typeof on === "boolean") this.foamBytesOn = on;
+        const r = { on: this.foamBytesOn, ...this.foamStats };
+        this.foamStats = { bakes: 0, ms: 0, maxMs: 0 };
+        return r;
+      },
+      /** FOAM PARITY: the last swim foam's arguments baked BOTH ways under probe keys,
+       *  the two textures' texels read back from the GPU and compared; and each way timed. */
+      foamParity: () => {
+        const args = this.foamLastArgs;
+        const gl = (this.game.renderer as { gl?: WebGLRenderingContext | WebGL2RenderingContext }).gl;
+        if (!args || !gl) return { error: "no foam baked yet (swim first)" };
+        const [sp, sw, feetY, swimT, , span] = args;
+        const out: { tilt: number; diff: number; maxDelta: number; w: number; h: number; msCanvas: number; msBytes: number }[] = [];
+        for (const tilt of [-1, 0, 1]) {
+          const n = (this.foamProbeN = (this.foamProbeN ?? 0) + 1);
+          const t0 = performance.now();
+          const kc = this.foamTexture(sp, sw, feetY, swimT, tilt, span, { suffix: `#probeC${n}`, bytes: false });
+          const t1 = performance.now();
+          const kb = this.foamTexture(sp, sw, feetY, swimT, tilt, span, { suffix: `#probeB${n}`, bytes: true });
+          const t2 = performance.now();
+          if (!kc || !kb) { out.push({ tilt, diff: -1, maxDelta: -1, w: 0, h: 0, msCanvas: t1 - t0, msBytes: t2 - t1 }); continue; }
+          const tc = this.textures.get(kc).source[0], tb = this.textures.get(kb).source[0];
+          const gc = (tc.glTexture as { webGLTexture?: WebGLTexture } | null)?.webGLTexture;
+          const gb = (tb.glTexture as { webGLTexture?: WebGLTexture } | null)?.webGLTexture;
+          const pc = gc ? readTextureRect(gl, gc, 0, 0, tc.width, tc.height) : null;
+          const pb = gb ? readTextureRect(gl, gb, 0, 0, tb.width, tb.height) : null;
+          let diff = 0, maxDelta = 0;
+          if (!pc || !pb || pc.length !== pb.length) diff = -1;
+          else for (let i = 0; i < pc.length; i++) { const d = Math.abs(pc[i] - pb[i]); if (d) { diff++; if (d > maxDelta) maxDelta = d; } }
+          out.push({ tilt, diff, maxDelta, w: tc.width, h: tc.height, msCanvas: +(t1 - t0).toFixed(2), msBytes: +(t2 - t1).toFixed(2) });
+          this.textures.remove(kc);
+          this.textures.remove(kb);
+        }
+        return { frame: `${sp.frame.texture.key}#${sp.frame.name}`, swimT, out };
+      },
       groundLazy: (on?: boolean) => {
         if (typeof on === "boolean") this.groundLazyOn = on;
         return this.groundLazyOn;
@@ -18224,12 +18275,15 @@ export class WorldScene extends Phaser.Scene {
     swimT: number,
     tilt = 0,
     span: { min: number; max: number },
+    probe?: { suffix: string; bytes: boolean },
   ): string | null {
     const am = this.alphaMap(sp);
     const fw = am.w, fh = am.h;
     const swimTq = Math.round(swimT * 8) / 8; // quantise so a fall reuses ~8 bakes
-    const key = `${sp.frame.texture.key}#${sp.frame.name}#foam${swimTq}#t${tilt}`;
+    const key = `${sp.frame.texture.key}#${sp.frame.name}#foam${swimTq}#t${tilt}${probe ? probe.suffix : ""}`;
     if (this.textures.exists(key)) return key;
+    if (!probe) this.foamLastArgs = [sp, s, feetY, swimT, tilt, span];
+    const tBake = performance.now();
     const lineY0 = (feetY + (s.ly - feetY) * swimT) * fh; // crest row at column s.lx
     const lineY1 = (feetY + (s.ry - feetY) * swimT) * fh; // crest row at column s.rx
     const x0 = s.lx * fw, x1 = s.rx * fw;
@@ -18254,6 +18308,38 @@ export class WorldScene extends Phaser.Scene {
     const half = Math.max(1, (spanMax - spanMin) / 2);
     const dSlope = tilt / (half * 1.5); // gentle rotation; the ±≤1px lives only
     // at the outer columns, which fade out — so it can't open a visible gap
+    /* THE BYTES PATH: the same pixels, written straight (each is written once,
+     * so nothing blends), with the alpha the canvas would store — the CSS
+     * alpha is the 3-decimal string, rounded to a byte. Uploaded by
+     * addUint8Array (NEAREST, premultiplied on upload like a canvas). */
+    const useBytes = (probe ? probe.bytes : this.foamBytesOn) && this.t3rawCapable();
+    if (useBytes) {
+      const data = new Uint8Array(fw * fh * 4);
+      let anyB = false;
+      const put = (x: number, y: number, r: number, g: number, b: number, a: number) => {
+        const o = (y * fw + x) * 4;
+        data[o] = r;
+        data[o + 1] = g;
+        data[o + 2] = b;
+        data[o + 3] = a;
+      };
+      for (let x = lo; x <= hi; x++) {
+        const cy0 = Math.round(curveY(x));
+        if (x >= spanMin && x <= spanMax && !opaqueAbove(x, cy0)) continue;
+        const cy = cy0 + Math.round(dSlope * (x - cx));
+        if (cy < 0 || cy >= fh) continue;
+        const fade = Math.max(0, Math.min(1, Math.min(x - lo, hi - x) / FADE));
+        if (fade <= 0.02) continue;
+        put(x, cy, 236, 248, 255, Math.round(Number((0.92 * fade).toFixed(3)) * 255));
+        const a2 = Math.round(Number((0.42 * fade).toFixed(3)) * 255);
+        for (let y = cy + 1; y < cy + 1 + Math.min(2, fh - cy - 1); y++) put(x, y, 6, 26, 34, a2);
+        anyB = true;
+      }
+      if (!anyB) return null;
+      (this.textures as unknown as { addUint8Array(k: string, d: Uint8Array, w: number, h: number): unknown }).addUint8Array(key, data, fw, fh);
+      this.noteFoamBake(tBake);
+      return key;
+    }
     const cnv = document.createElement("canvas");
     cnv.width = fw;
     cnv.height = fh;
@@ -18277,7 +18363,21 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!any) return null;
     this.textures.addCanvas(key, cnv);
+    this.noteFoamBake(tBake);
     return key;
+  }
+
+  private noteFoamBake(t0: number): void {
+    const ms = performance.now() - t0;
+    this.foamStats.bakes++;
+    this.foamStats.ms += ms;
+    if (ms > this.foamStats.maxMs) this.foamStats.maxMs = ms;
+  }
+
+  /** WebGL with addUint8Array (the terrain's addRaw test, without its dev off-switch). */
+  private t3rawCapable(): boolean {
+    const t = this.textures as unknown as { addUint8Array?: unknown };
+    return this.game?.renderer?.type === Phaser.WEBGL && typeof t.addUint8Array === "function";
   }
 
   /** Pick an existing animation, falling back run→walk→idle then default dir. */
