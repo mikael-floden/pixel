@@ -1260,6 +1260,10 @@ const GROUND_COMPOSE_MS = 2;
  * His 14:01 run: `repaintCells` 29-79 ms in one frame on every batch. */
 const GROUND_REPAINT_MS = 5;
 const GROUND_REPAINT_CHUNK = 12;
+/** A landed or owed cell is repainted when its column is within this many
+ *  world px of the camera's view; a farther one waits (t3stale) until the
+ *  camera comes this near, or never, if it scrolls off first. */
+const GROUND_NEAR_PX = 256;
 /** ONE COMPOSITION IS AN ATOM, AND ON HIS PHONE IT IS ~13 ms.
  *
  *  Measured: with GROUND_RING_MS already in force, `prefetch` still cost 15.64
@@ -4531,8 +4535,20 @@ export class WorldScene extends Phaser.Scene {
    *  highest storey (40 x 15 px), and a batch is a screen block, not a column
    *  (t3cellTopLevel, t3repaintBucket). `?groundrect=0` / Settings→Dev. */
   private groundRectOn = groundFlagOn("groundrect", "ml-groundrect");
+  /** REPAINT ONLY WHAT CAN BE SEEN SOON (his 21:13 run: 350-780 repaint runs a
+   *  window; headless, 92% of the cells a landing or a drain repainted were
+   *  outside the camera's view — the ground texture is ~14x the screen). A far
+   *  cell goes to `t3stale` and is repainted when the camera comes within
+   *  GROUND_NEAR_PX; it is forgotten when it leaves the texture or a full
+   *  paint covers it. `?groundlazy=0` / Settings→Dev. */
+  private groundLazyOn = groundFlagOn("groundlazy", "ml-groundlazy");
+  private t3stale = new Set<number>();
+  private t3staleScan = { x: NaN, y: NaN, frame: -1000 };
+  private t3staleStats = { parked: 0, promoted: 0, dropped: 0 };
   /** The last 64 cell repaints (top-level calls), read by `__ml.groundRepaintLog`. */
-  private groundRepaintLog: { ms: number; cells: number; w: number; h: number; walked: number; blits: number; depth: number }[] = [];
+  private groundRepaintLog: { ms: number; cells: number; w: number; h: number; walked: number; blits: number; depth: number; inView: number; why: string }[] = [];
+  /** Who asked for the repaint in flight (the log's `why`): landing, drain, retry, flip, probe. */
+  private groundRepaintWhy = "other";
   private groundDeferOn = groundFlagOn("grounddefer", "ml-grounddefer");
   /** Ground ops whose placement was NOT a whole texel — see t3Blit. Zero on
    *  this machine; the maintainer's device is the one that can say otherwise. */
@@ -5987,6 +6003,15 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.groundRectOn,
           state: () => (this.groundRectOn ? "on" : "off"),
+        },
+        {
+          label: "ground: repaint only near",
+          act: () => {
+            this.groundLazyOn = !this.groundLazyOn;
+            localStorage.setItem("ml-groundlazy", this.groundLazyOn ? "1" : "0");
+          },
+          get: () => this.groundLazyOn,
+          state: () => (this.groundLazyOn ? "on" : "off"),
         },
         {
           label: "ground: plates off-thread",
@@ -7975,6 +8000,18 @@ export class WorldScene extends Phaser.Scene {
         if (typeof on === "boolean") this.groundRectOn = on;
         return this.groundRectOn;
       },
+      /** Repaint only near the view (A/B), and the parked cells: how many, and how many
+       *  of them the camera sees RIGHT NOW (must be 0 but for a frame of travel). */
+      groundLazy: (on?: boolean) => {
+        if (typeof on === "boolean") this.groundLazyOn = on;
+        return this.groundLazyOn;
+      },
+      groundStale: () => {
+        const view = this.t3viewRect(0);
+        let visible = 0;
+        if (view) for (const idx of this.t3stale) if (this.t3cellMeets(idx, view)) visible++;
+        return { stale: this.t3stale.size, visible, ...this.t3staleStats };
+      },
       groundRepaintLog: () => {
         const log = this.groundRepaintLog;
         this.groundRepaintLog = [];
@@ -8699,6 +8736,7 @@ export class WorldScene extends Phaser.Scene {
        *  camera having moved between them. */
       groundHash: () =>
         new Promise<{ hash: string; w: number; h: number; anchor: { x: number; y: number } }>((resolve, reject) => {
+          this.t3flushStale();
           this.t3flushSlices();
           const rt = this.groundRT;
           if (!rt) return reject(new Error("no ground RT"));
@@ -8725,6 +8763,7 @@ export class WorldScene extends Phaser.Scene {
        *  grade moves between two frames and swamps a one-texel difference. */
       groundSnapshot: () =>
         new Promise<{ w: number; h: number; url: string } | null>((resolve, reject) => {
+          this.t3flushStale();
           this.t3flushSlices();
           const rt = this.groundRT;
           if (!rt) return reject(new Error("no ground RT"));
@@ -8930,6 +8969,7 @@ export class WorldScene extends Phaser.Scene {
        *  its world anchor), so two redraws can be diffed pixel by pixel. */
       groundSnap: () =>
         new Promise<{ png: string; w: number; h: number; anchor: { x: number; y: number } }>((resolve, reject) => {
+          this.t3flushStale();
           this.t3flushSlices();
           const rt = this.groundRT;
           if (!rt) return reject(new Error("no ground RT"));
@@ -14274,16 +14314,18 @@ export class WorldScene extends Phaser.Scene {
      * exactly the pop-in the hold exists to prevent. */
     this.t3tex?.armCompose(this.streamingHeld ? Infinity : (this.composeMsOverride ?? GROUND_COMPOSE_MS));
     // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
+    if (!this.repaintGroundPending) this.t3promoteStale();
     if (this.repaintGroundPending) {
       this.repaintGroundPending = false;
       this.repaintGroundPartial = false; // the full paint covers the landed cells
       this.groundDirtyCells = [];
+      this.t3stale.clear(); // ...and the parked ones
       // In slices when there is a picture to paint over (queueFullGroundSlices); else the next latch paints in full.
       if (!this.queueFullGroundSlices()) this.lastGround = { x: NaN, y: NaN };
       this.repaintStats.groundRuns++;
     } else if (this.repaintGroundPartial) {
       this.repaintGroundPartial = false;
-      const dirty = this.groundDirtyCells;
+      const dirty = this.t3keepNear(this.groundDirtyCells);
       this.groundDirtyCells = [];
       this.ps();
       /* UNDER A BUDGET (Task 1, 2026-09-24): the landed cells are painted in
@@ -14313,7 +14355,9 @@ export class WorldScene extends Phaser.Scene {
         }
         const chunk = dirty.slice(at, end);
         at += chunk.length;
+        this.groundRepaintWhy = "landing";
         this.repaintTiles3Cells(chunk);
+        this.groundRepaintWhy = "other";
         if (Number.isNaN(this.lastGround.x)) { at = dirty.length; break; }
         if (at < dirty.length && performance.now() - t0 >= GROUND_REPAINT_MS) break;
       }
@@ -18934,7 +18978,10 @@ export class WorldScene extends Phaser.Scene {
     a.mask = mask;
     a.top = this.indoorTop;
     this.ps();
-    this.repaintTiles3Cells([...cells]);
+    // The cells near the view now; the far ones when the camera comes near (t3keepNear).
+    this.groundRepaintWhy = "flip";
+    this.repaintTiles3Cells(this.t3keepNear([...cells]));
+    this.groundRepaintWhy = "other";
     this.pe("repaintCells");
     this.ps();
     this.rebuildOccluders();
@@ -19519,6 +19566,7 @@ export class WorldScene extends Phaser.Scene {
     this.repaintOccPending = false;
     this.repaintGroundPartial = false; // the full paint covers the landed cells
     this.groundDirtyCells = [];
+    this.t3stale.clear();
     this.lastGround = { x: NaN, y: NaN };
     this.lastOccl = { x: NaN, y: NaN };
     this.ps();
@@ -21660,6 +21708,102 @@ export class WorldScene extends Phaser.Scene {
     return Math.min(this.maxLevel, lv + 1);
   }
 
+  /** The camera's view in ground-texture coordinates, grown by `pad` world px. */
+  private t3viewRect(pad: number): { x0: number; y0: number; x1: number; y1: number } | null {
+    const a = this.groundAnchor;
+    if (!a) return null;
+    const v = this.cameras.main.worldView;
+    return { x0: v.x - a.ax - pad, y0: v.y - a.ay - pad, x1: v.x + v.width - a.ax + pad, y1: v.y + v.height - a.ay + pad };
+  }
+
+  /** Does this cell's column (the repaint's own reach) meet rect `r` (texture coords)? */
+  private t3cellMeets(idx: number, r: { x0: number; y0: number; x1: number; y1: number }): boolean {
+    const a = this.groundAnchor, f = this.t3?.frame, world = this.world;
+    if (!a || !f || !world) return true;
+    const col = idx % world.width, row = (idx - col) / world.width;
+    const cx = t3columnX(f, col, row) - a.ax;
+    if (cx + T3_TILE <= r.x0 || cx >= r.x1) return false;
+    const lh = this.geom.lh;
+    const top = t3columnY(f, col, row, this.groundRectOn ? this.t3cellTopLevel(col, row) : this.maxLevel) - T3_TOP_Y - lh - T3_TILE - a.ay;
+    const bot = t3columnY(f, col, row, 0) + T3_TILE + lh - a.ay;
+    return bot > r.y0 && top < r.y1;
+  }
+
+  /** Split cells into the ones to repaint now (near the view) and park the rest in `t3stale`. */
+  private t3keepNear(cells: number[]): number[] {
+    if (!this.groundLazyOn || !cells.length) return cells;
+    const near = this.t3viewRect(GROUND_NEAR_PX);
+    if (!near) return cells;
+    const out: number[] = [];
+    for (const idx of cells) {
+      if (this.t3cellMeets(idx, near)) out.push(idx);
+      else if (!this.t3stale.has(idx)) {
+        this.t3stale.add(idx);
+        this.t3staleStats.parked++;
+      }
+    }
+    return out;
+  }
+
+  /** Bring parked cells the camera has come near back to the landing repaint;
+   *  forget the ones that left the texture. On camera travel of 16 px or every
+   *  15 frames — a scan is a few thousand compares. */
+  private t3promoteStale(): void {
+    if (!this.t3stale.size) return;
+    if (!this.groundLazyOn) {
+      for (const idx of this.t3stale) this.groundDirtyCells.push(idx);
+      this.t3stale.clear();
+      this.repaintGroundPartial = true;
+      return;
+    }
+    const v = this.cameras.main.worldView;
+    const frame = this.game.loop.frame;
+    const sc = this.t3staleScan;
+    if (Math.abs(v.x - sc.x) + Math.abs(v.y - sc.y) < 16 && frame - sc.frame < 15) return;
+    sc.x = v.x;
+    sc.y = v.y;
+    sc.frame = frame;
+    const near = this.t3viewRect(GROUND_NEAR_PX);
+    if (!near) return;
+    let any = false;
+    for (const idx of this.t3stale) {
+      if (!this.t3cellOnTexture(idx)) {
+        this.t3stale.delete(idx);
+        this.t3staleStats.dropped++;
+      } else if (this.t3cellMeets(idx, near)) {
+        this.t3stale.delete(idx);
+        this.groundDirtyCells.push(idx);
+        this.t3staleStats.promoted++;
+        any = true;
+      }
+    }
+    if (any) this.repaintGroundPartial = true;
+  }
+
+  /** Repaint every parked cell now — before a probe reads the whole texture:
+   *  the contract "pixel-identical to a full paint" holds once nothing is parked
+   *  (the far region is stale by design until the camera comes near). */
+  private t3flushStale(): void {
+    if (!this.t3stale.size) return;
+    const cells = [...this.t3stale].filter((i) => this.t3cellOnTexture(i));
+    this.t3stale.clear();
+    if (!cells.length) return;
+    const bk = new Map<number, number>();
+    for (const i of cells) bk.set(i, this.t3repaintBucket(i));
+    cells.sort((x, y) => bk.get(x)! - bk.get(y)! || x - y);
+    let at = 0;
+    while (at < cells.length) {
+      const k0 = bk.get(cells[at])!;
+      let e = at + 1;
+      while (e < cells.length && e - at < GROUND_REPAINT_CHUNK && bk.get(cells[e]) === k0) e++;
+      this.groundRepaintWhy = "flush";
+      this.repaintTiles3Cells(cells.slice(at, e));
+      this.groundRepaintWhy = "other";
+      at = e;
+      if (Number.isNaN(this.lastGround.x)) break; // the next latch paints in full
+    }
+  }
+
   /** A screen block of 8x8 lattice steps: a repaint batch stays inside one, so
    *  its rect is compact (column order let a batch span the texture's height). */
   private t3repaintBucket(idx: number): number {
@@ -21889,7 +22033,19 @@ export class WorldScene extends Phaser.Scene {
     this.groundCellStats.cells += cells.length;
     const runMs = performance.now() - t0;
     this.groundCellStats.ms += runMs;
-    this.groundRepaintLog.push({ ms: +runMs.toFixed(2), cells: cells.length, w: x1 - x0, h: y1 - y0, walked: this.t3stats.cells, blits: this.t3stats.blits, depth });
+    // How many of the run's cells the player could see (their column meets the camera's view).
+    let inView = 0;
+    {
+      const v = this.cameras.main.worldView;
+      const vx0 = v.x - a.ax, vy0 = v.y - a.ay, vx1 = vx0 + v.width, vy1 = vy0 + v.height;
+      for (let i = 0; i < kept.length; i++) {
+        const top = keptY[i], cx = keptX[i];
+        const col = kept[i] % world.width, row = (kept[i] - col) / world.width;
+        const bot = t3columnY(f, col, row, 0) + T3_TILE + lh - a.ay;
+        if (cx + T3_TILE > vx0 && cx < vx1 && bot > vy0 && top < vy1) inView++;
+      }
+    }
+    this.groundRepaintLog.push({ ms: +runMs.toFixed(2), cells: kept.length, w: x1 - x0, h: y1 - y0, walked: this.t3stats.cells, blits: this.t3stats.blits, depth, inView, why: this.groundRepaintWhy });
     if (this.groundRepaintLog.length > 64) this.groundRepaintLog.shift();
   }
 
@@ -22074,7 +22230,9 @@ export class WorldScene extends Phaser.Scene {
     // Its own section: with the compose worker this is where landed rasters
     // reach the ground, and the phone's beacon must be able to name it.
     this.ps();
+    this.groundRepaintWhy = "retry";
     this.repaintTiles3Cells(ready);
+    this.groundRepaintWhy = "other";
     this.pe("landRepaint");
     /* ONLY A RAISED REPAIR TOUCHES THE OCCLUDERS, and only the cells the walk
      * left INCOMPLETE (rebuildOccluders): a level-0 field cell emits no
@@ -22973,9 +23131,12 @@ export class WorldScene extends Phaser.Scene {
       while (e < n && this.t3repaintBucket(this.t3drainQueue[e]) === k0) e++;
       n = e;
     }
-    const group = this.t3drainQueue.splice(0, n);
+    const group = this.t3keepNear(this.t3drainQueue.splice(0, n));
+    if (!group.length) return;
     this.ps();
+    this.groundRepaintWhy = "drain";
     this.repaintTiles3Cells(group);
+    this.groundRepaintWhy = "other";
     this.pe("repaintCells");
   }
   /** Was the terrain loader idle last frame? — see t3drainDrops. */
@@ -25034,6 +25195,7 @@ export class WorldScene extends Phaser.Scene {
       this.groundAnchor = { ax, ay, mask, top };
       this.groundLastMode = "full";
       this.groundFullRuns++;
+      this.t3stale.clear(); // a full paint drew every parked cell with the art it has now
       return;
     }
   }

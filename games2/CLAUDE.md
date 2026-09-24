@@ -154,13 +154,14 @@ push, no PRs unless asked.
 **Perf** (`docs/perf.md`)
 - The capture pool is ALWAYS ON: no draw bracket may resize Phaser's capture
   target (that re-allocation WAS the new-area lag).
-- The ground scrolls, paints in slices, repaints landed cells (budgeted); a
-  full paint in play is sliced; compositions budgeted; pixel-identical to
-  a full paint (`__ml.groundHash`); a landing walks `occIncomplete`. A
-  tab-in poisons the latch; `?ground=legacy` bisects. A band pass walks
-  only cells reaching it, builds no plate; a repaint is cell-sized.
-- Pacing (`pacing.ts`): a steady 30 when 60 is not held. Terrain bake
-  (`terrainbake.ts`) is OPT-IN: his run read it slower.
+- The ground scrolls, paints in slices, repaints landed cells (budgeted,
+  cell-sized, near the view; far ones park); a full paint in play is
+  sliced; compositions budgeted; a band walks only cells reaching it,
+  builds no plate; pixel-identical to a full paint (`__ml.groundHash`
+  flushes the parked); a landing walks `occIncomplete`. A tab-in poisons
+  the latch; `?ground=legacy` bisects.
+- Pacing (`pacing.ts`): a steady 30 when 60 is not held. The terrain
+  bake is OPT-IN.
 - The beacon: `sections` are window means, `counts` snapshots (never
   correlate); allowlisted server-side (`verify-beacon.mjs`; `perf-read.mjs`
   reads runs).

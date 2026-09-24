@@ -18,34 +18,47 @@ for (let t0 = Date.now(); ; ) { try { if ((await fetch(origin + "/health")).ok) 
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome", args: ["--no-sandbox", "--disable-dev-shm-usage", "--enable-webgl", "--ignore-gpu-blocklist", "--use-gl=angle", "--use-angle=swiftshader"] });
 const spots = process.argv.includes("--spot") ? [process.argv[process.argv.indexOf("--spot") + 1].split(",").map(Number)] : [[96, 244], [104, 240], [168, 120], [328, 232]];
 let extentBad = 0;
-for (const [label, on] of (process.argv.includes("--on-only") ? [["sized repaint ON", true]] : [["sized repaint OFF", false], ["sized repaint ON", true]])) {
+const modeDefer = process.argv.includes("--defer");
+const modeLazy = process.argv.includes("--lazy");
+const cases = modeLazy ? [["repaint only near OFF", { l: "0" }], ["repaint only near ON", { l: "1" }]] : modeDefer ? [["plates off-thread OFF", { d: "0" }], ["plates off-thread ON", { d: "1" }]] : (process.argv.includes("--on-only") ? [["sized repaint ON", { r: "1" }]] : [["sized repaint OFF", { r: "0" }], ["sized repaint ON", { r: "1" }]]);
+for (const [label, set] of cases) {
   const ctx = await browser.newContext({ viewport: { width: 412, height: 732 }, serviceWorkers: "block" });
   const page = await ctx.newPage();
-  await page.addInitScript((v) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "B" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-groundrect", v ? "1" : "0"); }, on);
+  await page.addInitScript((v) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "B" })); sessionStorage.setItem("ml-rejoin", "1"); if (v.r) localStorage.setItem("ml-groundrect", v.r); if (v.d) localStorage.setItem("ml-grounddefer", v.d); if (v.l) localStorage.setItem("ml-groundlazy", v.l); }, set);
   await page.goto(origin + "/", { waitUntil: "commit" });
   await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 180000, polling: 100 });
-  console.log(`=== ${label} (switch reads ${await page.evaluate(() => window.__ml.groundRect())})`);
+  console.log(`=== ${label} (rect ${await page.evaluate(() => window.__ml.groundRect())}, defer ${await page.evaluate(() => window.__ml.groundDefer())}, lazy ${await page.evaluate(() => window.__ml.groundLazy())})`);
+  const all = [];
+  let staleVisibleMax = 0, staleSamples = 0, staleVisibleSamples = 0;
   for (const [sx, sy] of spots) {
     await page.evaluate(() => window.__ml.groundRepaintLog());
     await page.evaluate(([x, y]) => window.__ml.teleport(x, y), [sx, sy]);
     const rows = [];
     for (let i = 0; i < 24; i++) {
       await sleep(500);
-      if (i >= 8 && i < 20) await page.evaluate(([x, y, k]) => window.__ml.teleport(x, y), [sx + (i - 7) * 1.0, sy + (i - 7) * 0.5]);
+      if (i >= 8 && i < 20) await page.evaluate(([x, y]) => window.__ml.teleport(x, y), [sx + (i - 7) * 1.0, sy + (i - 7) * 0.5]);
       for (const r of await page.evaluate(() => window.__ml.groundRepaintLog())) rows.push(r);
+      const st = await page.evaluate(() => window.__ml.groundStale());
+      staleSamples++;
+      if (st.visible > 0) staleVisibleSamples++;
+      if (st.visible > staleVisibleMax) staleVisibleMax = st.visible;
     }
-    rows.sort((a, b) => b.ms - a.ms);
+    const by = {};
+    for (const r of rows) { const b = (by[r.why] ??= { n: 0, ms: 0, cells: 0, inView: 0 }); b.n++; b.ms += r.ms; b.cells += r.cells; b.inView += r.inView; }
     const sum = (k) => rows.reduce((n, r) => n + r[k], 0);
-    const mean = (k) => (rows.length ? (sum(k) / rows.length).toFixed(0) : "-");
-    console.log(`spot ${sx},${sy}: ${rows.length} repaints, ${sum("ms").toFixed(0)} ms total, worst ${rows[0]?.ms ?? 0} ms | mean rect ${mean("w")}x${mean("h")}, cells ${mean("cells")}, walked ${mean("walked")}, blits ${mean("blits")}`);
-    if (on) {
+    console.log(`spot ${sx},${sy}: ${rows.length} repaints ${sum("ms").toFixed(0)} ms, ${sum("cells")} cells of which on screen ${sum("inView")} | ${Object.entries(by).map(([k, b]) => `${k} ${b.n}x/${b.ms.toFixed(0)}ms/${b.cells}c(${b.inView} seen)`).join(", ")}`);
+    all.push(...rows);
+    if (set.r === "1" && !modeDefer && !modeLazy) {
       const ex = await page.evaluate(() => window.__ml.groundExtentCheck(250));
-      console.log(`  extent: ${JSON.stringify(ex).slice(0, 400)}`);
+      console.log(`  extent: ${JSON.stringify(ex).slice(0, 300)}`);
       if (ex.error || ex.outside > 0) extentBad++;
     }
   }
+  const tot = (k) => all.reduce((n, r) => n + r[k], 0);
+  const st = await page.evaluate(() => window.__ml.groundStale());
+  console.log(`TOTAL ${label}: ${all.length} repaints, ${tot("ms").toFixed(0)} ms, ${tot("cells")} cells, on screen ${tot("inView")} (${(100 * tot("inView") / Math.max(1, tot("cells"))).toFixed(0)}%) | parked ${st.parked} promoted ${st.promoted} forgotten ${st.dropped} still parked ${st.stale} | stale cells on screen: max ${staleVisibleMax}, in ${staleVisibleSamples} of ${staleSamples} samples`);
   await ctx.close();
 }
-console.log(extentBad ? `EXTENT: ${extentBad} spot(s) painted above the sized rect` : "EXTENT OK");
+if (!modeDefer && !modeLazy) console.log(extentBad ? `EXTENT: ${extentBad} spot(s) painted above the sized rect` : "EXTENT OK");
 await browser.close();
 stop();

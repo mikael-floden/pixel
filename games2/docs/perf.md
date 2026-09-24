@@ -457,6 +457,29 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   check (`__ml.groundExtentCheck`) draws each of 250 cells alone into the
   cleared scratch at each place and requires no texel above its sized rect —
   1,000 of 1,000.
+- **REPAINT ONLY WHAT CAN BE SEEN SOON** (2026-09-24, same run). Measured
+  headless (`scripts/probe-repaint.mjs`, `why`/`inView` in
+  `__ml.groundRepaintLog`): 92% of the cells a landing or a drain repainted
+  lay outside the camera's view — the ground texture is ~14x the screen, and a
+  landing repaints every cell that asked for the file wherever it lies. Now a
+  landed, owed (drain) or flipped (indoor) cell is repainted only when its
+  column is within `GROUND_NEAR_PX` 256 of the view (`t3keepNear`); a farther
+  one is PARKED (`t3stale`) and brought back to the landing repaint when the
+  camera comes that near (`t3promoteStale`, on 16 px of travel or every 15
+  frames), forgotten when it leaves the texture (the band paints it fresh if it
+  comes back), and cleared by any full paint. THE CONTRACT MOVES WITH IT: the
+  texture equals a full paint once nothing is parked — `groundHash`,
+  `groundSnapshot`, `groundSnap` repaint every parked cell first
+  (`t3flushStale`), as they already flush owed slices. MEASURED headless on the
+  same walks (his places 96,244 / 104,240 / 168,120 / 328,232), two A/Bs that
+  disagree, so the honest number is the smaller: cells repainted 3,094 →
+  2,539 (-18%; 1,121 of 2,459 parked cells left the texture unpainted), repaint
+  runs about equal (promoted cells come back in smaller batches); the first
+  A/B read 184 → 12 runs and did not reproduce. `__ml.groundStale().visible`
+  (parked cells the camera sees) read 0 in 96 of 96 samples in both. `?groundlazy=0` / Settings→Dev
+  "ground: repaint only near". ALSO MEASURED: plates on the worker (410d19f944)
+  add ~30% repaint runs (the drain repaints the cells whose plate dropped);
+  near-only makes most of those park.
 - **THE FPS METER IS A DEV BUTTON** (maintainer 2026-09-24): Settings/dev
   "fps meter" mounts `fpsbadge.ts`'s corner readout (fps, worst frame,
   hitches over 5 s) and remembers per device (localStorage `ml-fps`, the
