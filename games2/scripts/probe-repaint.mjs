@@ -20,6 +20,30 @@ const spots = process.argv.includes("--spot") ? [process.argv[process.argv.index
 let extentBad = 0;
 const modeDefer = process.argv.includes("--defer");
 const modeLazy = process.argv.includes("--lazy");
+if (process.argv.includes("--boundary")) {
+  // THE BOUNDARY'S SECOND RESOLVE: at his places, slopes off and on, every nearby cell's boundary
+  // resolved the old way and with the cached cell passed in — equal, and timed.
+  let differ = 0;
+  for (const slope of ["0", "100"]) {
+    const ctx = await browser.newContext({ viewport: { width: 412, height: 732 }, serviceWorkers: "block" });
+    const page = await ctx.newPage();
+    await page.addInitScript((sl) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "B" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-slope-height", sl); }, slope);
+    await page.goto(origin + "/", { waitUntil: "commit" });
+    await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 180000, polling: 100 });
+    for (const [x, y] of [[297, 252], [96, 244], [168, 120], [258, 217], [441, 364]]) {
+      await page.evaluate(([a, b]) => window.__ml.teleport(a, b), [x, y]);
+      await sleep(5000);
+      const r = await page.evaluate(() => window.__ml.boundaryParity(2500));
+      console.log(`slope ${slope}% ${x},${y}: ${JSON.stringify(r)}`);
+      differ += r.differ ?? 1;
+    }
+    await ctx.close();
+  }
+  console.log(differ ? `BOUNDARY: ${differ} cells differ` : "BOUNDARY OK — identical everywhere");
+  await browser.close();
+  stop();
+  process.exit(differ ? 1 : 0);
+}
 if (process.argv.includes("--foam")) {
   // THE SWIM FOAM BAKE: cross his loop's stream (151-179, 126.6) with the canvas path and the byte path,
   // in fresh pages; then bake the same foam both ways and compare the GPU texels.

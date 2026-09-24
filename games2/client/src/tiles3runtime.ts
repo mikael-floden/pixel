@@ -228,10 +228,16 @@ export class Tiles3World {
 
   /** THE COMPOSED BOUNDARY this cell wears, for a draw pass that composes it in
    *  its own layer. Same call `resolveCell` makes. */
-  boundary(x: number, y: number): Tiles3Boundary | null {
+  boundary(x: number, y: number, known?: Tiles3Cell | null): Tiles3Boundary | null {
     const b = this.bounds;
     if (x < b.x0 || y < b.y0 || x >= b.x1 || y >= b.y1) return null;
     const t0 = now();
+    /* `known`: THE CELL THE CALLER ALREADY RESOLVED at this (x, y) — the scene's
+     * per-cell cache, the worker's own call just above. Resolving it again here
+     * was a full resolveCell per boundary (17-30 µs each in his 21:13 run against
+     * 0.8-1.5 µs before 24d722defc). Same inputs, same cell. A null `known`
+     * (no cell, or a resolve that threw) re-resolves as before, so the error path
+     * is unchanged. */
     /* ONE EVALUATION OF THE BOUNDARY RULE, NOT TWO. A cell that wears a slope
      * decided its boundary in `wangSurface` — the foot yielded to the slope
      * and the slope became the tile's own side — and that decision lives on
@@ -242,7 +248,7 @@ export class Tiles3World {
      * 2026-09-24 at 297,252, the ground pass's ops were the slope raster and
      * the sprite on top was `t3x:119|c:black_rock…`, the cliff foot, at the
      * plain anchor — "not a single slope" on every terrace, twice over. */
-    const c = this.cell(x, y);
+    const c = known ?? this.cell(x, y);
     /* RAMPS TOO. The composed ramp's cell decided "a ramp wins over a
      * boundary, the foot yields" (wangSurface); re-asking here handed 1,078
      * of the_game's 1,714 ramp cells the cliff-foot transition back — the

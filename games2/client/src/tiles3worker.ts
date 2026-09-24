@@ -159,7 +159,7 @@ function resolve(msg: WorkerResolve): void {
       cell = null;
     }
     try {
-      boundary = t3.boundary(col, row);
+      boundary = t3.boundary(col, row, cell); // the cell resolved just above, not a second resolve
     } catch {
       boundary = null;
     }

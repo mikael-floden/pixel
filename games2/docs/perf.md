@@ -499,6 +499,15 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   canvas. Not converted: `ringTextureFor` already asks `willReadFrequently` (a
   CPU canvas, its read-back a memcpy); `bodyatlas` is not wired; `flippedKey`
   has no caller.
+- **A BOUNDARY IS NOT A SECOND RESOLVE** (`Tiles3World.boundary(x, y, known?)`,
+  2026-09-24). Since 24d722defc the boundary lookup resolved its cell again
+  (a slope's boundary lives on the cell), uncached: 17-30 µs per boundary in
+  his 21:13 run against 0.8-1.5 before. Callers that already hold the cell pass
+  it — the scene's per-cell cache (`t3boundaryOf`), the resolve worker's own
+  call just above; a null `known` re-resolves as before, so the error path is
+  unchanged. MEASURED headless (`probe-repaint.mjs --boundary`,
+  `__ml.boundaryParity`): 25,000 cells at five places, slopes 0% and 100%,
+  identical both ways; 6-23 µs → 0.8-4 µs a boundary.
 - **REJECTED 2026-09-24: "one ground job a frame"** (58da4b2202, reverted the
   same hour). It stood the band slice and the drain group down on a frame whose
   landing repaint had painted (his 21:13 run: 64 of 192 worst frames stacked a

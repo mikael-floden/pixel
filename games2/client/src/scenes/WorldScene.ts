@@ -8053,6 +8053,36 @@ export class WorldScene extends Phaser.Scene {
         }
         return { frame: `${sp.frame.texture.key}#${sp.frame.name}`, swimT, out };
       },
+      /** BOUNDARY PARITY: for up to `n` cells around the player, the boundary resolved the old
+       *  way (a second resolve inside) and with the cached cell passed in — equal, and timed. */
+      boundaryParity: (n = 2000) => {
+        const t3 = this.t3, world = this.world, me = this.mePos();
+        if (!t3 || !world || !me) return { error: "not ready" };
+        const cx = Math.floor(me.x), cy = Math.floor(me.y);
+        let checked = 0, differ = 0, withB = 0, msOld = 0, msNew = 0;
+        const bad: unknown[] = [];
+        for (let r = 0; checked < n && r < 60; r++)
+          for (let dy = -r; dy <= r; dy++)
+            for (let dx = -r; dx <= r; dx++) {
+              if (Math.max(Math.abs(dx), Math.abs(dy)) !== r || checked >= n) continue;
+              const c = cx + dx, w = cy + dy;
+              if (c < 0 || w < 0 || c >= world.width || w >= world.height) continue;
+              let cell: ReturnType<typeof t3.cell> = null;
+              try { cell = t3.cell(c, w); } catch { continue; }
+              let bo: unknown = null, bn: unknown = null;
+              const t0 = performance.now();
+              try { bo = t3.boundary(c, w); } catch { bo = "throw"; }
+              const t1 = performance.now();
+              try { bn = t3.boundary(c, w, cell); } catch { bn = "throw"; }
+              const t2 = performance.now();
+              msOld += t1 - t0;
+              msNew += t2 - t1;
+              checked++;
+              if (bo) withB++;
+              if (JSON.stringify(bo) !== JSON.stringify(bn)) { differ++; if (bad.length < 5) bad.push({ c, w }); }
+            }
+        return { checked, withBoundary: withB, differ, usOld: +((msOld * 1000) / Math.max(1, checked)).toFixed(2), usNew: +((msNew * 1000) / Math.max(1, checked)).toFixed(2), bad };
+      },
       groundLazy: (on?: boolean) => {
         if (typeof on === "boolean") this.groundLazyOn = on;
         return this.groundLazyOn;
@@ -21134,7 +21164,7 @@ export class WorldScene extends Phaser.Scene {
   private t3boundaryOf(t3: Tiles3World, col: number, row: number): Tiles3Boundary | null {
     if (!this.groundCacheOn) return this.t3Try(`boundary ${col},${row}`, () => t3.boundary(col, row), null);
     const e = this.t3entry(col, row);
-    if (e.boundary === undefined) e.boundary = this.t3Try(`boundary ${col},${row}`, () => t3.boundary(col, row), null);
+    if (e.boundary === undefined) e.boundary = this.t3Try(`boundary ${col},${row}`, () => t3.boundary(col, row, this.t3cellOf(t3, col, row)), null);
     return e.boundary;
   }
   private t3decksOf(t3: Tiles3World, col: number, row: number): Tiles3DeckCell[] {
