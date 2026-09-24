@@ -1,0 +1,140 @@
+{
+  "id": "chough_flock",
+  "name": "Choughflock",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "They laugh at climbers from the cliff and the cliff laughs with them.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Tight cluster of black choughs with red beaks and legs moving as one wheeling mass, many red eyes.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "chough_flock/rotations/south.webp",
+    "south-east": "chough_flock/rotations/south-east.webp",
+    "east": "chough_flock/rotations/east.webp",
+    "north-east": "chough_flock/rotations/north-east.webp",
+    "north": "chough_flock/rotations/north.webp",
+    "north-west": "chough_flock/rotations/north-west.webp",
+    "west": "chough_flock/rotations/west.webp",
+    "south-west": "chough_flock/rotations/south-west.webp"
+  },
+  "sheet": "chough_flock/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f17f28e0-425e-4e69-9bcb-b3444b6b9a02",
+  "seed": 680066244,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:30:35+00:00",
+  "elapsed_s": 408.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.681,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.691,
+        "bbox": [
+          2,
+          6,
+          37,
+          36
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.719,
+        "bbox": [
+          4,
+          5,
+          35,
+          36
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.695,
+        "bbox": [
+          3,
+          5,
+          36,
+          35
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.681,
+        "bbox": [
+          4,
+          4,
+          36,
+          34
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.71,
+        "bbox": [
+          3,
+          5,
+          38,
+          36
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.703,
+        "bbox": [
+          4,
+          5,
+          37,
+          35
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.703,
+        "bbox": [
+          4,
+          5,
+          35,
+          35
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.709,
+        "bbox": [
+          5,
+          5,
+          36,
+          36
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      }
+    }
+  }
+}
