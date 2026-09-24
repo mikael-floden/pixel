@@ -1,0 +1,141 @@
+{
+  "id": "snow_crone",
+  "name": "Snowcrone",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "She sweeps the snow into your tracks so nobody follows you home.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Hunched old woman of packed snow with a black twig broom, coal eyes, a shawl of ice, leaving no footprints.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snow_crone/rotations/south.webp",
+    "south-east": "snow_crone/rotations/south-east.webp",
+    "east": "snow_crone/rotations/east.webp",
+    "north-east": "snow_crone/rotations/north-east.webp",
+    "north": "snow_crone/rotations/north.webp",
+    "north-west": "snow_crone/rotations/north-west.webp",
+    "west": "snow_crone/rotations/west.webp",
+    "south-west": "snow_crone/rotations/south-west.webp"
+  },
+  "sheet": "snow_crone/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fadc9dbd-9d68-486f-b6c3-1aa4e319a778",
+  "seed": 1157050530,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:59:13+00:00",
+  "elapsed_s": 1537.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.718,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.751,
+        "bbox": [
+          3,
+          3,
+          80,
+          84
+        ],
+        "fill": 0.805,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.822,
+        "bbox": [
+          14,
+          4,
+          76,
+          85
+        ],
+        "fill": 0.649,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.812,
+        "bbox": [
+          13,
+          4,
+          66,
+          86
+        ],
+        "fill": 0.561,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.739,
+        "bbox": [
+          12,
+          2,
+          86,
+          85
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.718,
+        "bbox": [
+          11,
+          3,
+          86,
+          84
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.722,
+        "bbox": [
+          18,
+          2,
+          74,
+          85
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.777,
+        "bbox": [
+          21,
+          4,
+          75,
+          86
+        ],
+        "fill": 0.572,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.81,
+        "bbox": [
+          2,
+          4,
+          79,
+          86
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      }
+    }
+  }
+}
