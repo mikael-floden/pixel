@@ -349,7 +349,10 @@ def generate_one(client, cfg, design, version, verbose=True, adopt=None):
 
 def cmd_generate(args):
     cfg = load_cfg()
-    if not args.redo:
+    # A SHARD OF A PARALLEL RUN DOES NOT RECONCILE. Reconcile acts on removals
+    # and GRADUATES — fifteen shards doing that at once would race on the same
+    # monsters and the feedback file. The workflow reconciles once, at the end.
+    if not args.redo and not os.environ.get("MONSTERS_SHARD"):
         reconcile(cfg, client=_client_or_none())
     only = set(args.only.split(",")) if args.only else None
     todo = []

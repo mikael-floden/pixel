@@ -1,0 +1,111 @@
+name: monsters candidates
+
+# GENERATE CANDIDATE BASES WHERE A RESTART CANNOT KILL THEM (2026-09-24).
+# The 200 v3 bases ran as background workers in an agent container, and the
+# container restarted twice in an hour, killing all fifteen each time with
+# nothing to say so. PixelLab's queue takes ~15 minutes a base, so the run is
+# hours long; here it is fifteen matrix shards, each committing a base the
+# moment it lands (disjoint folders, so shards never conflict), and one final
+# job that reconciles, rebuilds the index and pushes.
+#
+# A base PixelLab finishes after a shard stops waiting is not lost: generate
+# adopts an untagged character carrying the design's exact name before it
+# spends anything, so a re-run of this workflow picks it up for free.
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: "config batch to generate (candidates with batch == this)"
+        default: "v3"
+      shards:
+        description: "parallel shards (PixelLab allows 20 jobs at once)"
+        default: "15"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monsters-candidates
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.p.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 1, sparse-checkout: monsters/config }
+      - id: p
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          n = int("${{ inputs.shards }}")
+          print("matrix=" + json.dumps({"shard": list(range(n))}))
+          PY
+
+  generate:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 1 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt
+      - name: Generate this shard, committing each base as it lands
+        env:
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+          MONSTERS_SHARD: ${{ matrix.shard }}
+        run: |
+          [ -n "$PIXELLAB_API_KEY" ] || { echo "::warning::no PIXELLAB_API_KEY"; exit 0; }
+          git config user.name "pixel-monsters-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          sleep $(( ${{ matrix.shard }} * 6 ))
+          ids=$(python3 - <<'PY'
+          import json, os
+          c = json.load(open("monsters/config/candidates.json"))
+          v = [d for d in c["candidates"] if d.get("batch") == "${{ inputs.batch }}"]
+          order = [d["id"] for d in v if d.get("scale") != "big"] + [d["id"] for d in v if d.get("scale") == "big"]
+          todo = [i for i in order if not os.path.exists(f"monsters/candidates/{i}/candidate.json")]
+          n, k = int("${{ inputs.shards }}"), int("${{ matrix.shard }}")
+          print(" ".join(todo[k::n]))
+          PY
+          )
+          echo "shard ${{ matrix.shard }}: $ids"
+          for id in $ids; do
+            python -u monsters/pipeline/candidates.py generate --only "$id" --min-usd 0.30 || true
+            [ -f "monsters/candidates/$id/candidate.json" ] || continue
+            git add "monsters/candidates/$id"
+            git commit -q -m "monsters: candidate base $id (${{ inputs.batch }})"
+            git checkout -q -- monsters/candidates/index.json 2>/dev/null || true   # the finish job rebuilds it once
+            for i in 1 2 3 4 5 6; do
+              git pull -q --rebase origin main && git push -q origin HEAD:main && break
+              sleep $(( i * 5 ))
+            done
+          done
+
+  finish:
+    needs: generate
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 1 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt
+      - name: Rebuild the candidate index once, then push
+        run: |
+          git config user.name "pixel-monsters-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python3 -c "import sys;sys.path.insert(0,'monsters/pipeline');import candidates as c;c.rebuild_index(c.load_cfg())"
+          git add monsters/candidates/index.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "monsters: candidate index rebuilt after the ${{ inputs.batch }} run"
+          for i in 1 2 3 4; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
