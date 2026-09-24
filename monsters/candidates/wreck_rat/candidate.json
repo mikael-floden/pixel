@@ -1,0 +1,140 @@
+{
+  "id": "wreck_rat",
+  "name": "Wreckrat",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "The last one off the ship, and it took the ship with it.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Fat grey rat wearing a fragment of ship's timber as a shell, a rusted nail as a sword, sea water in its whiskers.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "wreck_rat/rotations/south.webp",
+    "south-east": "wreck_rat/rotations/south-east.webp",
+    "east": "wreck_rat/rotations/east.webp",
+    "north-east": "wreck_rat/rotations/north-east.webp",
+    "north": "wreck_rat/rotations/north.webp",
+    "north-west": "wreck_rat/rotations/north-west.webp",
+    "west": "wreck_rat/rotations/west.webp",
+    "south-west": "wreck_rat/rotations/south-west.webp"
+  },
+  "sheet": "wreck_rat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8196d4b8-b60f-487f-a463-479a9e05b7ec",
+  "seed": 14117168,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:36:15+00:00",
+  "elapsed_s": 195.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.689,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.723,
+        "bbox": [
+          3,
+          2,
+          34,
+          38
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.782,
+        "bbox": [
+          5,
+          2,
+          33,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.728,
+        "bbox": [
+          3,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.758,
+        "bbox": [
+          5,
+          2,
+          34,
+          38
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.689,
+        "bbox": [
+          6,
+          2,
+          34,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.748,
+        "bbox": [
+          6,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.729,
+        "bbox": [
+          4,
+          2,
+          37,
+          38
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.745,
+        "bbox": [
+          8,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      }
+    }
+  }
+}
