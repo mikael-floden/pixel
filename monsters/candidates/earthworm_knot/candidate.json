@@ -1,0 +1,143 @@
+{
+  "id": "earthworm_knot",
+  "name": "Wormknot",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "After rain it rises, and after sun it is gone.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Writhing knot of thick pink earthworms bound into a rough body with two clumps for arms, wet and shining, soil crumbs falling from it.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "earthworm_knot/rotations/south.webp",
+    "south-east": "earthworm_knot/rotations/south-east.webp",
+    "east": "earthworm_knot/rotations/east.webp",
+    "north-east": "earthworm_knot/rotations/north-east.webp",
+    "north": "earthworm_knot/rotations/north.webp",
+    "north-west": "earthworm_knot/rotations/north-west.webp",
+    "west": "earthworm_knot/rotations/west.webp",
+    "south-west": "earthworm_knot/rotations/south-west.webp"
+  },
+  "sheet": "earthworm_knot/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "de33f47f-bf15-4e1b-975d-31574b243d2b",
+  "seed": 1429983150,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:12:47+00:00",
+  "elapsed_s": 1.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.839,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.839,
+        "bbox": [
+          9,
+          5,
+          79,
+          83
+        ],
+        "fill": 0.705,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.87,
+        "bbox": [
+          17,
+          5,
+          74,
+          84
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.874,
+        "bbox": [
+          22,
+          4,
+          66,
+          85
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.859,
+        "bbox": [
+          18,
+          4,
+          71,
+          84
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.865,
+        "bbox": [
+          10,
+          5,
+          77,
+          82
+        ],
+        "fill": 0.666,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.854,
+        "bbox": [
+          16,
+          4,
+          70,
+          84
+        ],
+        "fill": 0.558,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.871,
+        "bbox": [
+          22,
+          4,
+          66,
+          84
+        ],
+        "fill": 0.455,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.866,
+        "bbox": [
+          14,
+          5,
+          71,
+          84
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      }
+    }
+  }
+}
