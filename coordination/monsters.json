@@ -1,8 +1,8 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-09-24T16:44:44+00:00",
+  "updated_at": "2026-09-24T18:19:25+00:00",
   "health": "running",
-  "current": "CLAIMED \u2014 generating the 200 v3 candidate bases (monsters/docs/candidates_v3.md, batch 'v3' in config). Estimated $12.92 against $7.09 on the account: small+standard first (more candidates per dollar), bigs after; stops at a $0.30 floor. FILES: monsters/config/candidates.json, monsters/candidates/<v3 ids>/**, monsters/candidates/index.json, coordination/monsters.json.",
+  "current": "CLAIMED \u2014 every open redo on main (his 14:55-16:18Z saves, 17 facings, none held by any board): ember_kit attack NE (+NW mirror); minotaur walk S; sand_scorpling attack S/SE/NE (+mirrors) reworded 'more aggressive, fast, reaches further'; plume_brawler attack reworded 'no hop, stays in frame' (+north missing) and die north (missing) / north-west. FILES: monsters/candidates/{ember_kit,minotaur,sand_scorpling,plume_brawler}/**, monsters/config/candidates.json (those designs), monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters.json. ALSO RUNNING (Actions, not this container): monsters-candidates.yml over the 200 v3 bases.",
   "progress": {
     "unit": "idle",
     "open_redos": 0,
