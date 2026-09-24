@@ -1,0 +1,143 @@
+{
+  "id": "shrew_pack",
+  "name": "Shrewpack",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "One shrew is harmless. There is never one.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Cluster of six tiny brown shrews moving as one clump, many black eyes and pink noses pointing in all directions, a single tangled tail.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shrew_pack/rotations/south.webp",
+    "south-east": "shrew_pack/rotations/south-east.webp",
+    "east": "shrew_pack/rotations/east.webp",
+    "north-east": "shrew_pack/rotations/north-east.webp",
+    "north": "shrew_pack/rotations/north.webp",
+    "north-west": "shrew_pack/rotations/north-west.webp",
+    "west": "shrew_pack/rotations/west.webp",
+    "south-west": "shrew_pack/rotations/south-west.webp"
+  },
+  "sheet": "shrew_pack/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7cd8daf1-785b-4468-891b-c5ca464b945c",
+  "seed": 862119945,
+  "version": 1,
+  "usage": {
+    "adopted": true
+  },
+  "generated_at": "2026-09-24T18:13:01+00:00",
+  "elapsed_s": 2.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.612,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.737,
+        "bbox": [
+          5,
+          6,
+          34,
+          33
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.696,
+        "bbox": [
+          8,
+          5,
+          34,
+          33
+        ],
+        "fill": 0.455,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.63,
+        "bbox": [
+          6,
+          6,
+          35,
+          33
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.675,
+        "bbox": [
+          7,
+          9,
+          35,
+          32
+        ],
+        "fill": 0.403,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.653,
+        "bbox": [
+          6,
+          9,
+          33,
+          30
+        ],
+        "fill": 0.354,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.655,
+        "bbox": [
+          5,
+          10,
+          32,
+          32
+        ],
+        "fill": 0.371,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.612,
+        "bbox": [
+          5,
+          9,
+          35,
+          33
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.707,
+        "bbox": [
+          5,
+          7,
+          35,
+          33
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      }
+    }
+  }
+}
