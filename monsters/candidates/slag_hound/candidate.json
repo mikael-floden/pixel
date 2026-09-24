@@ -1,0 +1,144 @@
+{
+  "id": "slag_hound",
+  "name": "Slaghound",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The smithy's dog, left too long by the forge.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Hound of grey slag with a glowing red seam along its spine, a jaw of black glass, dripping molten drool.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "slag_hound/rotations/south.webp",
+    "south-east": "slag_hound/rotations/south-east.webp",
+    "east": "slag_hound/rotations/east.webp",
+    "north-east": "slag_hound/rotations/north-east.webp",
+    "north": "slag_hound/rotations/north.webp",
+    "north-west": "slag_hound/rotations/north-west.webp",
+    "west": "slag_hound/rotations/west.webp",
+    "south-west": "slag_hound/rotations/south-west.webp"
+  },
+  "sheet": "slag_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c00245b9-54d6-424a-8db7-d674940eadca",
+  "seed": 478585619,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:28:15+00:00",
+  "elapsed_s": 1497.9,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.743,
+    "reasons": [
+      "east: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.822,
+        "bbox": [
+          23,
+          2,
+          68,
+          85
+        ],
+        "fill": 0.482,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.829,
+        "bbox": [
+          16,
+          2,
+          78,
+          86
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.833,
+        "bbox": [
+          0,
+          9,
+          86,
+          81
+        ],
+        "fill": 0.8,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.816,
+        "bbox": [
+          5,
+          5,
+          76,
+          85
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.802,
+        "bbox": [
+          22,
+          5,
+          64,
+          84
+        ],
+        "fill": 0.428,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.814,
+        "bbox": [
+          5,
+          6,
+          84,
+          84
+        ],
+        "fill": 0.796,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.824,
+        "bbox": [
+          1,
+          10,
+          88,
+          83
+        ],
+        "fill": 0.82,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.743,
+        "bbox": [
+          3,
+          2,
+          85,
+          86
+        ],
+        "fill": 0.889,
+        "touches_edge": false
+      }
+    }
+  }
+}
