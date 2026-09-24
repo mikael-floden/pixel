@@ -1,0 +1,141 @@
+{
+  "id": "midge_cloud",
+  "name": "Midgecloud",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It is a man in the same way a crowd is a man.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Dense grey cloud of tiny midges shaped roughly like a hunched man, two darker patches for eyes, edges constantly shifting.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "midge_cloud/rotations/south.webp",
+    "south-east": "midge_cloud/rotations/south-east.webp",
+    "east": "midge_cloud/rotations/east.webp",
+    "north-east": "midge_cloud/rotations/north-east.webp",
+    "north": "midge_cloud/rotations/north.webp",
+    "north-west": "midge_cloud/rotations/north-west.webp",
+    "west": "midge_cloud/rotations/west.webp",
+    "south-west": "midge_cloud/rotations/south-west.webp"
+  },
+  "sheet": "midge_cloud/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4dbba776-4891-4fa1-b641-f5e27f990a3c",
+  "seed": 1149587197,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T18:23:39+00:00",
+  "elapsed_s": 575.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.758,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.758,
+        "bbox": [
+          8,
+          4,
+          80,
+          84
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.846,
+        "bbox": [
+          12,
+          5,
+          73,
+          85
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.843,
+        "bbox": [
+          22,
+          4,
+          68,
+          85
+        ],
+        "fill": 0.481,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.813,
+        "bbox": [
+          16,
+          3,
+          70,
+          84
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.805,
+        "bbox": [
+          9,
+          3,
+          78,
+          83
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.82,
+        "bbox": [
+          17,
+          3,
+          72,
+          84
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.857,
+        "bbox": [
+          20,
+          4,
+          64,
+          85
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.848,
+        "bbox": [
+          15,
+          5,
+          76,
+          85
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      }
+    }
+  }
+}
