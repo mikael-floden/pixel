@@ -1,0 +1,140 @@
+{
+  "id": "shipwreck_golem",
+  "name": "Wreckgolem",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The ship broke on the rocks and the rocks could not keep it.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Golem of broken ship timbers, a figurehead's face for a head, rope tendons, an anchor for one arm.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shipwreck_golem/rotations/south.webp",
+    "south-east": "shipwreck_golem/rotations/south-east.webp",
+    "east": "shipwreck_golem/rotations/east.webp",
+    "north-east": "shipwreck_golem/rotations/north-east.webp",
+    "north": "shipwreck_golem/rotations/north.webp",
+    "north-west": "shipwreck_golem/rotations/north-west.webp",
+    "west": "shipwreck_golem/rotations/west.webp",
+    "south-west": "shipwreck_golem/rotations/south-west.webp"
+  },
+  "sheet": "shipwreck_golem/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fc876418-cd00-44e5-a8ef-beb2bf4ddcaf",
+  "seed": 1517862441,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:08:09+00:00",
+  "elapsed_s": 203.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.645,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.645,
+        "bbox": [
+          38,
+          8,
+          200,
+          215
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.719,
+        "bbox": [
+          46,
+          9,
+          186,
+          218
+        ],
+        "fill": 0.583,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.72,
+        "bbox": [
+          77,
+          8,
+          149,
+          217
+        ],
+        "fill": 0.3,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.674,
+        "bbox": [
+          48,
+          8,
+          166,
+          215
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.673,
+        "bbox": [
+          23,
+          7,
+          181,
+          211
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.677,
+        "bbox": [
+          38,
+          8,
+          166,
+          215
+        ],
+        "fill": 0.528,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.704,
+        "bbox": [
+          79,
+          8,
+          141,
+          217
+        ],
+        "fill": 0.258,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.71,
+        "bbox": [
+          56,
+          9,
+          182,
+          218
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      }
+    }
+  }
+}
