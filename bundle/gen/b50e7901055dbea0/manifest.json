@@ -1,6 +1,6 @@
 {
  "files": {
-  "index.html": "c2f975a0eb9c50dc",
+  "index.html": "9ecdca6e14efc7e3",
   "assets/artworker-661fce3db7.js": "661fce3db7967344",
   "assets/composeworker-de3d04132a.js": "de3d04132afaf40d",
   "assets/fly-7NCAHZ2X.webp": "b676eb013f1e963d",
@@ -12,7 +12,7 @@
   "assets/fly-W275LEDR.webp": "561e085999ee252a",
   "assets/fly-XANQ2PQ7.webp": "6356e3b6e41e8c25",
   "assets/fly-YPYMG4O3.webp": "c9a67f746d9f457a",
-  "assets/index-096b880aeb.js": "096b880aebf5a3ae",
+  "assets/index-7a5af33330.js": "7a5af333305a0a28",
   "assets/still-2I6DHTRM.webp": "de7f704b49e9aa00",
   "assets/still-H5PZSSF4.webp": "af27f10f077912b2",
   "assets/still-KGJ7S3HL.webp": "185d639d60ed7d5b",
@@ -23,8 +23,8 @@
   "assets/still-YHYMYXXT.webp": "629f4846084c221b",
   "assets/tiles3worker-02575339ed.js": "02575339ed01fc5b"
  },
- "git_sha": "4974db996f63511cfdbed13a99e2a3b9545aa841",
- "commit_ts": 1790277155,
+ "git_sha": "b636610f3fc02d2dca62f730e6d1684e97430b3f",
+ "commit_ts": 1790279175,
  "fallthrough": {
   "characters.json": "1b8b2f4c25538fc7",
   "chess/bb.webp": "8b70d137ceaa0f7a",
@@ -71,7 +71,12 @@
   "worlds.json": "1322d6cc52854d70"
  },
  "root": {
-  "shipset.json": "4439f86ac3416390"
+  "shipset.json": "a88d8f66e2b22a9c"
  },
- "art_bytes": 1962
+ "art": {
+  "monsters/config/roster.json": "579207092b7e4bcb",
+  "monsters/animation_map.json": "a760a1ecfbf9f148",
+  "monsters/config/candidates.json": "232a54ec304c14ab"
+ },
+ "art_bytes": 427122
 }
