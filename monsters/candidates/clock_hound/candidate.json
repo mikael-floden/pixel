@@ -1,0 +1,140 @@
+{
+  "id": "clock_hound",
+  "name": "Clockhound",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It chases the hour round the house.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Dog with a body of a brass mantel clock, a pendulum tail, cog ears, hands for a face spinning fast.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "clock_hound/rotations/south.webp",
+    "south-east": "clock_hound/rotations/south-east.webp",
+    "east": "clock_hound/rotations/east.webp",
+    "north-east": "clock_hound/rotations/north-east.webp",
+    "north": "clock_hound/rotations/north.webp",
+    "north-west": "clock_hound/rotations/north-west.webp",
+    "west": "clock_hound/rotations/west.webp",
+    "south-west": "clock_hound/rotations/south-west.webp"
+  },
+  "sheet": "clock_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e0a15407-b1c0-42d4-8fa6-8389da312ebf",
+  "seed": 340578036,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T20:54:47+00:00",
+  "elapsed_s": 232.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.814,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.832,
+        "bbox": [
+          25,
+          3,
+          68,
+          84
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.839,
+        "bbox": [
+          11,
+          3,
+          79,
+          84
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.848,
+        "bbox": [
+          5,
+          3,
+          84,
+          82
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.856,
+        "bbox": [
+          9,
+          3,
+          79,
+          82
+        ],
+        "fill": 0.714,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.86,
+        "bbox": [
+          21,
+          3,
+          60,
+          84
+        ],
+        "fill": 0.408,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.814,
+        "bbox": [
+          6,
+          3,
+          82,
+          85
+        ],
+        "fill": 0.805,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.857,
+        "bbox": [
+          2,
+          4,
+          83,
+          82
+        ],
+        "fill": 0.816,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.841,
+        "bbox": [
+          7,
+          3,
+          80,
+          84
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      }
+    }
+  }
+}
