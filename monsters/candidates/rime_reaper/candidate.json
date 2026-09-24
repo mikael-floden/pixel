@@ -1,0 +1,141 @@
+{
+  "id": "rime_reaper",
+  "name": "Rimereaper",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It harvests the ones the cold was always going to take.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Tall gaunt figure in a frost-white robe holding a scythe of ice, a face of blue shadow, snow falling only around it.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rime_reaper/rotations/south.webp",
+    "south-east": "rime_reaper/rotations/south-east.webp",
+    "east": "rime_reaper/rotations/east.webp",
+    "north-east": "rime_reaper/rotations/north-east.webp",
+    "north": "rime_reaper/rotations/north.webp",
+    "north-west": "rime_reaper/rotations/north-west.webp",
+    "west": "rime_reaper/rotations/west.webp",
+    "south-west": "rime_reaper/rotations/south-west.webp"
+  },
+  "sheet": "rime_reaper/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f7ef97c9-4ef5-4af2-b679-c401ee90657d",
+  "seed": 2107864570,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:46:51+00:00",
+  "elapsed_s": 229.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.76,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.772,
+        "bbox": [
+          7,
+          2,
+          82,
+          86
+        ],
+        "fill": 0.814,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.836,
+        "bbox": [
+          14,
+          1,
+          72,
+          87
+        ],
+        "fill": 0.644,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.779,
+        "bbox": [
+          23,
+          2,
+          82,
+          87
+        ],
+        "fill": 0.648,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.776,
+        "bbox": [
+          12,
+          2,
+          81,
+          87
+        ],
+        "fill": 0.757,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.76,
+        "bbox": [
+          8,
+          1,
+          74,
+          85
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.767,
+        "bbox": [
+          15,
+          2,
+          72,
+          87
+        ],
+        "fill": 0.626,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.793,
+        "bbox": [
+          13,
+          2,
+          65,
+          87
+        ],
+        "fill": 0.571,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.845,
+        "bbox": [
+          5,
+          2,
+          79,
+          87
+        ],
+        "fill": 0.812,
+        "touches_edge": false
+      }
+    }
+  }
+}
