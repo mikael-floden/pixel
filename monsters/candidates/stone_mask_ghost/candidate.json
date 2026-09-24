@@ -1,0 +1,140 @@
+{
+  "id": "stone_mask_ghost",
+  "name": "Maskstone",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The mask smiles. Nothing behind it smiles back.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Grey stone figure with a carved smiling face that is only a mask, cracks behind it show empty dark, arms of rubble.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stone_mask_ghost/rotations/south.webp",
+    "south-east": "stone_mask_ghost/rotations/south-east.webp",
+    "east": "stone_mask_ghost/rotations/east.webp",
+    "north-east": "stone_mask_ghost/rotations/north-east.webp",
+    "north": "stone_mask_ghost/rotations/north.webp",
+    "north-west": "stone_mask_ghost/rotations/north-west.webp",
+    "west": "stone_mask_ghost/rotations/west.webp",
+    "south-west": "stone_mask_ghost/rotations/south-west.webp"
+  },
+  "sheet": "stone_mask_ghost/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5ce2e0df-ebbc-4fc4-a91e-4141cbed87c2",
+  "seed": 913042600,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-24T21:41:08+00:00",
+  "elapsed_s": 353.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.774,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.774,
+        "bbox": [
+          2,
+          5,
+          85,
+          84
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.851,
+        "bbox": [
+          10,
+          4,
+          78,
+          85
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.843,
+        "bbox": [
+          23,
+          4,
+          64,
+          85
+        ],
+        "fill": 0.429,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.813,
+        "bbox": [
+          10,
+          3,
+          74,
+          84
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.808,
+        "bbox": [
+          7,
+          3,
+          81,
+          85
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.815,
+        "bbox": [
+          13,
+          3,
+          79,
+          87
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.84,
+        "bbox": [
+          24,
+          4,
+          64,
+          87
+        ],
+        "fill": 0.429,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.849,
+        "bbox": [
+          10,
+          4,
+          79,
+          86
+        ],
+        "fill": 0.731,
+        "touches_edge": false
+      }
+    }
+  }
+}
