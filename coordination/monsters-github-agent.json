@@ -1,12 +1,12 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T21:59:29+00:00",
+  "updated_at": "2026-09-24T22:01:15+00:00",
   "health": "running",
-  "current": "CLAIMED — his 21:56:51Z approval of monsters/candidates/hedge_maw (approved, rating 1): record the pick in the domain (animate.py approve --ids hedge_maw -> manifest review=approved + APPROVED tag on PixelLab, index rebuilt). NOT clearing the entry (review-contract law 2: an approval is never cleared). No animation generation this sitting. FILES: monsters/candidates/hedge_maw/candidate.json, monsters/candidates/index.json (regenerable, rebuilt from the filesystem on any conflict), coordination/monsters-github-agent.json. NOT touching live/feedback/monsters.json, monsters/config/candidates.json, or any candidate coordination/monsters.json names in flight.",
+  "current": "CLAIMED — HE IS REVIEWING THE NEW v3 BASES LIVE, one press every ~30s. Recording his candidate approvals: hedge_maw (21:56:51Z, SHIPPED be8abad77) + starfish_walker (21:58:37Z), sand_dollar_golem (21:59:33Z), boulder_toad (22:00:19Z), sea_glass_sprite (22:00:32Z) — all approved r1. animate.py approve --ids <them> -> manifest review=approved + APPROVED tag on PixelLab, index rebuilt from the filesystem. No entry cleared (law 2), no generation, $0.00. FILES: monsters/candidates/{hedge_maw,starfish_walker,sand_dollar_golem,boulder_toad,sea_glass_sprite}/candidate.json, monsters/candidates/index.json, coordination/monsters-github-agent.json. NOT MINE: his loom_widow REJECTION (21:59:45Z) — a drop rewrites monsters/config/candidates.json while monsters-candidates.yml is mid-run over the 200 bases and coordination/monsters.json names that file in flight. Also not mine: live/feedback/monsters.json, held in flight.",
   "progress": {
-    "unit": "hedge_maw approval — recording his pick",
-    "entries_taken": 1,
+    "unit": "his 21:56-22:00Z candidate approvals",
+    "entries_taken": 5,
     "entries_cleared": 0,
     "generations": 0,
     "usd_spent": 0.0
