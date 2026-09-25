@@ -138,5 +138,23 @@
       }
     }
   },
-  "approved_at": "2026-09-24T22:52:20+00:00"
+  "approved_at": "2026-09-24T22:52:20+00:00",
+  "pixellab_rotation_map": {
+    "east": "south-east",
+    "north": "north-east",
+    "north-east": "east",
+    "north-west": "north",
+    "south": "south-west",
+    "south-east": "south",
+    "south-west": "west",
+    "west": "north-west"
+  },
+  "animations": {
+    "idle": {
+      "directions": {},
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {},
+      "strips": {}
+    }
+  }
 }
