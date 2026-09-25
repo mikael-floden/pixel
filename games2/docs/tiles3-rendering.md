@@ -569,7 +569,11 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   SW 2, SE 1; a raised corner is one storey up), row for row so the texture
   stretches by duplication and never blurs, a faint shade down the incline,
   the plate's band as the side face under a raised lower edge, the band below
-  as on any plate. Frame 64 x (46 + 15), hung 15 rows up (the surface op and
+  as on any plate — EXCEPT ON A RAISED CELL, which drops only that band below
+  the level and keeps the whole incline (`withBand` false, one margin row).
+  (Not `rampTopOnly`: masked to the flat diamond's outline, it cut the
+  incline off 1,529 raised ramps on the_game and left the flat step.)
+  Frame 64 x (46 + 15), hung 15 rows up (the surface op and
   `dressKey`/`surfaceY` alike); the feet follow `rampHeight * lh`
   (`WorldScene.rampLiftPx`). Its art path is VIRTUAL (`synthetic/ramp/<ground>/
   <mask>/<member plate>`, the texture key; `art.from` names the plate) — the

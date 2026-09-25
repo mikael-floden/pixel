@@ -603,3 +603,30 @@ test("buildRampPixels: no tone step where the incline meets the flat plate — t
   }
   assert.equal(diff, 0);
 });
+
+test("a composed ramp on a raised cell keeps its whole lifted surface and side faces and drops only the band below its level", { skip }, () => {
+  const pat = load("tiles/patterns/index.json");
+  const paths = patternSheetPaths(pat);
+  const px = (rel: string): Pixels => { const i = imgRGBA(join(REPO, rel)) as { width: number; height: number; data: Uint8Array }; return { w: i.width, h: i.height, data: new Uint8ClampedArray(i.data) }; };
+  const sheets = patternSheets(pat, px(paths.silhouette), px(paths.masks), px(paths.border));
+  const plate = px("tiles/slopes/grass/a14_s02/post/" + load("tiles/slopes/index.json").sets.find((s: any) => s.dir === "tiles/slopes/grass/a14_s02").post_files[15]);
+  for (const mask of [10, 12, 3, 5, 1, 8, 7, 14]) {
+    const full = buildRampPixels(sheets, plate, mask, 15);
+    const top = buildRampPixels(sheets, plate, mask, 15, undefined, false);
+    let edgeMoved = 0, band = 0, opaque = 0;
+    for (let x = 0; x < 64; x++) {
+      let flatBottom = -1;
+      for (let y = 0; y < 29; y++) if (sheets.libTop[y * 64 + x]) flatBottom = y;
+      const topRow = (p: Pixels) => { for (let y = 0; y < p.h; y++) if (p.data[(y * 64 + x) * 4 + 3] > 0) return y; return -1; };
+      // The slope's upper outline — the lifted surface — is exactly the full raster's. A column whose
+      // first texel already lies on the level line holds band only (the tips of this raw tile), and
+      // a raised cell drops its band: nothing of the surface to compare there.
+      const t0 = topRow(full);
+      if (flatBottom >= 0 && t0 >= 0 && t0 < flatBottom + 15 && t0 !== topRow(top)) edgeMoved++;
+      for (let y = 0; y < top.h; y++) { const i = (y * 64 + x) * 4; if (top.data[i + 3] > 0) { opaque++; if (flatBottom >= 0 && y > flatBottom + 15 + 1) band++; } }
+    }
+    assert.equal(edgeMoved, 0, `mask ${mask}: the lifted surface's outline moved in ${edgeMoved} columns`);
+    assert.equal(band, 0, `mask ${mask}: ${band} band texels below the level on a raised cell`);
+    assert.ok(opaque >= 924, `mask ${mask}: the whole top face survives (${opaque} texels)`);
+  }
+});

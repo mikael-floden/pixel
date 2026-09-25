@@ -663,7 +663,7 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
  *  bottom row at the bottom: the surface op hangs it `lh` rows up, the body's
  *  lift follows `rampHeight * lh`. A published storey-height set replaces
  *  it the day one exists (tiles3 `slopeSets`, ramps first). */
-export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: number, lh: number, bandSrc?: Pixels): Pixels {
+export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: number, lh: number, bandSrc?: Pixels, withBand = true): Pixels {
   const { fw, fh } = sheets;
   const src = plate.w === fw && plate.h === fh ? plate : cropToArt(plate, fw, fh);
   /* THE TOP FACE COMES FROM THE CONFORMED PLATE (`plate`, the same raster the
@@ -739,9 +739,28 @@ export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: numb
       o[j] = bd[from]; o[j + 1] = bd[from + 1]; o[j + 2] = bd[from + 2]; o[j + 3] = 255;
     }
   }
-  // The plate's own band below, as on every plate (masked off on a raised cell by
-  // rampTopOnly): every texel the incline did not consume — near the diamond's
-  // tips the band begins above row 29, so this is by texel, not by row.
+  /* ON A RAISED CELL (`withBand` false) THE BAND BELOW THE LEVEL IS DROPPED —
+   * the cell's own x-over-y wall stack is the wall there — and NOTHING ELSE:
+   * the lifted surface and its side faces stand above the level and are the
+   * slope. Masking the ramp to the flat diamond's outline instead
+   * (`rampTopOnly`) cut the incline off every raised cell and left the flat
+   * step under it (1,529 raised ramps on the_game, 2026-09-25). One margin row
+   * replicated from each column's lowest surface pixel, as topFaceOnly does,
+   * so the interlock with the tile in front has no seam. */
+  if (!withBand) {
+    for (let x = 0; x < fw; x++) {
+      let low = -1;
+      for (let y = H - 1; y >= 0; y--) if (o[(y * fw + x) * 4 + 3] !== 0) { low = y; break; }
+      if (low < 0 || low + 1 >= H) continue;
+      const f = (low * fw + x) * 4;
+      const t = ((low + 1) * fw + x) * 4;
+      o[t] = o[f]; o[t + 1] = o[f + 1]; o[t + 2] = o[f + 2]; o[t + 3] = o[f + 3];
+    }
+    return out;
+  }
+  // The plate's own band below, as on every plate: every texel the incline did
+  // not consume — near the diamond's tips the band begins above row 29, so this
+  // is by texel, not by row.
   for (let y = 0; y < fh; y++) {
     for (let x = 0; x < fw; x++) {
       const k = y * fw + x;
@@ -1972,8 +1991,8 @@ export class Tiles3Textures {
           if (!src) return null;
           // The top face from the plate the flat cell draws (conformed when its member is), the band from the art.
           const top = art.fromKind === "conform" ? buildPlatePixels(this.o.sheets, { kind: "conform", path: art.from as string }, src, this.wallRGB(ground)) : src;
-          const ramp = buildRampPixels(this.o.sheets, top, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK), src);
-          return art.topOnly ? rampTopOnly(this.o.sheets, ramp) : ramp;
+          // Raised (topOnly): no band below the level, the slope kept whole — never rampTopOnly (see buildRampPixels).
+          return buildRampPixels(this.o.sheets, top, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK), src, !art.topOnly);
         });
         return built;
       }
