@@ -95,16 +95,14 @@
       "at": "2026-09-25T18:55:10+00:00"
     }
   ],
-  "updated_at": "2026-09-25T19:02:39+00:00",
+  "updated_at": "2026-09-25T19:35:32+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMING: SLOPES IN 8 DIRECTIONS (chamfer corners, behind his switch, off by default) — staged, verifying in the lab; then the showcase page he asked for.",
-    "since": "2026-09-25T19:02:39+00:00",
+    "unit": "CLAIMING (maintainer 2026-09-25, on the live slopes: 'The new slopes looks so good! The only thing I can complain on now is I can see a 1 px edge becouse the slope should be 1px wider/taller'): the composed ramp's dashed 1 px seams. Fix in tiles3draw buildRampPixels (the border ring lifted + each column bridged to its neighbours' first texel) + a painter test (server/test/rampseam.test.ts). The 8-direction chamfer is STAGED, not shipping: on a square hill it steps the ridges (a crenellated silhouette) — needs a per-corner choice first.",
+    "since": "2026-09-25T19:35:32+00:00",
     "files": [
-      "games2/client/src/tiles3.ts (rampHeight only)",
-      "games2/client/src/nightlight.ts (ramp helpers + walk + applyRamps occlusion)",
-      "games2/server/test/slopes.test.ts",
-      "games2/docs/lighting.md",
+      "games2/client/src/tiles3draw.ts (buildRampPixels)",
+      "games2/server/test/rampseam.test.ts (new)",
       "games2/docs/tiles3-rendering.md"
     ]
   },
