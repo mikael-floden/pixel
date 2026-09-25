@@ -3,9 +3,12 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "WAITING for his run on cac0da98de+ (three GC changes since his cool run: ephemerons ff0db3eb35, loader leftovers a328c157c2, sprite batch cac0da98de; plus the late-frame meter and the steady-20 choice). Read: the heap block per window, the major-GC frames (dh) against 92-166 ms, allocBy.render, the `late` table. No files claimed.",
-    "since": "2026-09-25T20:28:27+00:00",
-    "files": []
+    "unit": "CLAIMING: THE LATE METER GAINS TARGET SWITCHES AND CLEARED PIXELS. His cool run: the frames before a late one are only 0-35% busier than the window's mean on draws, fill, switches and clears alike; EVERY frame carries 22-36 render-target switches and ~10 Mpx of clears (headless pass list: the screen bound and cleared 3x a frame around two half-res light fields; 2-6 brackets through a 1508x1429 capture target each clearing 2.15 Mpx; each cover atlas cleared then left empty and re-entered). On a Mali tiler each switch stores (and may reload) the tiles. Two axes, fb and clMpx, so his next run says whether the late share climbs with them. Buckets coarsened to fit the server's 40-key block (38) and keep verify-beacon's four names: client-only, fast lane.",
+    "since": "2026-09-25T20:42:49+00:00",
+    "files": [
+      "games2/client/src/glframe.ts (LATE_AXES only)",
+      "games2/docs/perf.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
@@ -142,5 +145,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T20:28:27+00:00"
+  "updated": "2026-09-25T20:42:49+00:00"
 }
