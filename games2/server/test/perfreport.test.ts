@@ -21,6 +21,19 @@ test("the fields the beacon has always sent survive, clamped and rounded", () =>
   assert.deepEqual(r.counts, { occluders: 427 });
 });
 
+test("THE LATE-BY-LOAD TABLE reaches the file whole: draws, binds and fill buckets, frames and late each", () => {
+  const late: Record<string, number> = {};
+  for (const [axis, tops] of [["dc", [500, 1000, 1500, 2000, 3000]], ["tb", [1000, 2500, 5000, 10000]], ["fill", [10, 15, 20, 25, 30]]] as const)
+    for (const top of [...tops, "inf"]) {
+      late[`${axis}_${top}`] = 100;
+      late[`${axis}_${top}_late`] = 7;
+    }
+  assert.equal(Object.keys(late).length, 34);
+  const r = perfReport({ frames: { n: 60 }, late }, AT);
+  assert.deepEqual(r.late, late);
+  assert.equal(perfReport({ frames: { n: 60 } }, AT).late, null, "an older client sends none");
+});
+
 test("THE PACER'S ROW reaches the file: the mode string and every number", () => {
   const pace = { mode: "auto", paced: 1, lockedFrac: 0.91, hz: 30, tickHz: 60, locks: 1, run: 902, skipped: 870, work50: 12.4, work90: 18.9, workMax: 61.2 };
   const r = perfReport({ frames: { n: 60 }, pace }, AT);

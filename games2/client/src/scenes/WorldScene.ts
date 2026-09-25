@@ -145,7 +145,7 @@ import { buildLive, buildSocket } from "../buildlive";
 import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
-import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, glFrameCounters, type GlFrame } from "../glframe";
+import { installGlFrameProbe, glFrameTake, glWindowTake, glLateTake, glFrameEmpty, glFrameCounters, type GlFrame } from "../glframe";
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
 import { frameHist, rafHz, quantiles, inputSummary, sectionGroup, sortedNums } from "../perfextra";
 import { installLoaf, loafTake, loafRing, type LoafSplit } from "../perfloaf";
@@ -2399,7 +2399,7 @@ export class WorldScene extends Phaser.Scene {
     for (const k in this.hitchSec) secMs += this.hitchSec[k];
     this.hitchN++;
     this.hitchSum += total;
-    const gl = glFrameTake();
+    const gl = glFrameTake(total);
     const glPrev = this.hitchGlPrev;
     this.hitchGlPrev = gl;
     this.hitchBurst = total >= HITCH_LONG_MS ? this.hitchBurst + 1 : 0;
@@ -3074,6 +3074,11 @@ export class WorldScene extends Phaser.Scene {
        * of it, the display's own rate and the step's work inside the callback
        * — `frames.p50` is 33 under a paced 30 and this says why. */
       pace: paceTake(),
+      /* LATE BY LOAD (glframe.ts): every frame's interval filed under the
+       * previous frame's draws, texture binds and fill, as on time or late —
+       * whether his late frames are the GPU command stream, the pixels, or
+       * neither. */
+      late: glLateTake(),
       /* THE TERRAIN BAKE'S ROW (terrainbake.ts): chunks baked/live/waiting,
        * band images, atlases, the window's bake ms and peak, bakes, evictions. */
       bake: this.bake ? this.bake.take() : null,

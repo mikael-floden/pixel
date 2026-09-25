@@ -87,6 +87,8 @@ const MUST = {
   frames: ["n", "p50", "p90", "p99", "max", "le17", "gt100", "mean", "rafHz"],
   // The pacer's row (2026-09-24): `frames.p50` is 33 under a paced 30 and this block says why.
   pace: ["mode", "paced", "lockedFrac", "hz", "tickHz", "locks", "run", "skipped", "work50", "work90", "workMax"],
+  // Late by load (glframe.ts): each frame filed under the previous frame's draws / binds / fill.
+  late: ["dc_500", "dc_inf_late", "tb_1000", "fill_inf"],
   // The terrain bake's row (2026-09-24): how much of the window's terrain was band images.
   bake: ["on", "chunks", "baked", "live", "waiting", "images", "atlases", "ms", "peakMs", "bakes", "evicted", "dirtied", "ops", "opsMax", "unbakeable"],
   // `preUpdate`/`hooks`: the scene's own event listeners (Phaser's systems, the ambient mount), 2026-09-19.

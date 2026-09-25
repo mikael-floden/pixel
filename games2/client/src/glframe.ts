@@ -49,11 +49,63 @@ export interface GlFrame {
   cl: number;
   clMpx: number;
   rd: number;
+  /** Texture binds: a batch of up to 16 distinct textures binds each before
+   *  its draw (Phaser skips a unit already holding its texture). */
+  tb: number;
 }
 
-const fresh = (): GlFrame => ({ brk: {}, texNew: 0, texDel: 0, fbNew: 0, fbDel: 0, upKb: 0, capSw: 0, dc: 0, vt: 0, fill: 0, fillX: 0, fb: 0, cl: 0, clMpx: 0, rd: 0 });
+const fresh = (): GlFrame => ({ brk: {}, texNew: 0, texDel: 0, fbNew: 0, fbDel: 0, upKb: 0, capSw: 0, dc: 0, vt: 0, fill: 0, fillX: 0, fb: 0, cl: 0, clMpx: 0, rd: 0, tb: 0 });
 let frame = fresh();
-const win = { texNew: 0, texDel: 0, fbNew: 0, fbDel: 0, upKb: 0, dc: 0, dcMax: 0, fill: 0, fillMax: 0, fillX: 0, fb: 0, cl: 0, clMpx: 0, rd: 0, frames: 0 };
+const win = { texNew: 0, texDel: 0, fbNew: 0, fbDel: 0, upKb: 0, dc: 0, dcMax: 0, fill: 0, fillMax: 0, fillX: 0, fb: 0, cl: 0, clMpx: 0, rd: 0, tb: 0, frames: 0 };
+
+/* LATE BY LOAD (2026-09-25): IS A LATE FRAME THE PRICE OF THE FRAME BEFORE IT?
+ * His cool run (6f3f9f8a): ~156 of the 168 worst frames were idle waits — the
+ * game's work done, the thread free, the next frame one refresh late — at the
+ * places with 1,400-2,400 draws, 22-30 Mpx and 34-40 target switches a frame.
+ * Nothing on the page can time the GPU (no timer query on his Mali; the finish
+ * clock measured nothing), so the frames say it themselves: every frame's
+ * interval is filed under the PREVIOUS take's bill — the render whose GPU work
+ * the browser was still paying for — on each axis, as on time or late (over
+ * LATE_MS, the FPS meter's hitch line). A late share that climbs with the draws
+ * or binds is the command stream (fewer, bigger batches cure it); with fill,
+ * the pixels; flat on every axis, neither. `late` block: `<axis>_<upper bound>`
+ * frames and `..._late` late ones; `inf` is the open top bucket. */
+const LATE_MS = 45;
+const LATE_AXES: { key: "dc" | "tb" | "fill"; tops: number[] }[] = [
+  { key: "dc", tops: [500, 1000, 1500, 2000, 3000] },
+  { key: "tb", tops: [1000, 2500, 5000, 10000] },
+  { key: "fill", tops: [10, 15, 20, 25, 30] },
+];
+const lateN = LATE_AXES.map((a) => new Array<number>(a.tops.length + 1).fill(0));
+const lateL = LATE_AXES.map((a) => new Array<number>(a.tops.length + 1).fill(0));
+let lastTake: GlFrame | null = null;
+function lateFile(prev: GlFrame, total: number): void {
+  const late = total > LATE_MS;
+  for (let i = 0; i < LATE_AXES.length; i++) {
+    const { key, tops } = LATE_AXES[i];
+    const v = prev[key];
+    let b = 0;
+    while (b < tops.length && v > tops[b]) b++;
+    lateN[i][b]++;
+    if (late) lateL[i][b]++;
+  }
+}
+
+/** The window's late-by-load table (the `late` block); resets. */
+export function glLateTake(): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (let i = 0; i < LATE_AXES.length; i++) {
+    const { key, tops } = LATE_AXES[i];
+    for (let b = 0; b <= tops.length; b++) {
+      const name = `${key}_${b < tops.length ? tops[b] : "inf"}`;
+      out[name] = lateN[i][b];
+      out[`${name}_late`] = lateL[i][b];
+      lateN[i][b] = 0;
+      lateL[i][b] = 0;
+    }
+  }
+  return out;
+}
 let installed = false;
 // The current viewport, for the clears and the pipeline-less draws; whether a
 // drawArrays is a pipeline flush (its fill was measured off the buffer) or not.
@@ -186,6 +238,7 @@ export function installGlFrameProbe(
     frame.cl++;
     frame.clMpx += (vpW * vpH) / 1e6;
   });
+  wrapGl("bindTexture", () => frame.tb++);
   wrapGl("readPixels", () => frame.rd++);
   wrapGl("getError", () => frame.rd++);
   wrapGl("finish", () => frame.rd++);
@@ -227,8 +280,10 @@ export function installGlFrameProbe(
   });
 }
 
-/** The frame just closed; resets for the next. Compact: brackets with no time are dropped. */
-export function glFrameTake(): GlFrame {
+/** The frame just closed; resets for the next. Compact: brackets with no time are dropped.
+ *  `total` is the frame's interval (ms), filed under the previous take's bill
+ *  (`glLateTake`); omitted, nothing is filed. */
+export function glFrameTake(total?: number): GlFrame {
   const out = frame;
   out.capSw = captureFrameSwitches();
   frame = fresh();
@@ -249,6 +304,9 @@ export function glFrameTake(): GlFrame {
   win.cl += out.cl;
   win.clMpx += out.clMpx;
   win.rd += out.rd;
+  win.tb += out.tb;
+  if (total !== undefined && lastTake) lateFile(lastTake, total);
+  lastTake = out;
   out.fill = +out.fill.toFixed(2);
   out.fillX = +out.fillX.toFixed(2);
   out.clMpx = +out.clMpx.toFixed(2);
@@ -274,9 +332,10 @@ export function glWindowTake(): Record<string, number> {
     glClears: +(win.cl / n).toFixed(1),
     glClearMpx: +(win.clMpx / n).toFixed(2),
     glReads: win.rd,
+    glTexBinds: +(win.tb / n).toFixed(1),
   };
   win.texNew = win.texDel = win.fbNew = win.fbDel = win.upKb = 0;
-  win.dc = win.dcMax = win.fill = win.fillMax = win.fillX = win.fb = win.cl = win.clMpx = win.rd = win.frames = 0;
+  win.dc = win.dcMax = win.fill = win.fillMax = win.fillX = win.fb = win.cl = win.clMpx = win.rd = win.tb = win.frames = 0;
   return out;
 }
 
@@ -294,5 +353,6 @@ export function glFrameCounters(g: GlFrame): Record<string, number> {
   if (g.fb) out.fb = g.fb;
   if (g.cl) out.cl = g.cl;
   if (g.rd) out.rd = g.rd;
+  if (g.tb) out.tb = g.tb;
   return out;
 }

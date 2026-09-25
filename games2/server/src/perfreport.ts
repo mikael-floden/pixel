@@ -82,6 +82,8 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* THE PACER'S ROW (client pacing.ts, 2026-09-24): mode is a string, the
      * rest numbers — `mixed`, 16 keys against 11 sent. */
     pace: mixed(body.pace, 16),
+    // Late by load (glframe.ts glLateTake): 34 numbers — draws in 6 buckets, binds 5, fill 6, each frames + late.
+    late: mixed(body.late, 40),
     /* THE TERRAIN BAKE'S ROW (client terrainbake.ts, 2026-09-24): 15 numbers
      * sent against a cap of 24. */
     bake: mixed(body.bake, 24),

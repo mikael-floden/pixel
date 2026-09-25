@@ -1374,7 +1374,17 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   the browser throttled the tab); and the snapshot counts are promoted to
   means (`litOccMean`, `monActMean`, `flushMean`, `sceneryImgsMean`). `heap`
   is THE WINDOW'S (`meanMb`, `maxMb`, `grewMb` summed rises, `grewMbPerSec`,
-  `drops` = collections), reset with the window. (Until 2026-09-25 its sums
+  `drops` = collections), reset with the window. `late` answers WHY A FRAME CAME ONE
+  REFRESH LATE with nothing of ours running (glframe.ts): every frame's
+  interval is filed under the PREVIOUS frame's draws (`dc_500` ... `dc_inf`),
+  texture binds (`tb_`) and fill (`fill_`), as frames and `_late` frames (over
+  45 ms, the FPS meter's hitch line). A late share that climbs with draws or
+  binds is the GPU command stream (fewer, bigger batches — an atlas — cure
+  it), with fill the pixels, flat on every axis neither; `perf-read` prints it.
+  (His cool run 6f3f9f8a: ~156 of 168 worst frames were such idle waits at
+  1,400-2,400 draws a frame; nothing on the page can time his GPU — no timer
+  query, and the finish clock measured nothing.) `counts.glTexBinds` is the
+  window's binds per frame. (Until 2026-09-25 its sums
   ran from arming: `grewMbPerSec` divided a running total by one window and
   read 24 -> 155 MB/s over his 15:51 run while the real rate held at 13-24.
   Earlier runs difference consecutive windows.)
