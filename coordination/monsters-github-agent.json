@@ -1,26 +1,14 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-25T07:40:45+00:00",
-  "health": "idle",
-  "current": "RELEASED — holding no files, claimed nothing. His 07:31Z mountain_ram die north/north-east/north-west re-presses are APPROVALS (law 2: never cleared); the creature is already a graduated monster at 41/41 approved, all 8 die stamps match the strips on disk, verdicts.py check = 0 dangling. Nothing to do was the decision; nothing cleared, nothing generated, $0.00. (The 07:36Z sitting on this board is preserved below and its work stands: plume_brawler attack north re-rolled 4ec2f7c19, loom_widow removed 93afd59c3, 2 cleared, ~$0.19.)",
+  "updated_at": "2026-09-25T11:49:04+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 11:46Z 5th redo of monsters/plume_brawler#attack#north (\"Doesn't look like a N attack\"). The v8 PRO clip the 07:36Z sitting landed shows a SIDE PROFILE under north (base north is the back view); PRO takes no pins, so the facing was never anchored. Re-rolling it on the DEFAULT v3 recipe (keep_first pins frame 0 to our own north base), not PRO. FILES: monsters/candidates/plume_brawler/**, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json.",
   "progress": {
-    "unit": "his 07:31Z mountain_ram die approvals — read, verified, nothing owed",
-    "entries_taken": 3,
+    "unit": "plume_brawler attack north — his 5th redo",
+    "entries_taken": 1,
     "entries_cleared": 0,
-    "generations": 0,
-    "usd_spent": 0.0,
-    "dangling_verdicts": 0,
-    "mountain_ram": "graduated; 41/41 approved (entity + 40 facets); die stamps 8/8 match disk",
-    "prev_sitting_0736Z": {
-      "unit": "his 4th plume_brawler attack-north redo + the loom_widow removal",
-      "entries_taken": 2,
-      "entries_cleared": 2,
-      "generations": 1,
-      "usd_spent": 0.19,
-      "dangling_verdicts": 0,
-      "open_non_approvals_left": 0
-    }
+    "generations": 0
   },
   "budget_remaining": "PixelLab USD ~$93.63 (measured $93.83 at 07:36Z less that sitting's ~$0.19) — this sitting spent $0.00",
   "notes": [
