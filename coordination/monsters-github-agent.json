@@ -1,8 +1,8 @@
 {
   "domain": "monsters-github-agent",
-  "updated_at": "2026-09-25T14:41:37+00:00",
+  "updated_at": "2026-09-25T15:01:54+00:00",
   "health": "running",
-  "current": "CLAIMED — his 14:39Z grass_serpent idle review: the two redos monsters/grass_serpent#idle#north-east and #north-west (north-west is the mirror, so ONE v3 roll). FILES: monsters/candidates/grass_serpent/**, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json.",
+  "current": "CLAIMED (piece 2, repair) — swamp_ape idle north-east: the automatic prune-feedback at the tail of my grass_serpent generation deleted his two swamp_ape#idle#north-east/#north-west redos as dangling ('regenerated gone') while that art still does not exist, so his request is erased with nothing regenerated. One v3 roll puts the state back to 8/8. FILES: monsters/candidates/swamp_ape/**, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json.",
   "progress": {
     "unit": "rot_log idle approvals — read, verified, nothing to do (previous sitting: scree_lizard idle 8/8)",
     "verdicts_taken": 9,
