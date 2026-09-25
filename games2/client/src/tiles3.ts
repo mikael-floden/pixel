@@ -158,6 +158,113 @@ export function pickWeighted(weights: readonly number[], u: number): number {
   return -1;
 }
 
+/* -- THE STABLE PICK (bts2, not yet wired in — see games2/docs/tiles3-stablepick.md)
+ *
+ * Maintainer 2026-09-25: "changing the member list moves every bucket — that
+ * must have been what I noticed."
+ *
+ * He is right, and he sees it because he edits those sets LIVE from the wiki
+ * (live/tuning/base_tile_sets.json). MEASURED: pickWeighted walks a cumulative
+ * whose TOTAL moves when the pool changes, so every bucket boundary shifts.
+ * Adding a 7th member to a 6-member set leaves only 50.2% of cells on the tile
+ * they had; a weight nudge, 92.0%. The pick is perfectly DETERMINISTIC (100% on
+ * a re-roll) and has never been STABLE.
+ *
+ * Weighted RENDEZVOUS hashing fixes exactly that: hash each MEMBER against the
+ * cell and keep the best score, so no member's score depends on any other's.
+ * Adding a member can then only take the cells it wins, and nothing else moves
+ * — 85.9% kept against an optimum of 85.7%, and 97.2% on a weight change.
+ *
+ * INTEGER-ONLY, AND THAT IS NOT FASTIDIOUSNESS. Rendezvous with weights wants
+ * u^(1/w), and (a) member weights here are FRACTIONAL (0.05 … 30, measured off
+ * the live file), so the usual "replicate each member w times" dodge would cost
+ * thousands of hashes a cell; (b) V8 implements Math.pow/Math.log with its own
+ * fdlibm port while CPython calls the platform libm, and the two may differ in
+ * the last ulp. render3.py IS the spec and the parity fixture holds this port
+ * equal to it CELL FOR CELL, so a last-ulp disagreement is a single wrong tile
+ * somewhere in the world, someday, with nothing to blame. So the score is a
+ * hand-rolled fixed-point log2 over the hash, compared by cross-multiplication
+ * in integers: every operation is exact in both runtimes. Proven bit-identical
+ * against the Python port over 4000 rows.
+ *
+ * NOT WIRED IN. render3.py is the spec and wiki/lib/basesets.mjs is a third
+ * implementation; the rule may not change in one of the three. Requests are out
+ * to both (coordination/games-assistant.json). The namespace goes bts1 -> bts2
+ * when all three carry it — that changeover re-tiles the world ONCE, and is
+ * stable from then on. */
+
+/** log2 of a 32-bit value in Q16.16, INTEGER ONLY. Returns
+ *  floor(log2(h) * 65536) in [0, 32*65536); 0 for h = 0.
+ *
+ *  The fraction is 16 rounds of squaring: x stays under 2^18, so x*x stays
+ *  under 2^36 and is exact in a JS double as well as a Python int. Accuracy
+ *  against Math.log2 is ~2e-5, which does not matter — nothing compares this to
+ *  a real logarithm. What matters is that both runtimes compute the SAME
+ *  integer, and they do. */
+export function log2fx(h: number): number {
+  h = h >>> 0;
+  if (h === 0) return 0;
+  let e = 0;
+  let v = h;
+  while (v > 1) {
+    v >>>= 1;
+    e++;
+  }
+  // h normalised into [1<<16, 2<<16). `>>>` only below 2^32; the shift up is a
+  // multiply because `<<` would wrap at 32 bits.
+  let x = e >= 16 ? h >>> (e - 16) : h * Math.pow(2, 16 - e);
+  let frac = 0;
+  for (let i = 1; i <= 16; i++) {
+    x = Math.floor((x * x) / 65536);
+    if (x >= 131072) {
+      x = Math.floor(x / 2);
+      frac |= 1 << (16 - i);
+    }
+  }
+  return e * 65536 + frac;
+}
+
+/** Weights are scaled to integers before any comparison. 1000 covers the live
+ *  file's finest weight (0.05) with room to spare, and 32*65536 * 30000 stays
+ *  under 2^36 — exact in a double. */
+export const WEIGHT_SCALE = 1000;
+
+/** STABLE weighted pick: `keys[i]` identifies member i, `cell` identifies the
+ *  cell. Returns -1 when nothing can be picked, exactly as pickWeighted does.
+ *
+ *  Maximising u^(1/w) is minimising (-log2 u)/w, and with L = 32*65536 -
+ *  log2fx(hash) that is minimising L/W — compared as L_i*W_j < L_j*W_i so no
+ *  division is involved either. An exact tie falls to the smaller key, so the
+ *  answer never depends on the order the members arrive in. */
+export function pickStable(
+  keys: readonly string[],
+  weights: readonly number[],
+  cell: string,
+): number {
+  let best = -1;
+  let bL = 0;
+  let bW = 0;
+  for (let i = 0; i < keys.length; i++) {
+    const W = Math.round(weights[i] * WEIGHT_SCALE);
+    if (!(W > 0)) continue; // 0 still means never
+    const L = 32 * 65536 - log2fx(fnv1a(`${cell}|${keys[i]}`));
+    if (best < 0) {
+      best = i;
+      bL = L;
+      bW = W;
+      continue;
+    }
+    const a = L * bW;
+    const b = bL * W;
+    if (a < b || (a === b && keys[i] < keys[best])) {
+      best = i;
+      bL = L;
+      bW = W;
+    }
+  }
+  return best;
+}
+
 /** render3's `_rng`: a 32-bit LCG (Numerical Recipes constants). The fade and
  *  detail seeds exceed 32 bits before the mask — `(x*73856093) ^ (y*19349663)`
  *  is up to 2^45 — but every product stays under 2^53, so JS's ToInt32 on `^`
