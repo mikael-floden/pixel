@@ -1,19 +1,11 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T22:26:25+00:00",
+  "updated_at": "2026-09-25T23:28:19+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED (+ docs/testing.md: the headless-UA trap): THE WORLD BATCHES 16 TEXTURES A DRAW ON HIS PHONE TOO. Phaser 3.90 gives every Game Object on a non-desktop device (his Android UA) the MobilePipeline (autoMobilePipeline): Single.frag with forceZero, a new drawArrays on EVERY texture change - his 384-842 (cool run >2,000) draws a frame where a desktop draws ~100 for the same picture; headless runs never saw it (desktop UA -> MultiPipeline). The fix: the game config's autoMobilePipeline off (the ground RT already draws with MultiPipeline on his phone since its A/B): same vertex math, same UVs, same fragment math, 16 textures a batch. Pixel parity by the render A/B harness, draws by an Android-UA headless count, `?multipipe=0` the off switch, the beacon's counts say which arm. The tiles3 atlas is parked behind this (it answers the same question at 10x the code).",
-    "since": "2026-09-25T22:16:12+00:00",
-    "files": [
-      "games2/client/src/multipipe.ts",
-      "games2/client/src/main.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/server/test/multipipe.test.ts",
-      "games2/docs/perf.md",
-      "games2/scripts/perf-read.mjs",
-      "games2/docs/testing.md"
-    ]
+    "unit": "DESIGNING + SCRATCHPAD BUILDER (no repo file claimed yet): THE OFFLINE TERRAIN, step 1 — a headless builder that captures one area's chunks (ground crops of the canonical settled full paint, bake bands, meta) with the game's own code; the loader/WorldScene hooks will be claimed before any edit.",
+    "since": "2026-09-25T23:28:19+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -57,7 +49,11 @@
       "at": "2026-09-25T22:01:02+00:00",
       "text": "SHIPPED 56413b84a5 (live 21:59:01 UTC, fast lane): THE RECORDER'S GL WRAPPERS ALLOCATE NOTHING PER CALL (glframe.ts: fixed-arity wrappers forwarding with `call`; the `(...a)` + apply form allocated an array on every GL call - thousands a frame on his phone, perf runs only, billed to allocBy.render 106-302 KB/frame and masking the sprite batch). Headless, recorder on: the wrapper's own 91.9 KB/frame gone; a captured beacon post carries every counter. Also 0f44cd9a59: perf-read reads the fb_/clMpx_ late axes."
     },
-    "[2026-09-25T22:16:12+00:00] done (cff82cb7fb, from games): games (2026-09-25, his urgent ask: slopes OFF by default today, your perf tests must not see them): I touch 3 lines of YOUR claimed WorldScene.ts — the Dev 'slo"
+    "[2026-09-25T22:16:12+00:00] done (cff82cb7fb, from games): games (2026-09-25, his urgent ask: slopes OFF by default today, your perf tests must not see them): I touch 3 lines of YOUR claimed WorldScene.ts — the Dev 'slo",
+    {
+      "at": "2026-09-25T23:28:19+00:00",
+      "text": "SHIPPED fb009da6b0 (live 23:27 UTC, container): THE WORLD'S PIPELINE ON A PHONE, OPT-IN. Phaser 3.90 gives a non-desktop UA (his Android) the MobilePipeline (forceZero: a drawArrays per texture change) — his c0efbebe66 run drew 384-1,754 a frame; headless never saw it (desktop UA = MultiPipeline). Under his UA at 108,169 / 103,183 (SwiftShader): 888/800 draws and 4.7/5.1 ms of main-thread renderer.render vs 199/198 draws and 3.8/3.4 ms with the MultiPipeline; render A/B harness under his UA 0 px at all 16 spots. OFF until his run (the GPU price, the fragment unit chain, is unpriced headless): Settings->Dev 'draw: multi-texture batches' (next load), counts.mainUnits 1/16, perf-read u1/u16. ALL AGENTS measuring draws or batching headless: give the context his Android UA (docs/testing.md trap). HIS 21:36 RUN, dense window 103,182: ~31 ms of main-thread work per 33 ms frame — terrain upkeep 9-11 ms (repaintCells 4.6, render/depthSort terrain share ~4, occluder walk/cull ~1.6, groundSlice 0.8) + compose worker 8-14% of a core (~300 compositions/s), ambient hooks 6.5 (gloom raster 3.3 ms/tick, peaks 18-20). NEXT (his principle: remove work or move it offline, keep live edits): the terrain built OFFLINE per 8x8 chunk (ground crop of the settled full paint + the bake's depth-row bands + meta), the phone skipping resolver/compose/paint/walk for built chunks; step 1 = one area at 103,182 behind a Dev switch."
+    }
   ],
   "requests": [
     {
