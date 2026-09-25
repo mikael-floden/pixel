@@ -37,13 +37,24 @@ export function frameHist(frames: readonly number[]): { le17: number; le34: numb
   return h;
 }
 
+/** A NUMBER LIST SORTED ASCENDING, NATIVELY: a Float64Array's sort is numeric
+ *  in C++, where `slice().sort((a, b) => a - b)` calls a JS comparator ~n log n
+ *  times — and the recorder's sorts run once per window, in code the engine
+ *  never warms up. His cool run (6f3f9f8a): the report cost 20-29 ms on his
+ *  phone against 2-3.5 ms headless, because his windows hold ~900 frame times
+ *  and up to 3,000 load times per asset family where a headless one holds
+ *  dozens. The same values, in the same order (finite numbers). */
+export function sortedNums(xs: readonly number[]): Float64Array {
+  return Float64Array.from(xs).sort();
+}
+
 /** The display rate the game is actually pacing at, read off the FAST frames:
  *  the 15th-percentile interval is a frame that waited only for vsync, so its
  *  reciprocal is the refresh the browser is handing out — 60, 90, 120, or 30
  *  when it has throttled the tab. 0 when there are too few frames to say. */
 export function rafHz(frames: readonly number[]): number {
   if (frames.length < 20) return 0;
-  const s = frames.slice().sort((a, b) => a - b);
+  const s = sortedNums(frames);
   const p15 = s[Math.floor(s.length * 0.15)];
   if (!(p15 > 0)) return 0;
   const hz = 1000 / p15;
@@ -53,7 +64,7 @@ export function rafHz(frames: readonly number[]): number {
 
 /** p50/p90/p99/max/n of a sample list, for any block that carries one. */
 export function quantiles(samples: readonly number[]): { n: number; p50: number; p90: number; p99: number; max: number } {
-  const s = samples.slice().sort((a, b) => a - b);
+  const s = sortedNums(samples);
   const pick = (q: number) => (s.length ? +s[Math.min(s.length - 1, Math.floor(s.length * q))].toFixed(1) : 0);
   return { n: s.length, p50: pick(0.5), p90: pick(0.9), p99: pick(0.99), max: s.length ? +s[s.length - 1].toFixed(1) : 0 };
 }

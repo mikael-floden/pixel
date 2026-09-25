@@ -147,7 +147,7 @@ import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, glFrameCounters, type GlFrame } from "../glframe";
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
-import { frameHist, rafHz, quantiles, inputSummary, sectionGroup } from "../perfextra";
+import { frameHist, rafHz, quantiles, inputSummary, sectionGroup, sortedNums } from "../perfextra";
 import { installLoaf, loafTake, loafRing, type LoafSplit } from "../perfloaf";
 import { shapeWorst } from "../perfshape";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
@@ -2657,11 +2657,20 @@ export class WorldScene extends Phaser.Scene {
   private editTileIdx = 0;
   private editLast = "";
 
-  /** The grounds this world uses, sorted — the "dropdown" is a button that cycles them. */
+  /** The grounds this world uses, sorted — the "dropdown" is a button that
+   *  cycles them. KEPT per world doc, dropped by an edit: the button's label
+   *  reads it on every Settings refresh — each time-of-day change (20-40 s),
+   *  each weather flip — and it walked every cell of the world each time. */
+  private editGroundsKept: { world: World; list: string[] } | null = null;
   private editGrounds(): string[] {
+    const world = this.world;
+    if (!world) return [];
+    if (this.editGroundsKept?.world === world) return this.editGroundsKept.list;
     const seen = new Set<string>();
-    for (const row of this.world?.rows ?? []) for (const c of row) if (c.t) seen.add(c.t);
-    return [...seen].sort();
+    for (const row of world.rows) for (const c of row) if (c.t) seen.add(c.t);
+    const list = [...seen].sort();
+    this.editGroundsKept = { world, list };
+    return list;
   }
 
   private editTileName(): string {
@@ -2679,6 +2688,7 @@ export class WorldScene extends Phaser.Scene {
     if (change.t !== undefined) {
       if (!this.editGrounds().includes(change.t)) return { ok: false, error: `unknown ground ${change.t}` };
       cell.t = change.t;
+      this.editGroundsKept = null; // a ground's last cell may just have gone
     }
     if (change.dl) cell.l = Math.max(0, Math.min(this.terrainMaxLevel, (cell.l ?? 0) + change.dl));
     const after = { t: cell.t, l: cell.l };
@@ -2801,6 +2811,8 @@ export class WorldScene extends Phaser.Scene {
       this.perfBeaconSend(t0, false);
       const spent = performance.now() - t0;
       this.beaconSelfMs = +spent.toFixed(1);
+      const c = this.beaconCost;
+      this.beaconPartsPrev = { snap: +c.snap.toFixed(1), body: +c.build.toFixed(1), take: +c.worst.toFixed(1) };
       this.beaconCost.total = spent;
       this.beaconOver(spent - slack);
     }, 2000);
@@ -2846,7 +2858,7 @@ export class WorldScene extends Phaser.Scene {
     let bad = this.perfLongN > 0;
     if (!bad) for (const f of fs) if (f > 100) { bad = true; break; }
     if (!bad && fs.length > 30) {
-      const srt = [...fs].sort((a, b) => a - b);
+      const srt = sortedNums(fs); // native (perfextra): ~900 frames a window on his phone
       bad = srt[Math.floor(srt.length * 0.9)] > 30;
     }
     if (moved) this.perfStillPosted = 0;
@@ -2986,6 +2998,26 @@ export class WorldScene extends Phaser.Scene {
     this.perfCoverRowsN = 0;
     this.perfCoverSlotsSum = 0;
     this.perfSceneryImgSum = 0;
+    /* THE HEAP BLOCK IS THIS WINDOW'S, taken here and reset with the rest: its
+     * sums ran from arming, so `grewMbPerSec` divided a running total by one
+     * window's seconds and read 24 -> 155 MB/s over his 15:51 run while the
+     * real rate held at 13-24. (`perfHeapLast` carries over: it is the sample
+     * the next rise is measured from.) */
+    const heapBlock = this.perfHeapN
+        ? {
+            meanMb: +(this.perfHeapSum / this.perfHeapN).toFixed(1),
+            maxMb: +this.perfHeapMax.toFixed(1),
+            limitMb: Math.round(this.perfHeapLimit),
+            grewMb: +this.perfHeapGrew.toFixed(1),
+            grewMbPerSec: +(this.perfHeapGrew / Math.max(1, secs)).toFixed(1),
+            drops: this.perfHeapDrops,
+          }
+        : null;
+    this.perfHeapGrew = 0;
+    this.perfHeapDrops = 0;
+    this.perfHeapSum = 0;
+    this.perfHeapN = 0;
+    this.perfHeapMax = 0;
     this.perfLongN = 0;
     this.perfLongMs = 0;
     this.perfLongTasks = [];
@@ -3210,6 +3242,10 @@ export class WorldScene extends Phaser.Scene {
          * cause; recording one window at a time is the way to avoid it. */
         ...cpuIndex,
         beaconSelfMs: this.beaconSelfMs, // what the PREVIOUS report cost the frame it was built on
+        // ...and its parts: the snapshot, the body, the worst frames taken and packed
+        beaconSnapMs: this.beaconPartsPrev.snap,
+        beaconBodyMs: this.beaconPartsPrev.body,
+        beaconTakeMs: this.beaconPartsPrev.take,
         beaconIdleMs: this.beaconIdleMs, // what the PREVIOUS post cost in idle time (its JSON, the send)
         beaconOverMs: this.beaconOverMs, // how far the recorder's idle work ran past an idle period, the last window's worst
         beaconWorkerMs: this.beaconWorkerMs, // the PREVIOUS post's shaping + JSON, on the report's worker
@@ -3302,16 +3338,7 @@ export class WorldScene extends Phaser.Scene {
        * only), `drops` how many times it fell — a collection each. Together
        * they are the allocation RATE, which is what decides whether GC explains
        * `gapBusy`. */
-      heap: this.perfHeapN
-        ? {
-            meanMb: +(this.perfHeapSum / this.perfHeapN).toFixed(1),
-            maxMb: +this.perfHeapMax.toFixed(1),
-            limitMb: Math.round(this.perfHeapLimit),
-            grewMb: +this.perfHeapGrew.toFixed(1),
-            grewMbPerSec: +(this.perfHeapGrew / Math.max(1, secs)).toFixed(1),
-            drops: this.perfHeapDrops,
-          }
-        : null,
+      heap: heapBlock,
       /* THE LIGHT BILL (maintainer 2026-09-07: every light shadows scenery; his
        * run decides whether the phone pays for it) — what the night pass
        * uploaded, plus what could feed it. */
@@ -3509,6 +3536,8 @@ export class WorldScene extends Phaser.Scene {
   }
   /** What the worker spent shaping and stringifying the last post (ms). */
   private beaconWorkerMs = 0;
+  /** The previous report's parts (ms): `counts.beaconSnapMs/BodyMs/TakeMs`. */
+  private beaconPartsPrev = { snap: 0, body: 0, take: 0 };
 
   /** THE CPU BENCHMARK, ON THE REPORT'S WORKER. The throttling proxy
    *  (`cpu.scoreMs`) ran inside the frame that built each report; it runs on
@@ -9868,7 +9897,7 @@ export class WorldScene extends Phaser.Scene {
           this.perfLast = 0;
           return { armed: on };
         }
-        const f = [...this.perfFrames].sort((a, b) => a - b);
+        const f = sortedNums(this.perfFrames); // native (perfextra)
         const pick = (q: number) => (f.length ? +f[Math.min(f.length - 1, Math.floor(f.length * q))].toFixed(1) : 0);
         const sections = Object.fromEntries(
           Object.entries(this.perfAcc)

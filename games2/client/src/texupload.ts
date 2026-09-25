@@ -22,6 +22,7 @@
  * It is a MEASUREMENT, so it must not become the thing it measures: one wrap,
  * one `performance.now()` pair per upload, and a bounded sample array.
  */
+import { sortedNums } from "./perfextra";
 
 interface Up {
   n: number;
@@ -93,7 +94,7 @@ export function installTexUploadProbe(renderer: unknown): void {
   };
 }
 
-const pct = (sorted: number[], p: number) =>
+const pct = (sorted: ArrayLike<number>, p: number) =>
   sorted.length ? +sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))].toFixed(2) : 0;
 
 /** Take and RESET the window's uploads. One call per beacon. */
@@ -102,7 +103,7 @@ export function texUploadTake(secs: number): {
   worst: string[];
   by: string[];
 } {
-  const s = up.samples.slice().sort((a, b) => a - b);
+  const s = sortedNums(up.samples); // native (perfextra)
   const stats = {
     /** Uploads this window, and the total MAIN-THREAD milliseconds they cost.
      *  `msPerSec` against a 1000 ms second is the share of the frame budget

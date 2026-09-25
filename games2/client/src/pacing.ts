@@ -237,6 +237,8 @@ export class Pacer {
 
   /** The beacon window's row; resets the window's counters. */
   take(): PaceRow {
+    // One native sort of the window's ~900 work samples, not two JS ones and a spread.
+    const w = Float64Array.from(this.bWork).sort();
     const row: PaceRow = {
       mode: this.mode,
       paced: this.paced ? 1 : 0,
@@ -246,9 +248,9 @@ export class Pacer {
       locks: this.bLocks,
       run: this.bRun,
       skipped: this.bSkipped,
-      work50: +quantile(this.bWork, 0.5).toFixed(2),
-      work90: +quantile(this.bWork, 0.9).toFixed(2),
-      workMax: this.bWork.length ? +Math.max(...this.bWork).toFixed(2) : 0,
+      work50: +pick(w, 0.5).toFixed(2),
+      work90: +pick(w, 0.9).toFixed(2),
+      workMax: w.length ? +w[w.length - 1].toFixed(2) : 0,
     };
     this.bWork = [];
     this.bLockedMs = 0;
@@ -261,9 +263,12 @@ export class Pacer {
 }
 
 function quantile(xs: readonly number[], q: number): number {
-  if (!xs.length) return 0;
-  const s = xs.slice().sort((a, b) => a - b);
-  return s[Math.min(s.length - 1, Math.floor(s.length * q))];
+  return pick(Float64Array.from(xs).sort(), q);
+}
+
+/** The q-quantile of an ascending list (0 when it is empty). */
+function pick(s: ArrayLike<number>, q: number): number {
+  return s.length ? s[Math.min(s.length - 1, Math.floor(s.length * q))] : 0;
 }
 
 /** The structural slice of Phaser.Game the installer needs (no phaser import:

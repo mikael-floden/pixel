@@ -27,6 +27,8 @@
  * means the accumulators are per-window by construction.
  */
 
+import { sortedNums } from "./perfextra";
+
 /** URL prefix -> bucket. First match wins. */
 const FAMILIES: ReadonlyArray<readonly [string, string]> = [
   ["/assets/scenery/", "scenery"],
@@ -115,7 +117,7 @@ export function netPerfStart(): void {
   }
 }
 
-const pct = (sorted: number[], p: number): number =>
+const pct = (sorted: ArrayLike<number>, p: number): number =>
   sorted.length ? +sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))].toFixed(1) : 0;
 
 export interface NetFamilyStat {
@@ -143,7 +145,7 @@ export function netPerfTake(): {
 } {
   const fams: Record<string, NetFamilyStat> = {};
   for (const [fam, a] of accs) {
-    const sorted = a.ms.slice().sort((x, y) => x - y);
+    const sorted = sortedNums(a.ms); // native: up to 3,000 samples a family (perfextra)
     fams[fam] = {
       n: a.n,
       cached: a.cached,

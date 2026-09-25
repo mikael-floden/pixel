@@ -562,7 +562,11 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `beaconSelfMs` 34-65) runs on the FINAL flush only (`?beaconquiet=0` samples
   every window); the texture count is kept by the texture manager's events
   (`Object.keys` over ~10k textures was 3.9 ms a report); the long-task
-  pairing is a sweep. (IDLE TIME ALONE FAILED: his 15:51 run on a hot phone
+  pairing is a sweep; every per-window percentile sorts NATIVELY
+  (`sortedNums`: a Float64Array's numeric sort, the same values — a JS
+  comparator over his windows' ~900 frame times and up to 3,000 load times per
+  asset family was ~9 ms in node and the bulk of the report's 20-29 ms on his
+  cool phone, 6f3f9f8a, where a headless window holds dozens). (IDLE TIME ALONE FAILED: his 15:51 run on a hot phone
   put the report at 58-95 ms between frames, all of it past any idle period —
   a saturated phone has none, so work moved out of the frame still stalls the
   next one; only work taken off the thread, or made small, helps. Not a
@@ -572,7 +576,7 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   bisect): the game's thread pays 3.4-6.7 ms a window (the report 2.2-3.5, the
   hand-over 1.0-3.2; 11 ms in the first, cold) against 7.2-26.6 ms with the
   post on this thread; the worker 4.7-10.7 ms. `counts`: `beaconSelfMs` the
-  report, `beaconIdleMs` the hand-over, `beaconWorkerMs` the worker's share,
+  report (`beaconSnapMs`/`BodyMs`/`TakeMs` its parts), `beaconIdleMs` the hand-over, `beaconWorkerMs` the worker's share,
   `beaconOverMs` how far any of it ran past its idle period, `perfWorker` 0
   none / 1 made / 2 answered / 3 failed (a failed or 60 s silent worker is
   dropped and this thread posts). A hidden page's final flush builds and
@@ -1368,7 +1372,12 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   carries the histogram (`le17/le34/le50/le100/gt100`, `mean`) and `rafHz`
   (the refresh read off the 15th-percentile interval — 60/90/120, or 30 when
   the browser throttled the tab); and the snapshot counts are promoted to
-  means (`litOccMean`, `monActMean`, `flushMean`, `sceneryImgsMean`).
+  means (`litOccMean`, `monActMean`, `flushMean`, `sceneryImgsMean`). `heap`
+  is THE WINDOW'S (`meanMb`, `maxMb`, `grewMb` summed rises, `grewMbPerSec`,
+  `drops` = collections), reset with the window. (Until 2026-09-25 its sums
+  ran from arming: `grewMbPerSec` divided a running total by one window and
+  read 24 -> 155 MB/s over his 15:51 run while the real rate held at 13-24.
+  Earlier runs difference consecutive windows.)
   Every WORST-FRAME record now also says WHERE it happened (`at`, the body's
   cell), at what `z`oom and `t` ms into the window — every report he sends is
   about a place ("if I stand here and run down...") — and `longWhere` is the

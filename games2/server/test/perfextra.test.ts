@@ -3,7 +3,7 @@
 // sample block carries, and the fixed benchmark that is the throttling proxy.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary } from "../../client/src/perfextra";
+import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary, sortedNums } from "../../client/src/perfextra";
 
 test("the histogram buckets frames the way they are felt, and the mean is the mean", () => {
   const h = frameHist([10, 16.7, 17, 20, 34, 40, 50, 80, 100, 150, 1000]);
@@ -51,4 +51,34 @@ test("the input summary: delay is hardware-to-handler, duration is tap-to-paint,
   // A handler stamped before its event (clock skew) is a delay of 0, never negative.
   assert.equal(inputSummary([e("pointerdown", 10, 5, 20)]).delayMax, 0);
   assert.deepEqual(inputSummary([]), { n: 0, slow: 0, delayP50: 0, delayP90: 0, delayMax: 0, durP50: 0, durP90: 0, durMax: 0, worst: "" });
+});
+
+test("the recorder's native sort gives the comparator sort's values: quantiles and the display rate unchanged", () => {
+  // The old way, kept here as the reference: a JS comparator over a copy.
+  const oldQ = (xs: number[]) => {
+    const s2 = xs.slice().sort((a, b) => a - b);
+    const pick = (q: number) => (s2.length ? +s2[Math.min(s2.length - 1, Math.floor(s2.length * q))].toFixed(1) : 0);
+    return { n: s2.length, p50: pick(0.5), p90: pick(0.9), p99: pick(0.99), max: s2.length ? +s2[s2.length - 1].toFixed(1) : 0 };
+  };
+  let seed = 11;
+  const rnd = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  for (let round = 0; round < 200; round++) {
+    const n = Math.floor(rnd() * 3200);
+    // Frame times with ties (whole vsyncs), zeros and long tails, like his windows.
+    const xs = Array.from({ length: n }, () => (rnd() < 0.5 ? [16.7, 33.3, 50][Math.floor(rnd() * 3)] : rnd() < 0.05 ? 0 : rnd() * (rnd() < 0.1 ? 600 : 60)));
+    assert.deepEqual(quantiles(xs), oldQ(xs));
+    assert.deepEqual([...sortedNums(xs)], xs.slice().sort((a, b) => a - b));
+    const oldHz = (() => {
+      if (xs.length < 20) return 0;
+      const s2 = xs.slice().sort((a, b) => a - b);
+      const p15 = s2[Math.floor(s2.length * 0.15)];
+      if (!(p15 > 0)) return 0;
+      const hz = 1000 / p15;
+      for (const r of [30, 60, 90, 120, 144]) if (Math.abs(hz - r) / r < 0.12) return r;
+      return Math.round(hz);
+    })();
+    assert.equal(rafHz(xs), oldHz);
+  }
+  assert.deepEqual(quantiles([]), { n: 0, p50: 0, p90: 0, p99: 0, max: 0 });
+  assert.equal(sortedNums([]).length, 0);
 });
