@@ -380,6 +380,12 @@ pipeline.
   scripts/build-pwa-icons.py (committed). main.ts stashes
   `beforeinstallprompt` → select.ts shows "Install as an app".
   verify-mobile.mjs covers it headlessly.
-- **"Desktop site"**: the CANVAS is neutralized (dynamic integer zoom —
-  WorldScene.zoomFor, probe `__ml.camZoom()`); the DOM UI is ordinary
-  responsive CSS (no compensation).
+- **"Desktop site"** (a phone laying the page out ~980 css px wide and
+  shrinking it onto its screen — `desktopsite.ts` `desktopSqueeze`, >1 only on
+  a touch screen whose layout runs >= 1.25x the screen across): the CANVAS backs
+  at the SCREEN's pixels, dpr / squeeze (main.ts `rsFull`), so the integer zoom
+  frames what a device-width phone frames (540 world px across on his phone and
+  on his girlfriend's, 2026-09-25; backed at dpr per layout px hers was 2390 x
+  3912 at zoom 5, "way overkill"). The DOM UI is ordinary responsive CSS (no
+  compensation), so it draws at half size there: a notice (desktopsitenotice.ts,
+  once per launch) tells the player to turn the mode off.

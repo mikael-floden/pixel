@@ -22,6 +22,8 @@ import { openUpdateNotes, prefetchNotes } from "./updatenote";
 import { mountAmbient } from "../../ambient/index";
 import { gameAudio } from "../../composer/index";
 import { sessionGet, sessionRemove, sessionSet } from "./sessionflag";
+import { desktopSqueeze } from "./desktopsite";
+import { mountDesktopSiteNotice } from "./desktopsitenotice";
 
 // ---- PWA ----
 // Capture the browser's install prompt the moment it fires (often before any
@@ -295,6 +297,7 @@ async function boot() {
   // any styled surface (badge, select, HUD) so nothing flashes unthemed.
   mountTheme();
   showVersion();
+  mountDesktopSiteNotice(); // a phone in "Desktop site" draws everything at half size (desktopsitenotice.ts)
   try {
     // `?fps=1` shows the frame meter and remembers it; `?fps=0` forgets. See fpsbadge.ts.
     // localStorage can THROW (private mode, blocked site data) — never let a meter stop the boot.
@@ -472,8 +475,14 @@ async function boot() {
    * fills the screen at the square of the fraction in fragments.
    * "ml-render-res" refits the canvas live; the scene's resize
    * handler re-zooms and re-makes the ground texture. */
-  const RS_FULL = Math.min(4, Math.max(1, window.devicePixelRatio || 1));
-  const rsNow = () => RS_FULL * renderRes();
+  /* THE SCREEN'S REAL PIXELS, not the page's: under "Desktop site" the page is
+   * laid out ~2.2x wider than the screen (desktopsite.ts), so devicePixelRatio
+   * per CSS px backed the canvas at ~2.2x the pixels the screen has (his
+   * girlfriend's phone: 2390 x 3912, "way overkill as default"). Dividing by
+   * the squeeze backs it at the screen's own pixels, and the camera's integer
+   * zoom then lands where a device-width phone's does. 1 everywhere else. */
+  const rsFull = () => Math.max(1, Math.min(4, Math.max(1, window.devicePixelRatio || 1)) / desktopSqueeze());
+  const rsNow = () => rsFull() * renderRes();
   bootReloadOpen = false; // from here a late /version answer only banners — never a reload with a game up
   const game = new Phaser.Game({
     type: Phaser.AUTO,
@@ -528,7 +537,9 @@ async function boot() {
     const cssH = el.clientHeight;
     if (cssW < 1 || cssH < 1) return;
     const RS = rsNow();
-    setFullBacking(Math.round(cssW * RS_FULL), Math.round(cssH * RS_FULL));
+    // A rotation into or out of the squeeze moves the scale: the scene zooms off the registry.
+    if (game.registry.get("renderScale") !== RS) game.registry.set("renderScale", RS);
+    setFullBacking(Math.round(cssW * rsFull()), Math.round(cssH * rsFull()));
     const bw = Math.round(cssW * RS);
     const bh = Math.round(cssH * RS);
     if (game.scale.width !== bw || game.scale.height !== bh) game.scale.resize(bw, bh);
