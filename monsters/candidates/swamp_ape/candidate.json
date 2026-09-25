@@ -359,6 +359,79 @@
           "tries": 1,
           "generated_at": "2026-09-25T00:09:49+00:00",
           "source": "east"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0342,
+          "step_max": 0.0578,
+          "drift": 1.29,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.82,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "a644b369-27e0-4053-a2e3-027b01475545",
+          "group": "81f4ea09-7bc7-4ce9-8264-cc6061b90a2b",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T15:13:40+00:00"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0342,
+          "step_max": 0.0578,
+          "drift": 1.29,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.82,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "a644b369-27e0-4053-a2e3-027b01475545",
+          "group": "81f4ea09-7bc7-4ce9-8264-cc6061b90a2b",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T15:13:40+00:00",
+          "source": "north-east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -404,6 +477,20 @@
           "swamp_ape/animations/idle/west/02.webp",
           "swamp_ape/animations/idle/west/03.webp",
           "swamp_ape/animations/idle/west/04.webp"
+        ],
+        "north-east": [
+          "swamp_ape/animations/idle/north-east/00.webp",
+          "swamp_ape/animations/idle/north-east/01.webp",
+          "swamp_ape/animations/idle/north-east/02.webp",
+          "swamp_ape/animations/idle/north-east/03.webp",
+          "swamp_ape/animations/idle/north-east/04.webp"
+        ],
+        "north-west": [
+          "swamp_ape/animations/idle/north-west/00.webp",
+          "swamp_ape/animations/idle/north-west/01.webp",
+          "swamp_ape/animations/idle/north-west/02.webp",
+          "swamp_ape/animations/idle/north-west/03.webp",
+          "swamp_ape/animations/idle/north-west/04.webp"
         ]
       },
       "strips": {
@@ -412,8 +499,20 @@
         "east": "swamp_ape/animations/idle__east.webp",
         "north": "swamp_ape/animations/idle__north.webp",
         "south-west": "swamp_ape/animations/idle__south-west.webp",
-        "west": "swamp_ape/animations/idle__west.webp"
+        "west": "swamp_ape/animations/idle__west.webp",
+        "north-east": "swamp_ape/animations/idle__north-east.webp",
+        "north-west": "swamp_ape/animations/idle__north-west.webp"
       }
     }
+  },
+  "pixellab_rotation_map": {
+    "east": "east",
+    "north": "north",
+    "north-east": "north-east",
+    "north-west": "north-west",
+    "south": "south",
+    "south-east": "south-east",
+    "south-west": "south-west",
+    "west": "west"
   }
 }
