@@ -14,28 +14,6 @@
   },
   "candidates": [
     {
-      "id": "plume_brawler",
-      "name": "Plumefist",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 104,
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [
-        "barred feather",
-        "rainbow tail plume",
-        "teal quill",
-        "bundle of bright plumes"
-      ],
-      "prompt": "Stocky flightless fantasy bird with a barrel chest, thick scaly yellow legs ending in hooked black talons, a heavy hooked beak, a tall crest of stiff feathers in teal, crimson and gold, barred brown-and-cream wing feathers, and a long fan of iridescent rainbow tail plumes.",
-      "lore": "Too heavy to fly and too proud to hide. It settles every dispute with its talons, and it looks for disputes.",
-      "scale": "standard",
-      "attack_action": "Talon Rake - Keeps both feet planted on the ground, leans its heavy body forward and rakes one hooked talon foot down and forward in a short hard swipe, wings half open, then pulls back into the same stance, no hop, no jump, the whole bird stays inside the frame",
-      "attack_extreme": "Crest Flare Rake - Hurls itself forward with the crest snapped up, both talons raking down hard, loose feathers flying"
-    },
-    {
       "id": "gargoyle",
       "name": "Stonewing",
       "tier": "evil",
@@ -9466,6 +9444,36 @@
       "attack_action": "Lunging Sting - Snaps the curled tail forward in one fast vicious strike, the stinger shooting out far past its own claws toward the target at full reach, the body lunging behind it, then whips back",
       "attack_simple": "Pincer Snap - Throws one pincer wide open and snaps it shut",
       "graduated_at": "2026-09-24T21:24:37+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry",
+        "attack": "attack",
+        "die": "die"
+      }
+    },
+    {
+      "id": "plume_brawler",
+      "name": "Plumefist",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 104,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [
+        "barred feather",
+        "rainbow tail plume",
+        "teal quill",
+        "bundle of bright plumes"
+      ],
+      "prompt": "Stocky flightless fantasy bird with a barrel chest, thick scaly yellow legs ending in hooked black talons, a heavy hooked beak, a tall crest of stiff feathers in teal, crimson and gold, barred brown-and-cream wing feathers, and a long fan of iridescent rainbow tail plumes.",
+      "lore": "Too heavy to fly and too proud to hide. It settles every dispute with its talons, and it looks for disputes.",
+      "scale": "standard",
+      "attack_action": "Talon Rake - Keeps both feet planted on the ground, leans its heavy body forward and rakes one hooked talon foot down and forward in a short hard swipe, wings half open, then pulls back into the same stance, no hop, no jump, the whole bird stays inside the frame",
+      "attack_extreme": "Crest Flare Rake - Hurls itself forward with the crest snapped up, both talons raking down hard, loose feathers flying",
+      "graduated_at": "2026-09-25T13:54:59+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

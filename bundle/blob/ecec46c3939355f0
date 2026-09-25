@@ -1,7 +1,7 @@
 {
   "schema": "nangijala/shipset@1",
-  "generatedAt": "2026-09-25T07:38:46.977Z",
-  "digest": "75ca1fd1139f9859",
+  "generatedAt": "2026-09-25T14:02:37.599Z",
+  "digest": "c024289743aab21b",
   "policy": {
     "worlds": [
       "the_game"
@@ -42,10 +42,10 @@
       "shipBytes": 72849657
     },
     "monsters": {
-      "totalFiles": 40403,
+      "totalFiles": 40454,
       "shipFiles": 19803,
-      "totalBytes": 141070698,
-      "shipBytes": 44047126
+      "totalBytes": 141487582,
+      "shipBytes": 44047769
     },
     "items": {
       "totalFiles": 462,
@@ -72,21 +72,21 @@
       "shipBytes": 1256184
     },
     "wiki": {
-      "totalFiles": 99,
-      "shipFiles": 34,
-      "totalBytes": 15784828,
-      "shipBytes": 14731010
+      "totalFiles": 100,
+      "shipFiles": 35,
+      "totalBytes": 15973434,
+      "shipBytes": 14917588
     },
     "live": {
       "totalFiles": 32,
       "shipFiles": 31,
-      "totalBytes": 8769173,
-      "shipBytes": 8740013
+      "totalBytes": 8793514,
+      "shipBytes": 8764354
     }
   },
   "warnings": [
     "world the_game: npc \"isle-3\" references character 645f1252, which is missing",
     "world the_game: npc \"town-24\" references character 645f1252, which is missing"
   ],
-  "pathCount": 43117
+  "pathCount": 43118
 }
