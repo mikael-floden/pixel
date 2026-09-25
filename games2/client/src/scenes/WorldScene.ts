@@ -148,6 +148,7 @@ import { installCaptureProbe, installCapturePool, captureTake } from "../capture
 import { installGlFrameProbe, glFrameTake, glWindowTake, glLateTake, glFrameEmpty, glFrameCounters, type GlFrame } from "../glframe";
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
 import { frameHist, rafHz, quantiles, inputSummary, sectionGroup, sortedNums } from "../perfextra";
+import { releaseImagesOnComplete } from "../loaderrelease";
 import { installLoaf, loafTake, loafRing, type LoafSplit } from "../perfloaf";
 import { shapeWorst } from "../perfshape";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
@@ -5632,6 +5633,8 @@ export class WorldScene extends Phaser.Scene {
     this.load.on("progress", (f: number) => {
       if (!this.deferredAnimsKicked) setLoadingProgress(art0 + f * artSpan, "Loading art…");
     });
+    // Every image this loader brings in lets go of its File and request (loaderrelease.ts).
+    releaseImagesOnComplete(this.load, Phaser.Loader.Events.FILE_COMPLETE);
     // The world's NPCs stand there from the first frame: their standing art
     // joins THIS batch (one small image per distinct character) instead of
     // starting a second loader run mid-create.
@@ -21242,6 +21245,7 @@ export class WorldScene extends Phaser.Scene {
     if (!this.t3loader) {
       this.t3loader = new Phaser.Loader.LoaderPlugin(this);
       this.t3loader.crossOrigin = "anonymous";
+      releaseImagesOnComplete(this.t3loader, Phaser.Loader.Events.FILE_COMPLETE); // see loaderrelease.ts
     }
     return this.t3loader;
   }

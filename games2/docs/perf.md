@@ -544,27 +544,39 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   nothing since 2026-09-12). Headless: `occCull` 0.98 → 0.53 ms/frame, 101,543
   occluder checks with every stored box and decision identical
   (`verify-cullbox.mjs`, `__ml.cullParity()`).
-- **NO WEAKMAP OVER A CHURNING KEY SET: THE MAJOR COLLECTION PAYS FOR EVERY
-  ENTRY** (`genmemo.ts`, 2026-09-25, his "no recurring lag"; his cool run
-  had a major GC about once a minute, 92-166 ms frames). A WeakMap entry is an
-  ephemeron: V8 marks its value only once its key is known live, so every
-  major collection iterates the tables to a fixpoint, and tables whose values
-  hold each other's keys (a cell's ops name its art; the art keys the
-  plate-key and top-only memos) take round after round. Measured with V8's
-  own trace (`--js-flags=--trace-gc-nvp`, headless, a phone-sized 1 MB young
-  generation, the same 120 s camera tour through new ground): tiles3draw's
-  four per-cell memos were 19,925 of the heap's ~20k ephemerons; with them
-  the major pauses ran 21-194 ms (417 ms in all, ephemeron marking 93 ms +
-  its linear fallback 32 ms; a 60 s run had a NON-incremental 202 ms pause,
-  102.5 ms of it ephemerons), and with bounded two-generation STRONG memos
-  (the young rotates into the old at half the cap, an old hit is promoted,
-  the old is dropped whole) 14-50 ms (226 ms, ephemerons 3.5 ms). The price
-  is memory: evicted cells' answers live until their generation is dropped,
-  8.95 MB for the four after the tour (cap 24,000: the young generation holds
-  the scene's ~4-6k-cell cache twice over, so a paint never re-promotes its
-  whole window). Promotion was unchanged (0.9 MB/s). `usedJSHeapSize` counts
-  ArrayBuffers (a 100 MB buffer read +99.6 MB in Chrome 141), so the beacon's
-  `heap` block is mostly texture pixels, not objects.
+- **THE MAJOR COLLECTION: NO WEAKMAP OVER A CHURNING KEY SET, NO LOADER
+  LEFTOVERS** (`genmemo.ts`, `loaderrelease.ts`, 2026-09-25, his "no
+  recurring lag"; his cool run had a major GC about once a minute, 92-166 ms
+  frames). The instrument is V8's own trace (`--js-flags=--trace-gc-nvp`,
+  headless, a phone-sized 1 MB young generation, the same camera tour through
+  new ground; forced full collections via `HeapProfiler.collectGarbage`).
+  A major GC mostly FINISHES INCREMENTALLY and its pause is the marking left
+  over. A WeakMap entry is an ephemeron (its value is marked only once its key
+  is), and ephemerons whose values hold other tables' keys (a cell's ops name
+  its art; the art keys the plate-key and top-only memos) are settled in that
+  pause, round after round: with tiles3draw's four per-cell WeakMaps (19,925
+  of the heap's ~20k ephemerons) the leftover was 26-62 ms a collection with
+  V8's linear fallback firing (more than ten rounds), pauses 21-194 ms, 417 ms
+  in all over 120 s; with bounded two-generation STRONG memos 0.7-9.3 ms,
+  pauses 14-50 ms, 226 ms. The price is memory, and it shows in the other
+  kind: an ATOMIC collection (`allocation failure` — the heap outran the
+  marking; fired at 153 MB of objects under a 289 MB object limit but past
+  the 213 MB GLOBAL one, which counts ArrayBuffers and Blink objects) marks
+  the whole heap in the pause, 170-360 ms headless in every build; the memos
+  keep evicted cells a generation longer (8.95 MB after the tour, live heap
+  75 -> 83-86 MB), so that marking costs more. V8 bills an atomic marking loop
+  to `mark.ephemeron.marking` whatever the ephemerons — read the linear
+  fallback and the incremental leftover, not that line. Cap 24,000: the young
+  generation holds the scene's ~4-6k-cell cache twice over, so a paint never
+  re-promotes its whole window. THE LOADERS KEPT EVERY FILE: an image is its
+  texture's source for the texture's life, its onload closure held Phaser's
+  File, and `File.destroy` never drops the XMLHttpRequest or its response
+  Blob — 1,524 requests, 4,571 handlers and 1,187 Files after a 90 s tour;
+  cleared at FILE_COMPLETE on the terrain loader and the scene's, 11 / 16 / 5
+  (the image untouched). Its tracing time did not move measurably; the memory
+  it frees counts toward the global limit. `usedJSHeapSize` counts ArrayBuffers
+  (a 100 MB buffer read +99.6 MB in Chrome 141), so the beacon's `heap` block is
+  mostly texture pixels, not objects.
 - **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
   "I can't have a lag that is due to the perf run itself when I try to
   evaluate the performance... This might result in me pushing you to fix the
