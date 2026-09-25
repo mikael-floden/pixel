@@ -1,15 +1,11 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T11:49:58+00:00",
+  "updated_at": "2026-09-25T12:04:28+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: TWO RENDER BUGS THE ZERO-HITCHES HARNESS FOUND (same game loaded twice drew different pixels). (1) tiles3draw platePixels memoises a PLAIN plate's capped raster under plateKey = artKey(path) - the SAME key sourcePixels memoises the RAW source under - so whichever runs first wins: the t3s: capped plate can be the raw file (grass band in palette WALL green 20,100,78 instead of TOP 20,82,59: his zigzag dots back), and fades/details/composed ramps can be built from the capped plate instead of the raw art (collision since 2026-09-12; made likelier by composed ramps reading sources). (2) MINE, 410d19f944: a plate the compose worker built never enters the memo, so lid() finds no base and a lowered wall's lid falls back to the undarkened plate (his 'Lowered wall top darkening' dial) for the session. Fix: built plates in their own memo; a landed plate job memoised like one built here. games' tiles3draw claim is its shipped 5d1eee2514 (board stale since 21:37).",
-    "since": "2026-09-25T11:49:58+00:00",
-    "files": [
-      "games2/client/src/tiles3draw.ts",
-      "games2/server/test/tiles3draw.test.ts",
-      "games2/docs/perf.md"
-    ]
+    "unit": "Running the zero-hitches ULTRACODE workflow (census + GPU audit done; render A/B harness finishing; then design, worktree implementations, review). aa823e85a2 live 12:04 UTC.",
+    "since": "2026-09-25T12:04:28+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -44,6 +40,10 @@
     {
       "at": "2026-09-24T23:21:19+00:00",
       "text": "REVERTED 58da4b2202 (one ground job a frame) as bec16d326f: it moved ground work instead of removing it (3/3 skeptics; his 09-03 'slicing only redistributes' verdict; his 2026-09-24 'don't move the cost somewhere else'). SHIPPED 64f81dce7f: the swim foam bakes into bytes, not a canvas (every water crossing on his loop stalled 20-130 ms per new foam key on CanvasTexture's read-back; headless 618 ms -> 0.2 ms mean per bake; 163 texels differ by 1). The ultracode investigation (42 agents, 3 skeptics per candidate) found the body of his hitches is a saturated main thread (work per frame predicts frames >50 ms, r=0.94), the regression +149 ms/s of ground work; everything else it proposed was refuted as too small or as moving work."
+    },
+    {
+      "at": "2026-09-25T12:04:28+00:00",
+      "text": "SHIPPED aa823e85a2 (live 12:04 UTC, fast lane): TWO RENDER BUGS the zero-hitches render A/B harness found. (1) tiles3draw platePixels memoised a PLAIN plate's capped raster under plateKey, which IS its art key - the key sourcePixels memoises the RAW file under - so whichever ran first won: the t3s: plate could be the raw file (grass clean band 20,100,78 palette wall instead of 20,82,59 top: the zigzag dots), and a plate built first made fades/details/COMPOSED RAMPS read the capped plate as their source (games: your buildRampPixels bandSrc then got a flat palette band - 1,088-1,783 texels of a grass ramp - against his no-solid-colour-slope rule; now always the raw art, as you designed). Built plates now live in their own memo `plates`, keyed by the drawn texture key. (2) mine, 410d19f944: a plate the compose worker landed never entered the memo, so lid() had no base (raw-registered textures cannot be read back) and a lowered wall's lid fell back to the undarkened plate. Landed plate jobs are memoised now. Tests: tiles3draw.test.ts 'never share a memo', 'worker landed' (fail on the old code)."
     }
   ],
   "requests": [
