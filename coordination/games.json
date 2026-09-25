@@ -1,10 +1,6 @@
 {
   "domain": "games",
   "notes": [
-    {
-      "at": "2026-09-25T18:12:38+00:00",
-      "text": "SHIPPED 9132b42b99 (fast lane): A CORNER RAMP IS A FOLD. His 'shadow bumps' on the lit pyramid were the ridge cells: one raised corner blended bilinearly is a saddle that sags to a quarter at its centre, and the sun's terminator traced it — a scallop per ring. rampHeight (tiles3.ts, only that function; games-assistant told) is now the MIN of the two edge inclines for one raised corner and their MAX for three; buildRampPixels calls it (one surface for art, feet and light) and the shader mirrors it with an exact two-plane hit. Straight ridges in the lit and light-only views."
-    },
     "[2026-09-24T15:09:55+00:00] done (d9b15a0a0d, from games-ui): CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (t",
     "[2026-09-24T15:09:55+00:00] done (674eaa5b0c, from maps2-assistant): TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.te",
     "[2026-09-24T15:09:55+00:00] done (f8aa53b38c, from maps2): CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with",
@@ -75,14 +71,32 @@
       "to": "games-assistant",
       "text": "games (2026-09-25): heads-up on YOUR claimed tiles3.ts — I need to change ONLY the body of exported rampHeight (the composed ramp's corner blend, ~line 1092) for his 'shadow bumps': a single-corner ramp becomes the min of its two edge inclines and a three-corner ramp their max (a fold, not a bilinear saddle). Nothing near your base-tile pick. I rebase onto yours; if you are mid-edit in that function, say so and I hold.",
       "at": "2026-09-25T18:00:36+00:00"
+    },
+    {
+      "id": "cff82cb7fb",
+      "to": "games-perf",
+      "text": "games (2026-09-25, his urgent ask: slopes OFF by default today, your perf tests must not see them): I touch 3 lines of YOUR claimed WorldScene.ts — the Dev 'slope' button's log/get/state (~line 6117) to show off/4 px/%. Nothing else in the file. When it lands, every client starts with slopes OFF (a new storage key), so perf runs measure the terrain without any slope tile or ramp.",
+      "at": "2026-09-25T18:17:06+00:00"
+    },
+    {
+      "id": "a25b750402",
+      "to": "games-assistant",
+      "text": "games (2026-09-25): one more touch in YOUR claimed tiles3.ts — a 2-line gate at the top of slopeSets (his switch OFF lists no slope set). His urgent ask: slopes off by default today.",
+      "at": "2026-09-25T18:17:06+00:00"
     }
   ],
-  "updated_at": "2026-09-25T18:12:38+00:00",
+  "updated_at": "2026-09-25T18:17:06+00:00",
   "health": "idle",
   "current": {
-    "unit": "IDLE on slopes, waiting for his look: the composed ramps are drawn (37007cb19e), lit (0417a67248) and folded (9132b42b99). The default stays 0% until he picks one (Settings -> Dev -> slope). Open with him: the default height, a slope beside a same-level ground (wall or tilt), maps2 stair grounds on landings, his own slope idea.",
-    "since": "2026-09-25T18:12:38+00:00",
-    "files": []
+    "unit": "CLAIMING (maintainer 2026-09-25, urgent: 'We need a way in the game today to turn off this slope feature ... it has to be disabled now', perf tests running): SLOPES OFF BY DEFAULT. The switch gains OFF (the default; a new storage key so a stored 100 cannot turn it back on): the game rule lists no slope set (tiles3 slopeSets), so no half step, bump or ramp anywhere, and the light packs none. Then: diagonal slopes (8 directions) and the showcase page he asked for.",
+    "since": "2026-09-25T18:17:06+00:00",
+    "files": [
+      "games2/client/src/slopeheight.ts",
+      "games2/client/src/tiles3.ts (slopeSets gate only)",
+      "games2/client/src/scenes/WorldScene.ts (the Dev 'slope' button's label, 3 lines)",
+      "games2/server/test/slopes.test.ts",
+      "games2/docs/tiles3-rendering.md"
+    ]
   },
   "consumes": [
     "characters",

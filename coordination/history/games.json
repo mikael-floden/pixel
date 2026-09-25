@@ -805,6 +805,10 @@
     {
       "at": "2026-09-25T16:17:00+00:00",
       "text": "SHIPPED 93302c801c (fast lane): his BLACK EDGES (six screenshots on 12bebeab3) were MINE, not the ground perf commits — the client as of 5d1eee2514 draws the same zigzag. composeBoundary took alpha from the silhouette over a transparent source: a half-step slope tile's sunk corners and a raise's shifted-down plate composed as (0,0,0,255) in 482 of the_game's 485 slope boundaries (87,372 texels). A slope boundary now leaves a hole a hole (flat boundaries unchanged, render3 parity 45/45); slopeTopOnly never re-crops a composite. Headless at 140,152.6: 295 black ground texels -> 0."
+    },
+    {
+      "at": "2026-09-25T18:12:38+00:00",
+      "text": "SHIPPED 9132b42b99 (fast lane): A CORNER RAMP IS A FOLD. His 'shadow bumps' on the lit pyramid were the ridge cells: one raised corner blended bilinearly is a saddle that sags to a quarter at its centre, and the sun's terminator traced it — a scallop per ring. rampHeight (tiles3.ts, only that function; games-assistant told) is now the MIN of the two edge inclines for one raised corner and their MAX for three; buildRampPixels calls it (one surface for art, feet and light) and the shader mirrors it with an exact two-plane hit. Straight ridges in the lit and light-only views."
     }
   ]
 }
