@@ -1140,6 +1140,42 @@
           "tries": 1,
           "generated_at": "2026-09-25T19:25:42+00:00",
           "source": "north-east"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1612,
+          "step_max": 0.2073,
+          "drift": 1.88,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.88,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "50622e8b-97d4-419d-b4b6-5ef9a490896c",
+          "group": "3c84c6ff-74c2-49e7-8969-0058e95f7a7f",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T22:16:11+00:00"
         }
       },
       "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in",
@@ -1192,6 +1228,13 @@
           "spire_whelk/animations/angry/north-west/02.webp",
           "spire_whelk/animations/angry/north-west/03.webp",
           "spire_whelk/animations/angry/north-west/04.webp"
+        ],
+        "north": [
+          "spire_whelk/animations/angry/north/00.webp",
+          "spire_whelk/animations/angry/north/01.webp",
+          "spire_whelk/animations/angry/north/02.webp",
+          "spire_whelk/animations/angry/north/03.webp",
+          "spire_whelk/animations/angry/north/04.webp"
         ]
       },
       "strips": {
@@ -1201,7 +1244,8 @@
         "north-east": "spire_whelk/animations/angry__north-east.webp",
         "south-west": "spire_whelk/animations/angry__south-west.webp",
         "west": "spire_whelk/animations/angry__west.webp",
-        "north-west": "spire_whelk/animations/angry__north-west.webp"
+        "north-west": "spire_whelk/animations/angry__north-west.webp",
+        "north": "spire_whelk/animations/angry__north.webp"
       }
     }
   },
