@@ -3,9 +3,12 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "WAITING for his run on a216d092ad+ (GC: ephemerons, loader leftovers, sprite batch; the late meter by draws/binds/fill/switches/clears). No files claimed.",
-    "since": "2026-09-25T20:52:45+00:00",
-    "files": []
+    "unit": "CLAIMING: THE RECORDER'S GL WRAPPERS ALLOCATE NOTHING. glframe.ts wraps viewport/drawArrays/drawElements/bindFramebuffer/clear/bindTexture with a rest-args function + apply: one array per call, thousands a frame on his phone while the beacon is armed - his perf runs carry GC the game does not, and it masks the sprite batch in allocBy.render. Fixed-arity wrappers (orig.call(this, a, b)), same counters. Measured headless with the beacon on before/after.",
+    "since": "2026-09-25T21:43:32+00:00",
+    "files": [
+      "games2/client/src/glframe.ts (the GL call wrappers only)",
+      "games2/docs/perf.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
@@ -72,6 +75,10 @@
     {
       "at": "2026-09-25T20:52:45+00:00",
       "text": "SHIPPED a216d092ad (live 20:52:09 UTC, fast lane): THE LATE METER GAINS `fb` (render-target switches) AND `clMpx` (cleared Mpx). His cool run: the frame before each late one was only 0-35% busier than its window's mean on every axis, while EVERY frame carried 22-36 switches and ~10 Mpx of clears. Headless pass list (his geometry): the screen bound+cleared 3x a frame around two half-res light fields (nightlight.ts, games'); 2-6 brackets through a 1508x1429 capture target clearing 2.15 Mpx each; each cover atlas cleared in a pass of its own, left empty, re-entered for the blit. 38 late keys (server keeps 40). If his run's late share climbs with fb/clMpx, the fix is the pass order (offscreen first, the screen once) and the empty passes - the light-field half needs games (nightlight.ts)."
+    },
+    {
+      "at": "2026-09-25T21:43:32+00:00",
+      "text": "HIS RUN on c0efbebe66 (21:36-21:39, 3ac5553c, 7 windows): THE LATE FRAMES FOLLOW THE DRAW CALLS - late share by the previous frame's draws <=500 1.5%, <=1000 3.6%, <=1500 12.0%, <=2000 11.7%, >2000 36.8% (fill 0 -> 15.2%, target switches 5.2 -> 19.3%, cleared Mpx flat 6-10%). Headless at his worst place (108.4,168.8, 16 units): 70% of draws are texture-unit overflows, 70 of 95 draws ONE quad - the tiles3 atlas case. GC: 2 major collections in 3.3 min (56 and 69 ms frames, mostly idle wait) against 4 at 92-166 ms in the cool run. BUT `render` allocBy did not drop (106-302 KB/frame): the recorder's own GL wrappers (glframe.ts wrapGl: `...a` rest args + apply) allocate an array per wrapped GL call - thousands a frame on his phone, perf runs only. Also: rebuildScenery spikes 10-94 ms in the forest (96-130,150-185); hooks (ambient) dominant in 270 long frames, 4.3-8.8 ms/frame."
     }
   ],
   "requests": [
@@ -146,5 +153,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T20:52:45+00:00"
+  "updated": "2026-09-25T21:43:32+00:00"
 }
