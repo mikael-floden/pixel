@@ -18,7 +18,14 @@
 //    esbuild leaves the string alone, so the browser asks for a .ts file and
 //    gets nothing — silently, because a failed worker is not a page error. Each
 //    worker is therefore bundled first, named by its own content hash, and the
-//    specifier is rewritten in every .ts that mentions it.
+//    specifier is rewritten in every .ts that mentions it, AT ANY DEPTH
+//    (`../perfpost.ts` from scenes/ is `./perfpost-<hash>.js` beside the
+//    bundle). The workers are FOUND IN THE SOURCE (`findWorkers`), never kept
+//    in a list: the list was three names, the recorder's CPU benchmark was
+//    added to the client and not to it (2026-09-25), and every fast-lane bundle
+//    then asked for `../cpubench.ts` — his run read the benchmark 0 in every
+//    window and nothing said why. A bundle that still names a worker by its
+//    .ts is refused (step 1b).
 //
 // 2. `import.meta.env` AS AN OBJECT, not key by key. Defining
 //    `import.meta.env.VITE_GIT_SHA` alone leaves `import.meta.env` itself
@@ -42,7 +49,39 @@ import { fileURLToPath } from "node:url";
 
 const GAMES2 = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CLIENT = join(GAMES2, "client");
-const WORKERS = ["artworker", "composeworker", "tiles3worker"];
+/** The idiom, in any .ts under client/src: `new Worker(new URL("<rel>.ts",
+ *  import.meta.url)`. */
+const WORKER_IDIOM = /new Worker\(\s*new URL\(\s*(["'])((?:\.\.?\/)+[\w-]+)\.ts\1\s*,\s*import\.meta\.url/g;
+
+/** EVERY WORKER THE CLIENT STARTS, by name (its file's base name), from the
+ *  source. A worker's file must sit directly in client/src: the rewrite names
+ *  it beside the bundle. */
+export function findWorkers(srcDir = join(CLIENT, "src")) {
+  const found = new Set();
+  const walk = (dir) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (p.endsWith(".ts")) {
+        for (const m of readFileSync(p, "utf8").matchAll(WORKER_IDIOM)) {
+          const abs = resolve(dirname(p), `${m[2]}.ts`);
+          if (dirname(abs) !== srcDir) throw new Error(`fastbuild: ${p} starts a worker at ${abs} — a worker must sit directly in client/src`);
+          if (!existsSync(abs)) throw new Error(`fastbuild: ${p} starts a worker at ${abs}, which does not exist`);
+          found.add(abs.slice(srcDir.length + 1, -3));
+        }
+      }
+    }
+  };
+  walk(srcDir);
+  return [...found].sort();
+}
+
+/** Every mention of a worker's source file, at any relative depth, becomes its
+ *  emitted name beside the bundle: `./w.ts`, `../w.ts` -> `./w-<hash>.js`. */
+export function rewriteWorkerSpecifiers(text, names) {
+  for (const [w, name] of Object.entries(names)) text = text.replace(new RegExp(`(?<![\\w.])(?:\\.\\.?\\/)+${w}\\.ts`, "g"), `./${name}`);
+  return text;
+}
 
 /** Build a complete, servable client into `outDir`. Returns what it emitted. */
 export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean = true, sourcemap = false, manifest = true, imageOrigin = "" } = {}) {
@@ -114,6 +153,7 @@ export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean 
   const entryOf = (res, base) => res.outputFiles.find((f) => f.path.endsWith(`/${base}.js`));
 
   // (1) the workers first — main's rewrite needs their final names.
+  const WORKERS = findWorkers();
   const names = {};
   const wres = await Promise.all(WORKERS.map((w) => build({ ...common, entryPoints: [`src/${w}.ts`] })));
   wres.forEach((res, i) => {
@@ -128,8 +168,7 @@ export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean 
     setup(b) {
       b.onLoad({ filter: /\.ts$/ }, async (args) => {
         const { readFile } = await import("node:fs/promises");
-        let text = await readFile(args.path, "utf8");
-        for (const w of WORKERS) text = text.split(`./${w}.ts`).join(`./${names[w]}`);
+        const text = rewriteWorkerSpecifiers(await readFile(args.path, "utf8"), names);
         return { contents: text, loader: "ts" };
       });
     },
@@ -148,6 +187,10 @@ export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean 
     plugins: [rewriteWorkerUrls],
   });
   const js = entryOf(main, "main");
+  // (1b) A WORKER STILL STARTED FROM ITS SOURCE is the silent 404 of (1): the
+  // bundle is refused rather than published with a dead worker in it.
+  const fromSource = js.text.match(/new URL\(\s*["'][^"']*\.ts["']/g);
+  if (fromSource) throw new Error(`fastbuild: the bundle still starts a worker from its .ts source (${fromSource.join(", ")}) — the browser would get a 404 and no page error`);
   const bundle = `index-${hash(js.text)}.js`;
   const map = main.outputFiles.find((f) => f.path.endsWith("main.js.map"));
   put(main.outputFiles.filter((f) => f !== js && f !== map));

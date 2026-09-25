@@ -298,6 +298,13 @@ deploy's own rollback guard against the change I had just made to `/version`.
   granted `immutable` for a year. It now runs last, recursively.
 - **That check's regex rejected compound extensions**, so `sourcemap: true`
   always threw and an ordinary `logo.webp` would have read as a hash failure.
+- **fastbuild bundled a HAND-KEPT list of three workers.** A worker added to the
+  client and not to the list shipped as `new URL("../cpubench.ts")`, a 404 no
+  page error reports: his 2026-09-25 run read the CPU benchmark 0 in every
+  window. The workers are found in the client's source (`findWorkers`) and
+  rewritten at any depth, the build refuses a bundle that still starts one from
+  its `.ts`, and `verify-fastbundle` counts them from the source
+  (`fastbuildworkers.test.ts`: every `new Worker(` in the client is the idiom).
 - **An unreadable pointer made the publisher reset `seq` to 1**, which law 2
   then turns into "every future publish refused" until the seq climbs back. A
   pointer that exists and will not parse now ABORTS the publish.

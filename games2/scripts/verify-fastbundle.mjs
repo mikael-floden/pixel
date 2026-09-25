@@ -36,7 +36,7 @@ import { existsSync, rmSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
-import { fastBuild } from "./fastbuild.mjs";
+import { fastBuild, findWorkers } from "./fastbuild.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "client", "dist");
@@ -191,14 +191,17 @@ check((state?.blits ?? 0) > 0, `RENDERS — terrain drew (${state?.blits} blits)
 // inferred from what the page happened to request. Watching the page is the
 // weaker test and it reads stronger than it is: this run saw only 2 of the 3
 // (compose, art) because tiles3 can take its documented SYNC fallback, so the
-// page-traffic check passed with a worker it had never proven reachable.
+// page-traffic check passed with a worker it had never proven reachable. The
+// count is the workers the client's source starts (`findWorkers`), not a
+// number written here: it was 3 when the recorder's worker made it 4.
 const served = [];
 for (const name of Object.values(built.workers)) {
   const r = await fetch(`${origin}/assets/${name}`);
   served.push(`${r.status} ${name}`);
 }
+const expected = findWorkers().length;
 check(
-  served.length === 3 && served.every((s2) => s2.startsWith("200")),
+  expected >= 3 && served.length === expected && served.every((s2) => s2.startsWith("200")),
   `all ${served.length} emitted worker bundles are served (${served.join(", ")})`,
 );
 if (workers.length) console.log(`[fastbundle] the page itself fetched: ${workers.join(", ")}`);
