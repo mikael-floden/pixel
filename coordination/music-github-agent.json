@@ -1,9 +1,9 @@
 {
   "domain": "music",
   "agent": "music-github-agent",
-  "updated_at": "2026-09-18T23:29:15+00:00",
+  "updated_at": "2026-09-25T00:00:00+00:00",
   "health": "idle",
-  "current": "idle \u2014 review of 2026-09-18 read, no actionable verdict",
+  "current": "idle — review of 2026-09-25 read, no actionable verdict",
   "progress": {
     "verdicts_in_file": 1,
     "verdicts_taken": 0,
@@ -11,12 +11,12 @@
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-09-18] Stand-in github agent, run on the wiki review that landed on main. ACCOUNT:",
-    "TOOK: nothing. The only key in live/feedback/music.json is music/karmanjaka_riders_canyon/karmanjaka_riders_canyon \u2014 rating 4, status approved, updated 2026-08-12T14:15:12Z. live/docs/review-contract.md law 2: an APPROVAL IS NEVER CLEARED, it is his pick and has to outlive the review. Only redo/rejected die with the art they judged, and there is no redo or rejected entry in the file.",
-    "DID: read coordination/PROTOCOL.md, live/docs/review-contract.md, music/README.md, live/README.md, live/feedback/music.json, coordination/music.json (coordination/music-assistant.json does not exist). Verified the judged art is still on disk: music/karmanjaka_riders_canyon/ holds karmanjaka_riders_canyon.ogg + metadata.json \u2014 so contract law 4 (no verdict may name a path that is not on disk) holds with the entry left in place. No art touched, no pipeline run, no ElevenLabs credit spent, no entry edited. Only this board shipped.",
-    "DID NOT: clear the approval (law 2), and did not act on it as work \u2014 music/README.md gives this domain approved/rejected only, no redo sense, and 'approved' here means keep the track, which is already the state on disk. Did not run music/pipeline/loop.py or compose.py: nothing in the file asks for a new take, and composing unasked would spend shared ElevenLabs credit and replace art he has approved. Did not touch music/config/music.json, tracks.json or viewer_data.json \u2014 no reason to rebuild an index nothing changed. Left everything else in the domain alone per the one-unit rule.",
+    "[2026-09-25] Stand-in github agent, run on the wiki review that landed on main. ACCOUNT:",
+    "TOOK: nothing. live/feedback/music.json holds exactly ONE key — music/karmanjaka_riders_canyon/karmanjaka_riders_canyon, rating 4, status approved, entry updated_at 2026-08-12T14:15:12Z, file updated_at 2026-08-12T14:15:10Z. live/docs/review-contract.md law 2: an APPROVAL IS NEVER CLEARED — it is his pick and must outlive the review; only redo/rejected die with the art they judged, and the file holds neither. music/README.md gives this domain approved/rejected only (no redo sense — contract: 'do not invent one'), and 'approved' means keep the track, which is already the state on disk.",
+    "DID: read coordination/PROTOCOL.md, live/docs/review-contract.md, music/README.md, live/README.md, live/feedback/music.json, coordination/music.json (coordination/music-assistant.json does not exist), and this board. Verified from the FILESYSTEM that the judged art is present: music/karmanjaka_riders_canyon/ holds karmanjaka_riders_canyon.ogg (1.90 MB) + metadata.json, so contract law 4 (no verdict may name a path that is not on disk) holds with the entry left in place — the domain's only two tracks are karmanjaka_riders_canyon and nangijala_cherry_valley, both with metadata.json. Also checked git log on live/feedback/music.json: its last touching commit is 1dc40efa and the entry timestamp is unchanged, so THIS push moved nothing in the music file — the one entry is the same approval already read and left on 2026-09-18 (see history). Nothing claimed (there was no actionable unit to claim), no art touched, no pipeline run, no ElevenLabs credit spent, no entry edited. Only this board shipped.",
+    "DID NOT: clear the approval (law 2). Did not run music/pipeline/loop.py or compose.py — nothing in the file asks for a new take, and composing unasked would spend shared ElevenLabs credit and overwrite art he has approved. Did not rebuild music/viewer_data.json or tracks.json: nothing changed, and a regenerable index rebuilt for no reason is churn. Did not widen sparse-checkout or install requirements.txt — no pipeline command was needed. Left the rest of the domain alone per the one-unit rule.",
     "CLEARED: nothing.",
-    "OBSERVATION for the music agent, not acted on (do not treat as a claim): music/README.md 'What is a track?' documents a per-track .wav master and an .m4a streaming twin, and says music/**/*.wav is excluded from the image via .dockerignore. Both tracks on disk are now ogg-only, which is what CLAUDE.md's 'AUDIO SHIPS AS OGG/OPUS: ONE FORMAT, NO MASTER' (2026-09-09) requires \u2014 so the README section, and the game-side snippet that picks m4a for Safari, describe a layout that no longer exists. Doc-only, no game content affected; leaving it to the domain agent rather than editing docs nobody asked about."
+    "OBSERVATION for the music agent, still not acted on (do not treat as a claim; unchanged from 2026-09-18): music/README.md 'What is a track?' documents a per-track .wav master and an .m4a streaming twin and says music/**/*.wav is excluded from the image via .dockerignore, and its game-side snippet picks m4a for Safari. Both tracks on disk are ogg-only, which is what CLAUDE.md's 'AUDIO SHIPS AS OGG/OPUS: ONE FORMAT, NO MASTER' (2026-09-09) requires — so that README section describes a layout that no longer exists. Doc-only, no game content affected; it is the domain agent's to rewrite in place, not a github agent's unit."
   ],
   "requests": []
 }
