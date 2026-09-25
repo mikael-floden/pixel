@@ -1,18 +1,17 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T13:50:08+00:00",
+  "updated_at": "2026-09-25T15:00:52+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING (maintainer 2026-09-25: 'Can you start the Stop redoing work that doesn't change-implementation now?'): two per-frame CPU cuts from the zero-hitches design, each behind a switch, render-parity proven with the A/B harness. (1) FAST DEPTH SORT (?fastsort=0): re-place only the display-list objects whose depth changed (p50 19 of 4,277 per frame headless) and merge, instead of Phaser's full comparator sort every frame (0.9-3.3 ms/frame on his phone, 11-30 ms on rebuild frames); exact same order as the stable sort, proven every frame by a parity gate. (2) CULL BOX (?cullbox=0): an occluder's cull and cover box stored once at creation (geometry never changes) instead of ~10 getters per occluder per frame (occCull 0.65-2.25 ms/frame; coverIndex 3-7 ms per step). games' and games-assistant's WorldScene claims are their shipped 5d1eee2514 / 043159bc7d.",
-    "since": "2026-09-25T13:50:08+00:00",
+    "unit": "CLAIMING (maintainer 2026-09-25: 'I can't have a lag that is due to the perf run itself when I try to evaluate the performance'): THE PERF RECORDER'S OWN FREEZE — beaconSelfMs 34-65 ms once per 30 s window in his 07:19 run, a stall he feels while evaluating. The ground texel census (gl.readPixels 256x192 = a full GPU sync) moves to the final flush; every remaining part of the report build and its JSON is measured and cut; the probe proves it headless.",
+    "since": "2026-09-25T15:00:52+00:00",
     "files": [
       "games2/client/src/scenes/WorldScene.ts",
-      "games2/client/src/fastsort.ts",
-      "games2/server/test/fastsort.test.ts",
-      "games2/scripts/verify-fastsort.mjs",
-      "games2/scripts/verify-cullbox.mjs",
+      "games2/scripts/probe-beaconcost.mjs",
+      "games2/scripts/verify-beacon.mjs",
       "games2/docs/perf.md",
-      "games2/CLAUDE.md"
+      "games2/server/src/perfreport.ts",
+      "games2/scripts/perf-read.mjs"
     ]
   },
   "progress": {
@@ -51,6 +50,10 @@
     {
       "at": "2026-09-25T12:04:28+00:00",
       "text": "SHIPPED aa823e85a2 (live 12:04 UTC, fast lane): TWO RENDER BUGS the zero-hitches render A/B harness found. (1) tiles3draw platePixels memoised a PLAIN plate's capped raster under plateKey, which IS its art key - the key sourcePixels memoises the RAW file under - so whichever ran first won: the t3s: plate could be the raw file (grass clean band 20,100,78 palette wall instead of 20,82,59 top: the zigzag dots), and a plate built first made fades/details/COMPOSED RAMPS read the capped plate as their source (games: your buildRampPixels bandSrc then got a flat palette band - 1,088-1,783 texels of a grass ramp - against his no-solid-colour-slope rule; now always the raw art, as you designed). Built plates now live in their own memo `plates`, keyed by the drawn texture key. (2) mine, 410d19f944: a plate the compose worker landed never entered the memo, so lid() had no base (raw-registered textures cannot be read back) and a lowered wall's lid fell back to the undarkened plate. Landed plate jobs are memoised now. Tests: tiles3draw.test.ts 'never share a memo', 'worker landed' (fail on the old code)."
+    },
+    {
+      "at": "2026-09-25T15:00:52+00:00",
+      "text": "SHIPPED 8d44ffb965 (live 15:00 UTC): STOP REDOING WORK THAT DOESN'T CHANGE (his order). (1) fastsort.ts: the depth sort re-places only what moved (windows on a steady frame, a merge when objects were added/removed), exactly Phaser's stable order (1,220/1,220 sorts identical headless, 10 randomized unit suites); depthSort 1.13 -> 0.74 ms/frame headless, 2.8-3.6x cheaper in node on a steady frame. (2) occBoxes: an occluder's cull and cover boxes stored once at creation; the proximity cull's grid is not built while that cull is off; occCull 0.98 -> 0.53 ms/frame headless, 101,543 checks identical. Render A/B harness both off vs on: 16/16 spots, 0 px. Switches: ?fastsort=0 ?cullbox=0, Settings->Dev 'sort: only what moved', 'cull: stored boxes'."
     }
   ],
   "requests": [
