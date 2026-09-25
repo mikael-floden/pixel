@@ -576,7 +576,14 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   row). (Not `rampTopOnly`: masked to the flat diamond's outline, it cut the
   incline off 1,529 raised ramps on the_game and left the flat step. Not the
   band at level 0: the ramp's occluder copy painted it over the cells in
-  front, teal strips along every hill's foot.)
+  front, teal strips along every hill's foot.) NO SEAM BETWEEN TWO RAMPS:
+  the library diamond's border ring (46 texels a hair outside 0..1, the
+  overlap row every flat plate draws) lifts with the incline, and each column
+  continues its top and bottom texel to where the texel just outside the
+  diamond — the neighbour's, on the same surface — lands. (Without both, a
+  dashed 1 px line showed the side face behind along every cell edge of a
+  slope — his "the slope should be 1px wider/taller", 2026-09-25; the painter
+  test `server/test/rampseam.test.ts` holds all four ways up at every height.)
   Frame 64 x (46 + 15), hung 15 rows up (the surface op and
   `dressKey`/`surfaceY` alike); the feet follow `rampHeight * lh`
   (`WorldScene.rampLiftPx`). Its art path is VIRTUAL (`synthetic/ramp/<ground>/

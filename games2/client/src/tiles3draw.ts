@@ -693,7 +693,8 @@ export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: numb
       const i = y * fw + x;
       if (d[i * 4 + 3] === 0) continue;
       const [u, v] = uv(x, y);
-      if (u < 0 || u > 1 || v < 0 || v > 1) continue;
+      // The whole top face: the library diamond's border ring sits a hair outside 0..1 (see SEAMS below).
+      if (!sheets.libTop[i] && (u < 0 || u > 1 || v < 0 || v > 1)) continue;
       used[i] = 1;
       flatBottom[x] = y;
       const h = rampHeight(mask, u, v); // the one surface: art, feet and light (tiles3)
@@ -724,6 +725,52 @@ export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: numb
         const from = (rows[k - 1] * fw + x) * 4;
         o[j] = o[from]; o[j + 1] = o[from + 1]; o[j + 2] = o[from + 2]; o[j + 3] = 255;
       }
+    }
+  }
+  /* SEAMS: EACH COLUMN BRIDGES TO ITS NEIGHBOURS' FIRST TEXEL (maintainer
+   * 2026-09-25: "I can see a 1 px edge becouse the slope should be 1px
+   * wider/taller"; "You have very visible edges"). Two things left a dashed
+   * line along every cell edge of a slope. The library diamond's border ring
+   * (46 texels a hair outside 0..1 — the overlap row every flat plate draws so
+   * neighbours meet without a seam) was never lifted, so neighbours lost the
+   * row they share; it is lifted now, above. And where two diamonds' edge rows
+   * only ABUT (the 2:1 staircase alternates overlap and abut), the upper
+   * cell's last texel lifts up to 0.6 px more than the lower cell's first and
+   * the rounding opens a row between them — the side face behind showed
+   * through (22 of 62 seam columns of a north ramp row at 100%, measured by
+   * the painter test server/test/rampseam.test.ts). Inside one raster the
+   * stretch above closes such rows; across two nothing did. So every column
+   * continues its top texel UP and its bottom texel DOWN to where the texel
+   * just outside the diamond — the neighbour's, at the same point of the
+   * same continuous surface — lands: nothing when they overlap, the gap when
+   * they do not. */
+  const liftedRow = (x: number, y: number): number => {
+    const [u, v] = uv(x, y);
+    return y + lh - Math.round(lh * rampHeight(mask, u, v));
+  };
+  for (let x = 0; x < fw; x++) {
+    let t = -1;
+    let b = -1;
+    for (let y = 0; y < TOP; y++) if (used[y * fw + x]) { if (t < 0) t = y; b = y; }
+    if (t < 0) continue;
+    const rows = painted[x];
+    if (!rows.length) continue;
+    const top = rows[0];
+    const bottom = rows[rows.length - 1];
+    const above = liftedRow(x, t - 1);
+    for (let yy = Math.max(0, above + 1); yy < top; yy++) {
+      const j = (yy * fw + x) * 4;
+      if (o[j + 3] !== 0) continue;
+      const from = (top * fw + x) * 4;
+      o[j] = o[from]; o[j + 1] = o[from + 1]; o[j + 2] = o[from + 2]; o[j + 3] = 255;
+    }
+    const below = liftedRow(x, b + 1);
+    for (let yy = bottom + 1; yy < below && yy < H; yy++) {
+      const j = (yy * fw + x) * 4;
+      if (o[j + 3] !== 0) continue;
+      const from = (bottom * fw + x) * 4;
+      o[j] = o[from]; o[j + 1] = o[from + 1]; o[j + 2] = o[from + 2]; o[j + 3] = 255;
+      if (yy > lowest[x]) lowest[x] = yy;
     }
   }
   // The side face under a raised lower edge: the plate's own band texture, down to where the flat plate's face began.
