@@ -1,8 +1,16 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-23T18:49:11+00:00",
+  "updated_at": "2026-09-25T15:52:18+00:00",
   "health": "running",
-  "current": "idle — SHIPPED today: (1) the thumbstick reflects the desired velocity (cap leans by his dial, BOTH sticks publish the bearing; 74/74, 82/82); (2) the empty 'New version out' dialog — a lane publish is ahead of release_notes.json, so the dialog asks GitHub's compare for mine...new (verify-updatenotes 50/50). Still waiting on games for ONE card width (bars.ts .ml-bar-row 126/170 -> 148).",
+  "current": {
+    "unit": "REMOVE the Settings/Dev 'ambient: auto (birds)' demo-cycler button (maintainer 2026-09-25: 'Why do we have this ambient button? What's the point? Can you remove it?'). The per-effect Ambient checklist replaced it; the __ml demo probe stays for gates. Ambient's file, their boards name no files in flight.",
+    "since": "2026-09-25T15:52:18+00:00",
+    "files": [
+      "games2/ambient/runtime/mount.ts (two lines)",
+      "games2/ambient/runtime/hudbutton.ts (deleted)",
+      "coordination/games-ui.json"
+    ]
+  },
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -74,5 +82,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-23T18:49:11+00:00"
+  "updated": "2026-09-25T15:52:18+00:00"
 }
