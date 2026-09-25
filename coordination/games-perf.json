@@ -3,12 +3,9 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: THE LATE METER GAINS TARGET SWITCHES AND CLEARED PIXELS. His cool run: the frames before a late one are only 0-35% busier than the window's mean on draws, fill, switches and clears alike; EVERY frame carries 22-36 render-target switches and ~10 Mpx of clears (headless pass list: the screen bound and cleared 3x a frame around two half-res light fields; 2-6 brackets through a 1508x1429 capture target each clearing 2.15 Mpx; each cover atlas cleared then left empty and re-entered). On a Mali tiler each switch stores (and may reload) the tiles. Two axes, fb and clMpx, so his next run says whether the late share climbs with them. Buckets coarsened to fit the server's 40-key block (38) and keep verify-beacon's four names: client-only, fast lane.",
-    "since": "2026-09-25T20:42:49+00:00",
-    "files": [
-      "games2/client/src/glframe.ts (LATE_AXES only)",
-      "games2/docs/perf.md"
-    ]
+    "unit": "WAITING for his run on a216d092ad+ (GC: ephemerons, loader leftovers, sprite batch; the late meter by draws/binds/fill/switches/clears). No files claimed.",
+    "since": "2026-09-25T20:52:45+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -71,6 +68,10 @@
     {
       "at": "2026-09-25T20:28:27+00:00",
       "text": "SHIPPED cac0da98de (live 20:27:54 UTC, fast lane): THE SPRITE BATCH BOXES NO NUMBERS AT ITS OWN CALL (batchpatch.ts; his cool run's `render` = 105-285 KB/frame, ~40% of all allocation). Phaser 3.90.0's MultiPipeline.batchSprite with batchQuad's 42 stores and the tint packing inline; pipelines that override batchQuad (scenery-lit, PreFX) keep the original; off on any other Phaser version. Render A/B IDENTICAL (0 px, 4 spots at 1079x1416: day, swim, indoor, night); batchSprite 61.0 -> 21.5 KB/frame headless (the rest: its matrix calls + the lit copies). ?batchpatch=0 is the A/B."
+    },
+    {
+      "at": "2026-09-25T20:52:45+00:00",
+      "text": "SHIPPED a216d092ad (live 20:52:09 UTC, fast lane): THE LATE METER GAINS `fb` (render-target switches) AND `clMpx` (cleared Mpx). His cool run: the frame before each late one was only 0-35% busier than its window's mean on every axis, while EVERY frame carried 22-36 switches and ~10 Mpx of clears. Headless pass list (his geometry): the screen bound+cleared 3x a frame around two half-res light fields (nightlight.ts, games'); 2-6 brackets through a 1508x1429 capture target clearing 2.15 Mpx each; each cover atlas cleared in a pass of its own, left empty, re-entered for the blit. 38 late keys (server keeps 40). If his run's late share climbs with fb/clMpx, the fix is the pass order (offscreen first, the screen once) and the empty passes - the light-field half needs games (nightlight.ts)."
     }
   ],
   "requests": [
@@ -145,5 +146,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T20:42:49+00:00"
+  "updated": "2026-09-25T20:52:45+00:00"
 }
