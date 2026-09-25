@@ -1,11 +1,15 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-24T23:22:08+00:00",
+  "updated_at": "2026-09-25T11:49:58+00:00",
   "health": "running",
   "current": {
-    "unit": "IDLE after 1840d6b768 (deploying). Waiting for his run on the current build: the proof is ground ms/s back near 150 (was 211-299) and ms per repaint run <= 6 (was 8.6-15.4).",
-    "since": "2026-09-24T23:22:08+00:00",
-    "files": []
+    "unit": "CLAIMING: TWO RENDER BUGS THE ZERO-HITCHES HARNESS FOUND (same game loaded twice drew different pixels). (1) tiles3draw platePixels memoises a PLAIN plate's capped raster under plateKey = artKey(path) - the SAME key sourcePixels memoises the RAW source under - so whichever runs first wins: the t3s: capped plate can be the raw file (grass band in palette WALL green 20,100,78 instead of TOP 20,82,59: his zigzag dots back), and fades/details/composed ramps can be built from the capped plate instead of the raw art (collision since 2026-09-12; made likelier by composed ramps reading sources). (2) MINE, 410d19f944: a plate the compose worker built never enters the memo, so lid() finds no base and a lowered wall's lid falls back to the undarkened plate (his 'Lowered wall top darkening' dial) for the session. Fix: built plates in their own memo; a landed plate job memoised like one built here. games' tiles3draw claim is its shipped 5d1eee2514 (board stale since 21:37).",
+    "since": "2026-09-25T11:49:58+00:00",
+    "files": [
+      "games2/client/src/tiles3draw.ts",
+      "games2/server/test/tiles3draw.test.ts",
+      "games2/docs/perf.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
