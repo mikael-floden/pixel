@@ -25,9 +25,8 @@
 //
 // INJECTED FROM OUTSIDE, because games-ui owns hud.ts (UI_AGENT.md); the
 // zones/dungeons DATA is the games agent's, the chooser and the ambient-zones
-// layer are games-ui's (2026-09-18). Same pattern the ambient agent's settings
-// button uses (ambient/runtime/hudbutton.ts): find the page in the DOM, add to
-// it, and re-add when the HudBar has thrown everything away — it rebuilds
+// layer are games-ui's (2026-09-18). The pattern: find the page in the DOM,
+// add to it, and re-add when the HudBar has thrown everything away — it rebuilds
 // itself on a rejoin. `ensureMapLayers()` is idempotent and is polled from
 // the scene.
 //

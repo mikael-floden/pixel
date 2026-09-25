@@ -4,7 +4,6 @@ import { sampleEnv } from "./env";
 import { Director } from "./director";
 import { Toggles } from "./toggles";
 import { Demo } from "./demo";
-import { DemoButton } from "./hudbutton";
 import { birdDensity, setBirdDensity } from "./density";
 import { OUTDOOR_FADE_MS, OutdoorGain, readIndoor } from "./outdoor";
 import { ZoneField, levelFromProbe, pickFromProbe, sourceFromProbe } from "./zonefield";
@@ -65,7 +64,6 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
     const director = new Director(features);
     const toggles = new Toggles(features, director);
     const demo = new Demo(features, toggles);
-    const demoButton = new DemoButton(demo);
     let inited = false;
     let envAge = ENV_SAMPLE_MS; // sample on the first tick
     /* THE GLOOM READS THE FIELD (weather/gloom.ts): each weather's weight at
@@ -239,8 +237,6 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         directorDue = false;
         const t0 = performance.now();
         safe(() => director.tick(ctx.env, ctx));
-        // The HudBar rebuilds on re-joins; keep the demo button alive/fresh.
-        safe(() => demoButton.ensure());
         bill("_director", performance.now() - t0, t0);
       }
       ctx.view = cam.worldView;
@@ -336,13 +332,12 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         director.reroll(ctx.env, r === undefined ? Math.random : () => r);
         return director.debug();
       },
-      // Demo cycler (the settings button's brain): no args = next stop on
-      // the ring; a name jumps straight there; null returns to auto.
-      demo: (name?: string | null) => {
-        const label = name === undefined ? demo.next() : demo.select(name);
-        demoButton.sync();
-        return label;
-      },
+      // Demo cycler — a QA/probe control ONLY. Its Settings button is gone
+      // (maintainer 2026-09-25: "Why do we have this ambient button? What's
+      // the point? Can you remove it?"): the per-effect Ambient checklist is
+      // how he picks effects. No args = next stop on the ring; a name jumps
+      // straight there; null returns to auto.
+      demo: (name?: string | null) => (name === undefined ? demo.next() : demo.select(name)),
       // ---- per-effect toggles (the games-ui agent builds the Settings
       // switches on these; see ambient/README.md "Toggling effects") ----
       // Every effect + its live state for rendering switches: { name, kind,
@@ -353,18 +348,15 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       // incompatible effect is active — returns { ok, blockedBy }.
       toggle: (name: string) => {
         const r = toggles.toggle(name);
-        demoButton.sync();
         return r;
       },
       setEnabled: (name: string, on: boolean) => {
         const r = toggles.setEnabled(name, on);
-        demoButton.sync();
         return r;
       },
       // AUTO (director rolls) vs MANUAL (the enabled set drives). No arg reads.
       auto: (on?: boolean) => {
         if (on !== undefined) toggles.setAuto(on);
-        demoButton.sync();
         return toggles.getMode();
       },
       // ZONE CONTROL: server-driven per zone (true) or the free client

@@ -1486,10 +1486,10 @@ export class HudBar {
     }
     this.refreshSettings();
     wrap.appendChild(row);
-    // The ambient agent injects its cycler button into this row from outside
-    // (ambient/runtime/hudbutton.ts) as a bare-text .ml-plate-btn — the class
-    // is pure CSS again (the wiki button recipe), so it dresses itself; only
-    // wrap bare text labels in a <span> so the shared label styling applies.
+    // Other modules may inject a bare-text .ml-plate-btn into this row from
+    // outside — the class is pure CSS (the wiki button recipe), so it dresses
+    // itself; only wrap bare text labels in a <span> so the shared label
+    // styling applies.
     new MutationObserver(() => {
       row.querySelectorAll<HTMLElement>(".ml-plate-btn").forEach((el) => {
         if (!el.firstElementChild && el.textContent) {

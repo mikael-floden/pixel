@@ -380,10 +380,10 @@ them; folder isolation beats DRY here).
 - **The light ledger reserves ONE shader light slot for this agent**
   (`setAmbientLight` in `client/src/lightslots.ts`; spec
   `games2/spec/LIGHT_BUDGET.md`) — reservations are strict, never lent.
-- The Settings cycler button is INJECTED from `runtime/hudbutton.ts` using
-  the games-ui `.ml-plate-btn` class (a load-bearing hook — games-ui keeps
-  it alive as plain CSS); we never edit `hud.ts`, and re-inject on a poll
-  because the HudBar rebuilds on re-joins.
+- NO demo-cycler button in Settings (maintainer 2026-09-25: "Why do we have
+  this ambient button? What's the point? Can you remove it?" — removed): the
+  per-effect Ambient checklist is how he picks effects. The cycler survives as
+  a probe only, `__mlAmbient.demo(name?)`, for the gates.
 - Diagnostics live on `window.__mlAmbient` (`list()`, `debug(name)`),
   mirroring the game's `__ml` idiom.
 - **`cost(reset?)` is the LAG ANSWER, per feature**: the mount times every

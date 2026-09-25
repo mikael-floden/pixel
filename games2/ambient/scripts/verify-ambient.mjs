@@ -124,12 +124,13 @@ try {
   if ((await dbg("bats")).active) fail("bats must deactivate when the quiet slot wins");
   else ok("quiet slot wins → bats stand down");
 
-  // ---- demo button (maintainer 2026-07-18): selects the effect ONLY, never
-  // changes time-of-day/weather; has AUTO (shows the live effect) + NONE ----
-  await page.evaluate(() => window.__mlAmbient.demo("auto"));
-  const btn = await page.evaluate(() => document.querySelector(".ml-ambient-btn")?.textContent ?? null);
-  if (!btn || !btn.startsWith("ambient: auto")) fail(`settings must carry the ambient button (got ${JSON.stringify(btn)})`);
-  else ok(`settings button injected (${btn})`);
+  // ---- the demo cycler is a PROBE now: it selects the effect ONLY, never
+  // changes time-of-day/weather; AUTO shows the live effect. Its Settings
+  // button is gone (maintainer 2026-09-25: "Can you remove it?") ----
+  const autoFirst = await page.evaluate(() => window.__mlAmbient.demo("auto"));
+  const btn = await page.evaluate(() => !!document.querySelector(".ml-ambient-btn"));
+  if (btn) fail("the ambient demo button is back in Settings — he had it removed");
+  else ok(`no ambient demo button in Settings; the probe still cycles (${autoFirst})`);
 
   // The button must NOT touch time-of-day: record it, demo an effect, assert
   // the phase is unchanged (the whole point of this change).
@@ -180,13 +181,10 @@ try {
   if (!ssd.active || ssd.streaks < 30) fail(`demoed sandstorm must run (active ${ssd.active}, ${ssd.streaks} streaks)`);
   else ok(`demo(sandstorm): running (gain ${ssd.gain.toFixed(2)}, ${ssd.streaks} streaks)`);
 
-  // Clicking the real button advances the ring (sandstorm → leaves) and prints state.
-  const label = await page.evaluate(() => {
-    document.querySelector(".ml-ambient-btn").click();
-    return document.querySelector(".ml-ambient-btn").textContent;
-  });
-  if (label !== "ambient: leaves") fail(`button click must advance sandstorm -> leaves (got ${JSON.stringify(label)})`);
-  else ok("button click advances the ring (sandstorm -> leaves)");
+  // The cycler advances the ring (sandstorm → leaves) and reports its state.
+  const label = await page.evaluate(() => window.__mlAmbient.demo());
+  if (label !== "leaves") fail(`demo() must advance sandstorm -> leaves (got ${JSON.stringify(label)})`);
+  else ok("demo() advances the ring (sandstorm -> leaves)");
 
   // Leaves must FALL in world-height, LAND, and REST on the ground (not slide
   // down-screen forever). Give them time for the low ones to touch down.
@@ -279,10 +277,10 @@ try {
   // fireflies self-gate on and the label reports "auto (fireflies)".
   await page.evaluate(() => { window.__ml.timeOfDay("night", true); window.__mlAmbient.demo("auto"); });
   await page.waitForTimeout(4000);
-  const autoLabel = await page.evaluate(() => document.querySelector(".ml-ambient-btn")?.textContent);
+  const autoLabel = await page.evaluate(() => window.__mlAmbient.demo("auto"));
   const dirAuto = await page.evaluate(() => window.__mlAmbient.director());
   if (dirAuto.pinned !== null) fail(`auto must release the pin (got ${JSON.stringify(dirAuto)})`);
-  if (!/^ambient: auto \(.+\)$/.test(autoLabel)) fail(`AUTO must show the active effect (got ${JSON.stringify(autoLabel)})`);
+  if (!/^auto \(.+\)$/.test(autoLabel)) fail(`AUTO must show the active effect (got ${JSON.stringify(autoLabel)})`);
   else ok(`auto reports the live effect (${autoLabel})`);
 
   if (!failed) console.log("AMBIENT OK");
