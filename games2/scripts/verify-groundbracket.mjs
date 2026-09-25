@@ -20,6 +20,8 @@ const browser=await chromium.launch({executablePath:"/opt/pw-browsers/chromium-1
 const ctx=await browser.newContext({viewport:{width:412,height:732},serviceWorkers:"block"});
 const page=await ctx.newPage();
 const errs=[]; page.on("pageerror",(e)=>errs.push(e.message)); page.on("console",(m)=>{ if(m.type()==="error") errs.push("[console] "+m.text().slice(0,200)); });
+// The console's 404 line carries no URL: name every missing file here (a hole in the world is a 404).
+const missing=new Set(); page.on("response",(r)=>{ if(r.status()===404) missing.add(r.url().replace(origin,"")); });
 await page.addInitScript(()=>{localStorage.setItem("ml-last-choice",JSON.stringify({world:"the_game",characterUid:"default_boy",name:"W"}));sessionStorage.setItem("ml-rejoin","1");localStorage.removeItem("ml-ground-scissor");});
 await page.goto(origin+"/",{waitUntil:"commit"});
 await page.waitForFunction(()=>{try{return !!window.__ml&&window.__ml.players()>=1;}catch{return false;}},null,{timeout:180000,polling:100});
@@ -54,7 +56,15 @@ while (Date.now()-t0 < 150000 && (cellsOk < 5 || bandsOk < 5 || fullOk < 5)) {
   // Inside the band the two ways must agree over the real picture; outside it the whole way
   // repaints the spill, and what that is worth is the full-paint columns above.
   if (!l || l.error || l.diff !== 0) fail(`live scissored vs whole inside the band (step ${stx},${sty}): ${l ? say(l) : "no comparison"}`); else fullOk++;
-  if (f && fw && !f.error && !fw.error && f.diff + f.diffOut > fw.diff + fw.diffOut) fail(`the scissored picture is further from a full paint (${f.diff + f.diffOut} texels) than the whole one (${fw.diff + fw.diffOut})`);
+  /* AGAINST A FULL PAINT the two ways are REPORTED, not judged: outside the band the kept picture is
+   * the texture as it stood, and since cells that land away from the view are parked for later
+   * (docs/perf.md, REPAINT ONLY WHAT CAN BE SEEN SOON) it is stale there BY DESIGN while art streams —
+   * the whole blit's spill then happens to refresh some of those texels, and a total over the whole
+   * texture calls the scissored way "further" (the first try of a run, 4-5k of ~160-237k texels, red
+   * with and without any change). The scissor's contract is judged exactly above and below: inside
+   * the band both ways are identical (live), and over the poison nothing outside it is written. */
+  if (f && fw && !f.error && !fw.error) console.log(`  vs full (report): scissored ${f.diff + f.diffOut}, whole ${fw.diff + fw.diffOut} texels (in band ${f.diff} / ${fw.diff})`);
+  if (f && fw && !f.error && !fw.error && f.diff > fw.diff) fail(`inside the band the scissored picture is further from a full paint (${f.diff} texels) than the whole one (${fw.diff})`);
   if (!s || s.error || s.diff !== 0 || s.poisonOut !== 0) fail(`band over the poison (step ${stx},${sty}): ${s ? say(s) : "no comparison"}`); else bandsOk++;
   // THE TIGHT BAND (2026-09-24): a band pass walks only the cells that can reach its rect — no texel may change.
   const t = r.tightCmp, ct = r.cellsTightCmp;
@@ -72,6 +82,10 @@ if (bandsOk < 4) fail(`only ${bandsOk} band comparisons (wanted 4+)`);
 if (tightOk < 4) fail(`only ${tightOk} tight-band comparisons (wanted 4+)`);
 const gs = await page.evaluate(()=>{ try { return localStorage.getItem("ml-ground-scissor"); } catch { return "?"; } });
 console.log(`ml-ground-scissor after: ${gs} (null = the default, on); errs ${errs.length}`, errs.slice(0,3));
+// /asset-index.json is built only inside the image (Dockerfile, build-asset-index.mjs) and the
+// client boots without it (assetver.ts): its 404 on a local server is expected, anything else is a hole.
+const unexpected = [...missing].filter((u) => u !== "/asset-index.json");
+if (missing.size) console.log(`404s: ${unexpected.length ? unexpected.slice(0,8).join(" ") : "none unexpected"}${missing.has("/asset-index.json") ? " (+ /asset-index.json, image-only: expected locally)" : ""}`);
 if (gs === "0") fail("the probe left the ground blit switched to whole");
 if (errs.some((e)=>/WebGL|GL_INVALID|framebuffer/i.test(e))) fail("GL error on the console: " + errs.find((e)=>/WebGL|GL_INVALID|framebuffer/i.test(e)));
 console.log(failed ? "GROUNDBRACKET FAILED" : "GROUNDBRACKET OK");

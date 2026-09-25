@@ -78,6 +78,12 @@ Where a test belongs, the browser gates, the harness traps, device geometry. Mov
     device px. Any straight-edge artefact belongs to that state.
 - Rule of thumb: no pixels/pointers/websockets/Phaser anims needed → it
   belongs in `server/test` (3s), not a browser (minutes).
+- **A LOCAL SERVER 404s `/asset-index.json`, AND THAT IS NOT A HOLE**: the
+  index is built only inside the image (Dockerfile, `build-asset-index.mjs`) and
+  the client boots without it (`assetver.ts`). The console's 404 line carries no
+  URL — a gate names missing files from `page.on("response")` (see
+  `verify-groundbracket.mjs`) so a real hole (a missing art file) is not lost
+  among expected ones.
 - **A WORLD-READING TEST SKIPS WHEN THE TREE IS ABSENT, AND SKIPS BEFORE IT
   LISTENS.** The deploy's test job checks out no world tree (see THE DEPLOY
   GATE, above), so `maps2/worlds3/the_game` is missing there; a test that
