@@ -1,9 +1,9 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T15:00:52+00:00",
+  "updated_at": "2026-09-25T15:24:54+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING (maintainer 2026-09-25: 'I can't have a lag that is due to the perf run itself when I try to evaluate the performance'): THE PERF RECORDER'S OWN FREEZE — beaconSelfMs 34-65 ms once per 30 s window in his 07:19 run, a stall he feels while evaluating. The ground texel census (gl.readPixels 256x192 = a full GPU sync) moves to the final flush; every remaining part of the report build and its JSON is measured and cut; the probe proves it headless.",
+    "unit": "CLAIMING (maintainer 2026-09-25: 'I can't have a lag that is due to the perf run itself when I try to evaluate the performance'): THE PERF RECORDER'S OWN FREEZE — beaconSelfMs 34-65 ms once per 30 s window in his 07:19 run, a stall he feels while evaluating. The ground texel census (gl.readPixels 256x192 = a full GPU sync) moves to the final flush; every remaining part of the report build and its JSON is measured and cut; the probe proves it headless. Adds: the report built in idle time, the post in idle time, the CPU benchmark on a worker, the GPU name asked behind the loading screen, the every-third-frame finish clock opt-in (?gpufinish=1).",
     "since": "2026-09-25T15:00:52+00:00",
     "files": [
       "games2/client/src/scenes/WorldScene.ts",
@@ -11,7 +11,10 @@
       "games2/scripts/verify-beacon.mjs",
       "games2/docs/perf.md",
       "games2/server/src/perfreport.ts",
-      "games2/scripts/perf-read.mjs"
+      "games2/scripts/perf-read.mjs",
+      "games2/client/src/gputimer.ts",
+      "games2/client/src/perfextra.ts",
+      "games2/client/src/cpubench.ts"
     ]
   },
   "progress": {
