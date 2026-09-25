@@ -69,12 +69,19 @@ const win = { texNew: 0, texDel: 0, fbNew: 0, fbDel: 0, upKb: 0, dc: 0, dcMax: 0
  * the browser was still paying for — on each axis, as on time or late (past
  * the cadence it runs at: pacing.ts `paceLateMs`, the FPS meter's hitch line). A late share that climbs with the draws
  * or binds is the command stream (fewer, bigger batches cure it); with fill,
- * the pixels; flat on every axis, neither. `late` block: `<axis>_<upper bound>`
- * frames and `..._late` late ones; `inf` is the open top bucket. */
-const LATE_AXES: { key: "dc" | "tb" | "fill"; tops: number[] }[] = [
-  { key: "dc", tops: [500, 1000, 1500, 2000, 3000] },
-  { key: "tb", tops: [1000, 2500, 5000, 10000] },
-  { key: "fill", tops: [10, 15, 20, 25, 30] },
+ * the pixels; with the target switches or the cleared Mpx, the render
+ * passes (a tiler stores a target's tiles at every switch — the same run
+ * carried 22-36 switches and ~10 Mpx of clears in EVERY frame); flat on every
+ * axis, none of them. `late` block: `<axis>_<upper bound>` frames and
+ * `..._late` late ones; `inf` is the open top bucket. 38 numbers: the server
+ * keeps a block's first 40 (perfreport.ts `mixed`), and verify-beacon reads
+ * dc_500, dc_inf_late, tb_1000 and fill_inf. */
+const LATE_AXES: { key: "dc" | "tb" | "fill" | "fb" | "clMpx"; tops: number[] }[] = [
+  { key: "dc", tops: [500, 1000, 1500, 2000] },
+  { key: "tb", tops: [1000, 5000] },
+  { key: "fill", tops: [15, 20, 25] },
+  { key: "fb", tops: [20, 30, 45] },
+  { key: "clMpx", tops: [8, 12] },
 ];
 const lateN = LATE_AXES.map((a) => new Array<number>(a.tops.length + 1).fill(0));
 const lateL = LATE_AXES.map((a) => new Array<number>(a.tops.length + 1).fill(0));

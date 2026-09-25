@@ -1434,14 +1434,21 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `drops` = collections), reset with the window. `late` answers WHY A FRAME CAME ONE
   REFRESH LATE with nothing of ours running (glframe.ts): every frame's
   interval is filed under the PREVIOUS frame's draws (`dc_500` ... `dc_inf`),
-  texture binds (`tb_`) and fill (`fill_`), as frames and `_late` frames (over
-  45 ms, the FPS meter's hitch line). A late share that climbs with draws or
-  binds is the GPU command stream (fewer, bigger batches — an atlas — cure
-  it), with fill the pixels, flat on every axis neither; `perf-read` prints it.
-  (His cool run 6f3f9f8a: ~156 of 168 worst frames were such idle waits at
-  1,400-2,400 draws a frame; nothing on the page can time his GPU — no timer
-  query, and the finish clock measured nothing.) `counts.glTexBinds` is the
-  window's binds per frame. (Until 2026-09-25 its sums
+  texture binds (`tb_`), fill (`fill_`), render-target switches (`fb_`) and
+  cleared Mpx (`clMpx_`), as frames and `_late` frames (past the cadence,
+  `paceLateMs`). A late share that climbs with draws or binds is the GPU
+  command stream (fewer, bigger batches — an atlas — cure it), with fill the
+  pixels, with switches or clears the render passes (a tiler stores a target's
+  tiles at every switch), flat on every axis none of them; `perf-read` prints
+  it. 38 numbers: the server keeps a block's first 40. (His cool run
+  6f3f9f8a: ~156 of 168 worst frames were such idle waits, and the frame before
+  each was only 0-35% busier than its window's mean on every axis — while
+  EVERY frame carried 22-36 target switches and ~10 Mpx of clears; headless, a
+  frame binds and clears the screen three times around two half-res light
+  fields and runs 2-6 brackets through a 1508x1429 capture target, 2.15 Mpx
+  cleared each. Nothing on the page can time his GPU — no timer query, and
+  the finish clock measured nothing.) `counts.glTexBinds` is the window's
+  binds per frame. (Until 2026-09-25 its sums
   ran from arming: `grewMbPerSec` divided a running total by one window and
   read 24 -> 155 MB/s over his 15:51 run while the real rate held at 13-24.
   Earlier runs difference consecutive windows.)
