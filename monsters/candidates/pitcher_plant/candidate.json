@@ -503,6 +503,310 @@
         "west": "pitcher_plant/animations/idle__west.webp",
         "north-west": "pitcher_plant/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.0587,
+          "step_max": 0.0867,
+          "drift": 0.92,
+          "loop": 0.0992,
+          "loop_ratio": 1.69,
+          "travel": 0.12,
+          "pin": 0.973,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.995,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.059 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": "139b8c11-baac-4a18-acd1-2728a5ff5817",
+          "group": "5f49bf30-9a6f-400f-b1a0-bc58bd6ca37a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T17:20:04+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.0743,
+          "step_max": 0.1014,
+          "drift": 0.52,
+          "loop": 0.0939,
+          "loop_ratio": 1.26,
+          "travel": 0.41,
+          "pin": 0.917,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.012,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.074 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": "ecc4d027-f338-4591-badc-5d6fb2a071ca",
+          "group": "fcef14e9-6eea-4c49-b7c3-0bad7165e217",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T17:20:04+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0665,
+          "step_max": 0.0868,
+          "drift": 1.9,
+          "loop": 0.1988,
+          "loop_ratio": 2.99,
+          "travel": 1.9,
+          "pin": 0.944,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.988,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.066 outside the calm band 0.1–0.4 — eyeball it",
+            "last→first hand-off is 3.0× a normal step — the loop hitches"
+          ],
+          "sub": "f618ec2d-91b3-4387-ad17-d0d6a4f9185b",
+          "group": "154c597c-60a2-4a8c-adbb-f0365c6d5b86",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T17:20:05+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0373,
+          "step_max": 0.0494,
+          "drift": 0.6,
+          "loop": 0.0944,
+          "loop_ratio": 2.53,
+          "travel": 0.6,
+          "pin": 0.958,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.012,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.037 per frame",
+            "last→first hand-off 2.5× a step — eyeball the loop"
+          ],
+          "sub": "93b47741-07bd-4cd1-8083-818e7fc803c2",
+          "group": "319d95bc-94be-45d1-bb63-899075307e7a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T17:20:05+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0761,
+          "step_max": 0.0994,
+          "drift": 1.39,
+          "loop": 0.0307,
+          "loop_ratio": 0.4,
+          "travel": 0.05,
+          "pin": 0.93,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.995,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.076 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": "d1b91ecf-0036-45e7-b348-e3a924dc458d",
+          "group": "e6e6bc96-acc1-4bdc-8657-15f5ac52f7d1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T17:20:06+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0743,
+          "step_max": 0.1014,
+          "drift": 0.52,
+          "loop": 0.0939,
+          "loop_ratio": 1.26,
+          "travel": 0.41,
+          "pin": 0.917,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.012,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.074 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": "ecc4d027-f338-4591-badc-5d6fb2a071ca",
+          "group": "fcef14e9-6eea-4c49-b7c3-0bad7165e217",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T17:20:04+00:00",
+          "source": "south-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "pitcher_plant/animations/walk/south/00.webp",
+          "pitcher_plant/animations/walk/south/01.webp",
+          "pitcher_plant/animations/walk/south/02.webp",
+          "pitcher_plant/animations/walk/south/03.webp",
+          "pitcher_plant/animations/walk/south/04.webp",
+          "pitcher_plant/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "pitcher_plant/animations/walk/south-east/00.webp",
+          "pitcher_plant/animations/walk/south-east/01.webp",
+          "pitcher_plant/animations/walk/south-east/02.webp",
+          "pitcher_plant/animations/walk/south-east/03.webp",
+          "pitcher_plant/animations/walk/south-east/04.webp",
+          "pitcher_plant/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "pitcher_plant/animations/walk/east/00.webp",
+          "pitcher_plant/animations/walk/east/01.webp",
+          "pitcher_plant/animations/walk/east/02.webp",
+          "pitcher_plant/animations/walk/east/03.webp",
+          "pitcher_plant/animations/walk/east/04.webp",
+          "pitcher_plant/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "pitcher_plant/animations/walk/north-east/00.webp",
+          "pitcher_plant/animations/walk/north-east/01.webp",
+          "pitcher_plant/animations/walk/north-east/02.webp",
+          "pitcher_plant/animations/walk/north-east/03.webp",
+          "pitcher_plant/animations/walk/north-east/04.webp",
+          "pitcher_plant/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "pitcher_plant/animations/walk/north/00.webp",
+          "pitcher_plant/animations/walk/north/01.webp",
+          "pitcher_plant/animations/walk/north/02.webp",
+          "pitcher_plant/animations/walk/north/03.webp",
+          "pitcher_plant/animations/walk/north/04.webp",
+          "pitcher_plant/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "pitcher_plant/animations/walk/south-west/00.webp",
+          "pitcher_plant/animations/walk/south-west/01.webp",
+          "pitcher_plant/animations/walk/south-west/02.webp",
+          "pitcher_plant/animations/walk/south-west/03.webp",
+          "pitcher_plant/animations/walk/south-west/04.webp",
+          "pitcher_plant/animations/walk/south-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "pitcher_plant/animations/walk__south.webp",
+        "south-east": "pitcher_plant/animations/walk__south-east.webp",
+        "east": "pitcher_plant/animations/walk__east.webp",
+        "north-east": "pitcher_plant/animations/walk__north-east.webp",
+        "north": "pitcher_plant/animations/walk__north.webp",
+        "south-west": "pitcher_plant/animations/walk__south-west.webp"
+      }
     }
+  },
+  "pixellab_rotation_map": {
+    "east": "east",
+    "north": "north",
+    "north-east": "north-east",
+    "north-west": "north-west",
+    "south": "south",
+    "south-east": "south-east",
+    "south-west": "south-west",
+    "west": "west"
   }
 }
