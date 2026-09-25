@@ -1,9 +1,9 @@
 {
   "domain": "lore",
   "agent": "lore-github-agent",
-  "updated_at": "2026-09-18T23:29:00+00:00",
+  "updated_at": "2026-09-25T15:32:00+00:00",
   "health": "idle",
-  "current": "idle — nothing claimed, nothing edited",
+  "current": "idle — nothing claimed, nothing edited outside this board",
   "progress": {
     "verdicts_in_file": 0,
     "verdicts_taken": 0,
@@ -11,10 +11,10 @@
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-09-18T23:29Z] Stand-in github agent for lore, woken by a wiki review landing on main. RESULT: NOTHING TO DO — no work claimed, no file edited outside this board.",
-    "TOOK: nothing. live/feedback/lore.json is present and well-formed (format pixel-wiki-feedback@1, domain lore, updated_at 2026-07-31T00:00:00Z) and its `entries` object is EMPTY — zero keys. There is no verdict in it to take, approved, redo, rejected or otherwise. Its last touching commit is 2674c473 (2026-09-18 19:18), which did not add entries. lore has never carried a maintainer verdict.",
-    "DID: read coordination/PROTOCOL.md (Two writers per directory), live/docs/review-contract.md, lore/README.md and lore/CLAUDE.md; read live/feedback/lore.json, coordination/lore.json and coordination/lore-assistant.json. Ran no pipeline command: lore/pipeline/build.py touches lore/** and would rewrite lore/lore.json, which is work no verdict asked for and which would collide with the two writers already in that directory — with an empty feedback file it is a pass over the domain, not a unit. Shipped: this board only.",
-    "DID NOT: claim or edit anything under lore/**, and did not run build.py or rebuild lore.json. Law 4 of the review contract (no verdict may name a path/state/direction not on disk) is satisfied vacuously here — an empty entries object cannot dangle — so there was no cleanup owed either. Left standing for the lore agent and lore-assistant, untouched because they are theirs and not a review verdict: the lore-assistant request of 2026-09-12 on coordination/lore-assistant.json (the three flagged canon judgements — the_age_of_coming's portraits vs CONSTRAINTS §5, the_long_table's room count vs the second house in the_game, the meadow-as-village-green tone question — plus its proposed compass pass over the 79 leaf records). That is unacknowledged on coordination/lore.json and is domain work, not a wiki verdict; a github agent taking it would consume a request the domain agent has not chosen yet. Note also that coordination/lore.json reads health=running with updated_at 2026-08-24, ~3.5 weeks stale — by PROTOCOL's ~2h rule that agent is down, not in flight, so no file was in flight against me.",
+    "[2026-09-25T15:32Z] Stand-in github agent for lore, woken by a wiki review landing on main. RESULT: NOTHING TO DO — no verdict exists to take, no file edited outside this board.",
+    "TOOK: nothing. live/feedback/lore.json is well-formed (pixel-wiki-feedback@1, domain lore, updated_at 2026-07-31T00:00:00Z) and its `entries` object is EMPTY — zero keys. Its only touching commit in this history is 1dc40efa (2026-09-25 13:55 UTC, pixel-monsters-bot), which CREATED the file as a new empty stub (+6 lines, `entries: {}`) while graduating approved monsters; it added no lore verdict. So the review that woke this session moved nothing in lore's channel, and lore still carries no maintainer verdict of any kind.",
+    "DID: read coordination/PROTOCOL.md (Two writers per directory), live/docs/review-contract.md, lore/README.md, live/README.md and lore/CLAUDE.md; read live/feedback/lore.json plus coordination/lore.json and coordination/lore-assistant.json; diffed the feedback file's history (git log/show on live/feedback/lore.json). Ran NO pipeline command — lore/pipeline/build.py writes lore/lore.json, which no verdict asked for and which would put a third writer into a directory that already has two; with an empty feedback file that is a pass over the domain, not a unit. Shipped: this board only, no deploy triggered.",
+    "DID NOT: claim or edit anything under lore/**, and did not rebuild lore/lore.json. Review-contract law 4 (no key may name a path/state/direction not on disk) is satisfied vacuously — an empty entries object cannot dangle — so no cleanup was owed. Left standing because it is domain work and not a wiki verdict: the lore-assistant note of 2026-09-12 on coordination/lore-assistant.json — its three flagged canon judgements and the released leaf-compass pass over 79 item/monster records (mapping written out on that board). It is unacknowledged on coordination/lore.json; a github agent taking it would consume a unit the domain agent has not chosen. Note the domain's own board is stale: coordination/lore.json reads health=running with updated_at 2026-08-24, ~4.5 weeks old, which by PROTOCOL's ~2h rule means that agent is down rather than in flight — so no file was named in flight against this session. coordination/lore-assistant.json is idle with its claim explicitly released.",
     "CLEARED: nothing — there was no entry to clear."
   ],
   "requests": []
