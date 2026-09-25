@@ -950,10 +950,32 @@ float rampMaskAt(vec2 cr) {
   return floor((texture2D(uHeight, uv).b * 255.0 + 0.5) / 16.0);
 }
 
-// tiles3 rampHeight EXACTLY: the bilinear blend of the raised corners at f, the
-// point's fraction of its cell (x east, y south), clamped.
+// A FOLD RAMP (tiles3 rampHeight: one raised corner is the MIN of its two edge
+// inclines, three the MAX): does plane A rise with x, plane B with y (1) or fall (0).
+vec2 rampFoldUp(float m) {
+  float nw = mod(floor(m / 8.0), 2.0);
+  float ne = mod(floor(m / 4.0), 2.0);
+  float sw = mod(floor(m / 2.0), 2.0);
+  float se = mod(m, 2.0);
+  float n = nw + ne + sw + se;
+  if (n > 0.5 && n < 1.5) return vec2(step(0.5, ne + se), step(0.5, sw + se));
+  return vec2(step(nw + sw, 1.5), step(nw + ne, 1.5)); // three: the LOW corner west / north
+}
+float rampCount(float m) {
+  return mod(floor(m / 8.0), 2.0) + mod(floor(m / 4.0), 2.0) + mod(floor(m / 2.0), 2.0) + mod(m, 2.0);
+}
+
+// tiles3 rampHeight EXACTLY, at f, the point's fraction of its cell (x east,
+// y south), clamped: the fold for one or three raised corners, else bilinear.
 float rampH(float m, vec2 f) {
   vec2 c = clamp(f, 0.0, 1.0);
+  float n = rampCount(m);
+  if (n == 1.0 || n == 3.0) {
+    vec2 up = rampFoldUp(m);
+    float a = mix(1.0 - c.x, c.x, up.x);
+    float b = mix(1.0 - c.y, c.y, up.y);
+    return n == 1.0 ? min(a, b) : max(a, b);
+  }
   float nw = mod(floor(m / 8.0), 2.0);
   float ne = mod(floor(m / 4.0), 2.0);
   float sw = mod(floor(m / 2.0), 2.0);
@@ -964,6 +986,14 @@ float rampH(float m, vec2 f) {
 // Its slope, d(rampH)/dx and d(rampH)/dy (per cell).
 vec2 rampG(float m, vec2 f) {
   vec2 c = clamp(f, 0.0, 1.0);
+  float n = rampCount(m);
+  if (n == 1.0 || n == 3.0) {
+    vec2 up = rampFoldUp(m);
+    float a = mix(1.0 - c.x, c.x, up.x);
+    float b = mix(1.0 - c.y, c.y, up.y);
+    bool pickA = n == 1.0 ? a <= b : a >= b;
+    return pickA ? vec2(up.x * 2.0 - 1.0, 0.0) : vec2(0.0, up.y * 2.0 - 1.0);
+  }
   float nw = mod(floor(m / 8.0), 2.0);
   float ne = mod(floor(m / 4.0), 2.0);
   float sw = mod(floor(m / 2.0), 2.0);
@@ -1079,6 +1109,9 @@ void main() {
   float z = 0.0;
   vec2 cell = vec2(0.0);
   bool found = false;
+  // A ramp hit ON the incline (a top) and where along the ray it met it.
+  bool rampTop = false;
+  float rampV = 0.0;
   // Walk the ray over EXACT cell-boundary crossings (col crosses integers at
   // v = 2m - u, row at v = 2n + u) so every interval lies inside exactly one
   // cell. Fixed-width segments straddled cells, attributing wall pixels to
@@ -1121,12 +1154,41 @@ void main() {
     if (uSkip > 0.5 && v0 + (hb + uRampShare) * kk < vLo - 0.0001) { vHi = vLo; continue; }
     float H = heightAt(cr);
     // THE INCLINE (rampMaskAt): on a ramp cell the column's top is the ramp's
-    // surface. Along this segment the cell point moves (dd, dd) per unit s and the
-    // bilinear surface is a QUADRATIC in s, so the hit is solved exactly: the ray
-    // enters under the lip (a side-face pixel, as a flat column's wall) or meets
-    // the incline at the smallest root in [0, 1] (a TOP pixel), or passes over.
+    // surface. Along this segment the cell point moves (dd, dd) per unit s, so
+    // the hit is solved exactly: a FOLD (one or three raised corners) is the
+    // min / max of two planes, each a line in s — under the min means under
+    // both (the later onset), under the max under either (the earlier); any
+    // other ramp is bilinear, a QUADRATIC in s (smallest root in [0, 1]). The
+    // ray enters under the lip (a side-face pixel, as a flat column's wall) or
+    // meets the incline (a TOP pixel: rampTop), or passes over.
     float rmW = uRampShare > 0.0 && H < 90.0 ? rampMaskAt(cr) : 0.0;
-    if (rmW > 0.5) {
+    float nFold = rmW > 0.5 ? rampCount(rmW) : 0.0;
+    if (nFold == 1.0 || nFold == 3.0) {
+      vec2 f0 = vec2((u + vHi) * 0.5, (vHi - u) * 0.5) - floor(cr);
+      float dd = (vLo - vHi) * 0.5;
+      vec2 up = rampFoldUp(rmW);
+      float rHi = (vHi - v0) / kk;
+      float rd = (vLo - vHi) / kk;
+      // Each plane p0 + p1 s against the ray; the onset of "at or under it" (0 = already).
+      float cA = rHi - (H + uRampShare * mix(1.0 - f0.x, f0.x, up.x));
+      float kA = rd - uRampShare * dd * (up.x * 2.0 - 1.0);
+      float cB = rHi - (H + uRampShare * mix(1.0 - f0.y, f0.y, up.y));
+      float kB = rd - uRampShare * dd * (up.y * 2.0 - 1.0);
+      float sA = cA <= 0.0 ? 0.0 : (kA < 0.0 ? -cA / kA : 2.0);
+      float sB = cB <= 0.0 ? 0.0 : (kB < 0.0 ? -cB / kB : 2.0);
+      float sHit = nFold == 1.0 ? max(sA, sB) : min(sA, sB);
+      if (sHit <= 0.0) {
+        z = max(rHi, 0.0);
+        cell = cr;
+        found = true;
+      } else if (sHit <= 1.0001) {
+        rampV = mix(vHi, vLo, clamp(sHit, 0.0, 1.0));
+        z = max((rampV - v0) / kk, 0.0);
+        cell = cr;
+        found = true;
+        rampTop = true;
+      }
+    } else if (rmW > 0.5) {
       vec2 f0 = vec2((u + vHi) * 0.5, (vHi - u) * 0.5) - floor(cr);
       float dd = (vLo - vHi) * 0.5;
       float rNw = mod(floor(rmW / 8.0), 2.0);
@@ -1156,9 +1218,11 @@ void main() {
           }
         }
         if (sHit <= 1.0001) {
-          z = max((mix(vHi, vLo, clamp(sHit, 0.0, 1.0)) - v0) / kk, 0.0);
+          rampV = mix(vHi, vLo, clamp(sHit, 0.0, 1.0));
+          z = max((rampV - v0) / kk, 0.0);
           cell = cr;
           found = true;
+          rampTop = true;
         }
       }
     } else if (H < 90.0) {
@@ -1211,9 +1275,11 @@ void main() {
   float rmC = uRampShare > 0.0 && Ha < 90.0 ? rampMaskAt(cell) : 0.0;
   vec2 rampF = vec2(0.0);
   if (rmC > 0.5) {
-    float vR = v0 + z * kk;
+    float vR = rampTop ? rampV : v0 + z * kk;
     rampF = vec2((u + vR) * 0.5, (vR - u) * 0.5) - floor(cell);
-    Ha += uRampShare * rampH(rmC, rampF);
+    // On the incline the ray's height IS the surface's (exactly, not to a float's
+    // rounding): a top. At the entry under the lip the lip stands above: a face.
+    Ha = rampTop ? z : Ha + uRampShare * rampH(rmC, rampF);
   }
   if (uTest > 3.5 && uTest < 4.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
@@ -3890,8 +3956,9 @@ export class NightLights {
       let moved = false;
       for (let i = 0; i < w * h; i++) {
         const m = masks ? masks[i] : 0;
-        // The incline's height at the centre: the mean of its raised corners.
-        const b = m ? Math.round(((share * (((m >> 3) & 1) + ((m >> 2) & 1) + ((m >> 1) & 1) + (m & 1))) / 4) * hs) : 0;
+        // The incline's height at the centre: half the share for every ramp
+        // (an edge, a fold and a diagonal saddle all pass 0.5 there).
+        const b = m ? Math.round(share * 0.5 * hs) : 0;
         next[i] = b;
         const db = b - prev[i];
         if (!db) continue;

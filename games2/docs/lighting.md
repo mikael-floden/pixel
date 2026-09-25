@@ -299,9 +299,10 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   per step. What is packed is recorded on the textures (they outlive the
   instance). At 0% nothing is packed and the uniform is 0: every new branch
   is off and the pass is the old one. Not yet: the torch march's ground map
-  (uHeightG) and the mist pass read whole levels. THE RIDGE SCALLOPS are the
-  corner ramps' own shape (a bilinear single-corner patch is a saddle, not a
-  fold; the art is the same surface), which the sun's terminator traces.
+  (uHeightG) and the mist pass read whole levels. A CORNER RAMP IS A FOLD
+  (tiles3 `rampHeight`, mirrored by `rampH`/`rampG`; the walk solves the two
+  planes exactly): the bilinear saddle traced a scallop per ring along every
+  ridge in the sun's terminator (his "shadow bumps", 2026-09-25).
   15+ emission entries leave no nibble: flat light (`rampInfo()`).
 - STALE GATES, known: verify-solidband (predates maps2 worlds, fails on
   baseline; verify-wallspread went the same way and was replaced by

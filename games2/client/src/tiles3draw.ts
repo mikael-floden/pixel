@@ -48,6 +48,7 @@ import {
   PLATE_H,
   LIQUID_TILE_GROUNDS,
   hexRGB,
+  rampHeight,
   type PatternsDoc,
   type Tiles3Boundary,
   type Tiles3Cell,
@@ -676,7 +677,6 @@ export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: numb
   const out = newPixels(fw, H);
   const o = out.data;
   const d = src.data;
-  const nw = (mask >> 3) & 1, ne = (mask >> 2) & 1, sw = (mask >> 1) & 1, se = mask & 1;
   const TOP = 2 * DY + 1; // the diamond's rows, 0..28
   const uv = (x: number, y: number): [number, number] => {
     const a = (x + 0.5 - DX) / DX;
@@ -695,7 +695,7 @@ export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: numb
       if (u < 0 || u > 1 || v < 0 || v > 1) continue;
       used[i] = 1;
       flatBottom[x] = y;
-      const h = (1 - u) * (1 - v) * nw + u * (1 - v) * ne + (1 - u) * v * sw + u * v * se;
+      const h = rampHeight(mask, u, v); // the one surface: art, feet and light (tiles3)
       const yy = y + lh - Math.round(lh * h);
       const j = (yy * fw + x) * 4;
       /* A FAINT SHADE IN THE MIDDLE OF THE INCLINE ONLY: 1.0 at both ends, so

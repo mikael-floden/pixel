@@ -1190,12 +1190,18 @@ export function isRampSet(st: { elevation?: number }): boolean {
 }
 
 /** THE HEIGHT OF A RAMP CELL'S SURFACE, in levels (0..1), at (u, v) inside the
- *  cell — u along +x from the west edge, v along +y from the north edge — as
- *  the bilinear blend of its four corner bits (NW 8, NE 4, SW 2, SE 1). It is
- *  what the body's lift follows (WorldScene.rampLiftPx), so a climb is the
- *  incline the art shows and not a 15 px step at the boundary: 1 all along
- *  the raised edge, where the higher cell begins, and 0 along the opposite
- *  one — continuous with both neighbours by construction. */
+ *  cell — u along +x from the west edge, v along +y from the north edge — from
+ *  its four corner bits (NW 8, NE 4, SW 2, SE 1). ONE function for the art
+ *  (tiles3draw `buildRampPixels`), the feet (WorldScene.rampLiftPx) and the
+ *  light (nightlight `rampH`, its GLSL mirror): 1 all along a raised edge, 0
+ *  along the opposite one, continuous with both neighbours by construction.
+ *
+ *  A CORNER IS A FOLD, NOT A SADDLE (maintainer 2026-09-25, the "shadow bumps"
+ *  on the lit pyramid): one raised corner is the MIN of the two edge inclines
+ *  that meet there (a convex ridge), three the MAX (a concave valley). The
+ *  bilinear blend sagged both into a saddle — a scallop per ring along every
+ *  ridge, in the art and in the light's terminator. An edge (two neighbouring
+ *  corners) is a plane either way; the two diagonal pairs stay bilinear. */
 export function rampHeight(mask: number, u: number, v: number): number {
   const cu = u < 0 ? 0 : u > 1 ? 1 : u;
   const cv = v < 0 ? 0 : v > 1 ? 1 : v;
@@ -1203,6 +1209,11 @@ export function rampHeight(mask: number, u: number, v: number): number {
   const ne = (mask >> 2) & 1;
   const sw = (mask >> 1) & 1;
   const se = mask & 1;
+  const n = nw + ne + sw + se;
+  // A raised corner to the east rises with u, one to the south with v.
+  if (n === 1) return Math.min(ne || se ? cu : 1 - cu, sw || se ? cv : 1 - cv);
+  // The LOW corner to the west: the valley rises with u; to the north, with v.
+  if (n === 3) return Math.max(!nw || !sw ? cu : 1 - cu, !nw || !ne ? cv : 1 - cv);
   return (1 - cu) * (1 - cv) * nw + cu * (1 - cv) * ne + (1 - cu) * cv * sw + cu * cv * se;
 }
 

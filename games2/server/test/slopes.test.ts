@@ -41,7 +41,7 @@ const NEEDS = [
 const MISSING = NEEDS.filter((p) => !existsSync(join(REPO, p)));
 const skip = MISSING.length ? `not checked out: ${MISSING.join(", ")}` : false;
 
-test("rampHeight is the bilinear blend of the corner bits: 1 on the raised edge, 0 on the far one, half way between", () => {
+test("rampHeight: an edge is a plane (1 on the raised edge, 0 on the far one), a corner a FOLD — min of its two inclines for one raised corner, max for three", () => {
   // 12 = NW+NE: the north edge is up (the higher cell lies north, v = 0).
   assert.equal(rampHeight(12, 0.5, 0), 1);
   assert.equal(rampHeight(12, 0.5, 1), 0);
@@ -50,10 +50,24 @@ test("rampHeight is the bilinear blend of the corner bits: 1 on the raised edge,
   // 3 = SW+SE: the south edge is up.
   assert.equal(rampHeight(3, 0.5, 1), 1);
   assert.equal(rampHeight(3, 0.5, 0), 0);
-  // 4 = NE alone: a corner wedge, quarter height at the centre, full at the corner.
-  assert.equal(rampHeight(4, 0.5, 0.5), 0.25);
+  // 4 = NE alone: a convex ridge, min(u, 1 - v) — half height at the centre (the
+  // bilinear saddle sagged to a quarter: his "shadow bumps" on every ridge, 2026-09-25).
+  assert.equal(rampHeight(4, 0.5, 0.5), 0.5);
   assert.equal(rampHeight(4, 1, 0), 1);
   assert.equal(rampHeight(4, 0, 1), 0);
+  assert.equal(rampHeight(4, 0.8, 0.5), 0.5, "the lower of the two inclines");
+  assert.equal(rampHeight(4, 0.25, 0.1), 0.25);
+  // 7 = all but NW: a concave valley, max(u, v).
+  assert.equal(rampHeight(7, 0, 0), 0);
+  assert.equal(rampHeight(7, 0.3, 0.6), 0.6);
+  assert.equal(rampHeight(7, 1, 0), 1);
+  // Each fold meets its neighbours: along the raised corner's two edges it is the edge ramp there.
+  for (const t of [0, 0.25, 0.5, 1]) {
+    assert.equal(rampHeight(4, 1, t), rampHeight(12, 1, t), "NE's east edge is the north ramp's");
+    assert.equal(rampHeight(4, t, 0), rampHeight(5, t, 0), "NE's north edge is the east ramp's");
+  }
+  // The diagonal pairs stay bilinear.
+  assert.equal(rampHeight(9, 0.5, 0.5), 0.5);
   // Outside the cell the field clamps rather than extrapolates.
   assert.equal(rampHeight(12, 0.5, -3), 1);
   assert.equal(rampHeight(12, 0.5, 7), 0);

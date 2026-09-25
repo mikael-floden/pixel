@@ -565,8 +565,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   STOREY RAMP (`buildRampPixels`, tiles3draw; `syntheticRampSet`, tiles3):
   every ground with no PUBLISHED storey-height set gets a stand-in ramp set
   whose 16 tiles are composed from the cell's own member plate — the top face
-  lifted by the bilinear blend of the corner bits (`rampHeight`, NW 8, NE 4,
-  SW 2, SE 1; a raised corner is one storey up), row for row so the texture
+  lifted by `rampHeight` (NW 8, NE 4, SW 2, SE 1; a raised corner is one
+  storey up; an edge is a plane, ONE raised corner the MIN of its two edge
+  inclines and THREE their MAX — a fold, never the bilinear saddle, which
+  scalloped every ridge), row for row so the texture
   stretches by duplication and never blurs, a faint shade down the incline,
   the plate's band as the side face under a raised lower edge, the band below
   as on any plate — EXCEPT THAT A RAMP DROPS THE BAND BELOW ITS LEVEL, at
