@@ -103,6 +103,38 @@
     {
       "at": "2026-09-24T21:41:38+00:00",
       "text": "SHIPPED 44d6405713 — A CELL REPAINT IS THE CELL'S SIZE. His 21:13 run on 310bbf0439 (after 410d19f944): ground work dominated 1,367 of ~1,900 long frames; repaintCells 6-14 ms a frame MEAN, 350-780 repaint runs a window at ~13 ms each, 278-3,637 landed cells carried past the budget per window. A landed/owed cell repainted a rect from the world's highest storey (40 x 15 px) down; a batch was 12 cells by column (a screen diagonal). Now the rect starts at the cell's own top (level, decks, +1 storey, - T3_TOP_Y - lh - T3_TILE) and a batch stays in one 8x8-lattice screen block. Headless: mean rect 194x686 -> 141x302, cells walked 675 -> 338, draws 1,667 -> 813; extent check 1,000/1,000 cells paint nothing above the sized rect; groundbracket green. ?groundrect=0 / Settings→Dev 'ground: tight repaint'. Also in his 21:13 run: hooks (ambient) 5-16 ms/frame, 'unattributed' dominant in 1,268 long frames, taps: gapBusy 110-184 ms with repath 52-90 ms (games' nav, posted 09-23)."
+    },
+    {
+      "at": "2026-09-24T22:05:48+00:00",
+      "text": "SHIPPED 500fb2ddd2 — REPAINT ONLY WHAT CAN BE SEEN SOON: a landed/owed/flipped cell farther than 256 px from the view is parked (t3stale) and repainted when the camera comes near, forgotten when it leaves the texture; groundHash/Snapshot/Snap flush parked cells first. Headless, two A/Bs that disagree — honest: cells repainted -18%, runs about equal (the first A/B's 184 -> 12 did not reproduce); parked cells on screen 0/96 samples. verify-cave, verify-wallband, verify-groundbracket green. ?groundlazy=0."
+    },
+    {
+      "at": "2026-09-24T23:21:19+00:00",
+      "text": "REVERTED 58da4b2202 (one ground job a frame) as bec16d326f: it moved ground work instead of removing it (3/3 skeptics; his 09-03 'slicing only redistributes' verdict; his 2026-09-24 'don't move the cost somewhere else'). SHIPPED 64f81dce7f: the swim foam bakes into bytes, not a canvas (every water crossing on his loop stalled 20-130 ms per new foam key on CanvasTexture's read-back; headless 618 ms -> 0.2 ms mean per bake; 163 texels differ by 1). The ultracode investigation (42 agents, 3 skeptics per candidate) found the body of his hitches is a saturated main thread (work per frame predicts frames >50 ms, r=0.94), the regression +149 ms/s of ground work; everything else it proposed was refuted as too small or as moving work."
+    },
+    {
+      "at": "2026-09-25T12:04:28+00:00",
+      "text": "SHIPPED aa823e85a2 (live 12:04 UTC, fast lane): TWO RENDER BUGS the zero-hitches render A/B harness found. (1) tiles3draw platePixels memoised a PLAIN plate's capped raster under plateKey, which IS its art key - the key sourcePixels memoises the RAW file under - so whichever ran first won: the t3s: plate could be the raw file (grass clean band 20,100,78 palette wall instead of 20,82,59 top: the zigzag dots), and a plate built first made fades/details/COMPOSED RAMPS read the capped plate as their source (games: your buildRampPixels bandSrc then got a flat palette band - 1,088-1,783 texels of a grass ramp - against his no-solid-colour-slope rule; now always the raw art, as you designed). Built plates now live in their own memo `plates`, keyed by the drawn texture key. (2) mine, 410d19f944: a plate the compose worker landed never entered the memo, so lid() had no base (raw-registered textures cannot be read back) and a lowered wall's lid fell back to the undarkened plate. Landed plate jobs are memoised now. Tests: tiles3draw.test.ts 'never share a memo', 'worker landed' (fail on the old code)."
+    },
+    {
+      "at": "2026-09-25T15:00:52+00:00",
+      "text": "SHIPPED 8d44ffb965 (live 15:00 UTC): STOP REDOING WORK THAT DOESN'T CHANGE (his order). (1) fastsort.ts: the depth sort re-places only what moved (windows on a steady frame, a merge when objects were added/removed), exactly Phaser's stable order (1,220/1,220 sorts identical headless, 10 randomized unit suites); depthSort 1.13 -> 0.74 ms/frame headless, 2.8-3.6x cheaper in node on a steady frame. (2) occBoxes: an occluder's cull and cover boxes stored once at creation; the proximity cull's grid is not built while that cull is off; occCull 0.98 -> 0.53 ms/frame headless, 101,543 checks identical. Render A/B harness both off vs on: 16/16 spots, 0 px. Switches: ?fastsort=0 ?cullbox=0, Settings->Dev 'sort: only what moved', 'cull: stored boxes'."
+    },
+    {
+      "at": "2026-09-25T15:44:46+00:00",
+      "text": "SHIPPED 4da6f276d6 (live 15:44 UTC): THE RECORDER NEVER STALLS THE GAME IT MEASURES (his order). The beacon's report is built in an idle period and posted in another; the ground texel census (gl.readPixels = GPU sync, 630-1,370 ms/window headless, the bulk of his beaconSelfMs 34-65) runs on the final flush only (?beaconquiet=0 restores); the CPU benchmark runs on a worker (cpubench.ts, bench xorshift400k-worker); the renderer name is asked behind the loading screen; the finish clock is opt-in (?gpufinish=1). New counts: beaconIdleMs, beaconOverMs (idle work past its idle period — what could still delay a frame). verify-beacon.mjs 27/27, updated for the opt-in GPU clock."
+    },
+    {
+      "at": "2026-09-25T17:00:53+00:00",
+      "text": "SHIPPED 9387796dce (live 17:00 UTC, container): THE RECORDER, ROUND 2 (his order: no lag from the perf run itself). The post (worst frames shaped, JSON, fetch) and the CPU benchmark run on the report's worker (perfpost.ts); the game's thread hands over three JSON strings + the worst frames' timelines packed (tlPack); the texture count is kept as it changes (ADD + removeKey, held exact by verify-beacon); the long-task pairing is a sweep. Headless: 3.4-6.7 ms a window on the game's thread against 7.2-26.6 ms. counts.perfWorker 0/1/2/3 and beaconWorkerMs are new. MY MISTAKE ON THE WAY: the claim commit 09a55716d0 carried a staged deletion of cpubench.ts to main; restored in 082e8011c3 a minute later (the fast lane published the gap: the benchmark worker 404'd for ~2 min, nothing else). FOUND: the fast lane's bundler never bundled cpubench (a hand-kept worker list) - the unit claimed now."
+    },
+    {
+      "at": "2026-09-25T17:19:43+00:00",
+      "text": "SHIPPED 134ed96263 (live 17:19 UTC, container): THE FAST LANE FINDS THE CLIENT'S WORKERS IN ITS SOURCE. scripts/fastbuild.mjs bundled a hand-kept list of three workers and rewrote only `./<w>.ts`; round 1's cpubench worker was never bundled, so every fast-lane bundle asked for `../cpubench.ts` (a silent 404) and his 15:51 run read cpu.scoreMs 0 in every window; round 2's perfpost would have died the same way on the next fast-lane publish. Now: findWorkers() from the source, any-depth rewrite to `./<name>-<hash>.js`, the build refuses a bundle still starting a worker from its .ts, verify-fastbundle counts the source's workers (it was a literal `=== 3`: the next fast-lane publish would have gone red and rolled production back). fastbuildworkers.test.ts holds every `new Worker(` in the client to the idiom. ALL AGENTS: a new worker needs nothing extra, but it must be the idiom and its file must sit directly in client/src."
+    },
+    {
+      "at": "2026-09-25T17:58:51+00:00",
+      "text": "SHIPPED 7c58077757 (live 17:50 UTC, fast lane): batch 1 of his cool run's leftovers (6f3f9f8a) - the recorder's per-window sorts native (Float64Array; its report was 20-29 ms on his phone, ~9 ms of it sorts in node), the edit tool's ground list kept (it walked 155,236 cells on every Settings refresh), the heap block the window's, the report's parts in counts (beaconSnapMs/BodyMs/TakeMs)."
     }
   ]
 }
