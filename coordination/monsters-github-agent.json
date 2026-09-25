@@ -1,15 +1,25 @@
 {
   "domain": "monsters-github-agent",
-  "updated_at": "2026-09-25T13:56:00+00:00",
-  "health": "running",
-  "current": "CLAIMED — his 2026-09-25T13:53Z approval of monsters/plume_brawler#attack#north, the 40th and last direction of plume_brawler (design approved 09-18, all 5 states x 8 directions now approved). That makes it GRADUATION-ELIGIBLE, and .github/workflows/monsters-graduate.yml is already running on the same push (run 36143850267). So my unit is: watch that run, verify the outcome on disk, and only act if it did NOT graduate. FILES: coordination/monsters-github-agent.json (plus monsters/config/roster.json, monsters/config/candidates.json, monsters/plume_brawler/**, monsters/candidates/plume_brawler/**, monsters/candidates/index.json ONLY if I have to finish the graduation myself). Nothing to clear: an approval is never cleared (live/docs/review-contract.md law 2).",
+  "updated_at": "2026-09-25T14:12:00+00:00",
+  "health": "idle",
+  "current": "idle — holding no files. Unit closed: his approval of monsters/plume_brawler#attack#north (2026-09-25T13:53Z), the 40th and last direction of plume_brawler. Shipped a995e4326.",
   "progress": {
-    "unit": "verify graduation of plume_brawler",
-    "verdicts_taken": 1
+    "unit": "plume_brawler graduation verified + packed",
+    "verdicts_taken": 1,
+    "verdicts_cleared": 0,
+    "dangling_verdicts": 0
   },
-  "budget_remaining": "unchanged — this unit generates nothing",
+  "budget_remaining": "unchanged — this unit generated nothing (no PixelLab call)",
   "notes": [
-    "[2026-09-25T13:56:00+00:00] Read PROTOCOL.md, live/docs/review-contract.md, monsters/README.md, live/README.md, and both partner boards. monsters board (09-24 22:29) claims the idle sweep for 32 v3 candidates — names monsters/candidates/<those 32>/** and monsters/candidates/index.json, not plume_brawler. monsters-assistant board is idle (09-22) and holds no files: its batch 1 shipped plume_brawler at 40/40 and it is WAITING ON HIS REVIEW. This is that review. No board has claimed this verdict."
+    "[2026-09-25T14:12:00+00:00] TOOK: monsters/plume_brawler#attack#north — approved, rating 1, 2026-09-25T13:53:16Z. Unclaimed on both partner boards (monsters is on the 32-candidate idle sweep, naming monsters/candidates/<those 32>/** and candidates/index.json; monsters-assistant is idle since 09-22, its batch-1 note says plume_brawler shipped 40/40 and it is WAITING ON HIS REVIEW — this is that review). DID: read live/feedback/monsters.json — with this yes, all 41 plume_brawler keys are approved: the design (09-18) plus 5 states x 8 directions. That is graduate.py's eligibility test exactly, and .github/workflows/monsters-graduate.yml was already running on the same push. Watched it to completion rather than racing it: it graduated the monster at 1dc40efa1 (monsters/candidates/plume_brawler -> monsters/plume_brawler, 5 states x 8 directions on disk, candidate folder deleted only after the mirror verified). Then ran the domain's own checks on the rebased tree: `verdicts.py check` = 0 dangling (graduate() settled the addresses; the slot names were unversioned, so attack#north kept its key), and `pack.py --check --only plume_brawler` = 40 strips stale with NO packed/ directory at all. GRADUATION DOES NOT PACK, and the game draws packed strips, never raw ones — so his approval delivered a real monster the game had no packed layer for. Ran `pack.py --only plume_brawler` (local CPU, zero generations): 40 packed, 40 in index, decoded texels 9 MB -> 8 MB, content-hashed names, index points at the current file. SHIPPED a995e4326. CLEARED: nothing — every plume_brawler entry is `approved`, and an approval is never cleared (live/docs/review-contract.md law 2). No redo or rejection exists on this monster.",
+    "[2026-09-25T14:12:00+00:00] DID NOT DO, and why. (1) THE PACKED LAYER IS STALE DOMAIN-WIDE: 1566 strips over 34 monsters still stale after mine (38 of 100 monster folders have no packed/ at all). Same cause each time — a graduation or a sync builds raw strips and nothing runs pack.py. Left to the monsters agent/assistant: it is a pass over the domain, not this unit, and the graduate workflow is firing every few minutes on his live review right now, so a domain-wide pack would collide with folders being rewritten. WORTH FIXING AT THE SOURCE: have monsters-graduate.yml run `pack.py --only <id>` after the sync, and the problem stops recurring. (2) FOUR HOLES reported by `verdicts.py check`, none on plume_brawler: monsters/scree_lizard#idle#north-east, #idle#north-west, monsters/swamp_ape#idle#north-east, #idle#north-west — approved art missing from disk. A hole is never cleared (his yes is the only record the art existed); `refill.py` puts it back from the candidate folder or git history. Not mine to take — not the verdict I was started for, and refill touches those monsters' folders. (3) Did not run a domain-wide sync, qa or reconcile: nothing in this verdict asks for one and he is mid-review.",
+    "[2026-09-25T14:12:00+00:00] FOR THE MAINTAINER, one observation and no action taken: every plume_brawler approval carries rating 1. Ratings steer style (live/README.md) and approved is approved, so the art stands and the monster graduated. Flagging only in case the 1s are deliberate — nobody will act on them without you saying so."
   ],
-  "requests": []
+  "requests": [
+    {
+      "to": "monsters",
+      "text": "GRADUATION DOES NOT BUILD THE PACKED LAYER, and the game draws packed strips rather than raw ones. plume_brawler graduated on his approval today (1dc40efa1, monsters-graduate.yml) and arrived with no packed/ directory at all; I packed that one monster (a995e4326, 40 strips, zero generations). The domain-wide number after mine: `pack.py --check` reports 1566 strips stale over 34 monsters, and 38 of the 100 monster folders have no packed/ at all — every one the same cause, a sync or a graduation that built raw strips with nothing running pack.py afterwards. Two things, both yours: sweep the backlog when you are off the candidate idle sweep (pure CPU, no PixelLab), and add `pack.py --only <id>` to monsters-graduate.yml after its sync so a monster he finishes never reaches the game unpacked again. ALSO, unrelated and unclaimed: `verdicts.py check` reports 4 HOLES — scree_lizard idle north-east/north-west and swamp_ape idle north-east/north-west, approved art missing from disk. Never clear those (his yes is the only record it was there); refill.py restores them from the candidate folder or git history.",
+      "at": "2026-09-25T14:12:00+00:00"
+    }
+  ]
 }
