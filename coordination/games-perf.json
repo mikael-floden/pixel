@@ -1,21 +1,11 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T15:24:54+00:00",
+  "updated_at": "2026-09-25T15:44:46+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING (maintainer 2026-09-25: 'I can't have a lag that is due to the perf run itself when I try to evaluate the performance'): THE PERF RECORDER'S OWN FREEZE — beaconSelfMs 34-65 ms once per 30 s window in his 07:19 run, a stall he feels while evaluating. The ground texel census (gl.readPixels 256x192 = a full GPU sync) moves to the final flush; every remaining part of the report build and its JSON is measured and cut; the probe proves it headless. Adds: the report built in idle time, the post in idle time, the CPU benchmark on a worker, the GPU name asked behind the loading screen, the every-third-frame finish clock opt-in (?gpufinish=1).",
-    "since": "2026-09-25T15:00:52+00:00",
-    "files": [
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/scripts/probe-beaconcost.mjs",
-      "games2/scripts/verify-beacon.mjs",
-      "games2/docs/perf.md",
-      "games2/server/src/perfreport.ts",
-      "games2/scripts/perf-read.mjs",
-      "games2/client/src/gputimer.ts",
-      "games2/client/src/perfextra.ts",
-      "games2/client/src/cpubench.ts"
-    ]
+    "unit": "IDLE after 4da6f276d6 (live 15:44 UTC). Waiting for his next perf run: the proof is counts.beaconOverMs near 0 and no recorder stall; depthSort/occCull down with 8d44ffb965.",
+    "since": "2026-09-25T15:44:46+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -57,6 +47,10 @@
     {
       "at": "2026-09-25T15:00:52+00:00",
       "text": "SHIPPED 8d44ffb965 (live 15:00 UTC): STOP REDOING WORK THAT DOESN'T CHANGE (his order). (1) fastsort.ts: the depth sort re-places only what moved (windows on a steady frame, a merge when objects were added/removed), exactly Phaser's stable order (1,220/1,220 sorts identical headless, 10 randomized unit suites); depthSort 1.13 -> 0.74 ms/frame headless, 2.8-3.6x cheaper in node on a steady frame. (2) occBoxes: an occluder's cull and cover boxes stored once at creation; the proximity cull's grid is not built while that cull is off; occCull 0.98 -> 0.53 ms/frame headless, 101,543 checks identical. Render A/B harness both off vs on: 16/16 spots, 0 px. Switches: ?fastsort=0 ?cullbox=0, Settings->Dev 'sort: only what moved', 'cull: stored boxes'."
+    },
+    {
+      "at": "2026-09-25T15:44:46+00:00",
+      "text": "SHIPPED 4da6f276d6 (live 15:44 UTC): THE RECORDER NEVER STALLS THE GAME IT MEASURES (his order). The beacon's report is built in an idle period and posted in another; the ground texel census (gl.readPixels = GPU sync, 630-1,370 ms/window headless, the bulk of his beaconSelfMs 34-65) runs on the final flush only (?beaconquiet=0 restores); the CPU benchmark runs on a worker (cpubench.ts, bench xorshift400k-worker); the renderer name is asked behind the loading screen; the finish clock is opt-in (?gpufinish=1). New counts: beaconIdleMs, beaconOverMs (idle work past its idle period — what could still delay a frame). verify-beacon.mjs 27/27, updated for the opt-in GPU clock."
     }
   ],
   "requests": [
