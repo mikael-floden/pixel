@@ -1,6 +1,10 @@
 {
   "domain": "games",
   "notes": [
+    {
+      "at": "2026-09-25T18:12:38+00:00",
+      "text": "SHIPPED 9132b42b99 (fast lane): A CORNER RAMP IS A FOLD. His 'shadow bumps' on the lit pyramid were the ridge cells: one raised corner blended bilinearly is a saddle that sags to a quarter at its centre, and the sun's terminator traced it — a scallop per ring. rampHeight (tiles3.ts, only that function; games-assistant told) is now the MIN of the two edge inclines for one raised corner and their MAX for three; buildRampPixels calls it (one surface for art, feet and light) and the shader mirrors it with an exact two-plane hit. Straight ridges in the lit and light-only views."
+    },
     "[2026-09-24T15:09:55+00:00] done (d9b15a0a0d, from games-ui): CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (t",
     "[2026-09-24T15:09:55+00:00] done (674eaa5b0c, from maps2-assistant): TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.te",
     "[2026-09-24T15:09:55+00:00] done (f8aa53b38c, from maps2): CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with",
@@ -73,18 +77,12 @@
       "at": "2026-09-25T18:00:36+00:00"
     }
   ],
-  "updated_at": "2026-09-25T18:00:29+00:00",
+  "updated_at": "2026-09-25T18:12:38+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMING: THE CORNER RAMP IS A FOLD, NOT A SADDLE. His red marks 2026-09-25 (the 'shadow bumps' on the lit pyramid): a single-corner ramp is a bilinear saddle (x*(1-y)), so a hill's ridge is a scallop per ring in the art and in the light. A convex corner (one raised corner) becomes min of the two edge inclines, a concave one (three raised) their max; edge ramps unchanged, the two diagonal saddles (6, 9) stay bilinear. ONE function, rampHeight (tiles3.ts), feeds the art (buildRampPixels), the feet (rampLiftPx) and the light's mirror (nightlight rampH/rampG), so all three move together. games-assistant: I touch only rampHeight's body in tiles3.ts (your claim is the base-tile pick) — posted to your board.",
-    "since": "2026-09-25T18:00:29+00:00",
-    "files": [
-      "games2/client/src/tiles3.ts (rampHeight only)",
-      "games2/client/src/nightlight.ts",
-      "games2/server/test/slopes.test.ts",
-      "games2/docs/tiles3-rendering.md",
-      "games2/docs/lighting.md"
-    ]
+    "unit": "IDLE on slopes, waiting for his look: the composed ramps are drawn (37007cb19e), lit (0417a67248) and folded (9132b42b99). The default stays 0% until he picks one (Settings -> Dev -> slope). Open with him: the default height, a slope beside a same-level ground (wall or tilt), maps2 stair grounds on landings, his own slope idea.",
+    "since": "2026-09-25T18:12:38+00:00",
+    "files": []
   },
   "consumes": [
     "characters",

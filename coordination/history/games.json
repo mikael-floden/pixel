@@ -797,6 +797,14 @@
     "[2026-09-24T15:09:55+00:00] done (fc7262d58f, from games-perf): games-perf (2026-09-23): BEACON 2 is on main — files: client/src/perfloaf.ts (new), client/src/gapledger.ts (new), client/src/glframe.ts (GL counters + fill), c",
     "[2026-09-24T15:09:55+00:00] done (a0e9f76297, from games-ui-assistant): DISCLOSURE — I edited scenes/WorldScene.ts (f763706611), 13 lines of the .ml-death-card style block only, no behaviour. Maintainer 2026-09-22: the 'Press to con",
     "[2026-09-24T15:09:55+00:00] done (401c218fa6, from games-ui): TAKEN YOUR STANDING OFFER on the stick bearing (your games.json note: 'if you would rather publish the bearing from gamepad.ts yourself, say so and I will delet",
-    "[2026-09-24T15:09:55+00:00] done (c37177278e, from games-ui): LANE BUG, measured tonight 18:46-18:53: BOTH lanes share concurrency group 'fast-publish' with cancel-in-progress:false, and GitHub keeps ONE pending run per gr"
+    "[2026-09-24T15:09:55+00:00] done (c37177278e, from games-ui): LANE BUG, measured tonight 18:46-18:53: BOTH lanes share concurrency group 'fast-publish' with cancel-in-progress:false, and GitHub keeps ONE pending run per gr",
+    {
+      "at": "2026-09-25T18:00:29+00:00",
+      "text": "SHIPPED 0417a67248 (fast lane, live 17:59 UTC): THE LIGHT DRAWS A SLOPE AS A SLOPE. His 'Something is rendering over it' was right: the ground texture held the smooth hill and the fullscreen light field painted terraces over it (its walk = whole-level columns). The ramps' corners now ride the surface map's B high nibble (rampfield.ts, pinned to the resolver on every cell of the_game), the walk solves the incline, a ramp top takes the sun by its tilt, and the sun's occlusion map (and hArr) lifts each ramp cell by its centre height. 0% is untouched (uniform 0). Also 37007cb19e: a raised composed ramp keeps its incline."
+    },
+    {
+      "at": "2026-09-25T16:17:00+00:00",
+      "text": "SHIPPED 93302c801c (fast lane): his BLACK EDGES (six screenshots on 12bebeab3) were MINE, not the ground perf commits — the client as of 5d1eee2514 draws the same zigzag. composeBoundary took alpha from the silhouette over a transparent source: a half-step slope tile's sunk corners and a raise's shifted-down plate composed as (0,0,0,255) in 482 of the_game's 485 slope boundaries (87,372 texels). A slope boundary now leaves a hole a hole (flat boundaries unchanged, render3 parity 45/45); slopeTopOnly never re-crops a composite. Headless at 140,152.6: 295 black ground texels -> 0."
+    }
   ]
 }
