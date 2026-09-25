@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-25T11:50:23+00:00",
+  "generated_at": "2026-09-25T13:55:14+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,152 +18,8 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 332,
+  "count": 331,
   "candidates": [
-    {
-      "id": "plume_brawler",
-      "name": "Plumefist",
-      "tier": "mid",
-      "lore": "Too heavy to fly and too proud to hide. It settles every dispute with its talons, and it looks for disputes.",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [
-        "barred feather",
-        "rainbow tail plume",
-        "teal quill",
-        "bundle of bright plumes"
-      ],
-      "size": [
-        104,
-        104
-      ],
-      "template_id": "mannequin",
-      "scale": "standard",
-      "pixellab_id": "502b3605-3b7f-46ad-8ca8-8c87d35f1f2a",
-      "version": 1,
-      "sheet": "plume_brawler/sheet.webp",
-      "rotations": {
-        "south": "plume_brawler/rotations/south.webp",
-        "south-east": "plume_brawler/rotations/south-east.webp",
-        "east": "plume_brawler/rotations/east.webp",
-        "north-east": "plume_brawler/rotations/north-east.webp",
-        "north": "plume_brawler/rotations/north.webp",
-        "north-west": "plume_brawler/rotations/north-west.webp",
-        "west": "plume_brawler/rotations/west.webp",
-        "south-west": "plume_brawler/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.712,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.793,
-            "bbox": [
-              22,
-              3,
-              71,
-              102
-            ],
-            "fill": 0.449,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.781,
-            "bbox": [
-              15,
-              4,
-              84,
-              103
-            ],
-            "fill": 0.632,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.767,
-            "bbox": [
-              1,
-              7,
-              95,
-              102
-            ],
-            "fill": 0.826,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.753,
-            "bbox": [
-              5,
-              3,
-              91,
-              94
-            ],
-            "fill": 0.724,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.762,
-            "bbox": [
-              27,
-              3,
-              78,
-              87
-            ],
-            "fill": 0.396,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.747,
-            "bbox": [
-              15,
-              4,
-              99,
-              94
-            ],
-            "fill": 0.699,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.778,
-            "bbox": [
-              3,
-              7,
-              102,
-              102
-            ],
-            "fill": 0.87,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.712,
-            "bbox": [
-              5,
-              2,
-              99,
-              102
-            ],
-            "fill": 0.869,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-09T17:38:33+00:00",
-      "verdict": "approved",
-      "graduation": {
-        "state": "waiting",
-        "takes": {
-          "idle": "idle",
-          "walk": "walk",
-          "angry": "angry",
-          "die": "die"
-        },
-        "blocking": "not fully approved: attack"
-      }
-    },
     {
       "id": "gargoyle",
       "name": "Stonewing",
@@ -34880,8 +34736,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -39731,8 +39589,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -41065,8 +40925,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -41597,8 +41459,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -42678,8 +42542,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
