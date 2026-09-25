@@ -3,11 +3,12 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: MY verify-groundbracket IS RED ON MAIN (pre-existing, not a pixel regression): its 'scissored further from a full paint than whole' total counts texels OUTSIDE the band, where the kept picture is stale BY DESIGN since 500fb2ddd2 (landed cells away from the view are parked), so the whole blit's spill fixes some by chance on the first try while art streams. The scissor's contract stays enforced by liveCmp (in band identical) and the poison check (nothing outside written). Demote that total to a report line; name every 404's URL (today an anonymous console line).",
-    "since": "2026-09-25T20:02:33+00:00",
+    "unit": "CLAIMING: THE SPRITE BATCH WITHOUT A HEAP NUMBER PER CORNER. His cool run's allocBy puts `render` first in every window (105-285 KB/frame, ~40% of all allocation, the young-gen collections at ~18/s): Phaser's MultiPipeline.batchSprite hands 20 numbers to batchQuad, which is not inlined, so each non-Smi (8 corners, 4 UVs, 4 uint32 tints) is boxed at the call. batchpatch.ts: the same function with batchQuad's 42 stores and the tint packing inline (Phaser 3.90.0 copied exactly; any pipeline that overrides batchQuad - scenery-lit, PreFX - keeps the original call; LightPipeline has its own batchSprite). ?batchpatch=0 / ml-batch-patch 0 is off. Proven pixel-identical with the render A/B harness (--ls ml-batch-patch=0,1) and measured with the allocation profile before any push.",
+    "since": "2026-09-25T20:11:29+00:00",
     "files": [
-      "games2/scripts/verify-groundbracket.mjs",
-      "games2/docs/testing.md"
+      "games2/client/src/batchpatch.ts (new)",
+      "games2/client/src/scenes/WorldScene.ts (create(): the install call only)",
+      "games2/docs/perf.md"
     ]
   },
   "progress": {
@@ -63,6 +64,10 @@
     {
       "at": "2026-09-25T20:02:33+00:00",
       "text": "SHIPPED a328c157c2 (live 20:00:54 UTC, fast lane): A LOADED IMAGE LETS GO OF ITS LOADER (loaderrelease.ts; FILE_COMPLETE on the terrain loader and the scene's clears the <img>'s onload/onerror - the closure that kept Phaser's File, its XMLHttpRequest and the response Blob as long as the texture): after a 90 s headless tour 1,524 requests / 4,571 handlers / 1,187 Files -> 11 / 16 / 5. Tracing time did not move measurably; it frees memory that counts toward V8's GLOBAL limit. CORRECTION to my 19:28 note (docs rewritten in place): V8 bills an ATOMIC marking loop to mark.ephemeron.marking whatever the ephemerons; what the WeakMap fix measurably removed is the INCREMENTAL pause's leftover (26-62 ms with the linear fallback -> 0.7-9.3 ms). Forced atomic collections mark the whole heap in every build (170-360 ms headless); this run's atomic one fired on the GLOBAL limit (213 MB incl. ArrayBuffers + Blink), not the object limit. Next GC lever when his run says so: the ~37 MB (headless) of composed-texture pixels Phaser keeps for context restore (WebGLTextureWrapper.pixels)."
+    },
+    {
+      "at": "2026-09-25T20:11:29+00:00",
+      "text": "SHIPPED 51bc59a6c6 (container only, no player change): verify-groundbracket GREEN again - the out-of-band 'further from a full paint' total is a report line (the kept picture is stale outside the band by design since 500fb2ddd2's parking), the in-band comparison stays a failure, the scissor's contract stays judged by liveCmp + the poison; the gate names every 404 URL (/asset-index.json is image-only and expected locally; docs/testing.md)."
     }
   ],
   "requests": [
@@ -137,5 +142,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T20:02:33+00:00"
+  "updated": "2026-09-25T20:11:29+00:00"
 }
