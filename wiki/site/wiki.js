@@ -4812,6 +4812,15 @@ const shadowFilter = () => {
 };
 /** The sort the overview is showing, as a comparator — so the page and the
  *  ‹ › pager cannot disagree about what "next" means. */
+/** "24 Sep 21:24" this year, "3 Aug 2025" otherwise — a card-sized date. */
+function shortWhen(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(+d)) return "";
+  const mon = d.toLocaleString("en-GB", { month: "short" }).slice(0, 3);
+  return d.getFullYear() === new Date().getFullYear()
+    ? `${d.getDate()} ${mon} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
+    : `${d.getDate()} ${mon} ${d.getFullYear()}`;
+}
 /** The sort chip that is lit, with the admin guard applied once. A sort only
  *  the Game Master has cannot survive a logout: the key persists in
  *  localStorage, and a player opening the page would otherwise get an order
@@ -4827,6 +4836,7 @@ function monsterSort(list) {
   const sort = monsterSortMode();
   const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
   const byName = (a, b) => a.name.localeCompare(b.name);
+  const newer = (x, y) => (y ?? "") > (x ?? "") ? 1 : (y ?? "") < (x ?? "") ? -1 : 0;
   const lvl = (m) => Number(stat.get(m.id)?.level ?? 0);
   const CMP = {
     name: byName,
@@ -4834,6 +4844,12 @@ function monsterSort(list) {
     // Aggressive first, and hardest first within each half — "what can come
     // for me, worst first" is the question this sort answers.
     threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
+    // DATE ADDED / LAST CHANGED, newest first (maintainer 2026-09-25: "I want
+    // to be able to sort monsters and 'date added' and 'last changed'").
+    // `added` and `changed` come from the registry (git, cached for the image
+    // — wiki/monster_dates.json); an undated creature sorts last.
+    added: (a, b) => newer(a.added, b.added) || byName(a, b),
+    changed: (a, b) => newer(a.changed, b.changed) || byName(a, b),
   };
   /* HIS REVIEW ORDER, IN HIS WORDS (maintainer 2026-09-24: "The sort should
    * first list if I have an animation to review. Then by failed already
@@ -5252,6 +5268,8 @@ function viewMonsters() {
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
+      ["added", "date added", "Newest creature first — when its design first appeared"],
+      ["changed", "last changed", "Most recently changed art first — a new or regenerated animation counts"],
       ...(state.admin ? [["queue", "review first", "First the ones with a direction you have not reviewed, then the ones with a redo pending, then the rest — most animations first inside each"]] : []),
     ], sort, () => route(), { wrap: true }),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
@@ -5319,7 +5337,12 @@ function viewMonsters() {
         h("div", { class: "showcase-text" },
           h("div", { class: "card-name" }, m.name),
           h("div", { class: "card-sub" },
-            `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`)));
+            // With a date sort lit, the date it sorts by LEADS the line, or the
+            // order is invisible — the card would say nothing about why it
+            // stands where it does.
+            (sort === "added" || sort === "changed") && m[sort]
+              ? `${sort === "added" ? "added" : "changed"} ${shortWhen(m[sort])} · HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"}`
+              : `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`)));
     })));
 }
 /* ================= MONSTER CANDIDATES — the 8 directions, judged FIRST =====

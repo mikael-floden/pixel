@@ -460,6 +460,32 @@ ok(pv.bar === 0 && pv.cards === shelf.length,
   `a player gets no filter and every finished creature, even with a stale admin preference stored (${pv.cards} of ${shelf.length}, ${pv.bar} bars)`);
 await ctx2.close();
 
+/* DATE ADDED / LAST CHANGED (maintainer 2026-09-25: "I want to be able to
+ * sort monsters and 'date added' and 'last changed'"). For everyone, newest
+ * first against the registry's own dates, undated last, and the card says the
+ * date it is sorted by. */
+{
+  const ctx3 = await b.newContext({ viewport: { width: 393, height: 851 } });
+  const p3 = await ctx3.newPage();
+  await p3.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));
+  await p3.addInitScript(() => { localStorage.setItem("ml-staging-base", `${location.origin}/assets/`); localStorage.removeItem("wiki-monster-sort"); });
+  await p3.goto(`${W}#/monsters`, { waitUntil: "load" });
+  await p3.waitForTimeout(2200);
+  const byId = new Map(roster.map((m) => [m.id, m]));
+  ok(roster.filter((m) => m.added).length > roster.length * 0.9 && roster.filter((m) => m.changed).length > roster.length * 0.9,
+    `the registry dates the creatures (${roster.filter((m) => m.added).length} added, ${roster.filter((m) => m.changed).length} changed of ${roster.length})`);
+  for (const [chip, key, word] of [["date added", "added", "added"], ["last changed", "changed", "changed"]]) {
+    await p3.evaluate((c) => [...document.querySelectorAll('[data-bar="wiki-monster-sort"] button')].find((x) => x.textContent.trim() === c)?.click(), chip);
+    await p3.waitForTimeout(1300);
+    const got = await p3.evaluate(() => [...document.querySelectorAll(".showcase-card")].map((a) => ({ id: a.getAttribute("href").split("/").pop(), sub: a.querySelector(".card-sub")?.textContent ?? "" })));
+    const ds = got.map((c) => byId.get(c.id)?.[key] ?? "");
+    ok(got.length === shelf.length && ds.every((d, i) => i === 0 || (ds[i - 1] || "") >= (d || "")),
+      `"${chip}" is newest first, undated last (${ds.slice(0, 2).map((d) => d.slice(0, 16)).join(" ≥ ")} … ${got.length} cards)`);
+    ok(got[0]?.sub.startsWith(`${word} `), `and the card leads with that date ("${got[0]?.sub}")`);
+  }
+  await ctx3.close();
+}
+
 ok(errs.length === 0, `no page errors${errs.length ? `: ${errs[0]}` : ""}`);
 await b.close();
 console.log(fails.length ? `\nCREATURE CHECKS FAILED (${fails.length})` : "\nALL CREATURE CHECKS PASSED");

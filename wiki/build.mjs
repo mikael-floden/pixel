@@ -3002,11 +3002,74 @@ function buildMonsterCandidates() {
   }));
 }
 
+/* WHEN A CREATURE WAS ADDED, AND WHEN ITS ART LAST CHANGED (maintainer
+ * 2026-09-25: "I want to be able to sort monsters and 'date added' and 'last
+ * changed"). A shipped creature's monster.json carries no date at all, so both
+ * come from git, one walk over monsters/ (~30 s on this clone):
+ *   added   — the OLDEST commit that touched the creature, as a candidate or
+ *             shipped (monsters/candidates/<id>/ or monsters/<id>/);
+ *   changed — the NEWEST commit that touched its ART (rotations/,
+ *             animations/, sprite) — not a stats edit, which lives in live/.
+ * Candidate-built art also stamps generated_at per facing; the newest of those
+ * wins when it is later than git (art generated, not yet committed).
+ *
+ * THE IMAGE HAS NO .git, so the answers are committed to
+ * wiki/monster_dates.json and merged: added is the MIN of cache and git,
+ * changed the MAX. A clone's history is shallow, so a creature whose first
+ * sighting is the graft boundary is only "no later than" that — the min with
+ * the cache keeps an older, truer date seeded from a deeper clone. */
+const MONSTER_DATES_PATH = join(ROOT, "wiki", "monster_dates.json");
+function monsterDates() {
+  const cache = readJson(MONSTER_DATES_PATH)?.entries ?? {};
+  const got = {};
+  try {
+    const out = execSync("git log --format=C%cI --name-only -- monsters/",
+      { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"], maxBuffer: 256 * 1024 * 1024 }).toString();
+    let when = null;
+    for (const line of out.split("\n")) {
+      if (line.startsWith("C")) { when = line.slice(1); continue; }
+      const m = line.match(/^monsters\/(?:candidates\/)?([^/]+)\/(.*)$/);
+      if (!m || !when || ["config", "pipeline", "spec", "docs", "candidates"].includes(m[1])) continue;
+      const [, id, rest] = m;
+      const g = got[id] ??= { added: when, changed: null };
+      if (when < g.added) g.added = when;                          // newest-first walk: keep lowering
+      if (!g.changed && /^(rotations|animations)\/|^sprite\./.test(rest)) g.changed = when;
+    }
+  } catch { /* no git (deploy image) — the committed cache answers */ }
+  const merged = { ...cache };
+  for (const [id, g] of Object.entries(got)) {
+    const c = cache[id] ?? {};
+    merged[id] = {
+      added: [c.added, g.added].filter(Boolean).sort()[0] ?? null,
+      changed: [c.changed, g.changed].filter(Boolean).sort().pop() ?? null,
+    };
+  }
+  if (Object.keys(got).length) {
+    const next = JSON.stringify({ format: "wiki-monster-dates@1", note: "Committed so the deploy image, which has no .git, dates creatures the same way. Rebuilt by wiki/build.mjs.", entries: Object.fromEntries(Object.entries(merged).sort()) }, null, 1) + "\n";
+    let prev = "";
+    try { prev = readFileSync(MONSTER_DATES_PATH, "utf8"); } catch { /* first run */ }
+    if (next !== prev) writeFileSync(MONSTER_DATES_PATH, next);
+  }
+  return merged;
+}
+
 // -------------------------------------------------------------------- main
 const monsters = buildMonsters();
 const monsterCandidates = buildMonsterCandidates();
 // The approved-and-being-animated ones stand beside the shipped roster.
 if (monsters) monsters.push(...buildCandidateMonsters(new Set(monsters.map((m) => m.id))));
+if (monsters) {
+  const dates = monsterDates();
+  for (const m of monsters) {
+    const d = dates[m.id] ?? {};
+    // A facing's own generated_at beats git when it is later: art made and
+    // not committed yet is still the latest change.
+    let stamped = null;
+    for (const a of Object.values(m.animations ?? {})) for (const c of Object.values(a.dirs ?? {})) if (c?.at && (!stamped || c.at > stamped)) stamped = c.at;
+    m.added = d.added ?? null;
+    m.changed = [d.changed, stamped].filter(Boolean).sort().pop() ?? null;
+  }
+}
 const characters = buildCharacters();
 const tiles = buildTiles();
 const worldCells = buildWorld();
