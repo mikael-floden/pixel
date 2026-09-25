@@ -3062,22 +3062,6 @@
       "batch": "v3"
     },
     {
-      "id": "bog_skull_stack",
-      "name": "Skullstack",
-      "tier": "evil",
-      "scale": "standard",
-      "size": 88,
-      "template_id": "mannequin",
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "prompt": "Column of mud-brown animal skulls stacked and fused, a rib cage for arms, walking on two thigh-bone legs.",
-      "lore": "Everything the bog ever kept, stood up in a row.",
-      "items": [],
-      "batch": "v3"
-    },
-    {
       "id": "slime_carp",
       "name": "Slimecarp",
       "tier": "mid",
@@ -3170,22 +3154,6 @@
       ],
       "prompt": "Ball of black eels tangled together into a rough body with several heads poking out, glistening, moving on trailing eel-legs.",
       "lore": "The eels in the drain wound themselves together one winter.",
-      "items": [],
-      "batch": "v3"
-    },
-    {
-      "id": "bog_ghost_light",
-      "name": "Fenflame",
-      "tier": "cute",
-      "scale": "small",
-      "size": 40,
-      "template_id": "bear",
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "prompt": "Pale blue-green flame with a faint face inside it, hovering, a tail of vapour, drifting sideways.",
-      "lore": "It flickers where someone lost their way.",
       "items": [],
       "batch": "v3"
     },
@@ -8433,6 +8401,44 @@
       "batch": "v3",
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-25T07:36:06+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "bog_skull_stack",
+      "name": "Skullstack",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Column of mud-brown animal skulls stacked and fused, a rib cage for arms, walking on two thigh-bone legs.",
+      "lore": "Everything the bog ever kept, stood up in a row.",
+      "items": [],
+      "batch": "v3",
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-25T14:41:07+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "bog_ghost_light",
+      "name": "Fenflame",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Pale blue-green flame with a faint face inside it, hovering, a tail of vapour, drifting sideways.",
+      "lore": "It flickers where someone lost their way.",
+      "items": [],
+      "batch": "v3",
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-25T14:41:07+00:00",
       "versions_tried": 1
     }
   ],

@@ -507,7 +507,7 @@ def _client_or_none():
 
 # --- reconcile --------------------------------------------------------------
 
-def reconcile(cfg, client=None, apply=True, verbose=True, tags=False):
+def reconcile(cfg, client=None, apply=True, verbose=True, tags=False, graduate=True):
     """HIS REMOVALS ARE THE GROUND TRUTH, BOTH WAYS. Run before every command
     that shows or generates candidates (maintainer 2026-09-18: "I have also
     removed a lot of candidates I don't want to see more! No dangling states in
@@ -591,7 +591,7 @@ def reconcile(cfg, client=None, apply=True, verbose=True, tags=False):
     # (maintainer 2026-09-18: "When all animations have been approved and the
     # monster has been approved I want the monster to move to be a real monster
     # automatically!"). Import here — graduate imports this module.
-    if apply:
+    if apply and graduate:
         try:
             import graduate as _grad
             _grad.run(apply=True, verbose=verbose)

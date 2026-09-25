@@ -61,6 +61,11 @@ jobs:
           fi
           git config user.name "pixel-monsters-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # HIS REMOVALS ARE ACTED ON THE MOMENT HE SAVES THEM, not when an
+          # agent next happens to generate (2026-09-25: Fenflame and Skullstack
+          # removed at 16:05 were still in the wiki at 16:35). Folder, PixelLab
+          # record and every verdict on them go; graduation runs after.
+          python -c "import sys;sys.path.insert(0,'monsters/pipeline');import candidates as c;from pixellab_client import PixelLabClient;cfg=c.load_cfg();c.reconcile(cfg, client=PixelLabClient(), apply=True, graduate=False)"
           python monsters/pipeline/graduate.py --no-drop
 
       - name: Commit + push
@@ -73,8 +78,8 @@ jobs:
           # every rebase refuse, and one lost push race threw the whole
           # graduation away (2026-09-24: minotaur and sand scorpling, fully
           # approved, stayed candidates while the candidate shards were pushing).
-          git add monsters/ live/feedback/monsters.json
-          git diff --cached --quiet && { echo "nobody graduated"; exit 0; }
+          git add -A monsters/ live/feedback/monsters.json
+          git diff --cached --quiet && { echo "nothing removed or graduated"; exit 0; }
           git commit -m "monsters: graduate on his approval — a fully approved monster is not 'in the making'"
           ok=0
           for i in 1 2 3 4 5 6 7 8 9 10; do
