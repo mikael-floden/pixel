@@ -22,6 +22,7 @@
 import Phaser from "phaser";
 import { captureFrameSwitches } from "./capturepool";
 import { triFillPx } from "./perfextra";
+import { paceLateMs } from "./pacing";
 
 export interface GlFrame {
   /** DynamicTexture key -> [brackets, begin ms, end ms]. */
@@ -65,12 +66,11 @@ const win = { texNew: 0, texDel: 0, fbNew: 0, fbDel: 0, upKb: 0, dc: 0, dcMax: 0
  * Nothing on the page can time the GPU (no timer query on his Mali; the finish
  * clock measured nothing), so the frames say it themselves: every frame's
  * interval is filed under the PREVIOUS take's bill — the render whose GPU work
- * the browser was still paying for — on each axis, as on time or late (over
- * LATE_MS, the FPS meter's hitch line). A late share that climbs with the draws
+ * the browser was still paying for — on each axis, as on time or late (past
+ * the cadence it runs at: pacing.ts `paceLateMs`, the FPS meter's hitch line). A late share that climbs with the draws
  * or binds is the command stream (fewer, bigger batches cure it); with fill,
  * the pixels; flat on every axis, neither. `late` block: `<axis>_<upper bound>`
  * frames and `..._late` late ones; `inf` is the open top bucket. */
-const LATE_MS = 45;
 const LATE_AXES: { key: "dc" | "tb" | "fill"; tops: number[] }[] = [
   { key: "dc", tops: [500, 1000, 1500, 2000, 3000] },
   { key: "tb", tops: [1000, 2500, 5000, 10000] },
@@ -80,7 +80,7 @@ const lateN = LATE_AXES.map((a) => new Array<number>(a.tops.length + 1).fill(0))
 const lateL = LATE_AXES.map((a) => new Array<number>(a.tops.length + 1).fill(0));
 let lastTake: GlFrame | null = null;
 function lateFile(prev: GlFrame, total: number): void {
-  const late = total > LATE_MS;
+  const late = total > paceLateMs(); // missed its cadence: 45 ms at 30, ~62 at 20
   for (let i = 0; i < LATE_AXES.length; i++) {
     const { key, tops } = LATE_AXES[i];
     const v = prev[key];

@@ -697,8 +697,16 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   display: a 120 Hz phone holding a steady 60 on every 2nd vsync is never
   late), unlocks after 3 s of step work under 55% of the 60 Hz frame and
   never inside 15 s of the lock (a desktop holding 60 never locks, a phone
-  at 15 ms of work never flaps); `30` always, `60` never — Settings→Dev
-  "frame pacing" cycles them, `?pace=auto|30|60`, localStorage `ml-pace`.
+  at 15 ms of work never flaps); `30` always, `20` always at 20 (every 3rd
+  vsync at 60 Hz — a CHOICE on his principle, 2026-09-25: "It's all about
+  getting it consistent and predictable! ... we are better off running the
+  entire game at 15 FPS" than with a dip that keeps coming back; his cool
+  run's recurring dips were frames one refresh late at 30, 50 ms, exactly a
+  20 fps frame), `60` never — Settings→Dev "frame pacing" cycles auto → 30 →
+  20 → 60, `?pace=auto|30|20|60`, localStorage `ml-pace`. A frame is LATE
+  past its own cadence plus 0.7 of a 60 Hz vsync (`paceLateMs`: 45 ms at 30
+  or unpaced, ~62 at 20) — the FPS meter's hitch and the beacon's `late`
+  both read it; the pace row's `hz` is the rate actually paced.
   The step's delta is the skipped ticks' smoothed deltas SUMMED and
   `game.loop.delta` is set to agree, so every ease, tween and animation
   keeps its time constant; the decision is on RAW wall clock (the smoothed

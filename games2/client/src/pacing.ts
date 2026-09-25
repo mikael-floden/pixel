@@ -40,12 +40,24 @@
  *  slow frame (measured in pacing.test.ts).
  */
 
-export type PaceMode = "auto" | "30" | "60";
+export type PaceMode = "auto" | "30" | "20" | "60";
 
 const KEY = "ml-pace";
 /** The paced rate. Half the vsync of every phone the game ships to. */
 export const PACE_HZ = 30;
 const PACE_MS = 1000 / PACE_HZ;
+/** THE STEADY 20, a choice (maintainer 2026-09-25: "It's all about getting it
+ *  consistent and predictable! ... we are better off running the entire game
+ *  at 15 FPS" than with a dip that keeps coming back). His cool run's
+ *  recurring dips were frames ONE REFRESH LATE at 30 — 50 ms, exactly a 20 fps
+ *  frame — so a steady 20 has none where 30 is not held. Every 3rd vsync at
+ *  60 Hz (6th at 120); `?pace=20`, Settings→Dev "frame pacing". */
+export const PACE20_HZ = 20;
+/** A frame is LATE when it runs past its cadence by 0.7 of a 60 Hz vsync:
+ *  45 ms at 30 (a missed vsync is 50), ~62 at 20 (66.7). Unpaced, 45 as it
+ *  always was (three vsyncs). */
+const LATE_MARGIN_MS = (0.7 * 1000) / 60;
+const LATE_UNPACED_MS = 45;
 /** The frame the pacer asks a display to HOLD: 60 Hz, or the display's own
  *  when it is slower. A tick later than this plus half a vsync missed it. */
 const HOLD_MS = 1000 / 60;
@@ -132,7 +144,18 @@ export class Pacer {
 
   /** Pacing this tick? */
   get paced(): boolean {
-    return this.mode === "30" || (this.mode === "auto" && this.locked);
+    return this.mode === "30" || this.mode === "20" || (this.mode === "auto" && this.locked);
+  }
+
+  /** The paced period (ms): 50 in mode 20, 33.3 otherwise (auto locks to 30). */
+  get paceMs(): number {
+    return this.mode === "20" ? 1000 / PACE20_HZ : PACE_MS;
+  }
+
+  /** Over this a frame missed its cadence (the FPS meter's hitch, the
+   *  beacon's `late`). */
+  get lateMs(): number {
+    return this.paced ? this.paceMs + LATE_MARGIN_MS : LATE_UNPACED_MS;
   }
 
   setMode(mode: PaceMode): void {
@@ -172,7 +195,7 @@ export class Pacer {
     } else {
       this.accRaw += raw;
       this.accDt += delta;
-      if (this.accRaw < PACE_MS - this.period / 2) {
+      if (this.accRaw < this.paceMs - this.period / 2) {
         this.bSkipped++;
         return 0;
       }
@@ -243,7 +266,7 @@ export class Pacer {
       mode: this.mode,
       paced: this.paced ? 1 : 0,
       lockedFrac: this.bWallMs > 0 ? +(this.bLockedMs / this.bWallMs).toFixed(2) : 0,
-      hz: this.paced ? PACE_HZ : 0,
+      hz: this.paced ? (this.mode === "20" ? PACE20_HZ : PACE_HZ) : 0,
       tickHz: Math.round(1000 / this.vsync),
       locks: this.bLocks,
       run: this.bRun,
@@ -298,9 +321,9 @@ function readMode(): PaceMode {
   try {
     const q = g.location ? new URLSearchParams(g.location.search).get("pace") : null;
     const want = q === "off" ? "60" : q;
-    if (want === "auto" || want === "30" || want === "60") g.localStorage?.setItem(KEY, want);
+    if (want === "auto" || want === "30" || want === "20" || want === "60") g.localStorage?.setItem(KEY, want);
     const v = g.localStorage?.getItem(KEY);
-    if (v === "auto" || v === "30" || v === "60") return v;
+    if (v === "auto" || v === "30" || v === "20" || v === "60") return v;
   } catch {
     /* no storage (private mode) — the default */
   }
@@ -346,9 +369,9 @@ export function paceSetMode(mode: PaceMode): void {
   }
 }
 
-/** The Settings→Dev button: auto → 30 → 60 → auto. */
+/** The Settings→Dev button: auto → 30 → 20 → 60 → auto. */
 export function paceCycle(): PaceMode {
-  const next: Record<PaceMode, PaceMode> = { auto: "30", "30": "60", "60": "auto" };
+  const next: Record<PaceMode, PaceMode> = { auto: "30", "30": "20", "20": "60", "60": "auto" };
   const m = next[get().mode];
   paceSetMode(m);
   return m;
@@ -364,6 +387,12 @@ export function paceLabel(): string {
   const p = get();
   if (p.mode === "auto") return p.locked ? `auto: ${PACE_HZ} locked` : "auto: 60";
   return `${p.mode} fps`;
+}
+
+/** Over this (ms) a frame missed the cadence it runs at: the meter's hitch,
+ *  the beacon's `late`. */
+export function paceLateMs(): number {
+  return get().lateMs;
 }
 
 /** The rendered frames for the on-screen meter: gaps between consecutive

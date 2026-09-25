@@ -4,7 +4,7 @@
 // nothing. `clock` is the pacer's performance.now.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { Pacer, PACE_HZ, paceInstall } from "../../client/src/pacing";
+import { Pacer, PACE_HZ, PACE20_HZ, paceInstall, paceCycle, paceMode, paceSetMode } from "../../client/src/pacing";
 
 interface Drive {
   hz?: number;
@@ -61,7 +61,7 @@ class Sim {
 
 const near = (a: number, b: number, eps = 0.05) => Math.abs(a - b) <= eps;
 
-function mk(mode: "auto" | "30" | "60"): Sim {
+function mk(mode: "auto" | "30" | "20" | "60"): Sim {
   const clock = { t: 0 };
   return new Sim(new Pacer(mode, () => clock.t), clock);
 }
@@ -226,4 +226,50 @@ test("paceInstall wraps the step Phaser binds at start(), not the NOOP the loop 
   paceInstall(game2);
   game2.loop.callback(2000, 16.67);
   assert.deepEqual(calls2, [2000]);
+});
+
+test("mode 20 at 60 Hz: a step every third vsync, 50 ms of delta each, never sooner", () => {
+  const sim = mk("20");
+  sim.drive({ ms: 3000, work: () => 15 });
+  const gaps = sim.gaps(2);
+  assert.ok(gaps.length > 50, `steps: ${sim.steps.length}`);
+  assert.ok(gaps.every((g) => near(g, 50)), `gaps ${[...new Set(gaps)].join(",")}`);
+  assert.ok(sim.steps.slice(2).every((st) => near(st.dt, 50)), "the step's delta is the three ticks' summed");
+  assert.ok(Math.abs(sim.ticks - sim.steps.length * 3) <= 2, `ticks ${sim.ticks} for ${sim.steps.length} steps`);
+  assert.equal(PACE20_HZ, 20);
+});
+
+test("mode 20 at 120 Hz renders every 6th vsync — still 20; a 45 ms step at 20 is on time, not a hitch", () => {
+  const sim = mk("20");
+  sim.drive({ hz: 120, ms: 4000, work: (i) => (i % 7 === 3 ? 45 : 12) });
+  // Judged after the first census second: until the ticks have said 120 Hz the
+  // pacer assumes 60 (the 30 fps 120 Hz case above reads the same way).
+  const from = sim.steps.findIndex((st) => st.at > 1200);
+  const gaps = sim.gaps(from);
+  // A 45 ms step lands inside the next 50 ms slot's vsync grid: the cadence holds.
+  assert.ok(gaps.every((g) => near(g, 50, 0.1)), `gaps ${[...new Set(gaps)].join(",")}`);
+});
+
+test("late is judged against the cadence it runs at: 45 at 30 (as ever), ~62 at 20, 45 unpaced", () => {
+  const at = (mode: "30" | "20" | "60") => {
+    const sim = mk(mode);
+    sim.drive({ ms: 1500, work: () => 10 });
+    return sim.p.lateMs;
+  };
+  assert.ok(near(at("30"), 45, 0.01), `30: ${at("30")}`);
+  assert.ok(near(at("20"), 50 + 700 / 60, 0.01), `20: ${at("20")}`);
+  assert.equal(at("60"), 45);
+});
+
+test("the Settings button cycles auto -> 30 -> 20 -> 60 -> auto, and the beacon row says 20", () => {
+  const start = paceMode();
+  paceSetMode("auto");
+  assert.deepEqual([paceCycle(), paceCycle(), paceCycle(), paceCycle()], ["30", "20", "60", "auto"]);
+  paceSetMode(start);
+  const sim = mk("20");
+  sim.drive({ ms: 2000, work: () => 10 });
+  const row = sim.p.take();
+  assert.equal(row.mode, "20");
+  assert.equal(row.hz, 20);
+  assert.equal(row.paced, 1);
 });

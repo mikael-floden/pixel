@@ -13,9 +13,10 @@
  *  wall clock (walked back over the gaps until 5,000 ms), not a frame count
  *  sized by the long-run rate — that version lagged the very drops it was for
  *  (review, 2026-09-02). Gaps over 2 s are a hidden tab, not a frame. A hitch
- *  is a frame of three vsyncs or more (over 45 ms: 50.0 is exactly three and
- *  straddled the old "over 50", and under a paced 30 it is one missed slot). */
-import { paceFrames, pacedNow } from "./pacing";
+ *  is a frame that MISSED THE CADENCE IT RUNS AT (pacing.ts `paceLateMs`):
+ *  over 45 ms at 30 or unpaced (50.0 is exactly three vsyncs and straddled
+ *  the old "over 50"; under a paced 30 it is one missed slot), ~62 at 20. */
+import { paceFrames, pacedNow, paceLateMs } from "./pacing";
 
 let live: { el: HTMLElement; stop: boolean } | null = null;
 
@@ -67,7 +68,8 @@ export function mountFpsBadge(): void {
       const recent = src.slice(i);
       const fps = sum > 0 ? Math.round((1000 * recent.length) / sum) : 0;
       const worst = recent.length ? Math.round(Math.max(...recent)) : 0;
-      const hitches = recent.filter((g) => g > 45).length;
+      const lim = paceLateMs(); // the cadence it runs at: 45 at 30, ~62 at 20
+      const hitches = recent.filter((g) => g > lim).length;
       const tag = src === pf.gaps && pacedNow() ? " paced" : "";
       el.textContent = `${fps} fps${tag} · worst ${worst} ms · ${hitches} hitch${hitches === 1 ? "" : "es"}/5s`;
       shownAt = now;
