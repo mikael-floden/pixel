@@ -278,6 +278,31 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   ambient clock so shadows sweep. CPU twin `sunFactorAt()` shades lit-copy
   tints. Probes: `__ml.sunInfo()`, `__ml.sunAt(col,row[,z])` (z=−1 = own
   height). Regression: scripts/verify-sunshadow.mjs.
+- **A COMPOSED RAMP IS LIT AS ITS INCLINE** (his slope switch above 0%;
+  maintainer 2026-09-25: "Something is rendering over it I think!"). The
+  surface walk treats a cell as a flat-topped column of whole levels, so it
+  lit each ramp as a flat top plus a wall face and painted a terrace over
+  every slope the ground texture holds (measured headless in the slope lab:
+  forced off, the terraces vanished). The ramps' corner masks
+  (`rampfield.ts`, the resolver's own rule, pinned against it on every cell
+  of the_game by `rampfield.test.ts`) ride the HIGH nibble of the surface
+  map's B — emission index + 1 keeps the low one, so no new texture unit (a
+  ninth sampler is a compile failure on an 8-unit GPU) — and `uRampShare` is
+  the height a raised corner adds, in levels (`applyRamps`, repacked on the
+  "ml-slope-height" event). The walk solves the incline EXACTLY (the
+  bilinear surface along a segment is a quadratic), a ramp pixel is a top
+  (Ha is the incline's height there), and a ramp top takes the sun by its
+  own tilt relative to flat ground (`rampSun`, clamped 0.35-1.35). THE SUN'S
+  OCCLUSION MAP learns them too: each ramp cell's R (and its exact CPU twin
+  `hArr`) is raised by the incline's height at the centre, in whole bytes, so
+  the bilinear read between centres is an incline — whole levels cast a bump
+  per step. What is packed is recorded on the textures (they outlive the
+  instance). At 0% nothing is packed and the uniform is 0: every new branch
+  is off and the pass is the old one. Not yet: the torch march's ground map
+  (uHeightG) and the mist pass read whole levels. THE RIDGE SCALLOPS are the
+  corner ramps' own shape (a bilinear single-corner patch is a saddle, not a
+  fold; the art is the same surface), which the sun's terminator traces.
+  15+ emission entries leave no nibble: flat light (`rampInfo()`).
 - STALE GATES, known: verify-solidband (predates maps2 worlds, fails on
   baseline; verify-wallspread went the same way and was replaced by
   verify-wallwash, which finds its wall on the_game); verify-penumbra is PINNED TO NIGHT and finds

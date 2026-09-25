@@ -1991,8 +1991,12 @@ export class Tiles3Textures {
           if (!src) return null;
           // The top face from the plate the flat cell draws (conformed when its member is), the band from the art.
           const top = art.fromKind === "conform" ? buildPlatePixels(this.o.sheets, { kind: "conform", path: art.from as string }, src, this.wallRGB(ground)) : src;
-          // Raised (topOnly): no band below the level, the slope kept whole — never rampTopOnly (see buildRampPixels).
-          return buildRampPixels(this.o.sheets, top, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK), src, !art.topOnly);
+          /* NO BAND BELOW THE LEVEL, AT ANY LEVEL, the incline and its side faces kept whole
+           * (buildRampPixels; never rampTopOnly). Raised, the cell's own wall stack is the wall
+           * there; at level 0 nothing is under the ground, and the ramp's occluder copy — drawn
+           * over the cells in front — painted that band over them: teal strips along the foot
+           * of every hill (headless, the slope lab at 100%, 2026-09-25). */
+          return buildRampPixels(this.o.sheets, top, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK), src, false);
         });
         return built;
       }

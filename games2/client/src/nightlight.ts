@@ -6,6 +6,8 @@ import { World, MAP_GEOMETRY, geometryFor } from "./maps";
 import { renderedWorldView, ViewRect } from "./camview";
 import { lightScale } from "./lightscale";
 import { wallWrapExponent } from "./wallwrap";
+import { slopeHeight } from "./slopeheight";
+import { rampMaskField } from "./rampfield";
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -417,6 +419,7 @@ uniform float uIndoorMix; // the EASED indoor blend — the outside fades to bla
 uniform float uLidDark;   // his "Lowered wall top darkening" dial, 0..1: every wall top of MY room, the face fading into it
 uniform vec3 uAmbientOut; // the OUTDOOR grade — what a cell outside my room fades to
 uniform sampler2D uHeight;
+uniform float uRampShare;   // levels a composed ramp's raised corner stands over its cell (his slope switch; 0 = none) — see rampMaskAt
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 uniform sampler2D uHeightG; // GROUND column tops, LINEAR (see groundAtSoft)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
@@ -927,11 +930,45 @@ float airTopAt(vec2 cr) {
   return g - 128.0 * step(127.5, g);
 }
 
-// Emission palette index + 1 (0 = the cell does not glow): B channel.
+// Emission palette index + 1 (0 = the cell does not glow): B channel — its LOW
+// nibble while the ramps are on (the high one holds the ramp's corners, rampMaskAt).
 float emitAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uHeight, uv).b * 255.0;
+  float b = texture2D(uHeight, uv).b * 255.0;
+  return uRampShare > 0.0 ? mod(floor(b + 0.5), 16.0) : b;
+}
+
+// THE COMPOSED RAMP ON THIS CELL (his slope switch above 0%): its raised corners,
+// NW 8, NE 4, SW 2, SE 1, in the surface map's B HIGH nibble (rampfield.ts: the
+// resolver's own rule). 0 = a flat top. Without it the walk lit every ramp as a
+// flat top plus a wall face — a step painted over each slope the ground texture
+// draws (maintainer 2026-09-25: "Something is rendering over it I think!").
+float rampMaskAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return floor((texture2D(uHeight, uv).b * 255.0 + 0.5) / 16.0);
+}
+
+// tiles3 rampHeight EXACTLY: the bilinear blend of the raised corners at f, the
+// point's fraction of its cell (x east, y south), clamped.
+float rampH(float m, vec2 f) {
+  vec2 c = clamp(f, 0.0, 1.0);
+  float nw = mod(floor(m / 8.0), 2.0);
+  float ne = mod(floor(m / 4.0), 2.0);
+  float sw = mod(floor(m / 2.0), 2.0);
+  float se = mod(m, 2.0);
+  return (1.0 - c.x) * (1.0 - c.y) * nw + c.x * (1.0 - c.y) * ne + (1.0 - c.x) * c.y * sw + c.x * c.y * se;
+}
+
+// Its slope, d(rampH)/dx and d(rampH)/dy (per cell).
+vec2 rampG(float m, vec2 f) {
+  vec2 c = clamp(f, 0.0, 1.0);
+  float nw = mod(floor(m / 8.0), 2.0);
+  float ne = mod(floor(m / 4.0), 2.0);
+  float sw = mod(floor(m / 2.0), 2.0);
+  float se = mod(m, 2.0);
+  return vec2((1.0 - c.y) * (ne - nw) + c.y * (se - sw), (1.0 - c.x) * (sw - nw) + c.x * (se - ne));
 }
 
 // Multiplicative "self pulse" for an emitter's own pixels — EXACT mirror of
@@ -1080,9 +1117,51 @@ void main() {
     // pass's own pixels by __ml.nightHash).
     vec2 b = floor(cr * 0.125);
     if (uSkip > 0.5 && (b.x != blk.x || b.y != blk.y)) { blk = b; hb = blockMaxAt(b); }
-    if (uSkip > 0.5 && v0 + hb * kk < vLo - 0.0001) { vHi = vLo; continue; }
+    // A ramp stands up to uRampShare over its column's byte: the skip keeps that slack.
+    if (uSkip > 0.5 && v0 + (hb + uRampShare) * kk < vLo - 0.0001) { vHi = vLo; continue; }
     float H = heightAt(cr);
-    if (H < 90.0) {
+    // THE INCLINE (rampMaskAt): on a ramp cell the column's top is the ramp's
+    // surface. Along this segment the cell point moves (dd, dd) per unit s and the
+    // bilinear surface is a QUADRATIC in s, so the hit is solved exactly: the ray
+    // enters under the lip (a side-face pixel, as a flat column's wall) or meets
+    // the incline at the smallest root in [0, 1] (a TOP pixel), or passes over.
+    float rmW = uRampShare > 0.0 && H < 90.0 ? rampMaskAt(cr) : 0.0;
+    if (rmW > 0.5) {
+      vec2 f0 = vec2((u + vHi) * 0.5, (vHi - u) * 0.5) - floor(cr);
+      float dd = (vLo - vHi) * 0.5;
+      float rNw = mod(floor(rmW / 8.0), 2.0);
+      float rB = mod(floor(rmW / 4.0), 2.0) - rNw;
+      float rC = mod(floor(rmW / 2.0), 2.0) - rNw;
+      float rD = -rB - rC + mod(rmW, 2.0) - rNw;
+      float h0 = rNw + rB * f0.x + rC * f0.y + rD * f0.x * f0.y;
+      float c0 = (vHi - v0) / kk - (H + uRampShare * h0);
+      if (c0 <= 0.0) {
+        z = max((vHi - v0) / kk, 0.0);
+        cell = cr;
+        found = true;
+      } else {
+        float b0 = (vLo - vHi) / kk - uRampShare * dd * (rB + rC + rD * (f0.x + f0.y));
+        float a0 = -uRampShare * rD * dd * dd;
+        float sHit = 2.0;
+        if (abs(a0) < 0.000001) {
+          if (b0 < 0.0) sHit = -c0 / b0;
+        } else {
+          float disc = b0 * b0 - 4.0 * a0 * c0;
+          if (disc >= 0.0) {
+            float q = sqrt(disc);
+            float s1 = (-b0 - q) / (2.0 * a0);
+            float s2 = (-b0 + q) / (2.0 * a0);
+            if (s1 >= -0.0001) sHit = s1;
+            if (s2 >= -0.0001) sHit = min(sHit, s2);
+          }
+        }
+        if (sHit <= 1.0001) {
+          z = max((mix(vHi, vLo, clamp(sHit, 0.0, 1.0)) - v0) / kk, 0.0);
+          cell = cr;
+          found = true;
+        }
+      }
+    } else if (H < 90.0) {
       float vSurf = v0 + H * kk; // this column's top along the ray
       if (vSurf >= vLo - 0.0001) {
         float vHit = min(vHi, vSurf);
@@ -1126,6 +1205,16 @@ void main() {
   }
 
   float Ha = heightAt(cell);
+  // ON A RAMP the column's top under this pixel is the incline's height there:
+  // a pixel on it is a TOP (z == Ha), one under its lip a face. Every rule below
+  // reads Ha, and a flat top's Ha called the whole incline a wall face.
+  float rmC = uRampShare > 0.0 && Ha < 90.0 ? rampMaskAt(cell) : 0.0;
+  vec2 rampF = vec2(0.0);
+  if (rmC > 0.5) {
+    float vR = v0 + z * kk;
+    rampF = vec2((u + vR) * 0.5, (vR - u) * 0.5) - floor(cell);
+    Ha += uRampShare * rampH(rmC, rampF);
+  }
   if (uTest > 3.5 && uTest < 4.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
     // top pixels GREEN (probed numerically by the verify scripts).
@@ -1404,7 +1493,16 @@ void main() {
     // read 1.38x over the fade with no light on them. A pixel outside my room
     // keeps the world's sun (uSunOut); inside, the eased one.
     float sunShare = 0.45 * mix(uSunOut, uSun.w, r); // the sun's slice of the phase ambient
-    sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0);
+    // A RAMP'S TOP FACES ITS OWN WAY (his ask, 2026-09-25: the slopes in sun and
+    // shade): the incline's normal against the sun, relative to flat ground (1 on
+    // the flat; the sun vector is the one the march rises along, levels per cell),
+    // so a slope turned to the sun reads lighter and one turned away darker.
+    float rampSun = 1.0;
+    if (!isFace && rmC > 0.5 && uSun.z > 0.02) {
+      vec3 rn = vec3(-uRampShare * rampG(rmC, rampF), 1.0);
+      rampSun = clamp(dot(rn, vec3(-uSun.xy, uSun.z)) / (length(rn) * uSun.z), 0.35, 1.35);
+    }
+    sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0) * rampSun;
     /* THE SHADOW DEBUG SWITCH (settings: "shadows"). The maintainer's tool for
      * telling a SHADOW from a TILE: a dotted line that survives mode 1 is
      * painted into the ground texture, and one that turns red in mode 2 is
@@ -3093,6 +3191,11 @@ export class NightLights {
     const tBuild = performance.now();
     this.buildHeightmap();
     this.buildMs = +(performance.now() - tBuild).toFixed(1);
+    // HIS SLOPE SWITCH moves the ramps: repacked on its event (applyRamps).
+    this.applyRamps();
+    const onSlope = () => this.applyRamps();
+    window.addEventListener("ml-slope-height", onSlope);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => window.removeEventListener("ml-slope-height", onSlope));
     // MIST overlay shader (weather 2): declared uniforms only — the uSun
     // lesson applies here too (an undeclared uniform silently never syncs
     // on real phone GPUs).
@@ -3216,6 +3319,8 @@ export class NightLights {
       // 2.7% three, 0.8% four: dark fast, near-black by the third or fourth
       // tile, still a gradient rather than a wall of paint.
       uCaveK: { type: "1f", value: 1.2 },
+      // THE COMPOSED RAMPS (applyRamps): 0 while his slope switch is at 0%.
+      uRampShare: { type: "1f", value: 0 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
@@ -3720,6 +3825,100 @@ export class NightLights {
       uIndoor: (this.shader as any)?.uniforms?.uIndoor?.value,
       mix: +this.indoorMix.toFixed(3),
     };
+  }
+
+  /** THE COMPOSED RAMPS IN THE LIGHT (his slope switch above 0%). The light
+   *  finds the surface under a pixel by walking whole-level columns, so it lit
+   *  every ramp as a flat top plus a wall face: the ground texture held a
+   *  smooth hill and the light painted terraces over it (measured headless,
+   *  2026-09-25; forced off, the terraces vanished). Two maps learn the ramps:
+   *
+   *  - THE SURFACE MAP: the corner masks (rampfield.ts, the resolver's rule) in
+   *    the HIGH nibble of its B — emission index + 1 keeps the low one, so no
+   *    new texture unit — for the walk (`rampMaskAt`), with `uRampShare` the
+   *    height a raised corner adds, in levels.
+   *  - THE OCCLUSION MAP (R of the linear map, and its exact CPU twin `hArr`):
+   *    each ramp cell raised by the ramp's own height at its centre, in whole
+   *    bytes, so the bilinear read between centres is an incline and the sun
+   *    march casts a slope's shadow — whole levels threw a bump per step on
+   *    the ground behind every hill (his red marks, 2026-09-25). Scenery
+   *    stamps on those cells ride along (their saved originals move too).
+   *
+   *  What is packed is recorded ON THE TEXTURES (they outlive this instance),
+   *  so a switch back to 0% clears exactly it; at 0% with nothing packed no
+   *  byte moves and the uniform is 0 — the pass is byte-identical there. A
+   *  world with 15 or more emission entries has no low nibble to spare and
+   *  keeps flat light. */
+  private rampShare = 0;
+  private rampCells = 0;
+  applyRamps(): void {
+    const T = this.scene.textures;
+    if (!T.exists("world-heightmap")) return;
+    const tex = T.get("world-heightmap") as Phaser.Textures.CanvasTexture & { mlRampBits?: boolean };
+    const texL = T.exists("world-heightmap-linear")
+      ? (T.get("world-heightmap-linear") as Phaser.Textures.CanvasTexture & { mlRampOcc?: Uint8Array })
+      : null;
+    const share = slopeHeight() / 100;
+    const on = share > 0 && this.emitList.length < 15;
+    if (!on && !tex.mlRampBits && !texL?.mlRampOcc) {
+      this.rampShare = 0;
+      this.rampCells = 0;
+      return;
+    }
+    const w = this.world.width;
+    const h = this.world.height;
+    const masks = on ? rampMaskField(this.world) : null;
+    const ctx = tex.getContext();
+    const id = ctx.getImageData(0, 0, w, h);
+    const d = id.data;
+    let n = 0;
+    for (let i = 0; i < w * h; i++) {
+      const m = masks ? masks[i] : 0;
+      if (m) n++;
+      d[i * 4 + 2] = (d[i * 4 + 2] & 15) | (m << 4);
+    }
+    ctx.putImageData(id, 0, 0);
+    tex.refresh();
+    tex.mlRampBits = n > 0;
+    if (texL) {
+      const hs = this.hScale || 16;
+      const prev = texL.mlRampOcc ?? new Uint8Array(w * h);
+      const next = new Uint8Array(w * h);
+      const lctx = texL.getContext();
+      const lid = this.imgL ?? lctx.getImageData(0, 0, w, h);
+      const ld = lid.data;
+      let moved = false;
+      for (let i = 0; i < w * h; i++) {
+        const m = masks ? masks[i] : 0;
+        // The incline's height at the centre: the mean of its raised corners.
+        const b = m ? Math.round(((share * (((m >> 3) & 1) + ((m >> 2) & 1) + ((m >> 1) & 1) + (m & 1))) / 4) * hs) : 0;
+        next[i] = b;
+        const db = b - prev[i];
+        if (!db) continue;
+        moved = true;
+        ld[i * 4] = Math.max(0, Math.min(255, ld[i * 4] + db));
+        if (this.hArr) this.hArr[i] += db / hs;
+        const o = this.sceneryOrig.get(i);
+        if (o) {
+          o[0] += db;
+          o[3] += db / hs;
+        }
+      }
+      if (moved) {
+        lctx.putImageData(lid, 0, 0);
+        texL.refresh();
+        // refresh() re-applies the source's scale mode (see setRoom) — re-assert.
+        texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
+      }
+      texL.mlRampOcc = masks ? next : undefined;
+    }
+    this.rampShare = on ? share : 0;
+    this.rampCells = n;
+  }
+
+  /** What the light holds of the ramps (probes): the share and the ramp cells. */
+  rampInfo(): { share: number; cells: number } {
+    return { share: this.rampShare, cells: this.rampCells };
   }
 
   private buildHeightmap() {
@@ -5601,6 +5800,7 @@ export class NightLights {
     s.setUniform("uLightCol.value", this.colArr);
     s.setUniform("uLightExt.value", this.extArr);
     s.setUniform("uEmitN.value", this.emitList.length);
+    s.setUniform("uRampShare.value", this.rampShare);
 
     // MIST overlay — same world window/clock as the light field, its own
     // shader (NORMAL blend can't share the multiply pass). SETTING IT INVISIBLE
