@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-25T07:34:48+00:00",
+  "generated_at": "2026-09-25T07:36:07+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 333,
+  "count": 332,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -44548,139 +44548,6 @@
       "notes": null,
       "generated_at": "2026-09-24T20:54:47+00:00",
       "verdict": null,
-      "graduation": {
-        "state": "waiting",
-        "takes": {},
-        "blocking": "design not approved"
-      }
-    },
-    {
-      "id": "loom_widow",
-      "name": "Loomwidow",
-      "tier": "boss",
-      "lore": "She weaves the shroud for whoever comes next.",
-      "biome": [
-        "parquet_floor"
-      ],
-      "items": [],
-      "size": [
-        224,
-        224
-      ],
-      "template_id": "mannequin",
-      "scale": "big",
-      "pixellab_id": "c1f0cc92-86cf-4f3e-b21a-909eb54935cb",
-      "version": 1,
-      "sheet": "loom_widow/sheet.webp",
-      "rotations": {
-        "south": "loom_widow/rotations/south.webp",
-        "south-east": "loom_widow/rotations/south-east.webp",
-        "east": "loom_widow/rotations/east.webp",
-        "north-east": "loom_widow/rotations/north-east.webp",
-        "north": "loom_widow/rotations/north.webp",
-        "north-west": "loom_widow/rotations/north-west.webp",
-        "west": "loom_widow/rotations/west.webp",
-        "south-west": "loom_widow/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.628,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.68,
-            "bbox": [
-              51,
-              11,
-              166,
-              209
-            ],
-            "fill": 0.454,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.693,
-            "bbox": [
-              43,
-              11,
-              186,
-              216
-            ],
-            "fill": 0.584,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.68,
-            "bbox": [
-              51,
-              9,
-              180,
-              217
-            ],
-            "fill": 0.535,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.646,
-            "bbox": [
-              60,
-              8,
-              179,
-              211
-            ],
-            "fill": 0.481,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.636,
-            "bbox": [
-              37,
-              9,
-              177,
-              215
-            ],
-            "fill": 0.575,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.652,
-            "bbox": [
-              43,
-              11,
-              162,
-              211
-            ],
-            "fill": 0.474,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.672,
-            "bbox": [
-              37,
-              9,
-              174,
-              217
-            ],
-            "fill": 0.568,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.628,
-            "bbox": [
-              36,
-              9,
-              184,
-              216
-            ],
-            "fill": 0.611,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-24T21:02:40+00:00",
-      "verdict": "rejected",
       "graduation": {
         "state": "waiting",
         "takes": {},
