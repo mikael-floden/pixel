@@ -3,13 +3,9 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: THE SPRITE BATCH WITHOUT A HEAP NUMBER PER CORNER. His cool run's allocBy puts `render` first in every window (105-285 KB/frame, ~40% of all allocation, the young-gen collections at ~18/s): Phaser's MultiPipeline.batchSprite hands 20 numbers to batchQuad, which is not inlined, so each non-Smi (8 corners, 4 UVs, 4 uint32 tints) is boxed at the call. batchpatch.ts: the same function with batchQuad's 42 stores and the tint packing inline (Phaser 3.90.0 copied exactly; any pipeline that overrides batchQuad - scenery-lit, PreFX - keeps the original call; LightPipeline has its own batchSprite). ?batchpatch=0 / ml-batch-patch 0 is off. Proven pixel-identical with the render A/B harness (--ls ml-batch-patch=0,1) and measured with the allocation profile before any push.",
-    "since": "2026-09-25T20:11:29+00:00",
-    "files": [
-      "games2/client/src/batchpatch.ts (new)",
-      "games2/client/src/scenes/WorldScene.ts (create(): the install call only)",
-      "games2/docs/perf.md"
-    ]
+    "unit": "WAITING for his run on cac0da98de+ (three GC changes since his cool run: ephemerons ff0db3eb35, loader leftovers a328c157c2, sprite batch cac0da98de; plus the late-frame meter and the steady-20 choice). Read: the heap block per window, the major-GC frames (dh) against 92-166 ms, allocBy.render, the `late` table. No files claimed.",
+    "since": "2026-09-25T20:28:27+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -68,6 +64,10 @@
     {
       "at": "2026-09-25T20:11:29+00:00",
       "text": "SHIPPED 51bc59a6c6 (container only, no player change): verify-groundbracket GREEN again - the out-of-band 'further from a full paint' total is a report line (the kept picture is stale outside the band by design since 500fb2ddd2's parking), the in-band comparison stays a failure, the scissor's contract stays judged by liveCmp + the poison; the gate names every 404 URL (/asset-index.json is image-only and expected locally; docs/testing.md)."
+    },
+    {
+      "at": "2026-09-25T20:28:27+00:00",
+      "text": "SHIPPED cac0da98de (live 20:27:54 UTC, fast lane): THE SPRITE BATCH BOXES NO NUMBERS AT ITS OWN CALL (batchpatch.ts; his cool run's `render` = 105-285 KB/frame, ~40% of all allocation). Phaser 3.90.0's MultiPipeline.batchSprite with batchQuad's 42 stores and the tint packing inline; pipelines that override batchQuad (scenery-lit, PreFX) keep the original; off on any other Phaser version. Render A/B IDENTICAL (0 px, 4 spots at 1079x1416: day, swim, indoor, night); batchSprite 61.0 -> 21.5 KB/frame headless (the rest: its matrix calls + the lit copies). ?batchpatch=0 is the A/B."
     }
   ],
   "requests": [
@@ -142,5 +142,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T20:11:29+00:00"
+  "updated": "2026-09-25T20:28:27+00:00"
 }
