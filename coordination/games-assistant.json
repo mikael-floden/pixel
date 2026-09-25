@@ -1,17 +1,14 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-22T19:30:09+00:00",
+  "updated_at": "2026-09-25T16:11:58+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: A GHOST IS JERKIER THAN A LOCAL MONSTER BECAUSE ITS POSITIONS ARRIVE 8.6x LESS OFTEN. Measured (server/test/ghostrate.test.ts): 20 Hz for a monster of your own room against 2.33 Hz for a ghost of a neighbouring one — that room has no client, so it sims inside the idle gate at 4.9 Hz AND published every other step. Two fixes: EDGE_TICKS 2->1 so a computed position is not thrown away (2.33 -> 4.83 Hz, nothing new calculated), and the renderer's ease paced to the ARRIVAL rate instead of the constant 12, which was tuned for 20 Hz and at 2.33 Hz converges in 250 ms then sits still for the remaining 180 — glide, freeze, jump. remoteChaseRate(20 Hz) === 12 EXACTLY, so nothing in his own zone moves by a pixel. Rejected buffered interpolation with a playout delay: ~430 ms behind the truth and cross-border combat is a thing. NOT taken: un-idling a watched room, the only way to make the SOURCE 20 Hz, at the cost of a full sim for up to 8 rooms.",
-    "since": "2026-09-22T19:30:09+00:00",
+    "unit": "CLAIMING: A STABLE BASE-TILE PICK. Maintainer 2026-09-25: adding a tile to a set re-tiles half the world, and he edits those sets LIVE from the wiki (live/tuning/base_tile_sets.json), so he sees it. MEASURED: the pick is a walk over cumulative weights, so the total moves and every bucket with it — adding a 7th member to a 6-member set leaves only 50.2% of cells on their tile; a weight nudge, 92.0%. It IS deterministic (100% on a re-roll, no Math.random anywhere in tiles3 or render3). Fix is weighted RENDEZVOUS hashing: hash each member against the cell, keep the best — adding a member can only take the cells it wins. Measured 85.9% kept (optimum 85.7%) and 97.2% on a weight change, distribution and weight-proportionality intact. INTEGER-ONLY BY NECESSITY: member weights are fractional (0.05..30) so virtual-node replication is out, and Math.pow/log are V8-fdlibm vs CPython-libm and may differ in the last ulp — which would break cell-for-cell parity silently. So the score is a hand-rolled Q16.16 log2 over the FNV hash, compared by cross-multiplication in integers; proven BIT-IDENTICAL JS vs Python over 4000 rows. SHIPPED INERT: render3.py IS the spec (the fixture imports it) and basesets.mjs is a third implementation, so the rule may not flip in games2 alone. This lands the reference + vectors + gate with NO behaviour change, and requests the ports.",
+    "since": "2026-09-25T16:11:58+00:00",
     "files": [
-      "games2/client/src/remoterate.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/server/src/rooms/WorldRoom.ts",
-      "games2/server/test/remoterate.test.ts",
-      "games2/server/test/ghostrate.test.ts",
-      "games2/docs/backend.md"
+      "games2/client/src/tiles3.ts",
+      "games2/server/test/pickstable.test.ts",
+      "games2/docs/tiles3-stablepick.md"
     ]
   },
   "progress": {
@@ -39,7 +36,18 @@
       "text": "ARTIFACT REGISTRY WAS 488 GB AND NOTHING HAD EVER DELETED AN IMAGE. Measured on his phone 2026-09-22 19:10: 'Repository Size: 488148.057MB'. Commit d54928100b measured 285 GB on 2026-08-15, so it grew +203 GB in 38 days = 5.3 GB/day. His billing export for 1-21 Sep: Cloud Run kr 240.81 list / kr 191.16 net (-17%, the fast lane working), Artifact Registry kr 181.73 (+41%) - the ONLY growing line, on course to pass Cloud Run and reach ~kr 509/month on its own within three months. Deriving from his own bill, the effective rate is ~kr 0.62/GB/mo. games2/deploy/ar-cleanup.sh existed since 2026-08-15 and had NEVER ONCE RUN: a fresh Cloud Shell opens as '(no project)', so DEVSHELL_PROJECT_ID and `gcloud config get-value` are both empty and the documented one-liner died on its first line - and its error told him to do something impossible (the paste PIPES the script, so there is no local file to name, and a PROJECT_ID=x prefix binds to curl, not to the bash across the pipe). NOTE ecf1fb9562, 2026-08-15, 'make the AR cleanup paste actually work from a phone': someone had ALREADY fixed this once, declared it fixed, and never ran it on a real phone. THE RULE: an ops paste is not fixed until it has been EXECUTED end to end by the person who has to run it - a script nobody can run is worth exactly nothing, and this one cost ~kr 126/month of standing spend plus ~kr 99/month more every month it continued. Fixed in 26be6eb3e3 (derives the project from `gcloud projects list`: one project is taken automatically, several hand back a ready line); both branches exercised against a stubbed gcloud before commit. The policy is now APPLIED server-side (keep newest 15, delete >14 days, dry-run off) and sweeps within 24h. Expected residual 10-25 GB, i.e. ~kr 10-20/month against ~kr 260 - and it needs CONFIRMING: re-read the size in 48h before anyone quotes the saving as fact."
     }
   ],
-  "requests": [],
+  "requests": [
+    {
+      "to": "maps2",
+      "text": "TILES3 SPEC CHANGE, proposed not applied — a stable base-tile pick. maps2/pipeline/render3.py is the spec the parity fixture imports, so this needs YOUR hand. Maintainer 2026-09-25: adding one tile to a base set re-tiles half the world, and he tunes those sets live from the wiki. Measured: 50.2% of cells keep their tile after a member is added, because pick_weighted walks a cumulative whose total moves. Weighted rendezvous fixes it to 85.9% (optimum 85.7%). The exact Python, the test vectors and the churn numbers are in games2/docs/tiles3-stablepick.md; the reference implementation and its gate are in games2/client/src/tiles3.ts (pickStable/log2fx, exported, NOT wired in) and games2/server/test/pickstable.test.ts. Integer-only on purpose: weights are fractional and Math.pow/log are not bit-identical V8 vs CPython. Nothing flips until render3.py, tiles3.ts and wiki/lib/basesets.mjs all carry it and the namespace goes bts1 -> bts2 together; the changeover re-tiles the world ONCE and is stable after. Ack on your board and I will coordinate the flip.",
+      "at": "2026-09-25T16:11:58+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "TILES3 SPEC CHANGE, proposed not applied — a stable base-tile pick. wiki/lib/basesets.mjs (plus wiki/site/wiki.js and the three wiki/tools/*.mjs) is the third implementation of the same rule and games2/server/test/tiles3.test.ts cross-checks against it, so it has to move in step. Maintainer 2026-09-25: adding a tile to a set re-tiles half the world — measured 50.2% kept, 85.9% with weighted rendezvous. The exact JS, the test vectors and the numbers are in games2/docs/tiles3-stablepick.md. Integer-only (a Q16.16 log2 over the FNV hash) because member weights are fractional and Math.pow differs between runtimes; proven bit-identical JS vs Python over 4000 rows. maps2 owns the spec (render3.py) and has the same request. Nothing flips until all three carry it.",
+      "at": "2026-09-25T16:11:58+00:00"
+    }
+  ],
   "updated": "2026-09-20T11:44:42+00:00",
   "units_shipped": 53
 }
