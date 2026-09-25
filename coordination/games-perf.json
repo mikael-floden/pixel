@@ -3,16 +3,9 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: A STEADY 20 AS A PACING CHOICE (his principle, 2026-09-25: \"It's all about getting it consistent and predictable ... we are better off running the entire game at 15 FPS\" than a recurring dip). His cool run's recurring dips are frames one refresh late at 30 (50 ms) - exactly a 20 fps frame. pacing.ts: mode \"20\" (every 3rd 60 Hz vsync, the step's delta the summed ticks'), Settings->Dev frame pacing cycles auto -> 30 -> 20 -> 60, ?pace=20; the FPS meter's hitch and the beacon's `late` are judged against the chosen cadence (period + 0.7 vsync: 45 ms at 30 as today, ~62 at 20), the pace row reports the real hz. auto unchanged (60/30).",
-    "since": "2026-09-25T18:18:54+00:00",
-    "files": [
-      "games2/client/src/pacing.ts",
-      "games2/client/src/fpsbadge.ts",
-      "games2/client/src/glframe.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/server/test/pacing.test.ts",
-      "games2/docs/perf.md"
-    ]
+    "unit": "WAITING for his runs on ea04374f1e+ (30 with the late-frame meter: does the late share climb with draws/binds (atlas) or fill; 20 for feel). No files claimed.",
+    "since": "2026-09-25T18:37:59+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -72,6 +65,10 @@
     {
       "at": "2026-09-25T18:16:36+00:00",
       "text": "SHIPPED 7ab4fad87d (image live 18:13 UTC): THE LATE-FRAME METER. glframe counts texture binds per frame (tb, counts.glTexBinds) and the `late` block files every frame's interval under the PREVIOUS frame's draws / binds / fill as on time or late (>45 ms); server allowlist `late` (mixed 40), perf-read prints the late share per bucket. His next run decides whether the one-refresh-late frames are the GPU command stream (an atlas) or not. MY SLIP ON THE WAY: 0417a67248 (games' ramp light) landed under games2 between my test run and my push, and my push line rebased and pushed without re-running; re-ran on the pushed tree at once: typecheck clean, npm test 1038 pass, the 5 known red only."
+    },
+    {
+      "at": "2026-09-25T18:37:59+00:00",
+      "text": "SHIPPED ea04374f1e (live 18:28 UTC, fast lane; container behind it): A STEADY 20 AS A PACING CHOICE on his principle (\"consistent and predictable\" over rate; his cool run's recurring dips are frames one refresh late at 30 = 50 ms = a 20 fps frame). pacing.ts mode \"20\" (every 3rd 60 Hz vsync, summed delta), Settings->Dev frame pacing auto -> 30 -> 20 -> 60, ?pace=20; the FPS meter's hitch and the beacon's `late` judge against the chosen cadence (paceLateMs: 45 at 30/unpaced, ~62 at 20). ATLAS MAP (read-only research, for the one-refresh-late frames if his run's `late` block climbs with draws/binds): all tiles3 textures are NEAREST, unscaled, whole-pixel, content-addressed, built once, never freed (7,867 live on his phone, 64x46/64x64) - ~6 2048 pages with 1-texel edge gutters would hold them all, one 16-unit batch. Seams to change: t3Blit, occImage + its pool match, debrisTake, the bake's batchDraw/sizeOf/parity (explicit frames); textures.exists via the t3tm adapter; sourcePixels/texPixels need the sources kept; a context-restore refill (art queue pattern). Not started: his run decides."
     }
   ],
   "requests": [
@@ -146,5 +143,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T18:18:54+00:00"
+  "updated": "2026-09-25T18:37:59+00:00"
 }
