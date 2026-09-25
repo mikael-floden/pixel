@@ -3,19 +3,14 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: THE RECORDER STALL, ROUND 2. His 15:51 run (35a89e90d0, hot, charging): the report now builds between frames but costs 58-95 ms there (beaconOverMs = all of it: a saturated phone has no idle period) plus 10-23 ms for the post — the stall moved, it did not go. Cuts: the texture count kept by events (Object.keys over ~10k textures per report), the long-task pairing as a sweep (was every span x every task), and the post (worst-frame shaping, JSON, fetch) on a worker (perfpost.ts; the CPU benchmark rides the same worker, with a state field — it answered 0 in every window of his run); the worst frames' timelines handed over packed (perftimeline tlPack) and shaped by one shared function (perfshape.ts).",
-    "since": "2026-09-25T16:08:40+00:00",
+    "unit": "CLAIMING: THE FAST LANE'S WORKERS. scripts/fastbuild.mjs bundles a HAND-KEPT list of workers (artworker, composeworker, tiles3worker) and rewrites only `./<w>.ts`: round 1's cpubench worker was never bundled, so every fast-lane bundle asked for `../cpubench.ts` (a silent 404) and his 15:51 run read cpu.scoreMs 0 in every window; round 2's perfpost worker (created from scenes/ as `../perfpost.ts`) would fail the same way on the next fast-lane publish and the post would fall back to the game's thread. Fix: the workers are found in the client's source (the idiom), a specifier at any depth is rewritten to `./<name>-<hash>.js`, and the build throws if its output still names a worker .ts. Gate: a fastbuild bundle through verify-beacon (perfWorker 2, cpu score) + verify-fastbundle; a unit test that every `new Worker(` in client/src is found.",
+    "since": "2026-09-25T17:00:53+00:00",
     "files": [
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/client/src/perfpost.ts",
-      "games2/client/src/cpubench.ts",
-      "games2/client/src/perfloaf.ts",
-      "games2/scripts/probe-beaconcost.mjs",
+      "games2/scripts/fastbuild.mjs",
+      "games2/server/test/fastbuildworkers.test.ts",
       "games2/scripts/verify-beacon.mjs",
-      "games2/docs/perf.md",
-      "games2/client/src/perftimeline.ts",
-      "games2/client/src/perfshape.ts",
-      "games2/server/test/perfshape.test.ts"
+      "games2/docs/fast-lane.md",
+      "games2/docs/perf.md"
     ]
   },
   "progress": {
@@ -60,6 +55,10 @@
     {
       "at": "2026-09-25T15:44:46+00:00",
       "text": "SHIPPED 4da6f276d6 (live 15:44 UTC): THE RECORDER NEVER STALLS THE GAME IT MEASURES (his order). The beacon's report is built in an idle period and posted in another; the ground texel census (gl.readPixels = GPU sync, 630-1,370 ms/window headless, the bulk of his beaconSelfMs 34-65) runs on the final flush only (?beaconquiet=0 restores); the CPU benchmark runs on a worker (cpubench.ts, bench xorshift400k-worker); the renderer name is asked behind the loading screen; the finish clock is opt-in (?gpufinish=1). New counts: beaconIdleMs, beaconOverMs (idle work past its idle period — what could still delay a frame). verify-beacon.mjs 27/27, updated for the opt-in GPU clock."
+    },
+    {
+      "at": "2026-09-25T17:00:53+00:00",
+      "text": "SHIPPED 9387796dce (live 17:00 UTC, container): THE RECORDER, ROUND 2 (his order: no lag from the perf run itself). The post (worst frames shaped, JSON, fetch) and the CPU benchmark run on the report's worker (perfpost.ts); the game's thread hands over three JSON strings + the worst frames' timelines packed (tlPack); the texture count is kept as it changes (ADD + removeKey, held exact by verify-beacon); the long-task pairing is a sweep. Headless: 3.4-6.7 ms a window on the game's thread against 7.2-26.6 ms. counts.perfWorker 0/1/2/3 and beaconWorkerMs are new. MY MISTAKE ON THE WAY: the claim commit 09a55716d0 carried a staged deletion of cpubench.ts to main; restored in 082e8011c3 a minute later (the fast lane published the gap: the benchmark worker 404'd for ~2 min, nothing else). FOUND: the fast lane's bundler never bundled cpubench (a hand-kept worker list) - the unit claimed now."
     }
   ],
   "requests": [
@@ -134,5 +133,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T16:45:17+00:00"
+  "updated": "2026-09-25T17:00:53+00:00"
 }
