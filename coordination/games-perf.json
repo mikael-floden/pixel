@@ -3,9 +3,17 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "WAITING for his cool, charged perf run on 134ed96263 (the recorder round 2 + the fast lane's workers). Next, from that run: counts.perfWorker (2 = the post ran on the worker), beaconSelfMs/beaconIdleMs on his phone, cpu.scoreMs (throttling), then the lag sources — ambient hooks (the gloom raster spike), render, ground. Queued, not claimed: the heap block reset per window (grewMb/drops/meanMb/maxMb are cumulative since arming, so grewMbPerSec inflates with the window index) — pushed AFTER his run, a deploy mid-run restarts the server.",
-    "since": "2026-09-25T17:19:43+00:00",
-    "files": []
+    "unit": "CLAIMING: HIS COOL RUN'S LEFTOVERS, BATCH 1 (6f3f9f8a on 134ed96263: p50 33.4-34.3, 29-137 frames >50 ms a window). (1) The recorder's report still costs 20-29 ms on his phone (2-3.5 headless): the per-window sorts of ~900 frame times and up to 3,000 load times per family run a JS comparator in cold code - a native Float64Array sort instead (same values), and the report's parts go into counts (beaconSnapMs/BodyMs/TakeMs) so his next run names what is left. (2) The dev edit tool's ground list walked the whole world's cells on every Settings refresh (every time-of-day change, 20-40 s) - kept once. (3) The heap block reset per window (grewMb/drops/meanMb/maxMb were cumulative since arming, grewMbPerSec inflated with the window index).",
+    "since": "2026-09-25T17:37:43+00:00",
+    "files": [
+      "games2/client/src/perfextra.ts",
+      "games2/client/src/netperf.ts",
+      "games2/client/src/texupload.ts",
+      "games2/client/src/pacing.ts",
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/server/test/perfextra.test.ts",
+      "games2/docs/perf.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
@@ -131,5 +139,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T17:19:43+00:00"
+  "updated": "2026-09-25T17:37:43+00:00"
 }
