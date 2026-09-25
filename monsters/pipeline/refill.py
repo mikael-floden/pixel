@@ -195,3 +195,115 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def _candidate_rotations(cid):
+    """{direction: PIL} of the base rotations he approved, from disk or git."""
+    import io
+    out = {}
+    for d in ("south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"):
+        rel = f"monsters/candidates/{cid}/rotations/{d}.webp"
+        p = os.path.join(os.path.dirname(ROOT), rel)
+        if os.path.isfile(p):
+            out[d] = Image.open(p).convert("RGBA")
+            continue
+        sha = _run("git", "log", "--all", "--format=%H", "-1", "--", rel).stdout.decode().strip()
+        for rev in (f"{sha}^", sha) if sha else ():
+            blob = _run("git", "show", f"{rev}:{rel}")
+            if not blob.returncode:
+                out[d] = Image.open(io.BytesIO(blob.stdout)).convert("RGBA")
+                break
+    return out
+
+
+def adopt_candidate_art(cid, apply=True, verbose=True):
+    """A GRADUATED MONSTER SHIPS THE EXACT CLIPS HE APPROVED.
+
+    Graduation used to re-download the art from PixelLab, and PixelLab's copy
+    is not what he approved whenever the candidate pipeline touched it
+    afterwards: a die trimmed in post (9 frames there, 7 approved), a canvas
+    grown to hold a fall (the PixelLab canvas clips it), a take relabelled to
+    the facing it really shows, a reroll PixelLab holds several takes of
+    (measured 2026-09-25 on Plumefist: 7 of 34 approved facings differed). So
+    the candidate's approved takes are written into the monster instead —
+    every state, every facing, and the base rotations — on one canvas big
+    enough for all of them, centred (the candidate grows a canvas evenly on
+    both sides, so centring keeps the foot anchor). Each facing is marked
+    `from_candidate`, which the mirror never overwrites."""
+    mpath = os.path.join(ROOT, cid, "monster.json")
+    man = json.load(open(mpath))
+    takes = {}
+    cfg = json.load(open(os.path.join(ROOT, "config", "candidates.json")))
+    for g in cfg.get("graduated", []):
+        if g["id"] == cid:
+            takes = g.get("takes") or {}
+    dirs8 = ("south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west")
+    art = {}
+    for state in ("idle", "walk", "angry", "attack", "die"):
+        slot = takes.get(state, state)
+        for d in dirs8:
+            fr = _candidate_frames(cid, slot, d)
+            if fr:
+                art[(state, d)] = fr
+    rots = _candidate_rotations(cid)
+    if not art or len(rots) < 8:
+        print(f"  {cid}: approved art not found ({len(art)} facings, {len(rots)} rotations) — left as mirrored")
+        return False
+    W = max([im.size[0] for fr in art.values() for _, im in fr] + [im.size[0] for im in rots.values()])
+    H = max([im.size[1] for fr in art.values() for _, im in fr] + [im.size[1] for im in rots.values()])
+    nw, nh = man["native_size"]["width"], man["native_size"]["height"]
+    if verbose:
+        print(f"  {cid}: {len(art)} approved facings + 8 rotations from the candidate, canvas {W}x{H} (native {nw}x{nh})")
+    if not apply:
+        return True
+
+    def fit(im):
+        if im.size == (W, H):
+            return im
+        c = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        c.paste(im, ((W - im.size[0]) // 2, (H - im.size[1]) // 2))
+        return c
+
+    import shutil
+    rot_rel = {}
+    for d, im in rots.items():
+        p = os.path.join(ROOT, cid, "rotations", f"{d}.webp")
+        fit(im).save(p, "WEBP", lossless=True, exact=True)
+        rot_rel[d] = f"{cid}/rotations/{d}.webp"
+        if d == "south":
+            fit(im).save(os.path.join(ROOT, cid, "sprite.webp"), "WEBP", lossless=True, exact=True)
+    anims = man.setdefault("animations", {})
+    for state in ("idle", "walk", "angry", "attack", "die"):
+        rec = anims.setdefault(state, {"group_id": None, "source_name": f"candidates/{cid}", "directions": {}})
+        for d in dirs8:
+            fr = art.get((state, d))
+            if not fr:
+                continue
+            fdir = os.path.join(ROOT, cid, "animations", state, d)
+            shutil.rmtree(fdir, ignore_errors=True)
+            os.makedirs(fdir)
+            ims = []
+            for i, (_, im) in enumerate(fr):
+                im = fit(im)
+                im.save(os.path.join(fdir, f"{i:02d}.webp"), "WEBP", lossless=True, exact=True)
+                ims.append(im)
+            strip = Image.new("RGBA", (W * len(ims), H), (0, 0, 0, 0))
+            for i, im in enumerate(ims):
+                strip.paste(im, (i * W, 0))
+            strip.save(os.path.join(ROOT, cid, "animations", f"{state}__{d}.webp"), "WEBP", lossless=True, exact=True)
+            rec["directions"][d] = {
+                "frames": len(ims), "strip": f"{cid}/animations/{state}__{d}.webp",
+                "frame_paths": [f"{cid}/animations/{state}/{d}/{i:02d}.webp" for i in range(len(ims))],
+                "src_frames": len(ims), "sub": None, "from_candidate": takes.get(state, state),
+            }
+        rec["directions"] = {d: rec["directions"][d] for d in dirs8 if d in rec["directions"]}
+    man["size"] = {"width": W, "height": H}
+    man["pad"] = {"x": (W - nw) // 2, "y": (H - nh) // 2}
+    man["rotations"] = rot_rel
+    man["states"] = {s: s for s in ("idle", "walk", "angry", "attack", "die") if s in anims}
+    tmp = mpath + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(man, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    os.replace(tmp, mpath)
+    return True

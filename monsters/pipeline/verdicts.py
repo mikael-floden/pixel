@@ -250,3 +250,79 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ---------------------------------------------------------------------------
+# HIS APPROVAL TRAVELS WITH THE ART, STAMP INCLUDED (maintainer 2026-09-25:
+# "why didn't you bring the approval with it?"). The wiki pins a verdict to
+# the art it judged by `art` = md5 of the clip's strip file, first 16 hex, and
+# shows "regenerated since — judge again" when the file on disk hashes
+# differently. Graduation re-writes every file (mirrored from PixelLab,
+# normalized, padded), so every approval he carried over showed as stale
+# although the pixels had not moved. When the new clip is the SAME ART — every
+# frame's visible content identical to the clip he approved, frame for frame —
+# the stamp is moved to the new file. When it is not, the stamp stays and the
+# wiki is right to ask him.
+
+def _content(im):
+    """The visible pixels of one frame, cropped to its content box — so a
+    canvas grown or padded around the same drawing compares equal."""
+    import numpy as np
+    a = np.array(im.convert("RGBA"))
+    ys, xs = np.nonzero(a[..., 3] > 0)
+    if not len(xs):
+        return a[:0, :0]
+    return a[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+
+
+def restamp(cid, apply=False, verbose=True):
+    """Re-stamp his approvals on a graduated monster whose art is unchanged.
+
+    The approved clip is read from the candidate folder, or from git history
+    when graduation has already removed it (refill._candidate_frames). Returns
+    (restamped, left) — left are approvals whose art genuinely differs."""
+    import hashlib
+    import numpy as np
+    from PIL import Image
+    import refill
+    mpath = os.path.join(ROOT, cid, "monster.json")
+    if not os.path.isfile(mpath):
+        return 0, 0
+    man = json.load(open(mpath))
+    fb = load_feedback()
+    ent = fb.get("entries", {})
+    takes = _graduated_takes().get(cid, {})
+    done = left = 0
+    for key, v in list(ent.items()):
+        if not key.startswith(f"monsters/{cid}#") or v.get("status") != "approved":
+            continue
+        _, state, d = key.split("#")
+        rec = ((man.get("animations") or {}).get(state) or {}).get("directions", {}).get(d)
+        if not rec or not rec.get("strip"):
+            continue
+        strip = os.path.join(ROOT, rec["strip"])
+        if not os.path.isfile(strip):
+            continue
+        new_art = hashlib.md5(open(strip, "rb").read()).hexdigest()[:16]
+        if v.get("art") == new_art:
+            continue
+        slot = takes.get(state, state)
+        old = refill._candidate_frames(cid, slot, d)
+        new_dir = os.path.join(ROOT, cid, "animations", state, d)
+        new = [Image.open(os.path.join(new_dir, f)) for f in sorted(os.listdir(new_dir)) if f.endswith(".webp")] \
+            if os.path.isdir(new_dir) else []
+        same = bool(old) and len(old) == len(new) and all(
+            np.array_equal(_content(a), _content(b)) for (_, a), b in zip(old, new))
+        if not same:
+            left += 1
+            continue
+        done += 1
+        if apply:
+            ent[key] = dict(v, art=new_art)
+    if apply and done:
+        fb["entries"] = ent
+        save_feedback(fb)
+    if verbose:
+        print(f"  {cid}: {done} approval(s) re-stamped onto the graduated art"
+              f"{f', {left} left for him (the art really differs)' if left else ''}")
+    return done, left

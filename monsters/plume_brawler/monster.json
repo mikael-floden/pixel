@@ -13,16 +13,16 @@
     ]
   },
   "size": {
-    "width": 104,
-    "height": 104
+    "width": 154,
+    "height": 154
   },
   "native_size": {
     "width": 104,
     "height": 104
   },
   "pad": {
-    "x": 0,
-    "y": 0
+    "x": 25,
+    "y": 25
   },
   "sprite": "plume_brawler/sprite.webp",
   "directions": [
@@ -36,70 +36,20 @@
     "west"
   ],
   "rotations": {
-    "south-west": "plume_brawler/rotations/south-west.webp",
-    "north-west": "plume_brawler/rotations/north-west.webp",
-    "south-east": "plume_brawler/rotations/south-east.webp",
-    "north-east": "plume_brawler/rotations/north-east.webp",
     "south": "plume_brawler/rotations/south.webp",
+    "south-east": "plume_brawler/rotations/south-east.webp",
     "east": "plume_brawler/rotations/east.webp",
+    "north-east": "plume_brawler/rotations/north-east.webp",
     "north": "plume_brawler/rotations/north.webp",
-    "west": "plume_brawler/rotations/west.webp"
+    "north-west": "plume_brawler/rotations/north-west.webp",
+    "west": "plume_brawler/rotations/west.webp",
+    "south-west": "plume_brawler/rotations/south-west.webp"
   },
   "animations": {
     "die": {
       "group_id": "298aaf8c-ea97-4a44-b0a8-6a7c57e69e62",
       "source_name": "custom-Death - Faints, collapses to t",
       "directions": {
-        "east": {
-          "frames": 9,
-          "strip": "plume_brawler/animations/die__east.webp",
-          "frame_paths": [
-            "plume_brawler/animations/die/east/00.webp",
-            "plume_brawler/animations/die/east/01.webp",
-            "plume_brawler/animations/die/east/02.webp",
-            "plume_brawler/animations/die/east/03.webp",
-            "plume_brawler/animations/die/east/04.webp",
-            "plume_brawler/animations/die/east/05.webp",
-            "plume_brawler/animations/die/east/06.webp",
-            "plume_brawler/animations/die/east/07.webp",
-            "plume_brawler/animations/die/east/08.webp"
-          ],
-          "lm": "Fri, 25 Sep 2026 14:15:29 GMT",
-          "src_frames": 9,
-          "sub": "569a63f5-f881-4583-a6aa-c09b783ee72b"
-        },
-        "north": {
-          "frames": 7,
-          "strip": "plume_brawler/animations/die__north.webp",
-          "frame_paths": [
-            "plume_brawler/animations/die/north/00.webp",
-            "plume_brawler/animations/die/north/01.webp",
-            "plume_brawler/animations/die/north/02.webp",
-            "plume_brawler/animations/die/north/03.webp",
-            "plume_brawler/animations/die/north/04.webp",
-            "plume_brawler/animations/die/north/05.webp",
-            "plume_brawler/animations/die/north/06.webp"
-          ],
-          "lm": "Fri, 25 Sep 2026 14:15:31 GMT",
-          "src_frames": 7,
-          "sub": "76cfbe82-b6b4-4452-b8ce-e1af8c4972dd"
-        },
-        "north-east": {
-          "frames": 7,
-          "strip": "plume_brawler/animations/die__north-east.webp",
-          "frame_paths": [
-            "plume_brawler/animations/die/north-east/00.webp",
-            "plume_brawler/animations/die/north-east/01.webp",
-            "plume_brawler/animations/die/north-east/02.webp",
-            "plume_brawler/animations/die/north-east/03.webp",
-            "plume_brawler/animations/die/north-east/04.webp",
-            "plume_brawler/animations/die/north-east/05.webp",
-            "plume_brawler/animations/die/north-east/06.webp"
-          ],
-          "lm": "Wed, 23 Sep 2026 20:50:58 GMT",
-          "src_frames": 7,
-          "sub": "9a33e450-2baf-4f54-a3d3-56829cf6bf3a"
-        },
         "south": {
           "frames": 9,
           "strip": "plume_brawler/animations/die__south.webp",
@@ -114,12 +64,12 @@
             "plume_brawler/animations/die/south/07.webp",
             "plume_brawler/animations/die/south/08.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 14:15:40 GMT",
           "src_frames": 9,
-          "sub": "6e7f24f4-2853-47c6-8e35-daf6eb153534"
+          "sub": null,
+          "from_candidate": "die"
         },
         "south-east": {
-          "frames": 9,
+          "frames": 7,
           "strip": "plume_brawler/animations/die__south-east.webp",
           "frame_paths": [
             "plume_brawler/animations/die/south-east/00.webp",
@@ -128,47 +78,59 @@
             "plume_brawler/animations/die/south-east/03.webp",
             "plume_brawler/animations/die/south-east/04.webp",
             "plume_brawler/animations/die/south-east/05.webp",
-            "plume_brawler/animations/die/south-east/06.webp",
-            "plume_brawler/animations/die/south-east/07.webp",
-            "plume_brawler/animations/die/south-east/08.webp"
+            "plume_brawler/animations/die/south-east/06.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 14:15:42 GMT",
-          "src_frames": 9,
-          "sub": "dcce67a3-fbcd-4df0-a5b2-07e2f2780fda"
+          "src_frames": 7,
+          "sub": null,
+          "from_candidate": "die"
         },
-        "south-west": {
-          "frames": 9,
-          "strip": "plume_brawler/animations/die__south-west.webp",
+        "east": {
+          "frames": 7,
+          "strip": "plume_brawler/animations/die__east.webp",
           "frame_paths": [
-            "plume_brawler/animations/die/south-west/00.webp",
-            "plume_brawler/animations/die/south-west/01.webp",
-            "plume_brawler/animations/die/south-west/02.webp",
-            "plume_brawler/animations/die/south-west/03.webp",
-            "plume_brawler/animations/die/south-west/04.webp",
-            "plume_brawler/animations/die/south-west/05.webp",
-            "plume_brawler/animations/die/south-west/06.webp",
-            "plume_brawler/animations/die/south-west/07.webp",
-            "plume_brawler/animations/die/south-west/08.webp"
+            "plume_brawler/animations/die/east/00.webp",
+            "plume_brawler/animations/die/east/01.webp",
+            "plume_brawler/animations/die/east/02.webp",
+            "plume_brawler/animations/die/east/03.webp",
+            "plume_brawler/animations/die/east/04.webp",
+            "plume_brawler/animations/die/east/05.webp",
+            "plume_brawler/animations/die/east/06.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 14:15:43 GMT",
-          "src_frames": 9,
-          "sub": "480cdd1b-32f6-4e0f-b917-3fb67953d437"
+          "src_frames": 7,
+          "sub": null,
+          "from_candidate": "die"
         },
-        "west": {
-          "frames": 9,
-          "strip": "plume_brawler/animations/die__west.webp",
+        "north-east": {
+          "frames": 7,
+          "strip": "plume_brawler/animations/die__north-east.webp",
           "frame_paths": [
-            "plume_brawler/animations/die/west/00.webp",
-            "plume_brawler/animations/die/west/01.webp",
-            "plume_brawler/animations/die/west/02.webp",
-            "plume_brawler/animations/die/west/03.webp",
-            "plume_brawler/animations/die/west/04.webp",
-            "plume_brawler/animations/die/west/05.webp",
-            "plume_brawler/animations/die/west/06.webp",
-            "plume_brawler/animations/die/west/07.webp",
-            "plume_brawler/animations/die/west/08.webp"
+            "plume_brawler/animations/die/north-east/00.webp",
+            "plume_brawler/animations/die/north-east/01.webp",
+            "plume_brawler/animations/die/north-east/02.webp",
+            "plume_brawler/animations/die/north-east/03.webp",
+            "plume_brawler/animations/die/north-east/04.webp",
+            "plume_brawler/animations/die/north-east/05.webp",
+            "plume_brawler/animations/die/north-east/06.webp"
           ],
-          "mirrored_from": "east"
+          "src_frames": 7,
+          "sub": null,
+          "from_candidate": "die"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "plume_brawler/animations/die__north.webp",
+          "frame_paths": [
+            "plume_brawler/animations/die/north/00.webp",
+            "plume_brawler/animations/die/north/01.webp",
+            "plume_brawler/animations/die/north/02.webp",
+            "plume_brawler/animations/die/north/03.webp",
+            "plume_brawler/animations/die/north/04.webp",
+            "plume_brawler/animations/die/north/05.webp",
+            "plume_brawler/animations/die/north/06.webp"
+          ],
+          "src_frames": 7,
+          "sub": null,
+          "from_candidate": "die"
         },
         "north-west": {
           "frames": 7,
@@ -182,7 +144,41 @@
             "plume_brawler/animations/die/north-west/05.webp",
             "plume_brawler/animations/die/north-west/06.webp"
           ],
-          "mirrored_from": "north-east"
+          "src_frames": 7,
+          "sub": null,
+          "from_candidate": "die"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "plume_brawler/animations/die__west.webp",
+          "frame_paths": [
+            "plume_brawler/animations/die/west/00.webp",
+            "plume_brawler/animations/die/west/01.webp",
+            "plume_brawler/animations/die/west/02.webp",
+            "plume_brawler/animations/die/west/03.webp",
+            "plume_brawler/animations/die/west/04.webp",
+            "plume_brawler/animations/die/west/05.webp",
+            "plume_brawler/animations/die/west/06.webp"
+          ],
+          "src_frames": 7,
+          "sub": null,
+          "from_candidate": "die"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "plume_brawler/animations/die__south-west.webp",
+          "frame_paths": [
+            "plume_brawler/animations/die/south-west/00.webp",
+            "plume_brawler/animations/die/south-west/01.webp",
+            "plume_brawler/animations/die/south-west/02.webp",
+            "plume_brawler/animations/die/south-west/03.webp",
+            "plume_brawler/animations/die/south-west/04.webp",
+            "plume_brawler/animations/die/south-west/05.webp",
+            "plume_brawler/animations/die/south-west/06.webp"
+          ],
+          "src_frames": 7,
+          "sub": null,
+          "from_candidate": "die"
         }
       }
     },
@@ -190,45 +186,6 @@
       "group_id": "969fd911-1965-4e35-93ab-39d81e007de7",
       "source_name": "custom-Talon Rake - Keeps both feet planted on the ground",
       "directions": {
-        "east": {
-          "frames": 4,
-          "strip": "plume_brawler/animations/attack__east.webp",
-          "frame_paths": [
-            "plume_brawler/animations/attack/east/00.webp",
-            "plume_brawler/animations/attack/east/01.webp",
-            "plume_brawler/animations/attack/east/02.webp",
-            "plume_brawler/animations/attack/east/03.webp"
-          ],
-          "lm": "Fri, 25 Sep 2026 14:15:45 GMT",
-          "src_frames": 4,
-          "sub": "524dbd70-4a8b-4017-8082-ebf77b15c53a"
-        },
-        "north": {
-          "frames": 4,
-          "strip": "plume_brawler/animations/attack__north.webp",
-          "frame_paths": [
-            "plume_brawler/animations/attack/north/00.webp",
-            "plume_brawler/animations/attack/north/01.webp",
-            "plume_brawler/animations/attack/north/02.webp",
-            "plume_brawler/animations/attack/north/03.webp"
-          ],
-          "lm": "Thu, 24 Sep 2026 21:42:40 GMT",
-          "src_frames": 4,
-          "sub": "8b255c2f-a8ed-4919-b2a8-4a3768873ebc"
-        },
-        "north-east": {
-          "frames": 4,
-          "strip": "plume_brawler/animations/attack__north-east.webp",
-          "frame_paths": [
-            "plume_brawler/animations/attack/north-east/00.webp",
-            "plume_brawler/animations/attack/north-east/01.webp",
-            "plume_brawler/animations/attack/north-east/02.webp",
-            "plume_brawler/animations/attack/north-east/03.webp"
-          ],
-          "src_frames": 4,
-          "sub": null,
-          "from_candidate": "the clip he approved (PixelLab holds several takes here and the mirror picks another)"
-        },
         "south": {
           "frames": 4,
           "strip": "plume_brawler/animations/attack__south.webp",
@@ -238,9 +195,9 @@
             "plume_brawler/animations/attack/south/02.webp",
             "plume_brawler/animations/attack/south/03.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 14:15:48 GMT",
           "src_frames": 4,
-          "sub": "babc505e-63cd-4379-b8da-3fb0c7883bac"
+          "sub": null,
+          "from_candidate": "attack"
         },
         "south-east": {
           "frames": 4,
@@ -253,31 +210,46 @@
           ],
           "src_frames": 4,
           "sub": null,
-          "from_candidate": "the clip he approved (PixelLab holds several takes here and the mirror picks another)"
+          "from_candidate": "attack"
         },
-        "south-west": {
+        "east": {
           "frames": 4,
-          "strip": "plume_brawler/animations/attack__south-west.webp",
+          "strip": "plume_brawler/animations/attack__east.webp",
           "frame_paths": [
-            "plume_brawler/animations/attack/south-west/00.webp",
-            "plume_brawler/animations/attack/south-west/01.webp",
-            "plume_brawler/animations/attack/south-west/02.webp",
-            "plume_brawler/animations/attack/south-west/03.webp"
+            "plume_brawler/animations/attack/east/00.webp",
+            "plume_brawler/animations/attack/east/01.webp",
+            "plume_brawler/animations/attack/east/02.webp",
+            "plume_brawler/animations/attack/east/03.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 14:15:51 GMT",
           "src_frames": 4,
-          "sub": "23ed0556-6673-45a2-811f-72f5bbdd9705"
+          "sub": null,
+          "from_candidate": "attack"
         },
-        "west": {
+        "north-east": {
           "frames": 4,
-          "strip": "plume_brawler/animations/attack__west.webp",
+          "strip": "plume_brawler/animations/attack__north-east.webp",
           "frame_paths": [
-            "plume_brawler/animations/attack/west/00.webp",
-            "plume_brawler/animations/attack/west/01.webp",
-            "plume_brawler/animations/attack/west/02.webp",
-            "plume_brawler/animations/attack/west/03.webp"
+            "plume_brawler/animations/attack/north-east/00.webp",
+            "plume_brawler/animations/attack/north-east/01.webp",
+            "plume_brawler/animations/attack/north-east/02.webp",
+            "plume_brawler/animations/attack/north-east/03.webp"
           ],
-          "mirrored_from": "east"
+          "src_frames": 4,
+          "sub": null,
+          "from_candidate": "attack"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "plume_brawler/animations/attack__north.webp",
+          "frame_paths": [
+            "plume_brawler/animations/attack/north/00.webp",
+            "plume_brawler/animations/attack/north/01.webp",
+            "plume_brawler/animations/attack/north/02.webp",
+            "plume_brawler/animations/attack/north/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "from_candidate": "attack"
         },
         "north-west": {
           "frames": 4,
@@ -288,7 +260,35 @@
             "plume_brawler/animations/attack/north-west/02.webp",
             "plume_brawler/animations/attack/north-west/03.webp"
           ],
-          "mirrored_from": "north-east"
+          "src_frames": 4,
+          "sub": null,
+          "from_candidate": "attack"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "plume_brawler/animations/attack__west.webp",
+          "frame_paths": [
+            "plume_brawler/animations/attack/west/00.webp",
+            "plume_brawler/animations/attack/west/01.webp",
+            "plume_brawler/animations/attack/west/02.webp",
+            "plume_brawler/animations/attack/west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "from_candidate": "attack"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "plume_brawler/animations/attack__south-west.webp",
+          "frame_paths": [
+            "plume_brawler/animations/attack/south-west/00.webp",
+            "plume_brawler/animations/attack/south-west/01.webp",
+            "plume_brawler/animations/attack/south-west/02.webp",
+            "plume_brawler/animations/attack/south-west/03.webp"
+          ],
+          "src_frames": 4,
+          "sub": null,
+          "from_candidate": "attack"
         }
       }
     },
@@ -308,7 +308,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/idle/south"
+          "from_candidate": "idle"
         },
         "south-east": {
           "frames": 5,
@@ -322,7 +322,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/idle/south-east"
+          "from_candidate": "idle"
         },
         "east": {
           "frames": 5,
@@ -336,7 +336,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/idle/east"
+          "from_candidate": "idle"
         },
         "north-east": {
           "frames": 5,
@@ -350,7 +350,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/idle/north-east"
+          "from_candidate": "idle"
         },
         "north": {
           "frames": 5,
@@ -364,7 +364,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/idle/north"
+          "from_candidate": "idle"
         },
         "north-west": {
           "frames": 5,
@@ -378,7 +378,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/idle/north-west"
+          "from_candidate": "idle"
         },
         "west": {
           "frames": 5,
@@ -392,7 +392,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/idle/west"
+          "from_candidate": "idle"
         },
         "south-west": {
           "frames": 5,
@@ -406,7 +406,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/idle/south-west"
+          "from_candidate": "idle"
         }
       }
     },
@@ -427,7 +427,7 @@
           ],
           "src_frames": 6,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/walk/south"
+          "from_candidate": "walk"
         },
         "south-east": {
           "frames": 4,
@@ -440,7 +440,7 @@
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/walk/south-east"
+          "from_candidate": "walk"
         },
         "east": {
           "frames": 4,
@@ -453,7 +453,7 @@
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/walk/east"
+          "from_candidate": "walk"
         },
         "north-east": {
           "frames": 4,
@@ -466,7 +466,7 @@
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/walk/north-east"
+          "from_candidate": "walk"
         },
         "north": {
           "frames": 4,
@@ -479,7 +479,7 @@
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/walk/north"
+          "from_candidate": "walk"
         },
         "north-west": {
           "frames": 4,
@@ -492,7 +492,7 @@
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/walk/north-west"
+          "from_candidate": "walk"
         },
         "west": {
           "frames": 4,
@@ -505,7 +505,7 @@
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/walk/west"
+          "from_candidate": "walk"
         },
         "south-west": {
           "frames": 4,
@@ -518,7 +518,7 @@
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/walk/south-west"
+          "from_candidate": "walk"
         }
       }
     },
@@ -538,7 +538,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/angry/south"
+          "from_candidate": "angry"
         },
         "south-east": {
           "frames": 5,
@@ -552,7 +552,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/angry/south-east"
+          "from_candidate": "angry"
         },
         "east": {
           "frames": 5,
@@ -566,7 +566,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/angry/east"
+          "from_candidate": "angry"
         },
         "north-east": {
           "frames": 5,
@@ -580,7 +580,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/angry/north-east"
+          "from_candidate": "angry"
         },
         "north": {
           "frames": 5,
@@ -594,7 +594,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/angry/north"
+          "from_candidate": "angry"
         },
         "north-west": {
           "frames": 5,
@@ -608,7 +608,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/angry/north-west"
+          "from_candidate": "angry"
         },
         "west": {
           "frames": 5,
@@ -622,7 +622,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/angry/west"
+          "from_candidate": "angry"
         },
         "south-west": {
           "frames": 5,
@@ -636,7 +636,7 @@
           ],
           "src_frames": 5,
           "sub": null,
-          "refilled_from": "candidates/plume_brawler/animations/angry/south-west"
+          "from_candidate": "angry"
         }
       }
     }
@@ -649,5 +649,16 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      104,
+      104
+    ],
+    "pad": [
+      0,
+      0
+    ],
+    "fixes": []
+  }
 }

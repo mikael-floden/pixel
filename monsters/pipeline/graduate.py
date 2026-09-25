@@ -277,6 +277,18 @@ def graduate(cid, entries, client, apply=True, verbose=True):
         cand.rebuild_index(cand.load_cfg())
         return False
     cand.save_cfg(cfg)
+    # THE MONSTER SHIPS THE EXACT CLIPS HE APPROVED, not PixelLab's copy of
+    # them (a die trimmed in post, a canvas grown to hold a fall, a take
+    # relabelled to its true facing — all invisible to PixelLab). Written from
+    # the candidate while it is still on disk, and the monster is marked so a
+    # later sync never re-mirrors over it.
+    import refill  # noqa: E402
+    if refill.adopt_candidate_art(cid, verbose=verbose):
+        roster = sync_mod.load_roster()
+        for m in roster:
+            if m["id"] == cid:
+                m["art_from_candidate"] = True
+        sync_mod.write_roster(roster)
     if os.path.isdir(cand.cdir(cid)):
         shutil.rmtree(cand.cdir(cid))
     cand.rebuild_index(cand.load_cfg())
@@ -287,6 +299,10 @@ def graduate(cid, entries, client, apply=True, verbose=True):
     # by 2026-09-23, one carrying a comment of his).
     import verdicts  # noqa: E402
     verdicts.settle(apply=True, verbose=verbose)
+    # ...and his approvals keep their stamp: same pixels, new file, so the
+    # wiki must not ask him to judge again (maintainer 2026-09-25: "why didn't
+    # you bring the approval with it?").
+    verdicts.restamp(cid, apply=True, verbose=verbose)
     if verbose:
         print(f"  {cid}: GRADUATED — now monsters/{cid}, candidate folder removed")
     return True

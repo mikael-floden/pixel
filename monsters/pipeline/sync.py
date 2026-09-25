@@ -272,10 +272,20 @@ def sync(client, fresh=False, dry_run=False, only=None, allow_mass_prune=False):
 
     metas = []
     for m in roster:
-        if only and m["id"] != only:
+        # A MONSTER WHOSE ART IS THE CLIPS HE APPROVED IS NOT RE-MIRRORED.
+        # Graduation writes the candidate's approved takes into the monster
+        # (refill.adopt_candidate_art) and sets `art_from_candidate`; PixelLab
+        # holds other pixels for it (untrimmed dies, clipped canvases, other
+        # takes, rotations filed off), and even an unchanged frame is rewritten
+        # by the canvas fit, which breaks the stamp on every one of his
+        # approvals (measured 2026-09-25: 40/40 on Plumefist after one sync).
+        held = m.get("art_from_candidate")
+        if (only and m["id"] != only) or held:
             existing = read_manifest(m["id"])
             if existing:
                 metas.append(existing)
+            if held and (not only or m["id"] == only):
+                print(f"\nkeep {m['id']} — its art is the clips he approved (art_from_candidate), not re-mirrored")
             continue
         print(f"\nmirror {m['id']} <- {m['kind']} {m['pixellab_id']}")
         if dry_run:
