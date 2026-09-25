@@ -1,9 +1,9 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T22:16:12+00:00",
+  "updated_at": "2026-09-25T22:26:25+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED: THE WORLD BATCHES 16 TEXTURES A DRAW ON HIS PHONE TOO. Phaser 3.90 gives every Game Object on a non-desktop device (his Android UA) the MobilePipeline (autoMobilePipeline): Single.frag with forceZero, a new drawArrays on EVERY texture change - his 384-842 (cool run >2,000) draws a frame where a desktop draws ~100 for the same picture; headless runs never saw it (desktop UA -> MultiPipeline). The fix: the game config's autoMobilePipeline off (the ground RT already draws with MultiPipeline on his phone since its A/B): same vertex math, same UVs, same fragment math, 16 textures a batch. Pixel parity by the render A/B harness, draws by an Android-UA headless count, `?multipipe=0` the off switch, the beacon's counts say which arm. The tiles3 atlas is parked behind this (it answers the same question at 10x the code).",
+    "unit": "CLAIMED (+ docs/testing.md: the headless-UA trap): THE WORLD BATCHES 16 TEXTURES A DRAW ON HIS PHONE TOO. Phaser 3.90 gives every Game Object on a non-desktop device (his Android UA) the MobilePipeline (autoMobilePipeline): Single.frag with forceZero, a new drawArrays on EVERY texture change - his 384-842 (cool run >2,000) draws a frame where a desktop draws ~100 for the same picture; headless runs never saw it (desktop UA -> MultiPipeline). The fix: the game config's autoMobilePipeline off (the ground RT already draws with MultiPipeline on his phone since its A/B): same vertex math, same UVs, same fragment math, 16 textures a batch. Pixel parity by the render A/B harness, draws by an Android-UA headless count, `?multipipe=0` the off switch, the beacon's counts say which arm. The tiles3 atlas is parked behind this (it answers the same question at 10x the code).",
     "since": "2026-09-25T22:16:12+00:00",
     "files": [
       "games2/client/src/multipipe.ts",
@@ -11,7 +11,8 @@
       "games2/client/src/scenes/WorldScene.ts",
       "games2/server/test/multipipe.test.ts",
       "games2/docs/perf.md",
-      "games2/scripts/perf-read.mjs"
+      "games2/scripts/perf-read.mjs",
+      "games2/docs/testing.md"
     ]
   },
   "progress": {
