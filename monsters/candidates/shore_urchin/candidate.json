@@ -763,6 +763,42 @@
           "tries": 1,
           "generated_at": "2026-09-25T15:59:48+00:00",
           "source": "north-east"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1948,
+          "step_max": 0.213,
+          "drift": 1.08,
+          "loop": 0.2033,
+          "loop_ratio": 1.04,
+          "travel": 0.32,
+          "pin": 0.82,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.012,
+          "end_iou": null,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "ff28756c-42f6-4352-8b33-f4a637d45f83",
+          "group": "2b547265-4c9a-4ec5-8736-07b0115380a3",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T18:56:01+00:00"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -822,6 +858,14 @@
           "shore_urchin/animations/walk/north-west/03.webp",
           "shore_urchin/animations/walk/north-west/04.webp",
           "shore_urchin/animations/walk/north-west/05.webp"
+        ],
+        "north": [
+          "shore_urchin/animations/walk/north/00.webp",
+          "shore_urchin/animations/walk/north/01.webp",
+          "shore_urchin/animations/walk/north/02.webp",
+          "shore_urchin/animations/walk/north/03.webp",
+          "shore_urchin/animations/walk/north/04.webp",
+          "shore_urchin/animations/walk/north/05.webp"
         ]
       },
       "strips": {
@@ -831,7 +875,8 @@
         "north-east": "shore_urchin/animations/walk__north-east.webp",
         "south-west": "shore_urchin/animations/walk__south-west.webp",
         "west": "shore_urchin/animations/walk__west.webp",
-        "north-west": "shore_urchin/animations/walk__north-west.webp"
+        "north-west": "shore_urchin/animations/walk__north-west.webp",
+        "north": "shore_urchin/animations/walk__north.webp"
       }
     }
   },
