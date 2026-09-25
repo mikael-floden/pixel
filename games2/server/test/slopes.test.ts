@@ -7,8 +7,8 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Tiles3, PLATE_H, RAMP_MIN_PX, SYNTHETIC_RAMP_DIR, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
-import { buildBoundaryPixels, buildRampPixels, patternSheetPaths, patternSheets, slopeLift, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
+import { Tiles3, PLATE_H, RAMP_MIN_PX, SYNTHETIC_RAMP_DIR, hexRGB, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
+import { buildBoundaryPixels, buildPlatePixels, buildRampPixels, patternSheetPaths, patternSheets, shiftDown, slopeLift, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
 import { cellArtPaths, dressKey, surfaceY, Tiles3World, viewFromParsed } from "../../client/src/tiles3runtime.js";
 import { parseWorld, ISO_GEOMETRY_MAPS3 } from "../../shared/src/index";
 // @ts-expect-error — plain .mjs helper shared with the build scripts
@@ -385,6 +385,79 @@ test("buildBoundaryPixels with a slope: the other side is shifted `lift` rows do
     if (isB === liftedB) moved++; else missed++;
   }
   assert.ok(missed < moved / 50, `the mask curve rides with the raster (${moved} agree, ${missed} do not)`);
+});
+
+/* -- HIS "Black edges!" (2026-09-25, six screenshots on 12bebeab3) ---------------------------------------------- */
+
+test("a slope boundary leaves a hole a hole: no (0,0,0,255) where its source is transparent, nothing moves, a flat boundary is untouched", { skip }, () => {
+  const pat = load("tiles/patterns/index.json");
+  const paths = patternSheetPaths(pat);
+  const px = (rel: string): Pixels => { const i = imgRGBA(join(REPO, rel)) as { width: number; height: number; data: Uint8Array }; return { w: i.width, h: i.height, data: new Uint8ClampedArray(i.data) }; };
+  const sheets = patternSheets(pat, px(paths.silhouette), px(paths.masks), px(paths.border));
+  const { fw, fh } = sheets;
+  const solid = (r: number, g: number, b: number): Pixels => { const p = { w: fw, h: fh, data: new Uint8ClampedArray(fw * fh * 4) }; for (let i = 0; i < fw * fh; i++) { p.data[i * 4] = r; p.data[i * 4 + 1] = g; p.data[i * 4 + 2] = b; p.data[i * 4 + 3] = 255; } return p; };
+  // The slope side as a published tile has it: its top rows empty (a sunk corner), the rest solid.
+  const holed = solid(0, 200, 0);
+  holed.data.fill(0, 0, fw * 4 * 4); // (0,0,0,0), as the published files hold a hole
+  const A = solid(200, 0, 0);
+  const black = (p: Pixels) => { let n = 0; for (let i = 0; i < fw * fh; i++) if (p.data[i * 4 + 3] && !p.data[i * 4] && !p.data[i * 4 + 1] && !p.data[i * 4 + 2]) n++; return n; };
+  let totalHoles = 0, flatBlack = 0;
+  for (const frame of [1, 28, 184, 282]) for (const lift of [0, 4]) {
+    const out = buildBoundaryPixels(sheets, { maskFrame: frame, topOnly: true, slope: { side: "b", rise: 4, lift } }, A, holed, true);
+    assert.equal(black(out), 0, `frame ${frame} lift ${lift}: a hole composed as black`);
+    // Nothing moved: every texel the composite keeps is the one the solid composite has there.
+    const full = buildBoundaryPixels(sheets, { maskFrame: frame, topOnly: true, slope: { side: "b", rise: 4, lift } }, A, solid(0, 200, 0), true);
+    let same = 0, moved = 0, holes = 0;
+    for (let i = 0; i < fw * fh; i++) {
+      if (!out.data[i * 4 + 3]) { if (full.data[i * 4 + 3]) holes++; continue; }
+      if (out.data.subarray(i * 4, i * 4 + 4).join() === full.data.subarray(i * 4, i * 4 + 4).join()) same++; else moved++;
+    }
+    assert.equal(moved, 0, `frame ${frame} lift ${lift}: ${moved} texels moved (the composite was re-cropped)`);
+    assert.ok(same > 900, `frame ${frame} lift ${lift}: ${same} kept`);
+    totalHoles += holes;
+    // A flat boundary is render3's: alpha from the silhouette whatever its plates hold (the parity path).
+    if (!lift) flatBlack += black(buildBoundaryPixels(sheets, { maskFrame: frame, topOnly: true }, A, holed, true)) + black(buildBoundaryPixels(sheets, { maskFrame: frame, topOnly: true }, holed, A, true));
+  }
+  assert.ok(totalHoles > 0, "the holed side was drawn somewhere, so the arm tests something");
+  assert.ok(flatBlack > 0, "the flat compose is unchanged (parity): it still reads the silhouette's alpha");
+});
+
+test("on the_game at 0%: no slope boundary composes a black texel its sources do not hold", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  const t = resolver([], {}, true);
+  const pat = load("tiles/patterns/index.json");
+  const paths = patternSheetPaths(pat);
+  const px = (rel: string): Pixels => { const i = imgRGBA(join(REPO, rel)) as { width: number; height: number; data: Uint8Array }; return { w: i.width, h: i.height, data: new Uint8ClampedArray(i.data) }; };
+  const sheets = patternSheets(pat, px(paths.silhouette), px(paths.masks), px(paths.border));
+  const gt = load("tiles/ground_types.json").grounds;
+  const parsed = parseWorld(JSON.parse(readFileSync(WORLD, "utf8")))!;
+  const view = viewFromParsed(parsed as never);
+  const frame = { x0: 0, y0: 0, x1: parsed.width, y1: parsed.height, ox: 0, oy: 0, pitch: ISO_GEOMETRY_MAPS3.lh, canvas: [1, 1] } as never;
+  const w = new Tiles3World({ view, tiles: t, frame, patterns: pat });
+  const plates = new Map<string, Pixels>();
+  const plate = (art: { path: string }, g: string): Pixels => {
+    const k = JSON.stringify(art) + g;
+    if (!plates.has(k)) plates.set(k, buildPlatePixels(sheets, art as never, px(art.path), hexRGB(gt[g].palette.wall)));
+    return plates.get(k)!;
+  };
+  const blk = (p: Pixels, i: number) => p.data[i * 4 + 3] > 0 && !p.data[i * 4] && !p.data[i * 4 + 1] && !p.data[i * 4 + 2];
+  let bounds = 0, bad = 0;
+  const where: string[] = [];
+  for (let y = 0; y < parsed.height; y++) for (let x = 0; x < parsed.width; x++) {
+    const b = w.boundary(x, y);
+    if (!b?.slope) continue;
+    bounds++;
+    const a = plate(b.plateA, b.a), bb = plate(b.plateB, b.b);
+    const out = buildBoundaryPixels(sheets, b as never, a, bb, true);
+    // The sources as the composer reads them: the other side shifted `lift` rows down.
+    const sa = b.slope.lift && b.slope.side === "b" ? shiftDown(a, b.slope.lift) : a;
+    const sb = b.slope.lift && b.slope.side === "a" ? shiftDown(bb, b.slope.lift) : bb;
+    let n = 0;
+    for (let i = 0; i < out.w * out.h; i++) if (blk(out, i) && !blk(sa, i) && !blk(sb, i)) n++;
+    if (n) { bad++; if (where.length < 5) where.push(`${x},${y} ${b.a}|${b.b} lift ${b.slope.lift}: ${n}`); }
+  }
+  // 2026-09-25, before the fix: 482 of 485 slope boundaries, 87,372 black texels.
+  assert.ok(bounds >= 400, `${bounds} slope boundaries on the_game`);
+  assert.deepEqual(where, [], `${bad} of ${bounds} slope boundaries compose black out of a hole`);
 });
 
 test("the occluder pass anchors a raise's cap where the ground pass paints it: `rise` rows up (dressKey, surfaceY)", { skip }, () => {

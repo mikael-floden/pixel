@@ -235,13 +235,21 @@ export function composeBoundary(
   frame: number,
   plateA: Pixels,
   plateB: Pixels,
-  opts?: { seam?: boolean; maskShift?: number },
+  opts?: { seam?: boolean; maskShift?: number; holes?: boolean },
 ): Pixels {
   const { fw, fh, sil, tone } = sheets;
   // A raise composite is drawn `maskShift` rows up, so its mask (and seam) is
   // sampled `maskShift` rows up the sheet: the curve lands where the neighbours' is.
   const ms = opts?.maskShift ?? 0;
   const my = (y: number) => (y - ms < 0 ? 0 : y - ms >= fh ? fh - 1 : y - ms);
+  /* `holes`: A SLOPE BOUNDARY LEAVES A HOLE A HOLE. A flat plate fills the
+   * silhouette; a slope tile does not (its sunk corners), and a raise shifts
+   * the other plate down (its top rows empty). Alpha from the silhouette over
+   * a transparent source was (0,0,0,255): his "Black edges!" (2026-09-25, six
+   * screenshots) — 482 of the_game's 485 slope boundaries, 87,372 texels. A
+   * hole stays alpha 0, as the slope cell's own top-only raster has it there.
+   * Flat boundaries never set it: render3 parity. */
+  const holes = !!opts?.holes;
   for (const [name, p] of [
     ["a", plateA],
     ["b", plateB],
@@ -261,6 +269,7 @@ export function composeBoundary(
        * what the GPU sees, stated. */
       if (a === 0) continue;
       const src = sheets.maskBit(frame, x, my(y)) ? plateB.data : plateA.data;
+      if (holes && src[i * 4 + 3] === 0) continue;
       let r = src[i * 4];
       let g = src[i * 4 + 1];
       let b = src[i * 4 + 2];
@@ -310,8 +319,8 @@ export function buildBoundaryPixels(
     if (sl.side === "a") bb = shiftDown(bb, sl.lift);
     else a = shiftDown(a, sl.lift);
   }
-  const out = composeBoundary(sheets, b.maskFrame as number, a, bb, { seam, maskShift: sl?.lift ?? 0 });
-  if (sl && b.topOnly) return slopeTopOnly(sheets, out, sl.rise);
+  const out = composeBoundary(sheets, b.maskFrame as number, a, bb, { seam, maskShift: sl?.lift ?? 0, holes: !!sl });
+  if (sl && b.topOnly) return slopeTopOnly(sheets, out, sl.rise, true);
   /* EVERY RAISED TRANSITION TILE CARRIES THE MARGIN ROW, not only a liquid's
    * (maintainer 2026-09-18, the sand path and the terrace at 252,236 and
    * 270,257: "When I almost stand still the transition tile/boundary tile
@@ -347,9 +356,12 @@ export function buildPlatePixels(sheets: PatternSheets, art: PlateLike, src: Pix
  *  cell showed its plateau and the wall under it, and no slope. The band
  *  under the flat part's lower edges is still dropped, so the cell's own
  *  x-over-y wall stays the only wall. */
-export function slopeTopOnly(sheets: PatternSheets, src: Pixels, rise: number): Pixels {
+export function slopeTopOnly(sheets: PatternSheets, src: Pixels, rise: number, framed = false): Pixels {
   const { fw, fh, libTop } = sheets;
-  const a = cropToArt(src, fw, fh);
+  // `framed`: a composed boundary is already in the plate frame. It must not be
+  // re-cropped: its holes are transparent now, so its first opaque row can sit
+  // below row 0 and the crop would lift the whole raster by that many rows.
+  const a = framed ? src : cropToArt(src, fw, fh);
   const out = newPixels(fw, fh);
   const down = Math.max(0, Math.min(fh, Math.round(rise)));
   for (let x = 0; x < fw; x++) {

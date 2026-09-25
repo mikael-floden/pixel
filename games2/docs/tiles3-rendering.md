@@ -601,7 +601,11 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   own down to the half level at the level; a raise beside a same-plane ground
   change composes its boundary WITH THE SLOPE AS ITS OWN SIDE,
   `Tiles3Boundary.slope`, the other side shifted `lift` rows down and the
-  mask sampled `lift` rows up; `slopeTopOnly` keeps the sunk rows; an
+  mask sampled `lift` rows up; `slopeTopOnly` keeps the sunk rows, and never
+  re-crops the composite; A SLOPE BOUNDARY LEAVES A HOLE A HOLE — alpha from
+  the silhouette over a transparent source was (0,0,0,255), his "Black
+  edges!" on 482 of the_game's 485 slope boundaries, 87,372 texels, 2026-09-25;
+  flat boundaries keep render3's silhouette alpha; an
   unjudged ground falls back to its first complete bump set): it is what a
   set generated at terrain height 8 would draw as two true half steps.
   FOUR BARS, EACH PAID FOR ON 2026-09-24: (1) 834b119e2b drew the raise AT
