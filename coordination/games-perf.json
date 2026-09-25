@@ -3,17 +3,9 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: WHY FRAMES ARRIVE ONE REFRESH LATE, THE METER. His cool run: ~156 of 168 worst frames were idle waits (the game's work done, the next frame late) at the heavy places (1,400-2,400 draws, 22-30 Mpx, 34-40 target switches a frame; Mali's 16 texture units against hundreds of distinct tile textures in painter order = 1-4 sprites a draw headless). Before any atlas is proposed, his phone decides: glframe counts texture binds per frame (`tb`) and a `late` block files every frame's interval under the PREVIOUS frame's draws / binds / fill as on time or late (> 45 ms) - a late share that climbs with the draws is the command stream, with fill the pixels, flat neither. Allowlisted server-side (perfreport `late`), gated in verify-beacon, printed by perf-read.",
-    "since": "2026-09-25T17:58:51+00:00",
-    "files": [
-      "games2/client/src/glframe.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/server/src/perfreport.ts",
-      "games2/server/test/perfreport.test.ts",
-      "games2/scripts/verify-beacon.mjs",
-      "games2/scripts/perf-read.mjs",
-      "games2/docs/perf.md"
-    ]
+    "unit": "WAITING for his next run on 7ab4fad87d+ (the late-frame meter). Meanwhile, read-only: mapping how tiles3 art becomes textures and how occluders / the ground RT draw them, to judge a pixel-identical runtime atlas (Mali's 16 units against hundreds of distinct tile textures: 1-4 sprites a draw headless even with the art settled). No files claimed.",
+    "since": "2026-09-25T18:16:36+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -69,6 +61,10 @@
     {
       "at": "2026-09-25T17:58:51+00:00",
       "text": "SHIPPED 7c58077757 (live 17:50 UTC, fast lane): batch 1 of his cool run's leftovers (6f3f9f8a) - the recorder's per-window sorts native (Float64Array; its report was 20-29 ms on his phone, ~9 ms of it sorts in node), the edit tool's ground list kept (it walked 155,236 cells on every Settings refresh), the heap block the window's, the report's parts in counts (beaconSnapMs/BodyMs/TakeMs)."
+    },
+    {
+      "at": "2026-09-25T18:16:36+00:00",
+      "text": "SHIPPED 7ab4fad87d (image live 18:13 UTC): THE LATE-FRAME METER. glframe counts texture binds per frame (tb, counts.glTexBinds) and the `late` block files every frame's interval under the PREVIOUS frame's draws / binds / fill as on time or late (>45 ms); server allowlist `late` (mixed 40), perf-read prints the late share per bucket. His next run decides whether the one-refresh-late frames are the GPU command stream (an atlas) or not. MY SLIP ON THE WAY: 0417a67248 (games' ramp light) landed under games2 between my test run and my push, and my push line rebased and pushed without re-running; re-ran on the pushed tree at once: typecheck clean, npm test 1038 pass, the 5 known red only."
     }
   ],
   "requests": [
@@ -143,5 +139,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T17:58:51+00:00"
+  "updated": "2026-09-25T18:16:36+00:00"
 }
