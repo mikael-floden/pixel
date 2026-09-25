@@ -3,16 +3,9 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: THE FAST LANE'S WORKERS. scripts/fastbuild.mjs bundles a HAND-KEPT list of workers (artworker, composeworker, tiles3worker) and rewrites only `./<w>.ts`: round 1's cpubench worker was never bundled, so every fast-lane bundle asked for `../cpubench.ts` (a silent 404) and his 15:51 run read cpu.scoreMs 0 in every window; round 2's perfpost worker (created from scenes/ as `../perfpost.ts`) would fail the same way on the next fast-lane publish and the post would fall back to the game's thread. Fix: the workers are found in the client's source (the idiom), a specifier at any depth is rewritten to `./<name>-<hash>.js`, and the build throws if its output still names a worker .ts. Gate: a fastbuild bundle through verify-beacon (perfWorker 2, cpu score) + verify-fastbundle; a unit test that every `new Worker(` in client/src is found.",
-    "since": "2026-09-25T17:00:53+00:00",
-    "files": [
-      "games2/scripts/fastbuild.mjs",
-      "games2/server/test/fastbuildworkers.test.ts",
-      "games2/scripts/verify-beacon.mjs",
-      "games2/docs/fast-lane.md",
-      "games2/docs/perf.md",
-      "games2/scripts/verify-fastbundle.mjs"
-    ]
+    "unit": "WAITING for his cool, charged perf run on 134ed96263 (the recorder round 2 + the fast lane's workers). Next, from that run: counts.perfWorker (2 = the post ran on the worker), beaconSelfMs/beaconIdleMs on his phone, cpu.scoreMs (throttling), then the lag sources — ambient hooks (the gloom raster spike), render, ground. Queued, not claimed: the heap block reset per window (grewMb/drops/meanMb/maxMb are cumulative since arming, so grewMbPerSec inflates with the window index) — pushed AFTER his run, a deploy mid-run restarts the server.",
+    "since": "2026-09-25T17:19:43+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -60,6 +53,10 @@
     {
       "at": "2026-09-25T17:00:53+00:00",
       "text": "SHIPPED 9387796dce (live 17:00 UTC, container): THE RECORDER, ROUND 2 (his order: no lag from the perf run itself). The post (worst frames shaped, JSON, fetch) and the CPU benchmark run on the report's worker (perfpost.ts); the game's thread hands over three JSON strings + the worst frames' timelines packed (tlPack); the texture count is kept as it changes (ADD + removeKey, held exact by verify-beacon); the long-task pairing is a sweep. Headless: 3.4-6.7 ms a window on the game's thread against 7.2-26.6 ms. counts.perfWorker 0/1/2/3 and beaconWorkerMs are new. MY MISTAKE ON THE WAY: the claim commit 09a55716d0 carried a staged deletion of cpubench.ts to main; restored in 082e8011c3 a minute later (the fast lane published the gap: the benchmark worker 404'd for ~2 min, nothing else). FOUND: the fast lane's bundler never bundled cpubench (a hand-kept worker list) - the unit claimed now."
+    },
+    {
+      "at": "2026-09-25T17:19:43+00:00",
+      "text": "SHIPPED 134ed96263 (live 17:19 UTC, container): THE FAST LANE FINDS THE CLIENT'S WORKERS IN ITS SOURCE. scripts/fastbuild.mjs bundled a hand-kept list of three workers and rewrote only `./<w>.ts`; round 1's cpubench worker was never bundled, so every fast-lane bundle asked for `../cpubench.ts` (a silent 404) and his 15:51 run read cpu.scoreMs 0 in every window; round 2's perfpost would have died the same way on the next fast-lane publish. Now: findWorkers() from the source, any-depth rewrite to `./<name>-<hash>.js`, the build refuses a bundle still starting a worker from its .ts, verify-fastbundle counts the source's workers (it was a literal `=== 3`: the next fast-lane publish would have gone red and rolled production back). fastbuildworkers.test.ts holds every `new Worker(` in the client to the idiom. ALL AGENTS: a new worker needs nothing extra, but it must be the idiom and its file must sit directly in client/src."
     }
   ],
   "requests": [
@@ -134,5 +131,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T17:07:16+00:00"
+  "updated": "2026-09-25T17:19:43+00:00"
 }
