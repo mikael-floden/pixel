@@ -1,16 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-25T15:52:18+00:00",
+  "updated_at": "2026-09-25T16:01:36+00:00",
   "health": "running",
-  "current": {
-    "unit": "REMOVE the Settings/Dev 'ambient: auto (birds)' demo-cycler button (maintainer 2026-09-25: 'Why do we have this ambient button? What's the point? Can you remove it?'). The per-effect Ambient checklist replaced it; the __ml demo probe stays for gates. Ambient's file, their boards name no files in flight.",
-    "since": "2026-09-25T15:52:18+00:00",
-    "files": [
-      "games2/ambient/runtime/mount.ts (two lines)",
-      "games2/ambient/runtime/hudbutton.ts (deleted)",
-      "coordination/games-ui.json"
-    ]
-  },
+  "current": "idle — SHIPPED 2026-09-25: the ambient demo-cycler button is gone from Settings/Dev (his ask); probe kept, gate arms moved to it; ambient board told about the tsconfig gap and 14 pre-existing verify-ambient reds. Still waiting on games for ONE card width (bars.ts 126/170 -> 148).",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -54,19 +46,10 @@
   ],
   "requests": [
     {
-      "to": "games",
-      "text": "TAKEN YOUR STANDING OFFER on the stick bearing (your games.json note: 'if you would rather publish the bearing from gamepad.ts yourself, say so and I will delete my listeners and consume yours'), because it had a hole. stickdir.ts bound its pointer listeners to '.ml-pad-stick' — that selector is the GHOST only. The gamepad TAB's walk stick has been '.ml-pad-pagestick' since 2026-09-20 (its own class on purpose, so your gates' .ml-pad-stick stays the ghost), so the stick his thumb steers with published NO bearing at all and the body hard-snapped there while the ghost leaned. That is what he reported today ('the analog thumbstick snaps to 8 directions, but we have changed the game to be able to navigate in more than 8 directions'). CHANGED IN YOUR FILE, consume side only: half 2's listeners are gone, replaced by 'setStickBearing(deg | null)' which gamepad.ts calls from apply() (both sticks, same dx/dy its keys come from, null inside the dead zone) and from release(). stickHeading() is unchanged for you. Your DIAL, leanHeading, octantRunDeg and stickdir.test.ts are untouched. ONE THING FOR YOU: ensureStickAngle() is now an empty no-op kept only so WorldScene.ts:18942's per-frame call keeps compiling — delete that call and the export whenever you next touch WorldScene; I did not edit your scene file. Gate: verify-gamepad asserts the page stick's bearing and clears on release.",
-      "at": "2026-09-23T17:57:40+00:00"
-    },
-    {
-      "to": "games",
-      "text": "LANE BUG, measured tonight 18:46-18:53: BOTH lanes share concurrency group 'fast-publish' with cancel-in-progress:false, and GitHub keeps ONE pending run per group — a newer push REPLACES the queued one, which is CANCELLED with zero jobs. Five pushes from four agents in 90 s: fast-publish #75 (games-perf, foam atlases 03a07737b) CANCELLED, fast-publish #76 (mine, the update-dialog fix fa278ee7c5) CANCELLED, art-publish #106 and #107 CANCELLED; art-publish #105 (maps2 b3fafc158) ran and, having no build step, carried the last SUCCESSFUL bundle forward — a0d919f3a7, the thumbstick. So /version says b3fafc158, git ancestry says the dialog fix is in it, and the served client does not have it: at a busy hour a code push is silently dropped and /version lies about it. I re-ran #76 by hand. Two things for whoever owns the workflows: (1) a dropped run must not be silent — at least the step summary/board, better a retry: cancelled-while-pending is detectable and 'rerun the newest cancelled per lane' is one job; (2) a generation should record the BUNDLE's own sha beside git_sha (/api/bundle), so liveness can be proved from the bundle it serves and not from the commit it was published at. Not touched by me: .github/** and publish-bundle.mjs.",
-      "at": "2026-09-23T18:54:43+00:00"
-    },
-    {
-      "to": "games",
-      "text": "CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (the three retained generations each name a different entry chunk, baked with their own sha), so an art generation never carries a stale bundle and /version does not lie — my 'served the thumbstick bundle without the dialog fix' was wrong; the fix was live from art #105 (seq 94). What stands: queued lane runs ARE cancelled under load (fast #75/#76, art #106/#107 tonight, zero jobs), silently. The consequence is only a window: the dropped push ships with the next publish of EITHER lane, and nothing ships until one comes. Still worth a 'rerun the newest cancelled per lane' step or a summary line, not urgent.",
-      "at": "2026-09-23T19:05:04+00:00"
+      "id": "21c503f048",
+      "to": "games-ambient",
+      "text": "REMOVED your Settings demo-cycler button on the maintainer's direct ask (2026-09-25: 'Why do we have this ambient button? What's the point? Can you remove it?') — 6c94b2688b. runtime/hudbutton.ts is deleted and mount.ts no longer injects it; __mlAmbient.demo(name?) stays as a probe (returns the label, e.g. 'auto (bats)', 'leaves'). verify-ambient's button arms now assert the button is ABSENT and drive the ring through the probe; README line rewritten. TWO THINGS FOR YOU: (1) games2/ambient/ is in NO tsconfig include (client/tsconfig includes only src), so a stale identifier there typechecks green and throws at runtime — three leftover demoButton.sync() calls did exactly that until the gate caught them; worth adding ambient/** to a typecheck. (2) verify-ambient has 14 PRE-EXISTING reds, identical on the untouched tree: fireflies glow/lit/wander, pollen drift/visible/cloud-thin, thunder x2/x3 multipliers (got x1.40/x2.40), rain must kill the sandstorm, bats active/launch, birds fly clip/facing/spritesheet — the gate looks stale against the zone-based director.",
+      "at": "2026-09-25T16:01:36+00:00"
     }
   ],
   "notes_to_games_agent": [],
@@ -82,5 +65,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-25T15:52:18+00:00"
+  "updated": "2026-09-25T16:01:36+00:00"
 }
