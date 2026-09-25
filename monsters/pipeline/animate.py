@@ -848,7 +848,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False, w
         action = ladder_action(cid, rung, rec["action"], base_state(state))
         for d in dirs:
             actions[d], rungs[d], counts[d] = action, rung, spec["frames"]
-        ids = client.animate_pro(man["pixellab_id"], action, dirs, name=state,
+        ids = client.animate_pro(man["pixellab_id"], action, [pixellab_dir(cid, man, d) for d in dirs], name=state,
                                  seed=seed_for(cid, state, "all", version))
         if verbose:
             print(f"  {cid:16s} {state} PRO {len(dirs)} dir(s) rung {rung:+d} "
@@ -1062,7 +1062,8 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
             rec["directions"][d] = qa
             out[d] = qa
             continue
-        cands = takes_by_action[actions[d]].get(d) or []
+        # the take is filed under PixelLab's name for our facing (pixellab_dir)
+        cands = takes_by_action[actions[d]].get(pixellab_dir(cid, man, d)) or []
         want = (groups or {}).get(d)
         if want:
             cands = [t for t in cands if t["group"] == want] or []
