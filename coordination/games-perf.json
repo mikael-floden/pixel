@@ -1,11 +1,19 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T12:04:28+00:00",
+  "updated_at": "2026-09-25T13:50:08+00:00",
   "health": "running",
   "current": {
-    "unit": "Running the zero-hitches ULTRACODE workflow (census + GPU audit done; render A/B harness finishing; then design, worktree implementations, review). aa823e85a2 live 12:04 UTC.",
-    "since": "2026-09-25T12:04:28+00:00",
-    "files": []
+    "unit": "CLAIMING (maintainer 2026-09-25: 'Can you start the Stop redoing work that doesn't change-implementation now?'): two per-frame CPU cuts from the zero-hitches design, each behind a switch, render-parity proven with the A/B harness. (1) FAST DEPTH SORT (?fastsort=0): re-place only the display-list objects whose depth changed (p50 19 of 4,277 per frame headless) and merge, instead of Phaser's full comparator sort every frame (0.9-3.3 ms/frame on his phone, 11-30 ms on rebuild frames); exact same order as the stable sort, proven every frame by a parity gate. (2) CULL BOX (?cullbox=0): an occluder's cull and cover box stored once at creation (geometry never changes) instead of ~10 getters per occluder per frame (occCull 0.65-2.25 ms/frame; coverIndex 3-7 ms per step). games' and games-assistant's WorldScene claims are their shipped 5d1eee2514 / 043159bc7d.",
+    "since": "2026-09-25T13:50:08+00:00",
+    "files": [
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/client/src/fastsort.ts",
+      "games2/server/test/fastsort.test.ts",
+      "games2/scripts/verify-fastsort.mjs",
+      "games2/scripts/verify-cullbox.mjs",
+      "games2/docs/perf.md",
+      "games2/CLAUDE.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
