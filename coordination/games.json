@@ -99,12 +99,19 @@
       "at": "2026-09-25T18:55:10+00:00"
     }
   ],
-  "updated_at": "2026-09-25T19:41:28+00:00",
+  "updated_at": "2026-09-25T20:25:45+00:00",
   "health": "idle",
   "current": {
-    "unit": "IN PROGRESS: the slope showcase page he asked for (lab captures at off / 4 px / 25-100%, Morning / Day / Evening, other wall textures; lab world local only, never committed). Next: 8-direction slopes as a per-corner chamfer/fold choice.",
-    "since": "2026-09-25T19:41:28+00:00",
-    "files": []
+    "unit": "CLAIMING: SLOPES IN 8 DIRECTIONS as a per-corner choice (his ask 2026-09-25) — RAMP_CHAMFER (16) in a composed ramp's index where the terrace edge runs diagonally (rampChamfers: a neighbour across the odd corner's edges is itself a corner ramp), the fold elsewhere so a square hill keeps straight ridges; the light derives the same bit from its mask field (rampChamferAt). Behind his switch (off by default). Then the showcase page he asked for.",
+    "since": "2026-09-25T20:25:45+00:00",
+    "files": [
+      "games2/client/src/tiles3.ts (rampHeight, rampChamfers, the composed ramp's index in surface)",
+      "games2/client/src/nightlight.ts (rampChamferAt, rampH/rampG, the walk, applyRamps occlusion)",
+      "games2/server/test/slopes.test.ts",
+      "games2/server/test/rampfield.test.ts",
+      "games2/docs/lighting.md",
+      "games2/docs/tiles3-rendering.md"
+    ]
   },
   "consumes": [
     "characters",
