@@ -598,11 +598,14 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   load list and the image closure name the plate, never the path. HIS SLOPE
   SWITCH (`slopeheight.ts`, Settings -> Dev -> "slope"): OFF no slope of any
   kind — `slopeSets` lists none, so no half step, cut, bump or ramp and every
-  rise is the plain stair; "4 px" his published sets (the half step);
-  25/50/75% a ramp that climbs that share of the storey with the x-over-y
-  wall left above it; 100% a clean slope with no wall (his ask, 2026-09-24:
-  "make one that is 25% higher, 50% higher, 75% higher and 100% higher ...
-  you need to use the base tile set"). THE DEFAULT IS OFF, under a storage
+  rise is the plain stair; 25/50% a ramp that climbs that share of the
+  storey with the x-over-y wall left above it; 100% a clean slope with no
+  wall (his ask, 2026-09-24: "make one that is 25% higher, 50% higher, 75%
+  higher and 100% higher ... you need to use the base tile set"). NOT 4 px
+  (his published half step) AND NOT 75% (maintainer 2026-09-25: "the 4px
+  slope looks like shit. The 75% also looks like shit. It leaves a single
+  stripe that looks buggy" — at 75% only the wall's lit top row survives);
+  the resolver still reads 0 as the half step, the switch never sends it. THE DEFAULT IS OFF, under a storage
   key new with the off stop so no stored value turns it back on (maintainer
   2026-09-25: "it has to be disabled now ... Once we have got it workikg we
   can change the default to enabled"; perf runs measure the terrain without

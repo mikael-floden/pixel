@@ -17,7 +17,12 @@
  *  detailrate.ts: "ml-slope-height" rebuilds the resolver on both threads.
  *  Node-safe: no DOM at module scope. */
 export const SLOPE_OFF = -1;
-export const SLOPE_HEIGHTS = [SLOPE_OFF, 0, 25, 50, 75, 100] as const;
+/* THE STOPS HE KEPT (maintainer 2026-09-25, on the lab page: "the 4px slope
+ * looks like shit. The 75% also looks like shit. It leaves a single stripe that
+ * looks buggy. 25%, 50% and 100% looks good"). 0 and 75 are no longer offered;
+ * a stored one snaps to the nearest kept stop. The resolver still reads 0 as the
+ * published half step (its tests pin it), the switch just never sends it. */
+export const SLOPE_HEIGHTS = [SLOPE_OFF, 25, 50, 100] as const;
 export const SLOPE_HEIGHT_DEFAULT = SLOPE_OFF;
 const KEY = "ml-slope-height2";
 
@@ -68,7 +73,7 @@ export function slopeLabel(n = value): string {
   return n < 0 ? "off" : n === 0 ? "4 px" : `${n}%`;
 }
 
-/** The next stop on the switch, wrapping: 100 -> off -> 4 px -> 25 -> ... */
+/** The next stop on the switch, wrapping: 100 -> off -> 25 -> 50 -> 100. */
 export function nextSlopeHeight(): number {
   const i = SLOPE_HEIGHTS.indexOf(value as (typeof SLOPE_HEIGHTS)[number]);
   return SLOPE_HEIGHTS[(i + 1) % SLOPE_HEIGHTS.length];
