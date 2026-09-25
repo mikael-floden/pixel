@@ -127,11 +127,18 @@ for (const [block, keys] of Object.entries(MUST)) {
 // A WORST-FRAME RECORD MUST ARRIVE WHOLE. It is JSON in a string with a
 // length cap, and the cap has twice cut off the tail — which is where the
 // evidence lives (`mode`, `ring`, `tex`, and now `at`/`z`/`t`).
-// THE GPU CLOCK (2026-09-19): headless Chromium lends no timer query either,
-// and until today that meant gpu.avail=false and no GPU number at all. The
-// finish clock must stand in: avail, method "finish", and samples taken.
-if (!rep.gpu?.avail || rep.gpu.method !== "finish") fail(`no GPU clock without a timer query: ${JSON.stringify(rep.gpu)}`);
-else if (!(rep.gpu.n > 0)) fail(`the finish clock took no samples: ${JSON.stringify(rep.gpu)}`);
+// THE GPU CLOCK: headless Chromium lends no timer query, and the finish clock
+// that stood in is OPT-IN since 2026-09-25 (`?gpufinish=1`): on his phone it
+// read 0.0-0.2 ms in every run, i.e. it measured nothing, while forcing a flush
+// into one frame in three of every run he recorded. Without the opt-in the
+// block must say so — no GPU number is `avail: false` with the reason, never a
+// silent 0. (The finish path itself is armed by `?gpufinish=1`.)
+if (rep.gpu?.avail || rep.gpu?.method !== "none" || !/gpufinish/.test(String(rep.gpu?.reason))) fail(`the GPU block without a timer query must say the finish clock is opt-in: ${JSON.stringify(rep.gpu)}`);
+// THE RECORDER'S OWN COST (2026-09-25): built and posted in idle time; the
+// window carries what the last report and post cost and how far they ran past
+// an idle period, and the CPU benchmark comes from its worker.
+for (const k of ["beaconSelfMs", "beaconIdleMs", "beaconOverMs"]) if (typeof rep.counts?.[k] !== "number") fail(`counts.${k} did not reach the file`);
+if (rep.cpu?.bench !== "xorshift400k-worker") fail(`cpu.bench is ${JSON.stringify(rep.cpu?.bench)}, not the worker's`);
 if (rep.lights && rep.lights.pass === undefined) fail("lights.pass (the lighting-pass switch) did not reach the file");
 const w0 = (rep.worst ?? [])[0];
 if (!w0) fail("no worst frame reached the file — the hitch recorder rides with the beacon");

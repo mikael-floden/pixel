@@ -147,7 +147,7 @@ import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, glFrameCounters, type GlFrame } from "../glframe";
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
-import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary, sectionGroup } from "../perfextra";
+import { frameHist, rafHz, quantiles, inputSummary, sectionGroup } from "../perfextra";
 import { installLoaf, loafTake, loafAt } from "../perfloaf";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
 import { tlArm, tlMark, tlTake, tlCompact, clock0, type Mark } from "../perftimeline";
@@ -1258,6 +1258,13 @@ type OccTagged = Phaser.GameObjects.Image & {
   ocB?: number;
   ocNear?: number;
 };
+/** requestIdleCallback where the browser has it (Chrome — his phone), a timer
+ *  where it does not (Safari). The callback gets the deadline when there is one. */
+function idleCall(fn: (d?: { timeRemaining(): number; didTimeout: boolean }) => void, timeout?: number): void {
+  const ric = (globalThis as { requestIdleCallback?: (cb: (d: { timeRemaining(): number; didTimeout: boolean }) => void, o?: { timeout: number }) => number }).requestIdleCallback;
+  if (typeof ric === "function") ric((d) => fn(d), timeout ? { timeout } : undefined);
+  else setTimeout(() => fn(), 1);
+}
 /** A ground switch: on unless the URL says `?<param>=0` or Settings→Dev stored "0". */
 function groundFlagOn(param: string, storeKey: string): boolean {
   try {
@@ -2767,6 +2774,7 @@ export class WorldScene extends Phaser.Scene {
     if (!this.perfBeaconAt) {
       this.perfBeaconAt = now;
       this.perfBeaconFrom = this.mePos();
+      this.cpuScoreBg(); // the first report's score, measured on the worker before it
       if (!this.perfHideHooked) {
         this.perfHideHooked = true;
         /* BACKGROUNDING IS A FLUSH TOO. He plays from an installed app and
@@ -2781,9 +2789,31 @@ export class WorldScene extends Phaser.Scene {
       }
       return;
     }
-    if (now - this.perfBeaconAt < PERF_BEACON_MS) return;
-    this.perfBeaconSend(now, false);
+    if (now - this.perfBeaconAt < PERF_BEACON_MS || this.perfBeaconDue) return;
+    // Built in the next idle period, not in this frame: see the call site.
+    this.perfBeaconDue = true;
+    idleCall((d) => {
+      this.perfBeaconDue = false;
+      if (!this.perfBeacon) return; // switched off meanwhile: its own flush has gone
+      const slack = d && !d.didTimeout ? d.timeRemaining() : 0;
+      const t0 = performance.now();
+      this.perfBeaconSend(t0, false);
+      const spent = performance.now() - t0;
+      this.beaconSelfMs = +spent.toFixed(1);
+      this.beaconCost.total = spent;
+      this.beaconOver(spent - slack);
+    }, 2000);
   }
+  /** HOW FAR THE RECORDER'S IDLE WORK RAN PAST ITS IDLE PERIOD (ms, the most
+   *  this window) — the part of it that could have delayed a frame. 0 is the
+   *  goal; `counts.beaconOverMs`. */
+  private beaconOverMs = 0;
+  private beaconOverNext = 0;
+  private beaconOver(ms: number): void {
+    if (ms > this.beaconOverNext) this.beaconOverNext = +ms.toFixed(1);
+  }
+  /** A window is due and its report waits for an idle period. */
+  private perfBeaconDue = false;
 
   /** Send the window that has accumulated so far, and start a new one.
    *
@@ -2833,12 +2863,19 @@ export class WorldScene extends Phaser.Scene {
     const winT1 = performance.now();
     this.perfWinT0 = winT1;
     let snap: Record<string, unknown> | null = null;
+    const cost = (this.beaconCost = { snap: 0, ground: 0, worst: 0, build: 0, wire: 0, bytes: 0, total: 0, idle: 0, final });
+    const tSnap = performance.now();
     try {
       snap = (window as unknown as { __ml?: { perf?: () => Record<string, unknown> } }).__ml?.perf?.() ?? null;
     } catch {
       snap = null;
     }
+    cost.snap = performance.now() - tSnap;
     if (!snap) return;
+    const tBuild = performance.now();
+    // The recorder's own overrun, per window: the worst of the window that just closed.
+    this.beaconOverMs = this.beaconOverNext;
+    this.beaconOverNext = 0;
     /* THE WINDOW IS CLOSED HERE, not at the early returns above — taking the
      * snapshot is what resets `perfAcc` and `perfFrames`, so the delta
      * baselines must advance in step with it or a skipped window (too short,
@@ -3052,7 +3089,7 @@ export class WorldScene extends Phaser.Scene {
         patchHz: +(patches / Math.max(1, secs)).toFixed(1),
         reconnects: this.reconnectRetries,
       },
-      cpu: { bench: "xorshift400k", scoreMs: cpuScoreMs() },
+      cpu: { bench: "xorshift400k-worker", scoreMs: this.cpuScoreBg() },
       /* THE FELT LAG (Event Timing API, `inputSummary`): input delay and
        * tap-to-paint duration quantiles for every input the browser answered
        * later than 16 ms, the count over 100 ms and the worst one named.
@@ -3161,7 +3198,9 @@ export class WorldScene extends Phaser.Scene {
          * path. Thermal throttling across back-to-back windows is the expected
          * cause; recording one window at a time is the way to avoid it. */
         ...cpuIndex,
-        beaconSelfMs: this.beaconSelfMs, // what the PREVIOUS report cost to build
+        beaconSelfMs: this.beaconSelfMs, // what the PREVIOUS report cost the frame it was built on
+        beaconIdleMs: this.beaconIdleMs, // what the PREVIOUS post cost in idle time (its JSON, the send)
+        beaconOverMs: this.beaconOverMs, // how far the recorder's idle work ran past an idle period, the last window's worst
         /* PER WINDOW, NOT SINCE PAGE LOAD — and reading them as per-window when
          * they were cumulative cost a round of analysis. Four consecutive
          * reports read fullPaints 25/33/36/38 and drains 21/29/29/29, which I
@@ -3327,7 +3366,14 @@ export class WorldScene extends Phaser.Scene {
         maxTex: (this.game.renderer as unknown as { maxTextures?: number }).maxTextures ?? -1,
         pipe: String((this.groundRT?.texture as unknown as { pipeline?: { name?: string } } | undefined)?.pipeline?.name ?? ""),
       },
-      ground: this.groundTexelReport(final),
+      /* THE GROUND CENSUS ON THE FINAL FLUSH ONLY (maintainer 2026-09-25: "I
+       * can't have a lag that is due to the perf run itself when I try to
+       * evaluate the performance"). Its gl.readPixels is a full GPU sync —
+       * the frame waits until the GPU has finished everything queued — and
+       * it ran once per 30 s window while he was playing. The flush is when
+       * he stops recording, so the one sample a run needs costs nothing he
+       * is evaluating. `?beaconquiet=0` samples every window again. */
+      ground: this.beaconTimed("ground", () => (final || !this.beaconQuietOn ? this.groundTexelReport(final) : null)),
       /* THE DISCRIMINATOR. On a flush, sample the texture, then FORCE a full
        * repaint and sample it again. The zigzag is in the ground texture (his
        * crop shows it), but nothing offline reproduces it: clean tiles tile
@@ -3375,50 +3421,124 @@ export class WorldScene extends Phaser.Scene {
       ),
       // Why the long frames were long: wait (compositor/GPU) | task | gc — see above.
       longWhy,
-      worst: (() => {
-        try {
-          const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
-          /* ALL OF THEM, NOT FIVE. The recorder already keeps 24 worst frames
-           * and the report threw 19 away — and that cost real analysis time:
-           * proving the depthSort spikes were a mis-billed stall rather than a
-           * slow sort needed the frames AROUND them, and answering "what was
-           * this frame doing" is exactly what the tail is for. Twenty-four
-           * records is a few KB against a report that already carries a PNG on
-           * its final flush. */
-          const w = (h?.worst ?? null) as Record<string, unknown>[] | null;
-          if (!w) return null;
-          /* THE LOAF ENTRY FOR EACH RECORD, MATCHED BY TIME: the browser
-           * reports a long frame after it closed, so the record could not
-           * carry it when it was written. `_t0`/`_t1` are the record's
-           * performance.now() bounds and never leave the client. */
-          return w.map((r) => {
-            const o: Record<string, unknown> = { ...r };
-            const t0 = o._t0 as number | undefined;
-            const t1 = o._t1 as number | undefined;
-            delete o._t0;
-            delete o._t1;
-            if (t0 !== undefined && t1 !== undefined) {
-              const l = loafAt(t0, t1);
-              if (l) o.loaf = l;
-            }
-            /* THE TIMELINE, compacted here for the 24 records that leave:
-             * every region that ran in or ahead of the frame as [name, start,
-             * end] relative to `pt0`, sorted by start — the wait between one
-             * region's end and the next one's start is what he asked to see. */
-            const raw = o._tl as { marks: Mark[]; dropped: number } | undefined;
-            delete o._tl;
-            if (raw && t0 !== undefined) {
-              o.tl = tlCompact(raw.marks, t0);
-              if (raw.dropped) o.tlDropped = raw.dropped;
-            }
-            return o;
-          });
-        } catch {
-          return null;
-        }
-      })(),
+      /* THE WORST FRAMES: taken here (the recorder resets them), shaped for
+       * the wire in idle time with the rest of the post (perfWorstShape). */
+      worst: null as Record<string, unknown>[] | null,
     };
-    this.perfPost(body, this.perfWinIdx, final);
+    const tWorst = performance.now();
+    let worstRaw: Record<string, unknown>[] | null = null;
+    try {
+      const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
+      worstRaw = (h?.worst ?? null) as Record<string, unknown>[] | null;
+    } catch {
+      worstRaw = null;
+    }
+    cost.worst = performance.now() - tWorst;
+    cost.build = tWorst - tBuild - cost.ground;
+    this.perfPost(body, this.perfWinIdx, final, worstRaw);
+  }
+
+  /** THE CPU BENCHMARK, OFF THE MAIN THREAD (cpubench.ts). The throttling
+   *  proxy (`cpu.scoreMs`) ran inside the frame that built each report; it runs
+   *  on a worker now, asked once per window, and a report carries the latest
+   *  answer. No worker (it failed to start): no score, never a stall. */
+  private cpuScore = 0;
+  private cpuBenchAsked = false;
+  private cpuWorker: Worker | null | undefined;
+  private cpuScoreBg(): number {
+    if (this.cpuWorker === undefined) {
+      try {
+        this.cpuWorker = new Worker(new URL("../cpubench.ts", import.meta.url), { type: "module" });
+        this.cpuWorker.onmessage = (e: MessageEvent) => {
+          this.cpuBenchAsked = false;
+          const v = Number(e.data);
+          if (Number.isFinite(v)) this.cpuScore = +v.toFixed(2);
+        };
+        this.cpuWorker.onerror = () => {
+          this.cpuWorker?.terminate();
+          this.cpuWorker = null;
+        };
+      } catch {
+        this.cpuWorker = null;
+      }
+    }
+    if (this.cpuWorker && !this.cpuBenchAsked) {
+      this.cpuBenchAsked = true;
+      this.cpuWorker.postMessage(0);
+    }
+    return this.cpuScore;
+  }
+
+  /** THE WORST FRAMES, SHAPED FOR THE WIRE — in idle time, off the frame (the
+   *  pump). ALL OF THEM, NOT FIVE: the recorder keeps 24 worst frames and the
+   *  report used to throw 19 away — proving the depthSort spikes were a
+   *  mis-billed stall needed the frames AROUND them. */
+  private perfWorstShape(w: Record<string, unknown>[] | null): Record<string, unknown>[] | null {
+    if (!w) return null;
+    try {
+      /* THE LOAF ENTRY FOR EACH RECORD, MATCHED BY TIME: the browser reports a
+       * long frame after it closed, so the record could not carry it when it
+       * was written. `_t0`/`_t1` are the record's performance.now() bounds and
+       * never leave the client. */
+      return w.map((r) => {
+        const o: Record<string, unknown> = { ...r };
+        const t0 = o._t0 as number | undefined;
+        const t1 = o._t1 as number | undefined;
+        delete o._t0;
+        delete o._t1;
+        if (t0 !== undefined && t1 !== undefined) {
+          const l = loafAt(t0, t1);
+          if (l) o.loaf = l;
+        }
+        /* THE TIMELINE, compacted for the 24 records that leave: every region
+         * that ran in or ahead of the frame as [name, start, end] relative to
+         * `pt0`, sorted by start — the wait between one region's end and the
+         * next one's start is what he asked to see. */
+        const raw = o._tl as { marks: Mark[]; dropped: number } | undefined;
+        delete o._tl;
+        if (raw && t0 !== undefined) {
+          o.tl = tlCompact(raw.marks, t0);
+          if (raw.dropped) o.tlDropped = raw.dropped;
+        }
+        return o;
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  /** WHAT THE LAST POST COST IN IDLE TIME (ms): shaping the worst frames, the
+   *  JSON and handing it to fetch — off the frame, reported beside
+   *  `beaconSelfMs` (the frame's share) as `counts.beaconIdleMs`. */
+  private beaconIdleMs = 0;
+  private perfPumpQueued = false;
+  /** Run the pump in the next idle period (the frame is never the one that
+   *  pays for the post). A 3 s timeout keeps a machine that is never idle
+   *  posting anyway. */
+  private perfPumpSoon(): void {
+    if (this.perfPumpQueued) return;
+    this.perfPumpQueued = true;
+    idleCall((d) => {
+      this.perfPumpQueued = false;
+      const slack = d && !d.didTimeout ? d.timeRemaining() : 0;
+      const t0 = performance.now();
+      this.perfPump();
+      this.beaconOver(performance.now() - t0 - slack);
+    }, 3000);
+  }
+
+  /** WHAT BUILDING THE LAST REPORT COST, BY PART (ms): the snapshot, the ground
+   *  census, the worst frames, the rest of the body, and the JSON — the parts
+   *  of `beaconSelfMs`, which is their sum plus the send. `__ml.beaconCost()`. */
+  private beaconCost = { snap: 0, ground: 0, worst: 0, build: 0, wire: 0, bytes: 0, total: 0, idle: 0, final: false };
+  private beaconQuietOn = groundFlagOn("beaconquiet", "ml-beaconquiet");
+  private beaconTimed<R>(part: "ground" | "worst", fn: () => R): R {
+    const t = performance.now();
+    try {
+      return fn();
+    } finally {
+      this.beaconCost[part] = performance.now() - t;
+    }
   }
 
   /* THE POST, MADE TO ARRIVE (2026-09-19). His 20:52 run posted windows 1 and
@@ -3445,11 +3565,17 @@ export class WorldScene extends Phaser.Scene {
    *  not the clean ledger of its first attempt. */
   private perfWire(body: Record<string, unknown>, attempt: number): string {
     body.beacon = { ...this.perfLedger, queued: this.perfOutbox.length, attempt };
-    return JSON.stringify(body);
+    const t = performance.now();
+    const text = JSON.stringify(body);
+    this.beaconCost.wire = performance.now() - t;
+    this.beaconCost.bytes = text.length;
+    return text;
   }
 
-  private perfPost(body: Record<string, unknown>, win: number, final: boolean): void {
+  private perfPost(body: Record<string, unknown>, win: number, final: boolean, worstRaw: Record<string, unknown>[] | null): void {
     if (final && document.visibilityState === "hidden") {
+      // The page is going away: no idle period is coming, the post goes now.
+      body.worst = this.perfWorstShape(worstRaw);
       this.perfLedger.sent++;
       const text = this.perfWire(body, 1);
       void fetch("/api/perf", { method: "POST", headers: { "Content-Type": "application/json" }, body: text, keepalive: true })
@@ -3460,17 +3586,22 @@ export class WorldScene extends Phaser.Scene {
         .catch((e) => this.perfFail(win, final, 0, String(e), text.length));
       return;
     }
-    this.perfOutbox.push({ body, win, final, tries: 0 });
+    this.perfOutbox.push({ body, win, final, tries: 0, worstRaw });
     if (this.perfOutbox.length > PERF_OUTBOX_MAX) {
       const dropped = this.perfOutbox.shift()!;
       this.perfFail(dropped.win, dropped.final, -1, "outbox full", 0);
     }
-    this.perfPump();
+    this.perfPumpSoon();
   }
 
   private perfPump(): void {
     if (this.perfPumping || !this.perfOutbox.length) return;
     const item = this.perfOutbox[0];
+    const t0 = performance.now();
+    if (item.worstRaw) {
+      item.body.worst = this.perfWorstShape(item.worstRaw);
+      item.worstRaw = null;
+    }
     this.perfPumping = true;
     this.perfLedger.sent++;
     if (item.tries > 0) this.perfLedger.retried++;
@@ -3488,7 +3619,7 @@ export class WorldScene extends Phaser.Scene {
         this.perfFail(item.win, item.final, status, err, text.length);
         if (item.tries >= PERF_POST_TRIES) this.perfOutbox.shift();
       }
-      if (this.perfOutbox.length) window.setTimeout(() => this.perfPump(), ok ? 6000 : 15000);
+      if (this.perfOutbox.length) window.setTimeout(() => this.perfPumpSoon(), ok ? 6000 : 15000);
     };
     fetch("/api/perf", { method: "POST", headers: { "Content-Type": "application/json" }, body: text }).then(
       async (r) => {
@@ -3497,6 +3628,8 @@ export class WorldScene extends Phaser.Scene {
       },
       (e) => settle(false, 0, String(e).slice(0, 120)),
     );
+    this.beaconIdleMs = +(performance.now() - t0).toFixed(1);
+    this.beaconCost.idle = this.beaconIdleMs;
   }
 
   private perfFail(win: number, final: boolean, status: number, error: string, bytes: number): void {
@@ -4278,7 +4411,7 @@ export class WorldScene extends Phaser.Scene {
    * frame time when the browser lends its timer. */
   private perfRunId = Math.random().toString(16).slice(2, 10);
   private perfWinIdx = 0;
-  private perfOutbox: { body: Record<string, unknown>; win: number; final: boolean; tries: number }[] = [];
+  private perfOutbox: { body: Record<string, unknown>; win: number; final: boolean; tries: number; worstRaw: Record<string, unknown>[] | null }[] = [];
   private perfStillPosted = 0;
   private perfPumping = false;
   private perfLedger = { sent: 0, ok: 0, failed: 0, retried: 0, lastStatus: 0, lastError: "", lastOkWin: 0 };
@@ -5450,6 +5583,10 @@ export class WorldScene extends Phaser.Scene {
      * one capture texture per size — see capturepool.ts. */
     if (this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
     this.installDepthSort();
+    // The renderer's name, asked behind the loading screen: `getParameter` is a
+    // synchronous round trip to the GPU (620 ms headless in the first report,
+    // where it used to be asked).
+    this.gpuString();
     this.installVisibleScratch();
     /* A BEACON ARMED AT BOOT (`?perf=1`, or remembered) gets the same
      * instruments the settings toggle installs. Without this the two arming
@@ -8246,6 +8383,14 @@ export class WorldScene extends Phaser.Scene {
           this.lastGround = { x: NaN, y: NaN }; // the scratch was borrowed: the next latch paints in full
         }
         return { checked, outside, empty, offTex, withDecks, ramps, maxLv, bad };
+      },
+      /** WHAT THE LAST BEACON REPORT COST TO BUILD, BY PART (see beaconCost),
+       *  and the quiet switch (the ground census on the final flush only). */
+      beaconCost: (quiet?: boolean) => {
+        if (typeof quiet === "boolean") this.beaconQuietOn = quiet;
+        const c = this.beaconCost;
+        const r = (v: number) => +v.toFixed(2);
+        return { quiet: this.beaconQuietOn, snap: r(c.snap), ground: r(c.ground), worst: r(c.worst), build: r(c.build), total: r(c.total), idle: r(c.idle), wire: r(c.wire), bytes: c.bytes, cpuScore: this.cpuScore, overMs: Math.max(this.beaconOverMs, this.beaconOverNext), final: c.final, selfMs: this.beaconSelfMs };
       },
       /** THE STORED OCCLUDER BOXES (occBoxes): the switch. */
       cullBox: (on?: boolean) => {
@@ -14700,31 +14845,15 @@ export class WorldScene extends Phaser.Scene {
         if (d < 3) this.perfTravel += d; // a teleport is not travel
       }
       this.perfPrevPos = pp;
-      /* THE INSTRUMENT MUST NOT BILL THE GAME, AND IT WAS BILLING 125 ms.
-       *
-       * Building a window's report is expensive on purpose — a gl.readPixels of
-       * 256x192 is a full GPU sync, and it used to sort 49,152 numbers on top —
-       * but it ran AFTER `perfLast` was stamped, so its whole cost landed in the
-       * NEXT frame's measurement. That frame is f=3778 in his last beacon: the
-       * first frame of window 4, total 138.4 ms with `other` 125.0 and every
-       * section under 3.2 ms. One of the three "mystery" frames I was chasing
-       * was this probe measuring itself, and at 125 ms it was a quarter of all
-       * the unaccounted time in the tail.
-       *
-       * Re-stamping `perfLast` afterwards takes it out of the game's frame, and
-       * `beaconSelfMs` reports what it cost so the number is visible rather than
-       * merely gone. It is a real stall on his device while recording — but it
-       * is the measurement's, not the game's, and it must not be attributed to
-       * the thing it is measuring. */
-      if (this.perfBeacon) {
-        const b0 = performance.now();
-        this.perfBeaconTick(now);
-        const spent = performance.now() - b0;
-        if (spent > 1) {
-          this.beaconSelfMs = +spent.toFixed(1);
-          this.perfLast = performance.now();
-        }
-      }
+      /* THE RECORDER BUILDS ITS REPORT OFF THE FRAME (maintainer 2026-09-25:
+       * "I can't have a lag that is due to the perf run itself when I try to
+       * evaluate the performance"). The frame only asks whether a window is
+       * due; the report is built in the next idle period (`perfBeaconTick`),
+       * posted in another (`perfPumpSoon`), the CPU benchmark runs in a third
+       * (`cpuScoreIdle`), and the ground census's GPU sync runs on the final
+       * flush only. It stalled a frame 34-65 ms once per 30 s window in his
+       * 07:19 run (`beaconSelfMs`), a hitch he felt while judging the lag. */
+      if (this.perfBeacon) this.perfBeaconTick(now);
     }
     this.ps();
     /* A FULL PAINT COUNTS AS HAVING PAINTED, and it did not.

@@ -544,6 +544,26 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   nothing since 2026-09-12). Headless: `occCull` 0.98 → 0.53 ms/frame, 101,543
   occluder checks with every stored box and decision identical
   (`verify-cullbox.mjs`, `__ml.cullParity()`).
+- **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
+  "I can't have a lag that is due to the perf run itself when I try to
+  evaluate the performance... This might result in me pushing you to fix the
+  lag forever"). His 07:19 run: `beaconSelfMs` 34-65 ms once per 30 s window
+  — a frame stalled while he judged the lag. The frame now only asks whether a
+  window is due; the report is BUILT in the next idle period, POSTED in
+  another (the worst frames shaped, the JSON, the send), the CPU benchmark
+  runs on a WORKER (`cpubench.ts`), the renderer's name is asked behind the
+  loading screen (`getParameter` is a GPU round trip: 620 ms headless in the
+  first report), and the ground texel census (a 256x192 `gl.readPixels`, a
+  full GPU sync — 630-1,360 ms per window headless, the bulk of his 34-65)
+  runs on the FINAL flush only, when he has stopped recording
+  (`?beaconquiet=0` samples every window again). `counts.beaconSelfMs` is the
+  report's build and `beaconIdleMs` the post, both in idle time;
+  `beaconOverMs` is how far any of it ran past its idle period — the part
+  that could still delay a frame (0 is the goal; headless has no idle periods,
+  so there it is everything). Headless (`scripts/probe-beaconcost.mjs`): the
+  report 2.7-9.6 ms and the post 4.5-11.7 ms, both off the frame, against
+  636-1,371 ms in the frame before. The final flush of a HIDDEN page still
+  builds and posts at once: no idle period is coming.
 - **REJECTED 2026-09-24: "one ground job a frame"** (58da4b2202, reverted the
   same hour). It stood the band slice and the drain group down on a frame whose
   landing repaint had painted (his 21:13 run: 64 of 192 worst frames stacked a
@@ -1321,20 +1341,17 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   what he was DOING, `deviceMemoryGb`, the connection hint, the UA); `rtt`
   (input seq sent → the server's ack, p50/p90/p99/max — network plus the 20
   Hz tick, the one lag no CPU section can see — with `patches`/`patchHz`
-  and `reconnects`); `cpu` (`xorshift400k` scoreMs: the same work every
-  window, so a window where it rose while the sections did not is the phone
-  throttling, not the game); `gpu` (frame time p50/p90/p99 from
-  `EXT_disjoint_timer_query` where the browser lends it — Phaser 3 is WebGL1;
-  the `_webgl2` form is tried first — and otherwise from THE FINISH CLOCK
-  (2026-09-19, `gputimer.ts`): his phone's Chrome lends no query to WebGL1,
-  so every run before carried `avail: false`; now one frame in three ends
-  with `gl.finish()` while the beacon is armed, and the wall time it blocks
-  is the GPU work still outstanding at that frame's end — near zero when
-  the GPU keeps up, the GPU's own frame time when it does not. `method`
-  says `query` or `finish`, `every` the sampling stride; the sampled frames
-  read longer in the histogram by what they waited, which is the price of
-  a number where there was none. `avail`+`reason` first: "no numbers" is
-  never 0 ms); `frames` now
+  and `reconnects`); `cpu` (`xorshift400k-worker` scoreMs: the same work
+  every window, on its own thread since 2026-09-25 (`cpubench.ts`), so a
+  window where it rose while the sections did not is the phone throttling,
+  not the game — compare runs of the same `bench` only); `gpu` (frame time
+  p50/p90/p99 from `EXT_disjoint_timer_query` where the browser lends it —
+  Phaser 3 is WebGL1; the `_webgl2` form is tried first — otherwise
+  `avail: false` with the reason. THE FINISH CLOCK (`gl.finish()` ending one
+  frame in three) is OPT-IN, `?gpufinish=1`: on his phone it read 0.0-0.2 ms
+  in every run — Chrome answers without waiting — so it measured nothing
+  while forcing a flush into a third of the frames he recorded. "no
+  numbers" is never 0 ms); `frames` now
   carries the histogram (`le17/le34/le50/le100/gt100`, `mean`) and `rafHz`
   (the refresh read off the 15th-percentile interval — 60/90/120, or 30 when
   the browser throttled the tab); and the snapshot counts are promoted to

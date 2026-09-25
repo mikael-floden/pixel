@@ -69,6 +69,14 @@ const q = {
     Number(isGl2 ? (gl as WebGL2RenderingContext).getQueryParameter(x, (gl as WebGL2RenderingContext).QUERY_RESULT) : ext!.getQueryObjectEXT!(x, ext!.QUERY_RESULT_EXT!)),
 };
 
+function finishWanted(): boolean {
+  try {
+    return new URLSearchParams(location.search).get("gpufinish") === "1";
+  } catch {
+    return false;
+  }
+}
+
 /** Hook Phaser's render bracket. Idempotent; the `on` getter gates per frame. */
 export function installGpuTimer(
   renderer: { gl?: WebGLRenderingContext | WebGL2RenderingContext },
@@ -91,6 +99,16 @@ export function installGpuTimer(
     else e = null;
   }
   if (!e) {
+    /* THE FINISH CLOCK IS OPT-IN (2026-09-25, `?gpufinish=1`). On his phone it
+     * read 0.0-0.2 ms in every run — Chrome answers `finish` without waiting —
+     * so it measured nothing, while forcing a flush into one frame in three
+     * of every run he recorded: the recorder must not change the frames it
+     * measures (maintainer: "I can't have a lag that is due to the perf run
+     * itself"). */
+    if (!finishWanted()) {
+      reason = "no timer query (the finish clock is opt-in: ?gpufinish=1)";
+      return;
+    }
     gl = g;
     method = "finish";
     reason = "ok";
