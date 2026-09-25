@@ -507,42 +507,42 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.187,
-          "step_max": 0.2942,
-          "drift": 2.98,
-          "loop": 0.5309,
-          "loop_ratio": 2.84,
-          "travel": 1.93,
-          "pin": 0.864,
+          "status": "warn",
+          "step_mean": 0.1855,
+          "step_max": 0.2507,
+          "drift": 4.61,
+          "loop": 0.4586,
+          "loop_ratio": 2.47,
+          "travel": 1.72,
+          "pin": 0.899,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.932,
+          "end_area": 1.002,
           "end_iou": null,
           "canvas": [
             224,
             224
           ],
           "reasons": [
-            "last→first hand-off is 2.8× a normal step — the loop hitches"
+            "last→first hand-off 2.5× a step — eyeball the loop"
           ],
-          "sub": "744d3636-f621-4cbb-baca-5addb4d89ba1",
-          "group": "c925dbb4-7626-476f-aa2d-cc26df2995aa",
+          "sub": "35a0edab-4a50-4efa-989d-fc4feaa6dc9b",
+          "group": "12111750-d65e-4438-8e10-12a79e218dbb",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "v3",
-          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning, with clearly more movement",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 6,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-25T18:21:30+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-25T21:07:03+00:00"
         },
         "south-east": {
           "status": "warn",
