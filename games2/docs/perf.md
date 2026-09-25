@@ -593,6 +593,26 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   its own `batchSprite`); it copies Phaser 3.90.0 and turns itself off on any
   other version, so an upgrade falls back to Phaser's code, never to a wrong
   one. `?batchpatch=0` / `ml-batch-patch` "0" is the A/B.
+- **THE WORLD'S PIPELINE ON A PHONE IS PHASER'S MOBILE ONE: A DRAW PER
+  TEXTURE SWITCH** (`multipipe.ts`, 2026-09-25). Phaser 3.90 gives every Game
+  Object on a device it does not call a desktop (`Device.os.desktop`, read off
+  the UA: his Android, any iOS) the MobilePipeline (`autoMobilePipeline`,
+  default on) — Single.frag with `forceZero`, a new batch, i.e. a drawArrays,
+  on EVERY texture change. Painter order over thousands of tile textures made
+  his phone issue a draw per switch: `glDraws` 384-1,754 a frame (window
+  means) through his c0efbebe66 run. HEADLESS NEVER SAW IT: a desktop UA gets
+  the MultiPipeline (testing.md, the UA trap). Measured under his UA at his
+  dense spots (108,169 / 103,183; SwiftShader, 5-6 frames an arm): 888 / 800
+  draws a frame and 4.7 / 5.1 ms of main-thread `renderer.render` against
+  199 / 198 draws and 3.8 / 3.4 ms with the MultiPipeline (the ground RT's
+  since its A/B) — the same vertex math, UVs and fragment math, 16 textures a
+  batch: work REMOVED from the main thread and from Chrome's GPU process, none
+  added to either; the render A/B harness under his UA, Mobile against Multi:
+  0 differing pixels at all 16 spots (day, night, swimming, cave, house). Its one price is on his GPU, where the fragment shader walks up to
+  15 compares to its unit — so it is OPT-IN until a run of his shows it (the
+  bake's law, below): Settings→Dev "draw: multi-texture batches" (Phaser takes
+  it at boot: the next load), `?multipipe=1`; `counts.mainUnits` says which
+  arm a window ran (1 mobile, 16 multi; perf-read's `u`).
 - **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
   "I can't have a lag that is due to the perf run itself when I try to
   evaluate the performance... This might result in me pushing you to fix the

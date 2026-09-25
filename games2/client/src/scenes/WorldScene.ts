@@ -150,6 +150,7 @@ import { installGpuTimer, gpuTimerTake } from "../gputimer";
 import { frameHist, rafHz, quantiles, inputSummary, sectionGroup, sortedNums } from "../perfextra";
 import { releaseImagesOnComplete } from "../loaderrelease";
 import { installBatchPatch } from "../batchpatch";
+import { mainBatchUnits, multiPipeState, multiPipeStored, setMultiPipe } from "../multipipe";
 import { installLoaf, loafTake, loafRing, type LoafSplit } from "../perfloaf";
 import { shapeWorst } from "../perfshape";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
@@ -3209,6 +3210,8 @@ export class WorldScene extends Phaser.Scene {
          * comparing two reports. Numbers, because `counts` is flattened. */
         monstersOn: this.monstersMock ? 2 : this.monstersOn ? 1 : 0, // 2 = pink mock
         sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
+        // Textures a batch of the world's pipeline holds: 1 = Phaser's mobile default, 16 = multipipe.ts.
+        mainUnits: mainBatchUnits(this.game.renderer),
         // Capture-target size switches this window = re-allocations stock Phaser
         // would do (does, with the pool off), and the distinct sizes seen.
         capSwitch: cap.switches,
@@ -6396,6 +6399,15 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.fastSortOn,
           state: () => (this.fastSortOn ? "on" : "off"),
+        },
+        /* THE WORLD'S PIPELINE (multipipe.ts, 2026-09-25): 16 textures a draw
+         * instead of Phaser's mobile one. Phaser picks it at boot, so a press
+         * stores the choice and the NEXT load takes it; OPT-IN until his run. */
+        {
+          label: "draw: multi-texture batches",
+          act: () => setMultiPipe(!multiPipeStored()),
+          get: () => mainBatchUnits(this.game.renderer) > 1,
+          state: () => multiPipeState(mainBatchUnits(this.game.renderer) > 1, !this.game.device.os.desktop),
         },
         /* THE EDIT TOOL (see worldEdit): the tile "dropdown" cycles the world's
          * grounds; place/dig/raise act on the player's own cell. */

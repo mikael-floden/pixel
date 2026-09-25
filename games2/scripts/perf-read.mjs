@@ -74,7 +74,7 @@ if (diff) {
 }
 
 console.log(`${rows.length} windows (file updated ${doc.updated_at})`);
-console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "pace", "bake", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops", "posts", "lag", "loaf n:pre/raf/dom", "draws/fill/fb"].join(" | "));
+console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "pace", "bake", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops", "posts", "lag", "loaf n:pre/raf/dom", "draws/fill/fb u"].join(" | "));
 for (const r of rows) {
   const fr = r.frames ?? {};
   const over50 = fr.le100 !== undefined ? fr.le100 + fr.gt100 : "-";
@@ -96,7 +96,8 @@ for (const r of rows) {
     // long frames (perfloaf.ts) and the GPU's bill per frame (glframe.ts).
     r.counts?.rafLagMean !== undefined ? f(r.counts.rafLagMean) : "-",
     r.loaf ? (r.loaf.state === "on" ? `${r.loaf.n}:${f(r.loaf.pre, 0)}/${f(r.loaf.raf, 0)}/${f(r.loaf.dom, 0)}` : r.loaf.state) : "-",
-    r.counts?.glDraws !== undefined ? `${f(r.counts.glDraws, 0)}/${f(r.counts.glFillMpx)}/${f(r.counts.glFbSw, 0)}` : "-",
+    // u = textures a batch of the world's pipeline holds (multipipe.ts): u1 Phaser's mobile default, u16 the multi-texture one
+    r.counts?.glDraws !== undefined ? `${f(r.counts.glDraws, 0)}/${f(r.counts.glFillMpx)}/${f(r.counts.glFbSw, 0)}${r.counts.mainUnits !== undefined ? ` u${r.counts.mainUnits}` : ""}` : "-",
   ].join(" | "));
 }
 // The census by GROUP (idle and busy in the argmax), summed over the printed windows.

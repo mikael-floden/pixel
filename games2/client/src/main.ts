@@ -2,6 +2,7 @@ import { renderRes, setFullBacking } from "./resolution";
 import { zoneAt, zoneGrid, CELL_WU, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
 import { mountFpsBadge } from "./fpsbadge";
 import { paceInstall } from "./pacing";
+import { multiPipeOn } from "./multipipe";
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
@@ -489,6 +490,8 @@ async function boot() {
     parent: "game",
     backgroundColor: "#12121c",
     pixelArt: true,
+    // 16 textures a draw on a phone too — opt-in (multipipe.ts: ?multipipe=1, Settings→Dev).
+    autoMobilePipeline: !multiPipeOn(),
     scale: {
       mode: Phaser.Scale.NONE,
       width: Math.round(window.innerWidth * rsNow()),

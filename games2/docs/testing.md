@@ -84,6 +84,13 @@ Where a test belongs, the browser gates, the harness traps, device geometry. Mov
   URL — a gate names missing files from `page.on("response")` (see
   `verify-groundbracket.mjs`) so a real hole (a missing art file) is not lost
   among expected ones.
+- **A HEADLESS PAGE DRAWS WITH THE DESKTOP PIPELINE, HIS PHONE WITH PHASER'S
+  MOBILE ONE**: Phaser picks the MobilePipeline (a draw per texture change)
+  when `Device.os.desktop` is false, which it reads off the USER AGENT alone —
+  Playwright's `isMobile` changes nothing. A draw-call or batching measurement
+  gives the context his Android UA (`userAgent: "Mozilla/5.0 (Linux; Android
+  10; K) ..."`) or it measures a pipeline he never runs (`docs/perf.md`, THE
+  WORLD'S PIPELINE).
 - **A WORLD-READING TEST SKIPS WHEN THE TREE IS ABSENT, AND SKIPS BEFORE IT
   LISTENS.** The deploy's test job checks out no world tree (see THE DEPLOY
   GATE, above), so `maps2/worlds3/the_game` is missing there; a test that
