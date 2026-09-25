@@ -1,11 +1,19 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T15:44:46+00:00",
+  "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "IDLE after 4da6f276d6 (live 15:44 UTC). Waiting for his next perf run: the proof is counts.beaconOverMs near 0 and no recorder stall; depthSort/occCull down with 8d44ffb965.",
-    "since": "2026-09-25T15:44:46+00:00",
-    "files": []
+    "unit": "CLAIMING: THE RECORDER STALL, ROUND 2. His 15:51 run (35a89e90d0, hot, charging): the report now builds between frames but costs 58-95 ms there (beaconOverMs = all of it: a saturated phone has no idle period) plus 10-23 ms for the post — the stall moved, it did not go. Cuts: the texture count kept by events (Object.keys over ~10k textures per report), the long-task pairing as a sweep (was every span x every task), and the post (worst-frame shaping, JSON, fetch) on a worker (perfpost.ts; the CPU benchmark rides the same worker, with a state field — it answered 0 in every window of his run).",
+    "since": "2026-09-25T16:08:40+00:00",
+    "files": [
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/client/src/perfpost.ts",
+      "games2/client/src/cpubench.ts",
+      "games2/client/src/perfloaf.ts",
+      "games2/scripts/probe-beaconcost.mjs",
+      "games2/scripts/verify-beacon.mjs",
+      "games2/docs/perf.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
