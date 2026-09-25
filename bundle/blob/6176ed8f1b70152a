@@ -808,7 +808,40 @@
       "renames": {
         "custom-Talon Rake - Keeps both feet planted on the ground": "attack",
         "custom-Death - Faints, collapses to t": "die"
-      }
+      },
+      "direction_remap": {
+        "rotations": {
+          "east": "south-east",
+          "north": "north-east",
+          "north-east": "east",
+          "north-west": "north",
+          "south": "south-west",
+          "south-east": "south",
+          "south-west": "west",
+          "west": "north-west"
+        },
+        "attack": {
+          "east": "south-east",
+          "north": "north-east",
+          "north-east": "east",
+          "north-west": "north",
+          "south": "south-west",
+          "south-east": "south",
+          "south-west": "west",
+          "west": "north-west"
+        },
+        "die": {
+          "east": "south-east",
+          "north": "north-east",
+          "north-east": "east",
+          "north-west": "north",
+          "south": "south-west",
+          "south-east": "south",
+          "south-west": "west",
+          "west": "north-west"
+        }
+      },
+      "art_from_candidate": true
     },
     {
       "id": "hollow_knight",
