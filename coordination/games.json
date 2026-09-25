@@ -1,6 +1,10 @@
 {
   "domain": "games",
   "notes": [
+    {
+      "at": "2026-09-25T18:35:03+00:00",
+      "text": "bb86080402 LIVE (fast-publish 36173748239 green; nangijala.online bundle index-9be812e0dc carries ml-slope-height2): slopes OFF by default — no half step, cut, bump or ramp; Dev -> slope cycles off / 4 px / 25..100%. Perf runs now measure the terrain without slopes."
+    },
     "[2026-09-24T15:09:55+00:00] done (d9b15a0a0d, from games-ui): CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (t",
     "[2026-09-24T15:09:55+00:00] done (674eaa5b0c, from maps2-assistant): TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.te",
     "[2026-09-24T15:09:55+00:00] done (f8aa53b38c, from maps2): CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with",
@@ -85,16 +89,16 @@
       "at": "2026-09-25T18:17:06+00:00"
     }
   ],
-  "updated_at": "2026-09-25T18:17:06+00:00",
+  "updated_at": "2026-09-25T18:35:03+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMING (maintainer 2026-09-25, urgent: 'We need a way in the game today to turn off this slope feature ... it has to be disabled now', perf tests running): SLOPES OFF BY DEFAULT. The switch gains OFF (the default; a new storage key so a stored 100 cannot turn it back on): the game rule lists no slope set (tiles3 slopeSets), so no half step, bump or ramp anywhere, and the light packs none. Then: diagonal slopes (8 directions) and the showcase page he asked for.",
-    "since": "2026-09-25T18:17:06+00:00",
+    "unit": "CLAIMING: SLOPES IN 8 DIRECTIONS (his ask 2026-09-25: 'draw slopes in 8 and not 4 directions'): a corner ramp becomes a CHAMFER (one raised corner: the triangle at it inclines toward it, the rest flat; three: the triangle at the low corner inclines, the rest at the top) — a diagonal terrace edge becomes one plane instead of a zigzag of folds. Behind his switch (off by default), so nothing changes for players. Then the showcase page he asked for (lab captures, never committed).",
+    "since": "2026-09-25T18:35:03+00:00",
     "files": [
-      "games2/client/src/slopeheight.ts",
-      "games2/client/src/tiles3.ts (slopeSets gate only)",
-      "games2/client/src/scenes/WorldScene.ts (the Dev 'slope' button's label, 3 lines)",
+      "games2/client/src/tiles3.ts (rampHeight only)",
+      "games2/client/src/nightlight.ts (rampH/rampG + the ramp walk solve + applyRamps occlusion)",
       "games2/server/test/slopes.test.ts",
+      "games2/docs/lighting.md",
       "games2/docs/tiles3-rendering.md"
     ]
   },
