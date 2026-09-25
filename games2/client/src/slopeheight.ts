@@ -5,15 +5,21 @@
  *  'base tile set' when creating this artificial slopes"). 0 keeps his
  *  published 4 px sets (the half step); 25..100 compose a ramp from the cell's
  *  own member plate (tiles3draw `buildRampPixels`) that climbs that share of
- *  the 15 px storey, the wall above it what is left. THE DEFAULT IS 0: the
- *  composed ramp still draws stepped shadows, leftover faces and stretched
- *  texture (maintainer 2026-09-24: "Still looks so bad and buggy!"), so it
- *  stays opt-in until its redesign lands. Owned here like
+ *  the 15 px storey, the wall above it what is left.
+ *
+ *  THE DEFAULT IS OFF (-1): no slope of any kind, the half step included — the
+ *  resolver lists no slope set (tiles3 `slopeSets`), so every rise is the
+ *  plain stair (maintainer 2026-09-25: "We need a way in the game today to
+ *  turn off this 'slope' feature becouse it's currently broken. Once we have
+ *  got it workikg we can change the default to enabled ... We are also
+ *  running performance tests"). The storage key is new with the off stop, so
+ *  a value stored before it cannot switch slopes back on. Owned here like
  *  detailrate.ts: "ml-slope-height" rebuilds the resolver on both threads.
  *  Node-safe: no DOM at module scope. */
-export const SLOPE_HEIGHTS = [0, 25, 50, 75, 100] as const;
-export const SLOPE_HEIGHT_DEFAULT = 0;
-const KEY = "ml-slope-height";
+export const SLOPE_OFF = -1;
+export const SLOPE_HEIGHTS = [SLOPE_OFF, 0, 25, 50, 75, 100] as const;
+export const SLOPE_HEIGHT_DEFAULT = SLOPE_OFF;
+const KEY = "ml-slope-height2";
 
 const g = globalThis as unknown as {
   window?: { dispatchEvent(e: unknown): void };
@@ -40,7 +46,7 @@ function load(): number {
   return SLOPE_HEIGHT_DEFAULT;
 }
 
-/** The share, 0..100. */
+/** The share, 0..100, or SLOPE_OFF. */
 export function slopeHeight(): number {
   return value;
 }
@@ -57,7 +63,12 @@ export function setSlopeHeight(n: number): void {
   if (g.window && g.CustomEvent) g.window.dispatchEvent(new g.CustomEvent("ml-slope-height", { detail: next }));
 }
 
-/** The next stop on the switch, wrapping: 100 -> 0 -> 25 -> ... */
+/** The switch as he reads it: "off", "4 px" (the half step) or the share. */
+export function slopeLabel(n = value): string {
+  return n < 0 ? "off" : n === 0 ? "4 px" : `${n}%`;
+}
+
+/** The next stop on the switch, wrapping: 100 -> off -> 4 px -> 25 -> ... */
 export function nextSlopeHeight(): number {
   const i = SLOPE_HEIGHTS.indexOf(value as (typeof SLOPE_HEIGHTS)[number]);
   return SLOPE_HEIGHTS[(i + 1) % SLOPE_HEIGHTS.length];

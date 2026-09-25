@@ -582,17 +582,19 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   (`WorldScene.rampLiftPx`). Its art path is VIRTUAL (`synthetic/ramp/<ground>/
   <mask>/<member plate>`, the texture key; `art.from` names the plate) — the
   load list and the image closure name the plate, never the path. HIS SLOPE
-  SWITCH (`slopeheight.ts`, Settings -> Dev -> "slope"): 0% his published
-  4 px sets (the half step), 25/50/75% a ramp that climbs that share of the
-  storey with the x-over-y wall left above it, 100% a clean slope with no
-  wall (his ask, 2026-09-24: "make one that is 25% higher, 50% higher, 75%
-  higher and 100% higher ... you need to use the base tile set"); the
-  default is 0% until the composed ramp stops drawing stepped shadows,
-  leftover faces and stretched texture (his verdict on 100%, 2026-09-24:
-  "Still looks so bad and buggy!"); "ml-slope-height" rebuilds the resolver
-  on both threads.
+  SWITCH (`slopeheight.ts`, Settings -> Dev -> "slope"): OFF no slope of any
+  kind — `slopeSets` lists none, so no half step, cut, bump or ramp and every
+  rise is the plain stair; "4 px" his published sets (the half step);
+  25/50/75% a ramp that climbs that share of the storey with the x-over-y
+  wall left above it; 100% a clean slope with no wall (his ask, 2026-09-24:
+  "make one that is 25% higher, 50% higher, 75% higher and 100% higher ...
+  you need to use the base tile set"). THE DEFAULT IS OFF, under a storage
+  key new with the off stop so no stored value turns it back on (maintainer
+  2026-09-25: "it has to be disabled now ... Once we have got it workikg we
+  can change the default to enabled"; perf runs measure the terrain without
+  slopes); "ml-slope-height" rebuilds the resolver on both threads.
   A game rule (`footBoundary`; `slopeHeight` 0 or the parity path keeps
-  render3's pools). THE PICK (`rampIndexFor`): every corner a cell
+  render3's pools, below 0 lists none). THE PICK (`rampIndexFor`): every corner a cell
   exactly one level up touches, never a full plateau top; a published
   storey-height set (`isRampSet`, `RAMP_MIN_PX` 12) comes first and replaces
   the composition the day one exists. A RAMP WINS OVER A SAME-PLANE BOUNDARY

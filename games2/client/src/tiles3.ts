@@ -829,7 +829,8 @@ export interface Tiles3Data {
    *  one-level rise of a ground with no published storey-height set wears a
    *  ramp composed from its member plate that climbs this share
    *  (`syntheticRampSet`). 0 or absent keeps the published-set half step,
-   *  which the tests pin on its own. A game rule, with `footBoundary`. */
+   *  which the tests pin on its own; BELOW 0 the switch is OFF and no slope
+   *  set is listed at all (`slopeSets`). A game rule, with `footBoundary`. */
   slopeHeight?: number;
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
@@ -2207,6 +2208,9 @@ export class Tiles3 {
    *  from a set he had never seen ("I kinda got the feeling you used a slope I
    *  never approved"). */
   slopeSets(ground: string, ramp = false): SlopeSet[] {
+    // HIS SWITCH OFF (slopeheight.ts, the default): no slope of any kind — no
+    // half step, bump or ramp — so every rise is the plain stair.
+    if (this.data.footBoundary && (this.data.slopeHeight ?? 0) < 0) return [];
     if (!this.slopeCache) {
       const by = new Map<string, SlopeSet[]>();
       /* AN UNJUDGED GROUND FALLS BACK TO ITS FIRST COMPLETE SET (maintainer

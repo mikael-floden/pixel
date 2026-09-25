@@ -227,7 +227,7 @@ import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type Reso
 import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
 import { detailEvery, detailRate, setDetailEvery } from "../detailrate";
 import { ensureDetailDial } from "../detaildial";
-import { slopeHeight, setSlopeHeight, nextSlopeHeight } from "../slopeheight";
+import { slopeHeight, setSlopeHeight, nextSlopeHeight, slopeLabel } from "../slopeheight";
 // ---- TILES 3.0 (maps3 worlds) -------------------------------------------
 // The resolver (what draws on this cell), the draw layer (the two pixel ops +
 // the texture factory), the streaming per-cell runtime, and scenery. All four
@@ -6107,17 +6107,18 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.night && this.night.testPattern === 5,
           state: () => (this.night?.testPattern === 5 ? "on" : "off"),
         },
-        /* SLOPE — how high the composed slope climbs (slopeheight.ts): 0% his
-         * published 4 px sets, 25/50/75% a ramp with a wall left above it,
-         * 100% a clean slope without stairs (maintainer 2026-09-24). */
+        /* SLOPE — how high the composed slope climbs (slopeheight.ts): off
+         * (the default) no slope at all, 4 px his published sets, 25/50/75% a
+         * ramp with a wall left above it, 100% a clean slope without stairs
+         * (maintainer 2026-09-24/25). */
         {
           label: "slope",
           act: () => {
             setSlopeHeight(nextSlopeHeight());
-            this.chat.addLog("—", `slope: ${slopeHeight()}%`);
+            this.chat.addLog("—", `slope: ${slopeLabel()}`);
           },
-          get: () => slopeHeight() > 0,
-          state: () => `${slopeHeight()}%`,
+          get: () => slopeHeight() >= 0,
+          state: () => slopeLabel(),
         },
         /* OVERLAYS — the same idea as the shadows switch, for the three
          * full-screen passes. The zigzag is NOT in the ground texture (exact
