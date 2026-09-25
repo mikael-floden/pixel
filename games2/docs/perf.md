@@ -577,6 +577,22 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   it frees counts toward the global limit. `usedJSHeapSize` counts ArrayBuffers
   (a 100 MB buffer read +99.6 MB in Chrome 141), so the beacon's `heap` block is
   mostly texture pixels, not objects.
+- **THE SPRITE BATCH BOXES NO NUMBERS AT ITS OWN CALL** (`batchpatch.ts`,
+  2026-09-25). `render` was the largest allocation of every window of his cool
+  run (105-285 KB a frame, ~40% of all; the young generation collected ~18
+  times a second): Phaser's `MultiPipeline.batchSprite` hands twenty numbers
+  to `batchQuad`, too big to inline, so every corner, UV and packed tint (a
+  uint32 past the Smi range) became a HeapNumber at the call. The patch is
+  the same function with `batchQuad`'s 42 stores and the tint packing written
+  inline — the same values into the same vertex slots, so the render A/B
+  harness (`--ls ml-batch-patch=0,1`, 1079x1416, day, swimming, indoor,
+  night) reads 0 differing pixels. Headless, standing: `batchSprite`
+  61.0 -> 21.5 KB a frame (the rest is its matrix calls, and the scenery-lit
+  copies, which keep the original). Only a pipeline whose `batchQuad` is
+  Phaser's own takes it (scenery-lit and PreFX override it; LightPipeline has
+  its own `batchSprite`); it copies Phaser 3.90.0 and turns itself off on any
+  other version, so an upgrade falls back to Phaser's code, never to a wrong
+  one. `?batchpatch=0` / `ml-batch-patch` "0" is the A/B.
 - **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
   "I can't have a lag that is due to the perf run itself when I try to
   evaluate the performance... This might result in me pushing you to fix the

@@ -149,6 +149,7 @@ import { installGlFrameProbe, glFrameTake, glWindowTake, glLateTake, glFrameEmpt
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
 import { frameHist, rafHz, quantiles, inputSummary, sectionGroup, sortedNums } from "../perfextra";
 import { releaseImagesOnComplete } from "../loaderrelease";
+import { installBatchPatch } from "../batchpatch";
 import { installLoaf, loafTake, loafRing, type LoafSplit } from "../perfloaf";
 import { shapeWorst } from "../perfshape";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
@@ -5717,6 +5718,8 @@ export class WorldScene extends Phaser.Scene {
     /* Before the first DynamicTexture bracket (cover surfaces, ground RT):
      * one capture texture per size — see capturepool.ts. */
     if (this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
+    // The sprite batch without a heap number per corner (batchpatch.ts; ?batchpatch=0 is off).
+    if (this.game.renderer.type === Phaser.WEBGL) installBatchPatch();
     this.installDepthSort();
     // The renderer's name, asked behind the loading screen: `getParameter` is a
     // synchronous round trip to the GPU (620 ms headless in the first report,
