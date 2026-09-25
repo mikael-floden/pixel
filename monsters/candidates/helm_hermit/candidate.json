@@ -762,6 +762,42 @@
           "tries": 1,
           "generated_at": "2026-09-25T16:37:11+00:00",
           "source": "north-east"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1797,
+          "step_max": 0.1968,
+          "drift": 1.35,
+          "loop": 0.1663,
+          "loop_ratio": 0.93,
+          "travel": 0.15,
+          "pin": 0.87,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.993,
+          "end_iou": null,
+          "canvas": [
+            48,
+            48
+          ],
+          "reasons": [],
+          "sub": "7e9d42b2-0a22-493f-87d3-e6e16804019b",
+          "group": "62d0b263-ba62-4261-bd28-b6aec9b8a432",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T19:02:56+00:00"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -821,6 +857,14 @@
           "helm_hermit/animations/walk/north-west/03.webp",
           "helm_hermit/animations/walk/north-west/04.webp",
           "helm_hermit/animations/walk/north-west/05.webp"
+        ],
+        "north": [
+          "helm_hermit/animations/walk/north/00.webp",
+          "helm_hermit/animations/walk/north/01.webp",
+          "helm_hermit/animations/walk/north/02.webp",
+          "helm_hermit/animations/walk/north/03.webp",
+          "helm_hermit/animations/walk/north/04.webp",
+          "helm_hermit/animations/walk/north/05.webp"
         ]
       },
       "strips": {
@@ -830,7 +874,8 @@
         "north-east": "helm_hermit/animations/walk__north-east.webp",
         "south-west": "helm_hermit/animations/walk__south-west.webp",
         "west": "helm_hermit/animations/walk__west.webp",
-        "north-west": "helm_hermit/animations/walk__north-west.webp"
+        "north-west": "helm_hermit/animations/walk__north-west.webp",
+        "north": "helm_hermit/animations/walk__north.webp"
       }
     }
   },
