@@ -76,6 +76,65 @@ export function tlCompact(marks: readonly Mark[], t0: number, keep = TL_KEEP): M
     .map(([n, a, b]) => [n.length > 24 ? n.slice(0, 24) : n, +(a - t0).toFixed(1), +(b - t0).toFixed(1)]);
 }
 
+/** THE WORST FRAMES' TIMELINES, PACKED for the report's worker (perfpost.ts):
+ *  each mark's name an index into `names`, its two times in one Float64Array,
+ *  record r's marks at [at[r], at[r+1]); `has[r]` 0 when record r carried no
+ *  timeline. A window's 24 records hold ~2,000-2,500 marks, and handing them
+ *  over as [name, t0, t1] arrays was the largest part of the post left on the
+ *  game's thread (structured clone 1.4-3.0 ms headless, JSON 0.9-1.4 ms —
+ *  every double formatted); typed arrays clone as bytes. Exact: a time comes
+ *  back as the same double. */
+export interface TlPacked {
+  names: string[];
+  name: Uint32Array;
+  t: Float64Array;
+  at: Uint32Array;
+  dropped: Uint32Array;
+  has: Uint8Array;
+}
+
+export function tlPack(tls: readonly ({ marks: readonly Mark[]; dropped: number } | undefined)[]): TlPacked {
+  let n = 0;
+  for (const tl of tls) if (tl) n += tl.marks.length;
+  const ids = new Map<string, number>();
+  const names: string[] = [];
+  const name = new Uint32Array(n);
+  const t = new Float64Array(2 * n);
+  const at = new Uint32Array(tls.length + 1);
+  const dropped = new Uint32Array(tls.length);
+  const has = new Uint8Array(tls.length);
+  let k = 0;
+  for (let r = 0; r < tls.length; r++) {
+    at[r] = k;
+    const tl = tls[r];
+    if (!tl) continue;
+    has[r] = 1;
+    dropped[r] = tl.dropped;
+    for (const m of tl.marks) {
+      let id = ids.get(m[0]);
+      if (id === undefined) {
+        id = names.length;
+        names.push(m[0]);
+        ids.set(m[0], id);
+      }
+      name[k] = id;
+      t[2 * k] = m[1];
+      t[2 * k + 1] = m[2];
+      k++;
+    }
+  }
+  at[tls.length] = k;
+  return { names, name, t, at, dropped, has };
+}
+
+/** Record `r`'s timeline back out of a pack, as `tlTake` gave it. */
+export function tlUnpack(p: TlPacked, r: number): { marks: Mark[]; dropped: number } | undefined {
+  if (!p.has[r]) return undefined;
+  const marks: Mark[] = [];
+  for (let k = p.at[r]; k < p.at[r + 1]; k++) marks.push([p.names[p.name[k]], p.t[2 * k], p.t[2 * k + 1]]);
+  return { marks, dropped: p.dropped[r] };
+}
+
 /** Pure: the waits a timeline holds — for each mark, the gap from the end of
  *  the latest-ending mark before it to its start (0 when they overlap or
  *  nest). The sum is the time nothing timed was running. */

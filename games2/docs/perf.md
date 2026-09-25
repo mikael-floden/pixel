@@ -547,23 +547,36 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
 - **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
   "I can't have a lag that is due to the perf run itself when I try to
   evaluate the performance... This might result in me pushing you to fix the
-  lag forever"). His 07:19 run: `beaconSelfMs` 34-65 ms once per 30 s window
-  — a frame stalled while he judged the lag. The frame now only asks whether a
-  window is due; the report is BUILT in the next idle period, POSTED in
-  another (the worst frames shaped, the JSON, the send), the CPU benchmark
-  runs on a WORKER (`cpubench.ts`), the renderer's name is asked behind the
+  lag forever"). The frame only asks whether a window is due. The report is
+  BUILT in the next idle period — the snapshot, the body, the worst frames
+  taken and their timelines PACKED (`tlPack`: names as indices, times in a
+  Float64Array) — and POSTED in another: this thread writes three JSON strings
+  (the body, the worst records, the LoAF ring) and hands them with the pack to
+  THE REPORT'S WORKER (`perfpost.ts`), which shapes the worst frames
+  (`perfshape.ts` `shapeWorst`, the one function both paths run), writes the
+  wire JSON and fetches; the outbox, the retries and the ledger stay here. The
+  CPU benchmark runs on that worker; the renderer's name is asked behind the
   loading screen (`getParameter` is a GPU round trip: 620 ms headless in the
-  first report), and the ground texel census (a 256x192 `gl.readPixels`, a
-  full GPU sync — 630-1,360 ms per window headless, the bulk of his 34-65)
-  runs on the FINAL flush only, when he has stopped recording
-  (`?beaconquiet=0` samples every window again). `counts.beaconSelfMs` is the
-  report's build and `beaconIdleMs` the post, both in idle time;
-  `beaconOverMs` is how far any of it ran past its idle period — the part
-  that could still delay a frame (0 is the goal; headless has no idle periods,
-  so there it is everything). Headless (`scripts/probe-beaconcost.mjs`): the
-  report 2.7-9.6 ms and the post 4.5-11.7 ms, both off the frame, against
-  636-1,371 ms in the frame before. The final flush of a HIDDEN page still
-  builds and posts at once: no idle period is coming.
+  first report); the ground texel census (a 256x192 `gl.readPixels`, a full
+  GPU sync — 630-1,360 ms per window headless, the bulk of his 07:19 run's
+  `beaconSelfMs` 34-65) runs on the FINAL flush only (`?beaconquiet=0` samples
+  every window); the texture count is kept by the texture manager's events
+  (`Object.keys` over ~10k textures was 3.9 ms a report); the long-task
+  pairing is a sweep. (IDLE TIME ALONE FAILED: his 15:51 run on a hot phone
+  put the report at 58-95 ms between frames, all of it past any idle period —
+  a saturated phone has none, so work moved out of the frame still stalls the
+  next one; only work taken off the thread, or made small, helps. Not a
+  structured clone of the objects: 5x the JSON of the same body, and a
+  window's ~2,000-2,500 timeline marks were 1.4-3.0 ms of it.) Headless
+  (`scripts/probe-beaconcost.mjs`; `?perfworker=0` posts on this thread, the
+  bisect): the game's thread pays 3.4-6.7 ms a window (the report 2.2-3.5, the
+  hand-over 1.0-3.2; 11 ms in the first, cold) against 7.2-26.6 ms with the
+  post on this thread; the worker 4.7-10.7 ms. `counts`: `beaconSelfMs` the
+  report, `beaconIdleMs` the hand-over, `beaconWorkerMs` the worker's share,
+  `beaconOverMs` how far any of it ran past its idle period, `perfWorker` 0
+  none / 1 made / 2 answered / 3 failed (a failed or 60 s silent worker is
+  dropped and this thread posts). A hidden page's final flush builds and
+  posts at once, here: no idle period is coming.
 - **REJECTED 2026-09-24: "one ground job a frame"** (58da4b2202, reverted the
   same hour). It stood the band slice and the drain group down on a frame whose
   landing repaint had painted (his 21:13 run: 64 of 192 worst frames stacked a
@@ -1342,7 +1355,7 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   (input seq sent → the server's ack, p50/p90/p99/max — network plus the 20
   Hz tick, the one lag no CPU section can see — with `patches`/`patchHz`
   and `reconnects`); `cpu` (`xorshift400k-worker` scoreMs: the same work
-  every window, on its own thread since 2026-09-25 (`cpubench.ts`), so a
+  every window, on the report's worker since 2026-09-25 (`perfpost.ts`), so a
   window where it rose while the sections did not is the phone throttling,
   not the game — compare runs of the same `bench` only); `gpu` (frame time
   p50/p90/p99 from `EXT_disjoint_timer_query` where the browser lends it —

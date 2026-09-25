@@ -60,7 +60,13 @@ await page.evaluate(() => window.__ml.noAggro?.(true));
 // The beacon posts a window only after the body has MOVED (>= 2 cells): walk it.
 for (let i = 0; i < 14 && !captured; i++) { await page.evaluate((i) => window.__ml.teleport(261.8 - i * 2, 219.3), i); await page.waitForTimeout(6000); }
 await page.waitForTimeout(3000);
+// THE TEXTURE COUNT IS KEPT AS IT CHANGES (ADD events, `removeKey`), not counted per report: after
+// the walk (streamed art added, covers and bakes rebuilt) it must equal the list itself — a drift
+// would read as a leak, or hide one.
+const texCount = await page.evaluate(() => ({ kept: window.__ml.perf().counts.textures, exact: Object.keys(window.__mlGame.textures.list).length }));
 await browser.close();
+if (texCount.kept !== texCount.exact) fail(`counts.textures is kept at ${texCount.kept} but the texture list holds ${texCount.exact}`);
+else console.log(`textures: kept ${texCount.kept} = the list's ${texCount.exact}`);
 if (!posts.length) { fail("no POST to /api/perf was made in 90 s"); process.exit(1); }
 if (!captured) { fail(`the first window was refused (502) and never posted again in 90 s — the outbox retry is gone (${posts.length} post(s) seen)`); process.exit(1); }
 if (captured.run?.winIdx !== posts[0].run?.winIdx) fail(`the retry carried window ${captured.run?.winIdx}, not the refused window ${posts[0].run?.winIdx}`);
@@ -134,11 +140,14 @@ for (const [block, keys] of Object.entries(MUST)) {
 // block must say so — no GPU number is `avail: false` with the reason, never a
 // silent 0. (The finish path itself is armed by `?gpufinish=1`.)
 if (rep.gpu?.avail || rep.gpu?.method !== "none" || !/gpufinish/.test(String(rep.gpu?.reason))) fail(`the GPU block without a timer query must say the finish clock is opt-in: ${JSON.stringify(rep.gpu)}`);
-// THE RECORDER'S OWN COST (2026-09-25): built and posted in idle time; the
-// window carries what the last report and post cost and how far they ran past
-// an idle period, and the CPU benchmark comes from its worker.
-for (const k of ["beaconSelfMs", "beaconIdleMs", "beaconOverMs"]) if (typeof rep.counts?.[k] !== "number") fail(`counts.${k} did not reach the file`);
-if (rep.cpu?.bench !== "xorshift400k-worker") fail(`cpu.bench is ${JSON.stringify(rep.cpu?.bench)}, not the worker's`);
+// THE RECORDER'S OWN COST (2026-09-25): the report built in idle time, the post
+// (worst frames shaped, JSON, fetch) and the CPU benchmark on the report's worker
+// (perfpost.ts); the window carries what the last report cost this thread, the
+// hand-over, the worker's share and how far any of it ran past an idle period.
+// THIS report came through the worker: its timelines above were shaped there.
+for (const k of ["beaconSelfMs", "beaconIdleMs", "beaconOverMs", "beaconWorkerMs", "perfWorker"]) if (typeof rep.counts?.[k] !== "number") fail(`counts.${k} did not reach the file`);
+if (rep.counts?.perfWorker !== 2) fail(`counts.perfWorker is ${rep.counts?.perfWorker}: the report's worker never answered (2), so the post ran on the game's thread`);
+if (rep.cpu?.bench !== "xorshift400k-worker" || !(rep.cpu?.scoreMs > 0)) fail(`cpu is ${JSON.stringify(rep.cpu)}: the worker's benchmark never answered`);
 if (rep.lights && rep.lights.pass === undefined) fail("lights.pass (the lighting-pass switch) did not reach the file");
 const w0 = (rep.worst ?? [])[0];
 if (!w0) fail("no worst frame reached the file — the hitch recorder rides with the beacon");

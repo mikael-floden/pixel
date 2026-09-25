@@ -148,9 +148,10 @@ import { installCaptureProbe, installCapturePool, captureTake } from "../capture
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, glFrameCounters, type GlFrame } from "../glframe";
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
 import { frameHist, rafHz, quantiles, inputSummary, sectionGroup } from "../perfextra";
-import { installLoaf, loafTake, loafAt } from "../perfloaf";
+import { installLoaf, loafTake, loafRing, type LoafSplit } from "../perfloaf";
+import { shapeWorst } from "../perfshape";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
-import { tlArm, tlMark, tlTake, tlCompact, clock0, type Mark } from "../perftimeline";
+import { tlArm, tlMark, tlTake, tlPack, clock0, type Mark, type TlPacked } from "../perftimeline";
 import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
 import { FastDepthSort } from "../fastsort";
@@ -2923,13 +2924,23 @@ export class WorldScene extends Phaser.Scene {
      * which is the compositor waiting on the GPU. One run says which
      * population `cells:unattributed` is (his 03:13 run: 42 of 55 long frames
      * in a window were idle gaps of 35-120 ms with nothing of ours in them). */
+    /* A SWEEP, NOT EVERY PAIR: main-thread long tasks never overlap one
+     * another, so sorted by start they are sorted by end too, and a span only
+     * meets the tasks from the first that ends after it starts. Every pair was
+     * ~350 spans x 256 tasks per report on his hot phone — the same sums. */
     const lt = this.perfLongTasks;
+    const tasks: [number, number][] = [];
+    for (let i = 0; i + 1 < lt.length; i += 2) tasks.push([lt[i], lt[i + 1]]);
+    tasks.sort((a, b) => a[0] - b[0]);
+    const spans = this.hitchSpans.slice().sort((a, b) => a.i0 - b.i0);
     const why = { n: 0, wait: 0, task: 0, gc: 0, taskMs: 0, waitIdleMs: 0, gcMb: 0 };
-    for (const s of this.hitchSpans) {
+    let tk = 0;
+    for (const s of spans) {
       why.n++;
       let overlap = 0;
-      for (let i = 0; i + 1 < lt.length; i += 2) {
-        const o = Math.min(lt[i + 1], s.i1) - Math.max(lt[i], s.i0);
+      while (tk < tasks.length && tasks[tk][1] <= s.i0) tk++;
+      for (let j = tk; j < tasks.length && tasks[j][0] < s.i1; j++) {
+        const o = Math.min(tasks[j][1], s.i1) - Math.max(tasks[j][0], s.i0);
         if (o > 0) overlap += o;
       }
       const w = overlap > 0 ? "task" : s.dh <= -HITCH_GC_MB ? "gc" : "wait";
@@ -3201,6 +3212,8 @@ export class WorldScene extends Phaser.Scene {
         beaconSelfMs: this.beaconSelfMs, // what the PREVIOUS report cost the frame it was built on
         beaconIdleMs: this.beaconIdleMs, // what the PREVIOUS post cost in idle time (its JSON, the send)
         beaconOverMs: this.beaconOverMs, // how far the recorder's idle work ran past an idle period, the last window's worst
+        beaconWorkerMs: this.beaconWorkerMs, // the PREVIOUS post's shaping + JSON, on the report's worker
+        perfWorker: this.perfWorkerState, // the report's worker: 0 not made, 1 made, 2 answered, 3 failed (main-thread post)
         /* PER WINDOW, NOT SINCE PAGE LOAD — and reading them as per-window when
          * they were cumulative cost a round of analysis. Four consecutive
          * reports read fullPaints 25/33/36/38 and drains 21/29/29/29, which I
@@ -3433,78 +3446,83 @@ export class WorldScene extends Phaser.Scene {
     } catch {
       worstRaw = null;
     }
+    /* THE TIMELINES PACKED with the window (tlPack): the outbox holds bytes,
+     * not ~2,000 small arrays, and the records the rest of their fields. */
+    let tl: TlPacked | null = null;
+    if (worstRaw) {
+      tl = tlPack(worstRaw.map((r) => r._tl as { marks: Mark[]; dropped: number } | undefined));
+      for (const r of worstRaw) delete r._tl;
+    }
     cost.worst = performance.now() - tWorst;
     cost.build = tWorst - tBuild - cost.ground;
-    this.perfPost(body, this.perfWinIdx, final, worstRaw);
+    this.perfPost(body, this.perfWinIdx, final, worstRaw, worstRaw ? loafRing() : [], tl);
   }
 
-  /** THE CPU BENCHMARK, OFF THE MAIN THREAD (cpubench.ts). The throttling
-   *  proxy (`cpu.scoreMs`) ran inside the frame that built each report; it runs
-   *  on a worker now, asked once per window, and a report carries the latest
-   *  answer. No worker (it failed to start): no score, never a stall. */
-  private cpuScore = 0;
-  private cpuBenchAsked = false;
-  private cpuWorker: Worker | null | undefined;
-  private cpuScoreBg(): number {
-    if (this.cpuWorker === undefined) {
+  /** THE REPORT'S WORKER (perfpost.ts): the post — the worst frames shaped,
+   *  the JSON, the fetch — and the CPU benchmark, off the game's thread. Made
+   *  on first use; null when it cannot be (the main-thread path then). */
+  private perfWorker: Worker | null | undefined;
+  private perfWorkerState = 0; // 0 not made, 1 made, 2 answered, 3 failed
+  private perfWorkerPosts = new Map<number, (ok: boolean, status: number, err: string, bytes: number) => void>();
+  private perfWorkerSeq = 0;
+  private perfWorkerOn = groundFlagOn("perfworker", "ml-perfworker"); // ?perfworker=0: the post on this thread (the bisect)
+  private perfWorkerGet(): Worker | null {
+    if (this.perfWorker === undefined && !this.perfWorkerOn) this.perfWorker = null;
+    if (this.perfWorker === undefined) {
       try {
-        this.cpuWorker = new Worker(new URL("../cpubench.ts", import.meta.url), { type: "module" });
-        this.cpuWorker.onmessage = (e: MessageEvent) => {
-          this.cpuBenchAsked = false;
-          const v = Number(e.data);
-          if (Number.isFinite(v)) this.cpuScore = +v.toFixed(2);
+        const w = new Worker(new URL("../perfpost.ts", import.meta.url), { type: "module" });
+        w.onmessage = (e: MessageEvent) => {
+          const m = e.data as { kind: string; id?: number; ok?: boolean; status?: number; err?: string; bytes?: number; ms?: number };
+          this.perfWorkerState = 2;
+          if (m.kind === "bench") {
+            this.cpuBenchAsked = false;
+            const v = Number(m.ms);
+            if (Number.isFinite(v)) this.cpuScore = +v.toFixed(2);
+            return;
+          }
+          const done = this.perfWorkerPosts.get(m.id as number);
+          this.perfWorkerPosts.delete(m.id as number);
+          if (typeof m.ms === "number") this.beaconWorkerMs = +m.ms.toFixed(1);
+          if (m.bytes) this.beaconCost.bytes = m.bytes;
+          done?.(!!m.ok, m.status ?? 0, m.err ?? "", m.bytes ?? 0);
         };
-        this.cpuWorker.onerror = () => {
-          this.cpuWorker?.terminate();
-          this.cpuWorker = null;
-        };
+        w.onerror = () => this.perfWorkerDrop("post worker failed");
+        this.perfWorker = w;
+        this.perfWorkerState = 1;
       } catch {
-        this.cpuWorker = null;
+        this.perfWorker = null;
+        this.perfWorkerState = 3;
       }
     }
-    if (this.cpuWorker && !this.cpuBenchAsked) {
+    return this.perfWorker;
+  }
+  /** The worker is gone for this page (failed to load, threw, or went
+   *  silent): posts in flight on it fail over to this thread's retry. */
+  private perfWorkerDrop(why: string): void {
+    this.perfWorkerState = 3;
+    this.perfWorker?.terminate();
+    this.perfWorker = null;
+    this.cpuBenchAsked = false;
+    const inFlight = [...this.perfWorkerPosts.values()];
+    this.perfWorkerPosts.clear();
+    for (const done of inFlight) done(false, -3, why, 0);
+  }
+  /** What the worker spent shaping and stringifying the last post (ms). */
+  private beaconWorkerMs = 0;
+
+  /** THE CPU BENCHMARK, ON THE REPORT'S WORKER. The throttling proxy
+   *  (`cpu.scoreMs`) ran inside the frame that built each report; it runs on
+   *  the worker now, asked once per window, and a report carries the latest
+   *  answer. No worker: no score (0), never a stall. */
+  private cpuScore = 0;
+  private cpuBenchAsked = false;
+  private cpuScoreBg(): number {
+    const w = this.perfWorkerGet();
+    if (w && !this.cpuBenchAsked) {
       this.cpuBenchAsked = true;
-      this.cpuWorker.postMessage(0);
+      w.postMessage({ kind: "bench" });
     }
     return this.cpuScore;
-  }
-
-  /** THE WORST FRAMES, SHAPED FOR THE WIRE — in idle time, off the frame (the
-   *  pump). ALL OF THEM, NOT FIVE: the recorder keeps 24 worst frames and the
-   *  report used to throw 19 away — proving the depthSort spikes were a
-   *  mis-billed stall needed the frames AROUND them. */
-  private perfWorstShape(w: Record<string, unknown>[] | null): Record<string, unknown>[] | null {
-    if (!w) return null;
-    try {
-      /* THE LOAF ENTRY FOR EACH RECORD, MATCHED BY TIME: the browser reports a
-       * long frame after it closed, so the record could not carry it when it
-       * was written. `_t0`/`_t1` are the record's performance.now() bounds and
-       * never leave the client. */
-      return w.map((r) => {
-        const o: Record<string, unknown> = { ...r };
-        const t0 = o._t0 as number | undefined;
-        const t1 = o._t1 as number | undefined;
-        delete o._t0;
-        delete o._t1;
-        if (t0 !== undefined && t1 !== undefined) {
-          const l = loafAt(t0, t1);
-          if (l) o.loaf = l;
-        }
-        /* THE TIMELINE, compacted for the 24 records that leave: every region
-         * that ran in or ahead of the frame as [name, start, end] relative to
-         * `pt0`, sorted by start — the wait between one region's end and the
-         * next one's start is what he asked to see. */
-        const raw = o._tl as { marks: Mark[]; dropped: number } | undefined;
-        delete o._tl;
-        if (raw && t0 !== undefined) {
-          o.tl = tlCompact(raw.marks, t0);
-          if (raw.dropped) o.tlDropped = raw.dropped;
-        }
-        return o;
-      });
-    } catch {
-      return null;
-    }
   }
 
   /** WHAT THE LAST POST COST IN IDLE TIME (ms): shaping the worst frames, the
@@ -3572,10 +3590,17 @@ export class WorldScene extends Phaser.Scene {
     return text;
   }
 
-  private perfPost(body: Record<string, unknown>, win: number, final: boolean, worstRaw: Record<string, unknown>[] | null): void {
+  private perfPost(
+    body: Record<string, unknown>,
+    win: number,
+    final: boolean,
+    worstRaw: Record<string, unknown>[] | null,
+    ring: LoafSplit[],
+    tl: TlPacked | null,
+  ): void {
     if (final && document.visibilityState === "hidden") {
       // The page is going away: no idle period is coming, the post goes now.
-      body.worst = this.perfWorstShape(worstRaw);
+      body.worst = this.perfShapeSafe(worstRaw, ring, tl);
       this.perfLedger.sent++;
       const text = this.perfWire(body, 1);
       void fetch("/api/perf", { method: "POST", headers: { "Content-Type": "application/json" }, body: text, keepalive: true })
@@ -3586,7 +3611,7 @@ export class WorldScene extends Phaser.Scene {
         .catch((e) => this.perfFail(win, final, 0, String(e), text.length));
       return;
     }
-    this.perfOutbox.push({ body, win, final, tries: 0, worstRaw });
+    this.perfOutbox.push({ body, win, final, tries: 0, worstRaw, ring, tl });
     if (this.perfOutbox.length > PERF_OUTBOX_MAX) {
       const dropped = this.perfOutbox.shift()!;
       this.perfFail(dropped.win, dropped.final, -1, "outbox full", 0);
@@ -3598,29 +3623,60 @@ export class WorldScene extends Phaser.Scene {
     if (this.perfPumping || !this.perfOutbox.length) return;
     const item = this.perfOutbox[0];
     const t0 = performance.now();
-    if (item.worstRaw) {
-      item.body.worst = this.perfWorstShape(item.worstRaw);
-      item.worstRaw = null;
-    }
+    const w = this.perfWorkerGet();
     this.perfPumping = true;
     this.perfLedger.sent++;
     if (item.tries > 0) this.perfLedger.retried++;
     item.tries++;
-    const text = this.perfWire(item.body, item.tries);
-    const settle = (ok: boolean, status: number, err: string) => {
-      this.perfPumping = false;
-      if (ok) {
-        this.perfOutbox.shift();
-        this.perfLedger.ok++;
-        this.perfLedger.lastStatus = status;
-        this.perfLedger.lastOkWin = item.win;
-        perfBeaconTouch();
-      } else {
-        this.perfFail(item.win, item.final, status, err, text.length);
-        if (item.tries >= PERF_POST_TRIES) this.perfOutbox.shift();
+    if (w) {
+      /* THE WORKER POSTS IT: this thread writes three JSON strings and clones
+       * the packed timelines — the cheapest hand-over measured (a structured
+       * clone of the same objects was 5x the JSON). */
+      item.body.beacon = { ...this.perfLedger, queued: this.perfOutbox.length, attempt: item.tries };
+      let body: string;
+      let worst: string | null;
+      let ring: string;
+      try {
+        body = JSON.stringify(item.body);
+        worst = item.worstRaw ? JSON.stringify(item.worstRaw) : null;
+        ring = JSON.stringify(item.ring);
+      } catch (e) {
+        // Unserialisable on any thread: the window is dropped, and says why.
+        item.tries = PERF_POST_TRIES;
+        this.perfSettle(item, false, -2, `json: ${String(e).slice(0, 80)}`, 0);
+        return;
       }
-      if (this.perfOutbox.length) window.setTimeout(() => this.perfPumpSoon(), ok ? 6000 : 15000);
-    };
+      this.beaconCost.wire = performance.now() - t0;
+      const id = ++this.perfWorkerSeq;
+      /* A WORKER THAT NEVER ANSWERS would hold the pump for the rest of the
+       * run: after 60 s it is dropped, the post counts as failed and the
+       * retries go by this thread. */
+      const dog = window.setTimeout(() => {
+        if (!this.perfWorkerPosts.has(id)) return;
+        this.perfWorkerDrop("post worker silent 60 s");
+      }, 60000);
+      this.perfWorkerPosts.set(id, (ok, status, err, bytes) => {
+        window.clearTimeout(dog);
+        this.perfSettle(item, ok, status, err, bytes);
+      });
+      try {
+        w.postMessage({ kind: "post", id, url: "/api/perf", body, worst, ring, tl: item.tl });
+        this.beaconIdleMs = +(performance.now() - t0).toFixed(1);
+        this.beaconCost.idle = this.beaconIdleMs;
+        return;
+      } catch {
+        // The worker would not take it: this thread posts it, now.
+        window.clearTimeout(dog);
+        this.perfWorkerPosts.delete(id);
+      }
+    }
+    if (item.worstRaw) {
+      item.body.worst = this.perfShapeSafe(item.worstRaw, item.ring, item.tl);
+      item.worstRaw = null;
+      item.tl = null;
+    }
+    const text = this.perfWire(item.body, item.tries);
+    const settle = (ok: boolean, status: number, err: string) => this.perfSettle(item, ok, status, err, text.length);
     fetch("/api/perf", { method: "POST", headers: { "Content-Type": "application/json" }, body: text }).then(
       async (r) => {
         const t = await r.text().catch(() => "");
@@ -3630,6 +3686,38 @@ export class WorldScene extends Phaser.Scene {
     );
     this.beaconIdleMs = +(performance.now() - t0).toFixed(1);
     this.beaconCost.idle = this.beaconIdleMs;
+  }
+
+  /** The worst frames shaped on this thread (no worker): a record that cannot
+   *  be shaped costs the report its worst frames, never the window. */
+  private perfShapeSafe(w: Record<string, unknown>[] | null, ring: LoafSplit[], tl: TlPacked | null): Record<string, unknown>[] | null {
+    try {
+      return shapeWorst(w, ring, tl);
+    } catch {
+      return null;
+    }
+  }
+
+  /** A post came back (either path): the ledger, the outbox, the next one. */
+  private perfSettle(
+    item: { win: number; final: boolean; tries: number },
+    ok: boolean,
+    status: number,
+    err: string,
+    bytes: number,
+  ): void {
+    this.perfPumping = false;
+    if (ok) {
+      this.perfOutbox.shift();
+      this.perfLedger.ok++;
+      this.perfLedger.lastStatus = status;
+      this.perfLedger.lastOkWin = item.win;
+      perfBeaconTouch();
+    } else {
+      this.perfFail(item.win, item.final, status, err, bytes);
+      if (item.tries >= PERF_POST_TRIES) this.perfOutbox.shift();
+    }
+    if (this.perfOutbox.length) window.setTimeout(() => this.perfPumpSoon(), ok ? 6000 : 15000);
   }
 
   private perfFail(win: number, final: boolean, status: number, error: string, bytes: number): void {
@@ -4389,6 +4477,8 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private perfRenderHooked = false;
+  /** Textures live, kept by the texture manager's ADD/REMOVE (see `perf`). */
+  private perfTexLive = 0;
   /** Batch flushes in the last rendered frame — see perfHookRender. */
   private perfDrawCount = 0;
   private perfFlushes = 0;
@@ -4411,7 +4501,15 @@ export class WorldScene extends Phaser.Scene {
    * frame time when the browser lends its timer. */
   private perfRunId = Math.random().toString(16).slice(2, 10);
   private perfWinIdx = 0;
-  private perfOutbox: { body: Record<string, unknown>; win: number; final: boolean; tries: number; worstRaw: Record<string, unknown>[] | null }[] = [];
+  private perfOutbox: {
+    body: Record<string, unknown>;
+    win: number;
+    final: boolean;
+    tries: number;
+    worstRaw: Record<string, unknown>[] | null;
+    ring: LoafSplit[];
+    tl: TlPacked | null;
+  }[] = [];
   private perfStillPosted = 0;
   private perfPumping = false;
   private perfLedger = { sent: 0, ok: 0, failed: 0, retried: 0, lastStatus: 0, lastError: "", lastOkWin: 0 };
@@ -8390,7 +8488,7 @@ export class WorldScene extends Phaser.Scene {
         if (typeof quiet === "boolean") this.beaconQuietOn = quiet;
         const c = this.beaconCost;
         const r = (v: number) => +v.toFixed(2);
-        return { quiet: this.beaconQuietOn, snap: r(c.snap), ground: r(c.ground), worst: r(c.worst), build: r(c.build), total: r(c.total), idle: r(c.idle), wire: r(c.wire), bytes: c.bytes, cpuScore: this.cpuScore, overMs: Math.max(this.beaconOverMs, this.beaconOverNext), final: c.final, selfMs: this.beaconSelfMs };
+        return { quiet: this.beaconQuietOn, snap: r(c.snap), ground: r(c.ground), worst: r(c.worst), build: r(c.build), total: r(c.total), idle: r(c.idle), wire: r(c.wire), bytes: c.bytes, cpuScore: this.cpuScore, overMs: Math.max(this.beaconOverMs, this.beaconOverNext), final: c.final, selfMs: this.beaconSelfMs, workerMs: this.beaconWorkerMs, worker: this.perfWorkerState, ledger: { ...this.perfLedger } };
       },
       /** THE STORED OCCLUDER BOXES (occBoxes): the switch. */
       cullBox: (on?: boolean) => {
@@ -9721,7 +9819,24 @@ export class WorldScene extends Phaser.Scene {
       perf: (on?: boolean) => {
         if (!this.perfTexHooked) {
           this.perfTexHooked = true;
+          /* THE LIVE TEXTURE COUNT, KEPT AS IT CHANGES: `Object.keys` over
+           * the ~10k-entry texture list was the costliest line of every report
+           * (the recorder must not stall the game — maintainer 2026-09-25).
+           * Every add in this client emits ADD (the art queue's `create`
+           * emits it itself); every deletion goes through `removeKey` —
+           * `remove()` destroys the texture, whose destroy calls it, and a
+           * RenderTexture destroyed with its object calls it with NO REMOVE
+           * event — so removals are counted there. verify-beacon holds the
+           * count to `Object.keys` at the end of its walk. */
+          this.perfTexLive = Object.keys(this.textures.list).length;
+          const tm = this.textures;
+          const removeKey = tm.removeKey;
+          tm.removeKey = (key: string) => {
+            if (Object.prototype.hasOwnProperty.call(tm.list, key)) this.perfTexLive--;
+            return removeKey.call(tm, key);
+          };
           this.textures.on(Phaser.Textures.Events.ADD, (key: string) => {
+            this.perfTexLive++;
             this.perfTexAdded++;
             this.perfTexFrame++;
             this.hitchC.tex++;
@@ -9781,7 +9896,7 @@ export class WorldScene extends Phaser.Scene {
             avatars: this.avatars.size,
             npcs: this.npcs.size,
             displayList: this.children.length,
-            textures: Object.keys(this.textures.list).length,
+            textures: this.perfTexLive,
             drawCount: r?.drawCount ?? null,
           },
           window: { ms: +this.perfFrames.reduce((a, b) => a + b, 0).toFixed(0) },

@@ -188,6 +188,17 @@ export function loafTake(): {
  *  clock, the same the entries use), compact, with its own bounds — or null
  *  when none does. */
 export function loafAt(t0: number, t1: number): { t0: number; t1: number; pre: number; raf: number; dom: number; by: [string, number][] } | null {
+  return loafAtIn(ring, t0, t1);
+}
+
+/** The recorded long frames as they stand — a copy a worker can match
+ *  against later (`loafAtIn`), taken when a report closes. */
+export function loafRing(): LoafSplit[] {
+  return ring.slice();
+}
+
+/** `loafAt` over a given ring: pure, so the report's post worker can run it. */
+export function loafAtIn(ring: readonly LoafSplit[], t0: number, t1: number): { t0: number; t1: number; pre: number; raf: number; dom: number; by: [string, number][] } | null {
   let best: LoafSplit | null = null;
   let bestOv = 0;
   for (const s of ring) {
