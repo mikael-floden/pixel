@@ -128,7 +128,7 @@ push, no PRs unless asked.
   gate `__ml.composeWorker({audit:true}).audit.diff` = 0.
 - The occluder set is drawn WHOLE (view cull only). Never submit a subset
   chosen per image: a shown course whose front cap is hidden paints over the
-  cap's ground (proximity cull, rejected). The list is insertion-sorted.
+  cap's ground (proximity cull, rejected). The sort re-places only what moved.
 - Scenery is sized against the 88-px person (`sceneryDrawnPx`); its bbox doc
   is gated (`check-scenery-bbox.mjs`).
 - A hitbox is an ellipse OR a perspective ground rect — port the wiki's

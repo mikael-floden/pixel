@@ -153,6 +153,7 @@ import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledge
 import { tlArm, tlMark, tlTake, tlCompact, clock0, type Mark } from "../perftimeline";
 import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
+import { FastDepthSort } from "../fastsort";
 import { TerrainBake, bakeParity, type BakeHost, type BakeSink } from "../terrainbake";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
@@ -1238,7 +1239,25 @@ const GROUND_RING_MS = 2;
  *  GROUND_RING_MS, which bounds the same work from the other side. */
 /** An occluder image carries the cell it came from as plain properties — see
  *  `tagOccluder`. Read only by `__ml.occAudit()` and `__ml.occDump()`. */
-type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number; ocBase?: number; ocNear?: number };
+type OccTagged = Phaser.GameObjects.Image & {
+  ocCol?: number;
+  ocRow?: number;
+  ocBase?: number;
+  /* THE BOXES, stored once at creation (`occBoxes`): the view cull's box and
+   * the cover index's frame box, each exactly the arithmetic the live rule
+   * does on the getters. An occluder's position, frame, origin and scale never
+   * change after `occImage` made it — its pool key is its cell, texture,
+   * position and base depth, and nothing else is ever set on it. */
+  ocCx0?: number;
+  ocCx1?: number;
+  ocCy0?: number;
+  ocCy1?: number;
+  ocL?: number;
+  ocR?: number;
+  ocT?: number;
+  ocB?: number;
+  ocNear?: number;
+};
 /** A ground switch: on unless the URL says `?<param>=0` or Settings→Dev stored "0". */
 function groundFlagOn(param: string, storeKey: string): boolean {
   try {
@@ -4154,20 +4173,65 @@ export class WorldScene extends Phaser.Scene {
     // The depth sort times itself — see installDepthSort.
   }
 
-  /** PHASER'S DEPTH SORT, TIMED. (An insertion sort was tried here, on the
-   *  idea that only the bodies move between frames — measured on his phone
-   *  at 1.05 ms/frame against Phaser's own 0.85 at the same list size: a
-   *  rebuild appends hundreds of images out of order, so the attempt was paid
-   *  and the merge sort ran anyway. Rejected 2026-09-12.) */
+  /** THE DEPTH SORT, TIMED — and answered from the last sort's order
+   *  (fastsort.ts: the objects whose depth changed or that were added are
+   *  sorted and merged; the order is exactly Phaser's stable sort, proven
+   *  object by object with `__ml.sortParity(true)`). `?fastsort=0`,
+   *  Settings→Dev "sort: only what moved" is Phaser's own sort. (An insertion
+   *  sort was rejected here 2026-09-12: 1.05 ms/frame against Phaser's 0.85 —
+   *  it re-read every depth through a comparator.) */
+  private fastSortOn = groundFlagOn("fastsort", "ml-fastsort");
+  private fastSorter = new FastDepthSort<{ _depth: number }>();
+  /** Gate mode: after every fast sort, Phaser's sort of a copy, compared. */
+  private sortParityOn = false;
+  private sortParity = { checked: 0, bad: 0, badObjs: 0, sample: "" };
   private installDepthSort(): void {
-    const dl = this.children as unknown as { depthSort(): void };
+    const dl = this.children as unknown as {
+      depthSort(): void;
+      sortChildrenFlag: boolean;
+      list: { _depth: number }[];
+      sortByDepth(a: { _depth: number }, b: { _depth: number }): number;
+    };
     const orig = dl.depthSort.bind(dl);
+    const stable = Phaser.Utils.Array.StableSort as unknown as (a: { _depth: number }[], c: (a: { _depth: number }, b: { _depth: number }) => number) => unknown;
+    const native = (list: { _depth: number }[]): void => {
+      stable(list, dl.sortByDepth);
+    };
+    /** The sort itself; returns the list as it was when the gate asks for a check. */
+    const run = (): { _depth: number }[] | null => {
+      if (!this.fastSortOn || !dl.sortChildrenFlag) {
+        orig();
+        return null;
+      }
+      const was = this.sortParityOn ? dl.list.slice() : null;
+      this.fastSorter.sort(dl.list, native);
+      dl.sortChildrenFlag = false;
+      return was;
+    };
+    /** Gate mode, OUTSIDE the timed span: Phaser's sort of the list as it was, compared. */
+    const check = (want: { _depth: number }[]): void => {
+      native(want);
+      const p = this.sortParity;
+      p.checked++;
+      let bad = 0;
+      for (let i = 0; i < want.length; i++) if (dl.list[i] !== want[i]) bad++;
+      if (bad || want.length !== dl.list.length) {
+        p.bad++;
+        p.badObjs += bad;
+        if (!p.sample) p.sample = `sort ${p.checked}: ${bad} of ${want.length} objects differ`;
+      }
+    };
     dl.depthSort = () => {
-      if (!this.perfOn) return orig();
+      if (!this.perfOn) {
+        const was = run();
+        if (was) check(was);
+        return;
+      }
       const t = performance.now();
-      orig();
+      const was = run();
       const t1 = performance.now();
       this.pAdd("depthSort", t1 - t, t1, t);
+      if (was) check(was);
     };
   }
 
@@ -6035,6 +6099,27 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.groundDeferOn,
           state: () => (this.groundDeferOn ? "on" : "off"),
+        },
+        /* STOP REDOING WORK THAT DOESN'T CHANGE (2026-09-25): on by default,
+         * off is Phaser's own full sort — the A/B. */
+        {
+          label: "cull: stored boxes",
+          act: () => {
+            this.cullBoxOn = !this.cullBoxOn;
+            localStorage.setItem("ml-cullbox", this.cullBoxOn ? "1" : "0");
+          },
+          get: () => this.cullBoxOn,
+          state: () => (this.cullBoxOn ? "on" : "off"),
+        },
+        {
+          label: "sort: only what moved",
+          act: () => {
+            this.fastSortOn = !this.fastSortOn;
+            this.fastSorter.reset();
+            localStorage.setItem("ml-fastsort", this.fastSortOn ? "1" : "0");
+          },
+          get: () => this.fastSortOn,
+          state: () => (this.fastSortOn ? "on" : "off"),
         },
         /* THE EDIT TOOL (see worldEdit): the tile "dropdown" cycles the world's
          * grounds; place/dig/raise act on the player's own cell. */
@@ -8162,6 +8247,70 @@ export class WorldScene extends Phaser.Scene {
         }
         return { checked, outside, empty, offTex, withDecks, ramps, maxLv, bad };
       },
+      /** THE STORED OCCLUDER BOXES (occBoxes): the switch. */
+      cullBox: (on?: boolean) => {
+        if (typeof on === "boolean") this.cullBoxOn = on;
+        return { on: this.cullBoxOn, nearStale: this.occNearStale };
+      },
+      /** Gate: every live occluder's stored boxes against the getters' now (all
+       *  eight numbers, exactly), and the view cull's decision both ways against
+       *  this frame's rect. Every count must be 0. */
+      cullParity: () => {
+        const cam = this.cameras.main;
+        const rv = renderedWorldView(cam, { x: 0, y: 0, width: 0, height: 0 });
+        const x0 = rv.x - CULL_EDGE_PX;
+        const y0 = rv.y - CULL_EDGE_PX;
+        const x1 = rv.x + rv.width + CULL_EDGE_PX;
+        const y1 = rv.y + rv.height + CULL_EDGE_PX;
+        let checked = 0;
+        let unboxed = 0;
+        let boxDiffer = 0;
+        let decisionDiffer = 0;
+        let sample = "";
+        for (const im0 of this.occluders) {
+          const im = im0 as OccTagged;
+          if (im.ocCx0 === undefined) {
+            unboxed++;
+            continue;
+          }
+          checked++;
+          const w = Math.abs(im.displayWidth);
+          const h = Math.abs(im.displayHeight);
+          const pad = im.rotation === 0 ? 0 : Math.max(w, h);
+          const ix = im.x - w * im.originX - pad;
+          const iy = im.y - h * im.originY - pad;
+          const f = im.frame;
+          const l = im.x - im.originX * f.cutWidth * im.scaleX;
+          const t = im.y - im.originY * f.cutHeight * im.scaleY;
+          const live = [ix, ix + (w + pad * 2), iy, iy + (h + pad * 2), l, l + f.cutWidth * im.scaleX, t, t + f.cutHeight * im.scaleY];
+          const kept = [im.ocCx0, im.ocCx1, im.ocCy0, im.ocCy1, im.ocL, im.ocR, im.ocT, im.ocB];
+          if (live.some((v, i) => v !== kept[i])) {
+            boxDiffer++;
+            if (!sample) sample = `${im.texture.key} at ${im.x},${im.y}: live ${live.join(",")} kept ${kept.join(",")}`;
+          }
+          const liveHidden = ix + (w + pad * 2) < x0 || ix > x1 || iy + (h + pad * 2) < y0 || iy > y1;
+          const keptHidden = (im.ocCx1 as number) < x0 || im.ocCx0 > x1 || (im.ocCy1 as number) < y0 || (im.ocCy0 as number) > y1;
+          if (liveHidden !== keptHidden) decisionDiffer++;
+        }
+        return { on: this.cullBoxOn, occluders: this.occluders.length, checked, unboxed, boxDiffer, decisionDiffer, sample };
+      },
+      /** THE FAST DEPTH SORT (fastsort.ts): the switch, and the sorter's counts. */
+      fastSort: (on?: boolean) => {
+        if (typeof on === "boolean" && on !== this.fastSortOn) {
+          this.fastSortOn = on;
+          this.fastSorter.reset();
+        }
+        return { on: this.fastSortOn, ...this.fastSorter.stats };
+      },
+      /** Gate: Phaser's own sort of a copy after every fast sort, compared object
+       *  by object. `sortParity(true)` arms and zeroes it; the counts read back. */
+      sortParity: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.sortParityOn = on;
+          this.sortParity = { checked: 0, bad: 0, badObjs: 0, sample: "" };
+        }
+        return { on: this.sortParityOn, ...this.sortParity, fast: { ...this.fastSorter.stats } };
+      },
       /** The band pass's two cuts (A/B): the cell reject and the plates on the worker. */
       groundTight: (on?: boolean) => {
         if (typeof on === "boolean") this.groundTightOn = on;
@@ -8372,6 +8521,10 @@ export class WorldScene extends Phaser.Scene {
       occNear: (on?: boolean) => {
         if (typeof on === "boolean") {
           this.occNearOn = on;
+          if (on && this.occNearStale) {
+            this.occNearStale = false;
+            this.occNearIndex();
+          }
           this.occNearDirty = true;
           if (!on) for (const im of this.occluders) im.cameraFilter = 0;
         }
@@ -11652,13 +11805,23 @@ export class WorldScene extends Phaser.Scene {
     this.coverBuckets.clear();
     this.coverGen++;
     if (!this.coverExact) return;
+    const stored = this.cullBoxOn;
     const add = (im: Phaser.GameObjects.Image) => {
       if (!im.visible) return;
-      const f = im.frame;
-      const x0 = im.x - im.originX * f.cutWidth * im.scaleX;
-      const y0 = im.y - im.originY * f.cutHeight * im.scaleY;
-      const x1 = x0 + f.cutWidth * im.scaleX;
-      const y1 = y0 + f.cutHeight * im.scaleY;
+      let x0: number, y0: number, x1: number, y1: number;
+      const b = im as OccTagged;
+      if (stored && b.ocL !== undefined) {
+        x0 = b.ocL;
+        y0 = b.ocT as number;
+        x1 = b.ocR as number;
+        y1 = b.ocB as number;
+      } else {
+        const f = im.frame;
+        x0 = im.x - im.originX * f.cutWidth * im.scaleX;
+        y0 = im.y - im.originY * f.cutHeight * im.scaleY;
+        x1 = x0 + f.cutWidth * im.scaleX;
+        y1 = y0 + f.cutHeight * im.scaleY;
+      }
       for (let bx = Math.floor(x0 / COVER_BUCKET); bx <= Math.floor((x1 - 1) / COVER_BUCKET); bx++)
         for (let by = Math.floor(y0 / COVER_BUCKET); by <= Math.floor((y1 - 1) / COVER_BUCKET); by++) {
           const k = coverBucketKey(bx, by);
@@ -11683,6 +11846,7 @@ export class WorldScene extends Phaser.Scene {
     out.length = 0;
     const seen = this.coverSeen;
     seen.clear();
+    const stored = this.cullBoxOn;
     for (let bx = Math.floor(x0 / COVER_BUCKET); bx <= Math.floor((x1 - 1) / COVER_BUCKET); bx++)
       for (let by = Math.floor(y0 / COVER_BUCKET); by <= Math.floor((y1 - 1) / COVER_BUCKET); by++) {
         const a = this.coverBuckets.get(coverBucketKey(bx, by));
@@ -11691,10 +11855,15 @@ export class WorldScene extends Phaser.Scene {
           if (seen.has(im)) continue;
           seen.add(im);
           if (!im.visible || im.depth <= sp.depth) continue;
-          const f = im.frame;
-          const l = im.x - im.originX * f.cutWidth * im.scaleX;
-          const t = im.y - im.originY * f.cutHeight * im.scaleY;
-          if (l >= x1 || l + f.cutWidth * im.scaleX <= x0 || t >= y1 || t + f.cutHeight * im.scaleY <= y0) continue;
+          const b = im as OccTagged;
+          if (stored && b.ocL !== undefined) {
+            if (b.ocL >= x1 || (b.ocR as number) <= x0 || (b.ocT as number) >= y1 || (b.ocB as number) <= y0) continue;
+          } else {
+            const f = im.frame;
+            const l = im.x - im.originX * f.cutWidth * im.scaleX;
+            const t = im.y - im.originY * f.cutHeight * im.scaleY;
+            if (l >= x1 || l + f.cutWidth * im.scaleX <= x0 || t >= y1 || t + f.cutHeight * im.scaleY <= y0) continue;
+          }
           out.push(im);
         }
       }
@@ -26007,6 +26176,33 @@ export class WorldScene extends Phaser.Scene {
     return img.setTint(c[role] ?? 0xffffff);
   }
 
+  /** STOP REDOING WORK THAT DOESN'T CHANGE (maintainer 2026-09-25): an
+   *  occluder's two boxes, computed ONCE when it is made instead of from ~10
+   *  getters per occluder per frame (the view cull: 0.65-2.25 ms/frame on his
+   *  phone for 3.4-7.8k of them) and per rebuild (the cover index). Each is
+   *  the live rule's arithmetic, operation for operation, so a decision made
+   *  from it is bit-identical (`__ml.cullParity()` checks both, every image).
+   *  `?cullbox=0`, Settings→Dev "cull: stored boxes" reads the getters again. */
+  private occBoxes(im: OccTagged): void {
+    const w = Math.abs(im.displayWidth);
+    const h = Math.abs(im.displayHeight);
+    const pad = im.rotation === 0 ? 0 : Math.max(w, h);
+    const ix = im.x - w * im.originX - pad;
+    const iy = im.y - h * im.originY - pad;
+    im.ocCx0 = ix;
+    im.ocCx1 = ix + (w + pad * 2);
+    im.ocCy0 = iy;
+    im.ocCy1 = iy + (h + pad * 2);
+    const f = im.frame;
+    const l = im.x - im.originX * f.cutWidth * im.scaleX;
+    const t = im.y - im.originY * f.cutHeight * im.scaleY;
+    im.ocL = l;
+    im.ocR = l + f.cutWidth * im.scaleX;
+    im.ocT = t;
+    im.ocB = t + f.cutHeight * im.scaleY;
+  }
+  private cullBoxOn = groundFlagOn("cullbox", "ml-cullbox");
+
   private occImage(tex: string, x: number, y: number, depth: number, col: number, row: number): Phaser.GameObjects.Image {
     /* KEYED BY CELL, NOT BY A STRING OF EVERYTHING. The key used to be
      * `${col},${row},${tex},${x},${y},${depth}` — six fields rendered to a
@@ -26040,6 +26236,7 @@ export class WorldScene extends Phaser.Scene {
     else {
       img = this.tagOccluder(this.add.image(x, y, tex).setOrigin(0, 0), col, row) as OccTagged;
       img.ocBase = depth;
+      this.occBoxes(img);
       this.occCreated++;
     }
     img.setDepth(depth + this.occSeq++ * OCC_DEPTH_EPS);
@@ -26140,6 +26337,25 @@ export class WorldScene extends Phaser.Scene {
      * the per-image slack it replaced. Rotation is handled per image instead. */
     const lists = this.occNearOn ? this.sceneryCullLists : this.cullLists;
     for (const list of lists) {
+      if (list === this.occluders && this.cullBoxOn) {
+        // The stored box (occBoxes): the same four numbers the rule below makes.
+        for (let i = 0; i < list.length; i++) {
+          const im = list[i] as OccTagged;
+          const cx0 = im.ocCx0;
+          let hidden: boolean;
+          if (cx0 === undefined) {
+            const w = Math.abs(im.displayWidth);
+            const h = Math.abs(im.displayHeight);
+            const pad = im.rotation === 0 ? 0 : Math.max(w, h);
+            const ix = im.x - w * im.originX - pad;
+            const iy = im.y - h * im.originY - pad;
+            hidden = ix + (w + pad * 2) < x0 || ix > x1 || iy + (h + pad * 2) < y0 || iy > y1;
+          } else hidden = (im.ocCx1 as number) < x0 || cx0 > x1 || (im.ocCy1 as number) < y0 || (im.ocCy0 as number) > y1;
+          im.cameraFilter = hidden ? id : 0;
+          if (hidden) off++;
+        }
+        continue;
+      }
       for (let i = 0; i < list.length; i++) {
         const im = list[i];
         // ABS: a flip done with a negative scale gives a negative displayWidth,
@@ -26279,6 +26495,7 @@ export class WorldScene extends Phaser.Scene {
    *  which is every OCC_STEP of camera drift; the arrays are kept and refilled
    *  so a step allocates nothing but the cells the window has just reached. */
   private occNearIndex(): void {
+    this.occNearStale = false;
     const grid = this.occNearGrid;
     for (const arr of grid.values()) arr.length = 0;
     const G = OCC_NEAR_GRID;
@@ -26328,6 +26545,8 @@ export class WorldScene extends Phaser.Scene {
    * image is not a valid picture; only the whole set (or a front-closed one)
    * is. Kept as the A/B for a closure version; `docs/depth-sort.md`. */
   private occNearOn = false;
+  /** The set changed while the proximity cull was off, so its grid was not built. */
+  private occNearStale = false;
   private occNearDirty = true;
   private occNearGrid = new Map<number, Phaser.GameObjects.Image[]>();
   private occNearShown: Phaser.GameObjects.Image[] = [];
@@ -26623,7 +26842,10 @@ export class WorldScene extends Phaser.Scene {
       const flatI: Phaser.GameObjects.Image[] = [];
       for (const b of this.occNext.values()) for (const im of b) flatI.push(im);
       this.occluders = flatI;
-      this.occNearIndex();
+      // The proximity cull's grid is read by nothing while that cull is off
+      // (its default since 2026-09-12): built when it is switched on.
+      if (this.occNearOn || !this.cullBoxOn) this.occNearIndex();
+      else this.occNearStale = true;
     }
     // The meta is rebuilt by every walked cell, so the flat record follows
     // any walk (cheap: one push per record).

@@ -24,7 +24,8 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   cool phone, 37% of frames under 17 ms; the same route on a throttled phone
   26-33 ms). It scales with the occluder count (3.5-8.8k sprites in the
   display list): `render` 2.8-7.6, `occCull` 0.9-2.2, `depthSort` 0.85-2.1 —
-  answered by the proximity cull and the insertion sort (`docs/depth-sort.md`).
+  answered by STOP REDOING WORK THAT DOESN'T CHANGE below and the fast sort
+  (`docs/depth-sort.md`).
   What is left after them, per frame: the ground streaming (`prefetch` +
   `repaintCells` + `groundSlice` 2.4-5.5 ms), `gapBusy` 1.8-4 (unattributed),
   `monsterLoop` 0.5-2.4 (20-40 monsters, ~70 µs each), `lighting` ~1, the
@@ -517,6 +518,32 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   unchanged. MEASURED headless (`probe-repaint.mjs --boundary`,
   `__ml.boundaryParity`): 25,000 cells at five places, slopes 0% and 100%,
   identical both ways; 6-23 µs → 0.8-4 µs a boundary.
+- **STOP REDOING WORK THAT DOESN'T CHANGE** (maintainer 2026-09-25, from the
+  zero-hitches design; both on by default, Settings→Dev is the A/B).
+  (1) THE DEPTH SORT re-places only what moved (`fastsort.ts`,
+  `docs/depth-sort.md`; `?fastsort=0`, "sort: only what moved"): Phaser's
+  comparator sort of the whole list every frame → one walk against the last
+  order, then windows (a steady frame) or a merge (objects added or removed).
+  Measured in node on Phaser-shaped objects: a steady frame 2.8-3.6x cheaper
+  (4,277 objects, 19-150 moved: 83-326 µs against 238-987), a rebuild frame
+  1.15-2x (600-2,000 removed and appended). Headless on his loop with ambient
+  and monsters on: `depthSort` 1.13 → 0.74 ms/frame, and 1,220 of 1,220 sorts
+  object-for-object Phaser's order (`verify-fastsort.mjs`). THE WALK IS THE
+  FLOOR: it reads every `_depth` (megamorphic) — tracking depths through the
+  setter instead would skip that, and was not taken: a depth written past the
+  setter would then draw in the wrong order. Two first cuts were measured and
+  dropped: merging into a buffer and copying the whole list back cost what the
+  comparator did (0.29 against 0.25 ms), and a WeakSet for membership was half
+  of a rebuild frame's sort (a number stamped on the object replaced it).
+  (2) THE OCCLUDER BOXES are stored once (`occBoxes`, at creation in
+  `occImage`; `?cullbox=0`, "cull: stored boxes"): the per-frame view cull and
+  the cover index read four numbers instead of ~10 getters per occluder, the
+  live rule's arithmetic operation for operation (an occluder's position,
+  frame, origin and scale never change after creation), and a set change no
+  longer builds the proximity cull's grid while that cull is off (read by
+  nothing since 2026-09-12). Headless: `occCull` 0.98 → 0.53 ms/frame, 101,543
+  occluder checks with every stored box and decision identical
+  (`verify-cullbox.mjs`, `__ml.cullParity()`).
 - **REJECTED 2026-09-24: "one ground job a frame"** (58da4b2202, reverted the
   same hour). It stood the band slice and the drain group down on a frame whose
   landing repaint had painted (his 21:13 run: 64 of 192 worst frames stacked a

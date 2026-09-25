@@ -36,14 +36,23 @@ How bodies and pieces interleave with terrain columns: the occluder set, the pur
   cover pass already rasterises for the lit copy) and drop the occluder
   sprites from the display list altogether — the retake's goal without its
   per-pixel GPU walk.
-- **THE DEPTH SORT IS AN INSERTION SORT** (`installDepthSort`, 2026-09-12).
-  Phaser re-runs a merge sort of the whole display list whenever any depth
-  changed — every frame a body moves — 0.85-2.1 ms on his phone over 4.6-9.7k
-  objects, while the list is nearly sorted (only the bodies moved). A stable
-  insertion sort costs one pass plus a slot per inversion and hands the list
-  to Phaser's own sort when the inversions pass the list's length (a rebuild
-  added hundreds of images). Equal depths keep their order in both, so the
-  picture is the same.
+- **THE DEPTH SORT RE-PLACES ONLY WHAT MOVED** (`fastsort.ts`, wired in
+  `installDepthSort`; 2026-09-25). Phaser sorts the whole display list with a
+  JS comparator every frame any depth was set (0.9-3.3 ms on his phone over
+  5-13.5k objects; 11-30 ms on a rebuild frame), while a frame changes p50 19
+  depths of 4,277. The last sort's order and depths are kept; the list is
+  walked against them once — an object met in that order at the depth it was
+  sorted at is in place, a changed or added one is DIRTY — and the dirty few
+  are sorted by (depth, list index) and merged. That is EXACTLY Phaser's
+  stable order (the key is total; both halves are sorted by it), proven
+  object by object every frame by `__ml.sortParity(true)` (gate
+  `verify-fastsort.mjs`, unit `fastsort.test.ts`). Depths are READ, not
+  tracked, so a depth written by any path is seen; removals (Phaser's,
+  `destroyBatch`'s filter, `debrisReturn`) keep the order; a NaN depth hands
+  the frame to Phaser. `?fastsort=0`, Settings→Dev "sort: only what moved".
+  Rejected 2026-09-12: an insertion sort (1.05 ms/frame against Phaser's
+  0.85 — it re-read every depth through a comparator and paid a rebuild's
+  appends one shift at a time).
 - **SEE-THROUGH WALLS IS DELETED — never reintroduce a per-frame occluder
   alpha sweep.** The prototype ([7] key, "see-through walls" switch,
   `occFade`/`occFocus`/`occApply` probes) swept the whole live occluder set
