@@ -542,43 +542,42 @@
           "generated_at": "2026-09-25T18:43:35+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.1465,
-          "step_max": 0.1889,
-          "drift": 7.96,
-          "loop": 0.4251,
-          "loop_ratio": 2.9,
-          "travel": 5.87,
-          "pin": 0.893,
+          "status": "warn",
+          "step_mean": 0.1727,
+          "step_max": 0.1853,
+          "drift": 6.64,
+          "loop": 0.3688,
+          "loop_ratio": 2.14,
+          "travel": 5.64,
+          "pin": 0.904,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 1.004,
+          "end_area": 1.054,
           "end_iou": null,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "drifts 8.0 px — eyeball it",
-            "last→first hand-off is 2.9× a normal step — the loop hitches"
+            "last→first hand-off 2.1× a step — eyeball the loop"
           ],
-          "sub": "0c0678d6-aecb-44db-996c-48014a32df02",
-          "group": "2ad35292-5156-4c8d-b2ce-a314ec4c0a23",
+          "sub": "5badffe0-7240-4acd-8dbf-9e1d0af48e57",
+          "group": "ba1e98f5-6c41-4ad3-b28a-fd536e9d5e49",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "v3",
-          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning, with less movement, calmer and more controlled",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 6,
-          "rung": 0,
+          "rung": -1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-25T18:43:36+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-25T21:17:16+00:00"
         },
         "east": {
           "status": "pass",
@@ -770,6 +769,45 @@
           "tries": 1,
           "generated_at": "2026-09-25T18:43:37+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1727,
+          "step_max": 0.1853,
+          "drift": 6.64,
+          "loop": 0.3688,
+          "loop_ratio": 2.14,
+          "travel": 5.64,
+          "pin": 0.904,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.054,
+          "end_iou": null,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "sub": "5badffe0-7240-4acd-8dbf-9e1d0af48e57",
+          "group": "ba1e98f5-6c41-4ad3-b28a-fd536e9d5e49",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning, with less movement, calmer and more controlled",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 6,
+          "rung": -1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-25T21:17:16+00:00",
+          "source": "south-east"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -829,6 +867,14 @@
           "hole_mouth/animations/walk/north-west/03.webp",
           "hole_mouth/animations/walk/north-west/04.webp",
           "hole_mouth/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "hole_mouth/animations/walk/south-west/00.webp",
+          "hole_mouth/animations/walk/south-west/01.webp",
+          "hole_mouth/animations/walk/south-west/02.webp",
+          "hole_mouth/animations/walk/south-west/03.webp",
+          "hole_mouth/animations/walk/south-west/04.webp",
+          "hole_mouth/animations/walk/south-west/05.webp"
         ]
       },
       "strips": {
@@ -838,7 +884,8 @@
         "north-east": "hole_mouth/animations/walk__north-east.webp",
         "north": "hole_mouth/animations/walk__north.webp",
         "west": "hole_mouth/animations/walk__west.webp",
-        "north-west": "hole_mouth/animations/walk__north-west.webp"
+        "north-west": "hole_mouth/animations/walk__north-west.webp",
+        "south-west": "hole_mouth/animations/walk__south-west.webp"
       }
     }
   },
