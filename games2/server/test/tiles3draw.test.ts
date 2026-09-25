@@ -793,6 +793,88 @@ test("a level-0 clean plate draws the capped raster, never its wall band", { ski
   assert.deepEqual(T.opsForCell(wall).map((o) => o.key), ["t2:course.webp"]);
 });
 
+/* -- 6b'. a plate is built the same whatever ran first ------------------- */
+
+/** THE MEMO COLLISION (found 2026-09-25 by the render A/B: the same page loaded
+ *  twice drew grass clean.webp's band (20,100,78) on one load, (20,82,59) on the
+ *  other). A plain plate's plateKey IS its art key, and the built plate was
+ *  memoised in the same map as the decoded sources — so a source read first
+ *  (a detail, a fade, a composed ramp) made the capped raster the raw file, and
+ *  a plate built first made every later source read the capped plate. */
+test("a plate and its source never share a memo: the order changes no pixel", { skip }, () => {
+  const path = "tiles/plates/light_beach/clean.webp";
+  const ground = "light_beach";
+  const art: any = { kind: "clean", path, w: TILE, h: PLATE_H };
+  const cell: any = { kind: "field", ground, sx: 0, sy: 0, pasteY: 0, art };
+  const drawn = (fx: ReturnType<typeof fakeTextures>, key: string) => Buffer.from(((fx.t.get(key) as any).getSourceImage() as { pix: Uint8ClampedArray }).pix);
+  const fresh = () => {
+    const fx = fakeTextures();
+    fx.put(artKey(path), px(path));
+    return { fx, T: new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas }) };
+  };
+  // the reference: the plate alone, and the detail alone
+  const a = fresh();
+  const plateKeyDrawn = a.T.opsForCell(cell)[0].key;
+  const b = fresh();
+  const detailKey = b.T.detail(path, ground) as string;
+  assert.ok(detailKey, "the detail overlay must build from this plate");
+  // a source read FIRST, then the plate: still the capped raster
+  const c = fresh();
+  c.T.detail(path, ground);
+  assert.equal(c.T.opsForCell(cell)[0].key, plateKeyDrawn);
+  assert.equal(Buffer.compare(drawn(c.fx, plateKeyDrawn), drawn(a.fx, plateKeyDrawn)), 0, "a source read first made the capped plate the raw file");
+  // the plate FIRST, then a source read: still the raw art
+  const d = fresh();
+  d.T.opsForCell(cell);
+  assert.equal(d.T.detail(path, ground), detailKey);
+  assert.equal(Buffer.compare(drawn(d.fx, detailKey), drawn(b.fx, detailKey)), 0, "a plate built first made the detail read the capped plate as its source");
+});
+
+/** A PLATE THE WORKER LANDED IS THE LID'S BASE TOO. Under WebGL a composed
+ *  raster is registered from raw bytes, so its texture cannot be read back:
+ *  `lid` finds its base only in the built-plate memo, and a plate job that
+ *  landed without entering it left the lowered wall's lid undarkened for the
+ *  session (410d19f944 deferred plates to the worker). */
+test("a plate the worker landed darkens its lid exactly like one built here", { skip }, () => {
+  const path = "tiles/plates/light_beach/clean.webp";
+  const ground = "light_beach";
+  const art: any = { kind: "clean", path, w: TILE, h: PLATE_H, topOnly: true }; // a cutCap is always top-only
+  const rawFx = () => {
+    const fx = fakeTextures();
+    const raw = new Map<string, Uint8Array>();
+    fx.man.addRaw = (k, data) => {
+      raw.set(k, data);
+      fx.t.set(k, { getSourceImage: () => data }); // WebGL: the source is the array, not a canvas
+      return {};
+    };
+    fx.put(artKey(path), px(path));
+    return { fx, raw };
+  };
+  const m = rawFx();
+  const M = new Tiles3Textures({ textures: m.fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  const key = M.plate(art, ground) as string;
+  const mLid = M.lid(key, 0.5) as string;
+  assert.ok(mLid && mLid !== key, "a plate built here must give a darkened lid");
+
+  const w = rawFx();
+  const jobs: any[] = [];
+  const W = new Tiles3Textures({ textures: w.fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas, remote: { ready: () => true, compose: (j) => jobs.push(j) }, artUrl: (p) => "/" + p });
+  W.deferPlates = true;
+  assert.equal(W.plate(art, ground), null, "a deferred plate is posted, not built");
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].kind, "plate");
+  assert.equal(jobs[0].key, key);
+  // what composeworker.ts answers: buildPlatePixels over its own decode, the job's wall colour
+  const s = jobs[0].side;
+  W.landRemote(key, buildPlatePixels(SHEETS, { kind: s.kind, path: s.path, topOnly: s.topOnly, rise: s.rise }, px(path), s.wall));
+  W.deferPlates = false;
+  assert.equal(W.plate(art, ground), key);
+  const wLid = W.lid(key, 0.5);
+  assert.equal(wLid, mLid, "the landed plate's lid fell back to the undarkened plate");
+  assert.equal(Buffer.compare(Buffer.from(w.raw.get(wLid as string)!), Buffer.from(m.raw.get(mLid)!)), 0, "the two lids differ");
+  assert.equal(Buffer.compare(Buffer.from(w.raw.get(key)!), Buffer.from(m.raw.get(key)!)), 0, "the worker's plate differs from the one built here");
+});
+
 /* -- 6c. a transition tile covers what the plate it replaces covered -------- */
 
 /** THE HOLE (2026-09-04). The ground loop takes ONE of the two, never both:

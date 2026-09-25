@@ -428,7 +428,16 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   whose art has all loaded a deferred plate stood as a hole until something
   else loaded — so a landed plate or fade arms it (`t3remoteLanded`: drained
   once the worker is idle or every `T3_REMOTE_DRAIN_MS` 400 while busy), and
-  a drop arms the drain while the worker holds a job. MEASURED headless at
+  a drop arms the drain while the worker holds a job. A LANDED PLATE IS A
+  BUILT PLATE: it enters the factory's built-plate memo (`plates`), which is
+  where `lid` finds a lowered wall's base — a raw-registered texture cannot be
+  read back, so without it the lid fell back to the undarkened plate for the
+  session. Built plates and decoded sources are TWO memos (`plates` by the key
+  the raster is drawn under, `pix` by art key): a plain plate's plateKey IS
+  its art key, and one map let whichever ran first win — the render A/B drew
+  grass clean.webp's band in palette wall (20,100,78) on one load and top
+  (20,82,59) on the next (tiles3draw.test.ts "never share a memo", "worker
+  landed"). MEASURED headless at
   his worst spot 229,256 (`scripts/probe-groundslice.mjs`, a 1.5-cell walk):
   a 289x492 slice walked ~825 cells for ~135 inside its rect, made ~3,500
   ops of which ~1,700 the clip threw away, and built 5-23 ms of plates;

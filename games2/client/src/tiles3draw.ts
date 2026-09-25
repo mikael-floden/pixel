@@ -1733,7 +1733,20 @@ export class Tiles3Textures {
    *  (2026-09-24, probe-groundslice.mjs). */
   deferPlates = false;
   private mine = new Map<string, true>();
+  /** Decoded SOURCES by art key (`sourcePixels`) — the raw file, always. */
   private pix = new Map<string, Pixels | null>();
+  /** BUILT PLATES by the texture key they are drawn under (`platePixels`, and a
+   *  plate the worker landed). NOT `pix`: a plain plate's plateKey IS its art
+   *  key, and one map let whichever ran first win — the capped t3s: raster came
+   *  out as the raw file (the band in the palette WALL colour, his zigzag dots)
+   *  while fades, details and composed ramps read the capped plate as their
+   *  source. Measured by the render A/B: the same page loaded twice drew grass
+   *  clean.webp's band (20,100,78) on one load and (20,82,59) on the other. */
+  private plates = new Map<string, Pixels>();
+  /** Plate jobs in flight on the worker — a landed one is memoised like one
+   *  built here, or `lid` finds no base and the lowered wall's lid falls back
+   *  to the undarkened plate for the session. */
+  private plateJobs = new Set<string>();
 
   constructor(opts: Tiles3TexturesOpts) {
     this.o = opts;
@@ -1995,6 +2008,7 @@ export class Tiles3Textures {
     if (!this.inflight.has(key)) {
       this.inflight.add(key);
       this.stats.queued++;
+      this.plateJobs.add(key);
       if (this.audit) this.auditJobs.set(key, () => this.platePixels(art, ground));
       remote.compose({ kind: "plate", key, side: this.side(art, ground) });
     }
@@ -2028,7 +2042,7 @@ export class Tiles3Textures {
     return (
       this.ensureHit(dkey) ??
       this.ensure(dkey, () => {
-        const base = this.pix.get(key) ?? this.sourcePixels(key);
+        const base = this.plates.get(key) ?? this.sourcePixels(key);
         if (!base) return null;
         const { w, h } = base;
         const k = 1 - pct / 100;
@@ -2444,6 +2458,7 @@ export class Tiles3Textures {
    *  key is replaced — a live base_tile_sets push, an atlas swap. */
   clearSources(): void {
     this.pix.clear();
+    this.plates.clear(); // built from them
   }
 
   private ensure(key: string, build: () => Pixels | null): string | null {
@@ -2512,6 +2527,7 @@ export class Tiles3Textures {
    *  built here, and audited against one built here when the audit is on. */
   landRemote(key: string, px: Pixels): void {
     this.inflight.delete(key);
+    const plate = this.plateJobs.delete(key);
     const job = this.auditJobs.get(key);
     this.auditJobs.delete(key);
     if (job) {
@@ -2534,6 +2550,7 @@ export class Tiles3Textures {
       this.stats.missing++;
       return;
     }
+    if (plate) this.plates.set(key, px);
     this.admit(key, t0);
     this.stats.landed++;
     if (!key.startsWith("t3d:")) this.stats.builtBoundary++;
@@ -2542,6 +2559,7 @@ export class Tiles3Textures {
   /** The worker could not build this key; this thread will. */
   remoteMissed(key: string): void {
     this.inflight.delete(key);
+    this.plateJobs.delete(key);
     this.auditJobs.delete(key);
     this.remoteDead.add(key);
   }
@@ -2565,8 +2583,11 @@ export class Tiles3Textures {
    *  boundaries built from it would be permanently absent from the map with no
    *  error anywhere. Only real pixels are memoised. */
   private platePixels(art: PlateLike, ground: string): Pixels | null {
-    const key = plateKey(art, ground);
-    const hit = this.pix.get(key);
+    // Memoised under the key the raster is DRAWN under (a plain plate's is
+    // `t3s:`), which no source key can equal — see `plates`.
+    const { key: pk, skey } = this.keysFor(art, ground);
+    const key = art.kind !== "conform" && !art.topOnly ? skey : pk;
+    const hit = this.plates.get(key);
     if (hit) return hit;
     const src = this.sourcePixels(artKey(art.path));
     // The conform, the cap and the mask are `buildPlatePixels` — the same
@@ -2590,7 +2611,7 @@ export class Tiles3Textures {
      * came back with them. Capping first repaints that band from each column's
      * own bottom top-face texel, so the margin row is the SURFACE's colour and
      * cannot read as a course whatever the mask keeps. */
-    if (out) this.pix.set(key, out);
+    if (out) this.plates.set(key, out);
     return out;
   }
 
