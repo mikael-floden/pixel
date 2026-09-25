@@ -903,6 +903,13 @@ python monsters/pipeline/sync.py --only <id> # limit mirroring to one monster
 - `pipeline/refill.py` — puts back a facing he approved that the move to the
   roster lost, from the candidate folder or from git history at the candidate
   path. Never regenerates: new pixels would reset his verdict.
+- `pipeline/redos.py` — HIS REDO IS ACTED ON THE MOMENT HE SAVES IT, candidate
+  or graduated: run by `monsters-graduate.yml` on every feedback push. A live
+  redo is one whose `art` stamp is the strip on disk now. A candidate goes
+  through `animate.py review` + `redo`; a graduated monster re-rolls only that
+  facing on PixelLab and writes it onto its canvas (never a sync — that
+  re-saves every frame and breaks every other stamp). (A graduated redo had no
+  code path: Foxfire's walk S sat five hours, 2026-09-25.)
 - `pipeline/states.py` — keyword classifier used only for brand-new monsters
   nobody has mapped yet.
 - `pipeline/review_artifact.py` — emits the self-contained review gallery HTML

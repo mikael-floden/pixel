@@ -33,7 +33,7 @@ concurrency:
 jobs:
   graduate:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 100
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -67,6 +67,10 @@ jobs:
           # record and every verdict on them go; graduation runs after.
           python -c "import sys;sys.path.insert(0,'monsters/pipeline');import candidates as c;from pixellab_client import PixelLabClient;cfg=c.load_cfg();c.reconcile(cfg, client=PixelLabClient(), apply=True, graduate=False)"
           python monsters/pipeline/graduate.py --no-drop
+          # HIS REDOS ARE ACTED ON HERE TOO, candidate or graduated (2026-09-25:
+          # a graduated monster's redo had no code path and sat for five hours).
+          # Only redos on art that still exists; the verdict dies with the art.
+          python monsters/pipeline/redos.py --apply
 
       - name: Commit + push
         id: push
@@ -80,7 +84,7 @@ jobs:
           # approved, stayed candidates while the candidate shards were pushing).
           git add -A monsters/ live/feedback/monsters.json
           git diff --cached --quiet && { echo "nothing removed or graduated"; exit 0; }
-          git commit -m "monsters: graduate on his approval — a fully approved monster is not 'in the making'"
+          git commit -m "monsters: his review acted on — removals, redos, and graduation of what he fully approved"
           ok=0
           for i in 1 2 3 4 5 6 7 8 9 10; do
             if git push origin main; then ok=1; break; fi
@@ -93,6 +97,7 @@ jobs:
               # index is regenerable and is rebuilt from the tree, never merged.
               git checkout --ours -- live/feedback/monsters.json monsters/candidates/index.json 2>/dev/null || true
               python monsters/pipeline/verdicts.py settle --apply
+              python monsters/pipeline/animate.py prune-feedback   # a redo whose art was just remade dies here too
               python -c "import sys;sys.path.insert(0,'monsters/pipeline');import candidates as c;c.rebuild_index(c.load_cfg())"
               git add live/feedback/monsters.json monsters/candidates/index.json
               if [ -n "$(git diff --name-only --diff-filter=U)" ]; then
