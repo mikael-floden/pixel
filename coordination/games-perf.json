@@ -1,11 +1,18 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T23:28:19+00:00",
+  "updated_at": "2026-09-25T23:37:48+00:00",
   "health": "running",
   "current": {
-    "unit": "DESIGNING + SCRATCHPAD BUILDER (no repo file claimed yet): THE OFFLINE TERRAIN, step 1 — a headless builder that captures one area's chunks (ground crops of the canonical settled full paint, bake bands, meta) with the game's own code; the loader/WorldScene hooks will be claimed before any edit.",
-    "since": "2026-09-25T23:28:19+00:00",
-    "files": []
+    "unit": "CLAIMED: THE OFFLINE TERRAIN, step 1 (his principle 2026-09-25: remove work or move it offline/pre-built/a cache; keep live edits). A headless builder (the game's own renderer) captures 8x8-cell chunks: the ground texture's canonical texels over each chunk's level-0 cells (exact partition: 57,344 of 114,688 texels a 512x224 box), the bake's depth-row bands, the cells' occluder meta — measured ~5.6 KB ground + ~6.7 KB bands a chunk as lossless WebP. The phone (Settings->Dev 'terrain: pre-built', OFF by default) loads a built chunk through the art queue and for it skips the resolver, compositions, ground painting and the occluder walk: the ground texture draws the chunk's picture over its diamond, the bands stand as images at their row depths, the meta is shipped. First area: his hard place (103,182). Parity by the render A/B harness; the phone's run decides.",
+    "since": "2026-09-25T23:37:48+00:00",
+    "files": [
+      "games2/client/src/prebuilt.ts",
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/server/test/prebuilt.test.ts",
+      "games2/client/public/prebuilt/**",
+      "games2/scripts/prebuild-terrain.mjs",
+      "games2/docs/perf.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
