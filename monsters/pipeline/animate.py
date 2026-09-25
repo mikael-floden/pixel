@@ -907,7 +907,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False, w
         actions[d] = action
         counts[d] = nf
         if _char_anim_live(client):
-            job = client.animate_v3(man["pixellab_id"], state, action, d,
+            job = client.animate_v3(man["pixellab_id"], state, action, pixellab_dir(cid, man, d),
                                     frame_count=nf, end_frame=end, seed=seed,
                                     keep_first=spec.get("keep_first", True) or pin)
         else:
@@ -1161,6 +1161,45 @@ def needed_dirs(man, slot, redo=None, reword_dirs=False):
     return [d for d in GEN_DIRS
             if rec["directions"].get(d, {}).get("status") in (None, "fail")
             and (rec["directions"].get(d, {}).get("rolls") or 0) < MAX_TRIES]
+
+
+def pixellab_dir(cid, man, d):
+    """The PixelLab direction whose rotation IS our <d>.
+
+    create-character-v3 sometimes returns the eight rotations filed a slot or
+    more round the compass; postprocess re-files OUR copy (18 of 143 then,
+    vent_lizard, kelp_hound, cinder_hare… in v3), but PixelLab's stays as it
+    was. A v3 clip starts on PixelLab's rotation (keep_first) and is pinned to
+    ours at the end, so asking for our <d> by name drew a clip that started on
+    the neighbour and ended on <d> — 'frame 0 is not the base rotation', 'loop
+    does not close', on every facing of every such monster (2026-09-25, nine
+    idles failed that way). Measured once (facing.rotation_offset, 1.000 on
+    all eight or nothing) and cached in the candidate manifest."""
+    m = man.get("pixellab_rotation_map")
+    if m is None:
+        try:
+            import facing
+            m = facing.rotation_offset(cid) or {}
+        except Exception as e:                      # never block a roll on the probe
+            print(f"  {cid}: rotation map not measured ({e}) — asking by name", flush=True)
+            m = {}
+        man["pixellab_rotation_map"] = m
+        p = os.path.join(cand.cdir(cid), "candidate.json")
+        try:
+            disk = json.load(open(p))
+            disk["pixellab_rotation_map"] = m
+            tmp = p + ".tmp"
+            with open(tmp, "w") as f:
+                json.dump(disk, f, indent=2, ensure_ascii=False)
+                f.write("\n")
+            os.replace(tmp, p)
+        except OSError:
+            pass
+        moved = {k: v for k, v in m.items() if k != v}
+        if moved:
+            print(f"  {cid}: PixelLab's rotations are filed differently — asking by its names {moved}", flush=True)
+    inv = {v: k for k, v in (m or {}).items()}
+    return inv.get(d, d)
 
 
 def cmd_state(args, state):
