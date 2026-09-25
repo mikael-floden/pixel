@@ -544,6 +544,27 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   nothing since 2026-09-12). Headless: `occCull` 0.98 → 0.53 ms/frame, 101,543
   occluder checks with every stored box and decision identical
   (`verify-cullbox.mjs`, `__ml.cullParity()`).
+- **NO WEAKMAP OVER A CHURNING KEY SET: THE MAJOR COLLECTION PAYS FOR EVERY
+  ENTRY** (`genmemo.ts`, 2026-09-25, his "no recurring lag"; his cool run
+  had a major GC about once a minute, 92-166 ms frames). A WeakMap entry is an
+  ephemeron: V8 marks its value only once its key is known live, so every
+  major collection iterates the tables to a fixpoint, and tables whose values
+  hold each other's keys (a cell's ops name its art; the art keys the
+  plate-key and top-only memos) take round after round. Measured with V8's
+  own trace (`--js-flags=--trace-gc-nvp`, headless, a phone-sized 1 MB young
+  generation, the same 120 s camera tour through new ground): tiles3draw's
+  four per-cell memos were 19,925 of the heap's ~20k ephemerons; with them
+  the major pauses ran 21-194 ms (417 ms in all, ephemeron marking 93 ms +
+  its linear fallback 32 ms; a 60 s run had a NON-incremental 202 ms pause,
+  102.5 ms of it ephemerons), and with bounded two-generation STRONG memos
+  (the young rotates into the old at half the cap, an old hit is promoted,
+  the old is dropped whole) 14-50 ms (226 ms, ephemerons 3.5 ms). The price
+  is memory: evicted cells' answers live until their generation is dropped,
+  8.95 MB for the four after the tour (cap 24,000: the young generation holds
+  the scene's ~4-6k-cell cache twice over, so a paint never re-promotes its
+  whole window). Promotion was unchanged (0.9 MB/s). `usedJSHeapSize` counts
+  ArrayBuffers (a 100 MB buffer read +99.6 MB in Chrome 141), so the beacon's
+  `heap` block is mostly texture pixels, not objects.
 - **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
   "I can't have a lag that is due to the perf run itself when I try to
   evaluate the performance... This might result in me pushing you to fix the

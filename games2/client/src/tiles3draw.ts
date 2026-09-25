@@ -56,6 +56,7 @@ import {
   type Tiles3Window,
   type TileArt,
  WALL, } from "./tiles3";
+import { GenMemo } from "./genmemo";
 
 /* -- pixels ----------------------------------------------------------------- */
 
@@ -1292,19 +1293,25 @@ export interface Tiles3Blit {
  *  collections in one 30 s running window, against 21.4 MB/s and 554 while
  *  standing still in the same place.
  *
- *  A WeakMap, so the memo dies with the cell: a rebuilt resolver makes new cell
- *  objects and the old entries are collected with them, which is what keeps
- *  this from becoming a cache that can go stale. Nothing mutates a returned ops
- *  array — every `push` in this file is a builder filling its OWN local array —
- *  and that is the invariant this sharing rests on. */
-const cellOpsMemo = new WeakMap<Tiles3Cell, Tiles3Blit[]>();
+ *  Keyed by the cell OBJECT, so it cannot go stale: a rebuilt resolver makes
+ *  new cell objects, and an evicted cell's entry ages out a generation later.
+ *  NOT A WeakMap — the per-cell memos in this file were 99% of the heap's
+ *  ephemerons and half of a major collection's pause (see GenMemo). The cap
+ *  holds the scene's cell cache (the ground window, ~4-6k cells) twice over
+ *  in the young generation. Nothing mutates a returned ops array — every
+ *  `push` in this file is a builder filling its OWN local array — and that is
+ *  the invariant this sharing rests on. */
+export const CELL_MEMO_CAP = 24000;
+const cellOpsMemo = new GenMemo<Tiles3Cell, Tiles3Blit[]>(CELL_MEMO_CAP);
 /** `LIQUID_TILE_GROUNDS.includes` ran a linear scan per cell per paint. */
 const LIQUID_SET = new Set<string>(LIQUID_TILE_GROUNDS);
 
 /** `{ ...art, topOnly: true }`, once per art object rather than once per cell
  *  per paint. Pure: the variant depends on nothing but the art, and generic so
- *  it carries the caller's own type exactly as the inline spread did. */
-const topOnlyMemo = new WeakMap<object, unknown>();
+ *  it carries the caller's own type exactly as the inline spread did. Bounded
+ *  and strong, like the cell memo (a copy of an art object holds what the
+ *  other memos key on — the chain that made their ephemerons iterate). */
+const topOnlyMemo = new GenMemo<object, unknown>(CELL_MEMO_CAP);
 function topOnlyOf<T extends object>(art: T): T & { topOnly: true } {
   let v = topOnlyMemo.get(art) as (T & { topOnly: true }) | undefined;
   if (v === undefined) topOnlyMemo.set(art, (v = { ...art, topOnly: true }));
@@ -1954,9 +1961,9 @@ export class Tiles3Textures {
    *  were rebuilt as template strings on every call — a fresh string object
    *  each time, so every Map and dictionary lookup downstream rehashed ~50
    *  characters instead of reading a cached hash. The art object comes out of
-   *  the resolution cache and is immutable, so the memo is exact and dies with
-   *  it (WeakMap). */
-  private plateKeyMemo = new WeakMap<object, Map<string, { key: string; skey: string }>>();
+   *  the resolution cache and is immutable, so the memo is exact; bounded and
+   *  strong like the cell memo (GenMemo — not a WeakMap). */
+  private plateKeyMemo = new GenMemo<object, Map<string, { key: string; skey: string }>>(CELL_MEMO_CAP);
   private keysFor(art: PlateLike, ground: string): { key: string; skey: string } {
     const o = art as unknown as object;
     let m = this.plateKeyMemo.get(o);
@@ -2384,7 +2391,7 @@ export class Tiles3Textures {
    *
    *  Uses the liquid diamond, which is already a cached flat diamond per RGB
    *  and exactly the right shape (a plate's own top-face mask). */
-  private underlayMemo = new WeakMap<Tiles3Cell, Tiles3Blit>();
+  private underlayMemo = new GenMemo<Tiles3Cell, Tiles3Blit>(CELL_MEMO_CAP); // per cell, like cellOpsMemo
   groundUnderlay(cell: Tiles3Cell): Tiles3Blit | null {
     /* A PURE FUNCTION OF THE CELL — ground colour from static world data, x/y
      * from the cell — rebuilt per paint as: a hex parse (four string slices),
