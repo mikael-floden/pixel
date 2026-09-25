@@ -629,7 +629,14 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `beaconOverMs` how far any of it ran past its idle period, `perfWorker` 0
   none / 1 made / 2 answered / 3 failed (a failed or 60 s silent worker is
   dropped and this thread posts). A hidden page's final flush builds and
-  posts at once, here: no idle period is coming.
+  posts at once, here: no idle period is coming. ITS PER-CALL WRAPPERS
+  ALLOCATE NOTHING (glframe.ts): the GL counters wrap every draw, bind,
+  switch, clear and viewport of the frame — ~1,500-2,600 draws and thousands
+  of binds on his phone — and a `(...a) => { on(a); orig.apply(this, a) }`
+  wrapper allocated an array per call, billed to `render` (106-302 KB a frame
+  in his 21:36 run, c0efbebe66) and paid by perf runs alone; each hot wrapper
+  names its parameters and forwards them with `call` (headless, recorder on:
+  the wrapper's own 91.9 KB a frame gone).
 - **REJECTED 2026-09-24: "one ground job a frame"** (58da4b2202, reverted the
   same hour). It stood the band slice and the drain group down on a frame whose
   landing repaint had painted (his 21:13 run: 64 of 192 worst frames stacked a

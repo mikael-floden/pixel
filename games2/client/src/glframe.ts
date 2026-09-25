@@ -212,43 +212,78 @@ export function installGlFrameProbe(
   };
 
   // --- the GPU's bill, at the API ---------------------------------------------------------------
-  const wrapGl = (name: string, on: (a: unknown[]) => void) => {
-    const orig = gl[name];
-    if (typeof orig !== "function") return;
-    gl[name] = function (this: unknown, ...a: unknown[]) {
-      on(a);
-      return orig.apply(this, a);
-    };
-  };
+  /* FIXED ARITY, NOTHING ALLOCATED PER CALL. These run on every GL call the
+   * frame makes — on his phone ~1,500-2,600 draws and thousands of texture
+   * binds a frame — and they were `function (...a) { on(a); orig.apply(this,
+   * a) }`: an arguments array per call, which his 21:36 run (c0efbebe66) billed
+   * as `render` 106-302 KB a frame and which only a perf run pays. Each wrapper
+   * now names its parameters and forwards them with `call`. The rare, variable-
+   * arity ones (readPixels, the uploads above) keep the rest form. */
+  const g = gl as unknown as Record<string, (...a: any[]) => any>;
   let lastFb: unknown = null;
-  wrapGl("viewport", (a) => {
-    vpW = a[2] as number;
-    vpH = a[3] as number;
-  });
-  wrapGl("drawArrays", (a) => {
-    frame.dc++;
-    frame.vt += a[2] as number;
-    if (!inFlush) frame.fillX += (vpW * vpH) / 1e6;
-  });
-  wrapGl("drawElements", (a) => {
-    frame.dc++;
-    frame.vt += a[1] as number;
-    if (!inFlush) frame.fillX += (vpW * vpH) / 1e6;
-  });
-  wrapGl("bindFramebuffer", (a) => {
-    if (a[1] !== lastFb) {
-      lastFb = a[1];
-      frame.fb++;
-    }
-  });
-  wrapGl("clear", () => {
-    frame.cl++;
-    frame.clMpx += (vpW * vpH) / 1e6;
-  });
-  wrapGl("bindTexture", () => frame.tb++);
-  wrapGl("readPixels", () => frame.rd++);
-  wrapGl("getError", () => frame.rd++);
-  wrapGl("finish", () => frame.rd++);
+  const oViewport = g.viewport;
+  if (typeof oViewport === "function")
+    g.viewport = function (this: unknown, x: number, y: number, w: number, h: number) {
+      vpW = w;
+      vpH = h;
+      return oViewport.call(this, x, y, w, h);
+    };
+  const oDrawArrays = g.drawArrays;
+  if (typeof oDrawArrays === "function")
+    g.drawArrays = function (this: unknown, mode: number, first: number, count: number) {
+      frame.dc++;
+      frame.vt += count;
+      if (!inFlush) frame.fillX += (vpW * vpH) / 1e6;
+      return oDrawArrays.call(this, mode, first, count);
+    };
+  const oDrawElements = g.drawElements;
+  if (typeof oDrawElements === "function")
+    g.drawElements = function (this: unknown, mode: number, count: number, type: number, offset: number) {
+      frame.dc++;
+      frame.vt += count;
+      if (!inFlush) frame.fillX += (vpW * vpH) / 1e6;
+      return oDrawElements.call(this, mode, count, type, offset);
+    };
+  const oBindFramebuffer = g.bindFramebuffer;
+  if (typeof oBindFramebuffer === "function")
+    g.bindFramebuffer = function (this: unknown, target: number, fb: unknown) {
+      if (fb !== lastFb) {
+        lastFb = fb;
+        frame.fb++;
+      }
+      return oBindFramebuffer.call(this, target, fb);
+    };
+  const oClear = g.clear;
+  if (typeof oClear === "function")
+    g.clear = function (this: unknown, mask: number) {
+      frame.cl++;
+      frame.clMpx += (vpW * vpH) / 1e6;
+      return oClear.call(this, mask);
+    };
+  const oBindTexture = g.bindTexture;
+  if (typeof oBindTexture === "function")
+    g.bindTexture = function (this: unknown, target: number, tex: unknown) {
+      frame.tb++;
+      return oBindTexture.call(this, target, tex);
+    };
+  const oGetError = g.getError;
+  if (typeof oGetError === "function")
+    g.getError = function (this: unknown) {
+      frame.rd++;
+      return oGetError.call(this);
+    };
+  const oFinish = g.finish;
+  if (typeof oFinish === "function")
+    g.finish = function (this: unknown) {
+      frame.rd++;
+      return oFinish.call(this);
+    };
+  const oReadPixels = g.readPixels;
+  if (typeof oReadPixels === "function")
+    g.readPixels = function (this: unknown, ...a: unknown[]) {
+      frame.rd++;
+      return oReadPixels.apply(this, a);
+    };
 
   /* THE FILL, OFF THE VERTEX BUFFER. Every pipeline flush hands its triangles
    * to drawArrays; their screen area is right there in vertexViewF32 (the
