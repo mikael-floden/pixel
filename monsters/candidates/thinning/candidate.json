@@ -1247,6 +1247,378 @@
         "west": "thinning/animations/angry__west.webp",
         "north-west": "thinning/animations/angry__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.571,
+          "step_max": 0.5802,
+          "drift": 4.84,
+          "loop": 0.0013,
+          "loop_ratio": 0.0,
+          "travel": 5.25,
+          "pin": 0.904,
+          "pad": 0,
+          "flash": 0.062,
+          "peak": 0.579,
+          "reach": 0.319,
+          "turn": 3,
+          "end_area": 1.001,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "some bright effect pixels (0.06) — eyeball it"
+          ],
+          "sub": "be6a0843-d3dc-4269-918a-0cdca78027fd",
+          "group": "1daf8ee2-3033-473a-83bc-37aef5620ec2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:00:19+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.5424,
+          "step_max": 0.5732,
+          "drift": 2.67,
+          "loop": 0.0777,
+          "loop_ratio": 0.14,
+          "travel": 5.0,
+          "pin": 0.792,
+          "pad": 0,
+          "flash": 0.076,
+          "peak": 0.5242,
+          "reach": 0.304,
+          "turn": 3,
+          "end_area": 0.93,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "some bright effect pixels (0.08) — eyeball it"
+          ],
+          "sub": "3e01f7ef-4267-4ab8-b267-7651c3587725",
+          "group": "1daf8ee2-3033-473a-83bc-37aef5620ec2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:00:24+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.5395,
+          "step_max": 0.5781,
+          "drift": 8.51,
+          "loop": 0.3205,
+          "loop_ratio": 0.59,
+          "travel": 8.51,
+          "pin": 0.644,
+          "pad": 0,
+          "flash": 0.099,
+          "peak": 0.5781,
+          "reach": 0.448,
+          "turn": 4,
+          "end_area": 1.027,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "some bright effect pixels (0.10) — eyeball it"
+          ],
+          "sub": "3fefe911-f76a-4c79-9726-1ea208f8ef0c",
+          "group": "1daf8ee2-3033-473a-83bc-37aef5620ec2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:00:25+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.6077,
+          "step_max": 0.7216,
+          "drift": 12.31,
+          "loop": 0.4554,
+          "loop_ratio": 0.75,
+          "travel": 12.31,
+          "pin": 0.618,
+          "pad": 0,
+          "flash": 0.086,
+          "peak": 0.7216,
+          "reach": 0.62,
+          "turn": 3,
+          "end_area": 0.984,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "drifts 12.3 px — eyeball it",
+            "some bright effect pixels (0.09) — eyeball it"
+          ],
+          "sub": "09c75557-4331-4baa-8f95-b0b4d169a62e",
+          "group": "1daf8ee2-3033-473a-83bc-37aef5620ec2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:00:26+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.5308,
+          "step_max": 0.6431,
+          "drift": 8.34,
+          "loop": 0.332,
+          "loop_ratio": 0.63,
+          "travel": 10.56,
+          "pin": 0.794,
+          "pad": 0,
+          "flash": 0.036,
+          "peak": 0.6431,
+          "reach": 0.413,
+          "turn": 2,
+          "end_area": 1.049,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "84803033-fa69-40f7-a650-ceaa4b532f87",
+          "group": "1daf8ee2-3033-473a-83bc-37aef5620ec2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:00:27+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.5424,
+          "step_max": 0.5732,
+          "drift": 2.67,
+          "loop": 0.0777,
+          "loop_ratio": 0.14,
+          "travel": 5.0,
+          "pin": 0.792,
+          "pad": 0,
+          "flash": 0.076,
+          "peak": 0.5242,
+          "reach": 0.304,
+          "turn": 3,
+          "end_area": 0.93,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "some bright effect pixels (0.08) — eyeball it"
+          ],
+          "sub": "3e01f7ef-4267-4ab8-b267-7651c3587725",
+          "group": "1daf8ee2-3033-473a-83bc-37aef5620ec2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:00:24+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.5395,
+          "step_max": 0.5781,
+          "drift": 8.51,
+          "loop": 0.3205,
+          "loop_ratio": 0.59,
+          "travel": 8.51,
+          "pin": 0.644,
+          "pad": 0,
+          "flash": 0.099,
+          "peak": 0.5781,
+          "reach": 0.448,
+          "turn": 4,
+          "end_area": 1.027,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "some bright effect pixels (0.10) — eyeball it"
+          ],
+          "sub": "3fefe911-f76a-4c79-9726-1ea208f8ef0c",
+          "group": "1daf8ee2-3033-473a-83bc-37aef5620ec2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:00:25+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.6077,
+          "step_max": 0.7216,
+          "drift": 12.31,
+          "loop": 0.4554,
+          "loop_ratio": 0.75,
+          "travel": 12.31,
+          "pin": 0.618,
+          "pad": 0,
+          "flash": 0.086,
+          "peak": 0.7216,
+          "reach": 0.62,
+          "turn": 3,
+          "end_area": 0.984,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "drifts 12.3 px — eyeball it",
+            "some bright effect pixels (0.09) — eyeball it"
+          ],
+          "sub": "09c75557-4331-4baa-8f95-b0b4d169a62e",
+          "group": "1daf8ee2-3033-473a-83bc-37aef5620ec2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:00:26+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Strike - Quickly lunges forward and strikes once",
+      "frame_paths": {
+        "south": [
+          "thinning/animations/attack/south/00.webp",
+          "thinning/animations/attack/south/01.webp",
+          "thinning/animations/attack/south/02.webp",
+          "thinning/animations/attack/south/03.webp"
+        ],
+        "south-east": [
+          "thinning/animations/attack/south-east/00.webp",
+          "thinning/animations/attack/south-east/01.webp",
+          "thinning/animations/attack/south-east/02.webp",
+          "thinning/animations/attack/south-east/03.webp"
+        ],
+        "east": [
+          "thinning/animations/attack/east/00.webp",
+          "thinning/animations/attack/east/01.webp",
+          "thinning/animations/attack/east/02.webp",
+          "thinning/animations/attack/east/03.webp"
+        ],
+        "north-east": [
+          "thinning/animations/attack/north-east/00.webp",
+          "thinning/animations/attack/north-east/01.webp",
+          "thinning/animations/attack/north-east/02.webp",
+          "thinning/animations/attack/north-east/03.webp"
+        ],
+        "north": [
+          "thinning/animations/attack/north/00.webp",
+          "thinning/animations/attack/north/01.webp",
+          "thinning/animations/attack/north/02.webp",
+          "thinning/animations/attack/north/03.webp"
+        ],
+        "south-west": [
+          "thinning/animations/attack/south-west/00.webp",
+          "thinning/animations/attack/south-west/01.webp",
+          "thinning/animations/attack/south-west/02.webp",
+          "thinning/animations/attack/south-west/03.webp"
+        ],
+        "west": [
+          "thinning/animations/attack/west/00.webp",
+          "thinning/animations/attack/west/01.webp",
+          "thinning/animations/attack/west/02.webp",
+          "thinning/animations/attack/west/03.webp"
+        ],
+        "north-west": [
+          "thinning/animations/attack/north-west/00.webp",
+          "thinning/animations/attack/north-west/01.webp",
+          "thinning/animations/attack/north-west/02.webp",
+          "thinning/animations/attack/north-west/03.webp"
+        ]
+      },
+      "strips": {
+        "south": "thinning/animations/attack__south.webp",
+        "south-east": "thinning/animations/attack__south-east.webp",
+        "east": "thinning/animations/attack__east.webp",
+        "north-east": "thinning/animations/attack__north-east.webp",
+        "north": "thinning/animations/attack__north.webp",
+        "south-west": "thinning/animations/attack__south-west.webp",
+        "west": "thinning/animations/attack__west.webp",
+        "north-west": "thinning/animations/attack__north-west.webp"
+      }
     }
   },
   "pixellab_rotation_map": {
