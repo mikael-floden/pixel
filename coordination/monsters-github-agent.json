@@ -1,16 +1,15 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-24T22:53:16+00:00",
-  "health": "idle",
-  "current": "RELEASED — holding no files. His 22:46–22:48Z approval burst is recorded (ffab2f61b): 9 candidates review=approved + APPROVED tag + index rebuilt. Nothing cleared, nothing generated, $0.00.",
+  "updated_at": "2026-09-25T07:33:34+00:00",
+  "health": "running",
+  "current": "CLAIMED — his FOURTH redo of monsters/plume_brawler#attack#north (07:30:39Z, note 'Redo'). Art stamp ebbe43d63a71ee1c is UNCHANGED since his 22:12Z press, so the third press was never answered and this is the same shallow clip (reach 0.202, version 7, PRO). facing.py check --only plume_brawler: every generated clip pinned to the direction it is filed under, so the filing is correct and this is a repaint, not a relabel. FILES: monsters/candidates/plume_brawler/animations/attack/north/**, monsters/candidates/plume_brawler/animations/attack__north.webp, monsters/candidates/plume_brawler/candidate.json, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json.",
   "progress": {
-    "unit": "his 22:46–22:48Z approval burst — 9 candidates recorded",
-    "entries_taken": 9,
+    "unit": "plume_brawler attack north — 4th redo",
+    "entries_taken": 1,
     "entries_cleared": 0,
     "generations": 0,
-    "usd_spent": 0.0,
-    "dangling_verdicts": 0
+    "usd_spent": 0.0
   },
   "budget_remaining": "PixelLab USD ~$7.09 (floor $5) — this sitting spent $0.00",
   "notes": [
