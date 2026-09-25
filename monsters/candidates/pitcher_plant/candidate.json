@@ -1251,6 +1251,382 @@
         "west": "pitcher_plant/animations/angry__west.webp",
         "north-west": "pitcher_plant/animations/angry__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1638,
+          "step_max": 0.1798,
+          "drift": 2.14,
+          "loop": 0.0872,
+          "loop_ratio": 0.53,
+          "travel": 0.66,
+          "pin": 0.893,
+          "pad": 0,
+          "flash": -0.002,
+          "peak": 0.1911,
+          "reach": 0.085,
+          "turn": 0,
+          "end_area": 1.05,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "5381c18f-9d1e-4dc3-9d90-9d66a0166515",
+          "group": "f3a5dca7-8634-4bf2-923f-a68c94db48bf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:16:44+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.3063,
+          "step_max": 0.3558,
+          "drift": 4.9,
+          "loop": 0.2609,
+          "loop_ratio": 0.85,
+          "travel": 4.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3409,
+          "reach": 0.231,
+          "turn": 0,
+          "end_area": 0.979,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "7fd61f6d-aa53-4f90-9bed-f4c36f5fa772",
+          "group": "f3a5dca7-8634-4bf2-923f-a68c94db48bf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:16:45+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.2508,
+          "step_max": 0.3615,
+          "drift": 3.37,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.33,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3045,
+          "reach": 0.246,
+          "turn": 0,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
+          "sub": "7db05efe-d414-42ce-b732-9c2ca779169d",
+          "group": "f3a5dca7-8634-4bf2-923f-a68c94db48bf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:16:46+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1222,
+          "step_max": 0.1841,
+          "drift": 2.67,
+          "loop": 0.0851,
+          "loop_ratio": 0.7,
+          "travel": 2.3,
+          "pin": 0.998,
+          "pad": 0,
+          "flash": -0.004,
+          "peak": 0.1275,
+          "reach": 0.242,
+          "turn": 0,
+          "end_area": 1.043,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.128 — eyeball it",
+            "shallow strike: reach 0.24 — eyeball it"
+          ],
+          "sub": "723789b7-6b2c-4bcd-b330-d6f03da7e087",
+          "group": "f3a5dca7-8634-4bf2-923f-a68c94db48bf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:16:47+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0129,
+          "step_max": 0.0184,
+          "drift": 0.2,
+          "loop": 0.0007,
+          "loop_ratio": 0.05,
+          "travel": 0.09,
+          "pin": 0.999,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.0124,
+          "reach": 0.117,
+          "turn": 0,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.013 per frame",
+            "no strike: peak 0.012 of the silhouette away from the base",
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
+          "sub": "3048269a-d45a-4659-b8b0-e5223fa72008",
+          "group": "f3a5dca7-8634-4bf2-923f-a68c94db48bf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:16:47+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.3063,
+          "step_max": 0.3558,
+          "drift": 4.9,
+          "loop": 0.2609,
+          "loop_ratio": 0.85,
+          "travel": 4.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3409,
+          "reach": 0.231,
+          "turn": 0,
+          "end_area": 0.979,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "7fd61f6d-aa53-4f90-9bed-f4c36f5fa772",
+          "group": "f3a5dca7-8634-4bf2-923f-a68c94db48bf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:16:45+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.2508,
+          "step_max": 0.3615,
+          "drift": 3.37,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.33,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3045,
+          "reach": 0.246,
+          "turn": 0,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
+          "sub": "7db05efe-d414-42ce-b732-9c2ca779169d",
+          "group": "f3a5dca7-8634-4bf2-923f-a68c94db48bf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:16:46+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1222,
+          "step_max": 0.1841,
+          "drift": 2.67,
+          "loop": 0.0851,
+          "loop_ratio": 0.7,
+          "travel": 2.3,
+          "pin": 0.998,
+          "pad": 0,
+          "flash": -0.004,
+          "peak": 0.1275,
+          "reach": 0.242,
+          "turn": 0,
+          "end_area": 1.043,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.128 — eyeball it",
+            "shallow strike: reach 0.24 — eyeball it"
+          ],
+          "sub": "723789b7-6b2c-4bcd-b330-d6f03da7e087",
+          "group": "f3a5dca7-8634-4bf2-923f-a68c94db48bf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T23:16:47+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Strike - Quickly lunges forward and strikes once",
+      "frame_paths": {
+        "south": [
+          "pitcher_plant/animations/attack/south/00.webp",
+          "pitcher_plant/animations/attack/south/01.webp",
+          "pitcher_plant/animations/attack/south/02.webp",
+          "pitcher_plant/animations/attack/south/03.webp"
+        ],
+        "south-east": [
+          "pitcher_plant/animations/attack/south-east/00.webp",
+          "pitcher_plant/animations/attack/south-east/01.webp",
+          "pitcher_plant/animations/attack/south-east/02.webp",
+          "pitcher_plant/animations/attack/south-east/03.webp"
+        ],
+        "east": [
+          "pitcher_plant/animations/attack/east/00.webp",
+          "pitcher_plant/animations/attack/east/01.webp",
+          "pitcher_plant/animations/attack/east/02.webp",
+          "pitcher_plant/animations/attack/east/03.webp"
+        ],
+        "north-east": [
+          "pitcher_plant/animations/attack/north-east/00.webp",
+          "pitcher_plant/animations/attack/north-east/01.webp",
+          "pitcher_plant/animations/attack/north-east/02.webp",
+          "pitcher_plant/animations/attack/north-east/03.webp"
+        ],
+        "north": [
+          "pitcher_plant/animations/attack/north/00.webp",
+          "pitcher_plant/animations/attack/north/01.webp",
+          "pitcher_plant/animations/attack/north/02.webp",
+          "pitcher_plant/animations/attack/north/03.webp"
+        ],
+        "south-west": [
+          "pitcher_plant/animations/attack/south-west/00.webp",
+          "pitcher_plant/animations/attack/south-west/01.webp",
+          "pitcher_plant/animations/attack/south-west/02.webp",
+          "pitcher_plant/animations/attack/south-west/03.webp"
+        ],
+        "west": [
+          "pitcher_plant/animations/attack/west/00.webp",
+          "pitcher_plant/animations/attack/west/01.webp",
+          "pitcher_plant/animations/attack/west/02.webp",
+          "pitcher_plant/animations/attack/west/03.webp"
+        ],
+        "north-west": [
+          "pitcher_plant/animations/attack/north-west/00.webp",
+          "pitcher_plant/animations/attack/north-west/01.webp",
+          "pitcher_plant/animations/attack/north-west/02.webp",
+          "pitcher_plant/animations/attack/north-west/03.webp"
+        ]
+      },
+      "strips": {
+        "south": "pitcher_plant/animations/attack__south.webp",
+        "south-east": "pitcher_plant/animations/attack__south-east.webp",
+        "east": "pitcher_plant/animations/attack__east.webp",
+        "north-east": "pitcher_plant/animations/attack__north-east.webp",
+        "north": "pitcher_plant/animations/attack__north.webp",
+        "south-west": "pitcher_plant/animations/attack__south-west.webp",
+        "west": "pitcher_plant/animations/attack__west.webp",
+        "north-west": "pitcher_plant/animations/attack__north-west.webp"
+      }
     }
   },
   "pixellab_rotation_map": {
