@@ -962,16 +962,16 @@
           "generated_at": "2026-09-25T20:39:42+00:00"
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.0287,
-          "step_max": 0.0526,
-          "drift": 0.83,
-          "loop": 0.0005,
-          "loop_ratio": 0.02,
-          "travel": 0.83,
+          "status": "pass",
+          "step_mean": 0.0548,
+          "step_max": 0.0662,
+          "drift": 1.51,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.51,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.002,
+          "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
@@ -981,23 +981,21 @@
             96,
             96
           ],
-          "reasons": [
-            "frozen: silhouette moves 0.029 per frame"
-          ],
-          "sub": "36ddc4c9-62ee-4483-b922-19f9861ef2eb",
-          "group": "67f3ddba-80c7-4299-abca-881a9c06805b",
+          "reasons": [],
+          "sub": "fb7a47ba-b0e0-4760-862b-3c2123f40c24",
+          "group": "4adfe38a-0e92-4683-bd51-875a2d03fa4e",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "v3",
-          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in",
+          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in, more agitated: stomps, tosses its head, bigger movement",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-25T20:39:48+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-25T22:19:33+00:00"
         },
         "north-east": {
           "status": "warn",
@@ -1038,13 +1036,13 @@
           "generated_at": "2026-09-25T20:39:49+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.0271,
-          "step_max": 0.0465,
-          "drift": 0.84,
+          "status": "pass",
+          "step_mean": 0.1127,
+          "step_max": 0.1305,
+          "drift": 3.48,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.07,
+          "travel": 0.15,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
@@ -1057,23 +1055,21 @@
             96,
             96
           ],
-          "reasons": [
-            "frozen: silhouette moves 0.027 per frame"
-          ],
-          "sub": "1094d2e9-029e-42ed-ac13-2a7331cce6fc",
-          "group": "e197a7c6-5283-4c2b-87cd-57f2435b613e",
+          "reasons": [],
+          "sub": "215e0e66-91ff-4026-9c84-7d4a944156e9",
+          "group": "eb4ca5fc-f914-4bf2-9242-b54a3210a103",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "v3",
-          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in",
+          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in, more agitated: stomps, tosses its head, bigger movement",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-25T20:39:49+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-25T22:19:34+00:00"
         },
         "south-west": {
           "status": "warn",
@@ -1152,6 +1148,43 @@
           "tries": 1,
           "generated_at": "2026-09-25T20:39:49+00:00",
           "source": "north-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0548,
+          "step_max": 0.0662,
+          "drift": 1.51,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.51,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "fb7a47ba-b0e0-4760-862b-3c2123f40c24",
+          "group": "4adfe38a-0e92-4683-bd51-875a2d03fa4e",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in, more agitated: stomps, tosses its head, bigger movement",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 5,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-25T22:19:33+00:00",
+          "source": "east"
         }
       },
       "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in",
@@ -1204,6 +1237,13 @@
           "moon_milk/animations/angry/north-west/02.webp",
           "moon_milk/animations/angry/north-west/03.webp",
           "moon_milk/animations/angry/north-west/04.webp"
+        ],
+        "west": [
+          "moon_milk/animations/angry/west/00.webp",
+          "moon_milk/animations/angry/west/01.webp",
+          "moon_milk/animations/angry/west/02.webp",
+          "moon_milk/animations/angry/west/03.webp",
+          "moon_milk/animations/angry/west/04.webp"
         ]
       },
       "strips": {
@@ -1213,7 +1253,8 @@
         "north-east": "moon_milk/animations/angry__north-east.webp",
         "north": "moon_milk/animations/angry__north.webp",
         "south-west": "moon_milk/animations/angry__south-west.webp",
-        "north-west": "moon_milk/animations/angry__north-west.webp"
+        "north-west": "moon_milk/animations/angry__north-west.webp",
+        "west": "moon_milk/animations/angry__west.webp"
       }
     }
   },
