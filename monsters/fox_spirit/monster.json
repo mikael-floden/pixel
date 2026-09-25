@@ -283,18 +283,20 @@
       "source_name": "custom-walk loop, full walk cycle in ",
       "directions": {
         "south": {
-          "frames": 5,
+          "frames": 4,
           "strip": "fox_spirit/animations/walk__south.webp",
           "frame_paths": [
             "fox_spirit/animations/walk/south/00.webp",
             "fox_spirit/animations/walk/south/01.webp",
             "fox_spirit/animations/walk/south/02.webp",
-            "fox_spirit/animations/walk/south/03.webp",
-            "fox_spirit/animations/walk/south/04.webp"
+            "fox_spirit/animations/walk/south/03.webp"
           ],
-          "lm": "Thu, 24 Sep 2026 18:56:19 GMT",
-          "src_frames": 5,
-          "sub": "b10b97bd-4079-481c-a7a6-86c1a46a5bbb"
+          "src_frames": 4,
+          "sub": "a32e4bd5-93e3-4167-8cf3-d8f219ef187d",
+          "group": "97e6098e-569f-41d7-9541-d2786fb51504",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "rolls": 2,
+          "redone_at": "2026-09-25T16:38:24+00:00"
         },
         "south-east": {
           "frames": 4,
@@ -348,18 +350,18 @@
           "sub": null,
           "refilled_from": "candidates/fox_spirit/animations/walk/north"
         },
-        "north-west": {
+        "south-west": {
           "frames": 4,
-          "strip": "fox_spirit/animations/walk__north-west.webp",
+          "strip": "fox_spirit/animations/walk__south-west.webp",
           "frame_paths": [
-            "fox_spirit/animations/walk/north-west/00.webp",
-            "fox_spirit/animations/walk/north-west/01.webp",
-            "fox_spirit/animations/walk/north-west/02.webp",
-            "fox_spirit/animations/walk/north-west/03.webp"
+            "fox_spirit/animations/walk/south-west/00.webp",
+            "fox_spirit/animations/walk/south-west/01.webp",
+            "fox_spirit/animations/walk/south-west/02.webp",
+            "fox_spirit/animations/walk/south-west/03.webp"
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/fox_spirit/animations/walk/north-west"
+          "refilled_from": "candidates/fox_spirit/animations/walk/south-west"
         },
         "west": {
           "frames": 4,
@@ -374,18 +376,18 @@
           "sub": null,
           "refilled_from": "candidates/fox_spirit/animations/walk/west"
         },
-        "south-west": {
+        "north-west": {
           "frames": 4,
-          "strip": "fox_spirit/animations/walk__south-west.webp",
+          "strip": "fox_spirit/animations/walk__north-west.webp",
           "frame_paths": [
-            "fox_spirit/animations/walk/south-west/00.webp",
-            "fox_spirit/animations/walk/south-west/01.webp",
-            "fox_spirit/animations/walk/south-west/02.webp",
-            "fox_spirit/animations/walk/south-west/03.webp"
+            "fox_spirit/animations/walk/north-west/00.webp",
+            "fox_spirit/animations/walk/north-west/01.webp",
+            "fox_spirit/animations/walk/north-west/02.webp",
+            "fox_spirit/animations/walk/north-west/03.webp"
           ],
           "src_frames": 4,
           "sub": null,
-          "refilled_from": "candidates/fox_spirit/animations/walk/south-west"
+          "refilled_from": "candidates/fox_spirit/animations/walk/north-west"
         }
       }
     },
