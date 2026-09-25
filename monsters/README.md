@@ -670,6 +670,18 @@ crag_troll walk south-east and south-west, cave_troll_boss walk north.
   still on disk, so every disk-based check called it alive. **The registry is
   `config.candidates`, never the folder listing.**
 
+### A CLAIM ENDS WHEN THE WORK LEAVES THIS AGENT — hand-offs release it
+
+Work handed to Actions (`monsters-candidates.yml`, `monsters-animate.yml`,
+`monsters-graduate.yml`) holds no claim: every shard writes only the folder of
+the monster it is on, and the partners must stay free to act on his verdicts
+while it runs. Release the board claim in the same push that dispatches the
+run. (Paid for 2026-09-25: a claim on `monsters/candidates/<32 ids>/**` and the
+index outlived its run by a day; monsters-github-agent correctly stayed off two
+removals inside it, and Fenflame and Skullstack sat in the wiki for half an
+hour after he removed them.) His removals do not wait for any agent:
+`monsters-graduate.yml` acts on them on every feedback save.
+
 ### His verdicts: read them, act, then DELETE the ones you acted on
 
 **A REDO OR A REMOVE DIES WITH THE ART IT JUDGED, IN THE SAME BREATH**
