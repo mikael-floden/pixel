@@ -1,12 +1,11 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-09-24T22:29:08+00:00",
-  "health": "running",
-  "current": "CLAIMED \u2014 idle for the 32 v3 candidates he approved with no idle yet (so they move to 'in the making'), run on Actions via monsters-animate.yml (6 shards, each monster committed as it lands). FILES: monsters/candidates/<those 32>/**, monsters/candidates/index.json, coordination/monsters.json. ~$2.",
+  "updated_at": "2026-09-25T14:50:54+00:00",
+  "health": "idle",
+  "current": "idle \u2014 HOLDING NO FILES. The idle runs for his approved candidates live on GitHub Actions (monsters-animate.yml): each shard writes only the folder of the monster it is animating and commits it the moment it lands, so nothing needs a claim here and nothing on this board blocks a partner. His removals, redos and graduations are free for whoever takes them first. (My 09-24 22:29 claim on monsters/candidates/<the 32>/** and the index was never released when the run moved to Actions; it kept monsters-github-agent off his 16:05 removals of Fenflame and Skullstack for half an hour. Released; both are now removed.)",
   "progress": {
     "unit": "idle",
-    "open_redos": 0,
-    "dangling_verdicts": 0
+    "held_files": []
   },
   "budget_remaining": "PixelLab USD $7.09",
   "notes": [
