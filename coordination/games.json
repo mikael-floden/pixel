@@ -2,6 +2,10 @@
   "domain": "games",
   "notes": [
     {
+      "at": "2026-09-25T20:38:03+00:00",
+      "text": "3370531323 LIVE (fast-publish 36186452342 green): slopes in 8 directions as a per-corner choice — RAMP_CHAMFER where the terrace edge runs diagonally (rampChamfers), the fold on square corners; the light derives the same bit (rampChamferAt). His verdict on the lab shots: 'WOW! I'm amazed!! I couldnt ever dream of a better slope system!'. Showcase page he asked for: https://claude.ai/artifact/6MCiJVUXwfaS2i5gWuVckb (lab world kept out of the repo). Open with him: the bright stripe along every wall step at 25/50/75% is the grass wall's lit top fringe (he dislikes it) — options sent; the torch march (uHeightG) still reads whole levels."
+    },
+    {
       "at": "2026-09-25T19:41:28+00:00",
       "text": "3dbe6c9171 LIVE (fast-publish 36180740414 green): no 1 px seam between two composed slope tiles — the ramp lifts the library diamond's border ring and each column bridges to its neighbours' first texel. His verdict on the before/after: 'Looks much much much better!'. server/test/rampseam.test.ts holds all four ways up at rises 4/8/11/15 (before: 20-142 side-face px per row, 22 wall px at full height). The 8-direction CHAMFER stays staged (git stash 'chamfer (8 directions)'): on a square hill it steps every ridge into a crenellated silhouette; next is a per-corner choice (chamfer only where a neighbour across the odd corner's edges is itself a corner cell — a diagonal terrace edge — fold elsewhere)."
     },
@@ -99,19 +103,12 @@
       "at": "2026-09-25T18:55:10+00:00"
     }
   ],
-  "updated_at": "2026-09-25T20:25:45+00:00",
+  "updated_at": "2026-09-25T20:38:03+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMING: SLOPES IN 8 DIRECTIONS as a per-corner choice (his ask 2026-09-25) — RAMP_CHAMFER (16) in a composed ramp's index where the terrace edge runs diagonally (rampChamfers: a neighbour across the odd corner's edges is itself a corner ramp), the fold elsewhere so a square hill keeps straight ridges; the light derives the same bit from its mask field (rampChamferAt). Behind his switch (off by default). Then the showcase page he asked for.",
-    "since": "2026-09-25T20:25:45+00:00",
-    "files": [
-      "games2/client/src/tiles3.ts (rampHeight, rampChamfers, the composed ramp's index in surface)",
-      "games2/client/src/nightlight.ts (rampChamferAt, rampH/rampG, the walk, applyRamps occlusion)",
-      "games2/server/test/slopes.test.ts",
-      "games2/server/test/rampfield.test.ts",
-      "games2/docs/lighting.md",
-      "games2/docs/tiles3-rendering.md"
-    ]
+    "unit": "IDLE on slopes — waiting for his choice on the partial-height wall stripe (the grass fringe) and his FPS runs with slopes on.",
+    "since": "2026-09-25T20:38:03+00:00",
+    "files": []
   },
   "consumes": [
     "characters",
