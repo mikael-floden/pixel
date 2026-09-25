@@ -2,6 +2,10 @@
   "domain": "games",
   "notes": [
     {
+      "at": "2026-09-25T19:41:28+00:00",
+      "text": "3dbe6c9171 LIVE (fast-publish 36180740414 green): no 1 px seam between two composed slope tiles — the ramp lifts the library diamond's border ring and each column bridges to its neighbours' first texel. His verdict on the before/after: 'Looks much much much better!'. server/test/rampseam.test.ts holds all four ways up at rises 4/8/11/15 (before: 20-142 side-face px per row, 22 wall px at full height). The 8-direction CHAMFER stays staged (git stash 'chamfer (8 directions)'): on a square hill it steps every ridge into a crenellated silhouette; next is a per-corner choice (chamfer only where a neighbour across the odd corner's edges is itself a corner cell — a diagonal terrace edge — fold elsewhere)."
+    },
+    {
       "at": "2026-09-25T19:02:39+00:00",
       "text": "3d248e4c0d LIVE (fast-publish 36176811764 green; bundle index-7fec6b1cea): a phone in 'Desktop site' (layout >= 1.25x the screen across, touch) backs the canvas at the screen's real pixels (dpr / squeeze) — his girlfriend's phone goes from 2390x3912 at zoom 5 to 1080x1770 at zoom 2, 540 world px across like his — and a once-per-launch notice (desktopsitenotice.ts) tells the player to turn the mode off. The UI itself is not compensated (UI_AGENT.md law): turning the mode off is the fix."
     },
@@ -95,16 +99,12 @@
       "at": "2026-09-25T18:55:10+00:00"
     }
   ],
-  "updated_at": "2026-09-25T19:35:32+00:00",
+  "updated_at": "2026-09-25T19:41:28+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMING (maintainer 2026-09-25, on the live slopes: 'The new slopes looks so good! The only thing I can complain on now is I can see a 1 px edge becouse the slope should be 1px wider/taller'): the composed ramp's dashed 1 px seams. Fix in tiles3draw buildRampPixels (the border ring lifted + each column bridged to its neighbours' first texel) + a painter test (server/test/rampseam.test.ts). The 8-direction chamfer is STAGED, not shipping: on a square hill it steps the ridges (a crenellated silhouette) — needs a per-corner choice first.",
-    "since": "2026-09-25T19:35:32+00:00",
-    "files": [
-      "games2/client/src/tiles3draw.ts (buildRampPixels)",
-      "games2/server/test/rampseam.test.ts (new)",
-      "games2/docs/tiles3-rendering.md"
-    ]
+    "unit": "IN PROGRESS: the slope showcase page he asked for (lab captures at off / 4 px / 25-100%, Morning / Day / Evening, other wall textures; lab world local only, never committed). Next: 8-direction slopes as a per-corner chamfer/fold choice.",
+    "since": "2026-09-25T19:41:28+00:00",
+    "files": []
   },
   "consumes": [
     "characters",
