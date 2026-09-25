@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Tiles3, PLATE_H, RAMP_MIN_PX, SYNTHETIC_RAMP_DIR, hexRGB, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
+import { Tiles3, PLATE_H, RAMP_CHAMFER, RAMP_MIN_PX, SYNTHETIC_RAMP_DIR, hexRGB, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
 import { SLOPE_HEIGHT_DEFAULT, SLOPE_OFF, slopeHeight, slopeLabel } from "../../client/src/slopeheight.js";
 import { buildBoundaryPixels, buildPlatePixels, buildRampPixels, patternSheetPaths, patternSheets, shiftDown, slopeLift, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
 import { cellArtPaths, dressKey, surfaceY, Tiles3World, viewFromParsed } from "../../client/src/tiles3runtime.js";
@@ -67,6 +67,25 @@ test("rampHeight: an edge is a plane (1 on the raised edge, 0 on the far one), a
     assert.equal(rampHeight(4, 1, t), rampHeight(12, 1, t), "NE's east edge is the north ramp's");
     assert.equal(rampHeight(4, t, 0), rampHeight(5, t, 0), "NE's north edge is the east ramp's");
   }
+  // RAMP_CHAMFER (16): a corner on a diagonal terrace edge inclines only the
+  // triangle at its odd corner — one raised corner a + b - 1, three a + b — so
+  // the edge's cells, alternating one and three raised corners, are ONE plane
+  // (his ask 2026-09-25: "draw slopes in 8 and not 4 directions").
+  const near = (a: number, b: number, why: string) => assert.ok(Math.abs(a - b) < 1e-9, `${a} vs ${b}: ${why}`);
+  const clamp01 = (t: number) => Math.max(0, Math.min(1, t));
+  assert.equal(rampHeight(4 | RAMP_CHAMFER, 0.5, 0.5), 0, "one corner: the centre is on the flat half");
+  assert.equal(rampHeight(7 | RAMP_CHAMFER, 0.5, 0.5), 1, "three corners: the centre is on the top half");
+  for (const u of [0, 0.2, 0.5, 0.7, 1])
+    for (const v of [0, 0.3, 0.5, 0.9, 1]) {
+      // The higher terrace south-east of x + y = 2: (0,0) raises SE only, (1,0) all but NW.
+      near(rampHeight(1 | RAMP_CHAMFER, u, v), clamp01(u + v - 1), `(0,0) at ${u},${v}`);
+      near(rampHeight(7 | RAMP_CHAMFER, u, v), clamp01(1 + u + v - 1), `(1,0) at ${u},${v}`);
+    }
+  for (const t of [0, 0.25, 0.5, 1]) {
+    assert.equal(rampHeight(4 | RAMP_CHAMFER, 1, t), rampHeight(12, 1, t), "a chamfer meets the edge ramps as the fold does");
+    assert.equal(rampHeight(4 | RAMP_CHAMFER, t, 0), rampHeight(5, t, 0));
+  }
+  assert.equal(rampHeight(12 | RAMP_CHAMFER, 0.3, 0.4), rampHeight(12, 0.3, 0.4), "an edge ignores the bit");
   // The diagonal pairs stay bilinear.
   assert.equal(rampHeight(9, 0.5, 0.5), 0.5);
   // Outside the cell the field clamps rather than extrapolates.
@@ -558,7 +577,7 @@ test("the game rule: every one-level rise of a ground with no published storey s
     const sl = c.slope, art = c.art as { kind: string; path: string; h: number; from?: string; mask?: number } | undefined;
     if (!sl || !sl.ramp || !art || art.kind !== "ramp") { if (wrong.length < 5) wrong.push(`${c.x},${c.y} L${c.level} ${gr}: ${sl ? (sl.ramp ? "ramp but art " + art?.kind : "a bump") : "nothing"}`); continue; }
     ramps++;
-    if (art.mask !== one || !art.from || !art.path.startsWith(SYNTHETIC_RAMP_DIR + "/") || art.h !== PLATE_H + 15) wrong.push(`${c.x},${c.y}: art ${JSON.stringify(art)} for mask ${one}`);
+    if (((art.mask ?? 0) & 15) !== one || !art.from || !art.path.startsWith(SYNTHETIC_RAMP_DIR + "/") || art.h !== PLATE_H + 15) wrong.push(`${c.x},${c.y}: art ${JSON.stringify(art)} for mask ${one}`);
     cellArtPaths(c, (p) => paths.add(p));
   }
   assert.deepEqual(wrong.slice(0, 5), [], `${wrong.length} wrong`);

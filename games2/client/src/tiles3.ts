@@ -1202,7 +1202,18 @@ export function isRampSet(st: { elevation?: number }): boolean {
  *  that meet there (a convex ridge), three the MAX (a concave valley). The
  *  bilinear blend sagged both into a saddle — a scallop per ring along every
  *  ridge, in the art and in the light's terminator. An edge (two neighbouring
- *  corners) is a plane either way; the two diagonal pairs stay bilinear. */
+ *  corners) is a plane either way; the two diagonal pairs stay bilinear.
+ *
+ *  RAMP_CHAMFER (16) MAKES A CORNER A CHAMFER — SLOPES IN 8 DIRECTIONS
+ *  (maintainer 2026-09-25: "I want you to draw slopes in 8 and not 4
+ *  directions"): one raised corner inclines only the triangle at it (a + b - 1,
+ *  the rest flat at the level), three only the triangle at the low corner
+ *  (a + b, the rest at the top), a and b the two edge inclines — so a DIAGONAL
+ *  terrace edge, whose cells alternate one and three raised corners, is one
+ *  plane facing the diagonal instead of a zigzag of folds. Worn only there
+ *  (`rampChamfers`): on a square hill's corner the chamfer steps every ridge
+ *  into a crenellated silhouette, so a square corner keeps its fold. */
+export const RAMP_CHAMFER = 16;
 export function rampHeight(mask: number, u: number, v: number): number {
   const cu = u < 0 ? 0 : u > 1 ? 1 : u;
   const cv = v < 0 ? 0 : v > 1 ? 1 : v;
@@ -1211,11 +1222,53 @@ export function rampHeight(mask: number, u: number, v: number): number {
   const sw = (mask >> 1) & 1;
   const se = mask & 1;
   const n = nw + ne + sw + se;
+  const chamfer = (mask & RAMP_CHAMFER) !== 0;
   // A raised corner to the east rises with u, one to the south with v.
-  if (n === 1) return Math.min(ne || se ? cu : 1 - cu, sw || se ? cv : 1 - cv);
+  if (n === 1) {
+    const a = ne || se ? cu : 1 - cu;
+    const b = sw || se ? cv : 1 - cv;
+    return chamfer ? Math.max(0, a + b - 1) : Math.min(a, b);
+  }
   // The LOW corner to the west: the valley rises with u; to the north, with v.
-  if (n === 3) return Math.max(!nw || !sw ? cu : 1 - cu, !nw || !ne ? cv : 1 - cv);
+  if (n === 3) {
+    const a = !nw || !sw ? cu : 1 - cu;
+    const b = !nw || !ne ? cv : 1 - cv;
+    return chamfer ? Math.min(1, a + b) : Math.max(a, b);
+  }
   return (1 - cu) * (1 - cv) * nw + cu * (1 - cv) * ne + (1 - cu) * cv * sw + cu * cv * se;
+}
+
+/** THE ODD CORNER'S TWO EDGE NEIGHBOURS of a one- or three-corner ramp mask:
+ *  the cell across the side edge (dx) and across the top/bottom edge (dy) that
+ *  meet at the raised corner (one) or the low corner (three); null otherwise. */
+export function rampCornerNeighbours(mask: number): [number, number] | null {
+  const nw = (mask >> 3) & 1;
+  const ne = (mask >> 2) & 1;
+  const sw = (mask >> 1) & 1;
+  const se = mask & 1;
+  const n = nw + ne + sw + se;
+  if (n === 1) return [ne || se ? 1 : -1, sw || se ? 1 : -1];
+  if (n === 3) return [!nw || !sw ? -1 : 1, !nw || !ne ? -1 : 1];
+  return null;
+}
+
+/** A one- or three-corner mask: a corner ramp. */
+export function rampIsCorner(mask: number): boolean {
+  const m = mask & 15;
+  const n = (m & 1) + ((m >> 1) & 1) + ((m >> 2) & 1) + ((m >> 3) & 1);
+  return n === 1 || n === 3;
+}
+
+/** A CORNER RAMP IS A CHAMFER WHERE THE TERRACE EDGE RUNS DIAGONALLY: when the
+ *  cell across either edge that meets its odd corner is itself a corner ramp
+ *  (a diagonal edge's cells alternate one and three raised corners), and a
+ *  fold where the edge turns a square corner (its neighbours there are edge
+ *  ramps). `maskAt(dx, dy)` is the neighbour's own ramp mask (0 for none).
+ *  The light restates it over its mask field (nightlight `rampChamferAt`). */
+export function rampChamfers(mask: number, maskAt: (dx: number, dy: number) => number): boolean {
+  const nb = rampCornerNeighbours(mask & 15);
+  if (!nb) return false;
+  return rampIsCorner(maskAt(nb[0], 0)) || rampIsCorner(maskAt(0, nb[1]));
 }
 
 export interface DetailPick {
@@ -3505,10 +3558,19 @@ export class Tiles3 {
     if (sl) {
       out.slope = sl;
       if (sl.ramp && sl.dir.startsWith(SYNTHETIC_RAMP_DIR + "/")) {
+        // A corner on a diagonal terrace edge is a chamfer (rampChamfers): its own raster, its own feet.
+        let mask = sl.index;
+        const nMask = (dx: number, dy: number): number => {
+          const gn = g(x + dx, y + dy);
+          if (!gn || view.isLiquid(gn)) return 0;
+          const m = this.slopeIndexAt(g, L, gn, x + dx, y + dy, L(x + dx, y + dy), true);
+          return m === 15 ? 0 : m;
+        };
+        if (rampChamfers(mask, nMask)) mask |= RAMP_CHAMFER;
         // Unique per member plate AND mask: the key of a composed texture is its content.
-        const path = `${sl.dir}/${String(sl.index).padStart(2, "0")}/${p.art.path}`;
-        out.art = { kind: "ramp", path, w: TILE, h: sl.h, from: p.art.path, fromKind: p.art.kind, mask: sl.index };
-        out.slope = { ...sl, file: path };
+        const path = `${sl.dir}/${String(mask).padStart(2, "0")}/${p.art.path}`;
+        out.art = { kind: "ramp", path, w: TILE, h: sl.h, from: p.art.path, fromKind: p.art.kind, mask };
+        out.slope = { ...sl, index: mask, file: path };
       } else out.art = sl.ramp ? { kind: "ramp", path: sl.file, w: TILE, h: sl.h } : { kind: "plate", path: sl.file, w: TILE, h: sl.h, rise: sl.rise };
     }
 

@@ -8,6 +8,7 @@ import { lightScale } from "./lightscale";
 import { wallWrapExponent } from "./wallwrap";
 import { slopeHeight } from "./slopeheight";
 import { rampMaskField } from "./rampfield";
+import { RAMP_CHAMFER, rampChamfers, rampHeight } from "./tiles3";
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -965,15 +966,40 @@ float rampCount(float m) {
   return mod(floor(m / 8.0), 2.0) + mod(floor(m / 4.0), 2.0) + mod(floor(m / 2.0), 2.0) + mod(m, 2.0);
 }
 
+// A CORNER RAMP IS A CHAMFER ON A DIAGONAL TERRACE EDGE (tiles3 rampChamfers,
+// RAMP_CHAMFER): the cell across either edge that meets its odd corner — the
+// raised one of one, the low one of three — is itself a corner ramp. The
+// resolver asks the same question of the same masks (rampfield.test.ts).
+bool rampChamferAt(vec2 cr, float m) {
+  float n = rampCount(m);
+  if (n != 1.0 && n != 3.0) return false;
+  vec2 up = rampFoldUp(m);
+  vec2 d = n == 1.0 ? up * 2.0 - 1.0 : 1.0 - up * 2.0;
+  float nh = rampCount(rampMaskAt(cr + vec2(d.x, 0.0)));
+  float nv = rampCount(rampMaskAt(cr + vec2(0.0, d.y)));
+  return nh == 1.0 || nh == 3.0 || nv == 1.0 || nv == 3.0;
+}
+
+// Where along a walk segment (s in 0..1) the ray is at or under a plane: c is
+// the ray's height over it at s = 0, k its change per unit s. (first, last);
+// empty when first > last.
+vec2 rampUnder(float c, float k) {
+  if (abs(k) < 0.000001) return c <= 0.0 ? vec2(0.0, 1.0001) : vec2(2.0, -1.0);
+  float r = -c / k;
+  return k < 0.0 ? vec2(max(r, 0.0), 1.0001) : vec2(0.0, min(r, 1.0001));
+}
+
 // tiles3 rampHeight EXACTLY, at f, the point's fraction of its cell (x east,
-// y south), clamped: the fold for one or three raised corners, else bilinear.
-float rampH(float m, vec2 f) {
+// y south), clamped: the fold — or on a diagonal edge the chamfer (ch) — for
+// one or three raised corners, else bilinear.
+float rampH(float m, vec2 f, bool ch) {
   vec2 c = clamp(f, 0.0, 1.0);
   float n = rampCount(m);
   if (n == 1.0 || n == 3.0) {
     vec2 up = rampFoldUp(m);
     float a = mix(1.0 - c.x, c.x, up.x);
     float b = mix(1.0 - c.y, c.y, up.y);
+    if (ch) return n == 1.0 ? max(a + b - 1.0, 0.0) : min(a + b, 1.0);
     return n == 1.0 ? min(a, b) : max(a, b);
   }
   float nw = mod(floor(m / 8.0), 2.0);
@@ -984,13 +1010,14 @@ float rampH(float m, vec2 f) {
 }
 
 // Its slope, d(rampH)/dx and d(rampH)/dy (per cell).
-vec2 rampG(float m, vec2 f) {
+vec2 rampG(float m, vec2 f, bool ch) {
   vec2 c = clamp(f, 0.0, 1.0);
   float n = rampCount(m);
   if (n == 1.0 || n == 3.0) {
     vec2 up = rampFoldUp(m);
     float a = mix(1.0 - c.x, c.x, up.x);
     float b = mix(1.0 - c.y, c.y, up.y);
+    if (ch) return (n == 1.0 ? a + b > 1.0 : a + b < 1.0) ? up * 2.0 - 1.0 : vec2(0.0);
     bool pickA = n == 1.0 ? a <= b : a >= b;
     return pickA ? vec2(up.x * 2.0 - 1.0, 0.0) : vec2(0.0, up.y * 2.0 - 1.0);
   }
@@ -1157,10 +1184,14 @@ void main() {
     // surface. Along this segment the cell point moves (dd, dd) per unit s, so
     // the hit is solved exactly: a FOLD (one or three raised corners) is the
     // min / max of two planes, each a line in s — under the min means under
-    // both (the later onset), under the max under either (the earlier); any
-    // other ramp is bilinear, a QUADRATIC in s (smallest root in [0, 1]). The
-    // ray enters under the lip (a side-face pixel, as a flat column's wall) or
-    // meets the incline (a TOP pixel: rampTop), or passes over.
+    // both (the later onset), under the max under either (the earlier); a
+    // CHAMFER (the same corner on a diagonal edge, rampChamferAt) is the level
+    // and the incline a + b - 1 under the max for one corner, the top and a + b
+    // under the min for three — a diagonal incline can be steeper than the
+    // ray, so each plane's span is solved whole (rampUnder); any other ramp is
+    // bilinear, a QUADRATIC in s (smallest root in [0, 1]). The ray enters
+    // under the lip (a side-face pixel, as a flat column's wall) or meets the
+    // incline (a TOP pixel: rampTop), or passes over.
     float rmW = uRampShare > 0.0 && H < 90.0 ? rampMaskAt(cr) : 0.0;
     float nFold = rmW > 0.5 ? rampCount(rmW) : 0.0;
     if (nFold == 1.0 || nFold == 3.0) {
@@ -1169,14 +1200,29 @@ void main() {
       vec2 up = rampFoldUp(rmW);
       float rHi = (vHi - v0) / kk;
       float rd = (vLo - vHi) / kk;
-      // Each plane p0 + p1 s against the ray; the onset of "at or under it" (0 = already).
-      float cA = rHi - (H + uRampShare * mix(1.0 - f0.x, f0.x, up.x));
-      float kA = rd - uRampShare * dd * (up.x * 2.0 - 1.0);
-      float cB = rHi - (H + uRampShare * mix(1.0 - f0.y, f0.y, up.y));
-      float kB = rd - uRampShare * dd * (up.y * 2.0 - 1.0);
-      float sA = cA <= 0.0 ? 0.0 : (kA < 0.0 ? -cA / kA : 2.0);
-      float sB = cB <= 0.0 ? 0.0 : (kB < 0.0 ? -cB / kB : 2.0);
-      float sHit = nFold == 1.0 ? max(sA, sB) : min(sA, sB);
+      float sHit = 2.0;
+      if (rampChamferAt(cr, rmW)) {
+        float one = nFold == 1.0 ? 1.0 : 0.0;
+        float ab0 = mix(1.0 - f0.x, f0.x, up.x) + mix(1.0 - f0.y, f0.y, up.y);
+        vec2 spF = rampUnder(rHi - (H + uRampShare * (1.0 - one)), rd);
+        vec2 spC = rampUnder(rHi - (H + uRampShare * (ab0 - one)), rd - uRampShare * dd * 2.0 * (up.x + up.y - 1.0));
+        if (one > 0.5) {
+          if (spF.x <= spF.y) sHit = spF.x;
+          if (spC.x <= spC.y) sHit = min(sHit, spC.x);
+        } else {
+          float lo = max(spF.x, spC.x);
+          if (lo <= min(spF.y, spC.y)) sHit = lo;
+        }
+      } else {
+        // Each plane p0 + p1 s against the ray; the onset of "at or under it" (0 = already).
+        float cA = rHi - (H + uRampShare * mix(1.0 - f0.x, f0.x, up.x));
+        float kA = rd - uRampShare * dd * (up.x * 2.0 - 1.0);
+        float cB = rHi - (H + uRampShare * mix(1.0 - f0.y, f0.y, up.y));
+        float kB = rd - uRampShare * dd * (up.y * 2.0 - 1.0);
+        float sA = cA <= 0.0 ? 0.0 : (kA < 0.0 ? -cA / kA : 2.0);
+        float sB = cB <= 0.0 ? 0.0 : (kB < 0.0 ? -cB / kB : 2.0);
+        sHit = nFold == 1.0 ? max(sA, sB) : min(sA, sB);
+      }
       if (sHit <= 0.0) {
         z = max(rHi, 0.0);
         cell = cr;
@@ -1273,13 +1319,14 @@ void main() {
   // a pixel on it is a TOP (z == Ha), one under its lip a face. Every rule below
   // reads Ha, and a flat top's Ha called the whole incline a wall face.
   float rmC = uRampShare > 0.0 && Ha < 90.0 ? rampMaskAt(cell) : 0.0;
+  bool rampCh = rmC > 0.5 && rampChamferAt(cell, rmC);
   vec2 rampF = vec2(0.0);
   if (rmC > 0.5) {
     float vR = rampTop ? rampV : v0 + z * kk;
     rampF = vec2((u + vR) * 0.5, (vR - u) * 0.5) - floor(cell);
     // On the incline the ray's height IS the surface's (exactly, not to a float's
     // rounding): a top. At the entry under the lip the lip stands above: a face.
-    Ha = rampTop ? z : Ha + uRampShare * rampH(rmC, rampF);
+    Ha = rampTop ? z : Ha + uRampShare * rampH(rmC, rampF, rampCh);
   }
   if (uTest > 3.5 && uTest < 4.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
@@ -1565,7 +1612,7 @@ void main() {
     // so a slope turned to the sun reads lighter and one turned away darker.
     float rampSun = 1.0;
     if (!isFace && rmC > 0.5 && uSun.z > 0.02) {
-      vec3 rn = vec3(-uRampShare * rampG(rmC, rampF), 1.0);
+      vec3 rn = vec3(-uRampShare * rampG(rmC, rampF, rampCh), 1.0);
       rampSun = clamp(dot(rn, vec3(-uSun.xy, uSun.z)) / (length(rn) * uSun.z), 0.35, 1.35);
     }
     sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0) * rampSun;
@@ -3956,9 +4003,17 @@ export class NightLights {
       let moved = false;
       for (let i = 0; i < w * h; i++) {
         const m = masks ? masks[i] : 0;
-        // The incline's height at the centre: half the share for every ramp
-        // (an edge, a fold and a diagonal saddle all pass 0.5 there).
-        const b = m ? Math.round(share * 0.5 * hs) : 0;
+        // The incline's height at the centre: half the share for an edge, a
+        // fold and a diagonal saddle, which all pass 0.5 there.
+        // A chamfer's centre is on its flat half (one corner: 0) or its top (three: 1).
+        const x = i % w;
+        const y = (i - x) / w;
+        const ch = m && masks && rampChamfers(m, (dx, dy) => {
+          const nx = x + dx;
+          const ny = y + dy;
+          return nx < 0 || ny < 0 || nx >= w || ny >= h ? 0 : masks[ny * w + nx];
+        });
+        const b = m ? Math.round(share * rampHeight(ch ? m | RAMP_CHAMFER : m, 0.5, 0.5) * hs) : 0;
         next[i] = b;
         const db = b - prev[i];
         if (!db) continue;

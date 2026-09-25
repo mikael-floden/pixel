@@ -302,7 +302,14 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   (uHeightG) and the mist pass read whole levels. A CORNER RAMP IS A FOLD
   (tiles3 `rampHeight`, mirrored by `rampH`/`rampG`; the walk solves the two
   planes exactly): the bilinear saddle traced a scallop per ring along every
-  ridge in the sun's terminator (his "shadow bumps", 2026-09-25).
+  ridge in the sun's terminator (his "shadow bumps", 2026-09-25). ON A
+  DIAGONAL TERRACE EDGE IT IS A CHAMFER (`RAMP_CHAMFER`, his "slopes in 8
+  directions"): the pass derives the bit itself, `rampChamferAt` — the cell
+  across either edge that meets the odd corner is a corner ramp, two fetches
+  of the same mask field the resolver asks (`rampChamfers`) — solves the
+  level/top and the diagonal incline as two planes with whole spans
+  (`rampUnder`: the incline can be steeper than the ray), and lifts the
+  occlusion by the chamfer's own centre (0 for one corner, 1 for three).
   15+ emission entries leave no nibble: flat light (`rampInfo()`).
 - STALE GATES, known: verify-solidband (predates maps2 worlds, fails on
   baseline; verify-wallspread went the same way and was replaced by

@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Tiles3, viewFromDoc } from "../../client/src/tiles3.js";
+import { RAMP_CHAMFER, Tiles3, rampChamfers, rampIsCorner, viewFromDoc } from "../../client/src/tiles3.js";
 import { rampMaskField } from "../../client/src/rampfield.js";
 import { parseWorld } from "../../shared/src/index";
 
@@ -63,20 +63,31 @@ test("the light's ramp field is the resolver's composed ramp on every cell of th
   const decked = new Set<number>();
   for (const d of parsed.decks ?? []) for (const c of d.cells) decked.add(c.row * W + c.col);
   const out = resolver(1).resolveWindow(viewFromDoc(doc));
-  let ramps = 0, bad = 0;
+  let ramps = 0, bad = 0, chamfers = 0, folds = 0;
   const wrong: string[] = [];
+  const nearDeck = (x: number, y: number) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (decked.has((y + dy) * W + x + dx)) return true; return false; };
   for (const c of out.cells) {
     const i = c.y * W + c.x;
     if (decked.has(i)) continue;
-    const want = c.slope?.ramp ? c.slope.index : 0;
+    const idx = c.slope?.ramp ? c.slope.index : 0;
+    const want = idx & 15;
     if (want) ramps++;
     if (field[i] !== want) {
       bad++;
       if (wrong.length < 5) wrong.push(`${c.x},${c.y}: resolver ${want}, field ${field[i]}`);
     }
+    // THE CHAMFER BIT IS THE FIELD'S RULE (the light derives it from the same masks).
+    if (!want || nearDeck(c.x, c.y)) continue;
+    const fieldSays = rampChamfers(field[i], (dx, dy) => field[(c.y + dy) * W + c.x + dx]);
+    if (rampIsCorner(want)) (fieldSays ? chamfers++ : folds++);
+    if (fieldSays !== ((idx & RAMP_CHAMFER) !== 0)) {
+      bad++;
+      if (wrong.length < 5) wrong.push(`${c.x},${c.y}: resolver chamfer ${(idx & RAMP_CHAMFER) !== 0}, field ${fieldSays}`);
+    }
   }
   assert.deepEqual(wrong, [], `${bad} cells disagree`);
   assert.ok(ramps >= 1500, `${ramps} ramps on the_game`);
+  console.log(`rampfield: ${ramps} ramps on the_game, corners: ${chamfers} chamfers (diagonal edges), ${folds} folds (square corners)`);
 });
 
 test("the ramp field: a one-level rise of the same ground raises the corners it touches; two levels, another ground or a plateau top do not", () => {
@@ -101,4 +112,23 @@ test("the ramp field: a one-level rise of the same ground raises the corners it 
   // Under a deck the slab is the surface.
   const w = world([[3, 3, 3, 3], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]);
   assert.equal(rampMaskField({ ...w, decks: [{ level: 5, cells: [{ col: 1, row: 1 }] }] })[5], 0);
+});
+
+test("a corner ramp is a chamfer on a diagonal terrace edge and a fold on a square corner", () => {
+  // A 12x12 patch: a one-level diamond (|dx| + |dy| <= 3) and, beside it, a one-level square.
+  const W = 24, H = 12;
+  const lv: number[][] = Array.from({ length: H }, () => new Array(W).fill(0));
+  for (let y = 0; y < H; y++) for (let x = 0; x < 12; x++) if (Math.abs(x - 6) + Math.abs(y - 6) <= 3) lv[y][x] = 1;
+  for (let y = 4; y <= 8; y++) for (let x = 16; x <= 20; x++) lv[y][x] = 1;
+  const field = rampMaskField({ width: W, height: H, rows: lv.map((r) => r.map((l) => ({ t: "grass", l }))), liquids: [] });
+  const at = (x: number, y: number) => rampChamfers(field[y * W + x], (dx, dy) => field[(y + dy) * W + x + dx]);
+  // The diamond's NE-facing edge, level 0 cells hugging it: every corner cell there is a chamfer.
+  let diag = 0, diagCh = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < 12; x++) if (lv[y][x] === 0 && rampIsCorner(field[y * W + x])) { diag++; if (at(x, y)) diagCh++; }
+  assert.ok(diag >= 8 && diagCh === diag, `${diagCh} of ${diag} corner cells round the diamond are chamfers`);
+  // The square's four outer corners (one raised corner each) keep the fold.
+  for (const [x, y] of [[15, 3], [21, 3], [15, 9], [21, 9]]) {
+    assert.ok(rampIsCorner(field[y * W + x]), `${x},${y} is a corner ramp`);
+    assert.equal(at(x, y), false, `${x},${y} folds`);
+  }
 });

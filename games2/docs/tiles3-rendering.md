@@ -568,7 +568,14 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   lifted by `rampHeight` (NW 8, NE 4, SW 2, SE 1; a raised corner is one
   storey up; an edge is a plane, ONE raised corner the MIN of its two edge
   inclines and THREE their MAX — a fold, never the bilinear saddle, which
-  scalloped every ridge), row for row so the texture
+  scalloped every ridge; ON A DIAGONAL TERRACE EDGE a chamfer instead,
+  `RAMP_CHAMFER` in the index and the path — only the triangle at the odd
+  corner inclines, so the edge's cells, alternating one and three raised
+  corners, are ONE plane facing the diagonal: slopes in 8 directions, his ask
+  2026-09-25. `rampChamfers`: the cell across either edge that meets the odd
+  corner is itself a corner ramp. Not everywhere: on a square hill's corner
+  the chamfer stepped every ridge into a crenellated silhouette; 164 of the
+  404 corner ramps on the_game chamfer), row for row so the texture
   stretches by duplication and never blurs, a faint shade down the incline,
   the plate's band as the side face under a raised lower edge, the band below
   as on any plate — EXCEPT THAT A RAMP DROPS THE BAND BELOW ITS LEVEL, at
