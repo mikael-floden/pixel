@@ -124,20 +124,21 @@ const where = {};
 for (const r of rows) for (const [k, v] of Object.entries(r.longWhere ?? {})) { const c = (where[k] ??= { n: 0, ms: 0, worst: 0 }); c.n += v.n ?? 0; c.ms += v.ms ?? 0; c.worst = Math.max(c.worst, v.worst ?? 0); }
 const we = Object.entries(where).sort((a, b) => b[1].ms - a[1].ms).slice(0, 10);
 if (we.length) console.log("\nlong frames by PLACE (8-cell blocks, teleport there)  —  " + we.map(([k, v]) => `${k} ${v.n}x/${v.ms.toFixed(0)}ms worst ${v.worst}`).join("; "));
-/* LATE BY LOAD (glframe.ts): the share of frames over 45 ms, by the PREVIOUS
- * frame's draws / texture binds / fill. Climbing with draws or binds = the GPU
- * command stream; with fill = the pixels; flat = neither. */
+/* LATE BY LOAD (glframe.ts): the share of late frames (past the cadence), by the
+ * PREVIOUS frame's draws / texture binds / fill / target switches / cleared Mpx.
+ * Climbing with draws or binds = the GPU command stream; with fill = the pixels;
+ * with switches or clears = the render passes; flat = none of them. */
 const lateAx = {};
 for (const r of rows) for (const [k, v] of Object.entries(r.late ?? {})) {
-  const m = /^(dc|tb|fill)_([^_]+)(_late)?$/.exec(k);
+  const m = /^(dc|tb|fill|fb|clMpx)_([^_]+)(_late)?$/.exec(k);
   if (!m) continue;
   const c = ((lateAx[m[1]] ??= {})[m[2]] ??= { n: 0, late: 0 });
   if (m[3]) c.late += v;
   else c.n += v;
 }
 for (const [ax, b] of Object.entries(lateAx)) {
-  const label = { dc: "draws", tb: "texture binds", fill: "fill Mpx" }[ax] ?? ax;
-  console.log(`\nlate (>45 ms) by the previous frame's ${label}  —  ` + Object.entries(b).map(([top, c]) => `<=${top}: ${c.late}/${c.n} (${c.n ? ((100 * c.late) / c.n).toFixed(1) : "-"}%)`).join("; "));
+  const label = { dc: "draws", tb: "texture binds", fill: "fill Mpx", fb: "target switches", clMpx: "cleared Mpx" }[ax] ?? ax;
+  console.log(`\nlate by the previous frame's ${label}  —  ` + Object.entries(b).map(([top, c]) => `<=${top}: ${c.late}/${c.n} (${c.n ? ((100 * c.late) / c.n).toFixed(1) : "-"}%)`).join("; "));
 }
 // The worst single frames of the printed windows, with where and when.
 const worst = rows.flatMap((r) => (r.worst ?? []).map((w) => { try { return JSON.parse(w); } catch { return null; } })).filter(Boolean).sort((a, b) => b.total - a.total).slice(0, 8);
