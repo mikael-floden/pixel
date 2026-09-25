@@ -284,7 +284,7 @@ def sync(client, fresh=False, dry_run=False, only=None, allow_mass_prune=False):
             shutil.rmtree(monster_dir(m["id"]), ignore_errors=True)
         mirror.mirror(client, m["id"], m["kind"], m["pixellab_id"],
                       renames=m.get("renames"), name=m.get("name"),
-                      direction_picks=m.get("direction_picks"),
+                      direction_picks=m.get("direction_picks"), direction_remap=m.get("direction_remap"),
                       lore=m.get("lore"))
         # repair wrap-around overflow + pinned die-tail cloud cuts on freshly
         # mirrored frames — see postprocess.py; re-reads the manifest they rewrite
@@ -311,7 +311,7 @@ def sync(client, fresh=False, dry_run=False, only=None, allow_mass_prune=False):
             shutil.rmtree(monster_dir(mid), ignore_errors=True)
             mirror.mirror(client, mid, m["kind"], m["pixellab_id"],
                           renames=m.get("renames"), name=m.get("name"),
-                          direction_picks=m.get("direction_picks"),
+                          direction_picks=m.get("direction_picks"), direction_remap=m.get("direction_remap"),
                           lore=m.get("lore"))
             postprocess.process_monster(mid)
             postprocess.trim_die_tails(mid)

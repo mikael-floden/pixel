@@ -36,14 +36,14 @@
     "west"
   ],
   "rotations": {
-    "south": "plume_brawler/rotations/south.webp",
-    "west": "plume_brawler/rotations/west.webp",
-    "east": "plume_brawler/rotations/east.webp",
-    "north": "plume_brawler/rotations/north.webp",
+    "south-west": "plume_brawler/rotations/south-west.webp",
+    "north-west": "plume_brawler/rotations/north-west.webp",
     "south-east": "plume_brawler/rotations/south-east.webp",
     "north-east": "plume_brawler/rotations/north-east.webp",
-    "north-west": "plume_brawler/rotations/north-west.webp",
-    "south-west": "plume_brawler/rotations/south-west.webp"
+    "south": "plume_brawler/rotations/south.webp",
+    "east": "plume_brawler/rotations/east.webp",
+    "north": "plume_brawler/rotations/north.webp",
+    "west": "plume_brawler/rotations/west.webp"
   },
   "animations": {
     "die": {
@@ -64,9 +64,9 @@
             "plume_brawler/animations/die/east/07.webp",
             "plume_brawler/animations/die/east/08.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:34 GMT",
+          "lm": "Fri, 25 Sep 2026 14:15:29 GMT",
           "src_frames": 9,
-          "sub": "dcce67a3-fbcd-4df0-a5b2-07e2f2780fda"
+          "sub": "569a63f5-f881-4583-a6aa-c09b783ee72b"
         },
         "north": {
           "frames": 7,
@@ -80,12 +80,12 @@
             "plume_brawler/animations/die/north/05.webp",
             "plume_brawler/animations/die/north/06.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:37 GMT",
+          "lm": "Fri, 25 Sep 2026 14:15:31 GMT",
           "src_frames": 7,
-          "sub": "9a33e450-2baf-4f54-a3d3-56829cf6bf3a"
+          "sub": "76cfbe82-b6b4-4452-b8ce-e1af8c4972dd"
         },
         "north-east": {
-          "frames": 9,
+          "frames": 7,
           "strip": "plume_brawler/animations/die__north-east.webp",
           "frame_paths": [
             "plume_brawler/animations/die/north-east/00.webp",
@@ -94,29 +94,11 @@
             "plume_brawler/animations/die/north-east/03.webp",
             "plume_brawler/animations/die/north-east/04.webp",
             "plume_brawler/animations/die/north-east/05.webp",
-            "plume_brawler/animations/die/north-east/06.webp",
-            "plume_brawler/animations/die/north-east/07.webp",
-            "plume_brawler/animations/die/north-east/08.webp"
+            "plume_brawler/animations/die/north-east/06.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:39 GMT",
-          "src_frames": 9,
-          "sub": "569a63f5-f881-4583-a6aa-c09b783ee72b"
-        },
-        "north-west": {
-          "frames": 7,
-          "strip": "plume_brawler/animations/die__north-west.webp",
-          "frame_paths": [
-            "plume_brawler/animations/die/north-west/00.webp",
-            "plume_brawler/animations/die/north-west/01.webp",
-            "plume_brawler/animations/die/north-west/02.webp",
-            "plume_brawler/animations/die/north-west/03.webp",
-            "plume_brawler/animations/die/north-west/04.webp",
-            "plume_brawler/animations/die/north-west/05.webp",
-            "plume_brawler/animations/die/north-west/06.webp"
-          ],
-          "lm": "Fri, 25 Sep 2026 13:54:42 GMT",
+          "lm": "Wed, 23 Sep 2026 20:50:58 GMT",
           "src_frames": 7,
-          "sub": "76cfbe82-b6b4-4452-b8ce-e1af8c4972dd"
+          "sub": "9a33e450-2baf-4f54-a3d3-56829cf6bf3a"
         },
         "south": {
           "frames": 9,
@@ -132,9 +114,9 @@
             "plume_brawler/animations/die/south/07.webp",
             "plume_brawler/animations/die/south/08.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:43 GMT",
+          "lm": "Fri, 25 Sep 2026 14:15:40 GMT",
           "src_frames": 9,
-          "sub": "480cdd1b-32f6-4e0f-b917-3fb67953d437"
+          "sub": "6e7f24f4-2853-47c6-8e35-daf6eb153534"
         },
         "south-east": {
           "frames": 9,
@@ -150,9 +132,9 @@
             "plume_brawler/animations/die/south-east/07.webp",
             "plume_brawler/animations/die/south-east/08.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:45 GMT",
+          "lm": "Fri, 25 Sep 2026 14:15:42 GMT",
           "src_frames": 9,
-          "sub": "6e7f24f4-2853-47c6-8e35-daf6eb153534"
+          "sub": "dcce67a3-fbcd-4df0-a5b2-07e2f2780fda"
         },
         "south-west": {
           "frames": 9,
@@ -168,7 +150,9 @@
             "plume_brawler/animations/die/south-west/07.webp",
             "plume_brawler/animations/die/south-west/08.webp"
           ],
-          "mirrored_from": "south-east"
+          "lm": "Fri, 25 Sep 2026 14:15:43 GMT",
+          "src_frames": 9,
+          "sub": "480cdd1b-32f6-4e0f-b917-3fb67953d437"
         },
         "west": {
           "frames": 9,
@@ -185,6 +169,20 @@
             "plume_brawler/animations/die/west/08.webp"
           ],
           "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "plume_brawler/animations/die__north-west.webp",
+          "frame_paths": [
+            "plume_brawler/animations/die/north-west/00.webp",
+            "plume_brawler/animations/die/north-west/01.webp",
+            "plume_brawler/animations/die/north-west/02.webp",
+            "plume_brawler/animations/die/north-west/03.webp",
+            "plume_brawler/animations/die/north-west/04.webp",
+            "plume_brawler/animations/die/north-west/05.webp",
+            "plume_brawler/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
         }
       }
     },
@@ -201,9 +199,9 @@
             "plume_brawler/animations/attack/east/02.webp",
             "plume_brawler/animations/attack/east/03.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:48 GMT",
+          "lm": "Fri, 25 Sep 2026 14:15:45 GMT",
           "src_frames": 4,
-          "sub": "ca684fd6-86e3-4fcc-91a5-89a50a1afbb4"
+          "sub": "524dbd70-4a8b-4017-8082-ebf77b15c53a"
         },
         "north": {
           "frames": 4,
@@ -214,9 +212,9 @@
             "plume_brawler/animations/attack/north/02.webp",
             "plume_brawler/animations/attack/north/03.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:49 GMT",
+          "lm": "Thu, 24 Sep 2026 21:42:40 GMT",
           "src_frames": 4,
-          "sub": "5ecea406-c3ce-45fb-8669-dda15c75e305"
+          "sub": "8b255c2f-a8ed-4919-b2a8-4a3768873ebc"
         },
         "north-east": {
           "frames": 4,
@@ -227,22 +225,9 @@
             "plume_brawler/animations/attack/north-east/02.webp",
             "plume_brawler/animations/attack/north-east/03.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:50 GMT",
           "src_frames": 4,
-          "sub": "524dbd70-4a8b-4017-8082-ebf77b15c53a"
-        },
-        "north-west": {
-          "frames": 4,
-          "strip": "plume_brawler/animations/attack__north-west.webp",
-          "frame_paths": [
-            "plume_brawler/animations/attack/north-west/00.webp",
-            "plume_brawler/animations/attack/north-west/01.webp",
-            "plume_brawler/animations/attack/north-west/02.webp",
-            "plume_brawler/animations/attack/north-west/03.webp"
-          ],
-          "lm": "Fri, 25 Sep 2026 13:54:52 GMT",
-          "src_frames": 4,
-          "sub": "8b255c2f-a8ed-4919-b2a8-4a3768873ebc"
+          "sub": null,
+          "from_candidate": "the clip he approved (PixelLab holds several takes here and the mirror picks another)"
         },
         "south": {
           "frames": 4,
@@ -253,9 +238,9 @@
             "plume_brawler/animations/attack/south/02.webp",
             "plume_brawler/animations/attack/south/03.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:53 GMT",
+          "lm": "Fri, 25 Sep 2026 14:15:48 GMT",
           "src_frames": 4,
-          "sub": "23ed0556-6673-45a2-811f-72f5bbdd9705"
+          "sub": "babc505e-63cd-4379-b8da-3fb0c7883bac"
         },
         "south-east": {
           "frames": 4,
@@ -266,9 +251,9 @@
             "plume_brawler/animations/attack/south-east/02.webp",
             "plume_brawler/animations/attack/south-east/03.webp"
           ],
-          "lm": "Fri, 25 Sep 2026 13:54:55 GMT",
           "src_frames": 4,
-          "sub": "babc505e-63cd-4379-b8da-3fb0c7883bac"
+          "sub": null,
+          "from_candidate": "the clip he approved (PixelLab holds several takes here and the mirror picks another)"
         },
         "south-west": {
           "frames": 4,
@@ -279,7 +264,9 @@
             "plume_brawler/animations/attack/south-west/02.webp",
             "plume_brawler/animations/attack/south-west/03.webp"
           ],
-          "mirrored_from": "south-east"
+          "lm": "Fri, 25 Sep 2026 14:15:51 GMT",
+          "src_frames": 4,
+          "sub": "23ed0556-6673-45a2-811f-72f5bbdd9705"
         },
         "west": {
           "frames": 4,
@@ -291,6 +278,17 @@
             "plume_brawler/animations/attack/west/03.webp"
           ],
           "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "plume_brawler/animations/attack__north-west.webp",
+          "frame_paths": [
+            "plume_brawler/animations/attack/north-west/00.webp",
+            "plume_brawler/animations/attack/north-west/01.webp",
+            "plume_brawler/animations/attack/north-west/02.webp",
+            "plume_brawler/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
         }
       }
     },

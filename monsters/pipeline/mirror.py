@@ -220,7 +220,7 @@ def resolve_states(anim_keys):
 
 
 def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
-           direction_picks=None, lore=None):
+           direction_picks=None, lore=None, direction_remap=None):
     """Pull rotations + all animations for one monster from PixelLab into
     monsters/<mid>/ and write its manifest. Change-detected per direction via
     If-Modified-Since; frames download concurrently. Returns the manifest."""
@@ -233,7 +233,17 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
     prev = read_manifest(mid, {}) or {}
 
     # rotations (+ sprite.png = south)
-    rot_urls = {d: u for d, u in (detail.get("rotation_urls") or {}).items() if u}
+    # A CHARACTER WHOSE PIXELLAB DIRECTIONS ARE FILED OFF FROM THE ART.
+    # `direction_remap` in the roster maps PixelLab's name to the facing the
+    # art really shows, per state ("rotations" for the eight bases). His
+    # Plumefist: PixelLab's eight rotations sit one compass slot from the ones
+    # he approved, and every clip whose frame 0 comes from them (attack, die)
+    # does too, while idle/walk/angry were pinned from the repo's own files and
+    # are right. Graduation re-mirrored it straight and put the static sprite,
+    # attack and die one slot out again (2026-09-25). Measured with facing.py.
+    direction_remap = direction_remap or {}
+    rot_map = direction_remap.get("rotations") or {}
+    rot_urls = {rot_map.get(d, d): u for d, u in (detail.get("rotation_urls") or {}).items() if u}
     rots = {}
     imgs = client.download_many(list(rot_urls.values()))
     for (d, _), img in zip(rot_urls.items(), imgs):
@@ -257,8 +267,21 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
                                "direction": d, "takes": subs})
         prev_dirs = (prev_anims.get(key) or {}).get("directions") or {}
         saved, frames_by_dir = {}, {}
-        for direction, urls in sorted(g["directions"].items()):
+        state_map = direction_remap.get(key) or {}
+        for direction, urls in sorted({state_map.get(d, d): u for d, u in g["directions"].items()}.items()):
             pv = prev_dirs.get(direction) or {}
+            # ART THE REPO HOLDS IS NEVER OVERWRITTEN BY A SYNC. A facing filled
+            # from the candidate he approved (refill.py, or a take PixelLab no
+            # longer serves) carries `refilled_from` / `from_candidate`; PixelLab
+            # has other pixels there, and mirroring them would silently swap the
+            # art under his approval (2026-09-25, Plumefist attack SE/NE/NW).
+            if (pv.get("refilled_from") or pv.get("from_candidate")) and _exists(pv.get("strip")):
+                fdir = os.path.join(mdir, "animations", key, direction)
+                cached = _load_frames(fdir, w, h)
+                if cached:
+                    saved[direction] = pv
+                    frames_by_dir[direction] = cached
+                    continue
             sub = client.sub_id(urls[0])
             unchanged = False
             # A different take of this direction (pin changed) must never be
@@ -343,6 +366,17 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
         print(f"  {key}: {dirs_n} dir(s) "
               f"x{sorted({v['frames'] for v in saved.values()})} frames  "
               f"(from {g['name'][:40]!r})")
+
+    # A GAME STATE THE REPO HOLDS SURVIVES A SYNC. A graduated monster can have
+    # states PixelLab never had or no longer has (idle/walk/angry built from
+    # the candidate he approved); a sync saw them missing upstream and deleted
+    # them — measured 2026-09-25 on Plumefist, and the same shape as every
+    # refilled graduate. Only the five game states are kept this way: an
+    # extra take that vanished upstream is still pruned.
+    for key in ("idle", "walk", "angry", "attack", "die"):
+        if key not in anims and (prev_anims.get(key) or {}).get("directions"):
+            anims[key] = prev_anims[key]
+            print(f"  {key}: not on PixelLab — kept the repo's {len(anims[key]['directions'])} facing(s)")
 
     # prune animation folders/files that no longer exist on PixelLab
     _prune_stale(mdir, set(anims))
