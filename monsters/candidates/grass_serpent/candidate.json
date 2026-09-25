@@ -252,12 +252,12 @@
         },
         "north-east": {
           "status": "pass",
-          "step_mean": 0.0938,
-          "step_max": 0.1078,
-          "drift": 2.38,
+          "step_mean": 0.0604,
+          "step_max": 0.094,
+          "drift": 0.49,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.38,
+          "travel": 0.13,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
@@ -271,10 +271,10 @@
             88
           ],
           "reasons": [],
-          "sub": "953abcb7-beeb-41af-9f33-dff979066df1",
-          "group": "c96ec133-255a-4bf4-8eb8-8896ac626c61",
+          "sub": "9653010f-dded-47d7-a288-b18892a129e3",
+          "group": "5adce8d9-52a1-4d41-a2d9-d79213697fef",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "v3",
           "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -284,7 +284,7 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-24T22:32:50+00:00"
+          "generated_at": "2026-09-25T15:00:58+00:00"
         },
         "north": {
           "status": "pass",
@@ -398,12 +398,12 @@
         },
         "north-west": {
           "status": "pass",
-          "step_mean": 0.0938,
-          "step_max": 0.1078,
-          "drift": 2.38,
+          "step_mean": 0.0604,
+          "step_max": 0.094,
+          "drift": 0.49,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.38,
+          "travel": 0.13,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
@@ -417,10 +417,10 @@
             88
           ],
           "reasons": [],
-          "sub": "953abcb7-beeb-41af-9f33-dff979066df1",
-          "group": "c96ec133-255a-4bf4-8eb8-8896ac626c61",
+          "sub": "9653010f-dded-47d7-a288-b18892a129e3",
+          "group": "5adce8d9-52a1-4d41-a2d9-d79213697fef",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
           "mode": "v3",
           "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -430,7 +430,7 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-24T22:32:50+00:00",
+          "generated_at": "2026-09-25T15:00:58+00:00",
           "source": "north-east"
         }
       },
@@ -504,5 +504,15 @@
         "north-west": "grass_serpent/animations/idle__north-west.webp"
       }
     }
+  },
+  "pixellab_rotation_map": {
+    "east": "east",
+    "north": "north",
+    "north-east": "north-east",
+    "north-west": "north-west",
+    "south": "south",
+    "south-east": "south-east",
+    "south-west": "south-west",
+    "west": "west"
   }
 }
