@@ -71,14 +71,16 @@
       "at": "2026-09-24T18:10:32+00:00"
     }
   ],
-  "updated_at": "2026-09-25T16:04:49+00:00",
+  "updated_at": "2026-09-25T17:23:17+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMING: A COMPOSED RAMP ON A RAISED CELL KEEPS ITS INCLINE (slope switch 25-100% only; 0% draws nothing of it). plate() masked every raised ramp to the flat diamond's outline (rampTopOnly), cutting the incline off 1,529 raised ramps on the_game and leaving the flat step: buildRampPixels(withBand=false) drops only the band below the level plus one margin row. Then the slope-height showcase he asked for (25/50/75/100%, built out and cut in, every direction incl. top-left/top/top-right, the base-set textures) as an artifact.",
-    "since": "2026-09-25T16:17:00+00:00",
+    "unit": "CLAIMING (maintainer 2026-09-25: 'Something is rendering over it I think!' — he was right): THE LIGHTING PASS DRAWS STEPS OVER EVERY SLOPE. Measured headless in the slope lab at 100%: the ground texture holds the smooth hill, and the fullscreen MULTIPLY light field repaints it as terraces — its surface walk treats every cell as a flat-topped column (uHeight, whole levels), so each ramp is a flat top plus a dark wall face. Forced off, the terraces vanish. Fix: the composed ramps' corner masks packed into the surface map's B high nibble (emission keeps the low one; no new texture unit), uRampShare = the switch; the walk hits the incline, a ramp pixel is a top, and a ramp top takes the sun by its own tilt (his ask: slopes in sun and shade). 0% stays byte-identical (uniform 0). rampfield.ts = the resolver's corner rule, pinned against the resolver on every cell of the_game. Raised-ramp fix shipped: 37007cb19e.",
+    "since": "2026-09-25T17:23:17+00:00",
     "files": [
-      "games2/client/src/tiles3draw.ts",
-      "games2/server/test/slopes.test.ts",
+      "games2/client/src/nightlight.ts",
+      "games2/client/src/rampfield.ts",
+      "games2/server/test/rampfield.test.ts",
+      "games2/docs/lighting.md",
       "games2/docs/tiles3-rendering.md"
     ]
   },
