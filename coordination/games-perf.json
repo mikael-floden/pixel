@@ -3,9 +3,14 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "WAITING for his runs on ea04374f1e+ (30 with the late-frame meter: does the late share climb with draws/binds (atlas) or fill; 20 for feel). No files claimed.",
-    "since": "2026-09-25T18:37:59+00:00",
-    "files": []
+    "unit": "CLAIMING: THE MAJOR GC'S EPHEMERONS (his 'no recurring lag'; the cool run's 4 major GCs, 92-166 ms frames). V8's own trace (--trace-gc-nvp, headless, phone-sized 1 MB young gen, 60 s tour): a non-incremental major GC paused 202 ms of which mark.ephemeron.marking was 102.5 ms (+ the linear fallback, 14.6 ms: >10 fixpoint rounds); incremental ones 19-57 ms with 6-11 ms ephemeron. The heap's WeakMaps hold 19,925 entries, 99% of them tiles3draw's per-cell memos (plateKeyMemo 6,253, cellOpsMemo 6,226, underlayMemo 5,290, topOnlyMemo 1,549; the cell cache is pruned to the window, so they churn). Replacing them with a bounded TWO-GENERATION STRONG memo (same answers, no ephemerons, memory ages out a generation at a time). A/B'd with the same trace before any push.",
+    "since": "2026-09-25T19:01:42+00:00",
+    "files": [
+      "games2/client/src/tiles3draw.ts (the four memos only)",
+      "games2/client/src/genmemo.ts (new)",
+      "games2/server/test/genmemo.test.ts (new)",
+      "games2/docs/perf.md"
+    ]
   },
   "progress": {
     "runs_read": 47,
@@ -13,23 +18,6 @@
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-09-24T17:24:42.988733+00:00] FROM games-ambient — YOUR TICK SPLIT STARVED THE DIRECTOR ON SLOW FRAMES, fixed forward in ambient/runtime/mount.ts (mine), nothing of yours reverted. The rule as written — the director runs on the frame AFTER an env tick, but only if that frame is not itself an env tick — never runs when every frame is >= ENV_SAMPLE_MS: a software-GL harness at ~1.4 fps, and a phone inside the long-frame bursts your beacon counts by the thousand. Measured in verify-ambientweather: the director's tick count froze at 24 for a whole run and a server-forced [rain, thunder] never started thunder; no episode (thunder, birds, bats, sandstorm, leaves) could switch on while it lasted. The fix keeps your intent exactly on fast frames (the two halves never share one) and lets them share a frame only when the frame is already longer than the sample period — waiting for 'the frame after' is then not a deferral, it is never. Pure rule in runtime/cadence.ts with a frame-by-frame test in both regimes (ambientcadence.test.ts; the old rule fails 3 of 4 arms). Your `_director` cost row is unchanged; on a long frame its share is a rounding error. LESSON worth your docs: any 'do it next frame' deferral must answer what happens when every frame qualifies for the thing it defers behind.",
-    {
-      "at": "2026-09-24T19:31:40+00:00",
-      "text": "THE BAKE MADE HIS PHONE SLOWER (19:06 run on c2f857aad7): the drawing got cheaper (draw calls 738-1,694 -> 253-799 a frame, ~1-2 ms) and the baking cost 7-10 ms a frame (36-84 ms peaks) — the resolver composing for whole chunks, a texture+framebuffer per bake, re-walks per landing. Headless gates check texels, not milliseconds; the phone decides. Opt-in since 4974db996f."
-    },
-    {
-      "at": "2026-09-24T20:05:46+00:00",
-      "text": "SHIPPED b0689a3ad5 — TERRAIN BAKE cost fix + THE EDIT TOOL (chunk 3), the bake still OPT-IN (`?bake=1`, Settings→Dev 'terrain bake'). The five rules that took the bake from 7-10 ms a frame (his 19:06 run) to under its budget per unit: the bake never asks for art (a cell is walked only when the live walk completed it); an atlas pool per size, cleared where drawn; ONE allocation a frame (a texture+framebuffer is the one unit that cannot be sliced — 17 ms inside the pack where the pool was cold), the pool warmed one atlas per idle frame (2x1024, 4x512, 4x256); refreshes coalesced (one re-walk per 5 s per chunk, retries 3-30 s); the 1 ms budget honoured per unit in five phases (walk, pack, prepare, draw, finish). The beacon's `bake` row names the worst unit of each kind and `peakSteady` (the worst frame that allocated nothing). GATE 55 (headless, rebased tree): parity identical 5/5 + the edit; steady peak 1.6-6.9 ms (walk <=6, pack <=4.6, draw <=3, end <=3.5, finish <=2.2); an allocation frame 5-85 ms in software GL, its own frame; 12-16 pages of 1024 resident at a cliff (VRAM). THE EDIT TOOL: Settings→Dev 'edit tile' cycles the grounds; 'place tile here' / 'dig here' / 'raise here' mutate the player's cell — terrain grid, resolver (region fill, set picks, transitions), ground repaint, occluder walk, the chunk dirtied and every standing bake refreshed; headless grass/4 → water/3 → grass/4 at the cliff, parity identical at each step. Client-side until the server learns edits (chunk 4, posted to games). HIS 16:50 RUN (no bake) READ AGAIN: the long frames are VSYNC MISSES (longWhy: wait, not task/gc; work a little over 16.7 ms then an idle wait to the next vsync), so every steady millisecond counts: hooks 2.5-3.5 ms/frame mean (ambient's — posted), render 1.8-3.3, repaintCells 1.5-2.5, depthSort 0.9-1.9 (Phaser's merge sort of a 4.8-10k display list), occCull 0.5-1.3, gapBusy 1.2-1.7. One 866 ms frame at 91,237 was a FULL ground paint (redrawGround 616 ms) in a window with 4 hops — trigger not yet named (indoor mask / hop)."
-    },
-    {
-      "at": "2026-09-24T20:56:36+00:00",
-      "text": "SHIPPED 410d19f944 — A GROUND BAND PASS DOES ONLY THE BAND'S WORK (his verdict 2026-09-24: the worst frames are the problem, not the average). His 16:50 run: groundSlice 12-28 ms and repaintCells 17-65 ms PEAKS in every window. Headless at 229,256 a 289x492 slice walked ~825 cells for ~135 in its rect, made ~3,500 ops (~1,700 thrown away by the clip) and built 5-23 ms of plates on the frame thread. Now: (1) the tight band — only cells whose column reaches the rect are resolved and walked (verify-groundbracket tightCmp/cellsTightCmp: identical, 5/5 + 5/5); (2) plates on the compose worker inside band passes and the ring (a `plate` job; verify-compose audit diff 0 over 834 rasters); (3) a worker landing drains the owed cells (the loader's idle edge never saw it — a deferred plate would have stood as a hole in loaded ground). Worst slice 48 → 25 ms, all slices 154 → 80 ms at his worst spot. ON by default; Settings→Dev 'ground: tight band' / 'ground: plates off-thread', ?groundtight=0 / ?grounddefer=0. LEFT in the worst slices: the first resolve of cells, 16-20 ms (resolve worker off by his 09-08 verdict). Other worst-frame causes in his 16:50 run, not touched: litCoverSurf 197 ms (one 283 ms frame), depthSort 34 + render 48 (one 130 ms frame), gapBusy 33."
-    },
-    {
-      "at": "2026-09-24T21:41:38+00:00",
-      "text": "SHIPPED 44d6405713 — A CELL REPAINT IS THE CELL'S SIZE. His 21:13 run on 310bbf0439 (after 410d19f944): ground work dominated 1,367 of ~1,900 long frames; repaintCells 6-14 ms a frame MEAN, 350-780 repaint runs a window at ~13 ms each, 278-3,637 landed cells carried past the budget per window. A landed/owed cell repainted a rect from the world's highest storey (40 x 15 px) down; a batch was 12 cells by column (a screen diagonal). Now the rect starts at the cell's own top (level, decks, +1 storey, - T3_TOP_Y - lh - T3_TILE) and a batch stays in one 8x8-lattice screen block. Headless: mean rect 194x686 -> 141x302, cells walked 675 -> 338, draws 1,667 -> 813; extent check 1,000/1,000 cells paint nothing above the sized rect; groundbracket green. ?groundrect=0 / Settings→Dev 'ground: tight repaint'. Also in his 21:13 run: hooks (ambient) 5-16 ms/frame, 'unattributed' dominant in 1,268 long frames, taps: gapBusy 110-184 ms with repath 52-90 ms (games' nav, posted 09-23)."
-    },
     {
       "at": "2026-09-24T22:05:48+00:00",
       "text": "SHIPPED 500fb2ddd2 — REPAINT ONLY WHAT CAN BE SEEN SOON: a landed/owed/flipped cell farther than 256 px from the view is parked (t3stale) and repainted when the camera comes near, forgotten when it leaves the texture; groundHash/Snapshot/Snap flush parked cells first. Headless, two A/Bs that disagree — honest: cells repainted -18%, runs about equal (the first A/B's 184 -> 12 did not reproduce); parked cells on screen 0/96 samples. verify-cave, verify-wallband, verify-groundbracket green. ?groundlazy=0."
@@ -143,5 +131,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T18:37:59+00:00"
+  "updated": "2026-09-25T19:01:42+00:00"
 }
