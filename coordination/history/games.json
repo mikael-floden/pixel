@@ -809,6 +809,10 @@
     {
       "at": "2026-09-25T18:12:38+00:00",
       "text": "SHIPPED 9132b42b99 (fast lane): A CORNER RAMP IS A FOLD. His 'shadow bumps' on the lit pyramid were the ridge cells: one raised corner blended bilinearly is a saddle that sags to a quarter at its centre, and the sun's terminator traced it — a scallop per ring. rampHeight (tiles3.ts, only that function; games-assistant told) is now the MIN of the two edge inclines for one raised corner and their MAX for three; buildRampPixels calls it (one surface for art, feet and light) and the shader mirrors it with an exact two-plane hit. Straight ridges in the lit and light-only views."
+    },
+    {
+      "at": "2026-09-25T18:35:03+00:00",
+      "text": "bb86080402 LIVE (fast-publish 36173748239 green; nangijala.online bundle index-9be812e0dc carries ml-slope-height2): slopes OFF by default — no half step, cut, bump or ramp; Dev -> slope cycles off / 4 px / 25..100%. Perf runs now measure the terrain without slopes."
     }
   ]
 }

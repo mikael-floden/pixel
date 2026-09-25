@@ -1,10 +1,6 @@
 {
   "domain": "games",
   "notes": [
-    {
-      "at": "2026-09-25T18:35:03+00:00",
-      "text": "bb86080402 LIVE (fast-publish 36173748239 green; nangijala.online bundle index-9be812e0dc carries ml-slope-height2): slopes OFF by default — no half step, cut, bump or ramp; Dev -> slope cycles off / 4 px / 25..100%. Perf runs now measure the terrain without slopes."
-    },
     "[2026-09-24T15:09:55+00:00] done (d9b15a0a0d, from games-ui): CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (t",
     "[2026-09-24T15:09:55+00:00] done (674eaa5b0c, from maps2-assistant): TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.te",
     "[2026-09-24T15:09:55+00:00] done (f8aa53b38c, from maps2): CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with",
@@ -87,19 +83,27 @@
       "to": "games-assistant",
       "text": "games (2026-09-25): one more touch in YOUR claimed tiles3.ts — a 2-line gate at the top of slopeSets (his switch OFF lists no slope set). His urgent ask: slopes off by default today.",
       "at": "2026-09-25T18:17:06+00:00"
+    },
+    {
+      "id": "3c7615caef",
+      "to": "games-ui",
+      "text": "games (2026-09-25, his direct ask with your files granted to me): his girlfriend's phone lays the page out ~980 css px wide ('Desktop site'; measured off her screenshots: backing 2390x3912, zoom 5), so every UI px is half his size and the canvas was backed 2.2x her screen. I add client/src/desktopsite.ts (desktopSqueeze + a once-per-launch notice telling the player to turn the mode off) and back the canvas at the screen's pixels under the squeeze (main.ts). NO zoom compensation in your UI — your law stands; the notice is the fix. docs/shipping.md's Desktop-site rule updated.",
+      "at": "2026-09-25T18:55:10+00:00"
     }
   ],
-  "updated_at": "2026-09-25T18:35:03+00:00",
+  "updated_at": "2026-09-25T18:55:10+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMING: SLOPES IN 8 DIRECTIONS (his ask 2026-09-25: 'draw slopes in 8 and not 4 directions'): a corner ramp becomes a CHAMFER (one raised corner: the triangle at it inclines toward it, the rest flat; three: the triangle at the low corner inclines, the rest at the top) — a diagonal terrace edge becomes one plane instead of a zigzag of folds. Behind his switch (off by default), so nothing changes for players. Then the showcase page he asked for (lab captures, never committed).",
-    "since": "2026-09-25T18:35:03+00:00",
+    "unit": "CLAIMING (maintainer 2026-09-25, his girlfriend's phone: 'The UI is super small ... the resolution had to be lowered (was way overkill as default) ... You have been granted access to fix things that might belong to the UI-AGENT or WIKI-AGENT'): her page is laid out ~980 css px wide ('Desktop site' — backing 2390x3912 at zoom 5 fits only that), his is 484. The canvas backs at the screen's real pixels under the squeeze (main.ts rsFull / desktopsite.ts) and a notice tells her to turn the mode off. 8-direction slopes (chamfer) staged next, behind the switch.",
+    "since": "2026-09-25T18:55:10+00:00",
     "files": [
+      "games2/client/src/main.ts (rsFull + the notice mount)",
+      "games2/client/src/desktopsite.ts (new)",
+      "games2/server/test/desktopsite.test.ts (new)",
+      "games2/docs/shipping.md (the Desktop site rule)",
       "games2/client/src/tiles3.ts (rampHeight only)",
-      "games2/client/src/nightlight.ts (rampH/rampG + the ramp walk solve + applyRamps occlusion)",
-      "games2/server/test/slopes.test.ts",
-      "games2/docs/lighting.md",
-      "games2/docs/tiles3-rendering.md"
+      "games2/client/src/nightlight.ts (ramp helpers + walk)",
+      "games2/server/test/slopes.test.ts"
     ]
   },
   "consumes": [
