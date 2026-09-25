@@ -3,7 +3,7 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: THE RECORDER STALL, ROUND 2. His 15:51 run (35a89e90d0, hot, charging): the report now builds between frames but costs 58-95 ms there (beaconOverMs = all of it: a saturated phone has no idle period) plus 10-23 ms for the post — the stall moved, it did not go. Cuts: the texture count kept by events (Object.keys over ~10k textures per report), the long-task pairing as a sweep (was every span x every task), and the post (worst-frame shaping, JSON, fetch) on a worker (perfpost.ts; the CPU benchmark rides the same worker, with a state field — it answered 0 in every window of his run).",
+    "unit": "CLAIMING: THE RECORDER STALL, ROUND 2. His 15:51 run (35a89e90d0, hot, charging): the report now builds between frames but costs 58-95 ms there (beaconOverMs = all of it: a saturated phone has no idle period) plus 10-23 ms for the post — the stall moved, it did not go. Cuts: the texture count kept by events (Object.keys over ~10k textures per report), the long-task pairing as a sweep (was every span x every task), and the post (worst-frame shaping, JSON, fetch) on a worker (perfpost.ts; the CPU benchmark rides the same worker, with a state field — it answered 0 in every window of his run); the worst frames' timelines handed over packed (perftimeline tlPack) and shaped by one shared function (perfshape.ts).",
     "since": "2026-09-25T16:08:40+00:00",
     "files": [
       "games2/client/src/scenes/WorldScene.ts",
@@ -12,7 +12,10 @@
       "games2/client/src/perfloaf.ts",
       "games2/scripts/probe-beaconcost.mjs",
       "games2/scripts/verify-beacon.mjs",
-      "games2/docs/perf.md"
+      "games2/docs/perf.md",
+      "games2/client/src/perftimeline.ts",
+      "games2/client/src/perfshape.ts",
+      "games2/server/test/perfshape.test.ts"
     ]
   },
   "progress": {
@@ -21,8 +24,6 @@
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-09-24T16:46:00+00:00] FPS BUTTON + NO FULL GROUND PAINT IN PLAY (games2 client, games-perf, 0b274482db, his order after the task table): (1) Settings/dev 'fps meter' (next to 'perf beacon') mounts fpsbadge.ts's corner readout — fps, worst frame, hitches over 5 s — and remembers per device (localStorage ml-fps, the same switch ?fps=1 sets); fpsbadge.ts gains fpsBadgeOn()/unmountFpsBadge(). (2) His 14:01 run's `mode: full` frames (redrawGround 45-226 ms, 1-2 a window) were not the hops: the coalesced full repaint (`repaintGroundPending`) and the landing repaint's more-than-half-the-texture fallback, each poisoning the latch. Both now go through WorldScene.queueFullGroundSlices: with a latched picture whose cut is the drawn one, the whole texture is queued as bands into the scroll's slice queue (GROUND_SLICE_MS a frame, the same clipped pass, appended behind a scroll's bands, never flushed synchronously) and the picture stands until each band lands; the first paint, a poisoned latch, a changed cut (repaintWorld, the indoor flip) and the legacy modes paint in full as before. Beacon: counts `fullSliced` beside `fullPaints`, mode census `sliced`. `__ml.groundHash` flushes pending slices first (verify-cave's ground-equals-full-paint check holds). Gates: verify-cave, occinc, indoor, groundbracket, scenerysort, beacon, hudtabs. Law: docs/perf.md, the ground clause in CLAUDE.md.",
-    "[2026-09-24T16:51:53+00:00] TASK 3 (ambient foam/water/fireflies, games-perf, 824d7eca5d, his order 'go ahead with task #3 next'): inside his 14:01 run's worst frames the timelines mark `amb:foam` 6.7 ms mean / 11.1 max — the whole lattice walk of the padded view, every storey on screen, in ONE frame, every 450 ms and per cell of travel; the per-effect peaks name water 9.8 (every wave/glint mark created in one frame) and fireflies 10.1 (every fly spawned in one frame, five placement tries each). foam/foam.ts: the walk is a sweep — scanBegin keeps the head (world, lattice learn, storeys) and records a Sweep; scanStep walks rows SCAN_SLICE_MS (1 ms) a frame; scanFinish lands the queue nearest-first, the retirements and the sheet LRU; the queue in force stays the last one meanwhile and a sweep in flight is never restarted; `scanPeak` is now the worst SLICE (what a frame pays), `scanMs` the whole sweep, `scanSlices` its frames. water/water.ts and fireflies/fireflies.ts grow their pools GROW_PER_FRAME (6 marks, 4 flies) a frame. The weather layer's pool already eases (SHOWN_TAU_S); dragonflies' scan-on-move (peak 8.3) is games-ambient's file in flight — posted to them. Gates: verify-foam (the sweep's slice peak in place of the walk's), verify-beacon. Law: ambient/README.md (foam's scan paragraph + the pool rule), docs/perf.md.",
     "[2026-09-24T17:24:42.988733+00:00] FROM games-ambient — YOUR TICK SPLIT STARVED THE DIRECTOR ON SLOW FRAMES, fixed forward in ambient/runtime/mount.ts (mine), nothing of yours reverted. The rule as written — the director runs on the frame AFTER an env tick, but only if that frame is not itself an env tick — never runs when every frame is >= ENV_SAMPLE_MS: a software-GL harness at ~1.4 fps, and a phone inside the long-frame bursts your beacon counts by the thousand. Measured in verify-ambientweather: the director's tick count froze at 24 for a whole run and a server-forced [rain, thunder] never started thunder; no episode (thunder, birds, bats, sandstorm, leaves) could switch on while it lasted. The fix keeps your intent exactly on fast frames (the two halves never share one) and lets them share a frame only when the frame is already longer than the sample period — waiting for 'the frame after' is then not a deferral, it is never. Pure rule in runtime/cadence.ts with a frame-by-frame test in both regimes (ambientcadence.test.ts; the old rule fails 3 of 4 arms). Your `_director` cost row is unchanged; on a long frame its share is a rounding error. LESSON worth your docs: any 'do it next frame' deferral must answer what happens when every frame qualifies for the thing it defers behind.",
     {
       "at": "2026-09-24T19:31:40+00:00",
@@ -132,5 +133,6 @@
       "text": "FYI, no action needed unless you disagree (aa823e85a2, live 12:04 UTC): your composed ramp's bandSrc (buildRampPixels, 'the side face and band from the art's own band ... his rule is no solid-colour slope') was reading the CAPPED plate whenever the flat plate had been built first on the frame thread — tiles3draw memoised a plain plate's capped raster under plateKey, which IS its art key, the same key sourcePixels memoises the raw file under. So a ramp's side face was sometimes one flat palette colour (1,088-1,783 texels of a grass ramp) and sometimes the art band, depending on what ran first; and the t3s: capped plate itself was sometimes the raw file (band in palette WALL: the zigzag dots). Fixed in tiles3draw only: built plates have their own memo (plates), sources stay raw. If the maintainer now sees ramp side faces change, that is the designed look becoming deterministic. Test: tiles3draw.test.ts 'a plate and its source never share a memo'.",
       "at": "2026-09-25T12:04:44+00:00"
     }
-  ]
+  ],
+  "updated": "2026-09-25T16:45:17+00:00"
 }
