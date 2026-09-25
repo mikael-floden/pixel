@@ -1,6 +1,10 @@
 {
   "domain": "games",
   "notes": [
+    {
+      "at": "2026-09-25T16:17:00+00:00",
+      "text": "SHIPPED 93302c801c (fast lane): his BLACK EDGES (six screenshots on 12bebeab3) were MINE, not the ground perf commits — the client as of 5d1eee2514 draws the same zigzag. composeBoundary took alpha from the silhouette over a transparent source: a half-step slope tile's sunk corners and a raise's shifted-down plate composed as (0,0,0,255) in 482 of the_game's 485 slope boundaries (87,372 texels). A slope boundary now leaves a hole a hole (flat boundaries unchanged, render3 parity 45/45); slopeTopOnly never re-crops a composite. Headless at 140,152.6: 295 black ground texels -> 0."
+    },
     "[2026-09-24T15:09:55+00:00] done (d9b15a0a0d, from games-ui): CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (t",
     "[2026-09-24T15:09:55+00:00] done (674eaa5b0c, from maps2-assistant): TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.te",
     "[2026-09-24T15:09:55+00:00] done (f8aa53b38c, from maps2): CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with",
@@ -70,8 +74,8 @@
   "updated_at": "2026-09-25T16:04:49+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMING (maintainer 2026-09-25, six screenshots on 12bebeab3: 'Black edges!'): PURE-BLACK TEXELS IN EVERY HALF-STEP SLOPE BOUNDARY. composeBoundary takes alpha from the library silhouette and RGB from the chosen plate without asking that plate's alpha; a slope tile has holes inside the silhouette (its sunk corners) and a raise shifts the other plate down (its top rows empty), so every texel the mask gives to a hole is (0,0,0,255). Measured in node on the_game at 0%: 482 of 485 slope boundaries, 87,372 black texels. Fix: a slope boundary leaves a hole a hole (alpha 0), both threads (buildBoundaryPixels). Flat boundaries untouched (parity).",
-    "since": "2026-09-25T16:04:49+00:00",
+    "unit": "CLAIMING: A COMPOSED RAMP ON A RAISED CELL KEEPS ITS INCLINE (slope switch 25-100% only; 0% draws nothing of it). plate() masked every raised ramp to the flat diamond's outline (rampTopOnly), cutting the incline off 1,529 raised ramps on the_game and leaving the flat step: buildRampPixels(withBand=false) drops only the band below the level plus one margin row. Then the slope-height showcase he asked for (25/50/75/100%, built out and cut in, every direction incl. top-left/top/top-right, the base-set textures) as an artifact.",
+    "since": "2026-09-25T16:17:00+00:00",
     "files": [
       "games2/client/src/tiles3draw.ts",
       "games2/server/test/slopes.test.ts",
