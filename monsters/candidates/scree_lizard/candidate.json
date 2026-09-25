@@ -360,6 +360,79 @@
           "tries": 1,
           "generated_at": "2026-09-25T00:07:38+00:00",
           "source": "east"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0845,
+          "step_max": 0.0968,
+          "drift": 0.64,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.22,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [],
+          "sub": "92e84025-a5e8-48ce-b8a3-0a94acf70954",
+          "group": "996261d6-a26f-46ad-bc0e-4374c1b76ded",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T14:07:38+00:00"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0845,
+          "step_max": 0.0968,
+          "drift": 0.64,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.22,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.0,
+          "end_iou": null,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [],
+          "sub": "92e84025-a5e8-48ce-b8a3-0a94acf70954",
+          "group": "996261d6-a26f-46ad-bc0e-4374c1b76ded",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-25T14:07:38+00:00",
+          "source": "north-east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -405,6 +478,20 @@
           "scree_lizard/animations/idle/west/02.webp",
           "scree_lizard/animations/idle/west/03.webp",
           "scree_lizard/animations/idle/west/04.webp"
+        ],
+        "north-east": [
+          "scree_lizard/animations/idle/north-east/00.webp",
+          "scree_lizard/animations/idle/north-east/01.webp",
+          "scree_lizard/animations/idle/north-east/02.webp",
+          "scree_lizard/animations/idle/north-east/03.webp",
+          "scree_lizard/animations/idle/north-east/04.webp"
+        ],
+        "north-west": [
+          "scree_lizard/animations/idle/north-west/00.webp",
+          "scree_lizard/animations/idle/north-west/01.webp",
+          "scree_lizard/animations/idle/north-west/02.webp",
+          "scree_lizard/animations/idle/north-west/03.webp",
+          "scree_lizard/animations/idle/north-west/04.webp"
         ]
       },
       "strips": {
@@ -413,7 +500,9 @@
         "east": "scree_lizard/animations/idle__east.webp",
         "north": "scree_lizard/animations/idle__north.webp",
         "south-west": "scree_lizard/animations/idle__south-west.webp",
-        "west": "scree_lizard/animations/idle__west.webp"
+        "west": "scree_lizard/animations/idle__west.webp",
+        "north-east": "scree_lizard/animations/idle__north-east.webp",
+        "north-west": "scree_lizard/animations/idle__north-west.webp"
       }
     }
   }
