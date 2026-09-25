@@ -3,12 +3,12 @@
   "updated_at": "2026-09-25T16:08:40+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: THE MAJOR GC'S EPHEMERONS (his 'no recurring lag'; the cool run's 4 major GCs, 92-166 ms frames). V8's own trace (--trace-gc-nvp, headless, phone-sized 1 MB young gen, 60 s tour): a non-incremental major GC paused 202 ms of which mark.ephemeron.marking was 102.5 ms (+ the linear fallback, 14.6 ms: >10 fixpoint rounds); incremental ones 19-57 ms with 6-11 ms ephemeron. The heap's WeakMaps hold 19,925 entries, 99% of them tiles3draw's per-cell memos (plateKeyMemo 6,253, cellOpsMemo 6,226, underlayMemo 5,290, topOnlyMemo 1,549; the cell cache is pruned to the window, so they churn). Replacing them with a bounded TWO-GENERATION STRONG memo (same answers, no ephemerons, memory ages out a generation at a time). A/B'd with the same trace before any push.",
-    "since": "2026-09-25T19:01:42+00:00",
+    "unit": "CLAIMING: THE LOADER'S LEFTOVERS. Every image a Phaser loader brings in keeps its File, the File's XMLHttpRequest and the response Blob alive for as long as the texture lives: the <img> (the texture's source) holds its onload closure, the closure holds the File, and File.destroy never drops xhrLoader. Headless after ~2 min: 1,234 XHRs + ~2 listeners each; on his phone every terrain tile ever loaded. V8's trace bills Blink-object tracing at 20-28 ms per major cycle (incremental steps up to 14-20 ms). Fix: at FILE_COMPLETE the image's onload/onerror are cleared (the image stays the source), on the terrain loader and the scene's. A/B'd with the GC trace and a snapshot count before any push.",
+    "since": "2026-09-25T19:30:29+00:00",
     "files": [
-      "games2/client/src/tiles3draw.ts (the four memos only)",
-      "games2/client/src/genmemo.ts (new)",
-      "games2/server/test/genmemo.test.ts (new)",
+      "games2/client/src/scenes/WorldScene.ts (tiles3Loader + the scene loader hook only)",
+      "games2/client/src/loaderrelease.ts (new)",
+      "games2/server/test/loaderrelease.test.ts (new)",
       "games2/docs/perf.md"
     ]
   },
@@ -57,6 +57,10 @@
     {
       "at": "2026-09-25T18:37:59+00:00",
       "text": "SHIPPED ea04374f1e (live 18:28 UTC, fast lane; container behind it): A STEADY 20 AS A PACING CHOICE on his principle (\"consistent and predictable\" over rate; his cool run's recurring dips are frames one refresh late at 30 = 50 ms = a 20 fps frame). pacing.ts mode \"20\" (every 3rd 60 Hz vsync, summed delta), Settings->Dev frame pacing auto -> 30 -> 20 -> 60, ?pace=20; the FPS meter's hitch and the beacon's `late` judge against the chosen cadence (paceLateMs: 45 at 30/unpaced, ~62 at 20). ATLAS MAP (read-only research, for the one-refresh-late frames if his run's `late` block climbs with draws/binds): all tiles3 textures are NEAREST, unscaled, whole-pixel, content-addressed, built once, never freed (7,867 live on his phone, 64x46/64x64) - ~6 2048 pages with 1-texel edge gutters would hold them all, one 16-unit batch. Seams to change: t3Blit, occImage + its pool match, debrisTake, the bake's batchDraw/sizeOf/parity (explicit frames); textures.exists via the t3tm adapter; sourcePixels/texPixels need the sources kept; a context-restore refill (art queue pattern). Not started: his run decides."
+    },
+    {
+      "at": "2026-09-25T19:30:29+00:00",
+      "text": "SHIPPED ff0db3eb35 (live 19:28:49 UTC, fast lane; image behind it): THE MAJOR GC'S EPHEMERONS. tiles3draw's four per-cell WeakMap memos (19,925 of the heap's ~20k ephemerons) are bounded two-generation STRONG memos (genmemo.ts, cap 24,000). V8's own trace (--trace-gc-nvp, headless, 1 MB young gen, the same 120 s tour): major pauses 21-194 ms -> 14-50 ms, 417 -> 226 ms in all, ephemeron marking 125 -> 3.5 ms; promotion unchanged 0.9 MB/s; the price 8.95 MB held. ALSO MEASURED: usedJSHeapSize counts ArrayBuffers in Chrome 141 (+99.6 MB for a 100 MB buffer), so the beacon's heap block is mostly texture pixels. verify-groundbracket is RED ON MAIN without my change (same 404 + the 'vs full' line) - mine to trace next after this unit."
     }
   ],
   "requests": [
@@ -131,5 +135,5 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T19:01:42+00:00"
+  "updated": "2026-09-25T19:30:29+00:00"
 }
