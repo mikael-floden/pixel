@@ -3,9 +3,12 @@
   "updated_at": "2026-09-26T09:33:33+00:00",
   "health": "running",
   "current": {
-    "unit": "(1) SHIPPED 9ee597496, deploy gate green: EVERY SHADER COMPILES HIGHP, always (highp.ts installed in main.ts; his law in games2/CLAUDE.md 'EVERY SHADER IS HIGHP ... never change it'); the Dev rows 'draw: full precision' and 'camera: steady zoom' removed. (2) IN FLIGHT, the maintainer's order to remove the 1px overlaps: headless (exact maths) without the liquid margin row and the lid growth, the forced full paint shows MORE page fill — sea 103,182: 15,765 -> 16,451; lids 205.6,217.5: 21,895 -> 28,781; 331.8,233.6: 0 -> 0 (464 rows changed) — so they cover real shape gaps, not only 16-bit error. Crops being diffed to see which can go; nothing that opens a gap ships. Claims held: tiles3draw.ts, docs/tiles3-rendering.md, the gates.",
-    "since": "2026-09-26T12:57:28+00:00",
+    "unit": "CLAIMED NOW (the maintainer 2026-09-26, his Settings->Dev screenshots: 'I have no idea what the settings even does and don't know if I'm at default ... Instead of 3 buttons/row we should show 2 so we have room for a small default button ... Can we remove something we don't need (investigation done)?'): THE DEV PAGE — two switches a row, each with a small 'default' button (the sliders' .ml-slider-def: disabled = already at default; a tap resets); every row declares atDefault/reset (WorldScene.ts); the finished investigations' rows go (Disk vs draw test with wcbench.ts and its beacon keys; ground: tight band / tight repaint / repaint only near / plates off-thread; cull: stored boxes; sort: only what moved — their URL params stay for a bisect). hud.ts and the two gates that measure the grid (verify-subtabs, qa-hudpages) claimed for it; games-ui told. PARKED, resumes next: the 1px overlaps (lid growth verified removable at 3 spots, 0 page texels; the margin row is woven into the new outline — to games).",
+    "since": "2026-09-26T13:14:18+00:00",
     "files": [
+      "games2/scripts/qa-hudpages.mjs",
+      "games2/scripts/verify-subtabs.mjs",
+      "games2/client/src/hud.ts",
       "games2/server/test/rampseam.test.ts",
       "games2/server/test/foam.test.ts",
       "games2/server/test/slopes.test.ts",
