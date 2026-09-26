@@ -88,7 +88,6 @@ try {
     const { writeFileSync } = await import("node:fs");
     const { PNG } = await import("pngjs");
     const snap = async (pg) => { await settle(pg); const h = await pg.evaluate(() => window.__ml.groundHash()); const s = await pg.evaluate(() => window.__ml.groundSnapshot()); return { h, png: PNG.sync.read(Buffer.from(s.url.split(",")[1], "base64")) }; };
-    const cpuSnap = await snap(page);
     const walkPage = async (gpu, name) => {
       const pg = await (await browser.newContext({ viewport: { width: 393, height: 851 }, serviceWorkers: "block" })).newPage();
       pg.on("pageerror", (e) => { console.log(`PAGEERROR (${name})`, e.message); bad = true; });
@@ -114,22 +113,40 @@ try {
       writeFileSync(`${OUT}/ground_${name}_diff.png`, PNG.sync.write(D));
       return { n, box };
     };
-    // THE CONTROL: another page, switch off — two CPU paints must agree, or the comparison proves nothing
-    const pc = await walkPage(false, "control");
-    const ctl = await snap(pc);
-    const dc = diff(cpuSnap.png, ctl.png, "control");
-    console.log(`control (CPU vs CPU, two pages): ${dc.n} texels differ${dc.n ? " " + JSON.stringify(dc.box) : ""}; anchors ${JSON.stringify(cpuSnap.h.anchor)} ${JSON.stringify(ctl.h.anchor)}`);
-    const p2 = await walkPage(true, "gpu");
-    const gs = await snap(p2);
-    const st = await p2.evaluate(() => window.__ml.gpuCompose());
-    console.log("gpu compositor on the game page:", JSON.stringify(st));
-    if (!st || !st.composed) { console.log("FAIL: the GPU compositor composed nothing on the game page"); bad = true; }
-    const dg = diff(cpuSnap.png, gs.png, "gpu");
-    writeFileSync(`${OUT}/ground_cpu.png`, PNG.sync.write(cpuSnap.png));
-    writeFileSync(`${OUT}/ground_gpu.png`, PNG.sync.write(gs.png));
-    if (JSON.stringify(cpuSnap.h.anchor) !== JSON.stringify(gs.h.anchor)) console.log(`INCONCLUSIVE: anchored differently (${JSON.stringify(cpuSnap.h.anchor)} vs ${JSON.stringify(gs.h.anchor)})`);
-    else if (dg.n) { console.log(`FAIL: the painted ground differs with GPU transitions on: ${dg.n} texels ${JSON.stringify(dg.box)} (control ${dc.n}); ${OUT}/ground_gpu_diff.png`); bad = true; }
-    else console.log(`ok: the painted ground is identical with GPU transitions on (${gs.png.width}x${gs.png.height}, control ${dc.n})`);
+    // ONE PAGE AT A TIME, each closed before the next joins (three open pages on
+    // one machine timed the last one out): a fresh page with the switch OFF and
+    // a fresh page with it ON walk the same spots; the grounds are compared over
+    // the WORLD REGION both textures cover (each anchors where its camera is).
+    await page.close();
+    const run = async (gpu, name) => {
+      const pg = await walkPage(gpu, name);
+      const sn = await snap(pg);
+      const st = gpu ? await pg.evaluate(() => window.__ml.gpuCompose()) : null;
+      await pg.close();
+      return { ...sn, st };
+    };
+    const off = await run(false, "control");
+    const on = await run(true, "gpu");
+    console.log("gpu compositor on the game page:", JSON.stringify(on.st));
+    if (!on.st || !on.st.composed) { console.log("FAIL: the GPU compositor composed nothing on the game page"); bad = true; }
+    const A = off.png, B = on.png, aa = off.h.anchor, ba = on.h.anchor;
+    const x0 = Math.max(aa.x, ba.x), y0 = Math.max(aa.y, ba.y), x1 = Math.min(aa.x + A.width, ba.x + B.width), y1 = Math.min(aa.y + A.height, ba.y + B.height);
+    if (x1 - x0 < 256 || y1 - y0 < 256) { console.log(`INCONCLUSIVE: the two grounds share only ${x1 - x0}x${y1 - y0} px`); bad = true; }
+    else {
+      const D = new PNG({ width: x1 - x0, height: y1 - y0 });
+      let n = 0, box = [1e9, 1e9, -1, -1];
+      for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+        const o = ((y - aa.y) * A.width + x - aa.x) * 4, q = ((y - ba.y) * B.width + x - ba.x) * 4, w = ((y - y0) * D.width + x - x0) * 4;
+        const d = Math.max(Math.abs(A.data[o] - B.data[q]), Math.abs(A.data[o + 1] - B.data[q + 1]), Math.abs(A.data[o + 2] - B.data[q + 2]), Math.abs(A.data[o + 3] - B.data[q + 3]));
+        if (d) { n++; D.data[w] = 255; D.data[w + 3] = 255; box = [Math.min(box[0], x - x0), Math.min(box[1], y - y0), Math.max(box[2], x - x0), Math.max(box[3], y - y0)]; }
+        else { D.data[w] = D.data[w + 1] = D.data[w + 2] = A.data[o] >> 2; D.data[w + 3] = 255; }
+      }
+      writeFileSync(`${OUT}/ground_gpu_diff.png`, PNG.sync.write(D));
+      writeFileSync(`${OUT}/ground_cpu.png`, PNG.sync.write(A));
+      writeFileSync(`${OUT}/ground_gpu.png`, PNG.sync.write(B));
+      if (n) { console.log(`FAIL: the painted ground differs with GPU transitions on: ${n} of ${(x1 - x0) * (y1 - y0)} texels ${JSON.stringify(box)}; ${OUT}/ground_gpu_diff.png`); bad = true; }
+      else console.log(`ok: the painted ground is identical with GPU transitions on (${x1 - x0}x${y1 - y0} px compared)`);
+    }
   }
 } finally {
   await browser.close();
