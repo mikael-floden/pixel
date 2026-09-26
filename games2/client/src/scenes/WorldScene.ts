@@ -1262,6 +1262,7 @@ const GROUND_SLICE_MS = 2;
  *  side is prepared again. */
 const GROUND_WARM_BACKLOG = 48;
 const GROUND_WARM_MOVE = 6;
+const GROUND_WARM_FRAME_MS = 1.5;
 const GROUND_SLICE_MAX = 768;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
 const GROUND_RING_COMPOSE = 3;
@@ -15379,6 +15380,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     this.t3retryBoundaries();
+    this.warmFrameStep(); // a side one tap away, on what the frame left (warmViewGround)
     this.pe("prefetch");
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
@@ -20710,7 +20712,7 @@ export class WorldScene extends Phaser.Scene {
    *  view on screen. A turn to it then finds its ground here: every cell
    *  resolved, every transition a texture, the art loaded. Again for a side only
    *  once the player has walked GROUND_WARM_MOVE cells. */
-  private groundWarm: { k: ViewRot; key: string; kept: { t3: Tiles3World; cells: WorldScene["t3cells"] }; todo: [number, number][]; at: number; short: [number, number][]; pass: number } | null = null;
+  private groundWarm: { k: ViewRot; key: string; kept: { t3: Tiles3World; cells: WorldScene["t3cells"] }; todo: [number, number][]; at: number; short: [number, number][]; pass: number; wait: number } | null = null;
   private groundWarmDone = new Map<ViewRot, string>();
   private slopeWarm = new WeakSet<World>();
   /** What the warm did, for the probes (`__ml.turnWarm()`). */
@@ -20773,68 +20775,83 @@ export class WorldScene extends Phaser.Scene {
       // bounded like the view on screen's own cache: that window, not the walk
       const inWin = new Set(todo.map(([c, r]) => r * w.width + c));
       for (const i of kept.cells.keys()) if (!inWin.has(i)) kept.cells.delete(i);
-      this.groundWarm = { k, key, kept, todo, at: 0, short: [], pass: 0 };
+      this.groundWarm = { k, key, kept, todo, at: 0, short: [], pass: 0, wait: 0 };
       this.groundWarmStats.jobs++;
       this.warmGroundSlice();
       return true;
     }
     return false;
   }
+  /** THE WARM'S WORK, `budget` ms of it: from an idle slot (warmGroundSlice) and
+   *  from the frame loop (warmFrameStep). Answers whether the job is still on. */
+  private warmWork(budget: number): boolean {
+    const job = this.groundWarm;
+    if (!job) return false;
+    // the turn came first, or the rules moved under it: the swap does the rest
+    const tex = this.t3tex;
+    if (this.turning || this.viewRot === job.k || this.t3ViewCache.get(job.k) !== job.kept || !this.world || !tex) { this.groundWarm = null; return false; }
+    if (performance.now() < job.wait) return true;
+    // the view on screen first: its own compositions never queue behind a warm's
+    if (tex.inflightCount() > GROUND_WARM_BACKLOG || this.groundSliceQ.length) return true;
+    const load = this.t3load, in0 = tex.inflightCount(), t0 = performance.now();
+    const need = (p: string | null | undefined) => { if (p && load) load.need(p); };
+    const live = this.t3cells;
+    this.t3cells = job.kept.cells; // the neighbour's own cells (t3cellOf reads the view on screen's)
+    setPickFrame(this.pickFn(job.k));
+    let n = 0;
+    try {
+      while (job.at < job.todo.length && performance.now() - t0 < budget && tex.inflightCount() - in0 < GROUND_WARM_BACKLOG) {
+        const [c, r] = job.todo[job.at++];
+        n++;
+        if (!this.composeCell(tex, job.kept.t3, c, r, job.pass ? null : need)) job.short.push([c, r]);
+      }
+    } finally {
+      this.t3cells = live;
+      setPickFrame(this.pickFn(this.viewRot));
+    }
+    const ms = performance.now() - t0;
+    const st = this.groundWarmStats;
+    st.cells += n; st.ms += ms; st.slices++; st.maxSliceMs = Math.max(st.maxSliceMs, ms);
+    if (!job.pass && load && load.stats.pending === 0) load.flush();
+    if (job.at < job.todo.length) return true;
+    // a pass is over: what was short is looked at again once the worker has had it
+    if (job.short.length && job.pass < 4) {
+      if (!job.pass) st.short += job.short.length;
+      job.todo = job.short;
+      job.short = [];
+      job.at = 0;
+      job.pass++;
+      job.wait = performance.now() + 250;
+      return true;
+    }
+    this.groundWarmDone.set(job.k, job.key);
+    this.groundWarm = null;
+    return false;
+  }
+  /** Idle slots, chained while the job lasts: as much as the browser says is
+   *  idle, less a millisecond, at most 10 (a slice cannot be interrupted). */
   private warmGroundSlice(): void {
     const job = this.groundWarm;
     if (!job) return;
     type Idle = { timeRemaining(): number };
     const ric = (window as unknown as { requestIdleCallback?: (f: (d: Idle) => void, o?: { timeout: number }) => void }).requestIdleCallback;
-    const later = (f: (d?: Idle) => void, ms = 0) => {
-      const go = () => (ric ? ric(f, { timeout: 1000 }) : window.setTimeout(f, 16));
-      if (ms) window.setTimeout(go, ms);
-      else go();
-    };
     const run = (dl?: Idle) => {
       if (this.groundWarm !== job) return;
-      // the turn came first, or the rules moved under it: the swap does the rest
-      const tex = this.t3tex;
-      if (this.turning || this.viewRot === job.k || this.t3ViewCache.get(job.k) !== job.kept || !this.world || !tex) { this.groundWarm = null; return; }
-      // the view on screen first: its own compositions never queue behind a warm's
-      if (tex.inflightCount() > GROUND_WARM_BACKLOG || this.groundSliceQ.length) { later(run, 100); return; }
-      const load = this.t3load, in0 = tex.inflightCount(), t0 = performance.now();
-      // what the browser says is idle, less a millisecond, at most 10 (a slice
-      // cannot be interrupted, and one cell's resolve can run a few ms)
-      const budget = dl ? Math.max(1, Math.min(10, dl.timeRemaining() - 1)) : 2;
-      const need = (p: string | null | undefined) => { if (p && load) load.need(p); };
-      const live = this.t3cells;
-      this.t3cells = job.kept.cells; // the neighbour's own cells (t3cellOf reads the view on screen's)
-      setPickFrame(this.pickFn(job.k));
-      let n = 0;
-      try {
-        while (job.at < job.todo.length && performance.now() - t0 < budget && tex.inflightCount() - in0 < GROUND_WARM_BACKLOG) {
-          const [c, r] = job.todo[job.at++];
-          n++;
-          if (!this.composeCell(tex, job.kept.t3, c, r, job.pass ? null : need)) job.short.push([c, r]);
-        }
-      } finally {
-        this.t3cells = live;
-        setPickFrame(this.pickFn(this.viewRot));
+      const budget = dl ? Math.min(10, dl.timeRemaining() - 1) : 2;
+      if (budget < 1 || this.warmWork(budget)) {
+        if (ric) ric(run, { timeout: 1000 });
+        else window.setTimeout(run, 16);
       }
-      const ms = performance.now() - t0;
-      const st = this.groundWarmStats;
-      st.cells += n; st.ms += ms; st.slices++; st.maxSliceMs = Math.max(st.maxSliceMs, ms);
-      if (!job.pass && load && load.stats.pending === 0) load.flush();
-      if (job.at < job.todo.length) { later(run); return; }
-      // a pass is over: what was short is looked at again once the worker has had it
-      if (job.short.length && job.pass < 4) {
-        if (!job.pass) st.short += job.short.length;
-        job.todo = job.short;
-        job.short = [];
-        job.at = 0;
-        job.pass++;
-        later(run, 250);
-        return;
-      }
-      this.groundWarmDone.set(job.k, job.key);
-      this.groundWarm = null;
     };
-    later(run);
+    if (ric) ric(run, { timeout: 1000 });
+    else window.setTimeout(run, 16);
+  }
+  /** AND A FIXED SHARE OF EVERY FRAME THAT PAINTED NO GROUND (GROUND_WARM_FRAME_MS):
+   *  idle slots alone starve when the frame leaves none — measured headless, a
+   *  slot came only on its 1 s timeout, 315 cells in 90 s. */
+  private warmFrameStep(): void {
+    if (!this.groundWarm || this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
+    this.warmWork(GROUND_WARM_FRAME_MS);
   }
   /** A view's pick frame: its resolver picks keyed by the SERVER cell (the same
    *  world, seen from another side). */
