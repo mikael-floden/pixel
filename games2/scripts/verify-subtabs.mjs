@@ -429,11 +429,12 @@ try {
     const dev = await page.evaluate(() => {
       const pane = document.querySelector('.ml-sub[data-sub="dev"]');
       const btns = [...pane.querySelectorAll(".ml-btnrow .ml-plate-btn")];
+      const cells = [...pane.querySelectorAll(".ml-btnrow > *")]; // two a row: a setting + its "default", or a bare button
       const hook = pane.querySelector(".ml-hudbtn");
       const slots = document.querySelector('.ml-page[data-page="backpack"] .ml-slots');
       return { sub: window.__mlHud.sub("settings"), btns: btns.length, painted: btns.filter((b) => b.getBoundingClientRect().width > 0).length,
         hook: !!hook && hook.getBoundingClientRect().width > 0, dials: pane.querySelectorAll(".ml-dials .ml-amb-slider").length, amb: !!pane.querySelector(".ml-amb-title"),
-        gridL: btns[0]?.getBoundingClientRect().left, gridR: btns[2]?.getBoundingClientRect().right, paneL: pane.getBoundingClientRect().left, paneR: pane.getBoundingClientRect().right,
+        gridL: cells[0]?.getBoundingClientRect().left, gridR: cells[1]?.getBoundingClientRect().right, paneL: pane.getBoundingClientRect().left, paneR: pane.getBoundingClientRect().right,
         audioInDev: btns.some((b) => /^(sound|music)\b/.test(b.textContent.trim())) };
     });
     dev.sub === "dev" && dev.btns >= 10 && dev.painted === dev.btns && dev.hook && dev.dials >= 8 && dev.amb && dev.audioInDev

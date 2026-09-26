@@ -184,6 +184,12 @@ export interface HudActions {
     /** Live state printed on the button after the label (maintainer: the
      * buttons show their current state — "time-of-day: Day", "speed: x2"). */
     state?: () => string;
+    /** Where the row's default is (maintainer 2026-09-26: "Why can't I see a
+     * default button that is enabled if I can go back to default?"): a row
+     * with both wears a small "default" button, disabled while `atDefault()`
+     * says so — the sliders' rule (`sliderRow`) — and `reset` is its tap. */
+    atDefault?: () => boolean;
+    reset?: () => void;
   }[];
   /** Backpack drag-out: an item slot was released over the GAME VIEW at
    * client coords (cx, cy) — the game converts to a world point and asks the
@@ -664,6 +670,8 @@ export class HudBar {
   private displayDials: HTMLElement | null = null;
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
+  /** Each Dev row's "default" button and the question that disables it. */
+  private defaults: [HTMLButtonElement, () => boolean][] = [];
   /** The dial group: EVERY slider on the Settings page, in one block in the
    * middle of the column (maintainer 2026-09-10: "we have two settings sliders
    * at the bottom of the page and the rest in the middle. Put all in the
@@ -1096,6 +1104,7 @@ export class HudBar {
     for (const [b, get] of this.switches) b.classList.toggle("on", !!get());
     for (const [b, entry] of this.stateful)
       (b.firstElementChild ?? b).textContent = `${entry.label}: ${entry.state!()}`;
+    for (const [d, atDefault] of this.defaults) d.disabled = !!atDefault();
     for (const f of this.refreshers) f();
   }
 
@@ -1486,7 +1495,25 @@ export class HudBar {
       if (t.hook) b.classList.add("ml-hudbtn"); // stable hook for the smoke
       if (t.get) this.switches.push([b, t.get]);
       if (t.state) this.stateful.push([b, t]);
-      row.appendChild(b);
+      /* TWO A ROW, EACH WITH ITS "default" (maintainer 2026-09-26: "Instead of
+       * 3 buttons/row we should show 2 so we have room for a small default
+       * button!"): a setting sits in a cell beside the sliders' own default
+       * button; a one-shot button (respawn, the edit tool) fills its cell. */
+      const { atDefault, reset } = t;
+      if (atDefault && reset) {
+        const cell = mk("div", "ml-setcell");
+        const d = mk("button", "ml-slider-def ml-set-def") as HTMLButtonElement;
+        d.type = "button";
+        d.textContent = "default";
+        d.title = "back to the default";
+        d.addEventListener("click", () => {
+          reset();
+          this.refreshSettings();
+        });
+        this.defaults.push([d, atDefault]);
+        cell.append(b, d);
+        row.appendChild(cell);
+      } else row.appendChild(b);
     }
     this.refreshSettings();
     wrap.appendChild(row);
@@ -3298,7 +3325,7 @@ function injectStyles() {
      PORTRAIT IS NOT TOUCHED: 16px sides against a 10px gap is his, unremarked
      on the screen he uses most, and this is landscape's number only. */
   :root.ml-land .ml-page{padding-left:8px;padding-right:8px}
-  /* the settings grid drops to two columns in the narrow landscape column —
+  /* the settings grid is two columns in the narrow landscape column too —
      three squeezed the labels into clipped fragments ("weathe…") */
   :root.ml-land .ml-btnrow{grid-template-columns:repeat(2,1fr)}
   /* the backpack turns its grid on its side with the layout (maintainer
@@ -3453,7 +3480,11 @@ function injectStyles() {
   /* ── settings ── */
   .ml-set{display:flex;flex-direction:column;align-items:stretch;gap:14px;
     width:100%;max-width:560px}
-  .ml-btnrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .ml-btnrow{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  /* a setting and its "default" (the sliders' button, narrowed to fit a cell) */
+  .ml-setcell{display:flex;gap:6px;min-width:0}
+  .ml-setcell>.ml-plate-btn{flex:1 1 auto;min-width:0}
+  .ml-setcell>.ml-set-def{flex:0 0 52px;min-height:0;padding:2px 4px;font-size:10px}
   /* a wide button (Log out) directly in a page or a sub-page: a full row of the column */
   .ml-page>.ml-plate-btn,.ml-sub>.ml-plate-btn{width:100%;max-width:560px;flex:none}
   /* ── sub-pages: one .ml-sub per sub-tab inside the page; the shown one is

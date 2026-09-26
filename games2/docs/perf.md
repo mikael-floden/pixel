@@ -869,11 +869,18 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   KB a tile, every texel back exact. A save is a stutter per tile and a load
   costs the phone more than drawing, so the disk never pays. (Not "the load is
   19-34x cheaper on the frame" — his rule counts all the phone's work, and the
-  save's frame cost comes first.) The test that measured it is
-  `client/src/wcbench.ts` + `WorldScene.runDiskDrawTest` (`__ml.diskDrawTest()`,
-  beacon `wbN wbDraw wbDraw1 wbLoad wbLoadBg wbSave wbSaveBg wbKb wbBad`): it
-  draws into the SPARE texture and puts the owed ledgers back, so the live
-  ground is untouched.
+  save's frame cost comes first.) The test that measured it (`wcbench.ts`,
+  its Dev row and the beacon's `wb*` keys) is gone with its answer; git
+  holds it.
+- **THE DEV PAGE: TWO A ROW, EVERY SETTING WITH ITS "default"** (maintainer
+  2026-09-26, his screenshots: "I have no idea what the settings even does and
+  don't know if I'm at default or not ... Instead of 3 buttons/row we should
+  show 2 so we have room for a small default button"; hud.ts, WorldScene's
+  `settings`). A row that is a setting declares `atDefault`/`reset`, and its
+  "default" button (the sliders' own `.ml-slider-def`) is disabled while it is
+  at its default. A finished investigation loses its row, never its bisect:
+  `?groundtight=0`, `?groundrect=0`, `?groundlazy=0`, `?grounddefer=0`,
+  `?cullbox=0`, `?fastsort=0` still turn each shipped change off.
 - **FRAME PACING: A STEADY 30 WHEN 60 CANNOT BE HELD** (maintainer
   2026-09-24, "The FPS is not stable! Think outside the box";
   `client/src/pacing.ts`, `pacing.test.ts`). His 16:50 run on 0b274482:

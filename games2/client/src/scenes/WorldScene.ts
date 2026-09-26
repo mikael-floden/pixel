@@ -159,12 +159,11 @@ import { shapeWorst } from "../perfshape";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
 import { tlArm, tlMark, tlTake, tlPack, clock0, type Mark, type TlPacked } from "../perftimeline";
 import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
-import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
+import { paceCycle, paceLabel, paceMode, paceSetMode, paceTake, pacedNow } from "../pacing";
 import { FastDepthSort } from "../fastsort";
 import { TerrainBake, bakeParity, type BakeHost, type BakeSink } from "../terrainbake";
 import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, tileBoxOf, tileMask, wcPageKey, wcSwitchOn, type WcFrame, type WcPicture, type WcRect, type WcSlot } from "../worldcache";
 import { WorldCacheGl, type WcGlDraw } from "../worldcachegl";
-import { benchClear, benchDb, benchDecode, benchEncode, benchGet, benchPut, benchSummary, type BenchTile } from "../wcbench";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -240,7 +239,7 @@ import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type Reso
 import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
 import { detailEvery, detailRate, setDetailEvery } from "../detailrate";
 import { ensureDetailDial } from "../detaildial";
-import { slopeHeight, setSlopeHeight, nextSlopeHeight, slopeLabel, slopeRule, SLOPE_OFF } from "../slopeheight";
+import { slopeHeight, setSlopeHeight, nextSlopeHeight, slopeLabel, slopeRule, SLOPE_OFF, SLOPE_HEIGHT_DEFAULT } from "../slopeheight";
 // ---- TILES 3.0 (maps3 worlds) -------------------------------------------
 // The resolver (what draws on this cell), the draw layer (the two pixel ops +
 // the texture factory), the streaming per-cell runtime, and scenery. All four
@@ -3301,7 +3300,6 @@ export class WorldScene extends Phaser.Scene {
         // CACHE WORLD RENDERING (worldcache.ts): on, tiles held here, MB, cells
         // the paints skipped and pictures taken this window, a take's worst ms
         ...this.wcCountsTake(),
-        ...this.wbCounts,
         // Capture-target size switches this window = re-allocations stock Phaser
         // would do (does, with the pool off), and the distinct sizes seen.
         capSwitch: cap.switches,
@@ -5373,11 +5371,6 @@ export class WorldScene extends Phaser.Scene {
   private wcCamY = NaN;
   private wcReadBuf: Uint8Array | null = null;
   private wcShutdownHooked = false;
-  /** THE DISK VS DRAW TEST (wcbench.ts): its state line, and the last result
-   *  for the beacon (`wb*` counts, kept until the next test). */
-  private wbState = "tap to run";
-  private wbRunning = false;
-  private wbCounts: Record<string, number> = {};
   /** Row stride for the pool's cell key — the world's width, so `row*stride+col`
    *  is unique per cell. Set at the top of every rebuild. */
   private occStride = 1;
@@ -6197,13 +6190,20 @@ export class WorldScene extends Phaser.Scene {
         this.dropHold();
         this.clearMoveTarget();
       },
+      /* EVERY ROW THAT IS A SETTING SAYS WHERE ITS DEFAULT IS (maintainer
+       * 2026-09-26: "I have no idea what the settings even does and don't know
+       * if I'm at default or not ... Why can't I see a default button that is
+       * enabled if I can go back to default?"): `atDefault` lights the row's
+       * small "default" button when it is false, `reset` is that button — the
+       * sliders' own rule (hud.ts sliderRow). One-shot buttons (respawn,
+       * time-of-day, the edit tool) have none. */
       settings: [
         // Disable aggro FIRST (maintainer 2026-08-07: "I will use this feature
         // to test walk around in the cave without dying"; 2026-09-09: "add
         // back the settings option so I can make monsters non aggro" — it was
         // the 24th of ~35 buttons, below the fold on a phone). Server-side and
         // per player — see the "noaggro" handler in WorldRoom.
-        { label: "disable aggro", act: () => this.toggleNoAggro(), get: () => this.noAggroOn },
+        { label: "disable aggro", act: () => this.toggleNoAggro(), get: () => this.noAggroOn, atDefault: () => !this.noAggroOn, reset: () => void (this.noAggroOn && this.toggleNoAggro()) },
         // Time-of-day is the one plain BUTTON; the rest are switches
         // (down = ON) — no keyboard-digit prefixes (maintainer).
         {
@@ -6220,19 +6220,22 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.room?.send("timespeed", {}),
           get: () => this.timeSpeed === 0,
           state: () => (this.timeSpeed === 0 ? "frozen" : `x${this.timeSpeed}`),
+          // x1 is the world's own (WorldState); an explicit value jumps there.
+          atDefault: () => this.timeSpeed === 1,
+          reset: () => this.room?.send("timespeed", { v: 1 }),
         },
         // Audio (composer agent): master sound + music, persisted switches.
-        { label: "sound", act: () => gameAudio.toggleSound(), get: () => gameAudio.soundEnabled },
-        { label: "music", act: () => gameAudio.toggleMusic(), get: () => gameAudio.musicEnabled },
+        { label: "sound", act: () => gameAudio.toggleSound(), get: () => gameAudio.soundEnabled, atDefault: () => gameAudio.soundEnabled, reset: () => void (!gameAudio.soundEnabled && gameAudio.toggleSound()) },
+        { label: "music", act: () => gameAudio.toggleMusic(), get: () => gameAudio.musicEnabled, atDefault: () => gameAudio.musicEnabled, reset: () => void (!gameAudio.musicEnabled && gameAudio.toggleMusic()) },
         // The same veil the death press gets (maintainer 2026-09-19: "I rather
         // ... use the same loading fix/solution when I press respawn").
         { label: "respawn", act: () => this.respawnWithVeil() },
-        { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
+        { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn, atDefault: () => this.torchOn, reset: () => void (!this.torchOn && this.toggleTorch()) },
         // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
         // default (maintainer 2026-07-30: "not visible by default").
-        { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
+        { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn, atDefault: () => !this.spawnAreasOn, reset: () => void (this.spawnAreasOn && this.toggleSpawnAreas()) },
         // The zone grid in the world, same shape of switch as spawn areas.
-        { label: "zone borders", act: () => this.toggleZoneLines(), get: () => this.zoneLinesOn },
+        { label: "zone borders", act: () => this.toggleZoneLines(), get: () => this.zoneLinesOn, atDefault: () => !this.zoneLinesOn, reset: () => void (this.zoneLinesOn && this.toggleZoneLines()) },
         // The AMBIENT zones in the world (maintainer 2026-09-20: "a menu button
         // under settings/dev where I can see the ambient zone boundaries") —
         // ambient's own overlay, ambient/runtime/zonelines.ts, the same recipe.
@@ -6240,15 +6243,20 @@ export class WorldScene extends Phaser.Scene {
           label: "ambient zones",
           act: () => (window as unknown as { __mlAmbient?: { zoneLines?: (on: "toggle") => boolean } }).__mlAmbient?.zoneLines?.("toggle"),
           get: () => !!(window as unknown as { __mlAmbient?: { zoneLines?: () => boolean } }).__mlAmbient?.zoneLines?.(),
+          atDefault: () => !(window as unknown as { __mlAmbient?: { zoneLines?: () => boolean } }).__mlAmbient?.zoneLines?.(),
+          reset: () => {
+            const z = (window as unknown as { __mlAmbient?: { zoneLines?: (on?: "toggle") => boolean } }).__mlAmbient?.zoneLines;
+            if (z?.()) z("toggle");
+          },
         },
         // Aggro radii (combat round 2) — DEBUG rings, off by default: red =
         // a predator's proximity radius, gold = the provoke radius on the
         // sword-marked target.
-        { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn },
+        { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn, atDefault: () => !this.aggroRadiusOn, reset: () => void (this.aggroRadiusOn && this.toggleAggroRadius()) },
         /* THE COLLISION OVERLAY — the maintainer's "show hitbox button". Both
          * layers at once: the cells the nav plans around AND the real footprint
          * ellipses the body collides with (see drawCollisionDebug). */
-        { label: "collision (hitbox)", act: () => this.toggleCollision(), get: () => this.collisionOn },
+        { label: "collision (hitbox)", act: () => this.toggleCollision(), get: () => this.collisionOn, atDefault: () => !this.collisionOn, reset: () => void (this.collisionOn && this.toggleCollision()) },
         /* SHADOWS: on / off / RED — the maintainer's instrument for telling a
          * SHADOW from a TILE (2026-09-03, on the dotted zigzag: "make a
          * settings button that switches between shadows enabled, disabled, red
@@ -6266,6 +6274,8 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night && this.night.shadowDbg !== 0,
           state: () => ["on", "off", "red"][this.night?.shadowDbg ?? 0],
+          atDefault: () => (this.night?.shadowDbg ?? 0) === 0,
+          reset: () => void (this.night && (this.night.shadowDbg = 0)),
         },
         /* LIGHT ONLY — the world as light and shadow, no textures (maintainer
          * 2026-09-18: "add a settings option so I also can render the world in
@@ -6284,6 +6294,8 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night && this.night.testPattern === 5,
           state: () => (this.night?.testPattern === 5 ? "on" : "off"),
+          atDefault: () => this.night?.testPattern !== 5,
+          reset: () => void (this.night?.testPattern === 5 && (this.night.testPattern = 0)),
         },
         /* SLOPE — how high the composed slope climbs (slopeheight.ts): auto
          * (the default) each slope run picks from his mix, off no slope at
@@ -6297,6 +6309,8 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => slopeHeight() !== SLOPE_OFF,
           state: () => slopeLabel(),
+          atDefault: () => slopeHeight() === SLOPE_HEIGHT_DEFAULT,
+          reset: () => setSlopeHeight(SLOPE_HEIGHT_DEFAULT),
         },
         /* OVERLAYS — the same idea as the shadows switch, for the three
          * full-screen passes. The zigzag is NOT in the ground texture (exact
@@ -6316,6 +6330,8 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night && this.night.dbgOverlays !== 0,
           state: () => ["all", "no fog", "no mist", "none"][this.night?.dbgOverlays ?? 0],
+          atDefault: () => (this.night?.dbgOverlays ?? 0) === 0,
+          reset: () => void (this.night && (this.night.dbgOverlays = 0)),
         },
         /* FOG: both atmospherics off in one tap — the always-on depth fog and
          * the weather mist (maintainer 2026-09-08: "a toggle in settings for
@@ -6332,6 +6348,8 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.fogOn,
           state: () => (this.fogOn ? "on" : "off"),
+          atDefault: () => this.fogOn,
+          reset: () => void (!this.fogOn && this.setFog(true)),
         },
         /* SCENERY LIGHTS: every light a PIECE makes — its pool in the slot
          * ledger and its glow halo — off in one tap, his ask (2026-09-15: "a
@@ -6353,6 +6371,8 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.sceneryLightsOn,
           state: () => (this.sceneryLightsOn ? `on (${this.sceneryLightSources.length})` : "off"),
+          atDefault: () => this.sceneryLightsOn,
+          reset: () => void (!this.sceneryLightsOn && this.setSceneryLights(true)),
         },
         /* THE WHOLE LIGHTING PASS, for the standing A/B (2026-09-19): the
          * fields, the composite, every lit copy and contact shadow — off, the
@@ -6367,6 +6387,8 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night?.active,
           state: () => (this.night?.active ? "on" : "off"),
+          atDefault: () => !this.night || this.night.active,
+          reset: () => void (this.night && !this.night.active && this.night.setActive(true)),
         },
         /* THE TWO SUBTRACTION SWITCHES — "does it still stutter without X?".
          * Turning one OFF takes effect immediately, because that is the arm
@@ -6392,6 +6414,16 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.monstersOn,
           state: () => (this.monstersMode === "on" ? `on (${this.monsters.size})` : this.monstersMode),
+          atDefault: () => this.monstersMode === "on",
+          // the act's own "on" arm: stored, and a rejoin brings them back
+          reset: () => {
+            if (this.monstersMode === "on") return;
+            this.monstersMode = "on";
+            this.monstersOn = true;
+            this.monstersMock = false;
+            localStorage.setItem("ml-monsters", "1");
+            this.chat.addLog("—", "monsters: on — rejoin to bring them back");
+          },
         },
         {
           label: "scenery",
@@ -6417,6 +6449,19 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.sceneryOn,
           state: () => this.sceneryMode,
+          atDefault: () => this.sceneryMode === "on",
+          // the act's own "on" arm
+          reset: () => {
+            if (this.sceneryMode === "on") return;
+            this.sceneryMode = "on";
+            this.sceneryOn = true;
+            this.sceneryMock = false;
+            localStorage.setItem("ml-scenery", "1");
+            this.sceneryFit.clear();
+            this.rebuildScenery(this.cameras.main);
+            this.requestRepaint("scenery");
+            this.chat.addLog("—", "scenery: on — rejoin to bring it back");
+          },
         },
         {
           label: "clear: pink",
@@ -6427,6 +6472,12 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.groundClearPink,
           state: () => (this.groundClearPink ? "pink" : "off"),
+          atDefault: () => !this.groundClearPink,
+          reset: () => {
+            if (!this.groundClearPink) return;
+            this.groundClearPink = false;
+            this.repaintWorld();
+          },
         },
         {
           label: "transitions",
@@ -6437,6 +6488,12 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !this.noTransitions,
           state: () => (this.noTransitions ? "off" : "on"),
+          atDefault: () => !this.noTransitions,
+          reset: () => {
+            if (!this.noTransitions) return;
+            this.noTransitions = false;
+            this.repaintWorld();
+          },
         },
         /* FADE ON TRANSITION — the maintainer's fourth fade control (the three
          * dials sit on the sliders below): may a fade tile land ON a composed
@@ -6480,6 +6537,8 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.togglePerfBeacon(),
           get: () => this.perfBeacon,
           state: () => (this.perfBeacon ? "reporting" : "off"),
+          atDefault: () => !this.perfBeacon,
+          reset: () => void (this.perfBeacon && this.togglePerfBeacon()),
         },
         /* THE FPS METER (maintainer 2026-09-24: "add a button under settings/dev
          * to render/show the FPS on screen"): fpsbadge.ts's corner readout —
@@ -6490,6 +6549,8 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.toggleFpsMeter(),
           get: () => fpsBadgeOn(),
           state: () => (fpsBadgeOn() ? "on screen" : "off"),
+          atDefault: () => !fpsBadgeOn(),
+          reset: () => void (fpsBadgeOn() && this.toggleFpsMeter()),
         },
         /* FRAME PACING (pacing.ts; maintainer 2026-09-24: "The FPS is not
          * stable!"): a steady 30 when 60 cannot be held. auto → 30 → 60, the
@@ -6500,6 +6561,8 @@ export class WorldScene extends Phaser.Scene {
           act: () => paceCycle(),
           get: () => pacedNow(),
           state: () => paceLabel(),
+          atDefault: () => paceMode() === "auto",
+          reset: () => paceSetMode("auto"),
         },
         /* THE TERRAIN BAKE (terrainbake.ts; maintainer 2026-09-24: "Let's do
          * the entire work"): raised terrain drawn once per chunk into a band
@@ -6509,6 +6572,8 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.toggleTerrainBake(),
           get: () => !!this.bake?.on,
           state: () => this.bakeLabel(),
+          atDefault: () => !this.bake?.on,
+          reset: () => void (this.bake?.on && this.toggleTerrainBake()),
         },
         /* CACHE WORLD RENDERING (worldcache.ts; maintainer 2026-09-26): the
          * phone keeps the ground tiles it has drawn and paints them back
@@ -6519,77 +6584,16 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.setWorldCache(!this.wcOn),
           get: () => this.wcOn,
           state: () => this.wcLabel(),
+          atDefault: () => !this.wcOn,
+          reset: () => void (this.wcOn && this.setWorldCache(false)),
         },
-        /* DISK VS DRAW (wcbench.ts; maintainer 2026-09-26: "I WANT TO KNOW IF
-         * ITS FASTER TO DRAW OR LOAD FROM DISK?!"): one tap draws the ground
-         * tiles nearest the view, saves them to this phone's disk and loads them
-         * back, timing each on HIS phone; the answer lands in the chat and the
-         * beacon. The live ground is never touched. */
-        {
-          label: "Disk vs draw test",
-          act: () => void this.runDiskDrawTest(),
-          get: () => this.wbRunning,
-          state: () => this.wbState,
-        },
-        /* THE GROUND BRACKET HITCHES (2026-09-24): both on by default — they only
-         * remove work from a band pass; off is the bisect. */
-        {
-          label: "ground: tight band",
-          act: () => {
-            this.groundTightOn = !this.groundTightOn;
-            localStorage.setItem("ml-groundtight", this.groundTightOn ? "1" : "0");
-          },
-          get: () => this.groundTightOn,
-          state: () => (this.groundTightOn ? "on" : "off"),
-        },
-        {
-          label: "ground: tight repaint",
-          act: () => {
-            this.groundRectOn = !this.groundRectOn;
-            localStorage.setItem("ml-groundrect", this.groundRectOn ? "1" : "0");
-          },
-          get: () => this.groundRectOn,
-          state: () => (this.groundRectOn ? "on" : "off"),
-        },
-        {
-          label: "ground: repaint only near",
-          act: () => {
-            this.groundLazyOn = !this.groundLazyOn;
-            localStorage.setItem("ml-groundlazy", this.groundLazyOn ? "1" : "0");
-          },
-          get: () => this.groundLazyOn,
-          state: () => (this.groundLazyOn ? "on" : "off"),
-        },
-        {
-          label: "ground: plates off-thread",
-          act: () => {
-            this.groundDeferOn = !this.groundDeferOn;
-            localStorage.setItem("ml-grounddefer", this.groundDeferOn ? "1" : "0");
-          },
-          get: () => this.groundDeferOn,
-          state: () => (this.groundDeferOn ? "on" : "off"),
-        },
-        /* STOP REDOING WORK THAT DOESN'T CHANGE (2026-09-25): on by default,
-         * off is Phaser's own full sort — the A/B. */
-        {
-          label: "cull: stored boxes",
-          act: () => {
-            this.cullBoxOn = !this.cullBoxOn;
-            localStorage.setItem("ml-cullbox", this.cullBoxOn ? "1" : "0");
-          },
-          get: () => this.cullBoxOn,
-          state: () => (this.cullBoxOn ? "on" : "off"),
-        },
-        {
-          label: "sort: only what moved",
-          act: () => {
-            this.fastSortOn = !this.fastSortOn;
-            this.fastSorter.reset();
-            localStorage.setItem("ml-fastsort", this.fastSortOn ? "1" : "0");
-          },
-          get: () => this.fastSortOn,
-          state: () => (this.fastSortOn ? "on" : "off"),
-        },
+        /* THE FINISHED INVESTIGATIONS HAVE NO ROW (maintainer 2026-09-26: "Can
+         * we remove something we don't need (investigation done)?"): the disk
+         * vs draw test (disk lost; wcbench.ts gone), the four ground bracket
+         * switches, the stored cull boxes and the fast sort — shipped, on, and
+         * still bisectable by their URL params (`?groundtight=0`,
+         * `?groundrect=0`, `?groundlazy=0`, `?grounddefer=0`, `?cullbox=0`,
+         * `?fastsort=0`). */
         /* THE WORLD'S PIPELINE (multipipe.ts, 2026-09-25): 16 textures a draw
          * instead of Phaser's mobile one. Phaser picks it at boot, so a press
          * stores the choice and the NEXT load takes it; OPT-IN until his run. */
@@ -6598,6 +6602,9 @@ export class WorldScene extends Phaser.Scene {
           act: () => setMultiPipe(!multiPipeStored()),
           get: () => mainBatchUnits(this.game.renderer) > 1,
           state: () => multiPipeState(mainBatchUnits(this.game.renderer) > 1, !this.game.device.os.desktop),
+          // the STORED choice (it applies from the next load)
+          atDefault: () => !multiPipeStored(),
+          reset: () => setMultiPipe(false),
         },
         /* THE EDIT TOOL (see worldEdit): the tile "dropdown" cycles the world's
          * grounds; place/dig/raise act on the player's own cell. */
@@ -6737,8 +6744,6 @@ export class WorldScene extends Phaser.Scene {
         if (on !== undefined && on !== this.wcOn) this.setWorldCache(on);
         return { on: this.wcOn, label: this.wcLabel(), take: this.wc?.take() ?? null, skipped: this.wcSkipped, takes: { ...this.wcTakes }, read: { ...this.wcRead }, refused: { ...this.wcRefused } };
       },
-      /** DISK VS DRAW (wcbench.ts): the test the Dev button runs, awaited. */
-      diskDrawTest: () => this.runDiskDrawTest(),
       /** Live occluder sprites against band images — what the bake removes. */
       bakeCount: () => ({ live: this.occluders.length, bands: this.bake?.images.length ?? 0, displayList: this.children.length }),
       /** The edit tool (worldEdit): mutate a cell, everything follows. */
@@ -21498,205 +21503,6 @@ export class WorldScene extends Phaser.Scene {
     this.wcTakes.ms += ms;
     if (ms > this.wcTakes.maxMs) this.wcTakes.maxMs = ms;
     return ok;
-  }
-
-  /** DISK VS DRAW, ON THIS PHONE (wcbench.ts). For the tiles wholly inside the
-   *  ground texture nearest its centre, one a frame: DRAW — the tile's rect
-   *  painted into the spare texture exactly as a band pass paints it (plates
-   *  built here, the cache bypassed), three times: the first builds what was
-   *  not cached, the median of the other two is a revisit's; the live
-   *  ledgers are put back as they were, so the live ground owes nothing and
-   *  is never touched. SAVE — the tile's texels read off the GPU (the frame
-   *  pays it), the diamond kept, encoded and written by the browser. LOAD —
-   *  read and decoded by the browser, uploaded on the frame, read back and
-   *  compared inside the diamond. */
-  private async runDiskDrawTest(): Promise<string> {
-    if (this.wbRunning) return this.wbState;
-    const rt = this.groundRT;
-    const scratch = this.groundScratch;
-    const a0 = this.groundAnchor;
-    if (!rt || !scratch || !a0 || !this.t3 || !this.world || this.game.renderer.type !== Phaser.WEBGL) return (this.wbState = "no ground yet");
-    if (a0.mask) return (this.wbState = "go outside first (indoors the cut draws)");
-    this.wbRunning = true;
-    this.wbState = "running…";
-    const f = this.wcFrame();
-    const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
-    const gl = r.gl;
-    const frameGap = () => new Promise<void>((ok) => requestAnimationFrame(() => ok()));
-    // the tiles wholly inside the ground texture, nearest its centre
-    const pick = (): { tx: number; ty: number; box: WcRect }[] => {
-      const a = this.groundAnchor!;
-      const g = { x0: a.ax, y0: a.ay, x1: a.ax + rt.width, y1: a.ay + rt.height };
-      const mx = (g.x0 + g.x1) / 2;
-      const my = (g.y0 + g.y1) / 2;
-      const [c, rr] = [Math.floor(((mx - f.ox) / f.dx + (my - f.oy) / f.dy) / 2), Math.floor(((my - f.oy) / f.dy - (mx - f.ox) / f.dx) / 2)];
-      const out: { tx: number; ty: number; box: WcRect; d: number }[] = [];
-      for (let ty = Math.floor(rr / WC_TILE) - 6; ty <= Math.floor(rr / WC_TILE) + 6; ty++)
-        for (let tx = Math.floor(c / WC_TILE) - 6; tx <= Math.floor(c / WC_TILE) + 6; tx++) {
-          const box = tileBoxOf(tx, ty, f);
-          if (box.x0 < g.x0 || box.y0 < g.y0 || box.x1 > g.x1 || box.y1 > g.y1) continue;
-          out.push({ tx, ty, box, d: Math.hypot((box.x0 + box.x1) / 2 - mx, (box.y0 + box.y1) / 2 - my) });
-        }
-      return out.sort((p, q) => p.d - q.d).slice(0, 8);
-    };
-    const tiles = pick();
-    const mask = tiles.length ? tileMask(tiles[0].tx, tiles[0].ty, f).mask : new Uint8Array(0);
-    const results: BenchTile[] = [];
-    let db: IDBDatabase | null = null;
-    try {
-      db = await benchDb();
-      for (let i = 0; i < tiles.length; i++) {
-        this.wbState = `running ${i + 1}/${tiles.length}…`;
-        await frameGap();
-        const a = this.groundAnchor;
-        if (!a || a.mask || this.groundRT !== rt) break;
-        const { box } = tiles[i];
-        const w = box.x1 - box.x0;
-        const h = box.y1 - box.y0;
-        const rect = { x0: box.x0 - a.ax, y0: box.y0 - a.ay, x1: box.x1 - a.ax, y1: box.y1 - a.ay };
-        if (rect.x0 < 0 || rect.y0 < 0 || rect.x1 > rt.width || rect.y1 > rt.height) continue;
-        // DRAW, three times, into the spare texture; the live state put back after
-        const keep = {
-          missing: new Map([...this.t3missing].map(([k, v]) => [k, new Set(v)])),
-          boundary: new Set(this.t3boundaryOwed),
-          drop: new Set(this.t3dropOwed),
-          deck: new Map(this.t3deckOwed),
-          stats: this.t3stats,
-          culled: this.groundCulled,
-          painted: this.groundPainted,
-          flushes: this.t3paintFlushes,
-          bracket: this.groundBracketRect,
-          paints: this.groundPaints,
-          blitPx: this.groundBlitPx,
-          wc: this.wc,
-        };
-        const draws: number[] = [];
-        this.wc = null;
-        try {
-          scratch.setPosition(a.ax, a.ay);
-          for (let k = 0; k < 3; k++) {
-            const win = this.t3groundWindow(a.ax, a.ay, rect.x0, rect.y0, w, h);
-            this.setGroundClip(rect);
-            if (this.t3tex) this.t3tex.deferPlates = false; // drawn here, whole: what a redraw really costs
-            const t0 = performance.now();
-            try {
-              this.drawTiles3Ground(scratch, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, null, null, a.top);
-            } finally {
-              this.setGroundClip(null);
-            }
-            draws.push(performance.now() - t0);
-          }
-        } finally {
-          this.t3missing = keep.missing;
-          this.t3boundaryOwed = keep.boundary;
-          this.t3dropOwed = keep.drop;
-          this.t3deckOwed = keep.deck;
-          this.t3stats = keep.stats;
-          this.groundCulled = keep.culled;
-          this.groundPainted = keep.painted;
-          this.t3paintFlushes = keep.flushes;
-          this.groundBracketRect = keep.bracket;
-          this.groundPaints = keep.paints;
-          this.groundBlitPx = keep.blitPx;
-          this.wc = keep.wc;
-        }
-        // SAVE: the live texels read off the GPU — what a disk save pays on the frame
-        const px = new Uint8Array(w * h * 4);
-        const fb = (rt.texture as Phaser.Textures.DynamicTexture).renderTarget?.framebuffer?.webGLFramebuffer;
-        if (!fb) break;
-        const r0 = performance.now();
-        r.pipelines.clear();
-        try {
-          gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-          gl.readPixels(rect.x0, rect.y0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
-          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        } finally {
-          r.pipelines.rebind();
-        }
-        const readMs = performance.now() - r0;
-        for (let t = 0; t < w * h; t++) if (!mask[t]) px.fill(0, t * 4, t * 4 + 4); // the diamond only, as the cache keeps it
-        const e0 = performance.now();
-        const blob = await benchEncode(px, w, h);
-        const encodeMs = performance.now() - e0;
-        const key = `t${i}`;
-        const p0 = performance.now();
-        await benchPut(db, key, blob);
-        const writeMs = performance.now() - p0;
-        // LOAD
-        const g0 = performance.now();
-        const back = await benchGet(db, key);
-        const getMs = performance.now() - g0;
-        if (!back) break;
-        const d0 = performance.now();
-        const bm = await benchDecode(back);
-        const decodeMs = performance.now() - d0;
-        await frameGap();
-        let uploadMs = 0;
-        let bad = 0;
-        r.pipelines.clear();
-        const flip = gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL);
-        const pma = gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL);
-        const glTex = gl.createTexture();
-        const glFb = gl.createFramebuffer();
-        try {
-          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-          gl.activeTexture(gl.TEXTURE0);
-          gl.bindTexture(gl.TEXTURE_2D, glTex);
-          const u0 = performance.now();
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bm);
-          uploadMs = performance.now() - u0;
-          // the picture that came back, inside the diamond, against the one that went in
-          gl.bindFramebuffer(gl.FRAMEBUFFER, glFb);
-          gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTex, 0);
-          const got = new Uint8Array(w * h * 4);
-          gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, got);
-          for (let t = 0; t < w * h; t++) {
-            if (!mask[t]) continue;
-            const o = t * 4;
-            if (got[o] !== px[o] || got[o + 1] !== px[o + 1] || got[o + 2] !== px[o + 2] || got[o + 3] !== px[o + 3]) bad++;
-          }
-        } finally {
-          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-          gl.bindTexture(gl.TEXTURE_2D, null);
-          gl.deleteFramebuffer(glFb);
-          gl.deleteTexture(glTex);
-          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flip);
-          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, pma);
-          r.pipelines.rebind();
-          bm.close();
-        }
-        results.push({
-          drawFirstMs: draws[0],
-          drawMs: (draws[1] + draws[2]) / 2,
-          readMs,
-          encodeMs,
-          writeMs,
-          getMs,
-          decodeMs,
-          uploadMs,
-          kb: blob.size / 1024,
-          bad,
-        });
-      }
-    } catch (e) {
-      this.wbState = `failed: ${(e as Error)?.message ?? e}`;
-      this.chat.addLog("—", `Disk vs draw test ${this.wbState}`);
-      return this.wbState;
-    } finally {
-      if (db) await benchClear(db).catch(() => undefined);
-      db?.close();
-      this.wbRunning = false;
-    }
-    if (!results.length) {
-      this.wbState = "no tile could be tested — stand still outside and tap again";
-      return this.wbState;
-    }
-    const sum = benchSummary(results);
-    this.wbCounts = sum.counts;
-    this.wbState = `draw ${sum.counts.wbDraw} ms · disk ${sum.counts.wbLoad} ms (+${sum.counts.wbLoadBg} bg)`;
-    this.chat.addLog("—", `Disk vs draw test: ${sum.line}`);
-    return sum.line;
   }
 
   /* CACHE WORLD RENDERING: what repaints the world changed what the ground

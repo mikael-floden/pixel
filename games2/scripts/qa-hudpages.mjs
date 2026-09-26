@@ -72,14 +72,15 @@ async function measure(page) {
     const page_ = document.querySelector(".ml-page.show");
     const cs = getComputedStyle(page_);
     const pr = r(page_);
-    const btns = [...document.querySelectorAll(".ml-btnrow .ml-plate-btn")].map(r);
+    // the grid's CELLS — a setting with its "default", or a bare button — two a row
+    const btns = [...document.querySelectorAll(".ml-btnrow > *")].map(r);
     document.querySelector('.ml-tab[data-tab="backpack"]').click();
     const slots = [...document.querySelectorAll(".ml-slot")].map(r);
     return {
       slotCount: slots.length,
       slotLeft: slots[0].left, slotRight: slots[4].right, slotTop: slots[0].top,
       slotGap: slots[1].left - slots[0].right,
-      btnLeft: btns[0].left, btnRight: btns[2].right, btnTop: btns[0].top,
+      btnLeft: btns[0].left, btnRight: btns[1].right, btnTop: btns[0].top,
       btnGap: btns[1].left - btns[0].right,
       pageLeft: pr.left, pageRight: pr.right,
       contentLeft: pr.left + parseFloat(cs.paddingLeft),
