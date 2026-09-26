@@ -160,6 +160,8 @@ import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
 import { FastDepthSort } from "../fastsort";
 import { TerrainBake, bakeParity, type BakeHost, type BakeSink } from "../terrainbake";
+import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, wcPageKey, wcSlotFrame, wcSwitchOn, type WcFrame, type WcRect, type WcSlot } from "../worldcache";
+import { WorldCacheGl } from "../worldcachegl";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -244,6 +246,7 @@ import { slopeHeight, setSlopeHeight, nextSlopeHeight, slopeLabel, slopeRule, SL
 import { rampHeight,
   Tiles3,
   DX as T3_DX,
+  DY as T3_DY,
   TOP_Y as T3_TOP_Y,
   TILE as T3_TILE,
   PLATE_H as T3_PLATE_H,
@@ -2767,7 +2770,9 @@ export class WorldScene extends Phaser.Scene {
     if (before.t === after.t && before.l === after.l) return { ok: true, before, after };
     this.terrain = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
     this.initTiles3();
-    this.repaintWorld();
+    // the cached tiles an edit can change let go; every other one still paints
+    this.wc?.dirtyEdit(col, row, this.maxLevel + 1);
+    this.repaintWorld(true);
     if (this.bake) {
       this.bake.dirty(col, row);
       this.bake.refreshAll();
@@ -3281,6 +3286,9 @@ export class WorldScene extends Phaser.Scene {
         sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
         // Textures a batch of the world's pipeline holds: 1 = Phaser's mobile default, 16 = multipipe.ts.
         mainUnits: mainBatchUnits(this.game.renderer),
+        // CACHE WORLD RENDERING (worldcache.ts): on, tiles held here, MB, cells
+        // the paints skipped and pictures taken this window, a take's worst ms
+        ...this.wcCountsTake(),
         // Capture-target size switches this window = re-allocations stock Phaser
         // would do (does, with the pool off), and the distinct sizes seen.
         capSwitch: cap.switches,
@@ -5314,6 +5322,19 @@ export class WorldScene extends Phaser.Scene {
   private bakeSink: BakeSink | null = null;
   private bakeRewalk = new Set<number>();
   private bakeSetChanged = false;
+  /* CACHE WORLD RENDERING (worldcache.ts; maintainer 2026-09-26: "Why can't
+   * the player maintain a world image cache it draws on its own?"). The phone
+   * keeps the 8x8-cell ground tiles it has drawn and paints them back instead
+   * of their cells. OFF BY DEFAULT (Settings->Dev "Cache world rendering",
+   * `ml-worldcache`): off, `wc` is null and every path below is today's. */
+  private wc: WorldCache | null = null;
+  private wcGl: WorldCacheGl | null = null;
+  private wcOn = wcSwitchOn();
+  /** Cells the ground paints skipped for a cached picture, this window. */
+  private wcSkipped = 0;
+  /** Pages allocated this frame (one at most), and this window's takes. */
+  private wcPagesThisFrame = 0;
+  private wcTakes = { n: 0, ms: 0, maxMs: 0 };
   /** Row stride for the pool's cell key — the world's width, so `row*stride+col`
    *  is unique per cell. Set at the top of every rebuild. */
   private occStride = 1;
@@ -5865,6 +5886,7 @@ export class WorldScene extends Phaser.Scene {
       if (this.night) {
         this.lastGround = { x: NaN, y: NaN };
         this.lastOccl = { x: NaN, y: NaN };
+        this.wc?.flush(); // the ground drawn before it carries the daylight shades
         this.ensureSceneryLitPipeline();
       }
     }
@@ -6445,6 +6467,15 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.bake?.on,
           state: () => this.bakeLabel(),
         },
+        /* CACHE WORLD RENDERING (worldcache.ts; maintainer 2026-09-26): the
+         * phone keeps the ground tiles it has drawn and paints them back
+         * instead of their cells. Off is today's paint exactly; the A/B. */
+        {
+          label: "Cache world rendering",
+          act: () => this.setWorldCache(!this.wcOn),
+          get: () => this.wcOn,
+          state: () => this.wcLabel(),
+        },
         /* THE GROUND BRACKET HITCHES (2026-09-24): both on by default — they only
          * remove work from a band pass; off is the bisect. */
         {
@@ -6586,7 +6617,7 @@ export class WorldScene extends Phaser.Scene {
     window.addEventListener("ml-indoor-wall", () => {
       if (!this.indoorInside) return; // outdoors there is nothing cut to redraw
       this.indoorMaskSig = "";
-      if (this.refreshIndoorMask()) this.repaintWorld();
+      if (this.refreshIndoorMask()) this.repaintWorld(true); // the cut only: the outdoor pictures stand
     });
     /* THE FADE DIALS (fadetune.ts) change how the RESOLVER places fades, so
      * the world is re-resolved and repainted — the whole picture, as the
@@ -6646,6 +6677,12 @@ export class WorldScene extends Phaser.Scene {
         return bakeParity(this.bake, this.bakeHost, { x: v.x, y: v.y, width: v.width, height: v.height }, !!png);
       },
       /** Live occluder sprites against band images — what the bake removes. */
+      /** CACHE WORLD RENDERING (worldcache.ts): the switch (`on` sets it) and
+       *  what the cache holds and did. */
+      worldCache: (on?: boolean) => {
+        if (on !== undefined && on !== this.wcOn) this.setWorldCache(on);
+        return { on: this.wcOn, take: this.wc?.take() ?? null, skipped: this.wcSkipped, takes: { ...this.wcTakes } };
+      },
       bakeCount: () => ({ live: this.occluders.length, bands: this.bake?.images.length ?? 0, displayList: this.children.length }),
       /** The edit tool (worldEdit): mutate a cell, everything follows. */
       worldEdit: (col: number, row: number, change: { t?: string; dl?: number }) => this.worldEdit(col, row, change),
@@ -6749,7 +6786,7 @@ export class WorldScene extends Phaser.Scene {
           this.destroyIndoorDebris(); // QA toggles are instant — no stale fade layer
           if (this.indoorInside) {
             this.indoorMaskSig = "";
-            if (this.refreshIndoorMask()) this.repaintWorld();
+            if (this.refreshIndoorMask()) this.repaintWorld(true); // the cut only
           }
         }
         const w = this.world;
@@ -15254,6 +15291,13 @@ export class WorldScene extends Phaser.Scene {
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
     this.t3drainTick();
+    // CACHE WORLD RENDERING (worldcache.ts): the tiles whose texels are final
+    // are taken — never on a frame that already painted ground
+    if (this.wcOn && !this.groundRedrewThisFrame) {
+      this.ps();
+      this.wcStep();
+      this.pe("wcStep");
+    }
     // Its own section: the queue's banded uploads (texSubImage2D, artworker.ts)
     // and the frame's texture creations are what it does, and they used to
     // land in the unattributed `gapBusy`.
@@ -19633,6 +19677,7 @@ export class WorldScene extends Phaser.Scene {
       // A draw-time input (caveTint) the kept ground picture may predate: the
       // next redraw paints in full rather than scrolling an untinted picture.
       this.lastGround = { x: NaN, y: NaN };
+      this.wc?.flush(); // ...and no cached picture predates it either
       this.publishRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth, this.caveUnder);
     }
     const av = this.avatars.get(this.myId);
@@ -19721,7 +19766,7 @@ export class WorldScene extends Phaser.Scene {
       // a cave whose ceiling steps to another height. The mask has to follow,
       // and if it really changed the two caches are now stale even though
       // nothing "flipped": repaint them exactly as commitIndoor would.
-      if (inside && this.refreshIndoorMask()) this.repaintWorld();
+      if (inside && this.refreshIndoorMask()) this.repaintWorld(true); // the cut only
       return;
     }
     this.commitIndoor(inside, now);
@@ -19802,7 +19847,7 @@ export class WorldScene extends Phaser.Scene {
     const a = this.groundAnchor;
     const perCell = !mask || !!cuts;
     if (!a || !perCell || Number.isNaN(this.lastGround.x)) {
-      this.repaintWorld();
+      this.repaintWorld(true); // the cut only: the outdoor pictures stand
       return;
     }
     const cells = new Set<number>();
@@ -21065,7 +21110,174 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
-  private repaintWorld() {
+  /* CACHE WORLD RENDERING: everything that repaints the world changed what the
+   * ground draws (a dial, the cut, the resolver, a view turn) — the cached
+   * tiles go, unless the caller let go of exactly the ones it changed (an
+   * edit: `keepCache`). */
+  private setWorldCache(on: boolean): void {
+    this.wcOn = on;
+    setWcSwitch(on);
+    if (!on) {
+      this.wc?.destroy();
+      this.wc = null;
+      this.wcGl = null;
+    }
+    this.repaintWorld();
+  }
+
+  private wcCountsTake(): Record<string, number> {
+    const t = this.wc?.take();
+    const out = { wcOn: this.wcOn ? 1 : 0, wcTiles: t?.here ?? 0, wcMb: t?.mb ?? 0, wcSkip: this.wcSkipped, wcTakes: this.wcTakes.n, wcTakeMax: +this.wcTakes.maxMs.toFixed(2) };
+    this.wcSkipped = 0;
+    this.wcTakes = { n: 0, ms: 0, maxMs: 0 };
+    return out;
+  }
+
+  private wcLabel(): string {
+    if (!this.wcOn) return "off";
+    const t = this.wc?.take();
+    return t ? `on: ${t.here} tiles, ${t.mb} MB` : "on";
+  }
+
+  /** The level-0 lattice of the ground texture: cell (c, r)'s top vertex is
+   *  (ox + (c - r)·DX, oy + (c + r)·DY) — tiles3's frame, the view's grid. */
+  private wcFrame(): WcFrame {
+    const f = this.t3!.frame;
+    return { ox: t3columnX(f, 0, 0) + T3_DX, oy: t3columnY(f, 0, 0, 0) + T3_TOP_Y, dx: T3_DX, dy: T3_DY };
+  }
+
+  private wcEnsure(): WorldCache | null {
+    if (!this.wcOn || this.wc) return this.wc;
+    if (!this.maps3 || !this.t3 || this.game.renderer.type !== Phaser.WEBGL) return null;
+    const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    this.wcGl = new WorldCacheGl(r.gl);
+    const scene = this;
+    this.wc = new WorldCache({
+      get frame() {
+        return scene.wcFrame();
+      },
+      get column() {
+        return { tile: T3_TILE, topY: T3_TOP_Y, lh: scene.geom.lh, pitch: scene.t3?.frame.pitch ?? scene.geom.lh };
+      },
+      topOf: (tx, ty) => this.wcTopOf(tx, ty),
+      final: (_tx, _ty, box) => this.wcFinal(box),
+      addPage: (p) => this.wcAddPage(p),
+      take: (_tx, _ty, box, slot) => this.wcTake(box, slot),
+      release: () => {}, // a take rewrites its whole box
+      dropPage: (p) => {
+        const k = wcPageKey(p);
+        if (this.textures.exists(k)) this.textures.remove(k);
+      },
+    });
+    return this.wc;
+  }
+
+  /** Once a frame (not one that painted ground): orientation, the cut, and
+   *  the tiles whose texels are final taken. */
+  private wcStep(): void {
+    this.wcPagesThisFrame = 0;
+    const wc = this.wcEnsure();
+    const rt = this.groundRT;
+    const a = this.groundAnchor;
+    if (!wc || !rt || !a) return;
+    wc.setRot(this.viewRot);
+    wc.suspend(!!a.mask);
+    wc.step({ x0: a.ax, y0: a.ay, x1: a.ax + rt.width, y1: a.ay + rt.height });
+  }
+
+  /** EVERY TEXEL OF THIS BOX IS FINAL in the ground texture (WcHost.final): no
+   *  full repaint pending, no slice queued over it, and no cell whose column
+   *  can reach it owed a landing, a composition, a deck, a dropped op or a
+   *  parked repaint — the ledgers the paint itself keeps. */
+  private wcFinal(box: WcRect): boolean {
+    const a = this.groundAnchor;
+    const f = this.t3?.frame;
+    const world = this.world;
+    if (!a || !f || !world || a.mask || this.repaintGroundPending || Number.isNaN(this.lastGround.x)) return false;
+    const rx0 = box.x0 - a.ax;
+    const ry0 = box.y0 - a.ay;
+    const rx1 = box.x1 - a.ax;
+    const ry1 = box.y1 - a.ay;
+    for (const q of this.groundSliceQ) if (q.x0 < rx1 && rx0 < q.x1 && q.y0 < ry1 && ry0 < q.y1) return false;
+    const W = world.width;
+    const lh = this.geom.lh;
+    const top = this.maxLevel;
+    const reaches = (idx: number): boolean => {
+      const col = idx % W;
+      const row = (idx - col) / W;
+      const cx = t3columnX(f, col, row);
+      if (cx + T3_TILE <= box.x0 || cx >= box.x1) return false;
+      return t3columnY(f, col, row, top) - T3_TOP_Y - lh < box.y1 && t3columnY(f, col, row, 0) + T3_TILE + lh > box.y0;
+    };
+    for (const k of this.t3boundaryOwed) if (reaches(k)) return false;
+    for (const k of this.t3deckOwed.keys()) if (reaches(k)) return false;
+    for (const k of this.t3dropOwed) if (reaches(k)) return false;
+    for (const k of this.t3stale) if (reaches(k)) return false;
+    for (const k of this.groundDirtyCells) if (reaches(k)) return false;
+    for (const set of this.t3missing.values()) for (const k of set) if (reaches(k)) return false;
+    return true;
+  }
+
+  /** The highest storey any cell of tile (tx, ty) draws to — t3cellTopLevel,
+   *  the bound the landing repaint's rect is verified against. */
+  private wcTopOf(tx: number, ty: number): number {
+    let top = 0;
+    for (let r = ty * WC_TILE; r < (ty + 1) * WC_TILE; r++)
+      for (let c = tx * WC_TILE; c < (tx + 1) * WC_TILE; c++) {
+        const t = this.t3cellTopLevel(c, r);
+        if (t > top) top = t;
+      }
+    return top;
+  }
+
+  /** A page: one allocation a frame (a texture and a framebuffer). */
+  private wcAddPage(p: number): boolean {
+    if (this.wcPagesThisFrame >= 1) return false;
+    const key = wcPageKey(p);
+    if (this.textures.exists(key)) this.textures.remove(key);
+    if (!this.textures.addDynamicTexture(key, WC_PAGE, WC_PAGE)) return false;
+    this.wcPagesThisFrame++;
+    return true;
+  }
+
+  /** THE TAKE, ON THE GPU (worldcachegl.ts): the box copied out of the ground
+   *  texture into the slot, the texels outside the tile's diamond cleared. */
+  private wcTake(box: WcRect, slot: WcSlot): boolean {
+    const rt = this.groundRT;
+    const a = this.groundAnchor;
+    const gl = this.wcGl;
+    if (!rt || !a || !gl) return false;
+    const w = box.x1 - box.x0;
+    const h = box.y1 - box.y0;
+    const src = { x: box.x0 - a.ax, y: box.y0 - a.ay, w, h };
+    if (src.x < 0 || src.y < 0 || src.x + w > rt.width || src.y + h > rt.height) return false;
+    const page = this.textures.get(wcPageKey(slot.page)) as Phaser.Textures.DynamicTexture;
+    const from = (rt.texture as Phaser.Textures.DynamicTexture).renderTarget;
+    const to = page?.renderTarget;
+    const srcFb = from?.framebuffer?.webGLFramebuffer;
+    const pageTex = to?.texture?.webGLTexture;
+    const pageFb = to?.framebuffer?.webGLFramebuffer;
+    if (!srcFb || !pageTex || !pageFb) return false;
+    const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const t0 = performance.now();
+    let ok = false;
+    r.pipelines.clear();
+    try {
+      ok = gl.take(srcFb, src, pageTex, pageFb, WC_PAGE, WC_PAGE, slot);
+    } finally {
+      r.pipelines.rebind();
+    }
+    const ms = performance.now() - t0;
+    this.wcTakes.n++;
+    this.wcTakes.ms += ms;
+    if (ms > this.wcTakes.maxMs) this.wcTakes.maxMs = ms;
+    const name = wcSlotFrame(slot.x, slot.y);
+    if (!page.has(name)) page.add(name, 0, slot.x, slot.y, w, h);
+    return ok;
+  }
+
+  private repaintWorld(keepCache = false) {
+    if (!keepCache) this.wc?.flush();
     this.groundSliceQ = [];
     this.groundSliceCtx = null;
     this.repaintGroundPending = false;
@@ -23223,6 +23435,7 @@ export class WorldScene extends Phaser.Scene {
       this.t3missing.delete(p);
     }
     if (!this.groundPartial || !this.groundScroll || sheets) this.repaintGroundPending = true;
+    if (sheets) this.wc?.flush(); // a sheet is worn by cells no ledger names
     else if (cells.size) {
       for (const i of cells) this.groundDirtyCells.push(i);
       this.repaintGroundPartial = true;
@@ -24244,12 +24457,21 @@ export class WorldScene extends Phaser.Scene {
       rt.beginDraw();
       this.groundBracketRect = this.groundClip ? { ...this.groundClip } : null;
     }
+    // CACHE WORLD RENDERING (worldcache.ts): never with the indoor cut up
+    this.wc?.suspend(!!mask);
+    const wcp = this.wc && !mask ? this.wc : null;
     for (const [col, row] of cells) {
       /* BEFORE THE RESOLVE, by the doc's own level (a level of margin for a
        * slope's rise or a lid): a cell the rect cannot see is not resolved
        * either — with the resolve worker off (his verdict) a resolve is frame
        * thread work, and a slice at a new spot resolved ~825 of them. */
       if (tight && !reaches(col, row, ((this.viewWorld ?? world).rows[row]?.[col]?.l ?? 0) + 1)) continue; // a DRAWN cell
+      // a cell whose tile and every tile its art reaches are cached IS those
+      // pictures, drawn last below: not resolved, not drawn
+      if (wcp && wcp.groundSkips(col, row)) {
+        this.wcSkipped++;
+        continue;
+      }
       const tr = performance.now();
       const cell = cellOf(col, row);
       if (!cell) continue;
@@ -24474,6 +24696,7 @@ export class WorldScene extends Phaser.Scene {
     for (const [col, row] of cells) {
       const idx = row * world.width + col;
       if (mask && (cuts ? cuts.get(idx) : top) !== undefined) continue; // my roof, or a lid over my floor
+      if (wcp && wcp.groundSkips(col, row)) continue; // in its tile's picture
       if (tight) {
         // By column first (no resolve), then the whole cell or none of it at
         // its decks' own levels: the owed-deck bookkeeping below is per cell.
@@ -24505,6 +24728,23 @@ export class WorldScene extends Phaser.Scene {
         if (!this.t3deckOwed.has(idx)) this.t3deckOwed.set(idx, 0);
       } else this.t3deckOwed.delete(idx);
       if ((tex?.droppedOps ?? 0) > dropsDeck || (tex?.plateRawFallbacks ?? 0) > rawDeck) this.t3dropOwed.add(idx);
+    }
+    /* THE CACHED PICTURES, LAST (worldcache.ts): each cached tile meeting this
+     * paint's rect, over its diamond — a skipped cell's texels come from here,
+     * and a live neighbour's spill into the tile is covered by the texels it
+     * took. Outside its diamond a picture is clear, so it touches nothing else. */
+    if (wcp) {
+      // a live op meeting the rect is drawn WHOLE (t3Blit), up to a tile past
+      // it: every picture it can have drawn over is drawn again, so the rect
+      // grows by two tiles (a picture is exact wherever it lands)
+      const g = 2 * T3_TILE;
+      const pr = clipRect
+        ? { x0: ax + clipRect.x0 - g, y0: ay + clipRect.y0 - g, x1: ax + clipRect.x1 + g, y1: ay + clipRect.y1 + g }
+        : { x0: ax, y0: ay, x1: ax + rt.width, y1: ay + rt.height };
+      for (const pic of wcp.pictures(pr)) {
+        rt.batchDrawFrame(wcPageKey(pic.page), wcSlotFrame(pic.x, pic.y), pic.box.x0 - ax, pic.box.y0 - ay);
+        stats.blits++;
+      }
     }
     if (ownBracket) {
       this.t3countBatches(rt);
@@ -26518,16 +26758,29 @@ export class WorldScene extends Phaser.Scene {
       this.lastGround = { x: NaN, y: NaN };
       this.lastOccl = { x: NaN, y: NaN };
     };
-    const onVisible = () => {
-      if (document.visibilityState === "visible") repaint();
+    // THE CACHED PICTURES GO FIRST, AND ON A TAB-IN TOO: their pages are
+    // framebuffers like the ground, so a GPU that reclaimed the ground reclaimed
+    // them — never a blank picture (worldcache.ts)
+    const wcLost = () => {
+      this.wc?.contextLost();
+      this.wcGl?.lost();
     };
-    const onPageShow = () => repaint(); // bfcache restore fires no visibilitychange
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      wcLost();
+      repaint();
+    };
+    const onPageShow = () => {
+      wcLost();
+      repaint(); // bfcache restore fires no visibilitychange
+    };
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("pageshow", onPageShow);
     // Phaser rebuilds the texture and framebuffer wrappers FIRST and emits
     // after (WebGLRenderer.dispatchContextRestored) — never hook the canvas
     // event directly, it runs before that.
     const webgl = this.game.renderer.type === Phaser.WEBGL ? this.game.renderer : null;
+    webgl?.on(Phaser.Renderer.Events.RESTORE_WEBGL, wcLost);
     webgl?.on(Phaser.Renderer.Events.RESTORE_WEBGL, repaint);
     // The art queue's banded textures have no source for Phaser to re-upload
     // from; the queue refills them itself, after Phaser's blank re-creation.
@@ -26536,6 +26789,7 @@ export class WorldScene extends Phaser.Scene {
     this.events.once("shutdown", () => {
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("pageshow", onPageShow);
+      webgl?.off(Phaser.Renderer.Events.RESTORE_WEBGL, wcLost);
       webgl?.off(Phaser.Renderer.Events.RESTORE_WEBGL, repaint);
       webgl?.off(Phaser.Renderer.Events.RESTORE_WEBGL, refill);
       this.ctxRestoreHooked = false;

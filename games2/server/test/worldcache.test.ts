@@ -1,24 +1,29 @@
 // CACHE WORLD RENDERING — the rules that decide which ground pictures stand
 // (client/src/worldcache.ts). What a screenshot cannot pin: that the tiles
-// partition the plane texel by texel, that a cell skips its paint only when
-// every tile its art reaches is pictured, that a picture is taken only when the
-// scene says its texels are final, and that an edit, a dial, a lost context, a
-// turn and the indoor cut each keep a stale picture off the screen.
+// partition the plane texel by texel, that a cell's reach holds every tile its
+// column can touch, that a cell skips its paint only when every tile its art
+// reaches is pictured, that a picture is taken only when the scene says its
+// texels are final, and that an edit, a dial, a lost context, a turn and the
+// indoor cut each keep a stale picture off the screen.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  WC_PAGE, WC_REACH, WC_TILE, WorldCache, cellUnder, editTiles, tileBoxOf, tileKeyOf, tileMask, tileRangeOfRect,
-  type WcFrame, type WcHost, type WcRect, type WcSlot,
+  WC_PAGE, WC_REFUSED_WAIT, WC_TILE, WorldCache, cellReach, cellUnder, editTiles, tileBoxOf, tileKeyOf, tileMask, tileRangeOfRect,
+  type WcColumn, type WcFrame, type WcHost, type WcRect, type WcSlot,
 } from "../../client/src/worldcache.js";
 
 /** the_game's lattice: DX 32, DY 14, a whole origin. */
 const F: WcFrame = { ox: 6336, oy: 10, dx: 32, dy: 14 };
+/** tiles3's column: TILE 64, TOP_Y 10, a 15-row storey. */
+const C: WcColumn = { tile: 64, topY: 10, lh: 15, pitch: 15 };
 
-function host(opts: { final?: (tx: number, ty: number) => boolean; pagesPerFrame?: number } = {}) {
+function host(opts: { final?: (tx: number, ty: number) => boolean; pagesPerFrame?: number; top?: (tx: number, ty: number) => number } = {}) {
   const log = { takes: [] as string[], released: [] as WcSlot[], pages: [] as number[], dropped: [] as number[] };
   let pagesThisFrame = 0;
   const h: WcHost = {
     frame: F,
+    column: C,
+    topOf: (tx, ty) => (opts.top ? opts.top(tx, ty) : 0),
     final: (tx, ty) => (opts.final ? opts.final(tx, ty) : true),
     addPage: (p) => {
       if (pagesThisFrame >= (opts.pagesPerFrame ?? 99)) return false;
@@ -93,6 +98,52 @@ test("tileRangeOfRect covers every tile whose box meets the rectangle", () => {
     }
 });
 
+test("a cell's reach holds every tile its grown column touches, texel by texel, and nothing farther", () => {
+  // the column tiles3 draws in (columnX, columnY on the level-0 lattice), grown by a tile
+  const rectOf = (c: number, r: number, top: number): WcRect => {
+    const cx = F.ox + (c - r - 1) * F.dx;
+    const y0c = F.oy - C.topY + (c + r) * F.dy;
+    return { x0: cx - C.tile, x1: cx + 2 * C.tile, y0: y0c - top * C.pitch - C.topY - C.lh - C.tile, y1: y0c + 2 * C.tile + C.lh };
+  };
+  let lists = 0;
+  for (const top of [0, 1, 3, 12, 41])
+    for (const [i, j] of [[0, 0], [7, 7], [0, 7], [7, 0], [3, 4], [5, 1]]) {
+      const tx = 13, ty = 21;
+      const c = tx * WC_TILE + i, r = ty * WC_TILE + j;
+      const got = new Set<string>();
+      const off = cellReach(i, j, top, F, C);
+      for (let k = 0; k < off.length; k += 2) got.add(`${off[k]},${off[k + 1]}`);
+      const rect = rectOf(c, r, top);
+      // every texel centre of the grown column: its tile is in the reach
+      const seen = new Set<string>();
+      for (let y = Math.floor(rect.y0); y < Math.ceil(rect.y1); y++)
+        for (let x = Math.floor(rect.x0); x < Math.ceil(rect.x1); x++) {
+          const [cc, rr] = cellUnder(x + 0.5, y + 0.5, F);
+          const k = `${Math.floor(cc / WC_TILE) - tx},${Math.floor(rr / WC_TILE) - ty}`;
+          seen.add(k);
+          assert.ok(got.has(k), `top ${top} place ${i},${j}: texel ${x},${y} is in tile ${k}, missing from the reach`);
+        }
+      assert.ok(got.has("0,0"), "a cell reaches its own tile");
+      // ...and nothing farther: every listed tile has a texel within 2 px of the column
+      const near = new Set<string>();
+      for (let y = Math.floor(rect.y0) - 2; y < Math.ceil(rect.y1) + 2; y++)
+        for (let x = Math.floor(rect.x0) - 2; x < Math.ceil(rect.x1) + 2; x++) {
+          const [cc, rr] = cellUnder(x + 0.5, y + 0.5, F);
+          near.add(`${Math.floor(cc / WC_TILE) - tx},${Math.floor(rr / WC_TILE) - ty}`);
+        }
+      for (const k of got) assert.ok(near.has(k), `top ${top} place ${i},${j}: tile ${k} listed but never within 2 px`);
+      lists += got.size;
+    }
+  assert.ok(lists > 0);
+  // a flat cell's reach is its tile and at most its eight neighbours; a
+  // 41-storey column (~700 px with its margins) reaches six half-rows up, 112 px each
+  assert.ok(cellReach(3, 4, 0, F, C).length / 2 <= 9);
+  const tall = cellReach(3, 4, 41, F, C);
+  let up = 0;
+  for (let k = 0; k < tall.length; k += 2) up = Math.min(up, tall[k] + tall[k + 1]);
+  assert.ok(up <= -6, `tall column reaches ${-up} tile half-rows up`);
+});
+
 test("a picture is taken only when the scene says its texels are final, nearest the ground's centre first, one a frame", () => {
   const blocked = new Set(["11,21"]);
   const { h, log, frame } = host({ final: (tx, ty) => !blocked.has(`${tx},${ty}`) });
@@ -107,8 +158,11 @@ test("a picture is taken only when the scene says its texels are final, nearest 
   }
   assert.ok(!log.takes.includes("11,21"), "never taken while its texels are not final");
   blocked.clear();
-  frame();
-  wc.step(ground);
+  // a refused tile rests WC_REFUSED_WAIT frames before it is asked again
+  for (let i = 0; i <= WC_REFUSED_WAIT + 8 && !log.takes.includes("11,21"); i++) {
+    frame();
+    wc.step(ground);
+  }
   assert.ok(log.takes.includes("11,21"), "taken once final");
   // only tiles wholly inside the ground texture
   for (const k of log.takes) {
@@ -119,7 +173,9 @@ test("a picture is taken only when the scene says its texels are final, nearest 
 });
 
 test("a cell skips its paint only when its tile AND every tile its art reaches are pictured", () => {
-  const { h, frame } = host();
+  // one tall tile: its cells reach far up; every other tile is flat
+  const tallAt = (tx: number, ty: number) => (tx === 22 && ty === 31 ? 30 : 0);
+  const { h, frame } = host({ top: tallAt });
   const wc = new WorldCache(h);
   const ground = rectOver(20, 26, 30, 36);
   for (let i = 0; i < 80; i++) {
@@ -130,17 +186,20 @@ test("a cell skips its paint only when its tile AND every tile its art reaches a
   for (let ty = 30; ty <= 36; ty++) for (let tx = 20; tx <= 26; tx++) assert.ok(pictured(tx, ty), `${tx},${ty} pictured`);
   let skips = 0, live = 0;
   for (let ty = 25; ty <= 40; ty++)
-    for (let tx = 15; tx <= 31; tx++) {
-      const want = pictured(tx, ty) && WC_REACH.every(([dx, dy]) => pictured(tx + dx, ty + dy));
-      assert.equal(wc.groundSkips(tx * WC_TILE + 3, ty * WC_TILE + 4), want, `tile ${tx},${ty}`);
-      if (want) skips++;
-      else live++;
-    }
+    for (let tx = 15; tx <= 31; tx++)
+      for (const [i, j] of [[3, 4], [0, 0], [7, 7], [7, 0]]) {
+        const off = cellReach(i, j, pictured(tx, ty) ? tallAt(tx, ty) : 0, F, C);
+        let want = pictured(tx, ty);
+        for (let k = 0; k < off.length && want; k += 2) want = pictured(tx + off[k], ty + off[k + 1]);
+        assert.equal(wc.groundSkips(tx * WC_TILE + i, ty * WC_TILE + j), want, `tile ${tx},${ty} place ${i},${j}`);
+        if (want) skips++;
+        else live++;
+      }
   assert.ok(skips > 0 && live > 0, `both kinds seen (${skips} skip, ${live} live)`);
-  // the block's interior skips; its north-west rim (reach -3) and south-east rim (reach +1) do not
-  assert.equal(wc.groundSkips(24 * WC_TILE, 34 * WC_TILE), true);
+  // a flat tile inside the block skips; the tall one reaches past the block's top rows and does not
+  assert.equal(wc.groundSkips(24 * WC_TILE + 3, 34 * WC_TILE + 4), true);
+  assert.equal(wc.groundSkips(22 * WC_TILE + 3, 31 * WC_TILE + 4), false, "a tall column reaching past the block's top paints live");
   assert.equal(wc.groundSkips(40 * WC_TILE, 40 * WC_TILE), false, "a tile not pictured never skips");
-  assert.ok(WC_REACH.some(([dx, dy]) => dx === -3 && dy === -3) && WC_REACH.some(([dx, dy]) => dx === 1 && dy === 1));
 });
 
 test("the pictures a paint draws are the pictured tiles meeting its rect, and none of another orientation or indoors", () => {
@@ -182,13 +241,22 @@ test("an edit lets go of every tile it can change and every tile their art reach
   for (let ty = 0; ty <= 9; ty++) for (let tx = 0; tx <= 9; tx++) assert.ok(before.has(`${tx},${ty}`));
   const [tx0, tx1, ty0, ty1] = editTiles(40, 40); // the 24-cell region 24..47 and 34..46: tiles 3..5
   assert.deepEqual([tx0, tx1, ty0, ty1], [3, 5, 3, 5]);
-  const n = wc.dirtyEdit(40, 40);
-  // tiles 3..5 and where their art reaches ([-3..1]): 0..6 x 0..6
+  const top = 12;
+  const n = wc.dirtyEdit(40, 40, top);
+  // tiles 3..5 and every tile their cells' art reaches up to storey 12
+  const hitSet = new Set<string>();
+  for (let ty = 3; ty <= 5; ty++)
+    for (let tx = 3; tx <= 5; tx++)
+      for (let j = 0; j < WC_TILE; j++)
+        for (let i = 0; i < WC_TILE; i++) {
+          const off = cellReach(i, j, top, F, C);
+          for (let k = 0; k < off.length; k += 2) hitSet.add(`${tx + off[k]},${ty + off[k + 1]}`);
+        }
+  assert.ok(hitSet.has("4,4") && hitSet.has("2,2") && !hitSet.has("9,9"));
   let gone = 0;
   for (const k of before) {
-    const [tx, ty] = k.split(",").map(Number);
-    const hit = tx >= 0 && tx <= 6 && ty >= 0 && ty <= 6;
-    assert.equal(pictured(tx, ty), !hit, `tile ${k}`);
+    const hit = hitSet.has(k);
+    assert.equal(pictured(...(k.split(",").map(Number) as [number, number])), !hit, `tile ${k}`);
     if (hit) gone++;
   }
   assert.equal(n, gone);

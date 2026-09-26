@@ -25,13 +25,15 @@
  * never read back to the CPU.
  *
  * WHEN A PICTURE IS USED. A paint of the ground skips every cell whose tile is
- * cached AND whose every tile its art can reach is cached too
- * (`groundSkips`: WC_REACH, a column rises ~600 px toward smaller col+row —
- * three tile rows — and every op overlaps its neighbours), then draws each
- * cached picture that meets its rect LAST, over its diamond: a live
- * neighbour's spill into the tile is covered by the texels the picture took,
- * and a skipped cell's texels come from the picture. Identical to painting
- * the cells, texel for texel — the render A/B gate holds that.
+ * cached AND whose every tile its art can reach is cached too (`groundSkips`,
+ * `cellReach`: the cell's own column up to its tile's highest storey, grown by
+ * a tile each way — the band pass's own bound), then draws each cached picture
+ * that meets its rect LAST, over its diamond: a live neighbour's spill into
+ * the tile is covered by the texels the picture took, and a skipped cell's
+ * texels come from the picture. The ground texture is opaque (a whole-texture
+ * fill first), so a picture's diamond replaces exactly and its clear corners
+ * leave the rest alone. Identical to painting the cells, texel for texel — the
+ * render A/B gate holds that.
  *
  * WHAT MAKES A PICTURE WRONG, and each one drops it: an EDIT (the tiles its
  * resolver region and fade reach can change, and every tile those reach —
@@ -45,6 +47,28 @@
  * the pictures farthest from the ground texture go. One page allocated a
  * frame at most, WC_TAKES_PER_FRAME pictures taken a frame at most. */
 
+/** The Settings->Dev switch "Cache world rendering" (`ml-worldcache`, "1" on).
+ *  Off by default; a page without storage reads as off. No URL parameter:
+ *  his game is installed on his home screen. */
+const SWITCH = "ml-worldcache";
+export function wcSwitchOn(): boolean {
+  try {
+    return (globalThis as { localStorage?: { getItem(k: string): string | null } }).localStorage?.getItem(SWITCH) === "1";
+  } catch {
+    return false;
+  }
+}
+export function setWcSwitch(on: boolean): void {
+  try {
+    (globalThis as { localStorage?: { setItem(k: string, v: string): void } }).localStorage?.setItem(SWITCH, on ? "1" : "0");
+  } catch {
+    /* no storage: the switch lasts this page */
+  }
+}
+/** A page's texture key, and a slot's frame on it. */
+export const wcPageKey = (page: number): string => `wc:page:${page}`;
+export const wcSlotFrame = (x: number, y: number): string => `s${x},${y}`;
+
 /** Cells a tile side: the terrain bake's chunk. */
 export const WC_TILE = 8;
 /** Bytes of pages (RGBA) the cache may hold. */
@@ -55,20 +79,29 @@ export const WC_KEEP_PX = 512;
 export const WC_TAKES_PER_FRAME = 1;
 /** The atlas page: 2 x 4 slots of a 512x224 box. */
 export const WC_PAGE = 1024;
-/** The tiles a tile's art can reach, as offsets — a column rises up to ~600
- *  px (40 storeys) toward smaller col+row, three tile rows of 224 px, and every
- *  op overlaps its neighbours by half a tile sideways and a plate's 17-row
- *  band down. The same square the pre-built terrain measured against. */
-export const WC_REACH: ReadonlyArray<readonly [number, number]> = (() => {
-  const out: [number, number][] = [];
-  for (let dy = -3; dy <= 1; dy++) for (let dx = -3; dx <= 1; dx++) out.push([dx, dy]);
-  return out;
-})();
+/** Candidates asked `final` a frame at most, and the frames a refused one
+ *  waits before it is asked again — the ask walks the owed ledgers, and while
+ *  art streams nearly every candidate is refused. */
+export const WC_FINAL_ASKS = 4;
+export const WC_REFUSED_WAIT = 15;
 /** A resolver region (tiles3 `regionAt`): an edit re-resolves its own 24-cell
  *  region; the fade reads up to its reach (his dial, 4) and the boundary rules
  *  two, so an edit re-resolves this many cells each way beyond itself. */
 const EDIT_REGION = 24;
 const EDIT_NEAR = 6;
+
+/** THE COLUMN BOUND the tight band pass trusts (drawTiles3Ground `reaches`,
+ *  verified texel-identical by verify-groundbracket): a cell's art lies in
+ *  [columnX, columnX + tile] x [columnY(top) - topY - lh, columnY(0) + tile +
+ *  lh], grown by a tile each way (an op is at most a tile). On the level-0
+ *  lattice columnX = ox + (c - r - 1)·dx and columnY(s) = oy - topY + (c + r)·dy
+ *  - s·pitch (tiles3 `columnX`/`columnY`). */
+export interface WcColumn {
+  tile: number;
+  topY: number;
+  lh: number;
+  pitch: number;
+}
 
 export interface WcRect {
   x0: number;
@@ -139,10 +172,36 @@ export function tileMask(tx: number, ty: number, f: WcFrame): { w: number; h: nu
   return { w, h, mask };
 }
 
-/** Every tile a tile's art can reach is cached — then its cells may skip. */
-export function groundInterior(tx: number, ty: number, cached: (tx: number, ty: number) => boolean): boolean {
-  for (const [dx, dy] of WC_REACH) if (!cached(tx + dx, ty + dy)) return false;
-  return true;
+/** THE TILES A CELL'S ART CAN REACH, as (dtx, dty) offsets from its own
+ *  tile, flat: every tile whose diamond meets the cell's grown column
+ *  (WcColumn) with its top at storey `top`. It depends only on the cell's
+ *  place (i, j) in its tile and the storey — the lattice repeats every WC_TILE
+ *  cells — so a cache computes it once per (place, storey).
+ *
+ *  EXACT BY SEPARATING AXES. In lattice units (a = (x - ox)/dx, b = (y -
+ *  oy)/dy) the grown column is an axis-aligned rectangle, and tile (u, v) is
+ *  the texels whose level-0 cell (`cellUnder`) is one of its 64: a+b in [16u,
+ *  16u + 16), b-a in [16v, 16v + 16) — a square turned 45 degrees. Two convex
+ *  polygons meet unless one of their four edge normals separates them;
+ *  touching counts as meeting, so the list can only be too long, never short. */
+export function cellReach(i: number, j: number, top: number, f: WcFrame, col: WcColumn): Int8Array {
+  const n = WC_TILE;
+  const s = 2 * n;
+  // the grown column, relative to the tile's first cell
+  const a0 = i - j - 1 - col.tile / f.dx;
+  const a1 = i - j - 1 + (2 * col.tile) / f.dx;
+  const b0 = i + j + (-2 * col.topY - top * col.pitch - col.lh - col.tile) / f.dy;
+  const b1 = i + j + (-col.topY + 2 * col.tile + col.lh) / f.dy;
+  const out: number[] = [];
+  for (let u = Math.floor((a0 + b0) / s) - 1; u <= Math.ceil((a1 + b1) / s) + 1; u++)
+    for (let v = Math.floor((b0 - a1) / s) - 1; v <= Math.ceil((b1 - a0) / s) + 1; v++) {
+      if (s * u > a1 + b1 || s * u + s < a0 + b0) continue; // the a+b normal
+      if (s * v > b1 - a0 || s * v + s < b0 - a1) continue; // the b-a normal
+      if (n * (u - v) - n > a1 || n * (u - v) + n < a0) continue; // the a normal
+      if (n * (u + v) > b1 || n * (u + v) + 2 * n < b0) continue; // the b normal
+      out.push(u, v);
+    }
+  return Int8Array.from(out);
 }
 
 /** The tiles a cell edit can change: its resolver region and the
@@ -174,6 +233,11 @@ export interface WcSlot {
 export interface WcHost {
   /** The level-0 lattice of the ground texture. */
   frame: WcFrame;
+  /** The column bound a cell's art keeps to (see WcColumn). */
+  column: WcColumn;
+  /** The highest storey any cell of this tile draws to (its doc and resolved
+   *  levels and its decks, plus one for a ramp's rise), asked at the take. */
+  topOf(tx: number, ty: number): number;
   /** Every texel of this tile's box is final in the ground texture, whose world
    *  rectangle is `ground` (see the header). */
   final(tx: number, ty: number, box: WcRect): boolean;
@@ -196,6 +260,8 @@ interface Tile {
   box: WcRect;
   slot: WcSlot;
   used: number;
+  /** The tile's highest storey, when taken (WcHost.topOf). */
+  top: number;
 }
 
 export interface WcPicture {
@@ -212,12 +278,16 @@ export class WorldCache {
   private suspended = false;
   private clock = 0;
   private ground: WcRect | null = null;
+  /** cellReach per storey: 64 places each. */
+  private reach = new Map<number, Int8Array[]>();
+  /** A refused candidate's key -> the clock before which it is not asked. */
+  private refused = new Map<number, number>();
   /** Slots per page and their positions. */
   private readonly slotW: number;
   private readonly slotH: number;
   private readonly perRow: number;
   private readonly perPage: number;
-  readonly stats = { taken: 0, dropped: 0, skipped: 0, drawn: 0, refusedFinal: 0, refusedTake: 0 };
+  readonly stats = { taken: 0, dropped: 0, drawn: 0, refusedFinal: 0, refusedTake: 0 };
 
   constructor(
     private readonly host: WcHost,
@@ -239,15 +309,28 @@ export class WorldCache {
     return this.pages.length * WC_PAGE * WC_PAGE * 4;
   }
 
-  private cachedAt = (tx: number, ty: number): boolean => !this.suspended && this.tiles.has(tileKeyOf(this.rot, tx, ty));
+  /** The reach offsets of place (i, j) at storey `top` (cellReach, memoised). */
+  reachOf(i: number, j: number, top: number): Int8Array {
+    let per = this.reach.get(top);
+    if (!per) {
+      per = [];
+      for (let q = 0; q < WC_TILE * WC_TILE; q++) per.push(cellReach(q % WC_TILE, Math.floor(q / WC_TILE), top, this.host.frame, this.host.column));
+      this.reach.set(top, per);
+    }
+    return per[j * WC_TILE + i];
+  }
 
   /** The ground paint skips this cell: its tile is cached, and so is every
-   *  tile its art can reach (WC_REACH). */
+   *  tile its art can reach — its column up to the tile's highest storey. */
   groundSkips(col: number, row: number): boolean {
     if (this.suspended) return false;
     const tx = Math.floor(col / WC_TILE);
     const ty = Math.floor(row / WC_TILE);
-    return this.cachedAt(tx, ty) && groundInterior(tx, ty, this.cachedAt);
+    const t = this.tiles.get(tileKeyOf(this.rot, tx, ty));
+    if (!t) return false;
+    const off = this.reachOf(col - tx * WC_TILE, row - ty * WC_TILE, t.top);
+    for (let k = 0; k < off.length; k += 2) if (!this.tiles.has(tileKeyOf(this.rot, tx + off[k], ty + off[k + 1]))) return false;
+    return true;
   }
 
   /** The pictures a paint of this world rectangle draws LAST — every cached
@@ -269,7 +352,8 @@ export class WorldCache {
 
   /** Once a frame: the ground texture's world rectangle. Tiles wholly inside
    *  it whose texels are final are taken, WC_TAKES_PER_FRAME at most, nearest
-   *  its centre first; then the cap holds. */
+   *  its centre first — WC_FINAL_ASKS asked at most, a refused one resting
+   *  WC_REFUSED_WAIT frames; then the cap holds. */
   step(ground: WcRect): void {
     this.clock++;
     this.ground = ground;
@@ -291,11 +375,17 @@ export class WorldCache {
         cand.push({ tx, ty, box, d: Math.hypot((box.x0 + box.x1) / 2 - mx, (box.y0 + box.y1) / 2 - my) });
       }
     cand.sort((a, b) => a.d - b.d);
+    if (this.refused.size > 1024) this.refused.clear();
     let taken = 0;
+    let asked = 0;
     for (const c of cand) {
-      if (taken >= WC_TAKES_PER_FRAME) break;
+      if (taken >= WC_TAKES_PER_FRAME || asked >= WC_FINAL_ASKS) break;
+      const key = tileKeyOf(this.rot, c.tx, c.ty);
+      if ((this.refused.get(key) ?? 0) > this.clock) continue;
+      asked++;
       if (!this.host.final(c.tx, c.ty, c.box)) {
         this.stats.refusedFinal++;
+        this.refused.set(key, this.clock + WC_REFUSED_WAIT);
         continue;
       }
       const slot = this.freeSlot();
@@ -305,8 +395,8 @@ export class WorldCache {
         this.pages[slot.page].slots[this.slotIndex(slot)] = false;
         continue;
       }
-      const key = tileKeyOf(this.rot, c.tx, c.ty);
-      this.tiles.set(key, { key, rot: this.rot, tx: c.tx, ty: c.ty, box: c.box, slot, used: this.clock });
+      this.refused.delete(key);
+      this.tiles.set(key, { key, rot: this.rot, tx: c.tx, ty: c.ty, box: c.box, slot, used: this.clock, top: this.host.topOf(c.tx, c.ty) });
       this.stats.taken++;
       taken++;
     }
@@ -369,16 +459,20 @@ export class WorldCache {
   }
 
   /** A CELL EDIT: every tile it can change (`editTiles`) and every tile THEIR
-   *  art reaches (WC_REACH — a raised column reaches up to three tile rows
-   *  toward smaller col+row) let their pictures go: they hold the old texels,
-   *  and are taken again from the repainted ground once final. Tile numbers
-   *  are the server grid's at rot 0; a turned view's tiles are dropped whole,
-   *  since its grid maps the edit elsewhere. */
-  dirtyEdit(col: number, row: number): number {
+   *  cells' art reaches up to storey `top` (the world's highest, so the old
+   *  art and the new are both inside it) let their pictures go: they hold the
+   *  old texels, and are taken again from the repainted ground once final.
+   *  Tile numbers are the server grid's at rot 0; a turned view's tiles are
+   *  dropped whole, since its grid maps the edit elsewhere. */
+  dirtyEdit(col: number, row: number, top: number): number {
     const [tx0, tx1, ty0, ty1] = editTiles(col, row);
     const hit = new Set<number>();
     for (let ty = ty0; ty <= ty1; ty++)
-      for (let tx = tx0; tx <= tx1; tx++) for (const [dx, dy] of WC_REACH) hit.add(tileKeyOf(0, tx + dx, ty + dy));
+      for (let tx = tx0; tx <= tx1; tx++)
+        for (let q = 0; q < WC_TILE * WC_TILE; q++) {
+          const off = this.reachOf(q % WC_TILE, Math.floor(q / WC_TILE), top);
+          for (let k = 0; k < off.length; k += 2) hit.add(tileKeyOf(0, tx + off[k], ty + off[k + 1]));
+        }
     let n = 0;
     for (const t of [...this.tiles.values()])
       if (t.rot !== 0 || hit.has(t.key)) {
@@ -397,6 +491,7 @@ export class WorldCache {
    *  and they are taken again from the repainted ground. Never a blank one. */
   contextLost(): void {
     this.tiles.clear();
+    this.refused.clear();
     for (let p = this.pages.length - 1; p >= 0; p--) this.host.dropPage(p);
     this.pages = [];
   }
