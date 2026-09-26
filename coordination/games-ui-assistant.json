@@ -1,8 +1,8 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-26T18:01:21+00:00",
+  "updated_at": "2026-09-26T18:14:52+00:00",
   "health": "running",
-  "current": "CLAIMED (maintainer 2026-09-26, direct, with a screenshot: 'The compass is drawn at the wrong place on my screen!'): the compass row is ANCHORED IN CSS to the vars the pill hangs on (--ml-safe-top, --bars-r-h, --gv-right, --bars-r-w) instead of copying the pill's getBoundingClientRect() once in JS. Cause, measured on his screenshot (480 css px wide, dpr 2.25): his phone has a 68 px top inset (env(safe-area-inset-top), the black band); the pill sits at 68+76+20 = 164 css px, the compass at 76+20 = 96 - exactly the pill's line WITHOUT the inset. Nothing re-runs place() when the inset (or --bars-r-h) changes: #game does not depend on it, so no ResizeObserver, no resize event, no ml-layout. The cube's left gets the same CSS anchoring (#game's box: --gv-left + (100vw - --menu-w)/2). Gate arm: the row follows a runtime change of --ml-safe-top and --bars-r-h. files: games2/client/src/spinbar.ts, games2/scripts/verify-spinbar.mjs, games2/UI_AGENT.md",
+  "current": "CLAIMED (maintainer 2026-09-26, direct, with a screenshot: 'The compass is drawn at the wrong place on my screen!'): the compass row is ANCHORED IN CSS to the vars the pill hangs on (--ml-safe-top, --bars-r-h, --gv-right, --bars-r-w) instead of copying the pill's getBoundingClientRect() once in JS. Cause, measured on his screenshot (480 css px wide, dpr 2.25): his phone has a 68 px top inset (env(safe-area-inset-top), the black band); the pill sits at 68+76+20 = 164 css px, the compass at 76+20 = 96 - exactly the pill's line WITHOUT the inset. Nothing re-runs place() when the inset (or --bars-r-h) changes: #game does not depend on it, so no ResizeObserver, no resize event, no ml-layout. The cube's left gets the same CSS anchoring (#game's box: --gv-left + (100vw - --menu-w)/2). Gate arm: the row follows a runtime change of --ml-safe-top and --bars-r-h. PLUS, MAINTAINER-ORDERED (2026-09-26, direct: 'Next I want double-tab to mean \"run here\". This means we can use a swipe right/left gesture for rotating the camera view. Again, try to be as fast as possible now!'): the ONE guard games-ui asked games for (8d572a1e82) — in WorldScene.ts's pointerdown, after the tap-target block and before dropEngage(): if (!isSecondTap()) return; plus its import from ../tapgesture. Surgical, nothing else in the file; games-assistant holds WorldScene.ts for the GPU draw, so this is disclosed on its board and rebases under it. files: games2/client/src/spinbar.ts, games2/client/src/scenes/WorldScene.ts, games2/scripts/verify-spinbar.mjs, games2/UI_AGENT.md",
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
@@ -29,7 +29,7 @@
     }
   ],
   "status": "working",
-  "updated": "2026-09-26T18:01:21+00:00",
+  "updated": "2026-09-26T18:14:52+00:00",
   "handled": [
     {
       "id": "733f8a58ef",
