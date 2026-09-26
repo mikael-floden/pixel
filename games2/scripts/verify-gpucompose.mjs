@@ -33,6 +33,7 @@ try {
   // AND WHERE THE SLOPES ARE: every cell of the world whose transition wears a
   // slope (Tiles3Boundary.slope), clustered, a few clusters visited — the
   // slope boundaries shift a side and leave holes, the GPU's hardest case.
+  if (process.env.SLOPESPOTS) await page.evaluate((n) => { window.__gateSlopeSpots = n; }, +process.env.SLOPESPOTS);
   const slopeSpots = await page.evaluate(() => {
     const s = window.__mlGame.scene.scenes.find((x) => x.monsters instanceof Map);
     const t3 = s.t3, w = s.world, got = [];
@@ -74,9 +75,11 @@ try {
   // texture, then the same walk on a page with "GPU transitions" on (below).
   const hashAt = async (pg) => { await settle(pg); return pg.evaluate(() => window.__ml.groundHash()); };
   const cpuHash = await hashAt(page);
-  const rep = await page.evaluate(() => window.__ml.gpuParity());
-  console.log(JSON.stringify(rep, null, 1));
-  if (!rep.compared || !rep.opaque || !rep.inked) { console.log(`FAIL: vacuous (${rep.compared} tiles, ${rep.opaque} opaque texels, ${rep.inked} inked)`); bad = true; }
+  // TILES=0 skips the per-tile half (the ground half below is the direct draw's test)
+  const rep = process.env.TILES === "0" ? null : await page.evaluate(() => window.__ml.gpuParity());
+  if (rep) console.log(JSON.stringify(rep, null, 1));
+  if (!rep) console.log("per-tile parity skipped (TILES=0)");
+  else if (!rep.compared || !rep.opaque || !rep.inked) { console.log(`FAIL: vacuous (${rep.compared} tiles, ${rep.opaque} opaque texels, ${rep.inked} inked)`); bad = true; }
   else if (!rep.ramps || !rep.rampsLined || !rep.linedPlates) { console.log(`FAIL: no ramp compared (${rep.ramps} ramps, ${rep.rampsLined} lined)`); bad = true; }
   else if (rep.tilesDiffering) { console.log(`FAIL: ${rep.tilesDiffering} of ${rep.compared} tiles differ (${rep.texelsDiffering} texels, max ${rep.maxDiff})`); bad = true; }
   else console.log(`ok: ${rep.compared} boundaries and ${rep.ramps} ramps (${rep.rampsLined} lined, ${rep.rampsOnTransition} lifting a transition; ${rep.linedPlates} of them flat tops with their outline) identical byte for byte (${rep.slopes} on slopes; ${rep.opaque} opaque texels, ${rep.inked} of them outline ink; ${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
@@ -128,7 +131,10 @@ try {
     const off = await run(false, "control");
     const on = await run(true, "gpu");
     console.log("gpu compositor on the game page:", JSON.stringify(on.st));
-    if (!on.st || !on.st.composed) { console.log("FAIL: the GPU compositor composed nothing on the game page"); bad = true; }
+    // THE DIRECT DRAW: the ground painted transitions, ramps and lined tops as
+    // quads of its own batch — none of them may have been a composed texture
+    const dd = on.st?.direct;
+    if (!dd || !dd.boundaries || !dd.ramps || !dd.quads) { console.log(`FAIL: the direct draw painted nothing (${JSON.stringify(dd)})`); bad = true; }
     const A = off.png, B = on.png, aa = off.h.anchor, ba = on.h.anchor;
     const x0 = Math.max(aa.x, ba.x), y0 = Math.max(aa.y, ba.y), x1 = Math.min(aa.x + A.width, ba.x + B.width), y1 = Math.min(aa.y + A.height, ba.y + B.height);
     if (x1 - x0 < 256 || y1 - y0 < 256) { console.log(`INCONCLUSIVE: the two grounds share only ${x1 - x0}x${y1 - y0} px`); bad = true; }

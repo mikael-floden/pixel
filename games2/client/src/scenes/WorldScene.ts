@@ -1,4 +1,5 @@
 import { gpuParity, GpuComposer, setGpuComposeEnabled, type GpuHost } from "../tiles3gpu";
+import { GroundPipeline, GROUND_PIPELINE } from "../groundpipe";
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { trackGap, arrivalHz, remoteChaseRate } from "../remoterate";
@@ -2348,6 +2349,10 @@ export class WorldScene extends Phaser.Scene {
     return (p?.patterns ?? []).flatMap((q) => Array.from({ length: cols }, (_, w) => q.row * cols + w));
   });
   private gpuHostMemo: GpuHost | null = null;
+  /** THE GROUND PIPELINE (groundpipe.ts): the ground RT draws through it while
+   *  the direct draw is on, so a transition, ramp or lined top is one quad of
+   *  the ground's own batch. */
+  private groundPipe: GroundPipeline | null = null;
   /** The compositor's share of Phaser's renderer: its GL context (the pipeline
    *  flushed and set aside around the raw GL, put back after), a texture of the
    *  renderer's own per tile, registered like any other and landed with the
@@ -2371,6 +2376,17 @@ export class WorldScene extends Phaser.Scene {
         this.t3tex?.landRemote(key, none);
         // a transition has its own retry (t3boundaryOwed); a ramp was a DROP, and drops drain
         if (!key.startsWith("t3x:")) this.t3remoteLanded = true;
+      },
+      dirty: () => {
+        const cur = r.pipelines.current as unknown as { activeTextures?: unknown[] } | null;
+        if (cur?.activeTextures) cur.activeTextures.length = 0;
+      },
+      groundPipe: (direct) => {
+        let p = r.pipelines.get(GROUND_PIPELINE) as unknown as GroundPipeline | undefined;
+        if (!p) p = r.pipelines.add(GROUND_PIPELINE, new GroundPipeline(this.game)) as unknown as GroundPipeline;
+        p.direct = direct;
+        if (this.t3sheets) p.fh = this.t3sheets.fh;
+        this.groundPipe = p;
       },
     };
     return this.gpuHostMemo;
@@ -8495,7 +8511,16 @@ export class WorldScene extends Phaser.Scene {
         ctx.putImageData(im, 0, 0);
         return { png: cv.toDataURL("image/png"), items: o.items, owned, w: o.w, h: o.h, cam: [this.cameras.main.width, this.cameras.main.height], canvas: [this.game.canvas.width, this.game.canvas.height] };
       },
-      gpuCompose: () => ({ on: this.t3gpuc.on, pending: this.t3gpuc.pending, ...this.t3gpuc.stats }),
+      gpuCompose: () => {
+        const d = this.t3gpuc.directStore;
+        const p = this.groundPipe;
+        return {
+          on: this.t3gpuc.on,
+          pending: this.t3gpuc.pending,
+          ...this.t3gpuc.stats,
+          direct: d ? { tiles: d.size, ...d.stats, quads: p?.stats.direct ?? 0, sumsPassesPipe: p?.stats.sumsPasses ?? 0, sumsMs: +(p?.stats.sumsMs ?? 0).toFixed(1) } : null,
+        };
+      },
       gpuParity: async (max?: number) => {
         const sheets = this.t3sheets;
         if (!sheets) throw new Error("no pattern sheets yet");
@@ -23446,6 +23471,10 @@ export class WorldScene extends Phaser.Scene {
       if (!key.startsWith("t3x:")) this.t3remoteLanded = true;
     });
     this.t3compose.onMissed((key) => this.t3tex?.remoteMissed(key));
+    // a plate or shape the direct draw was waiting for: its dropped cells drain
+    this.t3gpuc.onReady(() => {
+      this.t3remoteLanded = true;
+    });
     {
       const p = patternSheetPaths(patterns);
       this.t3compose.init({
@@ -23460,6 +23489,7 @@ export class WorldScene extends Phaser.Scene {
       sheets: this.t3sheets,
       remote: this.t3gpuc,
       gpuRamp: (job) => this.t3gpuc.ramp(job),
+      gpuDirect: { boundary: (job) => this.t3gpuc.directBoundary(job), ramp: (job) => this.t3gpuc.directRamp(job) },
       artUrl: (path) => docUrl(path, this.t3route),
       pitch: this.geom.lh, // the occluder pass's storey pitch: where a face ends, for the wall-foot band
 
@@ -23612,6 +23642,18 @@ export class WorldScene extends Phaser.Scene {
        * liquid has, and why water showed this worst and longest. */
       if (dx + op.sw <= clip.x0 || dy + op.sh <= clip.y0 || dx >= clip.x1 || dy >= clip.y1) {
         this.groundCulled++;
+        return;
+      }
+    }
+    /* THE DIRECT DRAW: a transition, ramp or lined top the GPU paints from
+     * what is resident — one quad of this batch, no texture (groundpipe.ts). */
+    const store = this.t3gpuc.directStore;
+    if (store && this.groundPipe) {
+      const inst = store.get(op.key);
+      if (inst) {
+        const dt = rt.texture as unknown as { pipeline: unknown; camera: { matrix: Phaser.GameObjects.Components.TransformMatrix } };
+        if (dt.pipeline !== this.groundPipe) dt.pipeline = this.groundPipe;
+        this.groundPipe.batchDirect(inst, dx, dy, op.sx, op.sy, op.sw, op.sh, tint, dt.camera.matrix);
         return;
       }
     }
@@ -24836,7 +24878,7 @@ export class WorldScene extends Phaser.Scene {
        * frame; nothing is deleted that was not repaired. */
       const d0 = tex.stats.deferred;
       if (b.topOnly) raisedRepair = true;
-      if (!tex.boundary(b)) {
+      if (!tex.opsForBoundary(b)) {
         /* WHICH `null` THIS IS DECIDES WHETHER TO STOP OR TO SKIP, and getting
          * it wrong wedges the repair. `boundary()` answers null for three
          * reasons: the budget refused it (then everything after it this frame
@@ -25922,7 +25964,13 @@ export class WorldScene extends Phaser.Scene {
       const r0 = tex.plateRawFallbacks;
       const m0 = tex.stats.missing;
       const f0 = tex.stats.deferred;
-      walkCell();
+      // an occluder copy is a SPRITE: it needs real textures, never the ground's direct draw
+      tex.wantTextures = true;
+      try {
+        walkCell();
+      } finally {
+        tex.wantTextures = false;
+      }
       if (tex.droppedOps !== d0 || tex.plateRawFallbacks !== r0 || tex.stats.missing !== m0 || tex.stats.deferred !== f0)
         st.incomplete = true;
       if (this.bakeSink) {

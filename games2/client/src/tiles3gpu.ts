@@ -375,6 +375,13 @@ export class SlotAtlas {
     return this.at(k);
   }
   uploads = 0;
+  /** `origin` that never evicts: null when the atlas is full. The direct draw
+   *  holds slot origins in its instances, so a slot, once given, is never
+   *  reused under another key. */
+  tryOrigin(key: string, data: () => Uint8Array): [number, number] | null {
+    if (!this.slots.has(key) && this.slots.size >= this.cap) return null;
+    return this.origin(key, data);
+  }
   /** Claim a slot for `key` whose pixels the caller uploads itself (a bulk load). */
   reserve(key: string): [number, number] {
     let k = this.slots.get(key);
@@ -821,6 +828,10 @@ export interface GpuHost {
   /** Register a composed tile under its key (TextureManager.addGLTexture) and
    *  tell the factory it landed. */
   land(key: string, wrapper: unknown): void;
+  /** Raw GL bound a texture behind the renderer's back: forget its cache. */
+  dirty(): void;
+  /** The ground pipeline (groundpipe.ts), given the direct store. */
+  groundPipe(direct: GpuDirect | null): void;
 }
 
 /** THE COMPOSE WORKER'S STAND-IN FOR BOUNDARIES, ON THE GAME'S OWN GPU CONTEXT.
@@ -841,6 +852,9 @@ export class GpuComposer {
   private ramps: RampJob[] = [];
   private rampPending = new Set<string>();
   private gpuR: GpuRamps | null = null;
+  /** THE DIRECT DRAW's resident store (made in `prepare`). */
+  private direct: GpuDirect | null = null;
+  private readyCb: (() => void) | null = null;
   private flushQueued = false;
   private plates = new Map<string, Pixels | Promise<Pixels>>();
   private src = new Map<string, Promise<Pixels>>();
@@ -871,6 +885,7 @@ export class GpuComposer {
     else { this.stats.prepMissed++; this.stats.error = m.error.slice(0, 160); }
     if (m.type !== "gpumiss") { this.asked.delete(m.type === "gpuplate" ? m.id : m.key); this.stats.prepLanded++; }
     this.schedule();
+    this.readyCb?.();
   }
   /** Ask the worker once; false = it cannot (not ready): do it here. */
   private ask(id: string, req: GpuPrepReq): boolean {
@@ -891,6 +906,11 @@ export class GpuComposer {
       this.gpu = new GpuBoundaries(host.gl, sheets);
       this.gpu.shared.preloadFrames(sheets, this.frames());
       this.gpuR = new GpuRamps(host.gl, sheets, this.gpu.shared);
+      const units = host.gl.getParameter(host.gl.MAX_TEXTURE_IMAGE_UNITS) as number;
+      if (units >= 8) {
+        this.direct = new GpuDirect(host.gl, sheets, this.gpu.shared, () => host.dirty());
+        host.groundPipe(this.direct);
+      } else this.stats.error = `direct draw: ${units} texture units`;
     } catch (e) {
       this.stats.error = String((e as Error)?.message ?? e);
       this.on = false;
@@ -901,6 +921,63 @@ export class GpuComposer {
   }
   ready(): boolean {
     return this.inner.ready();
+  }
+  /** Called when prepared inputs land (a plate, a shape): cells the direct
+   *  draw could not paint yet may be repainted. */
+  onReady(cb: () => void): void {
+    this.readyCb = cb;
+  }
+  /** The resident store, while the direct draw is on. */
+  get directStore(): GpuDirect | null {
+    return this.on ? this.direct : null;
+  }
+  /** THE FACTORY'S DIRECT HOOK for a transition: true = the ground pipeline can
+   *  paint `job.key` now. Its plates are conformed and its shape made on the
+   *  compose worker (asked once); until both are here, false. */
+  directBoundary(job: BoundaryJob): boolean {
+    noteJob(job);
+    const d = this.directStore, sheets = this.sheets();
+    if (!d || !sheets) return false;
+    if (d.has(job.key)) return true;
+    if (!supported(job)) return false;
+    const a = this.plateOf(job.a, sheets), b = this.plateOf(job.b, sheets);
+    if (!a || !b) return false;
+    if (!gpuShapeReady(sheets, job) && this.ask(shapeKey(job), { kind: "bshape", key: shapeKey(job), job })) return false;
+    try {
+      return !!d.boundary(job.key, job, a, b);
+    } catch (e) {
+      this.stats.error = String((e as Error)?.message ?? e).slice(0, 160);
+      return false;
+    }
+  }
+  /** ...and for a composed ramp or a lined flat top. */
+  directRamp(job: RampJob): boolean {
+    noteRampJob(job);
+    const d = this.directStore, sheets = this.sheets();
+    if (!d || !sheets) return false;
+    if (d.has(job.key)) return true;
+    const band = this.plateOf(job.band as BoundaryJob["a"], sheets);
+    let t: RampTile | null = null;
+    if (job.top.kind === "plate") {
+      const top = this.plateOf(job.top.side as BoundaryJob["a"], sheets);
+      if (band && top) t = { job, band, top };
+    } else {
+      const a = this.plateOf(job.top.job.a, sheets), bb = this.plateOf(job.top.job.b, sheets);
+      if (band && a && bb) t = { job, band, a, b: bb };
+    }
+    if (!t) return false;
+    const bj = job.top.kind === "boundary" ? job.top.job : null;
+    if (!rampShapeReady(sheets, job)) {
+      const rk = rampJobShapeKey(job);
+      if (this.ask(rk, { kind: "rshape", key: rk, job })) return false;
+    }
+    if (bj && !gpuShapeReady(sheets, bj) && this.ask(shapeKey(bj), { kind: "bshape", key: shapeKey(bj), job: bj })) return false;
+    try {
+      return !!d.ramp(job.key, t);
+    } catch (e) {
+      this.stats.error = String((e as Error)?.message ?? e).slice(0, 160);
+      return false;
+    }
   }
   get pending(): number {
     return this.queue.length + this.ramps.length;
@@ -1632,4 +1709,457 @@ export function rampCpu(sheets: PatternSheets, t: RampTile): Pixels {
   if (j.mask === LINED_PLATE) return j.edge ? edgeTopPixels(sheets, top, j.edge.mask, undefined, j.edge.verts, j.edge.nb) : top;
   const base = buildRampPixels(sheets, top, j.mask, j.lh, t.band, false);
   return j.edge ? edgeTopPixels(sheets, base, j.edge.mask, { mask: j.mask, lh: j.lh }, j.edge.verts, j.edge.nb) : base;
+}
+
+/* -- THE DIRECT DRAW (maintainer 2026-09-26: "The shader should use the already
+ * uploaded base tile set and mask to render any transition tile anywhere! Just
+ * tell it what and where and it can render them all in a single call!") ------
+ *
+ * No tile is made. The ground pipeline (groundpipe.ts) draws a transition, a
+ * composed ramp or an outlined flat top as ONE QUAD IN THE GROUND'S OWN BATCH,
+ * in painter order between the plain plates, and its fragment shader computes
+ * each texel from what stays resident on the GPU: the plates, the boundary
+ * shapes, the mask/seam frames, the ramp maps and shade rows, the seam tone and
+ * each tile's colour sums. The quad's vertices carry WHAT (slot origins, mode,
+ * seam, lift) and the batch carries WHERE; nothing else goes up per frame.
+ *
+ * THE SUMS (the outline inks in the tile's mean colour) are the one thing
+ * computed per tile, ONCE, on the GPU: a new tile's three sum texels are drawn
+ * into the resident sums texture by `sumsPass` right before the batch that
+ * first draws it (groundpipe `onBeforeFlush`), from the same resident inputs.
+ *
+ * The functions below are the same arithmetic as passes A, B and C and FRAG_RA
+ * (proven byte-exact against the CPU by `gpuParity`), rewritten to read their
+ * inputs from four per-quad vectors instead of per-pass attributes. */
+
+/** Sums slots: 3 texels each, SUMS_COLS a row. */
+const SUMS_COLS = 512;
+const SUMS_ROWS = 64;
+/** The shade-row table's last row is the seam tone (rint(v·tone)). */
+const LUT_ROWS = 1024;
+const TONE_ROW = LUT_ROWS - 1;
+
+/** One tile the direct draw can paint: `g` is its 16 per-quad floats.
+ *  Boundary (mode 1): g0 plate A xy, plate B xy | g1 shape xy, frame xy |
+ *    g2 mode, sums slot, seam, lift | g3 shifted side, 0, 0, 0.
+ *  Ramp or lined top (mode 2): g0 top (or plate A) xy, plate B xy |
+ *    g1 map xy (the rows share its slot), band xy | g2 mode, sums slot, seam,
+ *    top kind (0 plate, 1 transition) | g3 boundary shape xy, frame xy. */
+export interface DirectInst {
+  g: Float32Array;
+  w: number;
+  h: number;
+}
+
+const DIRECT_COMMON = `
+uniform sampler2D uPlates; uniform vec2 uPlatesSize;
+uniform sampler2D uShapes; uniform vec2 uShapesSize;
+uniform sampler2D uFrames; uniform vec2 uFramesSize;
+uniform sampler2D uMaps; uniform vec2 uMapsSize;
+uniform sampler2D uRows; uniform vec2 uRowsSize;
+uniform sampler2D uLut; uniform vec2 uLutSize;
+uniform sampler2D uSums; uniform vec2 uSumsSize;
+uniform float uFH;
+varying highp vec4 vG0;
+varying highp vec4 vG1;
+varying highp vec4 vG2;
+varying highp vec4 vG3;
+vec4 at(sampler2D t, vec2 size, vec2 px) { return texture2D(t, (px + 0.5) / size); }
+float b8(float v) { return floor(v * 255.0 + 0.5); }
+vec4 bytes(vec4 v) { return floor(v * 255.0 + 0.5); }
+vec3 tone3(vec3 c) {
+  return vec3(b8(at(uLut, uLutSize, vec2(c.r, ${TONE_ROW}.0)).r),
+              b8(at(uLut, uLutSize, vec2(c.g, ${TONE_ROW}.0)).r),
+              b8(at(uLut, uLutSize, vec2(c.b, ${TONE_ROW}.0)).r));
+}
+// pass A: the composite at local texel l, as bytes; cls = the outline class
+vec4 compB(vec2 l, out float cls) {
+  vec4 s = bytes(at(uShapes, uShapesSize, vG1.xy + l));
+  cls = mod(s.z, 4.0);
+  float side = floor(s.z / 4.0);
+  if (s.w == 0.0 && cls != 3.0) return vec4(0.0);
+  vec2 src = s.xy;
+  bool useB;
+  vec4 f;
+  if (side == 0.0) {
+    f = bytes(at(uFrames, uFramesSize, vG1.zw + src));
+    useB = f.x > 127.0;
+  } else {
+    useB = side == 2.0;
+    float row = side == vG3.x ? src.y : clamp(src.y - vG2.w, 0.0, uFH - 1.0);
+    f = bytes(at(uFrames, uFramesSize, vG1.zw + vec2(src.x, row)));
+  }
+  vec3 rgb = bytes(useB ? at(uPlates, uPlatesSize, vG0.zw + src) : at(uPlates, uPlatesSize, vG0.xy + src)).rgb;
+  if (vG2.z > 0.5 && f.y > 127.0) rgb = tone3(rgb);
+  return vec4(rgb, s.w);
+}
+// FRAG_RA: a ramp (or a lined flat top) at local texel l
+vec4 compR(vec2 l, out float cls) {
+  vec4 m = bytes(at(uMaps, uMapsSize, vG1.xy + l));
+  cls = mod(m.z, 4.0);
+  float which = floor(m.z / 4.0);
+  if (m.w == 0.0 && cls != 3.0) return vec4(0.0);
+  vec2 src = m.xy;
+  if (which == 2.0) return vec4(bytes(at(uPlates, uPlatesSize, vG1.zw + src)).rgb, m.w);
+  vec3 t;
+  if (vG2.w < 0.5) {
+    t = bytes(at(uPlates, uPlatesSize, vG0.xy + src)).rgb;
+  } else {
+    vec2 bs = bytes(at(uShapes, uShapesSize, vG3.xy + src)).xy;
+    vec4 f = bytes(at(uFrames, uFramesSize, vG3.zw + bs));
+    t = bytes(f.x > 127.0 ? at(uPlates, uPlatesSize, vG0.zw + bs) : at(uPlates, uPlatesSize, vG0.xy + bs)).rgb;
+    if (vG2.z > 0.5 && f.y > 127.0) t = tone3(t);
+  }
+  vec4 rw = bytes(at(uRows, uRowsSize, vG1.xy + l));
+  float row = rw.x + rw.y * 256.0;
+  return vec4(b8(at(uLut, uLutSize, vec2(t.r, row)).r), b8(at(uLut, uLutSize, vec2(t.g, row)).g), b8(at(uLut, uLutSize, vec2(t.b, row)).r), m.w);
+}
+vec4 comp(vec2 l, out float cls) {
+  if (vG2.x < 1.5) return compB(l, cls);
+  return compR(l, cls);
+}
+`;
+
+/** The ground pipeline's fragment shader: Phaser's Single shader for a plain
+ *  quad (mode 0, unchanged), the direct tile for mode 1/2 — composite, then
+ *  pass C's exact integer ink, then Phaser's upload premultiply, then the same
+ *  tint multiply a plain quad gets. */
+export const GROUND_FRAG = `#define SHADER_NAME ML_GROUND_FS
+precision highp float;
+uniform sampler2D uMainSampler;
+varying vec2 outTexCoord;
+varying float outTintEffect;
+varying vec4 outTint;
+${DIRECT_COMMON}
+vec4 pma(vec4 c) {
+  if (c.w == 0.0) return vec4(0.0);
+  if (c.w == 255.0) return c;
+  return vec4(floor((c.rgb * c.w + 127.5) / 255.0), c.w);
+}
+float ink(float d, float S, float n, vec4 k) {
+  float dn = d * k.x;
+  float q1 = floor(dn / k.y);
+  float r1 = dn - q1 * k.y;
+  if (r1 < 0.0) { q1 -= 1.0; r1 += k.y; }
+  if (r1 >= k.y) { q1 += 1.0; r1 -= k.y; }
+  float num = S * k.z;
+  float den = 100.0 * n;
+  float q2 = floor(num / den);
+  float r2 = num - q2 * den;
+  if (r2 < 0.0) { q2 -= 1.0; r2 += den; }
+  if (r2 >= den) { q2 += 1.0; r2 -= den; }
+  float lhs = 2.0 * (r1 * den + r2 * k.y);
+  float rhs = k.y * den;
+  float whole = lhs >= 2.0 * rhs ? 1.0 : 0.0;
+  float rest = lhs - whole * 2.0 * rhs;
+  return q1 + q2 + whole + (rest >= rhs ? 1.0 : 0.0);
+}
+float sum24(vec4 t) { return t.x + t.y * 256.0 + t.z * 65536.0; }
+void main() {
+  vec4 texel = vec4(outTint.bgr * outTint.a, outTint.a);
+  if (vG2.x < 0.5) {
+    vec4 texture = texture2D(uMainSampler, outTexCoord);
+    vec4 color = texture * texel;
+    if (outTintEffect == 1.0) color.rgb = mix(texture.rgb, outTint.bgr * outTint.a, texture.a);
+    else if (outTintEffect == 2.0) color = texel;
+    gl_FragColor = color;
+    return;
+  }
+  float cls;
+  vec4 c = comp(floor(outTexCoord), cls);
+  if (cls == 1.0 || cls == 2.0) {
+    float k = vG2.y;
+    vec2 si = vec2(mod(k, ${SUMS_COLS}.0) * 3.0, floor(k / ${SUMS_COLS}.0));
+    vec4 t0 = bytes(at(uSums, uSumsSize, si));
+    vec4 t1 = bytes(at(uSums, uSumsSize, si + vec2(1.0, 0.0)));
+    vec4 t2 = bytes(at(uSums, uSumsSize, si + vec2(2.0, 0.0)));
+    float n = t0.w + t1.w * 256.0 + t2.w * 65536.0;
+    // outer: 0.4 d = 2/5 d, 0.21 S/n ; inner: 0.55 d = 11/20 d, 0.27 S/n
+    vec4 kk = cls == 1.0 ? vec4(2.0, 5.0, 21.0, 0.0) : vec4(11.0, 20.0, 27.0, 0.0);
+    if (n > 0.0) c.rgb = vec3(ink(c.r, sum24(t0), n, kk), ink(c.g, sum24(t1), n, kk), ink(c.b, sum24(t2), n, kk));
+  }
+  gl_FragColor = (pma(c) / 255.0) * texel;
+}`;
+
+/** Phaser's Single vertex shader plus the four per-quad vectors. */
+export const GROUND_VERT = `#define SHADER_NAME ML_GROUND_VS
+precision highp float;
+uniform mat4 uProjectionMatrix;
+uniform vec2 uResolution;
+attribute vec2 inPosition;
+attribute vec2 inTexCoord;
+attribute float inTexId;
+attribute float inTintEffect;
+attribute vec4 inTint;
+attribute highp vec4 inG0;
+attribute highp vec4 inG1;
+attribute highp vec4 inG2;
+attribute highp vec4 inG3;
+varying vec2 outTexCoord;
+varying float outTintEffect;
+varying vec4 outTint;
+varying highp vec4 vG0;
+varying highp vec4 vG1;
+varying highp vec4 vG2;
+varying highp vec4 vG3;
+void main() {
+  gl_Position = uProjectionMatrix * vec4(inPosition, 1.0, 1.0);
+  outTexCoord = inTexCoord;
+  outTint = inTint;
+  outTintEffect = inTintEffect;
+  vG0 = inG0; vG1 = inG1; vG2 = inG2; vG3 = inG3;
+}`;
+
+/** pass B for the direct tiles: three sum texels per new tile, from the same
+ *  composite the ground shader draws. */
+const SUMS_VERT = `
+precision highp float;
+attribute vec2 aPos; attribute vec2 aLocal;
+attribute vec4 aG0; attribute vec4 aG1; attribute vec4 aG2; attribute vec4 aG3;
+uniform vec2 uTarget;
+varying vec2 vLocal;
+varying highp vec4 vG0; varying highp vec4 vG1; varying highp vec4 vG2; varying highp vec4 vG3;
+void main() {
+  vLocal = aLocal; vG0 = aG0; vG1 = aG1; vG2 = aG2; vG3 = aG3;
+  gl_Position = vec4(aPos / uTarget * 2.0 - 1.0, 0.0, 1.0);
+}`;
+const SUMS_FRAG = (fw: number) => `
+precision highp float;
+varying vec2 vLocal;
+${DIRECT_COMMON}
+void main() {
+  float part = floor(vLocal.x);
+  float sr = 0.0, sg = 0.0, sb = 0.0, n = 0.0, cls;
+  bool ramp = vG2.x > 1.5;
+  for (int y = 0; y < ${RAMP_H}; y++) {
+    if (!ramp && float(y) >= uFH) break;
+    for (int x = 0; x < ${fw}; x++) {
+      vec4 c = comp(vec2(float(x), float(y)), cls);
+      if (c.w > 0.0) { sr += c.r; sg += c.g; sb += c.b; n += 1.0; }
+    }
+  }
+  float v = part < 0.5 ? sr : (part < 1.5 ? sg : sb);
+  float nb = part < 0.5 ? mod(n, 256.0) : (part < 1.5 ? mod(floor(n / 256.0), 256.0) : floor(n / 65536.0));
+  gl_FragColor = vec4(mod(v, 256.0), mod(floor(v / 256.0), 256.0), floor(v / 65536.0), nb) / 255.0;
+}`;
+
+/** FNV-1a over a ramp map and its rows: identical maps share one slot (a lined
+ *  flat top's map is its outline over the silhouette, whatever the plate). */
+function hashBytes(a: Uint8Array, b: Uint8Array): string {
+  let h1 = 0x811c9dc5, h2 = 0x01000193 ^ 0x5bd1e995;
+  for (let i = 0; i < a.length; i++) { h1 = Math.imul(h1 ^ a[i], 16777619); h2 = Math.imul(h2 ^ a[i], 2246822519); }
+  for (let i = 0; i < b.length; i++) { h1 = Math.imul(h1 ^ b[i], 16777619); h2 = Math.imul(h2 ^ b[i], 2246822519); }
+  return `${(h1 >>> 0).toString(36)}.${(h2 >>> 0).toString(36)}`;
+}
+
+/** Everything the direct draw reads, resident: the shared plates/shapes/frames,
+ *  the ramp maps and rows (a slot per distinct map), the shade table with the
+ *  seam tone in its last row, the sums. `unit` binds them for a batch.
+ *  Uploads (a first-seen plate, shape, map, a new shade row) happen on
+ *  texture unit 7 and put unit 0 back active; `dirty` tells the renderer. */
+export class GpuDirect {
+  readonly maps: SlotAtlas;
+  readonly rows: SlotAtlas;
+  readonly lut: WebGLTexture;
+  readonly sums: WebGLTexture;
+  private lutRows = 0;
+  private insts = new Map<string, DirectInst>();
+  private mapSlot = new Map<string, string>();
+  private nextSum = 0;
+  private pending: DirectInst[] = [];
+  private prog: WebGLProgram;
+  private buf: WebGLBuffer;
+  private fb: WebGLFramebuffer;
+  readonly stats = { boundaries: 0, ramps: 0, sumsPasses: 0, sumsTiles: 0, full: 0, uploads: 0 };
+  constructor(private gl: WebGLRenderingContext, private sheets: PatternSheets, readonly shared: GpuShared, private dirty: () => void) {
+    const { fw, tone } = sheets;
+    this.maps = new SlotAtlas(gl, fw, RAMP_H);
+    this.rows = new SlotAtlas(gl, fw, RAMP_H);
+    this.lut = texture(gl, 256, LUT_ROWS, null);
+    const t = new Uint8Array(256 * 4);
+    for (let v = 0; v < 256; v++) { t[v * 4] = rint(v * tone); t[v * 4 + 3] = 255; }
+    this.upload(this.lut, 0, TONE_ROW, 256, 1, t);
+    this.sums = texture(gl, SUMS_COLS * 3, SUMS_ROWS, null);
+    this.prog = compile(gl, SUMS_VERT, SUMS_FRAG(fw));
+    this.buf = gl.createBuffer()!;
+    this.fb = gl.createFramebuffer()!;
+    this.dirty();
+  }
+  get size(): number { return this.insts.size; }
+  get(key: string): DirectInst | undefined { return this.insts.get(key); }
+  has(key: string): boolean { return this.insts.has(key); }
+  /** Run `f` (texture uploads) on unit 7, unit 0 active after. */
+  private onUnit7<T>(f: () => T): T {
+    const gl = this.gl;
+    gl.activeTexture(gl.TEXTURE7);
+    try { return f(); } finally { gl.activeTexture(gl.TEXTURE0); this.dirty(); }
+  }
+  private upload(t: WebGLTexture, x: number, y: number, w: number, h: number, data: Uint8Array): void {
+    this.onUnit7(() => {
+      const gl = this.gl;
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    });
+    this.stats.uploads++;
+  }
+  private slot(a: SlotAtlas, key: string, data: () => Uint8Array): [number, number] | null {
+    if (a.has(key)) return a.tryOrigin(key, data);
+    const n0 = a.uploads;
+    const o = this.onUnit7(() => a.tryOrigin(key, data));
+    if (a.uploads > n0) this.stats.uploads++;
+    if (!o) this.stats.full++;
+    return o;
+  }
+  private sumSlot(): number | null {
+    if (this.nextSum >= SUMS_COLS * SUMS_ROWS) { this.stats.full++; return null; }
+    return this.nextSum++;
+  }
+  private plate(id: string, px: Pixels): [number, number] | null {
+    return this.slot(this.shared.plates, id, () => padTo(px, this.shared.plates));
+  }
+  /** A transition under `key`: its plates, shape and frame resident. */
+  boundary(key: string, j: BoundaryJob, a: Pixels, b: Pixels): DirectInst | null {
+    const hit = this.insts.get(key);
+    if (hit) return hit;
+    const pa = this.plate(plateIdOf(j.a), a), pb = this.plate(plateIdOf(j.b), b);
+    const ps = this.slot(this.shared.shapes, shapeKey(j), () => shapeOf(this.sheets, j, a, b));
+    const pf = this.slot(this.shared.frames, String(j.frame), () => frameTile(this.sheets, j.frame));
+    if (!pa || !pb || !ps || !pf) return null;
+    const s = this.sumSlot();
+    if (s === null) return null;
+    const sl = j.slope;
+    const shifted = sl?.lift ? (sl.side === "a" ? 2 : 1) : 0;
+    const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], ps[0], ps[1], pf[0], pf[1], 1, s, j.seam ? 1 : 0, sl?.lift ?? 0, shifted, 0, 0, 0]);
+    const inst = { g, w: this.sheets.fw, h: this.sheets.fh };
+    this.insts.set(key, inst);
+    this.pending.push(inst);
+    this.stats.boundaries++;
+    return inst;
+  }
+  /** A composed ramp or a lined flat top under `key` (its full shape made). */
+  ramp(key: string, t: RampTile): DirectInst | null {
+    const hit = this.insts.get(key);
+    if (hit) return hit;
+    const j = t.job;
+    const full = rampFullShape(this.sheets, t);
+    const sk = rampJobShapeKey(j);
+    let mk = this.mapSlot.get(sk);
+    if (!mk) this.mapSlot.set(sk, (mk = hashBytes(full.map, full.rows)));
+    const pm = this.slot(this.maps, mk, () => full.map);
+    const pr = pm && this.slot(this.rows, mk, () => full.rows);
+    if (!pm || !pr || pm[0] !== pr[0] || pm[1] !== pr[1]) return null;
+    const pband = this.plate(plateIdOf(j.band), t.band);
+    let pa: [number, number] | null = [0, 0], pb: [number, number] | null = [0, 0], pbs: [number, number] | null = [0, 0], pf: [number, number] | null = [0, 0];
+    let kind = 0, seam = 0;
+    if (j.top.kind === "plate") pa = this.plate(plateIdOf(j.top.side), t.top!);
+    else {
+      const bj = j.top.job;
+      kind = 1;
+      seam = bj.seam ? 1 : 0;
+      pa = this.plate(plateIdOf(bj.a), t.a!);
+      pb = this.plate(plateIdOf(bj.b), t.b!);
+      pbs = this.slot(this.shared.shapes, shapeKey(bj), () => shapeOf(this.sheets, bj, t.a, t.b));
+      pf = this.slot(this.shared.frames, String(bj.frame), () => frameTile(this.sheets, bj.frame));
+    }
+    if (!pband || !pa || !pb || !pbs || !pf) return null;
+    const s = this.sumSlot();
+    if (s === null) return null;
+    this.syncLut();
+    const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], pm[0], pm[1], pband[0], pband[1], 2, s, seam, kind, pbs[0], pbs[1], pf[0], pf[1]]);
+    const inst = { g, w: this.sheets.fw, h: full.h };
+    this.insts.set(key, inst);
+    this.pending.push(inst);
+    this.stats.ramps++;
+    return inst;
+  }
+  /** Shade rows met since the last sync, uploaded (each once, ever). */
+  private syncLut(): void {
+    if (this.lutRows >= SHADE_ROWS.length) return;
+    if (SHADE_ROWS.length > TONE_ROW) throw new Error(`tiles3gpu: ${SHADE_ROWS.length} shade rows, the table holds ${TONE_ROW}`);
+    const n = SHADE_ROWS.length - this.lutRows;
+    const data = new Uint8Array(n * 256 * 4);
+    for (let r = 0; r < n; r++) data.set(shadeRowBytes(this.lutRows + r), r * 256 * 4);
+    this.upload(this.lut, 0, this.lutRows, 256, n, data);
+    this.lutRows = SHADE_ROWS.length;
+  }
+  get pendingSums(): number { return this.pending.length; }
+  /** Bind the resident textures to units 1..7 (unit 0 left active) and set the
+   *  program's sampler and size uniforms. */
+  bindUnits(set: (name: string, unit: number, w: number, h: number) => void): void {
+    const gl = this.gl, sh = this.shared;
+    const all: [string, WebGLTexture, number, number][] = [
+      ["uPlates", sh.plates.tex, sh.plates.w, sh.plates.h],
+      ["uShapes", sh.shapes.tex, sh.shapes.w, sh.shapes.h],
+      ["uFrames", sh.frames.tex, sh.frames.w, sh.frames.h],
+      ["uMaps", this.maps.tex, this.maps.w, this.maps.h],
+      ["uRows", this.rows.tex, this.rows.w, this.rows.h],
+      ["uLut", this.lut, 256, LUT_ROWS],
+      ["uSums", this.sums, SUMS_COLS * 3, SUMS_ROWS],
+    ];
+    all.forEach(([name, t, w, h], i) => {
+      gl.activeTexture(gl.TEXTURE1 + i);
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      set(name, i + 1, w, h);
+    });
+    gl.activeTexture(gl.TEXTURE0);
+  }
+  /** THE SUMS OF EVERY TILE FIRST SEEN since the last pass, into the resident
+   *  sums texture — raw GL; the caller restores the renderer's state after. */
+  sumsPass(): number {
+    const N = this.pending.length;
+    if (!N) return 0;
+    const gl = this.gl, { fh } = this.sheets;
+    const W = SUMS_COLS * 3;
+    const v = new Float32Array(N * 6 * 20);
+    let o = 0;
+    for (const inst of this.pending) {
+      const k = inst.g[9];
+      const x0 = (k % SUMS_COLS) * 3, y0 = Math.floor(k / SUMS_COLS);
+      const corner = (x: number, y: number, lx: number) => {
+        v[o] = x; v[o + 1] = y; v[o + 2] = lx; v[o + 3] = 0;
+        v.set(inst.g, o + 4);
+        o += 20;
+      };
+      corner(x0, y0, 0); corner(x0 + 3, y0, 3); corner(x0, y0 + 1, 0);
+      corner(x0 + 3, y0, 3); corner(x0 + 3, y0 + 1, 3); corner(x0, y0 + 1, 0);
+    }
+    this.pending = [];
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.sums, 0);
+    gl.viewport(0, 0, W, SUMS_ROWS);
+    gl.disable(gl.BLEND); gl.disable(gl.SCISSOR_TEST); gl.disable(gl.DEPTH_TEST); gl.disable(gl.STENCIL_TEST); gl.disable(gl.CULL_FACE);
+    gl.colorMask(true, true, true, true);
+    const p = this.prog;
+    gl.useProgram(p);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
+    gl.bufferData(gl.ARRAY_BUFFER, v, gl.STREAM_DRAW);
+    const names: [string, number, number][] = [["aPos", 2, 0], ["aLocal", 2, 2], ["aG0", 4, 4], ["aG1", 4, 8], ["aG2", 4, 12], ["aG3", 4, 16]];
+    const locs: number[] = [];
+    for (const [n, size, off] of names) {
+      const loc = gl.getAttribLocation(p, n);
+      if (loc < 0) continue;
+      locs.push(loc);
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 80, off * 4);
+    }
+    gl.uniform2f(gl.getUniformLocation(p, "uTarget"), W, SUMS_ROWS);
+    gl.uniform1f(gl.getUniformLocation(p, "uFH"), fh);
+    this.bindUnits((name, unit, w, h) => {
+      gl.uniform1i(gl.getUniformLocation(p, name), unit);
+      const sz = gl.getUniformLocation(p, name + "Size");
+      if (sz) gl.uniform2f(sz, w, h);
+    });
+    // the sums texture is the target: take it off its sampler unit for the draw
+    gl.activeTexture(gl.TEXTURE7);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.drawArrays(gl.TRIANGLES, 0, o / 20);
+    for (const loc of locs) gl.disableVertexAttribArray(loc);
+    this.stats.sumsPasses++;
+    this.stats.sumsTiles += N;
+    return N;
+  }
 }
