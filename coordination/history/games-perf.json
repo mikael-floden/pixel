@@ -151,6 +151,10 @@
     {
       "at": "2026-09-25T20:02:33+00:00",
       "text": "SHIPPED a328c157c2 (live 20:00:54 UTC, fast lane): A LOADED IMAGE LETS GO OF ITS LOADER (loaderrelease.ts; FILE_COMPLETE on the terrain loader and the scene's clears the <img>'s onload/onerror - the closure that kept Phaser's File, its XMLHttpRequest and the response Blob as long as the texture): after a 90 s headless tour 1,524 requests / 4,571 handlers / 1,187 Files -> 11 / 16 / 5. Tracing time did not move measurably; it frees memory that counts toward V8's GLOBAL limit. CORRECTION to my 19:28 note (docs rewritten in place): V8 bills an ATOMIC marking loop to mark.ephemeron.marking whatever the ephemerons; what the WeakMap fix measurably removed is the INCREMENTAL pause's leftover (26-62 ms with the linear fallback -> 0.7-9.3 ms). Forced atomic collections mark the whole heap in every build (170-360 ms headless); this run's atomic one fired on the GLOBAL limit (213 MB incl. ArrayBuffers + Blink), not the object limit. Next GC lever when his run says so: the ~37 MB (headless) of composed-texture pixels Phaser keeps for context restore (WebGLTextureWrapper.pixels)."
+    },
+    {
+      "at": "2026-09-25T20:11:29+00:00",
+      "text": "SHIPPED 51bc59a6c6 (container only, no player change): verify-groundbracket GREEN again - the out-of-band 'further from a full paint' total is a report line (the kept picture is stale outside the band by design since 500fb2ddd2's parking), the in-band comparison stays a failure, the scissor's contract stays judged by liveCmp + the poison; the gate names every 404 URL (/asset-index.json is image-only and expected locally; docs/testing.md)."
     }
   ]
 }
