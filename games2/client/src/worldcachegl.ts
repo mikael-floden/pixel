@@ -16,9 +16,12 @@
  * is odd), so the tie-breaking rule never decides: the four corner triangles
  * clear exactly the texels the mask says are not the tile's.
  *
- * ORIENTATION. Both textures are render targets, whose GL rows run bottom-up
- * (the snapshotArea trap): a top-left rect [y0, y1) is GL rows [H - y1, H - y0)
- * in each, so a copy between them keeps the picture upright. */
+ * ORIENTATION, MEASURED (glrows probe, Phaser 3.90, WebGL1): a render
+ * texture stores image row y at GL row y — a marker filled at a fresh
+ * DynamicTexture's top-left reads back at GL row 0, and the ground texture's
+ * `snapshotPixel(x, y)` equals the raw GL pixel at row y, not at H - 1 - y. So
+ * every rect here is the image's own, top-left, with no flip. (The bottom-up
+ * rows of the snapshotArea trap are the SCREEN's, not a render texture's.) */
 
 type GL = WebGLRenderingContext;
 
@@ -69,11 +72,11 @@ export class WorldCacheGl {
     return !!this.buf;
   }
 
-  /** Copy `src` (top-left, in the source target of height `srcH`) into the page
-   *  at `dst` (top-left, page height `pageH`), then clear the four corners
-   *  outside the box's inscribed diamond. The caller wraps this in Phaser's
-   *  `pipelines.clear()` / `rebind()`. False when GL refused (a lost context). */
-  take(srcFb: WebGLFramebuffer, srcH: number, src: WcGlRect, pageTex: WebGLTexture, pageFb: WebGLFramebuffer, pageW: number, pageH: number, dst: { x: number; y: number }): boolean {
+  /** Copy `src` (top-left, in the source target) into the page at `dst`
+   *  (top-left), then clear the four corners outside the box's inscribed
+   *  diamond. The caller wraps this in Phaser's `pipelines.clear()` /
+   *  `rebind()`. False when GL refused (a lost context). */
+  take(srcFb: WebGLFramebuffer, src: WcGlRect, pageTex: WebGLTexture, pageFb: WebGLFramebuffer, pageW: number, pageH: number, dst: { x: number; y: number }): boolean {
     const gl = this.gl;
     if (gl.isContextLost() || !this.program()) return false;
     const { w, h } = src;
@@ -81,9 +84,9 @@ export class WorldCacheGl {
     gl.bindFramebuffer(gl.FRAMEBUFFER, srcFb);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, pageTex);
-    gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, dst.x, pageH - (dst.y + h), src.x, srcH - (src.y + h), w, h);
+    gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, dst.x, dst.y, src.x, src.y, w, h);
     gl.bindTexture(gl.TEXTURE_2D, null);
-    // THE ERASE: four corner triangles, in the page's GL space (y up)
+    // THE ERASE: four corner triangles, in the page's own rows
     gl.bindFramebuffer(gl.FRAMEBUFFER, pageFb);
     gl.viewport(0, 0, pageW, pageH);
     gl.disable(gl.BLEND);
@@ -94,8 +97,8 @@ export class WorldCacheGl {
     const x0 = dst.x;
     const x1 = dst.x + w;
     const xm = dst.x + w / 2;
-    const yTop = pageH - dst.y; // the box's top edge in GL space
-    const yBot = pageH - (dst.y + h);
+    const yTop = dst.y; // the box's top row
+    const yBot = dst.y + h;
     const ym = (yTop + yBot) / 2;
     const t = this.tri;
     // top-left, top-right, bottom-right, bottom-left corners
@@ -114,12 +117,12 @@ export class WorldCacheGl {
   }
 
   /** A slot's texels cleared (before it is taken again, or let go). */
-  clear(pageFb: WebGLFramebuffer, pageH: number, dst: WcGlRect): void {
+  clear(pageFb: WebGLFramebuffer, dst: WcGlRect): void {
     const gl = this.gl;
     if (gl.isContextLost()) return;
     gl.bindFramebuffer(gl.FRAMEBUFFER, pageFb);
     gl.enable(gl.SCISSOR_TEST);
-    gl.scissor(dst.x, pageH - (dst.y + dst.h), dst.w, dst.h);
+    gl.scissor(dst.x, dst.y, dst.w, dst.h);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.disable(gl.SCISSOR_TEST);
