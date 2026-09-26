@@ -119,6 +119,22 @@ camera's centre):
 - what is still approximate (bodies and scenery are not in the mesh, so their
   pixels lie on the ground behind them) is blurred along the ground plane's own
   elliptical arc, peaking at mid-turn; the blur is a dial (`turnView`'s 4th arg).
+UPRIGHT THINGS ARE BILLBOARDS, ALWAYS STANDING (maintainer 2026-09-26: "The player,
+monsters, npcs and scenery should not rotate ... billboards that are always rendered
+straight up ... show motion blur however"). Players, NPCs, monsters and the
+depth-resolved scenery are not in the terrain mesh; textured onto it they lay flat
+and smeared into streaks mid-turn. At A and at B the renderer draws one more frame
+WITHOUT them (under the overlay, invisible): the mesh wears that bodiless frame, and
+each thing is a CARD — its pixels are the difference between the two frames (a
+waterline crop, the light and its name come along), carried by its feet' projection,
+depth-tested at its feet against the mesh (a bridge in front hides it as the painter
+did; its name draws on top, as labels do), drawn back to front BEFORE the blur pass
+(so it blurs with the scene). Overlaps are settled by an OWNER MAP: the things drawn
+once more as flat colours in the painter's order into an off-screen target, read back
+once, so each card keeps only the pixels it owns (grouping overlaps instead carried
+the player off-centre with the front-most NPC's feet). The player turns through
+THREE facings — A's, the one between (one more frame, shot on A's camera), B's — the
+sides a 90-degree orbit shows; everything else crosses A to B mid-turn.
 THE LOOK (`RotTune`, `__ml.turnTune`, defaults his to change): `blur` scales the
 arc; `zoom` 0.1 is a zoom pulse about the pivot riding the angular speed (keeps
 more of the screen on ground a frame saw); what NEITHER frame saw is a soft 5x5

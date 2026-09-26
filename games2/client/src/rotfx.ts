@@ -215,10 +215,63 @@ void main(){
   gl_FragColor = vec4(col, 1.0);
 }`;
 
+// Pass 3b: THE BODY AT THE PIVOT. The player stands on the orbit's axis, so on
+// screen it only follows its feet; smeared onto the ground it vanished mid-turn.
+// Its pixels are the DIFFERENCE between a frame and the same frame rendered
+// without it (so the crop at a waterline, the light and the name all come
+// along), drawn as a screen quad at the feet's depth: terrain in front hides it
+// exactly as the painter did.
+const BODY_VS = `attribute vec2 aQ;
+uniform vec2 uSize; uniform vec4 uRect; uniform vec2 uOff; uniform float uZ; uniform vec3 uZoom;
+varying vec2 vUV; varying vec2 vPx;
+void main(){
+  vec2 px = uRect.xy + aQ * uRect.zw;                  // in the frame it was taken in
+  vUV = px / uSize; vPx = px;
+  vec2 at = px + uOff;                                 // ...carried by the feet
+  at = uZoom.xy + (at - uZoom.xy) * uZoom.z;           // and the mesh's zoom pulse
+  gl_Position = vec4(at.x/uSize.x*2.0-1.0, 1.0-at.y/uSize.y*2.0, uZ, 1.0);
+}`;
+const BODY_FS = `precision highp float;
+uniform sampler2D uWith; uniform sampler2D uWithout; uniform float uAlpha;
+uniform vec4 uSpr; uniform float uPart; // the sprite's own rect; 0 = the sprite's pixels, 1 = the rest (labels)
+uniform sampler2D uOwn; uniform vec3 uOwnCol; uniform float uOwnMode; // -1 = no map; 0 = mine; 1 = mine or nobody's
+varying vec2 vUV; varying vec2 vPx;
+void main(){
+  bool inSpr = vPx.x >= uSpr.x && vPx.y >= uSpr.y && vPx.x < uSpr.x + uSpr.z && vPx.y < uSpr.y + uSpr.w;
+  if (inSpr != (uPart < 0.5)) discard;
+  if (uOwnMode > -0.5) {
+    // THE OWNER MAP (read back top row first, as the frame is uploaded): a pixel
+    // the painter gave another thing is not mine
+    vec4 o = texture2D(uOwn, vUV);
+    bool mine = o.a > 0.5 && all(lessThan(abs(o.rgb - uOwnCol), vec3(0.03)));
+    if (!(mine || (uOwnMode > 0.5 && o.a < 0.5))) discard;
+  }
+  vec3 a = texture2D(uWith, vUV).rgb, b = texture2D(uWithout, vUV).rgb;
+  float d = abs(a.r-b.r) + abs(a.g-b.g) + abs(a.b-b.b);
+  float m = smoothstep(0.04, 0.12, d) * uAlpha;
+  if (m < 0.01) discard;
+  gl_FragColor = vec4(a, m);
+}`;
+
 /* ---- the overlay -------------------------------------------------------- */
+
+/** The body in one frame: its screen rect there (canvas px) and its feet in
+ *  A's view grid (X, Y cells, H levels) — the same world point for A and B. */
+export interface RotBody {
+  rect: [number, number, number, number];
+  /** the sprite's own rect: its pixels sort at the feet; the rest of `rect` (the
+   *  name, the coordinates) draws on top, as the game draws labels */
+  sprite: [number, number, number, number];
+  foot: [number, number, number];
+  /** its colour in the frame's OWNER MAP (0..1), which settles every overlap */
+  own?: [number, number, number];
+}
 
 export interface RotFxStart {
   frameA: TexImageSource;
+  /** The same frame without the player (RotBody): the ground is textured with
+   *  this, so the body leaves no ghost on it. Absent = frameA. */
+  frameA0?: TexImageSource;
   projA: RotProjector;
   pivot: { x: number; y: number; h: number };  // view grid of A
   mesh: RotMesh;
@@ -238,8 +291,19 @@ export class RotFx {
   readonly canvas: HTMLCanvasElement;
   tune: RotTune = { ...ROT_TUNE_DEFAULT };
   private gl: WebGLRenderingContext;
-  private progs: { depth: WebGLProgram; main: WebGLProgram; post: WebGLProgram };
-  private tex: { A: WebGLTexture; B: WebGLTexture; DA: WebGLTexture; DB: WebGLTexture; M: WebGLTexture };
+  private progs: { depth: WebGLProgram; main: WebGLProgram; post: WebGLProgram; body: WebGLProgram };
+  private tex: { A: WebGLTexture; B: WebGLTexture; A0: WebGLTexture; B0: WebGLTexture; AM: WebGLTexture; OA: WebGLTexture; OB: WebGLTexture; DA: WebGLTexture; DB: WebGLTexture; M: WebGLTexture };
+  private hasOwn = { A: false, B: false };
+  /** EVERY UPRIGHT THING, grouped where their rects overlap (so a pixel belongs
+   *  to one billboard): bodies and standing scenery, in A and in B. `meA`/`meB`
+   *  index the player's group. */
+  private bodyA: RotBody[] = [];
+  private bodyB: RotBody[] = [];
+  private meA = -1;
+  private meB = -1;
+  /** The player's group again, the player at the facing BETWEEN A's and B's (the
+   *  camera at 45 degrees), shot on A's camera like A. */
+  private bodyM: RotBody | null = null;
   private fbo: { DA: WebGLFramebuffer; DB: WebGLFramebuffer; M: WebGLFramebuffer };
   private depthRb: WebGLRenderbuffer;
   private meshBuf: WebGLBuffer; private quadBuf: WebGLBuffer;
@@ -265,11 +329,11 @@ export class RotFx {
       if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error("rotfx shader: " + gl.getShaderInfoLog(s)); return s; };
     const prog = (vs: string, fs: string) => { const p = gl.createProgram()!; gl.attachShader(p, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs));
       gl.linkProgram(p); if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error("rotfx link: " + gl.getProgramInfoLog(p)); return p; };
-    this.progs = { depth: prog(DEPTH_VS, DEPTH_FS), main: prog(MAIN_VS, MAIN_FS), post: prog(POST_VS, POST_FS) };
+    this.progs = { depth: prog(DEPTH_VS, DEPTH_FS), main: prog(MAIN_VS, MAIN_FS), post: prog(POST_VS, POST_FS), body: prog(BODY_VS, BODY_FS) };
     const mk = () => { const t = gl.createTexture()!; gl.bindTexture(gl.TEXTURE_2D, t);
       for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.NEAREST], [gl.TEXTURE_MAG_FILTER, gl.NEAREST], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
       return t; };
-    this.tex = { A: mk(), B: mk(), DA: mk(), DB: mk(), M: mk() };
+    this.tex = { A: mk(), B: mk(), A0: mk(), B0: mk(), AM: mk(), OA: mk(), OB: mk(), DA: mk(), DB: mk(), M: mk() };
     for (const k of ["DA", "DB", "M"] as const) {
       gl.bindTexture(gl.TEXTURE_2D, this.tex[k]);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
@@ -333,7 +397,10 @@ export class RotFx {
     const t0 = performance.now(), gl = this.gl;
     this.st = s; this.hasB = false;
     this.upload(this.tex.A, s.frameA);
+    this.upload(this.tex.A0, s.frameA0 ?? s.frameA);
     this.upload(this.tex.B, s.frameA); // until B lands
+    this.upload(this.tex.B0, s.frameA0 ?? s.frameA);
+    this.bodyA = []; this.bodyB = []; this.bodyM = null; this.meA = this.meB = -1; this.hasOwn = { A: false, B: false };
     gl.bindBuffer(gl.ARRAY_BUFFER, this.meshBuf);
     gl.bufferData(gl.ARRAY_BUFFER, s.mesh.pos, gl.STATIC_DRAW);
     this.n = s.mesh.n;
@@ -352,9 +419,11 @@ export class RotFx {
   /** Frame B arrives. `pivotB` is where the SAME pivot sits in frame B's own
    *  view grid; the constant screen offset between "A's camera turned 90 degrees
    *  about P" and "B's actual camera" is measured at the pivot and lerped in. */
-  setB(frameB: TexImageSource, projB: RotProjector, pivotB: { x: number; y: number; h: number }): void {
+  setB(frameB: TexImageSource, projB: RotProjector, pivotB: { x: number; y: number; h: number }, frameB0?: TexImageSource, bodyB?: RotBody): void {
     const t0 = performance.now(), st = this.st!;
     this.upload(this.tex.B, frameB);
+    this.upload(this.tex.B0, frameB0 ?? frameB);
+    if (frameB0 && bodyB) { this.bodyB = [bodyB]; this.meB = 0; }
     const cs: [number, number] = [0, st.dir];
     const pa = this.pivotPx(st.projA, st.pivot.h, cs);
     const X = pivotB.x, Y = pivotB.y;
@@ -366,7 +435,51 @@ export class RotFx {
     this.timings.bMs = +(performance.now() - t0).toFixed(1);
   }
 
+  /** Frame A again WITHOUT the upright things (one frame later, under the overlay). */
+  setA0(frameA0: TexImageSource, bodies: RotBody[], me: number): void {
+    this.upload(this.tex.A0, frameA0);
+    this.bodyA = bodies; this.meA = me;
+  }
+  /** A frame's OWNER MAP: the upright things as flat colours in the painter's order
+   *  (WorldScene.turnOwnerMap), as read back — Phaser's off-screen target reads top
+   *  row first, the frames' own orientation (measured: flipped, every card was
+   *  matched against a mirror image and discarded itself). */
+  setOwners(which: "A" | "B", data: Uint8Array, w: number, h: number): void {
+    const gl = this.gl;
+    gl.bindTexture(gl.TEXTURE_2D, which === "A" ? this.tex.OA : this.tex.OB);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    this.hasOwn[which] = true;
+  }
+  /** Frame A with the player turned to the facing between A's and B's; `body` is
+   *  the player's group of A. */
+  setAM(frameAM: TexImageSource, body: RotBody): void {
+    this.upload(this.tex.AM, frameAM);
+    this.bodyM = body;
+  }
+  /** Frame B again without the upright things. */
+  setB0(frameB0: TexImageSource, bodies: RotBody[], me: number): void {
+    this.upload(this.tex.B0, frameB0);
+    this.bodyB = bodies; this.meB = me;
+  }
+
   get ready(): boolean { return this.hasB; }
+
+  /** XFORM's toPx on the CPU: a point of A's view grid -> canvas px under a camera
+   *  turned by `cs` about the pivot and shifted by `shift`. */
+  private gridPx(p: [number, number, number], cs: [number, number], shift: [number, number]): [number, number] {
+    const st = this.st!, pr = st.projA, P = st.pivot;
+    const dx = p[0] - P.x, dy = p[1] - P.y;
+    const qx = P.x + cs[0] * dx - cs[1] * dy, qy = P.y + cs[1] * dx + cs[0] * dy;
+    const wx = pr.ox + 32 + (qx - qy) * pr.dx, wy = pr.oy + 10 + (qx + qy) * pr.dy - p[2] * pr.lh;
+    return [(wx - pr.camX) * pr.zoom + shift[0], (wy - pr.camY) * pr.zoom + shift[1]];
+  }
+  /** XFORM's nearness on the CPU (larger = nearer the viewer). */
+  private nearness(p: [number, number, number], cs: [number, number]): number {
+    const st = this.st!, pr = st.projA, P = st.pivot;
+    const dx = p[0] - P.x, dy = p[1] - P.y;
+    return cs[0] * dx - cs[1] * dy + (cs[1] * dx + cs[0] * dy) + p[2] * ((2 * pr.dy) / pr.lh);
+  }
 
   /** Draw the turn at progress u in [0,1]. `blur` scales the arc (0 = none). */
   draw(u: number, blur = 1): void {
@@ -396,8 +509,69 @@ export class RotFx {
     gl.uniform3f(gl.getUniformLocation(m, "uZoom"), pvz[0] + shift[0], pvz[1] + shift[1], 1 + this.tune.zoom * speed);
     const bind = (unit: number, t: WebGLTexture, name: string, p: WebGLProgram) => {
       gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); gl.uniform1i(gl.getUniformLocation(p, name), unit); };
-    bind(0, this.tex.A, "uA", m); bind(1, this.tex.B, "uB", m); bind(2, this.tex.DA, "uDA", m); bind(3, this.tex.DB, "uDB", m);
+    bind(0, this.tex.A0, "uA", m); bind(1, this.tex.B0, "uB", m); bind(2, this.tex.DA, "uDA", m); bind(3, this.tex.DB, "uDB", m);
     this.drawMesh(m);
+    // pass 3b — the body, at its feet' depth: A's facing, then the one between
+    // (the camera at 45 degrees), then B's — the character seen from each side
+    // in turn as the camera goes round it
+    const three = !!this.bodyM && this.hasB && this.meA >= 0;
+    // SOLID THROUGH EVERY HAND-OVER: the next card comes in OVER the last one
+    // (drawn after it, `order`), and the last fades only once the next is whole —
+    // two half-transparent layers read as a ghost dipping out mid-turn. The
+    // player: A's facing, the one between, B's; everything else A -> B.
+    const hb = this.hasB;
+    const aOut = hb ? 1 - (three ? smooth(0.33, 0.40, u) : smooth(0.5, 0.62, u)) : 1;
+    const mIn = three ? smooth(0.26, 0.33, u) : 0, mOut = three ? 1 - smooth(0.67, 0.74, u) : 0;
+    const bIn = hb ? (three ? smooth(0.60, 0.67, u) : smooth(0.38, 0.5, u)) : 0;
+    const oA = hb ? 1 - smooth(0.5, 0.62, u) : 1, oB = hb ? smooth(0.38, 0.5, u) : 0;
+    const feetNow = (b: RotBody) => this.gridPx([b.foot[0], b.foot[1], b.foot[2]], cs, shift);
+    const drawBody = (b: RotBody, withT: WebGLTexture, withoutT: WebGLTexture, taken: [number, number], alpha: number, own: WebGLTexture | null, ownMode: number) => {
+      if (alpha < 0.01) return;
+      const now = feetNow(b), bp = this.progs.body;
+      gl.useProgram(bp);
+      gl.uniform2f(gl.getUniformLocation(bp, "uSize"), st.projA.w, st.projA.h);
+      gl.uniform4f(gl.getUniformLocation(bp, "uRect"), b.rect[0], b.rect[1], b.rect[2], b.rect[3]);
+      gl.uniform2f(gl.getUniformLocation(bp, "uOff"), now[0] - taken[0], now[1] - taken[1]);
+      // the feet's depth under the camera NOW, a hair toward the viewer so the
+      // ground they stand on never covers them
+      const near = this.nearness([b.foot[0], b.foot[1], b.foot[2]], cs) + 0.6;
+      gl.uniform1f(gl.getUniformLocation(bp, "uZ"), Math.max(-1, Math.min(1, -near / 400)));
+      gl.uniform1f(gl.getUniformLocation(bp, "uAlpha"), alpha);
+      gl.uniform3f(gl.getUniformLocation(bp, "uZoom"), pvz[0] + shift[0], pvz[1] + shift[1], 1 + this.tune.zoom * speed);
+      bind(4, withT, "uWith", bp); bind(5, withoutT, "uWithout", bp);
+      gl.uniform4f(gl.getUniformLocation(bp, "uSpr"), b.sprite[0], b.sprite[1], b.sprite[2], b.sprite[3]);
+      const oc = b.own ?? [0, 0, 0];
+      gl.uniform3f(gl.getUniformLocation(bp, "uOwnCol"), oc[0], oc[1], oc[2]);
+      gl.uniform1f(gl.getUniformLocation(bp, "uOwnMode"), own && b.own ? ownMode : -1);
+      if (own) bind(6, own, "uOwn", bp);
+      gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.quadBuf);
+      const a = gl.getAttribLocation(bp, "aQ");
+      gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 8, 0);
+      for (const part of [0, 1]) {
+        // the sprite sorts at its feet; its labels draw over everything
+        if (part === 1) gl.disable(gl.DEPTH_TEST);
+        gl.uniform1f(gl.getUniformLocation(bp, "uPart"), part);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
+      gl.enable(gl.DEPTH_TEST);
+      gl.disableVertexAttribArray(a);
+      gl.disable(gl.BLEND);
+    };
+    // BACK TO FRONT, so the soft edges blend over what is behind them
+    type Card = { b: RotBody; w: WebGLTexture; wo: WebGLTexture; taken: [number, number]; a: number; near: number; own: WebGLTexture | null; mode: number };
+    const cards: Card[] = [];
+    // `order` breaks a tie between the SAME thing's cards (same feet): later stage on top
+    const add = (b: RotBody, w: WebGLTexture, wo: WebGLTexture, taken: [number, number], a: number, own: WebGLTexture | null, mode: number, order: number) => {
+      if (a >= 0.01) cards.push({ b, w, wo, taken, a, near: this.nearness(b.foot, cs) + order * 1e-3, own, mode });
+    };
+    const ownA = this.hasOwn.A ? this.tex.OA : null, ownB = this.hasOwn.B ? this.tex.OB : null;
+    this.bodyA.forEach((b, i) => add(b, this.tex.A, this.tex.A0, this.gridPx(b.foot, [1, 0], [0, 0]), i === this.meA ? aOut : oA, ownA, 0, 0));
+    // the in-between facing's silhouette is not A's: its own pixels, or nobody's
+    if (three) add(this.bodyM!, this.tex.AM, this.tex.A0, this.gridPx(this.bodyM!.foot, [1, 0], [0, 0]), Math.min(mIn, mOut), ownA, 1, 1);
+    this.bodyB.forEach((b, i) => add(b, this.tex.B, this.tex.B0, this.gridPx(b.foot, [0, st.dir], this.shiftB), i === this.meB ? bIn : oB, ownB, 0, 2));
+    cards.sort((x, y) => x.near - y.near);
+    for (const c of cards) drawBody(c.b, c.w, c.wo, c.taken, c.a, c.own, c.mode);
     // pass 4 — blur along the ground-plane arc, onto the overlay
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.disable(gl.DEPTH_TEST);

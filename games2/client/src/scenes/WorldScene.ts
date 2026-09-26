@@ -227,9 +227,9 @@ import {
 } from "../maps";
 import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
-import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, unrotCell, rotVec, unrotVec, rotFootprints, rotDir8, unturnScreenVec, type ViewRot, type RotateStats } from "../viewrot";
+import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, unrotCell, rotVec, unrotVec, rotFootprints, rotDir8, unturnScreenVec, DIRS8, type ViewRot, type RotateStats } from "../viewrot";
 import { setPickFrame } from "../tiles3";
-import { RotFx, buildRotMesh, easeTurn, ROT_TUNE_DEFAULT, type RotProjector, type RotTune } from "../rotfx";
+import { RotFx, buildRotMesh, easeTurn, ROT_TUNE_DEFAULT, type RotProjector, type RotTune, type RotBody } from "../rotfx";
 import { parseWorld as parseWorldDoc } from "@nangijala/shared";
 import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type ResolvedCell } from "../resolveworker";
 import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
@@ -352,6 +352,12 @@ const ANIM_FPS: Record<string, number> = {
 /** How long the flinch overlay holds at the combat rate: the 5-frame clip at
  *  ANIM_FPS.hurt, rounded up. */
 const HURT_MS = 300;
+/** THE TURN'S OWNER-MAP COLOUR for upright thing `i` (rotfx BODY_FS matches it within
+ *  ~8/255): two 4-bit channels spaced 16 apart, blue a fixed marker — 255 things. */
+function ownerColour(i: number): [number, number, number] {
+  const k = (i % 255) + 1;
+  return [((k & 15) << 4) | 8, (((k >> 4) & 15) << 4) | 8, 200];
+}
 /** TEST SWITCH (`?pickframe=view`): a turned view hashes its picks by the DRAWN
  *  cell, i.e. exactly what the unmodified renderer draws for the world turned as
  *  data. The fidelity gate compares the two pixel for pixel (view-rotation.md). */
@@ -8236,6 +8242,22 @@ export class WorldScene extends Phaser.Scene {
       turnTune: (t?: Partial<RotTune>) => {
         if (t) { this.rotTune = { ...this.rotTune, ...t }; if (this.rotFx) { this.rotFx.tune = { ...this.rotTune }; } }
         return { ...this.rotTune };
+      },
+      /* THE LAST OWNER MAP as a PNG data URL, with how many objects were drawn
+       * into it and how many of its pixels are owned. */
+      turnOwners: () => {
+        const o = this.turnOwnerLast;
+        if (!o) return null;
+        const cv = document.createElement("canvas"); cv.width = o.w; cv.height = o.h;
+        const ctx = cv.getContext("2d")!, im = ctx.createImageData(o.w, o.h);
+        let owned = 0;
+        for (let y = 0; y < o.h; y++) for (let x = 0; x < o.w; x++) {
+          const si = (y * o.w + x) * 4, di = si; // Phaser's target reads back top row first
+          for (let c = 0; c < 4; c++) im.data[di + c] = o.data[si + c];
+          if (o.data[si + 3] > 127) owned++;
+        }
+        ctx.putImageData(im, 0, 0);
+        return { png: cv.toDataURL("image/png"), items: o.items, owned, w: o.w, h: o.h, cam: [this.cameras.main.width, this.cameras.main.height], canvas: [this.game.canvas.width, this.game.canvas.height] };
       },
       turnInfo: () => ({ turning: this.turning, viewRot: this.viewRot, ready: this.rotFx?.ready ?? false, settled: this.viewSettled(), ...this.turnLog, ...(this.rotFx?.timings ?? {}) }),
       lookAt: (col?: number, row?: number) => {
@@ -20569,6 +20591,142 @@ export class WorldScene extends Phaser.Scene {
     return true;
   }
 
+  /** EVERY UPRIGHT THING IN VIEW, for the turn: players, NPCs, monsters and the
+   *  standing scenery (the depth-resolved pieces; flat ones lie on the ground and
+   *  wall pieces hang on walls the mesh has). None of them is in the terrain mesh,
+   *  so textured onto it they lay flat and smeared as the camera went round. Each:
+   *  its display objects, its screen rect and its sprite's rect (canvas px; the
+   *  sprite sorts at the feet, the rest — the names — draws on top), its feet in
+   *  `kGrid`'s view grid and their screen y (front-most wins a group). */
+  private turnUprights(kGrid: ViewRot) {
+    type R = [number, number, number, number];
+    const w = this.world!, vw = this.viewWorld ?? w, cam = this.cameras.main, z = cam.zoom, wv = cam.worldView;
+    const out: { objs: Phaser.GameObjects.GameObject[]; own: Phaser.GameObjects.GameObject[]; rect: R; sprite: R; foot: [number, number, number]; footY: number; me: boolean }[] = [];
+    const vis = <T,>(o: T | null | undefined): o is T => !!o && (o as unknown as Phaser.GameObjects.Components.Visible).visible;
+    const px = (bd: Phaser.Geom.Rectangle, m: number): R => [(bd.x - m - wv.x) * z, (bd.y - m - wv.y) * z, (bd.width + 2 * m) * z, (bd.height + 2 * m) * z];
+    // `labels` (names) belong to the thing and draw on top; `extra` (lit copies,
+    // fog, outlines) share the sprite's silhouette and are only hidden
+    const push = (sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image, extra: (Phaser.GameObjects.GameObject | null | undefined)[], fx: number, fy: number, lvl: number, me: boolean, labels: (Phaser.GameObjects.GameObject | null | undefined)[] = []) => {
+      if (!vis(sprite)) return;
+      const sb = sprite.getBounds();
+      if (sb.right < wv.x || sb.x > wv.right || sb.bottom < wv.y || sb.y > wv.bottom) return; // off screen
+      const own: Phaser.GameObjects.GameObject[] = [sprite, ...labels.filter(vis)];
+      const objs: Phaser.GameObjects.GameObject[] = [...own, ...extra.filter(vis)];
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const o of objs) {
+        const bd = (o as unknown as { getBounds(): Phaser.Geom.Rectangle }).getBounds();
+        x0 = Math.min(x0, bd.x); y0 = Math.min(y0, bd.y); x1 = Math.max(x1, bd.right); y1 = Math.max(y1, bd.bottom);
+      }
+      const [fX, fY] = kGrid ? rotPoint(fx / CELL_WU, fy / CELL_WU, kGrid, w.width, w.height) : [fx / CELL_WU, fy / CELL_WU];
+      const ground = vw.rows[Math.floor(fY)]?.[Math.floor(fX)]?.l ?? 0;
+      out.push({ objs, own, rect: px(new Phaser.Geom.Rectangle(x0, y0, x1 - x0, y1 - y0), 3), sprite: px(sb, 1), foot: [fX, fY, Math.max(lvl, ground)], footY: sb.bottom, me }); // bottom: scenery hangs from its top-left
+    };
+    for (const [id, av] of this.avatars) push(av.sprite, [av.lit, av.fog, av.hidden], av.fx, av.fy, this.litLevelOf(av), id === this.myId, [av.label, id === this.myId ? this.posLabel : null]);
+    for (const n of this.npcs.values()) push(n.sprite, [n.lit, n.fog, n.hidden], n.fx, n.fy, n.surfLevel ?? 0, false);
+    for (const mv of this.monsters.values()) push(mv.sprite, [mv.lit, mv.fog, mv.hidden], mv.fx, mv.fy, mv.surfLevel ?? 0, false);
+    for (const r of this.scnResolve) push(r.img, [r.lo?.img, r.lo?.fog], r.fx, r.fy, r.lvl, false);
+    return out;
+  }
+
+  /** ONE FRAME WITHOUT THE UPRIGHT THINGS, for the turn: hidden after this frame's
+   *  update (so no per-frame code re-shows them before the render), the frame is
+   *  handed over on POST_RENDER, and they come back at once. Just before they go,
+   *  the OWNER MAP is drawn: one card per thing, each keeping only the pixels the
+   *  painter gave it, so overlapping things neither merge nor double. */
+  private turnFrameBodiless(kGrid: ViewRot, take: (cards: RotBody[], me: number, owners: { data: Uint8Array; w: number; h: number } | null) => void): Promise<{ groups: RotBody[]; me: number } | null> {
+    if (!this.world) return Promise.resolve(null);
+    return new Promise((res) => {
+      let hidden: Phaser.GameObjects.Components.Visible[] = [];
+      let result: { groups: RotBody[]; me: number } | null = null;
+      let owners: { data: Uint8Array; w: number; h: number } | null = null;
+      this.events.once(Phaser.Scenes.Events.POST_UPDATE, () => {
+        const ups = this.turnUprights(kGrid);
+        owners = this.turnOwnerMap(ups.map((u) => u.own));
+        const cards: RotBody[] = ups.map((u, i) => ({ rect: u.rect, sprite: u.sprite, foot: u.foot, own: ownerColour(i).map((c) => c / 255) as [number, number, number] }));
+        result = { groups: cards, me: ups.findIndex((u) => u.me) };
+        hidden = ups.flatMap((u) => u.objs) as unknown as Phaser.GameObjects.Components.Visible[];
+        for (const o of hidden) o.setVisible(false);
+      });
+      this.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
+        if (result) take(result.groups, result.me, owners);
+        for (const o of hidden) o.setVisible(true);
+        res(result);
+      });
+    });
+  }
+
+  /** THE OWNER MAP: each thing's own objects drawn once more as ONE flat colour
+   *  (tintFill), all of them in the painter's depth order, into an off-screen target
+   *  on this frame's camera, and read back once. Where two overlap, the pixel is
+   *  whoever the game drew in front. */
+  private turnOwnerDT: Phaser.Textures.DynamicTexture | null = null;
+  /** The last owner map, for `__ml.turnOwners()` (a gate compares it with frame A). */
+  private turnOwnerLast: { data: Uint8Array; w: number; h: number; items: number } | null = null;
+  private turnOwnerMap(own: Phaser.GameObjects.GameObject[][]): { data: Uint8Array; w: number; h: number } | null {
+    const cam = this.cameras.main, w = Math.round(cam.width), h = Math.round(cam.height);
+    const r = this.game.renderer as unknown as { gl?: WebGLRenderingContext; pushFramebuffer?: (fb: WebGLFramebuffer, u?: boolean, s?: boolean) => void; popFramebuffer?: () => void };
+    if (!r.gl || !r.pushFramebuffer || !r.popFramebuffer) return null;
+    try {
+      let dt = this.turnOwnerDT;
+      if (!dt || dt.width !== w || dt.height !== h) {
+        if (dt) this.textures.remove(dt);
+        dt = this.turnOwnerDT = this.textures.addDynamicTexture(`__turnOwners${Date.now()}`, w, h);
+      }
+      if (!dt) return null;
+      dt.camera.setScroll(cam.scrollX, cam.scrollY).setZoom(cam.zoom);
+      dt.clear();
+      type Tinted = Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Tint & Phaser.GameObjects.Components.Depth;
+      const items: { o: Tinted; col: number }[] = [];
+      own.forEach((objs, i) => { const [cr, cg, cb] = ownerColour(i); for (const o of objs) items.push({ o: o as Tinted, col: (cr << 16) | (cg << 8) | cb }); });
+      items.sort((a, b) => a.o.depth - b.o.depth);
+      for (const { o, col } of items) {
+        const t = [o.tintTopLeft, o.tintTopRight, o.tintBottomLeft, o.tintBottomRight], fill = o.tintFill;
+        o.setTintFill(col);
+        dt.draw(o);
+        o.setTint(t[0], t[1], t[2], t[3]);
+        o.tintFill = fill;
+      }
+      const fb = (dt as unknown as { renderTarget?: { framebuffer?: WebGLFramebuffer } }).renderTarget?.framebuffer;
+      if (!fb) return null;
+      const data = new Uint8Array(w * h * 4);
+      r.pushFramebuffer(fb, false, false);
+      r.gl.readPixels(0, 0, w, h, r.gl.RGBA, r.gl.UNSIGNED_BYTE, data);
+      r.popFramebuffer();
+      this.turnOwnerLast = { data, w, h, items: items.length };
+      return { data, w, h };
+    } catch (e) {
+      console.warn("[nangijala] turn owner map:", e);
+      return null;
+    }
+  }
+
+  /** ONE FRAME WITH MY BODY SHOWING ANOTHER FACING (its idle's first frame and that
+   *  facing's own foot anchor), for the turn's in-between side. The lit copy and
+   *  its fog still wear this frame's facing and sit it out; everything comes back
+   *  on POST_RENDER, and the animation re-applies its own frame on the next update. */
+  private turnFrameWithFacing(facing: string, take: () => void): Promise<boolean> {
+    const me = this.avatars.get(this.myId);
+    const key = me ? this.resolveAnim(me.character, "idle", facing) : null;
+    const f = key ? this.anims.get(key)?.frames[0]?.frame : null;
+    if (!me || !f) return Promise.resolve(false);
+    return new Promise((res) => {
+      let restore = () => {};
+      this.events.once(Phaser.Scenes.Events.POST_UPDATE, () => {
+        const sp = me.sprite, ox = sp.originX, oy = sp.originY, tk = sp.texture.key, fn = sp.frame.name;
+        const hide = [me.lit, me.fog, me.hidden].filter((o): o is NonNullable<typeof o> => !!o && o.visible);
+        sp.setTexture(f.texture.key, f.name);
+        this.applyAnchor(sp, me.character, facing, true);
+        for (const o of hide) o.setVisible(false);
+        restore = () => { sp.setTexture(tk, fn); sp.setOrigin(ox, oy); for (const o of hide) o.setVisible(true); };
+      });
+      this.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
+        take();
+        restore();
+        res(true);
+      });
+    });
+  }
+
   /** THE TURN (rotfx.ts). Take the frame the renderer just drew (A), swap the
    *  drawn world a quarter-turn, wait until the renderer has DRAWN the new view,
    *  take that frame (B), and orbit between the two on an overlay. Both ends of
@@ -20610,6 +20768,19 @@ export class WorldScene extends Phaser.Scene {
       fx.draw(0, 0);
       res();
     }));
+    // ...AND AGAIN WITHOUT ME, one frame later under the overlay: the difference is
+    // my body as drawn (the waterline crop, the light, the name), carried by the
+    // feet on the orbit's axis; the bodiless frame is what the ground wears.
+    const upA = await this.turnFrameBodiless(kA, (g, me, own) => { fx.setA0(cv, g, me); if (own) fx.setOwners("A", own.data, own.w, own.h); });
+    // ...and once with me turned to the facing BETWEEN (DIRS8 is the ring a
+    // quarter-turn steps by two): the camera's 45 degrees shows that side of me
+    const meA = this.avatars.get(this.myId);
+    const iA = meA?.dispDir ? DIRS8.indexOf(meA.dispDir as (typeof DIRS8)[number]) : -1;
+    if (upA && upA.me >= 0 && iA >= 0) {
+      const grp = upA.groups[upA.me];
+      await this.turnFrameWithFacing(DIRS8[(iA + dir + 8) % 8], () => fx.setAM(cv, grp));
+    }
+    this.turnLog.uprights = upA ? upA.groups.length : 0;
     this.turnLog.aMs = +(performance.now() - t0).toFixed(1);
     // A SWAP THAT THROWS (the turned document's fetch or parse) must not leave the
     // overlay up and `turning` set: every tap and drag would be swallowed forever.
@@ -20649,7 +20820,10 @@ export class WorldScene extends Phaser.Scene {
             capturing = true;
             this.turnLog.bWaitMs = +(now - tWait).toFixed(1);
             this.turnLog.bSettled = now - tWait > waitB ? "timeout" : "settled";
-            this.game.events.once(Phaser.Core.Events.POST_RENDER, () => fx.setB(cv, proj(), { x: bx, y: by, h: ph }));
+            this.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
+              fx.setB(cv, proj(), { x: bx, y: by, h: ph });
+              void this.turnFrameBodiless(kA, (g, me, own) => { fx.setB0(cv, g, me); if (own) fx.setOwners("B", own.data, own.w, own.h); });
+            });
           }
         }
         const u = this.turnPinned ?? easeTurn(raw);
