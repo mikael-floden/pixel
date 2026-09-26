@@ -1440,6 +1440,57 @@
     }
    ],
    "artifact": "https://claude.ai/artifact/AdqDf4FPTaLJRsprmbHmhr"
+  },
+  {
+   "date": "2026-09-26",
+   "commit": "01ea2d5f957",
+   "before": "781a879015f",
+   "title": "One ground to the edge: no rims, no scree bands, one material per flight of steps",
+   "changes": [
+    {
+     "name": "The grey rim along the mud terrace (your first photo)",
+     "what": "This is mine. The whole terrace already wears its own ground, so a strip of grey stone along its lip was the old edge-marking technique left behind. A band of another ground that never reaches more than one cell in from a terrace's edge now takes the terrace's own ground. A patch that reaches deeper is a place - a fen, an ice pool - and stays.",
+     "cell": [
+      258,
+      251
+     ],
+     "window": [
+      244,
+      238,
+      272,
+      262
+     ]
+    },
+    {
+     "name": "The rims further west (your third and fourth photos)",
+     "what": "The same rule along the whole bank. Across the map 1,462 such band cells went back to their terrace's ground, from the one-cell rims on the lips and from the scree the cliff apron laid at the foot of every cliff. The apron itself is retired from the build: its band is a ground change at an edge, which the whole-terrace rule makes unnecessary.",
+     "cell": [
+      230,
+      254
+     ],
+     "window": [
+      216,
+      242,
+      244,
+      266
+     ]
+    },
+    {
+     "name": "The striped stairs by the beach (your last three photos)",
+     "what": "These steps are one-cell strips at levels 3, 2 and 1, each its own tiny terrace, and the wall pass picked a rock per terrace, so every strip came out a different colour - grey, soil, mud, black - with a grey band across the tops. A flight of steps is now one thing: it wears the top most of it wears and the face most of it is named with. 72 flights across the map, 63 faces renamed.",
+     "cell": [
+      294,
+      250
+     ],
+     "window": [
+      282,
+      238,
+      306,
+      264
+     ]
+    }
+   ],
+   "artifact": "https://claude.ai/artifact/DJbvkZRUgMmVpCwM6b9PM7"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
