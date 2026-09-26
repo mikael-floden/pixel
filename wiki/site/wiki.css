@@ -2122,3 +2122,5 @@ input[type="range"] { accent-color: var(--accent); }
 .shader-title { margin: 4px 0 2px; }
 .shader-stage { margin: 10px 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #000; }
 .shader-frame { display: block; width: 100%; height: min(78vh, 720px); border: 0; }
+.shader-ground { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; flex-wrap: wrap; }
+.shader-ground-name { flex: 1 1 auto; min-width: 0; text-align: center; }

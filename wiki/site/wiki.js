@@ -14158,6 +14158,7 @@ window.addEventListener("message", (e) => {
   const d = e.data ?? {};
   if (d.type === "shaders:ready") {
     shaderFrame.el.contentWindow.postMessage({ type: "shaders:tuning", table: shaderTuningTable() }, location.origin);
+    sendShaderGround();
   } else if (d.type === "shaders:tune" && state.admin && d.key) {
     applyShaderTune(d);
   } else if (d.type === "shaders:selected" && d.id && d.id !== shaderFrame.id) {
@@ -14167,6 +14168,112 @@ window.addEventListener("message", (e) => {
     keepScrollY = window.scrollY; route();
   }
 });
+/* THE GROUND UNDER THE SPELL IS THE GAME'S GROUND (maintainer 2026-09-26:
+ * "we also need tiles under the player so it looks more like a world. Use the
+ * base tile set for this and let me be able to switch ground type by pressing
+ * a next/prev button", then: "It's also important to respect the 'base tile
+ * set' and the weights used to draw from it. If you ask what 'base tile set'
+ * to use - use the set with highest weight always").
+ *
+ * The WIKI owns the base-set model, so the wiki makes every choice the game
+ * makes and hands the viewer a finished floor plan: the ground's set with the
+ * HIGHEST weight (ties to the lower id — the one he made first), then one
+ * member per cell drawn by the members' own weights, the clean plate being a
+ * member like any other. Seeded by the ground, so a ground looks the same every
+ * visit and ‹ › back to it shows the same floor. The viewer only paints the
+ * plan (message `shaders:ground`, spec on the shaders board); no second copy
+ * of the weighting logic exists to drift. */
+const SHADER_GROUND_KEY = "wiki-shader-ground";
+const SHADER_GRID = 16;                  // 16x16 picks, wrapped over the viewer's floor
+/** The set a ground draws from: the highest weight that can draw at all. */
+function shaderGroundSet(typeId) {
+  const drawable = groundSets(typeId).filter(setDraws);
+  if (!drawable.length) return null;
+  return drawable.reduce((best, s) => (s.weight > best.weight ? s : best), drawable[0]);
+}
+/** Every ground with a set that can draw, in the World section's order. */
+function shaderGrounds() {
+  const order = (worldMeta().groundTypes ?? []).map((g) => g.id);
+  const ids = [...new Set([...order, ...Object.keys(setsDoc().grounds ?? {})])];
+  return ids.filter((g) => shaderGroundSet(g));
+}
+function shaderGroundId() {
+  const all = shaderGrounds();
+  let g = null;
+  try { g = localStorage.getItem(SHADER_GROUND_KEY); } catch { /* private mode */ }
+  return all.includes(g) ? g : all.includes("grass") ? "grass" : all[0] ?? null;
+}
+/** mulberry32 — small, seedable, the same picks on every device. */
+function seededRandom(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function strSeed(s) { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; }
+/** The floor plan for one ground: which art, and which art stands on each cell. */
+function shaderGroundPlan(typeId) {
+  const set = shaderGroundSet(typeId);
+  if (!set) return null;
+  const clean = patternLib()?.plates?.[typeId]?.clean ?? cleanArtOf(typeId);
+  const pool = [
+    ...(set.clean > 0 && clean ? [{ id: "clean", art: clean, weight: set.clean }] : []),
+    ...set.members.filter((m) => m.weight > 0 && m.art && !m.gone).map((m) => ({ id: m.id, art: m.art, weight: m.weight })),
+  ];
+  if (!pool.length) return null;
+  const total = pool.reduce((n, m) => n + m.weight, 0);
+  const rnd = seededRandom(strSeed(`${typeId}#${set.id}`));
+  const cells = [];
+  for (let i = 0; i < SHADER_GRID * SHADER_GRID; i++) {
+    let r = rnd() * total, k = 0;
+    while (k < pool.length - 1 && (r -= pool[k].weight) >= 0) k++;
+    cells.push(k);
+  }
+  return {
+    type: "shaders:ground",
+    ground: typeId,
+    name: typeLabelWorld(typeId) ?? typeId,
+    set: { id: set.id, name: set.name, weight: set.weight },
+    tiles: pool.map((m) => ({ id: m.id, url: new URL(assetUrl(m.art), location.href).href, weight: m.weight, share: m.weight / total })),
+    grid: { cols: SHADER_GRID, rows: SHADER_GRID, cells },
+  };
+}
+function sendShaderGround() {
+  const g = shaderGroundId();
+  const plan = g ? shaderGroundPlan(g) : null;
+  if (plan && shaderFrame?.el?.contentWindow) shaderFrame.el.contentWindow.postMessage(plan, location.origin);
+  return plan;
+}
+/** ‹ Grass · Set #1 (weight 3) › — the stepper under the stage. */
+function shaderGroundStepper() {
+  const all = shaderGrounds();
+  const label = h("span", { class: "shader-ground-name" });
+  const paint = () => {
+    const g = shaderGroundId();
+    const set = g ? shaderGroundSet(g) : null;
+    label.replaceChildren(
+      h("b", {}, g ? typeLabelWorld(g) ?? g : "No ground"),
+      set ? h("span", { class: "muted", title: "The set with the highest weight is the one the ground draws from; its tiles are drawn by their own weights" },
+        ` · ${set.name} #${set.id} (weight ${set.weight})`) : null);
+  };
+  const step = (d) => {
+    const i = Math.max(0, all.indexOf(shaderGroundId()));
+    const next = all[(i + d + all.length) % all.length];
+    try { localStorage.setItem(SHADER_GROUND_KEY, next); } catch { /* private mode */ }
+    paint();
+    sendShaderGround();
+  };
+  paint();
+  return h("div", { class: "shader-ground" },
+    h("span", { class: "muted" }, "Ground"),
+    h("button", { class: "nav-btn", type: "button", "aria-label": "Previous ground", onclick: () => step(-1) }, "‹"),
+    label,
+    h("button", { class: "nav-btn", type: "button", "aria-label": "Next ground", onclick: () => step(1) }, "›"));
+}
 function viewShader(id) {
   if (!state.admin) { location.hash = "#/items"; return h("div", {}); }
   loadShaderCatalog();
@@ -14189,6 +14296,7 @@ function viewShader(id) {
     h("h1", { class: "shader-title" }, e.name),
     h("p", { class: "muted" }, `${fam?.label ?? e.family} · ${e.kindLabel ?? e.kind}${e.category ? ` · ${e.category}` : ""}${(e.tags ?? []).length ? ` · ${e.tags.join(", ")}` : ""}`),
     h("div", { class: "shader-stage" }, shaderFrame.el),
+    shaderGrounds().length ? shaderGroundStepper() : null,
     feedbackRow("shaders", e.key, {
       redo: { label: "↻ redo", title: "Ask the shader agent for another take of this effect — your note says what to change", doneLabel: "redo asked", clearsRating: true },
     }),

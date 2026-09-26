@@ -31,7 +31,11 @@ async function page(admin) {
   const p = await ctx.newPage();
   const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
   await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ admin }) }));
-  await p.addInitScript((a) => { if (a) localStorage.setItem("wiki-admin-token", "gate"); localStorage.setItem("ml-staging-base", `${location.origin}/assets/`); localStorage.removeItem("wiki-shader-family"); }, admin);
+  await p.addInitScript((a) => {
+    if (a) localStorage.setItem("wiki-admin-token", "gate"); localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+    localStorage.removeItem("wiki-shader-family"); localStorage.removeItem("wiki-shader-ground");
+    window.addEventListener("message", (e) => { if (e.data?.type === "shaders:ground") (window.__groundPlans ??= []).push(e.data); });
+  }, admin);
   return { ctx, p, errs };
 }
 
@@ -82,6 +86,30 @@ if (fr) {
 ok(peak > 500, `the effect DRAWS inside the wiki — ${beam.id} lit ${peak} bright pixels at its peak`);
 const vr = await A.p.evaluate(() => [...document.querySelectorAll("button")].map((x) => x.textContent.trim()).filter((t) => /approve|redo|remove/.test(t)));
 ok(vr.includes("✓ approve") && vr.some((t) => /redo/.test(t)), `the verdict row is there (${vr.join(" · ")})`);
+
+// ---- the ground: the base tile set with the HIGHEST weight, members drawn by
+// their own weights (maintainer 2026-09-26: "respect the 'base tile set' and
+// the weights used to draw from it ... use the set with highest weight
+// always"). The plan the viewer receives is checked against the committed
+// live/tuning/base_tile_sets.json, not against the page's own arithmetic.
+{
+  const SETS = JSON.parse(readFileSync(join(ROOT, "live/tuning/base_tile_sets.json"), "utf8")).grounds ?? {};
+  const stepper = await A.p.evaluate(() => document.querySelector(".shader-ground")?.textContent.replace(/\s+/g, " ").trim() ?? "");
+  ok(/^Ground/.test(stepper), `a ground stepper sits under the stage (${stepper})`);
+  const seen = [];
+  const grab = () => fr.evaluate(() => window.__groundPlans ?? []);
+  for (let i = 0; i < 3; i++) { await A.p.click('.shader-ground button[aria-label="Next ground"]'); await A.p.waitForTimeout(250); }
+  seen.push(...await grab());
+  ok(seen.length >= 4, `the viewer receives a floor plan on boot and on every ‹ › (${seen.length} plans: ${seen.map((x) => x.ground).join(", ")})`);
+  const bad = seen.filter((plan) => {
+    const maxW = Math.max(...(SETS[plan.ground]?.sets ?? []).map((s) => Number(s.weight) || 0));
+    const shares = plan.tiles.map((_, i) => plan.grid.cells.filter((c) => c === i).length / plan.grid.cells.length);
+    const drift = Math.max(...plan.tiles.map((x, i) => Math.abs(shares[i] - x.share)));
+    return plan.set.weight !== maxW || drift > 0.08 || plan.grid.cells.length !== plan.grid.cols * plan.grid.rows;
+  });
+  ok(seen.length && !bad.length, `each plan uses the ground's highest-weight set and draws its tiles by their weights (off: ${bad.map((x) => x.ground).join(", ") || "none"})`);
+  if (seen[0]) console.log(`    (${seen[0].ground}: ${seen[0].set.name} #${seen[0].set.id}, weight ${seen[0].set.weight}, ${seen[0].tiles.length} tiles)`);
+}
 
 // ---- tuning: move a tunable inside the viewer
 const moved = fr ? await fr.evaluate(() => {
