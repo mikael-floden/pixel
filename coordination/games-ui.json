@@ -3,9 +3,15 @@
   "updated_at": "2026-09-26T11:32:44+00:00",
   "health": "running",
   "current": {
-    "unit": "LIVE 1012fc8822: back-turn note carries a window-size tape. WAITING ON HIM: reinstall (standalone) + a back-swipe screenshot. Compass row parked on the feature branch.",
-    "since": "2026-09-26T12:26:27+00:00",
-    "files": []
+    "unit": "DOUBLE-TAP GROUND MOVE + SWIPE TURN + compass row (maintainer 2026-09-26). Step 1: tapgesture.ts (the one double-tap judge) to main. Step 2 waits on games-perf for WorldScene.ts (request d6b4e2cc09): then spinbar.ts compass row + swipe, needle art.",
+    "since": "2026-09-26T12:56:02+00:00",
+    "files": [
+      "games2/client/src/tapgesture.ts",
+      "games2/client/src/spinbar.ts",
+      "games2/client/public/ui2/icon-needle.webp",
+      "games2/client/ui-src/icon-needle-src.png",
+      "games2/scripts/bake-corner-icons.py"
+    ]
   },
   "progress": {
     "charter": true,
@@ -75,6 +81,6 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-26T12:26:27+00:00",
+  "updated": "2026-09-26T12:56:02+00:00",
   "status": "running"
 }
