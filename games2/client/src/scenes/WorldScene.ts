@@ -160,7 +160,7 @@ import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
 import { FastDepthSort } from "../fastsort";
 import { TerrainBake, bakeParity, type BakeHost, type BakeSink } from "../terrainbake";
-import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, wcPageKey, wcSlotFrame, wcSwitchOn, type WcFrame, type WcRect, type WcSlot } from "../worldcache";
+import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, wcPageKey, wcSlotFrame, wcSwitchOn, type WcFrame, type WcPicture, type WcRect, type WcSlot } from "../worldcache";
 import { WorldCacheGl } from "../worldcachegl";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
@@ -918,6 +918,10 @@ const BOW_FRAC = 0.14;
 const CAVE_FALLOFF = 3.0;
 /** The draw-time floor tint is OFF: the shader covers the same pixels. */
 const CAVE_TINT_TILES = false;
+/** Cache world rendering's readback check (WorldScene.wcReadCheck): frames the
+ *  camera must have stood still, and the least time between two reads. */
+const WC_READ_STILL = 60;
+const WC_READ_EVERY_MS = 10_000;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 /** Texels the exposed band overlaps back into the kept picture (see
  *  scrollTiles3Ground). 1 is what the measured artefact needed; it is a
@@ -5335,6 +5339,18 @@ export class WorldScene extends Phaser.Scene {
   /** Pages allocated this frame (one at most), and this window's takes. */
   private wcPagesThisFrame = 0;
   private wcTakes = { n: 0, ms: 0, maxMs: 0 };
+  /** THE READBACK, MEASURED — what saving a picture to disk would cost this
+   *  phone (a synchronous GL read: WebGL1 has no async one) — and THE PAGES
+   *  CHECKED: a picture's centre is ground, opaque; a blank one means the GPU
+   *  dropped the page and every picture goes. Standing still only, one a
+   *  WC_READ_EVERY_MS at most. */
+  private wcRead = { n: 0, ms: 0, maxMs: 0, blank: 0 };
+  private wcReadAt = 0;
+  private wcStill = 0;
+  private wcCamX = NaN;
+  private wcCamY = NaN;
+  private wcReadBuf: Uint8Array | null = null;
+  private wcShutdownHooked = false;
   /** Row stride for the pool's cell key — the world's width, so `row*stride+col`
    *  is unique per cell. Set at the top of every rebuild. */
   private occStride = 1;
@@ -6676,13 +6692,13 @@ export class WorldScene extends Phaser.Scene {
         const v = this.cameras.main.worldView;
         return bakeParity(this.bake, this.bakeHost, { x: v.x, y: v.y, width: v.width, height: v.height }, !!png);
       },
-      /** Live occluder sprites against band images — what the bake removes. */
       /** CACHE WORLD RENDERING (worldcache.ts): the switch (`on` sets it) and
        *  what the cache holds and did. */
       worldCache: (on?: boolean) => {
         if (on !== undefined && on !== this.wcOn) this.setWorldCache(on);
-        return { on: this.wcOn, take: this.wc?.take() ?? null, skipped: this.wcSkipped, takes: { ...this.wcTakes } };
+        return { on: this.wcOn, take: this.wc?.take() ?? null, skipped: this.wcSkipped, takes: { ...this.wcTakes }, read: { ...this.wcRead } };
       },
+      /** Live occluder sprites against band images — what the bake removes. */
       bakeCount: () => ({ live: this.occluders.length, bands: this.bake?.images.length ?? 0, displayList: this.children.length }),
       /** The edit tool (worldEdit): mutate a cell, everything follows. */
       worldEdit: (col: number, row: number, change: { t?: string; dl?: number }) => this.worldEdit(col, row, change),
@@ -21110,10 +21126,7 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
-  /* CACHE WORLD RENDERING: everything that repaints the world changed what the
-   * ground draws (a dial, the cut, the resolver, a view turn) — the cached
-   * tiles go, unless the caller let go of exactly the ones it changed (an
-   * edit: `keepCache`). */
+  /** The Settings->Dev switch: off drops every picture and page. */
   private setWorldCache(on: boolean): void {
     this.wcOn = on;
     setWcSwitch(on);
@@ -21127,9 +21140,22 @@ export class WorldScene extends Phaser.Scene {
 
   private wcCountsTake(): Record<string, number> {
     const t = this.wc?.take();
-    const out = { wcOn: this.wcOn ? 1 : 0, wcTiles: t?.here ?? 0, wcMb: t?.mb ?? 0, wcSkip: this.wcSkipped, wcTakes: this.wcTakes.n, wcTakeMax: +this.wcTakes.maxMs.toFixed(2) };
+    const rd = this.wcRead;
+    const out = {
+      wcOn: this.wcOn ? 1 : 0,
+      wcTiles: t?.here ?? 0,
+      wcMb: t?.mb ?? 0,
+      wcSkip: this.wcSkipped,
+      wcTakes: this.wcTakes.n,
+      wcTakeMax: +this.wcTakes.maxMs.toFixed(2),
+      wcReadN: rd.n,
+      wcReadMs: rd.n ? +(rd.ms / rd.n).toFixed(2) : 0,
+      wcReadMax: +rd.maxMs.toFixed(2),
+      wcBlank: rd.blank,
+    };
     this.wcSkipped = 0;
     this.wcTakes = { n: 0, ms: 0, maxMs: 0 };
+    this.wcRead = { n: 0, ms: 0, maxMs: 0, blank: 0 };
     return out;
   }
 
@@ -21151,6 +21177,16 @@ export class WorldScene extends Phaser.Scene {
     if (!this.maps3 || !this.t3 || this.game.renderer.type !== Phaser.WEBGL) return null;
     const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
     this.wcGl = new WorldCacheGl(r.gl);
+    // a restart reuses this instance: the pictures and their pages end with the run
+    if (!this.wcShutdownHooked) {
+      this.wcShutdownHooked = true;
+      this.events.once("shutdown", () => {
+        this.wcShutdownHooked = false;
+        this.wc?.destroy();
+        this.wc = null;
+        this.wcGl = null;
+      });
+    }
     const scene = this;
     this.wc = new WorldCache({
       get frame() {
@@ -21183,6 +21219,48 @@ export class WorldScene extends Phaser.Scene {
     wc.setRot(this.viewRot);
     wc.suspend(!!a.mask);
     wc.step({ x0: a.ax, y0: a.ay, x1: a.ax + rt.width, y1: a.ay + rt.height });
+    this.wcReadCheck();
+  }
+
+  private wcReadCheck(): void {
+    const cam = this.cameras.main;
+    const moved = Math.abs(cam.scrollX - this.wcCamX) + Math.abs(cam.scrollY - this.wcCamY);
+    this.wcCamX = cam.scrollX;
+    this.wcCamY = cam.scrollY;
+    this.wcStill = moved < 0.5 ? this.wcStill + 1 : 0;
+    const now = performance.now();
+    if (this.wcStill < WC_READ_STILL || now - this.wcReadAt < WC_READ_EVERY_MS) return;
+    const wc = this.wc;
+    const pic = wc?.samplePicture();
+    if (!wc || !pic) return;
+    this.wcReadAt = now;
+    const page = this.textures.exists(wcPageKey(pic.page)) ? (this.textures.get(wcPageKey(pic.page)) as Phaser.Textures.DynamicTexture) : null;
+    const fb = page?.renderTarget?.framebuffer?.webGLFramebuffer;
+    if (!fb) return;
+    const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const gl = r.gl;
+    const w = pic.box.x1 - pic.box.x0;
+    const h = pic.box.y1 - pic.box.y0;
+    const buf = this.wcReadBuf && this.wcReadBuf.length === w * h * 4 ? this.wcReadBuf : (this.wcReadBuf = new Uint8Array(w * h * 4));
+    const t0 = performance.now();
+    r.pipelines.clear();
+    try {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+      gl.readPixels(pic.x, pic.y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    } finally {
+      r.pipelines.rebind();
+    }
+    const ms = performance.now() - t0;
+    this.wcRead.n++;
+    this.wcRead.ms += ms;
+    if (ms > this.wcRead.maxMs) this.wcRead.maxMs = ms;
+    // the diamond's centre (the box's) is the tile's ground: opaque, always
+    if (buf[((h >> 1) * w + (w >> 1)) * 4 + 3] !== 255) {
+      this.wcRead.blank++;
+      wc.contextLost();
+      this.wcGl?.lost();
+    }
   }
 
   /** EVERY TEXEL OF THIS BOX IS FINAL in the ground texture (WcHost.final): no
@@ -21228,6 +21306,32 @@ export class WorldScene extends Phaser.Scene {
         if (t > top) top = t;
       }
     return top;
+  }
+
+  /** ONE CACHED PICTURE into an open ground bracket, cropped to `r` (world
+   *  px, whole): the slot's own frame when it is whole, else the page's
+   *  `crop` frame re-cut — a batch reads a frame's UVs when it is called, so
+   *  one frame a page serves every crop. Texel-exact: every edge is a whole
+   *  texel of a 1024 page. */
+  private wcDrawPicture(rt: Phaser.GameObjects.RenderTexture, pic: WcPicture, ax: number, ay: number, r: WcRect): boolean {
+    const b = pic.box;
+    const x0 = Math.max(b.x0, r.x0);
+    const y0 = Math.max(b.y0, r.y0);
+    const x1 = Math.min(b.x1, r.x1);
+    const y1 = Math.min(b.y1, r.y1);
+    if (x1 <= x0 || y1 <= y0) return false;
+    const key = wcPageKey(pic.page);
+    if (x0 === b.x0 && y0 === b.y0 && x1 === b.x1 && y1 === b.y1) {
+      rt.batchDrawFrame(key, wcSlotFrame(pic.x, pic.y), Math.round(b.x0 - ax), Math.round(b.y0 - ay));
+      return true;
+    }
+    const page = this.textures.get(key);
+    const sx = pic.x + (x0 - b.x0);
+    const sy = pic.y + (y0 - b.y0);
+    if (page.has("crop")) page.get("crop").setSize(x1 - x0, y1 - y0, sx, sy);
+    else page.add("crop", 0, sx, sy, x1 - x0, y1 - y0);
+    rt.batchDrawFrame(key, "crop", Math.round(x0 - ax), Math.round(y0 - ay));
+    return true;
   }
 
   /** A page: one allocation a frame (a texture and a framebuffer). */
@@ -21276,6 +21380,10 @@ export class WorldScene extends Phaser.Scene {
     return ok;
   }
 
+  /* CACHE WORLD RENDERING: what repaints the world changed what the ground
+   * draws (a dial, the resolver, a view turn) — the cached tiles go, unless
+   * the caller let go of exactly the ones it changed (an edit) or changed only
+   * the indoor cut, which the pictures never hold: `keepCache`. */
   private repaintWorld(keepCache = false) {
     if (!keepCache) this.wc?.flush();
     this.groundSliceQ = [];
@@ -23434,8 +23542,8 @@ export class WorldScene extends Phaser.Scene {
       for (const i of set) cells.add(i);
       this.t3missing.delete(p);
     }
-    if (!this.groundPartial || !this.groundScroll || sheets) this.repaintGroundPending = true;
     if (sheets) this.wc?.flush(); // a sheet is worn by cells no ledger names
+    if (!this.groundPartial || !this.groundScroll || sheets) this.repaintGroundPending = true;
     else if (cells.size) {
       for (const i of cells) this.groundDirtyCells.push(i);
       this.repaintGroundPartial = true;
@@ -24734,17 +24842,17 @@ export class WorldScene extends Phaser.Scene {
      * and a live neighbour's spill into the tile is covered by the texels it
      * took. Outside its diamond a picture is clear, so it touches nothing else. */
     if (wcp) {
-      // a live op meeting the rect is drawn WHOLE (t3Blit), up to a tile past
-      // it: every picture it can have drawn over is drawn again, so the rect
-      // grows by two tiles (a picture is exact wherever it lands)
-      const g = 2 * T3_TILE;
+      // A live op meeting the rect is drawn WHOLE (t3Blit), up to a tile past
+      // it, and inside one bracket (the band's drain) a later slice's ops can
+      // land on an earlier slice's pictures: so the pictures cover the rect
+      // grown by a tile, CROPPED to it — outside it a texel is outside the
+      // blit or painted again by its own slice. A picture is exact wherever it
+      // lands; the crop only saves fill (integer texels: a crop is exact).
+      const g = T3_TILE;
       const pr = clipRect
-        ? { x0: ax + clipRect.x0 - g, y0: ay + clipRect.y0 - g, x1: ax + clipRect.x1 + g, y1: ay + clipRect.y1 + g }
-        : { x0: ax, y0: ay, x1: ax + rt.width, y1: ay + rt.height };
-      for (const pic of wcp.pictures(pr)) {
-        rt.batchDrawFrame(wcPageKey(pic.page), wcSlotFrame(pic.x, pic.y), pic.box.x0 - ax, pic.box.y0 - ay);
-        stats.blits++;
-      }
+        ? { x0: Math.floor(ax + clipRect.x0) - g, y0: Math.floor(ay + clipRect.y0) - g, x1: Math.ceil(ax + clipRect.x1) + g, y1: Math.ceil(ay + clipRect.y1) + g }
+        : { x0: Math.floor(ax), y0: Math.floor(ay), x1: Math.ceil(ax + rt.width), y1: Math.ceil(ay + rt.height) };
+      for (const pic of wcp.pictures(pr)) if (this.wcDrawPicture(rt, pic, ax, ay, pr)) stats.blits++;
     }
     if (ownBracket) {
       this.t3countBatches(rt);

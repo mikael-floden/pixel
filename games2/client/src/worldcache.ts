@@ -366,11 +366,11 @@ export class WorldCache {
     for (let ty = ty0; ty <= ty1; ty++)
       for (let tx = tx0; tx <= tx1; tx++) {
         const t = this.tiles.get(tileKeyOf(this.rot, tx, ty));
-        const box = tileBoxOf(tx, ty, f);
         if (t) {
           t.used = this.clock; // in the ground texture: in use
           continue;
         }
+        const box = tileBoxOf(tx, ty, f); // only the uncached allocate: this runs every frame
         if (!inside(box, ground)) continue;
         cand.push({ tx, ty, box, d: Math.hypot((box.x0 + box.x1) / 2 - mx, (box.y0 + box.y1) / 2 - my) });
       }
@@ -513,6 +513,21 @@ export class WorldCache {
   destroy(): void {
     this.contextLost();
   }
+
+  /** One picture of this orientation, a different one each call (the
+   *  pages' check walks them all in turn), or null. */
+  samplePicture(): WcPicture | null {
+    let i = 0;
+    let first: Tile | null = null;
+    const want = this.sampleAt++;
+    for (const t of this.tiles.values()) {
+      if (t.rot !== this.rot) continue;
+      if (!first) first = t;
+      if (i++ === want % Math.max(1, this.tiles.size)) return { page: t.slot.page, x: t.slot.x, y: t.slot.y, box: t.box };
+    }
+    return first ? { page: first.slot.page, x: first.slot.x, y: first.slot.y, box: first.box } : null;
+  }
+  private sampleAt = 0;
 
   /** Pictures held (this orientation / all), pages, MB, and the counters. */
   take(): { tiles: number; here: number; pages: number; mb: number } & WorldCache["stats"] {
