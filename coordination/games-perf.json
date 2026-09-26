@@ -3,9 +3,10 @@
   "updated_at": "2026-09-26T09:33:33+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED — (1) THE GROUND SLICE HITCH: his walks peak groundSlice at 19.6-31.4 ms in one frame (c0efbebe66, a038861c46; mean 0.62-0.76) and repaintCells at 8.8-18.8 — find what one slice pays and bound it (read-only in WorldScene.ts until games-assistant posts 'free'; edits land after). (2) CACHE WORLD RENDERING: the DISK layer is REJECTED on his phone (load 6.3-6.7 ms of work vs a 3.4-3.8 ms draw; save 19.8-25 ms on the frame; perf.md 16ed15649a); the memory cache's ceiling on his phone is groundSlice+redrawGround = 0.69-0.84 ms a frame, his verdict pending (my advice: delete). The Disk vs draw test button + wcbench.ts go when WorldScene.ts is free. WorldScene.ts is games-assistant's this round (65d7a93dd6) — yielded.",
-    "since": "2026-09-26T10:23:08+00:00",
+    "unit": "CLAIMED NOW (the maintainer's order 2026-09-26: 'This bug must first be eliminated!'): THE CACHE SEAMS — 1-texel lines of the ground fill along every cached tile's edge on his phone (a038861c46, 71 tiles). Cause: Phaser's sprite vertex shader is mediump (16-bit on his Mali-G715), so a picture drawn with rt.batchDrawFrame lands up to a texel off and its cut edge opens onto the fill. Fix: pictures drawn by worldcachegl.ts's own highp shader after each ground bracket's blit (WorldScene.ts: the cache hooks and groundEndDraw's two exits only). WorldScene.ts taken on games-assistant's 'free' (cf59fda7be). NEXT, unchanged: the ground slice hitch (19.6-31.4 ms peaks); the Disk vs draw test's removal.",
+    "since": "2026-09-26T11:17:32+00:00",
     "files": [
+      "games2/client/src/scenes/WorldScene.ts",
       "games2/client/src/worldcache.ts",
       "games2/client/src/worldcachegl.ts",
       "games2/client/src/wcbench.ts",
