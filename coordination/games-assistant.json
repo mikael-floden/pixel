@@ -1,38 +1,11 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-26T06:34:05+00:00",
+  "updated_at": "2026-09-26T06:48:16+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED: THE VIEW TURN LANDS ON MAIN, WIRED TO THE SPIN BAR (maintainer 2026-09-26, asked 'put it on the live game?': 'Yes and not behind a switch. Put it on the buttons always. We will fix any bugs and move forward.'). The branch claude/rotate-view-real-renderer: the REAL renderer draws the world N/W/S/E up (render-only: simulation, prediction, every room.send stay in server space) and turns between them with the motion-blur overlay he approved ('This looks so damn good!') — upright things (bodies, standing scenery) stay billboards, blurred with the scene. The spin bar's `ml-spin` (games-ui spinbar.ts, untouched) drives it; Q/E press the same buttons. ONE SERVER/SHARED CHANGE: InputMessage.vr (optional, absent = today's law exactly) so a turned view keeps one on-screen speed. The ambient files carry maintainer-authorized SURGICAL turn hooks only (a `viewTurned` drop of per-drawn-cell memos on the `ml-view-turn` event). || ALSO CLAIMED (maintainer 2026-09-26, direct, in my session): HIS NEW CUBE replaces the orb in the spin bar AT FULL PIXEL SIZE ('I did the new cube bigger because the old cube wasn't big enough'; he chose true pixel size over the orb's 32 pt slot). His 64x64 9-frame export goes in as spin-orb-src.gif (same names, so every consumer and gate keeps working), cropped in the bake to its 44x44 ink box (all frames' ink 38x43, centred), baked exact 2x -> 44 pt; the bar's row grows to 44 and --ml-spin-step follows (Report moves down 10). games-ui-assistant's files, taken with notice on their board.",
-    "since": "2026-09-26T05:58:10+00:00",
-    "files": [
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/client/src/viewrot.ts",
-      "games2/client/src/rotfx.ts",
-      "games2/client/src/nightlight.ts",
-      "games2/client/src/tiles3.ts",
-      "games2/client/src/tiles3worker.ts",
-      "games2/client/src/resolveworker.ts",
-      "games2/client/src/scenery3.ts",
-      "games2/client/src/footsteps.ts",
-      "games2/shared/src/index.ts",
-      "games2/server/src/rooms/WorldRoom.ts",
-      "games2/server/src/schema/WorldState.ts",
-      "games2/server/test/viewrot.test.ts",
-      "games2/docs/view-rotation.md",
-      "games2/CLAUDE.md",
-      "games2/ambient/runtime/mount.ts",
-      "games2/ambient/runtime/zonefield.ts",
-      "games2/ambient/runtime/zonelines.ts",
-      "games2/ambient/runtime/types.ts",
-      "games2/ambient/foam/foam.ts",
-      "games2/client/ui-src/spin-orb-src.gif",
-      "games2/client/public/ui2/spin-orb.webp",
-      "games2/scripts/bake-corner-icons.py",
-      "games2/client/src/spinbar.ts",
-      "games2/scripts/verify-spinbar.mjs",
-      "games2/UI_AGENT.md"
-    ]
+    "unit": "LANDED (b9fcdec8a8): THE VIEW TURN IS LIVE ON THE SPIN BAR (maintainer 2026-09-26: 'Put it on the buttons always. We will fix any bugs and move forward.'). A tap on .ml-spinbtn moves a goal a quarter as the finger lifts, ml-spin settles it on the orb's quarter at rest, the view chases a quarter at a time; a right tap turns the world's near side RIGHT (his orb's front does) = viewRot -1. Q/E click the bar's buttons. Server/shared: InputMessage.vr (absent = the old law) — rides the container. Watching for his reports; next: the chain's pause between quarters, reversal mid-turn, indoor check while turned. games2/CLAUDE.md has NO pointer to docs/view-rotation.md yet: it is at 20,477 of 20,480 bytes, so a line needs another cut first. ALSO LIVE in the same push: his new CUBE in the spin bar at full pixel size (44 pt, verify-spinbar 35/35), the fade at the blur's peak (RotTune.fade 0.06), a frame's upright set snapped in the frame it is cut from. OPEN: in a right-tap turn at 305,239 the NPC cards go ghostly mid-turn while the player stays solid — probing the overlay's A0 texture next.",
+    "since": "2026-09-26T06:48:16+00:00",
+    "files": []
   },
   "progress": {
     "units_shipped": 42
@@ -101,7 +74,7 @@
       "at": "2026-09-26T06:34:05+00:00"
     }
   ],
-  "updated": "2026-09-26T06:34:05+00:00",
+  "updated": "2026-09-26T06:48:16+00:00",
   "units_shipped": 53,
   "handled": [
     {
