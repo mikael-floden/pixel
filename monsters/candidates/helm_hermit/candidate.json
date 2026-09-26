@@ -1717,7 +1717,7 @@
     "die": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1227,
           "step_max": 0.1825,
           "drift": 4.62,
@@ -1737,8 +1737,7 @@
             48
           ],
           "reasons": [
-            "barely falls: last vs first 0.31 — eyeball it",
-            "still standing: the last frame matches the base at 0.72 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: barely falls: last vs first 0.31 — eyeball it; still standing: the last frame matches the base at 0.72 (his dies end under 0.60)"
           ],
           "sub": "b4e08cdf-4794-4ef3-977b-35b0eb265785",
           "group": "4753c960-256f-4bcd-b0a4-5caf92c4c000",
@@ -1871,7 +1870,7 @@
           "generated_at": "2026-09-26T02:40:28+00:00"
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1846,
           "step_max": 0.2135,
           "drift": 2.3,
@@ -1891,8 +1890,7 @@
             48
           ],
           "reasons": [
-            "still standing: the last frame is only 0.21 of the silhouette away from the first — no collapse",
-            "still standing: the last frame matches the base at 0.81 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: still standing: the last frame is only 0.21 of the silhouette away from the first — no collapse; still standing: the last frame matches the base at 0.81 (his dies end under 0.60)"
           ],
           "sub": "377bd137-1d8a-449e-834e-7965d9fab62b",
           "group": "e3282928-7e51-4262-9c7f-ad882ed3d545",

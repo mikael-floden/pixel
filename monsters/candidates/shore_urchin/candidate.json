@@ -1753,7 +1753,7 @@
           "generated_at": "2026-09-26T02:33:42+00:00"
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1532,
           "step_max": 0.2314,
           "drift": 1.27,
@@ -1773,8 +1773,7 @@
             40
           ],
           "reasons": [
-            "barely falls: last vs first 0.31 — eyeball it",
-            "still standing: the last frame matches the base at 0.73 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: barely falls: last vs first 0.31 — eyeball it; still standing: the last frame matches the base at 0.73 (his dies end under 0.60)"
           ],
           "sub": "547425de-cadc-4203-9a2d-481934bc916c",
           "group": "c32cf20f-e6e6-47f9-b054-af702a5d7cc2",
@@ -1792,7 +1791,7 @@
           "generated_at": "2026-09-26T03:12:33+00:00"
         },
         "east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0839,
           "step_max": 0.1377,
           "drift": 0.53,
@@ -1812,9 +1811,7 @@
             40
           ],
           "reasons": [
-            "motion 0.084 outside the calm band 0.1–0.9 — eyeball it",
-            "barely falls: last vs first 0.26 — eyeball it",
-            "still standing: the last frame matches the base at 0.76 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: motion 0.084 outside the calm band 0.1–0.9 — eyeball it; barely falls: last vs first 0.26 — eyeball it; still standing: the last frame matches the base at 0.76 (his dies end under 0.60)"
           ],
           "sub": "e595a35c-e02b-45df-9f05-1defc89a665a",
           "group": "0d45c30d-d0a0-42df-a2ef-e1affd0b8a99",
@@ -1832,7 +1829,7 @@
           "generated_at": "2026-09-26T03:12:34+00:00"
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.222,
           "step_max": 0.2966,
           "drift": 1.5,
@@ -1852,8 +1849,7 @@
             40
           ],
           "reasons": [
-            "barely falls: last vs first 0.34 — eyeball it",
-            "still standing: the last frame matches the base at 0.68 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: barely falls: last vs first 0.34 — eyeball it; still standing: the last frame matches the base at 0.68 (his dies end under 0.60)"
           ],
           "sub": "bbeedaa3-f0b0-45e7-880c-97e7ddd956d2",
           "group": "2f02ae56-8e55-4fc9-a12e-1debc892bbe0",
@@ -1907,6 +1903,123 @@
           "unwrapped": null,
           "tries": 1,
           "generated_at": "2026-09-26T01:07:56+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1532,
+          "step_max": 0.2314,
+          "drift": 1.27,
+          "loop": 0.3074,
+          "loop_ratio": 2.01,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.008,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.977,
+          "end_iou": 0.731,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "left for HIS eye after 3 rolls: barely falls: last vs first 0.31 — eyeball it; still standing: the last frame matches the base at 0.73 (his dies end under 0.60)"
+          ],
+          "sub": "547425de-cadc-4203-9a2d-481934bc916c",
+          "group": "c32cf20f-e6e6-47f9-b054-af702a5d7cc2",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away, collapses completely and lies flat on the ground, then fades away entirely",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 7,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-26T03:12:33+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0839,
+          "step_max": 0.1377,
+          "drift": 0.53,
+          "loop": 0.2607,
+          "loop_ratio": 3.11,
+          "travel": 0.31,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.005,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.923,
+          "end_iou": 0.761,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "left for HIS eye after 3 rolls: motion 0.084 outside the calm band 0.1–0.9 — eyeball it; barely falls: last vs first 0.26 — eyeball it; still standing: the last frame matches the base at 0.76 (his dies end under 0.60)"
+          ],
+          "sub": "e595a35c-e02b-45df-9f05-1defc89a665a",
+          "group": "0d45c30d-d0a0-42df-a2ef-e1affd0b8a99",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away, collapses completely and lies flat on the ground, then fades away entirely",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 7,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-26T03:12:34+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.222,
+          "step_max": 0.2966,
+          "drift": 1.5,
+          "loop": 0.3436,
+          "loop_ratio": 1.55,
+          "travel": 1.09,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.018,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.815,
+          "end_iou": 0.682,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "left for HIS eye after 3 rolls: barely falls: last vs first 0.34 — eyeball it; still standing: the last frame matches the base at 0.68 (his dies end under 0.60)"
+          ],
+          "sub": "bbeedaa3-f0b0-45e7-880c-97e7ddd956d2",
+          "group": "2f02ae56-8e55-4fc9-a12e-1debc892bbe0",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away, collapses completely and lies flat on the ground, then fades away entirely",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 7,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-26T03:12:34+00:00",
+          "source": "north-east"
         }
       },
       "action": "Death - Faints, collapses to the ground and fades away",
@@ -1955,6 +2068,33 @@
           "shore_urchin/animations/die/north/04.webp",
           "shore_urchin/animations/die/north/05.webp",
           "shore_urchin/animations/die/north/06.webp"
+        ],
+        "south-west": [
+          "shore_urchin/animations/die/south-west/00.webp",
+          "shore_urchin/animations/die/south-west/01.webp",
+          "shore_urchin/animations/die/south-west/02.webp",
+          "shore_urchin/animations/die/south-west/03.webp",
+          "shore_urchin/animations/die/south-west/04.webp",
+          "shore_urchin/animations/die/south-west/05.webp",
+          "shore_urchin/animations/die/south-west/06.webp"
+        ],
+        "west": [
+          "shore_urchin/animations/die/west/00.webp",
+          "shore_urchin/animations/die/west/01.webp",
+          "shore_urchin/animations/die/west/02.webp",
+          "shore_urchin/animations/die/west/03.webp",
+          "shore_urchin/animations/die/west/04.webp",
+          "shore_urchin/animations/die/west/05.webp",
+          "shore_urchin/animations/die/west/06.webp"
+        ],
+        "north-west": [
+          "shore_urchin/animations/die/north-west/00.webp",
+          "shore_urchin/animations/die/north-west/01.webp",
+          "shore_urchin/animations/die/north-west/02.webp",
+          "shore_urchin/animations/die/north-west/03.webp",
+          "shore_urchin/animations/die/north-west/04.webp",
+          "shore_urchin/animations/die/north-west/05.webp",
+          "shore_urchin/animations/die/north-west/06.webp"
         ]
       },
       "strips": {
