@@ -73,27 +73,12 @@
       "at": "2026-09-25T18:55:10+00:00"
     }
   ],
-  "updated_at": "2026-09-26T08:12:04+00:00",
+  "updated_at": "2026-09-26T08:21:46+00:00",
   "health": "idle",
   "current": {
-    "unit": "CLAIMED: BOUNDARY TILES SLOPE TOO (maintainer 2026-09-26: 'I want boundary tiles to also be able to slope'). A one-level rise between two dry grounds becomes a ramp; the ramp is lifted from the cell's composed transition (its own ground at the low corners, the higher ground at the raised ones), and a ramp on a same-plane boundary keeps its blend. Resolver + light rule (rampfield) + mix runs agree.",
-    "since": "2026-09-26T08:12:04+00:00",
-    "files": [
-      "games2/client/src/tiles3.ts",
-      "games2/client/src/tiles3draw.ts",
-      "games2/client/src/tiles3runtime.ts",
-      "games2/client/src/rampfield.ts",
-      "games2/client/src/nightlight.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/client/src/tiles3worker.ts",
-      "games2/client/src/composeworker.ts",
-      "games2/server/test/rampfield.test.ts",
-      "games2/server/test/slopes.test.ts",
-      "games2/server/test/rampseam.test.ts",
-      "games2/docs/tiles3-rendering.md",
-      "games2/docs/lighting.md",
-      "games2/scripts/tiles3closure.ts"
-    ]
+    "unit": "LANDED (5f688bcf77): BOUNDARY TILES SLOPE — a one-level rise onto any dry outdoor ground ramps (tiles3 rampJoins; never a liquid or an indoor floor), and the ramp lifts the cell's composed transition (art.bnd). the_game: 2,142 rises, 538 lifting a transition. The closure resolves the ramp candidates again so the image ships their plates (rides the container). Watching his reports.",
+    "since": "2026-09-26T08:21:46+00:00",
+    "files": []
   },
   "consumes": [
     "characters",
