@@ -22,11 +22,10 @@ immediately and go back". The blur and the zoom pulse follow that velocity, not
 the clock. PREPARE, THEN RUN (maintainer 2026-09-26, on the live build: "it lags
 like crazy in the middle of the rotation animation"): until B is COMPLETE — the
 frame, its bodiless twin, its owner map — a driven turn only creeps (to 0.12 at
-0.12/450 ms), so the swap's chunks, every upload, readback and extra render
-land while it barely moves and the fast middle draws and nothing else (it
-crawled at mid-turn waiting for B, up to 3 s, and took B there). Its B is checked every frame and
-taken on the second settled one, capped at 1.5 s (3 checks 60 ms apart were
-180 ms of waiting on a view already drawn). THE CUBE FOLLOWS THE WORLD ("it's not in sync with the
+0.12/450 ms), so every swap, upload, readback and extra render lands while it
+barely moves and the fast middle draws and nothing else (it crawled at mid-turn
+waiting for B, up to 3 s, and took B there). Its B settle is 3 checks 60 ms
+apart, capped at 1.5 s. THE CUBE FOLLOWS THE WORLD ("it's not in sync with the
 cube rotation"): the chase publishes `ml-view-angle {q, goal, busy}` every frame
 in the bar's quarters, and `spinbar.ts` draws the cube at the target minus the
 world's remaining turn — on its own 0.4 s clock it was done before the world
@@ -40,68 +39,6 @@ holds the cube's own clock (`__mlSpinFollow = false`).
 THE DIRECTION IS THE ORB'S: his orb's front face moves RIGHT on a right tap, so
 the world's near side does too — `viewRot - 1` per right quarter (the picture
 turns anticlockwise).
-
-## Nothing to prepare: a turn swaps what is kept, in frame-sized chunks
-
-(Maintainer 2026-09-26: "It's as if the game has to prepare a lot of stuff";
-then "Split up: break the swap into small per-frame chunks instead of one
-block.") The swap shares the main thread with the overlay, so it does as little
-as it can, and does that a few ms a frame:
-- THE SWAP RUNS IN STEPS (`swapSteps`, driven by `runSliced`, SWAP_SLICE_MS = 6
-  a frame, `applyViewRot(k, true)`): the night (a first visit's heightmap build
-  and ramps yield between row bands, `setWorldSteps`; a kept view puts its maps
-  back one texture a step), the camera, the indoor cut, the stamps, the
-  resolver, the view's scenery placements, the ground — painted at the new
-  anchor in 96 px bands, the scroll's own clipped pass, so the pixels are a
-  full paint's (`groundPaintSteps`) — the occluders, the ambient event, the
-  room. Meanwhile the camera is off, the frame loop's ground and occluder
-  upkeep stands down (`swapBusy`: its latch would have painted the whole new
-  side in one frame), the stamps and the slope switch wait for a half-built
-  night (`building`), and the turn CREEPS; frame B is taken only once the swap
-  is done. One swap at a time (`swapChain`: a tap back queues behind). Run
-  straight through (`__ml.viewRot`, a canvas renderer) it is the one block it
-  was. `turnLog.sw_chunkMax / sw_cpu / sw_frames / sw_bigStep / sw_stepCpu` say
-  what a frame paid and which step paid it.
-- ONLY THE SCENE'S FIRST BUILD TAKES THE WORLD DOWN (`t3Booted`): initTiles3
-  cleared `worldUp` on every rebuild and only the boot's hold set it back, so
-  after one turn (or the fade dial, or a terrain edit) streaming ran
-  unbudgeted, the ring prefetch stood down and a respawn could not begin.
-- EACH VIEW IS BUILT ONCE AND KEPT. `viewCache`: the rotated World, its terrain
-  grid, its deck index; the document is fetched ONCE, in idle time after the
-  world is up, and the two neighbours of the view on screen are built in idle
-  slots (`warmViews`) — fetched at the first tap, it held that turn's swap for
-  the whole round trip (8.5 s on a busy harness). `t3ViewCache`: each view's
-  resolver WITH the cells it resolved, put back on the turn back; a rule change
-  (fade, details, slope, world) clears them all. The night pass's `viewKeep`:
-  the heightmap maps' pixels, the CPU twins' arrays, the ramp tags and the
-  scenery stamps, keyed by the world object — four re-uploads instead of a
-  rebuild; the slope switch clears them; the stamps re-run only if the
-  footprints object changed (`stampSceneryCollision` makes a new one per stamp).
-  The resolver worker keeps its documents and a resolver per view too.
-- WHAT DOES NOT DEPEND ON THE SIDE IS NEVER MADE AGAIN (`viewSwapping`): the
-  art loader, the scenery piece manifests and the collision documents survive a
-  turn; only the view's placement index is rebuilt. Made per turn, every
-  manifest was asked for again and `/api/scenery-collision` landed a moment into
-  the turn with a re-stamp, a new footprints object (the night's stamps all over
-  again) and a FULL repaint — a second hitch in the middle of every turn. The
-  pick frame switches WITH the resolver, never before: a cell resolved in
-  between through the old view's resolver would be picked for the new side and
-  kept with the old view.
-- THE CAMERA MOVES BEFORE ANYTHING IS PAINTED: the bodies are re-based and the
-  camera put on the player (detached: on the same ground) with `preRender`, so
-  `worldView` already says where the ground and occluders go. Painted where the
-  OLD view had put the camera, every turn resolved and drew a whole window of
-  the new world nobody saw (~150 ms of resolving), pruned the kept cells of the
-  right window out of the cache, and drew it all again a frame later where the
-  chase snapped.
-Measured, swap alone, headless at 305,239: a view seen before was one block of
-350-600 ms, then 80-100 kept, and is now 44-62 ms of work over 7-8 frames, no
-frame paying more than 7.6-12.6; a first visit was one block of 430-580 and is
-now 250-330 ms over 19-22 frames — its largest share (56-70 ms: the slope runs
-and the ramp masks, two whole-world passes back to back) is now two steps, and
-both are made for the neighbours in idle time (`warmRamps`). The ground painted
-in bands hashes the same as a full paint (`__ml.groundHash`), a stepped night
-build the same as the one-block build.
 
 ## The one rule: RENDER-ONLY
 
@@ -257,9 +194,6 @@ thing only ONE frame saw (leaving or entering the view) is matched by name
 keeps its one card all turn, fading only at the far end — handed over at
 mid-turn, a lamp leaving the view vanished mid-screen. A card samples only what
 its frame saw: a rect past the frame's edge, clamped, drew a striped block.
-THE OVERLAY IS A PICTURE OVER THE WORLD: z 3, the freeze frame's layer — under
-the thumb stick (4), the HUD (4), chat (5) and the pill (8); at z 5 the stick
-vanished for every turn.
 THE LOOK (`RotTune`, `__ml.turnTune`, defaults his to change): `blur` scales the
 arc; `zoom` 0.1 is a zoom pulse about the pivot riding the angular speed (keeps
 more of the screen on ground a frame saw); what NEITHER frame saw is a soft 5x5
@@ -277,8 +211,7 @@ it. (A fade across half the turn, 0.25-0.75, laid the two views over each other
 for most of the orbit and muddied both sets of lines.)
 FRAME B WAITS FOR A NON-VACUOUS SETTLE: every art key on the cells in view is a
 texture, no cell in view is owed a repaint, the ground pass has blitted, at least
-60 cells were checked, held (driven: two frames; the debug hooks: five checks
-100 ms apart) — and no occluder cell in
+60 cells were checked, held for five checks 100 ms apart — and no occluder cell in
 view is incomplete and no scenery still is streaming (a B taken on the ground
 alone ended the turn on holes, then the live view popped them in). (A test that checked
 nothing answered "drawn" 20 ms after the swap and B was a half-painted view.)
@@ -290,9 +223,8 @@ VIEW quarters: +1 is the picture clockwise; neither moves the spin goal),
 
 ## Measured (headless Chrome, maintainer's screen 393x851 @2.75, software GL)
 
-- Swap: see "Nothing to prepare" (a view seen before 44-62 ms over 7-8 frames,
-  a first visit 250-330 ms over 19-22); a turned view's world entry ~45 ms,
-  built in idle time.
+- Swap: rebuild ~330 ms; parse of the turned doc ~45 ms (the first turn's
+  world.json fetch ~6.5 s under load — a cache hit on a phone).
 - Frame A capture 65 ms; turned view drawn (art streamed) 87-121 s HERE, where
   art streams at ~1 item / 3 s; a phone's is the number that decides the feel.
 
@@ -311,7 +243,3 @@ VIEW quarters: +1 is the picture clockwise; neither moves the spin goal),
   north-up.
 - A chained quarter still holds for its frame A (three frames) at the junction,
   and creeps near its start while its B is drawn.
-- A FIRST turn to each view still builds that view's night maps and resolves
-  its ground inside the swap — in chunks now, but 250-330 ms of them here:
-  the next thing to move off the turn (the night maps and the neighbour's
-  cells, made ahead of the tap).

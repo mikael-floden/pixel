@@ -340,9 +340,7 @@ export class RotFx {
     // between chained quarters it lies over the one still showing the turn
     Object.assign(this.canvas.style, {
       position: "fixed", left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px`,
-      // z 3, the freeze frame's layer: over the world, under everything the
-      // player still uses — the thumb stick (4) vanished under it for every turn
-      pointerEvents: "none", zIndex: "3", imageRendering: "pixelated", visibility: "hidden",
+      pointerEvents: "none", zIndex: "5", imageRendering: "pixelated", visibility: "hidden",
     } as CSSStyleDeclaration);
     const gl = this.canvas.getContext("webgl", { alpha: false, antialias: false, depth: true, premultipliedAlpha: false, preserveDrawingBuffer: false });
     if (!gl) throw new Error("rotfx: no WebGL");
@@ -356,10 +354,14 @@ export class RotFx {
       for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.NEAREST], [gl.TEXTURE_MAG_FILTER, gl.NEAREST], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
       return t; };
     this.tex = { A: mk(), B: mk(), A0: mk(), B0: mk(), AM: mk(), OA: mk(), OB: mk(), DA: mk(), DB: mk(), M: mk() };
-    gl.bindTexture(gl.TEXTURE_2D, this.tex.M);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    for (const k of ["DA", "DB", "M"] as const) {
+      gl.bindTexture(gl.TEXTURE_2D, this.tex[k]);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      if (k === "M") { gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); }
+    }
     this.depthRb = gl.createRenderbuffer()!;
-    this.sizeTargets(w, h);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthRb);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, w, h);
     const fb = (t: WebGLTexture) => { const f = gl.createFramebuffer()!; gl.bindFramebuffer(gl.FRAMEBUFFER, f);
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
       gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthRb); return f; };
@@ -370,47 +372,6 @@ export class RotFx {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.quadBuf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1]), gl.STATIC_DRAW);
     document.body.appendChild(this.canvas);
-  }
-
-  /** The render targets (the two depth maps, the scene, the depth buffer) at
-   *  w x h — or 1 x 1 while PARKED, so an idle overlay holds a context and its
-   *  compiled programs and next to no memory. */
-  private targetsW = 0;
-  private sizeTargets(w: number, h: number) {
-    const gl = this.gl;
-    for (const k of ["DA", "DB", "M"] as const) {
-      gl.bindTexture(gl.TEXTURE_2D, this.tex[k]);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    }
-    gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthRb);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, w, h);
-    this.targetsW = w;
-  }
-
-  /** Can this overlay turn a canvas of this size? (It keeps its own.) */
-  fits(w: number, h: number): boolean { return this.canvas.width === w && this.canvas.height === h; }
-
-  /** Over the game canvas again (the layout may have moved since it last drew). */
-  place(over: HTMLCanvasElement): void {
-    const r = over.getBoundingClientRect();
-    Object.assign(this.canvas.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
-  }
-
-  /** PARKED BETWEEN TURNS, NOT DESTROYED: a new WebGL context and four programs
-   *  compiled on every tap were the first thing a turn did. Hidden, its frames
-   *  and targets shrunk to 1 x 1 (two full-screen overlays held ~200 MB). */
-  park(): void {
-    const gl = this.gl;
-    const one = new Uint8Array(4);
-    for (const k of ["A", "B", "A0", "B0", "AM", "OA", "OB"] as const) {
-      gl.bindTexture(gl.TEXTURE_2D, this.tex[k]);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, one);
-    }
-    this.sizeTargets(1, 1);
-    this.targetsW = 0;
-    this.st = null; this.hasB = false;
-    this.bodyA = []; this.bodyB = []; this.bodyM = null; this.meA = this.meB = -1; this.hasOwn = { A: false, B: false };
-    Object.assign(this.canvas.style, { transition: "", opacity: "1", visibility: "hidden" });
   }
 
   private upload(t: WebGLTexture, src: TexImageSource) {
@@ -454,7 +415,6 @@ export class RotFx {
   /** Frame A arrives: the overlay can now draw the turn's first frame, which IS A. */
   start(s: RotFxStart): void {
     const t0 = performance.now(), gl = this.gl;
-    if (this.targetsW !== this.canvas.width) this.sizeTargets(this.canvas.width, this.canvas.height);
     this.st = s; this.hasB = false;
     this.upload(this.tex.A, s.frameA);
     this.upload(this.tex.A0, s.frameA0 ?? s.frameA);
