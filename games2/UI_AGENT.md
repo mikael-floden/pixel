@@ -89,6 +89,35 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   side the analog stick lives on, and in landscape which side the whole menu
   column takes. localStorage `ml-hand` + the "ml-hand" event; consumed by
   hud.ts (applyLayout + the Settings "controls" button) and gamepad.ts.
+- `client/src/spinbar.ts` — THE SPIN BAR: his rotating orb between two arrow
+  buttons, on the line directly under the HP/EP card, with the Report button
+  one step below it (maintainer 2026-09-26). It SPANS THE CARD — `--bars-l-w`
+  is the card's measured outer width, so the left button lands on the card's
+  left edge and the right button on its right, and the orb centres between
+  them; the Report button clears it by `--ml-spin-step`, which this module
+  PUBLISHES so the two placements cannot disagree (and which falls back to 0,
+  putting Report back on the card's own line, if the bar is ever not mounted).
+  The buttons are the 🔍 square's clothes written out, not a shared class, so
+  `verify-spinbar` compares them against the LIVE `.ml-wikinear` — 11
+  properties — the same way `verify-recbtn` does for the Wiki pill. ONE bake
+  serves both: his 24x24 `Right_Arrow` export at `/ui2/icon-arrow.webp`, the
+  left button wearing it under `scaleX(-1)` ("one has to be flipped"); a second
+  file would be a second thing to keep in sync with his art.
+  **A STRIP, NEVER A GIF.** A GIF cannot be scrubbed — the browser owns its
+  clock — and this must run BACKWARDS on one of the two buttons ("you have to
+  play it backwards to get the other direction working"), so
+  `bake-corner-icons.py`'s `STRIPS` lays the frames in one horizontal 2x strip
+  and the CSS steps `background-position`. **The strip IS one quarter turn**:
+  a press plays all of it and lands back on frame 0, the next quarter's zero,
+  which is what "remove some frames from the gif so it ends on a perfect 90°
+  rotation" asks for. The count is read from the art
+  (`naturalWidth / naturalHeight`), so re-aiming the trim is a bake, not a
+  code change; `background-size:auto 32px` is natural/2 for any exact-2x bake,
+  so the first paint is already on the grid and nothing waits on a probe.
+  The orb is `pointer-events:none` with no role — "the gif should be in the
+  middle (not a button)". It drives nothing yet, deliberately: a press emits
+  `ml-spin` with the new quarter and direction, so whatever it ends up turning
+  subscribes without this module knowing about it. Probe `__mlSpin`.
 - `client/src/gamefreeze.ts` — puts the Phaser loop to sleep while a
   full-screen reader is over the world (today: the wiki drawer). The seam
   between `wikipanel.ts`, which asks, and `main.ts`, which registers the
@@ -129,7 +158,9 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/bake-tab-icons.py`, `scripts/bake-corner-icons.py` (all emit
   `.webp` — convert at the SOURCE, never as a build step: a Dockerfile
   conversion would add minutes to every deploy and bust the layer cache).
-- UI verify scripts: `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
+- UI verify scripts: `scripts/verify-spinbar.mjs` (the spin bar: his two
+  edges, the orb centred and not a button, one mirrored bake, the quarter
+  arithmetic, landscape), `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
   `scripts/verify-mobile.mjs`, `scripts/verify-landscape.mjs`,
   `scripts/verify-dropqty.mjs` (backpack ×N badges + the drop dialog, both
   orientations; the SERVER's count clamp is unit-tested in
