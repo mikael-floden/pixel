@@ -944,7 +944,8 @@ test("the_game's boundaries share compositions — the ratio, measured", { skip 
     wallOverrides: load("live/tuning/tile_walls.json").overrides,
     basePromotions: load("live/tuning/base_tiles.json").overrides,
     fades: load("tiles/fades/index.json"),
-    slopes: load("tiles/slopes/index.json"),
+    // The slope library was retired by the tiles agent (2026-09-26); the composed ramps need none.
+    slopes: existsSync(join(REPO, "tiles/slopes/index.json")) ? load("tiles/slopes/index.json") : undefined,
     topWallOverrides: load("live/tuning/top_walls.json").overrides,
     topOverrides: load("live/tuning/tile_tops.json").overrides,
     // MEASURED elsewhere (tiles3.test.ts); the pitch only moves paste y, and

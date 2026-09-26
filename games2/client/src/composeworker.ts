@@ -23,6 +23,7 @@
 import type { PatternsDoc } from "./tiles3";
 import {
   buildBoundaryPixels,
+  withEdge,
   buildPlatePixels,
   fadeOverlay,
   patternSheets,
@@ -135,7 +136,8 @@ async function compose(g: number, j: ComposeJob): Promise<void> {
       const [a, b] = await Promise.all([plate(j.a), plate(j.b)]);
       if (g !== gen) return;
       t0 = performance.now();
-      px = buildBoundaryPixels(sheets, { maskFrame: j.frame, topOnly: j.topOnly, noWall: j.noWall, slope: j.slope }, a, b, j.seam);
+      // ...with the cell's outline, as the main thread builds it (tiles3draw `withEdge`).
+      px = withEdge(sheets, buildBoundaryPixels(sheets, { maskFrame: j.frame, topOnly: j.topOnly, noWall: j.noWall, slope: j.slope }, a, b, j.seam), j.edge);
     }
     const data = px.data.buffer as ArrayBuffer;
     post({ type: "composed", gen: g, key: j.key, w: px.w, h: px.h, data, ms: performance.now() - t0 }, [data]);

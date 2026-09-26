@@ -54,6 +54,8 @@ import { PLATE_H,
   TopsDoc,
 } from "./tiles3";
 import { slopeLift,
+  courseEdgeBits,
+  liveTextures,
   artKey,
   assetPath,
   patternSheetPaths,
@@ -746,16 +748,20 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
     const cap = cell.wall?.stack[cell.wall.stack.length - 1]?.tile;
     if (!cap?.path) return null;
     const k = artKey(cap.path);
-    return tex.exists(k) ? k : null;
+    // The cap course with the outline's verticals, as the ground pass drew it.
+    return tex.exists(k) ? t3.edgedCourse(k, courseEdgeBits(cell, cell.level)) : null;
   }
   const art = cell.art;
   if (!art) return null;
   if (art.kind === "liquid") return t3.liquid(art.topRGB);
   /* `topOnly` too: an occluder copy that drew the unmasked tile would put the
    * wall band back on the water this pass exists to keep clean. */
-  if (art.kind === "conform" || art.topOnly) return t3.plate(art, cell.ground);
+  if (art.kind === "conform" || art.topOnly) {
+    const k = t3.plate(art, cell.ground);
+    return k ? t3.edgedTop(cell, k) : null; // the outline, as the ground pass draws it
+  }
   const k = plateKey(art, cell.ground);
-  return tex.exists(k) ? k : null;
+  return tex.exists(k) ? t3.edgedTop(cell, k) : null;
 }
 
 /** THE MAINTAINER'S SET ON A WALL'S CAP — the second image the occluder copy
@@ -785,7 +791,8 @@ export function dressKey(t3: Tiles3Textures, cell: Tiles3Cell): { key: string; x
   if (cell.kind !== "wall" || !cell.dressed) return null;
   const art = cell.art;
   if (!art || art.kind === "liquid") return null;
-  const key = t3.plate(art, cell.ground);
+  const plain = t3.plate(art, cell.ground);
+  const key = plain ? t3.edgedTop(cell, plain) : null; // the outline, as the ground pass draws it
   // A RAISE HANGS ITS PLATE `rise` ROWS UP (tiles3draw slopeLift) — the same
   // anchor the ground pass paints it at. Without it this sprite landed on top
   // of the ground texture at the plain anchor, the sunk picture over the
@@ -864,7 +871,18 @@ export function faceKeyAt(
   const s = w.stack.length ? w.stack[storey - w.stack[0].storey] : undefined;
   if (s && s.storey === storey && s.tile.path) {
     const k = artKey(s.tile.path);
-    if (tex.exists(k)) return k;
+    if (tex.exists(k)) return edgedFace(tex, cell, k, storey);
   }
-  return faceKey(tex, cell);
+  const f = faceKey(tex, cell);
+  return f ? edgedFace(tex, cell, f, storey) : null;
+}
+
+/** The course WITH THE OUTLINE'S VERTICALS for this storey (tiles3draw
+ *  `courseEdgeBits`), built by the live texture factory drawing into `tex` —
+ *  the variant the ground pass draws, so an occluder copy matches it. */
+function edgedFace(tex: TextureManagerLike, cell: Tiles3Cell, key: string, storey: number): string {
+  if (!cell.edge) return key;
+  const t3 = liveTextures();
+  if (!t3 || t3.textureManager !== tex) return key;
+  return t3.edgedCourse(key, courseEdgeBits(cell, storey));
 }

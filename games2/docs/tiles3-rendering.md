@@ -555,6 +555,34 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   with the art still unrequested, which is the pop-in the hold was built to
   stop. verify-tiles3 still walks to its scenery window instead of `lookAt`;
   that is belt and braces now, not a requirement.)
+- **EVERY VISIBLE EDGE WEARS A 2 PX OUTLINE; A 100% RAMP WEARS NONE**
+  (maintainer 2026-09-26: "a 1px near-black (somewhat transparent) border at
+  every visible edge ... where the ground becomes wall or where a left wall
+  becomes a right wall", then "2px wide with the inner border lighter; light
+  joins light, dark joins dark; never a gap; follow the slope"). The rule is
+  tiles3 `edgeSet` → `Tiles3Cell.edge` (`top`: the top face's edges where it
+  stands above its neighbour at either end, or a back edge below one; `lo[3]`:
+  the left corner, the crease, the right corner, each with the height its run
+  goes down to), from corner SURFACE heights with the ramp rise in, so a full
+  ramp is flush and draws nothing and a 50% ramp keeps its riser. The ink is
+  BAKED into lined texture variants (key `|e<n>`, `|v<n>`, `|x<n>`: a new picture
+  is a new key), so the ground pass and every occluder copy draw one raster
+  and the outline costs zero fill (his phone is fill-bound; a per-pixel depth
+  outline was rejected for that). `edgeTopPixels`: per COLUMN, the OUTER line
+  (`EDGE_ALPHA` 0.7) on the last texel of art — a back edge's topmost opaque
+  texel (a plate's rounding and a ramp's lift included), a front edge's first
+  band texel under the rim (ground turning into wall) — and the INNER line
+  (`EDGE_ALPHA_IN` 0.35) one texel inside; one texel a column is what makes
+  two cells' lines meet at their shared vertex column. A riser in a plate's own
+  band and a ramp's side faces take their verticals there too (`verts`, bits
+  4-6 of a boundary's `edge`). `edgeCoursePixels`: corners down each row's
+  outermost texel (inner beside it), the crease both middle columns, and the
+  CAP course trimmed to `libTop` on the back edges it outlines — the review
+  art's diamond is rounded a texel wider and that texel showed OUTSIDE the line
+  (his screenshot). A fade or detail overlay on a lined top has the outline's
+  band cut out (`clearOutline`) — it painted gaps into the line. Gate:
+  `server/test/edges.test.ts`. (Not a GPU edge pass: it re-fills the screen.
+  Not the libTop rim alone: the cap under it stuck out.)
 - **A ONE-LEVEL RISE IS A RAMP THE BODY WALKS UP; A CLIFF OF TWO KEEPS ITS
   FOOT** (maintainer 2026-09-19: "Think how Zelda - a link to the past created
   slopes Link could run upwards without needing to jump ... 1 level elevation

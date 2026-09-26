@@ -37,10 +37,11 @@ test("the tiles3 art closure of every published worlds3 world resolves completel
   // slope file the game's rule picked that the parity rule had not): a cut's flat tile
   // is in the closure, and so is every tile of every complete bump set of a ground the
   // world uses — his verdicts are live, and a set approved between two deploys must not 404.
-  assert.ok(c.art.includes("tiles/slopes/grass/a14_s02/post/tile_00.0baf3959.webp"), "the cut's flat grass tile ships");
-  const grassSets = new Set(c.art.filter((p) => p.startsWith("tiles/slopes/grass/")).map((p) => p.split("/")[3]));
-  assert.ok(grassSets.size >= 10, `every complete grass slope set ships (${grassSets.size})`);
-  assert.ok(c.art.some((p) => p.startsWith("tiles/slopes/light_soil/")), "light_soil's slope sets ship");
+  // The slope library was retired by the tiles agent (2026-09-26): while it exists its sets ship, once gone nothing names it.
+  if (existsSync(join(REPO, "tiles/slopes/index.json"))) {
+    const grassSets = new Set(c.art.filter((p) => p.startsWith("tiles/slopes/grass/")).map((p) => p.split("/")[3]));
+    assert.ok(grassSets.size >= 10, `every complete grass slope set ships (${grassSets.size})`);
+  } else assert.deepEqual(c.art.filter((p) => p.startsWith("tiles/slopes/")), [], "no retired slope file is named");
   assert.ok(c.bytes < 25e6, `${(c.bytes / 1e6).toFixed(1)} MB of art`);
   assert.deepEqual(tiles3ArtClosure(REPO, worlds).art, c.art, "deterministic");
   console.log(`  ship-tiles3: ${worlds.join(", ")} → ${c.art.length} art files, ${(c.bytes / 1e6).toFixed(2)} MB, ${c.docs.length} documents`);

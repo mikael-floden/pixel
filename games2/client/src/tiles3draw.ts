@@ -49,6 +49,11 @@ import {
   LIQUID_TILE_GROUNDS,
   hexRGB,
   rampHeight,
+  EDGE_N,
+  EDGE_W,
+  EDGE_S,
+  EDGE_E,
+  EDGE_NONE,
   type PatternsDoc,
   type Tiles3Boundary,
   type Tiles3Cell,
@@ -665,6 +670,222 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
  *  bottom row at the bottom: the surface op hangs it `lh` rows up, the body's
  *  lift follows `rampHeight * lh`. A published storey-height set replaces
  *  it the day one exists (tiles3 `slopeSets`, ramps first). */
+/* -- the edge outline ------------------------------------------------------- */
+
+/** THE OUTLINE'S INK (maintainer 2026-09-26: "a 1px near-black (somewhat
+ *  transparent) border", then "a 2px wide border with the inner border being
+ *  lighter ... the light border should always join up with the light border on
+ *  the other tile, the dark with the dark"): near-black, the OUTER line on the
+ *  last pixel of art at EDGE_ALPHA, the INNER line beside it at EDGE_ALPHA_IN. */
+export const EDGE_RGB: readonly [number, number, number] = [14, 12, 10];
+export const EDGE_ALPHA = 0.7;
+export const EDGE_ALPHA_IN = 0.35;
+
+function inkAt(d: Uint8ClampedArray, i: number, a: number): void {
+  if (d[i + 3] === 0) return; // only over art: a hole stays a hole
+  d[i] = Math.round(d[i] * (1 - a) + EDGE_RGB[0] * a);
+  d[i + 1] = Math.round(d[i + 1] * (1 - a) + EDGE_RGB[1] * a);
+  d[i + 2] = Math.round(d[i + 2] * (1 - a) + EDGE_RGB[2] * a);
+}
+
+/** One outline: texel indices for the outer and the inner line, each inked
+ *  once (a vertex on two edges, or where a line meets a crease), the outer
+ *  winning over the inner. */
+function inkLines(px: Pixels, outer: Set<number>, inner: Set<number>): void {
+  for (const k of inner) if (!outer.has(k)) inkAt(px.data, k * 4, EDGE_ALPHA_IN);
+  for (const k of outer) inkAt(px.data, k * 4, EDGE_ALPHA);
+}
+
+/** The library top face's first and last row per column (`libTop`, the diamond
+ *  every plate is cut to); -1 where the column holds none. Memoised per sheet. */
+const spanMemo = new WeakMap<Uint8Array, Int16Array>();
+function topSpans(sheets: PatternSheets): Int16Array {
+  const hit = spanMemo.get(sheets.libTop);
+  if (hit) return hit;
+  const { fw, fh, libTop } = sheets;
+  const out = new Int16Array(fw * 2).fill(-1);
+  for (let x = 0; x < fw; x++)
+    for (let y = 0; y < Math.min(fh, 2 * DY + 2); y++)
+      if (libTop[y * fw + x] > 0) {
+        if (out[x * 2] < 0) out[x * 2] = y;
+        out[x * 2 + 1] = y;
+      }
+  spanMemo.set(sheets.libTop, out);
+  return out;
+}
+
+/** A TOP FACE WITH ITS OUTLINE: a copy of `px` (a plate, a composed tile or a
+ *  composed ramp in its taller frame) with the edges in `mask` (tiles3
+ *  `CellEdges.top`) inked, per column, so a line is one texel a column along
+ *  the 2:1 edge and meets the next cell's line at the shared vertex column.
+ *
+ *  THE OUTER LINE IS THE LAST PIXEL OF ART: on a back edge the topmost opaque
+ *  texel at the rim (a plate's rounding or a ramp's lift included), on a front
+ *  edge the first texel of the band under the rim when there is one (the
+ *  ground turning into wall) or the rim itself. Nothing of the top is left
+ *  outside the line. A ramp's rim is lifted exactly as its texels are
+ *  (`buildRampPixels`: `y + lh - round(lh * rampHeight)`), so the line rides
+ *  the incline. */
+export function edgeTopPixels(sheets: PatternSheets, px: Pixels, mask: number, ramp?: { mask: number; lh: number }, verts = 0): Pixels {
+  const out: Pixels = { w: px.w, h: px.h, data: new Uint8ClampedArray(px.data) };
+  const span = topSpans(sheets);
+  const W = out.w, H = out.h, d = out.data;
+  const opaque = (x: number, y: number) => y >= 0 && y < H && d[(y * W + x) * 4 + 3] > 0;
+  const lift = (x: number, y: number) => {
+    if (!ramp) return y;
+    const a = (x + 0.5 - DX) / DX;
+    const b = (y + 0.5) / DY;
+    return y + ramp.lh - Math.round(ramp.lh * rampHeight(ramp.mask, (a + b) / 2, (b - a) / 2));
+  };
+  const outer = new Set<number>(), inner = new Set<number>();
+  for (let x = 0; x < Math.min(W, sheets.fw); x++) {
+    const t = span[x * 2], b = span[x * 2 + 1];
+    if (t < 0) continue;
+    const right = x >= DX;
+    if (mask & (right ? EDGE_N : EDGE_W)) {
+      let y = lift(x, t);
+      const y0 = y;
+      while (y > y0 - 2 && opaque(x, y - 1)) y--; // art rounded past the rim is still the top
+      for (let g = 0; g < 3 && !opaque(x, y); g++) y++;
+      if (opaque(x, y)) {
+        outer.add(y * W + x);
+        if (opaque(x, y + 1)) inner.add((y + 1) * W + x);
+      }
+    }
+    if (mask & (right ? EDGE_E : EDGE_S)) {
+      const y0 = lift(x, b);
+      const y = opaque(x, y0 + 1) ? y0 + 1 : y0;
+      if (opaque(x, y)) {
+        outer.add(y * W + x);
+        if (opaque(x, y - 1)) inner.add((y - 1) * W + x);
+      }
+    }
+  }
+  /* THE VERTICALS OF A FACE THIS RASTER DRAWS ITSELF — a step's riser (the
+   * plate's own band) or a ramp's side faces, which no course carries: the
+   * corners down the outermost texel of each row from the (lifted) side
+   * vertex, the crease down the two middle columns from the bottom vertex, as
+   * `edgeCoursePixels` draws them on a course. */
+  const side = (bit: number, xs: readonly number[], inward: number) => {
+    if (!(verts & bit)) return;
+    const vx = xs[0];
+    const y0 = lift(vx, span[vx * 2]);
+    for (let y = Math.max(0, y0); y < H; y++) {
+      const x = xs.find((c) => opaque(c, y));
+      if (x === undefined) {
+        if (y > y0 + 2) break;
+        continue;
+      }
+      outer.add(y * W + x);
+      if (opaque(x + inward, y)) inner.add(y * W + x + inward);
+    }
+  };
+  side(1, [0, 1], 1);
+  side(4, [sheets.fw - 1, sheets.fw - 2], -1);
+  if (verts & 2) {
+    const y0 = lift(DX - 1, span[(DX - 1) * 2 + 1]) + 1;
+    for (let y = y0; y < H && (opaque(DX - 1, y) || opaque(DX, y)); y++) {
+      outer.add(y * W + DX - 1);
+      outer.add(y * W + DX);
+    }
+  }
+  inkLines(out, outer, inner);
+  return out;
+}
+
+/** A composed tile with its cell's outline (`Tiles3Boundary.edge`), both threads. */
+export function withEdge(sheets: PatternSheets, px: Pixels, edge: number | undefined): Pixels {
+  return edge ? edgeTopPixels(sheets, px, edge & 15, undefined, edge >> 4) : px;
+}
+
+/** AN OVERLAY WITH THE OUTLINE'S BAND CUT OUT: a fade or detail overlay is
+ *  drawn over the lined top, and where its texels reached the rim they painted
+ *  a gap into the line. The band is the rim's texels and their rounding either
+ *  side, on the edges in `mask`. */
+export function clearOutline(sheets: PatternSheets, px: Pixels, mask: number): Pixels {
+  const out: Pixels = { w: px.w, h: px.h, data: new Uint8ClampedArray(px.data) };
+  const span = topSpans(sheets);
+  const W = out.w, H = out.h;
+  const clear = (x: number, y0: number, y1: number) => {
+    for (let y = Math.max(0, y0); y <= Math.min(H - 1, y1); y++) out.data[(y * W + x) * 4 + 3] = 0;
+  };
+  for (let x = 0; x < Math.min(W, sheets.fw); x++) {
+    const t = span[x * 2], b = span[x * 2 + 1];
+    if (t < 0) continue;
+    const right = x >= DX;
+    if (mask & (right ? EDGE_N : EDGE_W)) clear(x, t - 2, t + 2);
+    if (mask & (right ? EDGE_E : EDGE_S)) clear(x, b - 2, b + 2);
+  }
+  return out;
+}
+
+/** What a wall course of `storey` carries (bits: 1 the left corner, 2 the
+ *  crease at the bottom corner, 4 the right corner — those whose run
+ *  (`CellEdges.lo`) starts below that storey; 8 and 16 TRIM the cap course's
+ *  top face to the library diamond on the up-left and up-right edges the top's
+ *  outline runs along — the review art's diamond is rounded a texel wider, and
+ *  that texel showed OUTSIDE the line, his screenshot 2026-09-26). */
+export function courseEdgeBits(cell: Tiles3Cell, storey: number): number {
+  const e = cell.edge;
+  if (!e) return 0;
+  let bits = 0;
+  for (let i = 0; i < 3; i++) if (e.lo[i] !== EDGE_NONE && storey > e.lo[i] + 0.05) bits |= 1 << i;
+  const stack = cell.wall?.stack;
+  if (stack?.length && stack[stack.length - 1].storey === storey) {
+    if (e.top & EDGE_W) bits |= 8;
+    if (e.top & EDGE_N) bits |= 16;
+  }
+  return bits;
+}
+
+/** A WALL COURSE WITH ITS OUTLINE (a 64 x 64 review course, its top face at
+ *  TOP_Y). A corner line runs down the face's outermost texel of each row from
+ *  the top face's side vertex (outer there, inner one texel in), so it meets
+ *  the rims at the vertex and the course above and below it (a course is taller
+ *  than a storey). The crease, where the left face turns into the right, is
+ *  the two middle columns from the bottom vertex down — both faces end there,
+ *  so both are the outer line. */
+export function edgeCoursePixels(sheets: PatternSheets, px: Pixels, bits: number): Pixels {
+  const out: Pixels = { w: px.w, h: px.h, data: new Uint8ClampedArray(px.data) };
+  const W = out.w, H = out.h, d = out.data;
+  const opaque = (x: number, y: number) => x >= 0 && x < W && d[(y * W + x) * 4 + 3] > 0;
+  if (bits & 24) {
+    const span = topSpans(sheets);
+    for (let x = 0; x < Math.min(W, sheets.fw); x++) {
+      if (!(bits & (x >= DX ? 16 : 8))) continue;
+      const t = span[x * 2];
+      const top = t < 0 ? TOP_Y + DY + 1 : TOP_Y + t;
+      for (let y = 0; y < Math.min(top, TOP_Y + DY + 1, H); y++) d[(y * W + x) * 4 + 3] = 0;
+    }
+  }
+  const outer = new Set<number>(), inner = new Set<number>();
+  const from = TOP_Y + DY - 1;
+  for (let y = Math.max(0, from); y < H; y++) {
+    if (bits & 1) {
+      let x = 0;
+      while (x < 2 && !opaque(x, y)) x++;
+      if (x < 2) {
+        outer.add(y * W + x);
+        inner.add(y * W + x + 1);
+      }
+    }
+    if (bits & 4) {
+      let x = W - 1;
+      while (x > W - 3 && !opaque(x, y)) x--;
+      if (x > W - 3) {
+        outer.add(y * W + x);
+        inner.add(y * W + x - 1);
+      }
+    }
+    if (bits & 2 && y >= TOP_Y + 2 * DY) {
+      outer.add(y * W + DX - 1);
+      outer.add(y * W + DX);
+    }
+  }
+  inkLines(out, outer, inner);
+  return out;
+}
+
 export function buildRampPixels(sheets: PatternSheets, plate: Pixels, mask: number, lh: number, bandSrc?: Pixels, withBand = true): Pixels {
   const { fw, fh } = sheets;
   const src = plate.w === fw && plate.h === fh ? plate : cropToArt(plate, fw, fh);
@@ -1196,6 +1417,7 @@ export function boundaryKey(
   topOnly = false,
   noWall = false,
   lift = 0,
+  edge = 0,
 ): string {
   /* `topOnly` IS PART OF THE KEY, because it is part of the PICTURE: a raised
    * boundary is masked to its 924-texel top face and a level-0 one carries the
@@ -1208,7 +1430,7 @@ export function boundaryKey(
    * `|m` suffix that once told a liquid's margin apart is folded in, and
    * `noWall` no longer changes the picture or the name. */
   void noWall;
-  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top|m" : ""}${lift ? "|lift" + lift : ""}`;
+  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top|m" : ""}${lift ? "|lift" + lift : ""}${edge ? "|e" + edge : ""}`;
 }
 
 /** A painted liquid diamond, keyed by the colour that IS its content. */
@@ -1241,6 +1463,7 @@ export function boundaryKeyFor(b: Tiles3Boundary, seam = true): string | null {
     !!b.topOnly,
     !!b.noWall,
     b.slope?.lift ?? 0,
+    b.edge ?? 0,
   );
 }
 
@@ -1325,6 +1548,8 @@ export interface Tiles3Blit {
   /** What produced this op — for the depth sort, the occluder pass and QA.
    *  `foot` is the wall-foot band on a lower cell (see `footBand`). */
   role: "surface" | "wall" | "boundary" | "deck" | "fade" | "detail" | "foot";
+  /** A wall course's storey — which verticals of the outline it carries (`courseEdgeBits`). */
+  storey?: number;
 }
 
 /** The ops for one resolved cell, in render3's own order: a field cell is ONE
@@ -1478,7 +1703,11 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
   }
   const w = cell.wall;
   if (!w) return [];
-  const ops = w.stack.map((s) => tileBlit(s.tile, cell.sx, s.y, "wall"));
+  const ops = w.stack.map((s) => {
+    const op = tileBlit(s.tile, cell.sx, s.y, "wall");
+    op.storey = s.storey;
+    return op;
+  });
   /* AND THE SURFACE GOES ON THE CAP. `cell.dressed` is the resolver saying the
    * over-tile does NOT own its top face, so the maintainer's own set surface
    * belongs on it — which is how a raised cell gets a fade, a slope or a
@@ -1656,7 +1885,7 @@ export interface ComposeSide {
   rise?: number;
 }
 export type ComposeJob =
-  | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide; slope?: { side: "a" | "b"; rise: number; lift: number } }
+  | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide; slope?: { side: "a" | "b"; rise: number; lift: number }; edge?: number }
   | { kind: "fade"; key: string; side: ComposeSide; top: [number, number, number] }
   /** A PLATE — the conformed field art under its own key, the same
    *  `buildPlatePixels` the worker builds a boundary's sides with. Posted only
@@ -1749,6 +1978,13 @@ export interface Tiles3TexturesStats {
  * so the same instance serves the streaming renderer, the occluder pass and an
  * atlas bake.
  */
+/** The live texture factory (the last one built): what `tiles3runtime`'s
+ *  manager-only key helpers ask for an outlined course. */
+let currentTextures: Tiles3Textures | null = null;
+export function liveTextures(): Tiles3Textures | null {
+  return currentTextures;
+}
+
 export class Tiles3Textures {
   readonly stats: Tiles3TexturesStats = { built: 0, builtFade: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0, builtBoundary: 0, deferred: 0, queued: 0, landed: 0, auditSame: 0, auditDiff: 0 };
   /** THE WORKER AUDIT — off unless `__ml.composeWorker({ audit: true })`: every
@@ -1838,7 +2074,82 @@ export class Tiles3Textures {
 
   constructor(opts: Tiles3TexturesOpts) {
     this.o = opts;
+    currentTextures = this;
   }
+
+  /** THE TEXTURE MANAGER THIS FACTORY DRAWS INTO — so a key helper that holds
+   *  only the manager (`tiles3runtime` `faceKeyAt`) can find the factory. */
+  get textureManager(): TextureManagerLike {
+    return this.o.textures;
+  }
+
+  /* -- the edge outline (tiles3 `CellEdges`; maintainer 2026-09-26) ------- */
+
+  /** THE CELL'S TOP WITH ITS OUTLINE: the lined variant of `key` (the top it
+   *  draws, built from `art`), or `key` itself when the cell draws no top line
+   *  or the source cannot be read. The variant carries the edge set in its
+   *  key, so a cell whose edges change can never be drawn from a stale one. */
+  edgedTop(cell: Tiles3Cell, key: string, art: PlateLike | undefined = cell.art as PlateLike | undefined): string {
+    const e = cell.edge;
+    const mask = e?.top ?? 0;
+    // A wall cell's courses carry its verticals (`edgedCourse`); a field's riser or a ramp's sides are this raster's.
+    const verts = e && cell.kind !== "wall" ? (e.lo[0] !== EDGE_NONE ? 1 : 0) | (e.lo[1] !== EDGE_NONE ? 2 : 0) | (e.lo[2] !== EDGE_NONE ? 4 : 0) : 0;
+    if ((!mask && !verts) || !art || (art as { kind: string }).kind === "liquid") return key;
+    const vkey = this.variantKey(key, mask | (verts << 4), "e");
+    const hit = this.ensureHit(vkey);
+    if (hit) return hit;
+    return (
+      this.ensure(vkey, () => {
+        const ramp = art.kind === "ramp" && art.from ? { mask: art.mask ?? 0, lh: Math.max(0, ((art as { h?: number }).h ?? PLATE_H) - PLATE_H) } : undefined;
+        const base = ramp ? this.rampRaster(art, cell.ground) : art.kind === "ramp" ? null : this.platePixels(art, cell.ground);
+        return base ? edgeTopPixels(this.o.sheets, base, mask, ramp, verts) : null;
+      }) ?? key
+    );
+  }
+
+  /** `${key}|<tag><n>`, built once per key and n: this runs per edge cell per
+   *  paint, and a fresh template string per call is a rehash per call. */
+  private variantKey(key: string, n: number, tag: "e" | "v" | "x"): string {
+    let arr = this.edgeKeys.get(key);
+    if (!arr) this.edgeKeys.set(key, (arr = []));
+    const i = tag === "e" ? n : tag === "v" ? 128 + n : 160 + n;
+    return arr[i] ?? (arr[i] = `${key}|${tag}${n}`);
+  }
+  private edgeKeys = new Map<string, string[]>();
+  /** A lined cell's finished ops (every op resolved): the ground pass walks the
+   *  same cells several times a second, and a lined cell would otherwise build
+   *  a new array each time. Textures are never evicted in play (`limit: 0`). */
+  private edgedOps = new GenMemo<Tiles3Cell, Tiles3Blit[]>(CELL_MEMO_CAP);
+
+  /** A WALL COURSE WITH ITS VERTICALS (`courseEdgeBits`), or `key` itself. */
+  edgedCourse(key: string, bits: number): string {
+    if (!bits) return key;
+    const vkey = this.variantKey(key, bits, "v");
+    const hit = this.ensureHit(vkey);
+    if (hit) return hit;
+    return (
+      this.ensure(vkey, () => {
+        const px = this.sourcePixels(key);
+        return px ? edgeCoursePixels(this.o.sheets, px, bits) : null;
+      }) ?? key
+    );
+  }
+
+  /** A FADE OR DETAIL OVERLAY on a lined top, with the outline's band cut out
+   *  (`clearOutline`), or null while its pixels are not here. */
+  private edgedOverlay(key: string, mask: number): string | null {
+    const vkey = this.variantKey(key, mask, "x");
+    return (
+      this.ensureHit(vkey) ??
+      this.ensure(vkey, () => {
+        const px = this.overlayPx.get(key);
+        return px ? clearOutline(this.o.sheets, px, mask) : null;
+      })
+    );
+  }
+  /** The pixels of every fade and detail overlay built (here or on the
+   *  worker), for `edgedOverlay`: 12 KB each, a few hundred in a world. */
+  private overlayPx = new Map<string, Pixels>();
 
   /** The composed boundary for one resolved boundary, registered and keyed.
    *  Null when the pattern has no frame or a source plate has not loaded — the
@@ -1861,9 +2172,9 @@ export class Tiles3Textures {
           this.auditJobs.set(key, () => {
             const a = this.platePixels(b.plateA, b.a);
             const bb = this.platePixels(b.plateB, b.b);
-            return a && bb ? buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false) : null;
+            return a && bb ? withEdge(this.o.sheets, buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false), b.edge) : null;
           });
-        remote.compose({ kind: "boundary", key, frame: b.maskFrame as number, seam: this.o.seam !== false, topOnly: !!b.topOnly, noWall: !!b.noWall, a: this.side(b.plateA, b.a), b: this.side(b.plateB, b.b), slope: b.slope });
+        remote.compose({ kind: "boundary", key, frame: b.maskFrame as number, seam: this.o.seam !== false, topOnly: !!b.topOnly, noWall: !!b.noWall, a: this.side(b.plateA, b.a), b: this.side(b.plateB, b.b), slope: b.slope, edge: b.edge });
       }
       return null;
     }
@@ -1962,7 +2273,7 @@ export class Tiles3Textures {
        * which is what he photographed swimming over the deep-water rim. A
        * raised cap keeps `margin: false`: its own wall column is drawn beneath
        * and the extra row would paint surface over the course. */
-      return buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false);
+      return withEdge(this.o.sheets, buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false), b.edge);
     });
     if (this.stats.built !== before) this.stats.builtBoundary++;
     return out;
@@ -2043,32 +2354,7 @@ export class Tiles3Textures {
       /* A COMPOSED RAMP is built from its member plate under its own virtual
        * key; the raw file branch below is a PUBLISHED storey-height set. */
       if (art.from) {
-        const built = this.ensureHit(key) ?? this.ensure(key, () => {
-          const src = this.sourcePixels(artKey(art.from as string));
-          if (!src) return null;
-          // The top face from the plate the flat cell draws (conformed when its member is), the band from the art.
-          let top = art.fromKind === "conform" ? buildPlatePixels(this.o.sheets, { kind: "conform", path: art.from as string }, src, this.wallRGB(ground)) : src;
-          /* A RAMP ON A GROUND CHANGE LIFTS THE COMPOSED TRANSITION (tiles3
-           * `wangSurface`, maintainer 2026-09-26: "I want boundary tiles to also
-           * be able to slope"): the same blend its flat neighbours compose,
-           * built from the same two plates, is the incline's top face. Both
-           * plates must be here; until they are, the null leaves the cell owed
-           * and it is repainted when they land — never a ramp of the wrong
-           * ground. */
-          const bnd = (art as { bnd?: Tiles3Boundary }).bnd;
-          if (bnd) {
-            const a = this.platePixels(bnd.plateA, bnd.a);
-            const bb = this.platePixels(bnd.plateB, bnd.b);
-            if (!a || !bb) return null;
-            top = buildBoundaryPixels(this.o.sheets, bnd, a, bb, this.o.seam !== false);
-          }
-          /* NO BAND BELOW THE LEVEL, AT ANY LEVEL, the incline and its side faces kept whole
-           * (buildRampPixels; never rampTopOnly). Raised, the cell's own wall stack is the wall
-           * there; at level 0 nothing is under the ground, and the ramp's occluder copy — drawn
-           * over the cells in front — painted that band over them: teal strips along the foot
-           * of every hill (headless, the slope lab at 100%, 2026-09-25). */
-          return buildRampPixels(this.o.sheets, top, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK), src, false);
-        });
+        const built = this.ensureHit(key) ?? this.ensure(key, () => this.rampRaster(art, ground));
         return built;
       }
       if (!art.topOnly) return this.o.textures.exists(key) ? key : null;
@@ -2081,6 +2367,39 @@ export class Tiles3Textures {
         return src ? rampTopOnly(this.o.sheets, src) : null;
       });
     }
+    return this.plateRest(art, ground, key, skey);
+  }
+
+  /** A COMPOSED RAMP'S RASTER (`art.from` names its member plate). */
+  private rampRaster(art: PlateLike, ground: string): Pixels | null {
+    const src = this.sourcePixels(artKey(art.from as string));
+    if (!src) return null;
+    // The top face from the plate the flat cell draws (conformed when its member is), the band from the art.
+    let top = art.fromKind === "conform" ? buildPlatePixels(this.o.sheets, { kind: "conform", path: art.from as string }, src, this.wallRGB(ground)) : src;
+    /* A RAMP ON A GROUND CHANGE LIFTS THE COMPOSED TRANSITION (tiles3
+     * `wangSurface`, maintainer 2026-09-26: "I want boundary tiles to also
+     * be able to slope"): the same blend its flat neighbours compose,
+     * built from the same two plates, is the incline's top face. Both
+     * plates must be here; until they are, the null leaves the cell owed
+     * and it is repainted when they land — never a ramp of the wrong
+     * ground. */
+    const bnd = (art as { bnd?: Tiles3Boundary }).bnd;
+    if (bnd) {
+      const a = this.platePixels(bnd.plateA, bnd.a);
+      const bb = this.platePixels(bnd.plateB, bnd.b);
+      if (!a || !bb) return null;
+      top = buildBoundaryPixels(this.o.sheets, bnd, a, bb, this.o.seam !== false);
+    }
+    /* NO BAND BELOW THE LEVEL, AT ANY LEVEL, the incline and its side faces kept whole
+     * (buildRampPixels; never rampTopOnly). Raised, the cell's own wall stack is the wall
+     * there; at level 0 nothing is under the ground, and the ramp's occluder copy — drawn
+     * over the cells in front — painted that band over them: teal strips along the foot
+     * of every hill (headless, the slope lab at 100%, 2026-09-25). */
+    return buildRampPixels(this.o.sheets, top, art.mask ?? 0, Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK), src, false);
+  }
+
+  /** `plate()` for everything but a ramp. */
+  private plateRest(art: PlateLike, ground: string, key: string, skey: string): string | null {
     /* A published or clean plate is drawn straight from its loaded file and is
      * never copied — UNLESS it is top-only, which is a different picture and so
      * a built raster under its own key. */
@@ -2252,7 +2571,9 @@ export class Tiles3Textures {
     return this.ensure(key, () => {
       const src = this.sourcePixels(artKey(path));
       if (!src) return null;
-      return fadeOverlay(this.o.sheets, src, this.topRGB(ground), this.wallRGB(ground));
+      const px = fadeOverlay(this.o.sheets, src, this.topRGB(ground), this.wallRGB(ground));
+      this.overlayPx.set(key, px);
+      return px;
     });
   }
 
@@ -2266,7 +2587,9 @@ export class Tiles3Textures {
     return this.ensure(key, () => {
       const src = this.sourcePixels(artKey(path));
       if (!src) return null;
-      return detailOverlay(this.o.sheets, src, this.wallRGB(ground));
+      const px = detailOverlay(this.o.sheets, src, this.wallRGB(ground));
+      if (px) this.overlayPx.set(key, px);
+      return px;
     });
   }
 
@@ -2283,7 +2606,13 @@ export class Tiles3Textures {
    *  than substituted: a hole this frame is a hole, and the next window fills
    *  it; a fallback tile is a wrong picture that nothing ever corrects. */
   opsForCell(cell: Tiles3Cell): Tiles3Blit[] {
+    if (cell.edge && (this.o.limit ?? 0) === 0) {
+      const hit = this.edgedOps.get(cell);
+      if (hit !== undefined) return hit;
+    }
     const base = cellOps(cell);
+    const drops0 = this.droppedOps;
+    let lined = true; // every op that should wear the outline got its variant
     /* COPY ON WRITE. Every op that passes through unchanged is the SAME object
      * the memo already holds, so the overwhelmingly common case — a window
      * whose art is all resident — now returns the memoised array itself and
@@ -2300,7 +2629,11 @@ export class Tiles3Textures {
        * transparent. Dropped like any other op if its art has not landed. */
       if (op.role === "fade") {
         const f = cell.fade;
-        const built = f ? this.fade(f.file, cell.ground) : null;
+        let built = f ? this.fade(f.file, cell.ground) : null;
+        if (built && cell.edge?.top) {
+          built = this.edgedOverlay(built, cell.edge.top);
+          if (!built) lined = false; // drawn next paint, never over the line
+        }
         if (built) {
           if (built !== op.key && !out) out = base.slice(0, i);
           if (out) out.push(built === op.key ? op : { ...op, key: built });
@@ -2316,7 +2649,11 @@ export class Tiles3Textures {
        * hole. */
       if (op.role === "detail") {
         const d = cell.detail;
-        const built = d ? this.detail(d.file, cell.ground) : null;
+        let built = d ? this.detail(d.file, cell.ground) : null;
+        if (built && cell.edge?.top) {
+          built = this.edgedOverlay(built, cell.edge.top);
+          if (!built) lined = false; // drawn next paint, never over the line
+        }
         if (built) {
           if (built !== op.key && !out) out = base.slice(0, i);
           if (out) out.push(built === op.key ? op : { ...op, key: built });
@@ -2405,10 +2742,27 @@ export class Tiles3Textures {
         if (!out) out = base.slice(0, i);
         continue;
       }
+      /* THE OUTLINE (tiles3 `CellEdges`): the top and the courses it runs on
+       * draw their lined variants — baked into the same raster, so the ground
+       * and the occluder copies (`tiles3runtime` surfaceKey / dressKey /
+       * faceKeyAt) draw one picture and nothing is drawn twice. */
+      if (cell.edge) {
+        const plain = key;
+        if (op.role === "surface") {
+          key = this.edgedTop(cell, key, art && art.kind !== "liquid" && liquidGround ? topOnlyOf(art) : (art as PlateLike | undefined));
+          if (key === plain && (cell.edge.top || (cell.kind !== "wall" && cell.edge.lo.some((v) => v !== EDGE_NONE)))) lined = false;
+        } else if (op.role === "wall" && op.storey !== undefined) {
+          const bits = courseEdgeBits(cell, op.storey);
+          key = this.edgedCourse(key, bits);
+          if (bits && key === plain) lined = false;
+        }
+      }
       if (key !== op.key && !out) out = base.slice(0, i);
       if (out) out.push(key === op.key ? op : { ...op, key });
     }
-    return out ?? base;
+    const done = out ?? base;
+    if (cell.edge && lined && this.droppedOps === drops0 && (this.o.limit ?? 0) === 0) this.edgedOps.set(cell, done);
+    return done;
   }
 
   /** A flat diamond in PLATE geometry (fw x fh, `libTop` at its own rows) —
@@ -2487,7 +2841,10 @@ export class Tiles3Textures {
     for (const op of cellOps(cell)) {
       if (op.role === "fade") {
         const f = cell.fade;
-        const built = f ? this.fade(f.file, cell.ground) : null;
+        let built = f ? this.fade(f.file, cell.ground) : null;
+        if (built && cell.edge?.top) {
+          built = this.edgedOverlay(built, cell.edge.top);
+        }
         if (built) out.push(built === op.key ? op : { ...op, key: built });
         else this.droppedOps++;
       } else if (op.role === "foot") {
@@ -2657,6 +3014,7 @@ export class Tiles3Textures {
       return;
     }
     if (plate) this.plates.set(key, px);
+    if (key.startsWith("t3d:")) this.overlayPx.set(key, px);
     this.admit(key, t0);
     this.stats.landed++;
     if (!key.startsWith("t3d:")) this.stats.builtBoundary++;

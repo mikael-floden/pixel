@@ -1411,7 +1411,36 @@ export interface Tiles3Cell {
    *  ground (`footBand`). Only walls whose lowest front is at this cell's own
    *  level: those are the faces that actually end on this plane. */
   foot?: { ul?: string; ur?: string; uu?: string };
+  /** THE OUTLINE THIS CELL DRAWS (`edgeSet`; a game rule, with the foot). */
+  edge?: CellEdges;
 }
+
+/** WHERE A CELL DRAWS ITS 1 PX OUTLINE (maintainer 2026-09-26: "a 1px
+ *  near-black (somewhat transparent) border at every visible edge ... where
+ *  the ground becomes wall or where a left wall becomes a right wall ... When a
+ *  slope is at 100% no border should be drawn"). From the SURFACE HEIGHT at
+ *  each diamond corner, this cell's and its neighbours', ramps included — so a
+ *  full ramp meets the terrace above and the ground below with no step and
+ *  draws nothing, while a partial ramp's riser is an edge like any stair.
+ *
+ *  `top`: which of the top face's four edges get a line — EDGE_N (the -y side,
+ *  upper right on screen), EDGE_W (-x, upper left), EDGE_S (+y, lower left),
+ *  EDGE_E (+x, lower right). A line when this cell stands higher than the
+ *  neighbour across it (a rim or a silhouette), or on a BACK edge when the
+ *  neighbour behind stands higher (where its wall meets this ground).
+ *  `lo`: the vertical lines at the left, bottom and right corners of the top
+ *  face ([L, B, R]) — where a face ends, or where the left face turns into the
+ *  right — as the height they run DOWN TO, in storeys (`EDGE_NONE` for none):
+ *  every wall course of a storey above it carries the line. */
+export interface CellEdges {
+  top: number;
+  lo: [number, number, number];
+}
+export const EDGE_N = 1;
+export const EDGE_W = 2;
+export const EDGE_S = 4;
+export const EDGE_E = 8;
+export const EDGE_NONE = -99;
 
 export interface Tiles3Boundary {
   x: number;
@@ -1444,6 +1473,9 @@ export interface Tiles3Boundary {
    *  other ground lands on the level and the mask curve stays where the
    *  neighbours' is. `rise` extends the top-only mask (slopeTopOnly). */
   slope?: { side: "a" | "b"; rise: number; lift: number };
+  /** The cell's outline on its top face (`CellEdges.top`): part of the
+   *  composed picture, so part of its key. */
+  edge?: number;
   /** Only the top face of the composed tile is painted — a wall cap, a liquid. */
   topOnly?: boolean;
   /** TOP FACE ONLY *AND NOTHING IS DRAWN UNDER IT* — a liquid on the flat, which
@@ -2379,6 +2411,63 @@ export class Tiles3 {
   }
   private synthCache = new Map<string, SlopeSet[]>();
 
+  /** THE SURFACE HEIGHT AT ONE CORNER OF A CELL, in storeys: its level, plus
+   *  its composed ramp's rise on a raised corner (the art's own rounding: the
+   *  rise is whole px of the storey). Corner k: 0 NW, 1 NE, 2 SW, 3 SE. Null
+   *  off the map. */
+  cornerHeight(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number, k: number): number | null {
+    const gr = g(x, y);
+    if (!gr) return null;
+    const z = L(x, y);
+    if (!this.rampsOn() || LIQUID_TILE_GROUNDS.includes(gr)) return z;
+    const m = this.rampIndexFor(g, L, gr, x, y, z);
+    if (!m || !(m & (8 >> k))) return z;
+    const pitch = this.data.storeyPitch || 15;
+    return z + Math.max(1, Math.round(pitch * Math.min(1, this.rampShareAt(x, y)))) / pitch;
+  }
+
+  /** THE OUTLINE ONE CELL DRAWS (`CellEdges`, maintainer 2026-09-26). A full
+   *  ramp draws none ("When a slope is at 100% no border should be drawn"). */
+  edgeSet(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number): CellEdges | undefined {
+    const gr = g(x, y);
+    if (!gr || LIQUID_TILE_GROUNDS.includes(gr)) return undefined;
+    const z = L(x, y);
+    if (this.rampsOn() && this.rampIndexFor(g, L, gr, x, y, z) && this.rampShareAt(x, y) >= 1) return undefined;
+    const EPS = 0.05;
+    const me = [0, 1, 2, 3].map((k) => this.cornerHeight(g, L, x, y, k) as number);
+    const h = (nx: number, ny: number, k: number): number | null => this.cornerHeight(g, L, nx, ny, k);
+    let top = 0;
+    // [bit, my corners, neighbour, its corners at the same two points, a back edge]
+    const edges: [number, number, number, number, number, number, number, boolean][] = [
+      [EDGE_N, 0, 1, x, y - 1, 2, 3, true],
+      [EDGE_W, 0, 2, x - 1, y, 1, 3, true],
+      [EDGE_S, 2, 3, x, y + 1, 0, 1, false],
+      [EDGE_E, 1, 3, x + 1, y, 0, 2, false],
+    ];
+    for (const [bit, c1, c2, nx, ny, n1, n2, back] of edges) {
+      const a = h(nx, ny, n1);
+      const b = h(nx, ny, n2);
+      if (a === null || b === null) continue; // the map's edge draws nothing
+      const d1 = me[c1] - a;
+      const d2 = me[c2] - b;
+      if (d1 > EPS || d2 > EPS) top |= bit;
+      else if (back && (d1 < -EPS || d2 < -EPS)) top |= bit; // the foot of the wall behind
+    }
+    const lo: [number, number, number] = [EDGE_NONE, EDGE_NONE, EDGE_NONE];
+    // A corner's vertical: the face that meets it on each side stands clear of its neighbour.
+    const vert = (i: 0 | 1 | 2, k: number, ax: number, ay: number, ak: number, bx: number, by: number, bk: number) => {
+      const a = h(ax, ay, ak);
+      const b = h(bx, by, bk);
+      if (a === null || b === null) return;
+      if (me[k] > a + EPS && me[k] > b + EPS) lo[i] = Math.max(a, b);
+    };
+    vert(0, 2, x, y + 1, 0, x - 1, y, 3); // left: the left face ends (its continuation, (x-1, y), stands lower)
+    vert(1, 3, x + 1, y, 2, x, y + 1, 1); // bottom: the left face turns into the right
+    vert(2, 1, x + 1, y, 0, x, y - 1, 3); // right: the right face ends
+    if (!top && lo[0] === EDGE_NONE && lo[1] === EDGE_NONE && lo[2] === EDGE_NONE) return undefined;
+    return { top, lo };
+  }
+
   /** THE SHARE OF THE STOREY THIS CELL'S COMPOSED RAMP CLIMBS: its run's pick
    *  under the auto mix (`slopeShares`, 0 = a stair), else the switch's. */
   rampShareAt(x: number, y: number): number {
@@ -2852,6 +2941,7 @@ export class Tiles3 {
     }
     if (zl === 0) {
       this.dress(cell, this.wangSurface(view, frame, g, L, gr, x, y, zl), false);
+      this.outline(cell, g, L);
       return cell;
     }
 
@@ -2953,7 +3043,15 @@ export class Tiles3 {
      * unexposed cell never paints a wall band onto flat ground. */
     this.dress(cell, this.wangSurface(view, frame, g, L, gr, x, y, zl), true);
     cell.dressed = dressed;
+    this.outline(cell, g, L);
     return cell;
+  }
+
+  /** The cell's outline, a GAME rule (with the foot; the parity path draws none). */
+  private outline(cell: Tiles3Cell, g: (x: number, y: number) => string | null, L: (x: number, y: number) => number): void {
+    if (!this.data.footBoundary) return;
+    const e = this.edgeSet(g, L, cell.x, cell.y);
+    if (e) cell.edge = e;
   }
 
   /** THE WALL FOOT — which of this cell's two up-screen edges has a higher
@@ -3304,6 +3402,10 @@ export class Tiles3 {
      * region drew the neighbour from the wrong set. */
     const pa = opts?.plateOf?.(sa) ?? this.plateFor(sa, x, y);
     const pb = opts?.plateOf?.(sb) ?? this.plateFor(sb, x, y);
+    // The cell's outline rides its composed tile (a deck's slab draws none: `plateOf`).
+    const edgeSet = this.data.footBoundary && !opts?.plateOf ? this.edgeSet(g, L, x, y) : undefined;
+    // The top's edges (bits 0-3) and, above them, the riser's verticals (tiles3draw `withEdge`).
+    const edgeTop = edgeSet ? edgeSet.top | ((edgeSet.lo[0] !== EDGE_NONE ? 1 : 0) | (edgeSet.lo[1] !== EDGE_NONE ? 2 : 0) | (edgeSet.lo[2] !== EDGE_NONE ? 4 : 0)) << 4 : 0;
     return {
       pa,
       pb,
@@ -3323,6 +3425,7 @@ export class Tiles3 {
         setB: pb.set.id,
         memberB: pb.memberIndex,
         folded,
+        ...(edgeTop ? { edge: edgeTop } : {}),
         /* TOP FACE ONLY at every raised level, so the cap's own wall survives,
          * AND ON A LIQUID, which has no wall at all — `resolveCell` gives a
          * liquid `dress(..., true)` for the same reason, and a full-silhouette
