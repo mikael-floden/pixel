@@ -2295,7 +2295,10 @@ export class WorldScene extends Phaser.Scene {
   private seamOn = true;
   /** `clear: pink` — fill the ground texture with magenta instead of the page
    *  dark, so an unpainted texel is unmistakable. Diagnostic, default off. */
-  private groundClearPink = false;
+  /** The ground's clear in MAGENTA, so a texel nothing painted shows (a probe's
+   *  switch: `?clearpink=1`; its Dev row went on his word, 2026-09-26 "don't
+   *  use it anymore"). */
+  private groundClearPink = new URLSearchParams(location.search).get("clearpink") === "1";
   /** `transitions` — skip the composed transition tile and let each cell draw
    *  its own plate instead. The draw loop takes ONE of the two, never both, so
    *  this is the A/B for "the zigzag is the transition tile you make with the
@@ -6225,8 +6228,6 @@ export class WorldScene extends Phaser.Scene {
           reset: () => this.room?.send("timespeed", { v: 1 }),
         },
         // Audio (composer agent): master sound + music, persisted switches.
-        { label: "sound", act: () => gameAudio.toggleSound(), get: () => gameAudio.soundEnabled, atDefault: () => gameAudio.soundEnabled, reset: () => void (!gameAudio.soundEnabled && gameAudio.toggleSound()) },
-        { label: "music", act: () => gameAudio.toggleMusic(), get: () => gameAudio.musicEnabled, atDefault: () => gameAudio.musicEnabled, reset: () => void (!gameAudio.musicEnabled && gameAudio.toggleMusic()) },
         // The same veil the death press gets (maintainer 2026-09-19: "I rather
         // ... use the same loading fix/solution when I press respawn").
         { label: "respawn", act: () => this.respawnWithVeil() },
@@ -6464,22 +6465,6 @@ export class WorldScene extends Phaser.Scene {
           },
         },
         {
-          label: "clear: pink",
-          act: () => {
-            this.groundClearPink = !this.groundClearPink;
-            this.chat.addLog("—", `ground clear: ${this.groundClearPink ? "MAGENTA" : "normal"} — magenta means NOTHING painted there`);
-            this.repaintWorld();
-          },
-          get: () => this.groundClearPink,
-          state: () => (this.groundClearPink ? "pink" : "off"),
-          atDefault: () => !this.groundClearPink,
-          reset: () => {
-            if (!this.groundClearPink) return;
-            this.groundClearPink = false;
-            this.repaintWorld();
-          },
-        },
-        {
           label: "transitions",
           act: () => {
             this.noTransitions = !this.noTransitions;
@@ -6606,13 +6591,24 @@ export class WorldScene extends Phaser.Scene {
           atDefault: () => !multiPipeStored(),
           reset: () => setMultiPipe(false),
         },
-        /* THE EDIT TOOL (see worldEdit): the tile "dropdown" cycles the world's
-         * grounds; place/dig/raise act on the player's own cell. */
-        { label: "edit tile", act: () => { this.editTileIdx++; }, state: () => this.editTileName() },
-        { label: "place tile here", act: () => this.editHere({ t: this.editTileName() }), state: () => this.editLast || "client-only" },
-        { label: "dig here", act: () => this.editHere({ dl: -1 }), state: () => this.editLast || "level -1" },
-        { label: "raise here", act: () => this.editHere({ dl: 1 }), state: () => this.editLast || "level +1" },
       ],
+      /* THE TERRAIN EDIT SECTION (see worldEdit; maintainer 2026-09-26: "edit
+       * tile / place / dig / raise should be moved to its own section under
+       * settings/dev with better UX"): the grounds this world uses, the one
+       * picked, and three actions at the player's own cell. Client-only until
+       * the server carries edits. */
+      terrainEdit: {
+        grounds: () => this.editGrounds(),
+        ground: () => this.editTileName(),
+        pick: (name) => {
+          const i = this.editGrounds().indexOf(name);
+          if (i >= 0) this.editTileIdx = i;
+        },
+        place: () => this.editHere({ t: this.editTileName() }),
+        dig: () => this.editHere({ dl: -1 }),
+        raise: () => this.editHere({ dl: 1 }),
+        status: () => this.editLast,
+      },
     });
     mountPageFrame();
     // Feed EVERY on-screen log line into the Chat page's persistent history

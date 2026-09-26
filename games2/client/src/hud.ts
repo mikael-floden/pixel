@@ -191,6 +191,19 @@ export interface HudActions {
     atDefault?: () => boolean;
     reset?: () => void;
   }[];
+  /** THE TERRAIN EDIT SECTION under Settings->Dev (maintainer 2026-09-26:
+   * "edit tile / place / dig / raise should be moved to its own section under
+   * settings/dev with better UX"): the grounds the world uses, the one picked,
+   * three actions at the player's own cell, and the last edit's line. */
+  terrainEdit?: {
+    grounds: () => string[];
+    ground: () => string;
+    pick: (name: string) => void;
+    place: () => void;
+    dig: () => void;
+    raise: () => void;
+    status: () => string;
+  };
   /** Backpack drag-out: an item slot was released over the GAME VIEW at
    * client coords (cx, cy) — the game converts to a world point and asks the
    * server to drop it there (clamped + ground-snapped server-side). `n` is
@@ -1517,6 +1530,50 @@ export class HudBar {
     }
     this.refreshSettings();
     wrap.appendChild(row);
+    /* TERRAIN EDIT, its own section below the switches: a real picker (the
+     * native select — a phone's own list) instead of a button that cycled
+     * ~40 names, one plate per action, and what the last tap did. */
+    const te = this.actions.terrainEdit;
+    if (te) {
+      const sec = mk("div", "ml-edit");
+      const note = mk("div", "ml-edit-note");
+      note.textContent = "Where you stand · only on this device";
+      const pick = mk("select", "ml-edit-pick") as HTMLSelectElement;
+      pick.setAttribute("aria-label", "Ground");
+      pick.addEventListener("change", () => {
+        te.pick(pick.value);
+        this.refreshSettings();
+      });
+      const acts = mk("div", "ml-edit-acts");
+      const act = (label: string, fn: () => void) =>
+        plateButton(label, () => {
+          fn();
+          this.refreshSettings();
+        });
+      acts.append(act("Place tile", te.place), act("Dig −1", te.dig), act("Raise +1", te.raise));
+      const status = mk("div", "ml-edit-status");
+      sec.append(sectionTitle("Terrain edit"), note, pick, acts, status);
+      wrap.appendChild(sec);
+      let names = "";
+      this.refreshers.push(() => {
+        const list = te.grounds();
+        const key = list.join("|");
+        if (key !== names) {
+          names = key;
+          pick.replaceChildren(
+            ...list.map((n) => {
+              const o = document.createElement("option");
+              o.value = n;
+              o.textContent = n.replace(/_/g, " ");
+              return o;
+            }),
+          );
+        }
+        if (list.length) pick.value = te.ground();
+        status.textContent = te.status() || "No edit yet";
+      });
+      this.refreshSettings();
+    }
     // Other modules may inject a bare-text .ml-plate-btn into this row from
     // outside — the class is pure CSS (the wiki button recipe), so it dresses
     // itself; only wrap bare text labels in a <span> so the shared label
@@ -3485,6 +3542,13 @@ function injectStyles() {
   .ml-setcell{display:flex;gap:6px;min-width:0}
   .ml-setcell>.ml-plate-btn{flex:1 1 auto;min-width:0}
   .ml-setcell>.ml-set-def{flex:0 0 52px;min-height:0;padding:2px 4px;font-size:10px}
+  /* the Terrain edit section: picker, three actions, the last edit's line */
+  .ml-edit{display:flex;flex-direction:column;gap:8px;width:100%}
+  .ml-edit-note,.ml-edit-status{color:var(--muted);font:500 12px/1.3 var(--sans);text-align:center}
+  .ml-edit-status{min-height:1.3em;overflow-wrap:anywhere}
+  .ml-edit-pick{width:100%;min-height:40px;padding:6px 10px;background:var(--surface);color:var(--ink);
+    border:1px solid var(--border);border-radius:10px;font:600 14px/1.2 var(--sans)}
+  .ml-edit-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
   /* a wide button (Log out) directly in a page or a sub-page: a full row of the column */
   .ml-page>.ml-plate-btn,.ml-sub>.ml-plate-btn{width:100%;max-width:560px;flex:none}
   /* ── sub-pages: one .ml-sub per sub-tab inside the page; the shown one is

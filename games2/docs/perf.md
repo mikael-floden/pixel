@@ -880,7 +880,12 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   "default" button (the sliders' own `.ml-slider-def`) is disabled while it is
   at its default. A finished investigation loses its row, never its bisect:
   `?groundtight=0`, `?groundrect=0`, `?groundlazy=0`, `?grounddefer=0`,
-  `?cullbox=0`, `?fastsort=0` still turn each shipped change off.
+  `?cullbox=0`, `?fastsort=0` still turn each shipped change off, and
+  `?clearpink=1` paints the ground's clear magenta. No sound or music row:
+  the Sound page has them (his call). THE TERRAIN EDIT TOOL IS ITS OWN SECTION
+  below the switches (`terrainEdit`: a native ground picker, Place tile / Dig
+  −1 / Raise +1 at the player's cell, the last edit's line; client-only until
+  the server carries edits), never four rows in the grid (his "better UX").
 - **FRAME PACING: A STEADY 30 WHEN 60 CANNOT BE HELD** (maintainer
   2026-09-24, "The FPS is not stable! Think outside the box";
   `client/src/pacing.ts`, `pacing.test.ts`). His 16:50 run on 0b274482:
