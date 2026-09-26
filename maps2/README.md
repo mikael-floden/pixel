@@ -504,6 +504,12 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   from a pool (slime, lava, ice and lava, mud and slime, rock, ice, mud),
   dug in the build after `dungeons` and, with `--apply <world_dir>`, into
   the shipped world in place (`spec/WORLD3.md` → the north caves).
+- `edges.py` — **one ground to the edge** (maintainer 2026-09-26): the whole
+  terrace shows a step, so a band of another ground along a level change takes
+  its terrace's ground and a flight of small steps wears one top and one face;
+  the cliff apron is retired (`spec/WORLD3.md` → one ground to the edge).
+  `--check` (exit 1 on a band or a mixed flight), `--apply <world_dir>`; the
+  build runs it after `way_ground`.
 - `roofs.py` — **a roof never wears the ground round the house** (maintainer
   2026-09-23, the snow roof on the snowfield): the roof deck's ground and the
   ring's tops are one ground, and it differs from the ground the player sees

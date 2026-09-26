@@ -27,8 +27,8 @@ things changed for these caves and drawn from pools per cave:
 The lids wear their field, the floors take their theme AFTER `caves()` has
 widened and iced them, the rooms are dressed and lit as every cave is
 (braziers on a room's wall, two torches on the pit's rim, the 8-per-window
-light budget re-audited), the scree and the grooming passes run (they are
-idempotent on the shipped world - measured), every ring cell is named with
+light budget re-audited), the grooming passes and the one-ground-to-the-edge
+rule run (edges.py; idempotent on the shipped world), every ring cell is named with
 the cave's side (cavewalls.py: the cave half of cliff_faces, whose outdoor
 palette re-rolls on a shipped world and so is not run; the first three pits
 shipped with 0 of 356 ring cells named and the field's grass drawn on the
@@ -534,8 +534,9 @@ def apply(world_dir, write=True, n=N_NORTH):
     paint_themes(g, sites)
     _only_new_decks(g, sites, g.cave_dress)
     braziers_and_torches(g, sites)
-    g.cliff_apron()
     g.regroom()
+    import edges
+    edges.equalise(doc, log=lambda *a: None)        # one ground to the edge (no scree band)
     import cavewalls
     named = cavewalls.add(doc, cavewalls.missing(g))
     print(f"  cave walls named: {named} ring cells (the caves' own sides)")

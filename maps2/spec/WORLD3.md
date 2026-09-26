@@ -1785,34 +1785,40 @@ black_rock 12, dark_mud 10, ice 2, light_beach 1), 39 the ground at their ends
 something else. light_soil is now a minority rather than every stair on the
 map.
 
-### the cliff apron — a wall never ends on a hard line
+### one ground to the edge — the whole terrace shows the step
 
-(maintainer 2026-09-07, two photographs: *"when a wall ends we often get a
-hard edge/line if the ground has a different ground type ... maybe it looks
-better if the ground at the boundary uses a transition/boundary tile"*.)
+**The edge is shown by the whole terrace, never by a band** (maintainer
+2026-09-26, seven photographs of grey rims along the lip of the mud terraces
+and striped stairs below them: *"I really don't understand why you change
+ground type near a slope/edge like crazy! ... back in the days we used this
+technique to make it easier for the player to detect an edge. But now we have
+a new rule to always change ground type on the entire new high ground so this
+is not needed any more and looks ugly!"*). `terrace_grounds` gives touching
+terraces different grounds, whole; nothing paints a strip along a level
+change on top of that. `edges.py` (`one_ground()` in the build, after
+`way_ground`; `--check`/`--apply <world_dir>` on the world that ships) holds
+two rules:
 
-The transition machinery only blends two grounds sharing a plane, and a wall
-face is vertical — there is nothing for it to blend into. So the line MOVES
-one cell out: `cliff_apron()` gives the ground a rock face lands on that same
-rock, the wall then meets its own material and has no edge at all, and
-rock-against-grass one cell away is a boundary the tiles already cover. Zero
-new art. It runs after `cliff_faces` (the faces must be dressed before their
-feet can copy them) and before `audit_ground`.
+- **A band takes its terrace's ground.** A patch of another natural ground
+  inside a terrace that never reaches more than 1 cell in from the terrace's
+  edge (a level change beside it, up or down) is a band and wears the
+  terrace's own ground. A patch reaching deeper is a place — a fen, an ice
+  pool, a scree field — and stays. Roads and paths, beach, paving, floors,
+  lava, slime, water, ramps and stairs (their material is `way_ground`'s),
+  decks and a road's own terrace are never touched. (the_game: 1,462 band
+  cells, measured — lip rims left by earlier terrace shapes and the scree
+  below.)
+- **A flight of steps is one thing.** A 4-connected run of cells whose own
+  terraces are smaller than `TERRACE_MIN`, stepping at most one level at a
+  time — the one-cell strips at 3, 2, 1 down a bank — wears the top most of
+  it wears and the face most of it is named with. `cliff_faces` keys its pick
+  per terrace, so every strip drew its own rock and the flight came out
+  striped grey, soil, mud and black (the_game: 72 flights, 63 faces renamed).
 
-The three rules that keep it scree and not a takeover, each paid for:
-
-- **only under a CLIFF** — `APRON_DROP = 3` levels. Treating every one-bench
-  step repainted whole snow terraces in the rock the bench above happened to
-  wear; measured, and it read as a material takeover.
-- **only rock sheds it** (`APRON_OF`: grey_stone, black_rock — ice is out for
-  the same reason) **onto soft ground** (`APRON_ON`: grass, dark_mud,
-  light_beach, snow). Made ground is never overwritten: a `light_soil` wall
-  would lay a road along the cliff, and paving, floors, roads, ramps, decks,
-  cave floors and liquids are all held back.
-- **a band, not a dot** — `APRON_MIN = 3` cells per run, 4-connected, and the
-  elbow of every diagonal pair is filled first. An iso cliff foot steps
-  diagonally, so the raw apron was a dotted line: 417 specks by the ground
-  audit's own rule. The dissolver runs after it for what the new band strands.
+REJECTED, both for the same reason — a ground change at an edge:
+`cliff_apron()` (2026-09-07, scree the rock face lands on, so a wall "never
+ends on a hard line"), retired from the build 2026-09-26; and the one-cell
+contrasting lip (2026-09-05, one build).
 
 the_game: 1,730 apron cells, 1,965 of 5,453 wall feet now meet their own
 material (657 before). `NO_APRON=1` builds without the pass, which is how the

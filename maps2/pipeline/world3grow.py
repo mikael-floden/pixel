@@ -6753,6 +6753,20 @@ class Grow:
         # BUILD ASSERT: no exposed face is grass over grass any more
         assert not any(sd == "grass" for (_, sd) in kinds), "a grass wall survived"
 
+    def one_ground(self):
+        """ONE GROUND TO THE EDGE (maintainer 2026-09-26; edges.py holds the
+        rule and runs it on the world that ships): the whole terrace shows the
+        edge, so no band of another ground along a level change survives, and
+        a flight of small steps wears one top and one face."""
+        import edges
+        nb, nf, moved = edges.equalise(self.doc, log=lambda *a: None)
+        self.placed += [("edge bands taken by their terrace", nb),
+                        ("flights of steps unified", nf), ("flight faces renamed", moved)]
+
+    # RETIRED FROM THE BUILD 2026-09-26 (edges.py): the scree band IS a ground
+    # change at an edge, which the whole-terrace rule makes unnecessary
+    # (maintainer: "we used this technique to make it easier for the player to
+    # detect an edge ... this is not needed any more and looks ugly").
     APRON_ON = ("grass", "dark_mud", "light_beach", "snow")   # what erodes
     APRON_OF = ("grey_stone", "black_rock")                   # what sheds it
     APRON_MIN = 3       # cells in a run: below this it is a speck, not talus
@@ -8301,7 +8315,7 @@ class Grow:
                      self.ramp_paths, self.regroom, self.reach_audit,
                      self.snap_hitboxes, self.police_footprints,
                      self.lights, self.npcs,
-                     self.rooms, self.cliff_faces, self.cliff_apron, self.way_ground,
+                     self.rooms, self.cliff_faces, self.way_ground, self.one_ground,
                      self.audit_ground,
                      self.dungeon_audit, self.spawns, self.places, self.recentre, self.settle_states,
                      self.resolve_audit):
