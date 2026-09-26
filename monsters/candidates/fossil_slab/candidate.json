@@ -1622,6 +1622,265 @@
         "west": "fossil_slab/animations/attack__west.webp",
         "north-west": "fossil_slab/animations/attack__north-west.webp"
       }
+    },
+    "die": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0126,
+          "step_max": 0.0171,
+          "drift": 1.3,
+          "loop": 0.0307,
+          "loop_ratio": 2.44,
+          "travel": 0.6,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.004,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.971,
+          "end_iou": 0.969,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.013 per frame",
+            "still standing: the last frame is only 0.03 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.97 (his dies end under 0.60)"
+          ],
+          "sub": "88daefd2-c50a-4336-aa51-c759afcfeaad",
+          "group": "5904f8b4-ec4f-4cec-80aa-9bd59b8aee05",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T00:06:30+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0162,
+          "step_max": 0.0481,
+          "drift": 3.29,
+          "loop": 0.0944,
+          "loop_ratio": 5.84,
+          "travel": 0.08,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.985,
+          "end_iou": 0.909,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.016 per frame",
+            "still standing: the last frame is only 0.09 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.91 (his dies end under 0.60)"
+          ],
+          "sub": "7136d146-785b-4ec2-8156-0dcbc8040b48",
+          "group": "920f35b5-4026-445c-ac8d-950360139993",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T00:06:30+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0352,
+          "step_max": 0.0526,
+          "drift": 3.64,
+          "loop": 0.1177,
+          "loop_ratio": 3.35,
+          "travel": 1.15,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.971,
+          "end_iou": 0.886,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.035 per frame",
+            "still standing: the last frame is only 0.12 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.89 (his dies end under 0.60)"
+          ],
+          "sub": "0b1e14b4-3580-4a29-8e19-5a40d6b6764c",
+          "group": "c5cda101-2f62-4262-ab4d-9bea180fcbbc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T00:06:31+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0158,
+          "step_max": 0.0438,
+          "drift": 1.31,
+          "loop": 0.0448,
+          "loop_ratio": 2.83,
+          "travel": 0.47,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.981,
+          "end_iou": 0.956,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.016 per frame",
+            "still standing: the last frame is only 0.04 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.96 (his dies end under 0.60)"
+          ],
+          "sub": "d308a0a8-c2ae-4a9d-b81c-d43a358e8b75",
+          "group": "fa932a87-740b-48f2-9dab-e4ae98aabde2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T00:06:32+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0435,
+          "step_max": 0.0701,
+          "drift": 3.87,
+          "loop": 0.1569,
+          "loop_ratio": 3.6,
+          "travel": 0.82,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.956,
+          "end_iou": 0.85,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.044 per frame",
+            "still standing: the last frame is only 0.16 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.85 (his dies end under 0.60)"
+          ],
+          "sub": "57ae025e-ab32-4d8b-be3e-6e939bf37ab6",
+          "group": "99007ce9-2a9f-46a5-8344-e50484ce7d5f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T00:06:32+00:00"
+        }
+      },
+      "action": "Death - Faints, collapses to the ground and fades away",
+      "frame_paths": {
+        "south": [
+          "fossil_slab/animations/die/south/00.webp",
+          "fossil_slab/animations/die/south/01.webp",
+          "fossil_slab/animations/die/south/02.webp",
+          "fossil_slab/animations/die/south/03.webp",
+          "fossil_slab/animations/die/south/04.webp",
+          "fossil_slab/animations/die/south/05.webp",
+          "fossil_slab/animations/die/south/06.webp"
+        ],
+        "south-east": [
+          "fossil_slab/animations/die/south-east/00.webp",
+          "fossil_slab/animations/die/south-east/01.webp",
+          "fossil_slab/animations/die/south-east/02.webp",
+          "fossil_slab/animations/die/south-east/03.webp",
+          "fossil_slab/animations/die/south-east/04.webp",
+          "fossil_slab/animations/die/south-east/05.webp",
+          "fossil_slab/animations/die/south-east/06.webp"
+        ],
+        "east": [
+          "fossil_slab/animations/die/east/00.webp",
+          "fossil_slab/animations/die/east/01.webp",
+          "fossil_slab/animations/die/east/02.webp",
+          "fossil_slab/animations/die/east/03.webp",
+          "fossil_slab/animations/die/east/04.webp",
+          "fossil_slab/animations/die/east/05.webp",
+          "fossil_slab/animations/die/east/06.webp"
+        ],
+        "north-east": [
+          "fossil_slab/animations/die/north-east/00.webp",
+          "fossil_slab/animations/die/north-east/01.webp",
+          "fossil_slab/animations/die/north-east/02.webp",
+          "fossil_slab/animations/die/north-east/03.webp",
+          "fossil_slab/animations/die/north-east/04.webp",
+          "fossil_slab/animations/die/north-east/05.webp",
+          "fossil_slab/animations/die/north-east/06.webp"
+        ],
+        "north": [
+          "fossil_slab/animations/die/north/00.webp",
+          "fossil_slab/animations/die/north/01.webp",
+          "fossil_slab/animations/die/north/02.webp",
+          "fossil_slab/animations/die/north/03.webp",
+          "fossil_slab/animations/die/north/04.webp",
+          "fossil_slab/animations/die/north/05.webp",
+          "fossil_slab/animations/die/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "fossil_slab/animations/die__south.webp",
+        "south-east": "fossil_slab/animations/die__south-east.webp",
+        "east": "fossil_slab/animations/die__east.webp",
+        "north-east": "fossil_slab/animations/die__north-east.webp",
+        "north": "fossil_slab/animations/die__north.webp"
+      }
     }
   },
   "pixellab_rotation_map": {
