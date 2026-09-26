@@ -2244,6 +2244,8 @@ export class WorldScene extends Phaser.Scene {
   /** Debug: a pinned turn progress for screenshots (`__ml.turnSeek`); null = the clock. */
   private turnPinned: number | null = null;
   private turnLog: Record<string, number | string> = {};
+  /** The running turn's frame watch (turnView), for the probes. */
+  private turnFw: { phase: string } | null = null;
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
   private worldW = WORLD_WIDTH; // this world's extent in world units (grid×CELL_WU)
   private worldH = WORLD_HEIGHT;
@@ -20527,6 +20529,10 @@ export class WorldScene extends Phaser.Scene {
       this.turnLog.hiddenPieces = st.hiddenPieces;
     }
     const tParse = performance.now();
+    // WHERE A SWAP'S TIME GOES, step by step (turnLog.sw_*): it blocks the main
+    // thread, so every ms here is a frame the turn cannot draw
+    let tStep = tParse;
+    const mark = (name: string) => { const t = performance.now(); this.turnLog[`sw_${name}`] = +(t - tStep).toFixed(1); tStep = t; };
     const kOld = this.viewRot;
     this.viewRot = k;
     this.viewWorld = vw;
@@ -20534,24 +20540,33 @@ export class WorldScene extends Phaser.Scene {
     const W0 = world.width, H0 = world.height;
     setPickFrame(k && !PICK_VIEW ? (x, y) => unrotCell(x, y, k, W0, H0) : null);
     this.night?.setWorld(vw ?? world);
+    mark("night");
     this.viewTerrain = k && vw ? buildTerrainGrid(vw.width, vw.height, vw.rows, vw.props, vw.decks) : null;
     this.viewDeckIndex.clear();
     if (k && vw) for (const d of vw.decks ?? []) for (const c of d.cells) this.viewDeckIndex.set(c.row * vw.width + c.col, { deck: d, cell: c });
+    mark("terrain");
     // INDOORS, THE CUT IS A FUNCTION OF THE VIEW: re-cut for this side before the
     // repaint below, and drop a crossfade layer placed for the old one
     this.destroyIndoorDebris();
     if (this.indoorInside && this.indoorSpace) { this.indoorMaskSig = ""; this.refreshIndoorMask(); }
+    mark("indoor");
     // the heightmap rebuild cleared the scenery shadows it had stamped: stamp the turned ones
     if (this.night && this.terrain) this.night.setSceneryOccluders(this.sceneryOn ? this.viewFootprints() : undefined);
+    mark("stamps");
     this.initTiles3();
+    mark("tiles3");
     this.repaintWorld();
+    mark("repaint");
     this.bake?.refreshAll();
     this.indoorDirty = true;
     // ambient effects that cache per DRAWN cell (the foam's liquid cells and
     // baked rasters) describe the old orientation now: they drop it on this
     window.dispatchEvent(new CustomEvent("ml-view-turn", { detail: { k } }));
+    mark("ambient");
     this.publishRoom(this.roomMask ? this.roomMask.keys() : null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, this.lastRoomTop);
+    mark("room");
     this.rebaseAfterTurn(normRot(k - kOld));
+    mark("rebase");
     this.camChase.init = false; // the body's screen point jumped: snap onto it, don't crawl
     if (!this.turning) this.inputRot = k; // an instant swap: input follows at once
     this.turnLog.parseMs = +(tParse - t0).toFixed(1);
@@ -20964,6 +20979,20 @@ export class WorldScene extends Phaser.Scene {
     this.turning = true;
     drive?.angle?.(0); // the spin bar's cube holds with the world while it prepares
     this.turnLog = { from: kA, to: kB, ms };
+    // EVERY FRAME A PERSON WAITS ON, from the tap to the end, with the phase it
+    // fell in (turnLog.slow: "phase:ms" for each gap over 34 ms)
+    const fw = { on: true, last: performance.now(), phase: "ctx", slow: [] as string[], max: 0 };
+    const fwTick = () => {
+      if (!fw.on) return;
+      const t = performance.now(), g = t - fw.last;
+      fw.last = t;
+      if (g > fw.max) fw.max = g;
+      if (g > 34 && fw.slow.length < 40) fw.slow.push(`${fw.phase}:${Math.round(g)}`);
+      requestAnimationFrame(fwTick);
+    };
+    requestAnimationFrame(fwTick);
+    const fwEnd = () => { fw.on = false; this.turnLog.slow = fw.slow.join(" "); this.turnLog.fr_max = Math.round(fw.max); };
+    this.turnFw = fw;
     const t0 = performance.now();
     const cv = this.game.canvas, cam = this.cameras.main, { dx, dy, lh } = this.geom;
     const W = world.width, H = world.height;
@@ -20981,13 +21010,19 @@ export class WorldScene extends Phaser.Scene {
     const [sx, sy] = unrotPoint(px, py, kA, W, H);        // the pivot in SERVER space...
     const [bx, by] = rotPoint(sx, sy, kB, W, H);          // ...and in B's view
     let fx: RotFx;
+    const tCtx = performance.now();
     try { fx = new RotFx(cv, cv.width, cv.height); } catch (e) { this.turning = false; await this.applyViewRot(kB); return { skipped: `no overlay: ${e}` }; }
+    this.turnLog.ph_ctx = +(performance.now() - tCtx).toFixed(1);
     fx.tune = { ...this.rotTune };
     this.rotFx = fx;
+    fw.phase = "mesh";
+    const tMesh = performance.now();
     const mesh = buildRotMesh((c, r) => vwA.rows[r]?.[c]?.l ?? null, (vwA.decks ?? []) as { level: number; thickness?: number; cells: { col: number; row: number }[] }[], px, py, 26, vwA.width, vwA.height);
     this.turnLog.meshVerts = mesh.n;
+    this.turnLog.ph_mesh = +(performance.now() - tMesh).toFixed(1);
     // FRAME A — inside the renderer's own frame, while its drawing buffer is valid,
     // its uprights snapped after the same frame's update
+    fw.phase = "capA";
     const snapA = await this.turnCapture(kA, () => {
       fx.start({ frameA: cv, projA: proj(), pivot: { x: px, y: py, h: ph }, mesh, dir });
       fx.draw(0, 0);
@@ -20998,6 +21033,8 @@ export class WorldScene extends Phaser.Scene {
     // ...AND AGAIN WITHOUT THEM, one frame later under the overlay: the difference
     // is each thing as drawn (the waterline crop, the light, the name), carried by
     // its feet; the bodiless frame is what the ground wears.
+    this.turnLog.ph_capA = +(performance.now() - t0).toFixed(1);
+    fw.phase = "a0";
     const upA = await this.turnFrameBodiless(snapA, (g, me, own) => { fx.setA0(cv, g, me); if (own) fx.setOwners("A", own.data, own.w, own.h); });
     // NO IN-BETWEEN FACING: the player hands over A to B like everything else.
     // A third card cut from one more frame kept every pixel that frame differed
@@ -21008,9 +21045,11 @@ export class WorldScene extends Phaser.Scene {
     this.turnLog.aMs = +(performance.now() - t0).toFixed(1);
     // A SWAP THAT THROWS (the turned document's fetch or parse) must not leave the
     // overlay up and `turning` set: every tap and drag would be swallowed forever.
+    fw.phase = "swap";
     try {
       await this.applyViewRot(kB);
     } catch (e) {
+      fwEnd();
       fx.destroy();
       if (this.rotFx === fx) this.rotFx = null;
       this.turning = false;
@@ -21055,6 +21094,7 @@ export class WorldScene extends Phaser.Scene {
       };
       const finish = (chained = false) => {
         if (!cam.visible) cam.setVisible(true); // never leave the game undrawn
+        fwEnd();
         this.turnLog.totalMs = +(performance.now() - t0).toFixed(1);
         const out = { ...this.turnLog, ...fx.timings, ...(swappedBack ? { reversed: 1 } : {}), vOut: chained ? v : 0 };
         if (chained) {
@@ -21077,6 +21117,7 @@ export class WorldScene extends Phaser.Scene {
       const step = () => {
         try { stepInner(); } catch (e) {
           console.warn("[nangijala] view turn loop failed:", e);
+          fwEnd();
           cam.setVisible(true);
           fx.destroy();
           if (this.rotFx === fx) this.rotFx = null;
@@ -21086,7 +21127,18 @@ export class WorldScene extends Phaser.Scene {
         }
       };
       const stepInner = () => {
+        const rawDt = performance.now() - last;
         const now = performance.now(), dt = Math.min(100, now - last); last = now;
+        fw.phase = backDone ? "back" : bDone ? "run" : capturing ? "capB" : "prep";
+        // THE FRAMES A PERSON SEES: the longest gap while preparing and while running
+        {
+          const key = bDone ? "fr_runMax" : "fr_prepMax";
+          const prev = typeof this.turnLog[key] === "number" ? (this.turnLog[key] as number) : 0;
+          if (rawDt > prev) this.turnLog[key] = +rawDt.toFixed(1);
+          const nk = bDone ? "fr_runN" : "fr_prepN", sk = bDone ? "fr_runSlow" : "fr_prepSlow";
+          this.turnLog[nk] = ((this.turnLog[nk] as number) || 0) + 1;
+          if (rawDt > 34) this.turnLog[sk] = ((this.turnLog[sk] as number) || 0) + 1;
+        }
         if (drive && this.turnPinned === null) {
           // BACK TO A: the goal went behind this quarter. Once there the renderer
           // swaps back (A is what the overlay shows at u = 0), and the overlay
