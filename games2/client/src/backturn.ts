@@ -23,10 +23,26 @@
 //    (wikipanel.ts), so a back while it is open closes the drawer and lands ON
 //    this entry — recognised by its state and left alone.
 //  - ONLY IN THE WORLD (`ml-ingame`): on the select screen back leaves as ever.
+//  - THE GAME HOLDS STILL THROUGH THE SWIPE (maintainer 2026-09-26: "The screen
+//    jumps a lot, laggy and rerendering… As if something tries to calculate a
+//    new resolution"). Android's back preview shrinks the window while the
+//    finger moves and springs it back after; every resize re-ran the HUD
+//    layout and reallocated the canvas twice per back. From an edge touch-down
+//    until SETTLE_MS after the back (or the finger lifting, or HOLD_MAX_MS),
+//    window/visualViewport resize events are stopped at the target (a capture
+//    listener runs before every bubble listener there) and the page and
+//    #game are pinned at their px size, so nothing lays out or re-renders; one
+//    resize is replayed at the end only if the size really changed. The OS's
+//    own animation (the card shrink, the white status bar) is drawn outside
+//    the page and cannot be stopped from here.
 
 const EDGE_PX = 48;
 const EDGE_MS = 1500;
 const NOTE_MS = 1800;
+/** Hold after the back fires: Android's preview springs back to full size. */
+const SETTLE_MS = 600;
+/** A gesture Android took and then abandoned never tells the page: give up. */
+const HOLD_MAX_MS = 2500;
 /** Which arrow a back with no visible edge presses. */
 const DEFAULT_DIR: "left" | "right" = "right";
 
@@ -38,6 +54,43 @@ export function mountBackTurn(): void {
   let armed = false;
   let lastDown: { x: number; t: number } | null = null;
   const inWorld = () => document.documentElement.classList.contains("ml-ingame");
+  // --- the size hold ---
+  let held: { w: number; h: number; undo: Array<() => void> } | null = null;
+  let holdTimer = 0;
+  const pin = (el: HTMLElement | null, w: number, h: number, undo: Array<() => void>) => {
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const was = [el.style.width, el.style.height];
+    el.style.width = `${r.width || w}px`;
+    el.style.height = `${r.height || h}px`;
+    undo.push(() => { el.style.width = was[0]; el.style.height = was[1]; });
+  };
+  const hold = () => {
+    clearTimeout(holdTimer);
+    holdTimer = window.setTimeout(release, HOLD_MAX_MS);
+    if (held) return;
+    const w = window.innerWidth, h = window.innerHeight;
+    const undo: Array<() => void> = [];
+    pin(document.documentElement, w, h, undo);
+    pin(document.body, w, h, undo);
+    pin(document.getElementById("game"), w, h, undo);
+    held = { w, h, undo };
+  };
+  function release() {
+    clearTimeout(holdTimer);
+    if (!held) return;
+    const { w, h, undo } = held;
+    held = null;
+    for (const u of undo) u();
+    if (window.innerWidth !== w || window.innerHeight !== h) window.dispatchEvent(new Event("resize"));
+  }
+  const swallow = (e: Event) => { if (held) e.stopImmediatePropagation(); };
+  window.addEventListener("resize", swallow, { capture: true });
+  window.visualViewport?.addEventListener("resize", swallow, { capture: true });
+  window.visualViewport?.addEventListener("scroll", swallow, { capture: true });
+  const releaseSoon = () => { clearTimeout(holdTimer); holdTimer = window.setTimeout(release, SETTLE_MS); };
+  document.addEventListener("pointerup", () => { if (held) releaseSoon(); }, { capture: true, passive: true });
+
   const arm = () => {
     if (armed || !inWorld() || document.querySelector(".ml-wikiroot")) return;
     armed = true;
@@ -47,6 +100,7 @@ export function mountBackTurn(): void {
     "pointerdown",
     (e) => {
       lastDown = { x: e.clientX, t: e.timeStamp };
+      if (inWorld() && (e.clientX <= EDGE_PX || window.innerWidth - e.clientX <= EDGE_PX)) hold();
       arm(); // a tap is the user activation Chrome requires
     },
     { capture: true, passive: true },
@@ -71,6 +125,7 @@ export function mountBackTurn(): void {
   };
   window.addEventListener("popstate", (e) => {
     if ((e.state as { mlTurn?: boolean } | null)?.mlTurn) return; // the wiki drawer closed onto us
+    if (held) releaseSoon();
     if (!armed) return;
     armed = false;
     if (!inWorld()) return;

@@ -761,10 +761,17 @@ from the games agent), #18 (title/landing screen).
   and WorldScene both take). From the LEFT edge (touch-down ≤48 px in, ≤1.5 s
   before) = the right arrow, from the RIGHT edge the left arrow; edge not seen
   (Android gesture nav can take the swipe first) = the right arrow. A 1.8 s note
-  says which — the open question on his phone. The entry is re-held on the next
+  says which (his phone 2026-09-26: BOTH edges seen). The entry is re-held on the next
   TAP, never from popstate: Chrome skips entries added without a user gesture,
   so a second back with no tap between leaves the page. The Wiki drawer's own
-  entry sits above this one and wins. Not on the select screen.
+  entry sits above this one and wins. Not on the select screen. THE GAME HOLDS
+  STILL THROUGH THE SWIPE ("The screen jumps a lot, laggy and rerendering"):
+  Android's back preview shrinks the window mid-gesture, and each resize re-ran
+  the HUD layout and reallocated the canvas. From an edge touch-down until
+  0.6 s after the back / finger-up (2.5 s cap) resize events are stopped at
+  window + visualViewport (capture) and html/body/#game pinned in px; one
+  resize is replayed only if the size really changed. The OS's card shrink and
+  white status bar are drawn outside the page — not stoppable.
 - **THE UPDATE POPUP LISTS WHAT CHANGED, AND THE LIST IS THE WIKI'S**
   (`updatenote.ts`, maintainer 2026-09-18: "I want it to list everything that
   has changed from the version I'm currently at to the version I'm about to
