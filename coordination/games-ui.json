@@ -1,17 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-26T10:09:12+00:00",
+  "updated_at": "2026-09-26T10:16:01+00:00",
   "health": "running",
-  "current": {
-    "unit": "THE UPDATE DIALOG OPENS EMPTY (maintainer 2026-09-26: 'When the new version out popup opens it starts empty and not with content immidiatly'): the GitHub compare for a lane publish is fetched on OPEN. Prefetch it with the notes (before the toast), and insert the card only when it is whole.",
-    "since": "2026-09-26T10:09:12+00:00",
-    "files": [
-      "games2/client/src/updatenote.ts",
-      "games2/scripts/verify-updatenotes.mjs",
-      "games2/UI_AGENT.md",
-      "coordination/games-ui.json"
-    ]
-  },
+  "current": "idle — SHIPPED 2026-09-26: the update dialog is inserted whole (the lane's GitHub range is prefetched before the toast). Still waiting on games for ONE card width (bars.ts 126/170 -> 148).",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -74,5 +65,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-26T10:09:12+00:00"
+  "updated": "2026-09-26T10:16:01+00:00"
 }
