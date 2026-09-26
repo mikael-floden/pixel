@@ -352,6 +352,11 @@ const ANIM_FPS: Record<string, number> = {
 /** How long the flinch overlay holds at the combat rate: the 5-frame clip at
  *  ANIM_FPS.hurt, rounded up. */
 const HURT_MS = 300;
+/** What drives a turn from outside (the spin bar's chase, WorldScene.chaseSpin):
+ *  how many quarters are still wanted in the turn's direction counting this one
+ *  (read every frame — more than one runs on through at speed, none goes back),
+ *  and the velocity the previous quarter ended at (quarters/ms). */
+type TurnDrive = { owed: () => number; v0: number };
 /** The turn's upright set of one frame (WorldScene.turnSnap): the objects to hide
  *  for its bodiless twin, the cards, the player's index and the owner map. */
 type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; mine: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
@@ -2220,6 +2225,13 @@ export class WorldScene extends Phaser.Scene {
   private spinAt = 0;
   private spinBusy = false;
   private spinRetryAt = 0;
+  /** The angular velocity (quarters/ms, in the chase's direction) a quarter that
+   *  ended AT SPEED hands the next one, and its overlay, held up until the next
+   *  one's first frame covers it — so a chain never stops or flashes between
+   *  quarters. */
+  private spinVel = 0;
+  private spinVelDir = 0;
+  private rotFxHold: RotFx | null = null;
   /** Debug: a pinned turn progress for screenshots (`__ml.turnSeek`); null = the clock. */
   private turnPinned: number | null = null;
   private turnLog: Record<string, number | string> = {};
@@ -20819,30 +20831,50 @@ export class WorldScene extends Phaser.Scene {
    *  world yet, a swap that threw) is retried from update() a second later. */
   private chaseSpin(): void {
     const d = Math.sign(this.spinGoal - this.spinAt);
-    if (!d || this.spinBusy || this.turning || !this.world) return;
+    if (!d || this.spinBusy || this.turning || !this.world) {
+      if (!d && !this.spinBusy) this.releaseTurnHold();
+      return;
+    }
     this.spinBusy = true;
-    const k0 = this.viewRot;
-    const after = () => {
+    const k0 = this.viewRot, at0 = this.spinAt;
+    // quarters still wanted THIS way, counting the one about to turn: more than
+    // one and it runs on through at speed, none and it goes back
+    const owed = () => (this.spinGoal - at0) * d;
+    const after = (r: Record<string, number | string>) => {
       this.spinBusy = false;
-      if (this.viewRot === k0) { this.spinRetryAt = this.time.now + 1000; return; }
+      this.spinVel = typeof r.vOut === "number" ? r.vOut : 0;
+      this.spinVelDir = d;
+      if (r.reversed) { this.chaseSpin(); return; } // back where it began: the goal decides again at once
+      if (this.viewRot === k0) { this.releaseTurnHold(); this.spinRetryAt = this.time.now + 1000; return; }
       this.spinAt += d;
       this.chaseSpin();
     };
-    this.turnView(d > 0 ? -1 : 1, Math.abs(this.spinGoal - this.spinAt) > 1 ? 800 : 1100).then(after, (e) => {
+    this.turnView(d > 0 ? -1 : 1, 1100, 3000, 1, { owed, v0: this.spinVelDir === d ? this.spinVel : 0 }).then(after, (e) => {
       console.warn("[nangijala] view turn failed:", e);
-      after();
+      after({});
     });
+  }
+
+  /** A held overlay nobody took over (the chain ended, or a turn was refused):
+   *  it shows the live view already, so it only has to fade. */
+  private releaseTurnHold(): void {
+    const h = this.rotFxHold;
+    if (!h) return;
+    this.rotFxHold = null;
+    h.canvas.style.transition = "opacity 120ms linear";
+    h.canvas.style.opacity = "0";
+    window.setTimeout(() => h.destroy(), 140);
   }
 
   /** THE TURN (rotfx.ts). Take the frame the renderer just drew (A), swap the
    *  drawn world a quarter-turn, wait until the renderer has DRAWN the new view,
    *  take that frame (B), and orbit between the two on an overlay. Both ends of
    *  the turn are the renderer's own pixels; only the in-between is built. */
-  private async turnView(dir: 1 | -1, ms = 1100, waitB = 3000, blur = 1): Promise<Record<string, number | string>> {
+  private async turnView(dir: 1 | -1, ms = 1100, waitB = 3000, blur = 1, drive?: TurnDrive): Promise<Record<string, number | string>> {
     const world = this.world;
     if (this.turning || !world) return { skipped: "busy, or no world" };
     // the death cam and the respawn veil are screen-space sequences: no turn under them
-    if ((this.room?.state.players.get(this.myId) as { dead?: boolean } | undefined)?.dead) return { skipped: "dead" };
+    if ((this.room?.state.players.get(this.myId) as { dead?: boolean } | undefined)?.dead) { this.releaseTurnHold(); return { skipped: "dead" }; }
     const kA = this.viewRot, kB = normRot(kA + dir);
     if (this.game.renderer.type !== Phaser.WEBGL) { await this.applyViewRot(kB); return { skipped: "canvas renderer: turned instantly" }; }
     this.turning = true;
@@ -20875,6 +20907,9 @@ export class WorldScene extends Phaser.Scene {
       fx.start({ frameA: cv, projA: proj(), pivot: { x: px, y: py, h: ph }, mesh, dir });
       fx.draw(0, 0);
     });
+    // the last quarter's overlay held its end (this frame A) until now: it goes
+    // under this one, which shows the same picture
+    if (this.rotFxHold) { this.rotFxHold.destroy(); this.rotFxHold = null; }
     // ...AND AGAIN WITHOUT THEM, one frame later under the overlay: the difference
     // is each thing as drawn (the waterline crop, the light, the name), carried by
     // its feet; the bodiless frame is what the ground wears.
@@ -20902,26 +20937,85 @@ export class WorldScene extends Phaser.Scene {
       console.warn("[nangijala] view turn failed:", e);
       return { skipped: `swap failed: ${e}` };
     }
+    let swappedBack = false;
     if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (bx - by) * dx, this.iso.oy + 10 + (bx + by) * dy - ph * lh);
     this.turnLog.swapMs = +(performance.now() - t0).toFixed(1);
     return await new Promise((done) => {
       let clock = 0, last = performance.now(), lastCheck = 0, capturing = false, held = 0;
       const tWait = performance.now();
-      const finish = () => {
+      // A DRIVEN TURN (the spin bar) MOVES LIKE A BODY: a velocity that carries
+      // across quarters, a constant acceleration, and a braking curve that
+      // stops it exactly on the goal — so a chain cruises through its quarters
+      // and a tap back decelerates, turns round and swaps the renderer back,
+      // as his orb does. `u` is this quarter's progress; a lone quarter over
+      // `ms` is a triangle profile peaking at 2/ms.
+      const acc = 4 / (ms * ms), vPeak = 2 / ms, vCap = 2.4 / ms;
+      let u = 0, v = drive ? Math.max(0, drive.v0) : 0;
+      let backDone = false, backHeld = 0, tBack = 0;
+      const finish = (chained = false) => {
         this.turnLog.totalMs = +(performance.now() - t0).toFixed(1);
+        const out = { ...this.turnLog, ...fx.timings, ...(swappedBack ? { reversed: 1 } : {}), vOut: chained ? v : 0 };
+        if (chained) {
+          // AT SPEED INTO THE NEXT QUARTER: this overlay (showing B, the live
+          // view) stays up until the next one's frame A covers it
+          if (this.rotFx === fx) this.rotFx = null;
+          this.releaseTurnHold();
+          this.rotFxHold = fx;
+          this.turning = false;
+          this.inputRot = this.viewRot;
+          done(out);
+          return;
+        }
         fx.canvas.style.transition = "opacity 120ms linear";
         fx.canvas.style.opacity = "0";
-        window.setTimeout(() => { fx.destroy(); if (this.rotFx === fx) this.rotFx = null; this.turning = false; this.inputRot = this.viewRot; done({ ...this.turnLog, ...fx.timings }); }, 140);
+        window.setTimeout(() => { fx.destroy(); if (this.rotFx === fx) this.rotFx = null; this.turning = false; this.inputRot = this.viewRot; done(out); }, 140);
       };
       const step = () => {
-        const now = performance.now(), dt = now - last; last = now;
+        const now = performance.now(), dt = Math.min(100, now - last); last = now;
+        if (drive && this.turnPinned === null) {
+          // BACK TO A: the goal went behind this quarter. Once there the renderer
+          // swaps back (A is what the overlay shows at u = 0), and the overlay
+          // leaves when the renderer has drawn it again.
+          if (backDone) {
+            if (swappedBack && now - lastCheck > 100) {
+              lastCheck = now;
+              backHeld = this.viewSettled() ? backHeld + 1 : 0;
+              if (backHeld >= 3 || now - tBack > waitB) { finish(); return; }
+            }
+            fx.draw(0, blur, 0);
+            requestAnimationFrame(step);
+            return;
+          }
+          const owedNow = drive.owed();
+          const target = owedNow >= 1 ? owedNow : 0;
+          const dist = target - u;
+          let vDes = Math.sign(dist) * Math.min(vCap, Math.sqrt(2 * acc * Math.abs(dist)));
+          // while B is still being drawn, crawl through mid-turn, where the blur
+          // is strongest, instead of stopping dead
+          if (!fx.ready && u > 0.42) vDes = Math.min(vDes, 0.15 * vPeak);
+          v += Math.max(-acc * dt, Math.min(acc * dt, vDes - v));
+          u += v * dt;
+          if (!fx.ready && u > 0.5) { u = 0.5; v = Math.min(v, 0); }
+          if (u >= 1 && fx.ready) {
+            u = 1;
+            fx.draw(1, blur, 0);
+            if (drive.owed() > 1) { finish(true); return; }
+            v = 0; finish(); return;
+          }
+          if (target === 0 && (u <= 0 || (u < 0.002 && Math.abs(v) < 0.05 * vPeak))) {
+            u = 0; v = 0; backDone = true; tBack = now;
+            this.turnLog.reversed = 1;
+            void this.applyViewRot(kA).then(() => { swappedBack = true; lastCheck = 0; }, (e) => { console.warn("[nangijala] view turn back failed:", e); swappedBack = true; });
+            if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (px - py) * dx, this.iso.oy + 10 + (px + py) * dy - ph * lh);
+          }
+        }
         // While B is still being drawn the clock crawls through mid-turn, where
         // the blur is strongest, instead of stopping dead.
         const rate = !fx.ready && clock / ms > 0.42 ? 0.15 : 1;
         clock = Math.min(ms, clock + dt * rate);
         let raw = clock / ms;
         if (!fx.ready) raw = Math.min(raw, 0.5);
-        if (!fx.ready && !capturing && now - lastCheck > 100) {
+        if (!fx.ready && !capturing && !backDone && now - lastCheck > 100) {
           lastCheck = now;
           held = this.viewSettled() ? held + 1 : 0;
           if (held >= 5 || now - tWait > waitB) {
@@ -20932,8 +21026,13 @@ export class WorldScene extends Phaser.Scene {
               .then((snapB) => this.turnFrameBodiless(snapB, (g, me, own) => { fx.setB0(cv, g, me); if (own) fx.setOwners("B", own.data, own.w, own.h); }));
           }
         }
-        const u = this.turnPinned ?? easeTurn(raw);
-        fx.draw(u, blur);
+        if (drive && this.turnPinned === null) {
+          fx.draw(u, blur, Math.abs(v) / vPeak);
+          requestAnimationFrame(step);
+          return;
+        }
+        const ue = this.turnPinned ?? easeTurn(raw);
+        fx.draw(ue, blur);
         if (this.turnPinned === null && raw >= 1 && fx.ready) { finish(); return; }
         requestAnimationFrame(step);
       };

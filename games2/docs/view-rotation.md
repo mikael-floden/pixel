@@ -9,11 +9,19 @@ it on the buttons always. We will fix any bugs and move forward.").
 A tap on `.ml-spinbtn.left/.right` moves a GOAL one quarter as the finger lifts
 (the bar's own `ml-spin` fires only when the orb rests, 360 ms a quarter later),
 and `ml-spin {quarter}` then settles the goal on the orb's quarter. The view
-chases the goal a quarter at a time (`chaseSpin`): each turn's end starts the
-next, a chained quarter runs 800 ms instead of 1100, a tap back undoes what is
-still owed, and a turn that did not happen (dead, no world yet, a swap that
-threw) is retried from `update` a second later. Q / E `.click()` the bar's own
-buttons, so the orb and the view never disagree.
+chases the goal a quarter at a time (`chaseSpin`), and A DRIVEN TURN MOVES LIKE
+A BODY (`TurnDrive`): a velocity that carries across quarters, a constant
+acceleration (a lone quarter is a triangle profile over 1100 ms, peak 2/ms
+quarters), a braking curve that stops it exactly on the goal — read every frame,
+so a tap mid-quarter re-plans it. Owed more than this quarter, it runs on through
+at speed: its overlay (showing B, the live view) is HELD until the next quarter's
+frame A covers it, so a chain neither stops nor flashes between quarters (each
+quarter faded out and eased to rest before). Owed none, it decelerates, turns
+round, and at A swaps the renderer back — his orb's rule, "change direction
+immediately and go back". The blur and the zoom pulse follow that velocity, not
+the clock. A turn that did not happen (dead, no world yet, a swap that threw) is
+retried from `update` a second later. Q / E `.click()` the bar's own buttons, so
+the orb and the view never disagree. The debug hooks keep the eased clock.
 THE DIRECTION IS THE ORB'S: his orb's front face moves RIGHT on a right tap, so
 the world's near side does too — `viewRot - 1` per right quarter (the picture
 turns anticlockwise).
@@ -212,5 +220,5 @@ VIEW quarters: +1 is the picture clockwise; neither moves the spin goal),
   in server keys.
 - The spawn-area debug overlay is not re-placed on a turn; the minimap stays
   north-up.
-- A chained turn pauses between quarters (each quarter re-takes its A), and a
-  tap back mid-turn finishes that quarter before it turns back.
+- A chained quarter still holds for its frame A (three frames) at the junction,
+  and crawls at mid-turn while its B is drawn.

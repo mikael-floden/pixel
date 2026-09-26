@@ -491,8 +491,11 @@ export class RotFx {
     return cs[0] * dx - cs[1] * dy + (cs[1] * dx + cs[0] * dy) + p[2] * ((2 * pr.dy) / pr.lh);
   }
 
-  /** Draw the turn at progress u in [0,1]. `blur` scales the arc (0 = none). */
-  draw(u: number, blur = 1): void {
+  /** Draw the turn at progress u in [0,1]. `blur` scales the arc (0 = none);
+   *  `speedIn` is the angular speed as a share of a lone quarter's peak, when a
+   *  driven turn knows it (a chain cruises through its quarters, a reversal slows
+   *  to nothing mid-way) — absent, the eased clock's own sin(pi u). */
+  draw(u: number, blur = 1, speedIn?: number): void {
     const gl = this.gl, st = this.st!;
     if (!st) return;
     const phi = (Math.PI / 2) * u * st.dir;
@@ -517,7 +520,7 @@ export class RotFx {
     gl.uniform1f(gl.getUniformLocation(m, "uSoft"), this.tune.soft);
     gl.uniform1f(gl.getUniformLocation(m, "uDim"), this.tune.dim);
     // the zoom pulse follows the turn's angular speed: none at either end
-    const speed = Math.sin(Math.PI * Math.min(1, Math.max(0, u)));
+    const speed = speedIn !== undefined ? Math.max(0, Math.min(1.3, speedIn)) : Math.sin(Math.PI * Math.min(1, Math.max(0, u)));
     const pvz = this.pivotPx(st.projA, st.pivot.h, cs);
     gl.uniform3f(gl.getUniformLocation(m, "uZoom"), pvz[0] + shift[0], pvz[1] + shift[1], 1 + this.tune.zoom * speed);
     const bind = (unit: number, t: WebGLTexture, name: string, p: WebGLProgram) => {
