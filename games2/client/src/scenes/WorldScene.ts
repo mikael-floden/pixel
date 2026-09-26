@@ -2241,6 +2241,12 @@ export class WorldScene extends Phaser.Scene {
   private spinVel = 0;
   private spinVelDir = 0;
   private rotFxHold: RotFx | null = null;
+  /** THE TURN OVERLAYS, KEPT (rotfx park): two, so a chained quarter draws on
+   *  one while the other holds the last quarter's end. Made in idle time before
+   *  the first tap (prewarmRotFx), so no turn pays for a WebGL context or a
+   *  shader compile. */
+  private rotFxPool: RotFx[] = [];
+  private rotFxWarmAt = 0;
   /** Debug: a pinned turn progress for screenshots (`__ml.turnSeek`); null = the clock. */
   private turnPinned: number | null = null;
   private turnLog: Record<string, number | string> = {};
@@ -15130,6 +15136,8 @@ export class WorldScene extends Phaser.Scene {
     if (this.spinGoal !== this.spinAt && !this.spinBusy && !this.turning && time >= this.spinRetryAt) this.chaseSpin();
     // ...and while one is owed the spin bar's cube hears where the world stands
     if (this.spinGoal !== this.spinAt || this.spinBusy) this.publishSpinAngle(this.spinQ, true);
+    // the turn's overlay is made before the first tap, in idle time
+    if (!this.rotFxPool.length && this.worldUp && time > this.rotFxWarmAt) { this.rotFxWarmAt = time + 5000; this.prewarmRotFx(); }
     /* Cleared here, set by t3drainSlices. The two stand-down guards below read
      * `groundSliceQ.length` AFTER the drain has already shifted its rects, so
      * the frame that EMPTIES the queue used to look idle to them — and after
@@ -20962,7 +20970,42 @@ export class WorldScene extends Phaser.Scene {
     this.rotFxHold = null;
     h.canvas.style.transition = "opacity 120ms linear";
     h.canvas.style.opacity = "0";
-    window.setTimeout(() => h.destroy(), 140);
+    window.setTimeout(() => this.parkRotFx(h), 140);
+  }
+
+  /** An overlay for this canvas: a parked one from the pool, or a new one (at
+   *  most two live — the drawing one and the held one). A canvas that changed
+   *  size (a phone turned) drops the pool. */
+  private takeRotFx(cv: HTMLCanvasElement): RotFx {
+    this.rotFxPool = this.rotFxPool.filter((f) => {
+      if (f.fits(cv.width, cv.height) || f === this.rotFx || f === this.rotFxHold) return true;
+      f.destroy();
+      return false;
+    });
+    let fx = this.rotFxPool.find((f) => f !== this.rotFx && f !== this.rotFxHold && f.fits(cv.width, cv.height));
+    if (!fx) {
+      fx = new RotFx(cv, cv.width, cv.height);
+      this.rotFxPool.push(fx);
+    }
+    fx.place(cv);
+    return fx;
+  }
+  private parkRotFx(fx: RotFx): void {
+    if (this.rotFx === fx) this.rotFx = null;
+    if (this.rotFxHold === fx) this.rotFxHold = null;
+    if (this.rotFxPool.includes(fx)) fx.park();
+    else fx.destroy();
+  }
+  /** One overlay made ahead of the first tap, in idle time once the world is up. */
+  private prewarmRotFx(): void {
+    if (this.rotFxPool.length || this.game.renderer.type !== Phaser.WEBGL) return;
+    const cv = this.game.canvas;
+    const make = () => {
+      if (this.rotFxPool.length || this.turning) return;
+      try { const fx = new RotFx(cv, cv.width, cv.height); fx.park(); this.rotFxPool.push(fx); } catch { /* no WebGL: turns go instant */ }
+    };
+    const ric = (window as unknown as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => void }).requestIdleCallback;
+    if (ric) ric(make, { timeout: 4000 }); else window.setTimeout(make, 500);
   }
 
   /** THE TURN (rotfx.ts). Take the frame the renderer just drew (A), swap the
@@ -21011,7 +21054,7 @@ export class WorldScene extends Phaser.Scene {
     const [bx, by] = rotPoint(sx, sy, kB, W, H);          // ...and in B's view
     let fx: RotFx;
     const tCtx = performance.now();
-    try { fx = new RotFx(cv, cv.width, cv.height); } catch (e) { this.turning = false; await this.applyViewRot(kB); return { skipped: `no overlay: ${e}` }; }
+    try { fx = this.takeRotFx(cv); } catch (e) { this.turning = false; await this.applyViewRot(kB); return { skipped: `no overlay: ${e}` }; }
     this.turnLog.ph_ctx = +(performance.now() - tCtx).toFixed(1);
     fx.tune = { ...this.rotTune };
     this.rotFx = fx;
@@ -21029,7 +21072,7 @@ export class WorldScene extends Phaser.Scene {
     });
     // the last quarter's overlay held its end (this frame A) until now: it goes
     // under this one, which shows the same picture
-    if (this.rotFxHold) { this.rotFxHold.destroy(); this.rotFxHold = null; }
+    if (this.rotFxHold) this.parkRotFx(this.rotFxHold);
     // ...AND AGAIN WITHOUT THEM, one frame later under the overlay: the difference
     // is each thing as drawn (the waterline crop, the light, the name), carried by
     // its feet; the bodiless frame is what the ground wears.
@@ -21050,8 +21093,7 @@ export class WorldScene extends Phaser.Scene {
       await this.applyViewRot(kB);
     } catch (e) {
       fwEnd();
-      fx.destroy();
-      if (this.rotFx === fx) this.rotFx = null;
+      this.parkRotFx(fx);
       this.turning = false;
       this.inputRot = this.viewRot;
       console.warn("[nangijala] view turn failed:", e);
@@ -21110,7 +21152,7 @@ export class WorldScene extends Phaser.Scene {
         }
         fx.canvas.style.transition = "opacity 120ms linear";
         fx.canvas.style.opacity = "0";
-        window.setTimeout(() => { fx.destroy(); if (this.rotFx === fx) this.rotFx = null; this.turning = false; this.inputRot = this.viewRot; done(out); }, 140);
+        window.setTimeout(() => { this.parkRotFx(fx); this.turning = false; this.inputRot = this.viewRot; done(out); }, 140);
       };
       // A THROW INSIDE THE LOOP MUST NOT STRAND THE TURN: the overlay up, the
       // camera off and `turning` set would swallow every tap and draw nothing
@@ -21119,8 +21161,7 @@ export class WorldScene extends Phaser.Scene {
           console.warn("[nangijala] view turn loop failed:", e);
           fwEnd();
           cam.setVisible(true);
-          fx.destroy();
-          if (this.rotFx === fx) this.rotFx = null;
+          this.parkRotFx(fx);
           this.turning = false;
           this.inputRot = this.viewRot;
           done({ ...this.turnLog, error: String(e) });
