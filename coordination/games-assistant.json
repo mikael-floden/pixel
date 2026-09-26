@@ -1,13 +1,15 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-26T10:54:25+00:00",
+  "updated_at": "2026-09-26T11:05:11+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED, IN FLIGHT: ITEM 2 of his two - 'No glitch at the end: carry each figure by its live [position] back to the game' (maintainer 2026-09-26, 'Do them one at a time!'). (a) every card of the turn overlay follows its thing's LIVE feet, so what walked during the turn is where the game has it at the hand-back; (b) the new side's GROUND IS COMPOSED BEFORE IT IS PAINTED: measured after item 1, a first-visit turn took frame B while ~800 transitions of the new side were still on the compose worker (landing 12 a frame), so B showed plain plates and the hand-back popped them in - the swap now resolves its window, posts what it lacks and waits (bounded) before its one banded paint, and B waits for owed transitions in view; (c) the neighbours' scenery stills are asked before the tap at a priority that lands; (d) a B taken on timeout fades out softly. Item 1 LANDED f6ed5df6a3 + 67fd594d4d (the retired slope doc out of TILES3_DOCS). nightlight.ts and tiles3runtime.ts are released. games-perf: WorldScene.ts is 'free' the moment item 2 lands, posted to you.",
-    "since": "2026-09-26T10:54:25+00:00",
+    "unit": "CLAIMED, IN FLIGHT (maintainer 2026-09-26, on his phone: 'I feel the rotation was less buggy before. Now it looks ugly and still lags. Can you revert the code that created this bug?'): REVERTING my view-turn smoothness round - f6ed5df6a3 (swap in frame-sized chunks), 51090f1eda (kept views/resolvers, neighbours in idle), d040ed2d9c (overlay kept), ea163c9ad5 (turn log). His screenshot is the whole ground a checkerboard after a turn; my own frame-by-frame recordings of that round showed the same checkerboard in the turn's last frame (the banded turn paint ahead of its plates/transitions), the build before the round did not. Kept: 67fd594d4d (the retired slope doc out of TILES3_DOCS, the fast lane needs it). Item 2 is SHELVED. When this lands, WorldScene.ts is FREE for games-perf (posted).",
+    "since": "2026-09-26T11:05:11+00:00",
     "files": [
       "games2/client/src/scenes/WorldScene.ts",
       "games2/client/src/rotfx.ts",
+      "games2/client/src/nightlight.ts",
+      "games2/client/src/tiles3worker.ts",
       "games2/docs/view-rotation.md"
     ]
   },
@@ -78,7 +80,7 @@
       "at": "2026-09-26T10:21:17+00:00"
     }
   ],
-  "updated": "2026-09-26T10:54:25+00:00",
+  "updated": "2026-09-26T11:05:11+00:00",
   "units_shipped": 53,
   "handled": []
 }
