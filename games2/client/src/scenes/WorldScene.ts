@@ -2342,7 +2342,11 @@ export class WorldScene extends Phaser.Scene {
   private t3compose = new ComposeWorker();
   /** THE GPU COMPOSITOR (tiles3gpu.ts), his switch "GPU transitions": the
    *  worker's boundary jobs composed on the GPU, landing the worker's way. */
-  private t3gpuc = new GpuComposer(this.t3compose, () => this.t3sheets, () => this.gpuHost());
+  private t3gpuc = new GpuComposer(this.t3compose, () => this.t3sheets, () => this.gpuHost(), () => {
+    const p = this.cache.json.get("t3doc:patterns") as { patterns?: { row: number }[] } | undefined;
+    const cols = 16;
+    return (p?.patterns ?? []).flatMap((q) => Array.from({ length: cols }, (_, w) => q.row * cols + w));
+  });
   private gpuHostMemo: GpuHost | null = null;
   /** The compositor's share of Phaser's renderer: its GL context (the pipeline
    *  flushed and set aside around the raw GL, put back after), a texture of the
@@ -6363,6 +6367,7 @@ export class WorldScene extends Phaser.Scene {
             const on = !this.t3gpuc.on;
             this.t3gpuc.on = on;
             setGpuComposeEnabled(on);
+            if (on) this.t3gpuc.prepare();
             this.chat.addLog("—", `GPU transitions: ${on ? "on" : "off"}`);
           },
           get: () => this.t3gpuc.on,
@@ -23448,6 +23453,8 @@ export class WorldScene extends Phaser.Scene {
         sheets: { silhouette: docUrl(p.silhouette, this.t3route), masks: docUrl(p.masks, this.t3route), border: docUrl(p.border, this.t3route) },
       });
     }
+    // the GPU compositor and every mask frame, now, with the factory — never at a first transition
+    this.t3gpuc.prepare();
     this.t3tex = new Tiles3Textures({
       textures: this.t3tm,
       sheets: this.t3sheets,

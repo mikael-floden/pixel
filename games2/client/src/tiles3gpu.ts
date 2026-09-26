@@ -373,6 +373,16 @@ export class SlotAtlas {
     return this.at(k);
   }
   uploads = 0;
+  /** Claim a slot for `key` whose pixels the caller uploads itself (a bulk load). */
+  reserve(key: string): [number, number] {
+    let k = this.slots.get(key);
+    if (k === undefined) {
+      if (this.slots.size >= this.cap) throw new Error("tiles3gpu: atlas full at load");
+      k = this.slots.size;
+      this.slots.set(key, k);
+    }
+    return this.at(k);
+  }
   get size(): number {
     return this.slots.size;
   }
@@ -393,10 +403,31 @@ export class GpuShared {
     const { fw, fh, tone } = sheets;
     this.plates = new SlotAtlas(gl, fw, PLATE_SLOT_H);
     this.shapes = new SlotAtlas(gl, fw, fh);
-    this.frames = new SlotAtlas(gl, fw, fh, 1024);
+    this.frames = new SlotAtlas(gl, fw, fh, 2048); // 32 x 44 = 1,408 frames: every pattern's 16 fit
     const lut = new Uint8Array(256 * 4);
     for (let v = 0; v < 256; v++) { lut[v * 4] = rint(v * tone); lut[v * 4 + 3] = 255; }
     this.tone = texture(gl, 256, 1, lut);
+  }
+  /** EVERY MASK/SEAM FRAME, AT LOAD (maintainer 2026-09-26: "We only have that
+   *  many masks. You can upload all masks to the GPU in loading"): the patterns'
+   *  frames (pattern.row x 16 Wang indices, ~288), one upload of the whole
+   *  atlas, never touched again. */
+  preloadFrames(sheets: PatternSheets, frames: readonly number[]): void {
+    const { fw, fh } = sheets;
+    const a = this.frames;
+    const data = new Uint8Array(a.w * a.h * 4);
+    for (const f of frames) {
+      const [ox, oy] = a.reserve(String(f));
+      const t = frameTile(sheets, f);
+      for (let y = 0; y < fh; y++) data.set(t.subarray(y * fw * 4, (y + 1) * fw * 4), ((oy + y) * a.w + ox) * 4);
+    }
+    const gl = this.gl;
+    gl.bindTexture(gl.TEXTURE_2D, a.tex);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, a.w, a.h, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    a.uploads++;
   }
   /** A plate's slot, its pixels uploaded the first time (padded to the slot). */
   plate(id: string, px: () => Pixels): [number, number] {
@@ -813,7 +844,28 @@ export class GpuComposer {
     private inner: { ready(): boolean; compose(job: ComposeJob): void },
     private sheets: () => PatternSheets | null,
     private host: () => GpuHost | null,
+    /** Every mask frame the patterns define (preloaded with the compositor). */
+    private frames: () => number[] = () => [],
   ) {}
+  /** MADE AT LOAD, not at the first transition: the compositor, its standing
+   *  resources and every mask/seam frame. Called by the scene once the pattern
+   *  sheets are resident; harmless to call again. */
+  prepare(): void {
+    const sheets = this.sheets(), host = this.host();
+    if (!this.on || this.gpu || !sheets || !host) return;
+    host.clear();
+    try {
+      this.gpu = new GpuBoundaries(host.gl, sheets);
+      this.gpu.shared.preloadFrames(sheets, this.frames());
+      this.gpuR = new GpuRamps(host.gl, sheets, this.gpu.shared);
+    } catch (e) {
+      this.stats.error = String((e as Error)?.message ?? e);
+      this.on = false;
+    } finally {
+      host.gl.bindFramebuffer(host.gl.FRAMEBUFFER, null);
+      host.rebind();
+    }
+  }
   ready(): boolean {
     return this.inner.ready();
   }
@@ -883,7 +935,7 @@ export class GpuComposer {
     let landed = 0;
     host.clear();
     try {
-      if (!this.gpu) this.gpu = new GpuBoundaries(host.gl, sheets);
+      if (!this.gpu) { this.gpu = new GpuBoundaries(host.gl, sheets); this.gpu.shared.preloadFrames(sheets, this.frames()); }
       const gl = host.gl, gpu = this.gpu, { fw, fh } = sheets;
       const s0 = performance.now();
       this.stats.waitingPlates = 0;
@@ -1022,11 +1074,31 @@ export interface RampShape {
   h: number;
   /** Per texel: source x, source y, which (0 nothing, 1 top, 2 band), alpha. */
   map: Uint8Array;
-  /** Per texel: the shade table row of a top texel (-1 none). */
+  /** Per texel: the GLOBAL shade row of a top texel (-1 none) — SHADE_ROWS. */
   row: Int32Array;
-  /** Per row: [red/blue shade, green shade] and its 256-entry tables. */
-  shades: [number, number][];
-  lut: Uint8Array; // rows x 256 x 4: r/b rounding in R, g rounding in G
+}
+
+/** THE SHADE TABLE, ONE FOR THE WHOLE GAME. A shade depends only on the slope's
+ *  direction and the source texel (never on the art, the ground or the rise):
+ *  measured, all 256 directions over the top face's 29 rows make 533 distinct
+ *  (red/blue, green) pairs. Each gets ONE row, appended the first time it is
+ *  met and never moved (a per-shape table overflowed and rows were reused under
+ *  ramps still reading them: 293 of 807 ramps shaded wrong). Row r holds the
+ *  CPU's own `Math.round(d·sh)` for d 0..255. */
+export const SHADE_ROWS: [number, number][] = [];
+const shadeIndex = new Map<string, number>();
+function shadeRow(srb: number, sg: number): number {
+  const k = `${srb},${sg}`;
+  let r = shadeIndex.get(k);
+  if (r === undefined) { r = SHADE_ROWS.push([srb, sg]) - 1; shadeIndex.set(k, r); }
+  return r;
+}
+/** The 256 texels (RGBA) of shade row `r`. */
+export function shadeRowBytes(r: number): Uint8Array {
+  const [srb, sg] = SHADE_ROWS[r];
+  const out = new Uint8Array(256 * 4);
+  for (let d = 0; d < 256; d++) { out[d * 4] = Math.round(d * srb); out[d * 4 + 1] = Math.round(d * sg); out[d * 4 + 3] = 255; }
+  return out;
 }
 
 const rampMemo = new WeakMap<PatternSheets, Map<string, RampShape>>();
@@ -1077,8 +1149,6 @@ export function rampShapeOf(sheets: PatternSheets, mask: number, lh: number, top
   const W = runs[0].w, H = runs[0].h;
   const map = new Uint8Array(W * H * 4);
   const row = new Int32Array(W * H).fill(-1);
-  const shades: [number, number][] = [];
-  const rowOf = new Map<string, number>();
   for (let i = 0; i < W * H; i++) {
     const a = runs[0].data[i * 4 + 3];
     if (a === 0) continue;
@@ -1091,22 +1161,10 @@ export function rampShapeOf(sheets: PatternSheets, mask: number, lh: number, top
       // the CPU's own shade, read back off a white top: it must agree
       if (white.data[i * 4] !== Math.round(255 * srb) || white.data[i * 4 + 1] !== Math.round(255 * sg))
         throw new Error(`tiles3gpu: ramp shade at ${i % W},${Math.floor(i / W)} is not the formula's (${white.data[i * 4]} vs ${Math.round(255 * srb)})`);
-      const k = `${srb},${sg}`;
-      let rw = rowOf.get(k);
-      if (rw === undefined) { rw = shades.push([srb, sg]) - 1; rowOf.set(k, rw); }
-      row[i] = rw;
+      row[i] = shadeRow(srb, sg);
     }
   }
-  const lut = new Uint8Array(shades.length * 256 * 4);
-  shades.forEach(([srb, sg], r) => {
-    for (let d = 0; d < 256; d++) {
-      const o = (r * 256 + d) * 4;
-      lut[o] = Math.round(d * srb);
-      lut[o + 1] = Math.round(d * sg);
-      lut[o + 3] = 255;
-    }
-  });
-  const shape: RampShape = { w: W, h: H, map, row, shades, lut };
+  const shape: RampShape = { w: W, h: H, map, row };
   if (key) m.set(key, shape);
   void fw; void fh;
   return shape;
@@ -1124,10 +1182,10 @@ export function rampFromShape(shape: RampShape, top: Pixels, band: Pixels): Pixe
     const src = which === 1 ? top : band;
     const s = (y * src.w + x) * 4;
     if (which === 1) {
-      const r = shape.row[i] * 256 * 4;
-      o[i * 4] = shape.lut[r + src.data[s] * 4];
-      o[i * 4 + 1] = shape.lut[r + src.data[s + 1] * 4 + 1];
-      o[i * 4 + 2] = shape.lut[r + src.data[s + 2] * 4];
+      const [srb, sg] = SHADE_ROWS[shape.row[i]];
+      o[i * 4] = Math.round(src.data[s] * srb);
+      o[i * 4 + 1] = Math.round(src.data[s + 1] * sg);
+      o[i * 4 + 2] = Math.round(src.data[s + 2] * srb);
     } else {
       o[i * 4] = src.data[s]; o[i * 4 + 1] = src.data[s + 1]; o[i * 4 + 2] = src.data[s + 2];
     }
@@ -1283,15 +1341,15 @@ export class GpuRamps {
   private maps: SlotAtlas;
   private rows: SlotAtlas;
   private lut: WebGLTexture;
+  /** SHADE_ROWS already on the GPU (the table only grows). */
   private lutRows = 0;
-  private lutAt = new Map<string, number>();
   private comp: WebGLTexture;
   private out: WebGLTexture;
   private sums: WebGLTexture;
   private verts: Float32Array;
   static readonly BATCH = 64;
   private readonly cols = 32;
-  private static readonly LUT_ROWS = 4096;
+  private static readonly LUT_ROWS = 1024; // 533 exist
   readonly stats = { tiles: 0, batches: 0, ms: 0 };
   constructor(gl: WebGLRenderingContext, private sheets: PatternSheets, readonly shared: GpuShared) {
     this.gl = gl;
@@ -1310,24 +1368,22 @@ export class GpuRamps {
     this.sums = texture(gl, GpuRamps.BATCH * 3, 1, null);
     this.verts = new Float32Array(GpuRamps.BATCH * 6 * 20);
   }
-  get uploads(): { maps: number; lutRows: number } {
+  get uploads(): { maps: number; lutRows: number } { // eslint-disable-line
     return { maps: this.maps.uploads, lutRows: this.lutRows };
   }
-  /** The shape's shade rows in the LUT texture (appended once). */
-  private lutBase(key: string, shape: RampShape): number {
-    let b = this.lutAt.get(key);
-    if (b !== undefined) return b;
-    if (this.lutRows + shape.shades.length > GpuRamps.LUT_ROWS) { this.lutAt.clear(); this.lutRows = 0; }
-    b = this.lutRows;
-    const gl = this.gl;
+  /** The shade rows met since the last batch, uploaded (each once, ever). */
+  private syncLut(): void {
+    if (this.lutRows >= SHADE_ROWS.length) return;
+    if (SHADE_ROWS.length > GpuRamps.LUT_ROWS) throw new Error(`tiles3gpu: ${SHADE_ROWS.length} shade rows, the table holds ${GpuRamps.LUT_ROWS}`);
+    const gl = this.gl, n = SHADE_ROWS.length - this.lutRows;
+    const data = new Uint8Array(n * 256 * 4);
+    for (let r = 0; r < n; r++) data.set(shadeRowBytes(this.lutRows + r), r * 256 * 4);
     gl.bindTexture(gl.TEXTURE_2D, this.lut);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    if (shape.shades.length) gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, b, 256, shape.shades.length, gl.RGBA, gl.UNSIGNED_BYTE, shape.lut);
-    this.lutRows += shape.shades.length;
-    this.lutAt.set(key, b);
-    return b;
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, this.lutRows, 256, n, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    this.lutRows = SHADE_ROWS.length;
   }
   compose(tiles: RampTile[], sink: GpuSink = { kind: "read" }, premultiply = false): Pixels[] {
     const gl = this.gl, { fw, fh } = this.sheets, sh = this.shared;
@@ -1342,7 +1398,6 @@ export class GpuRamps {
       const sk = rampJobShapeKey(j);
       const pm = this.maps.origin(sk, () => full.map);
       const pr = this.rows.origin(sk, () => full.rows);
-      const lb = this.lutBase(rampShapeKey(j.mask, j.lh, rampTopId(j), plateIdOf(j.band), false), full.shape);
       const pband = sh.plate(plateIdOf(j.band), () => t.band);
       let pa = [0, 0], pb = [0, 0], pbs = [0, 0], pf = [0, 0], kind = 0, seam = 0;
       if (j.top.kind === "plate") pa = sh.plate(plateIdOf(j.top.side), () => t.top!);
@@ -1355,8 +1410,9 @@ export class GpuRamps {
         pbs = sh.shapes.origin(shapeKey(bj), () => shapeOf(this.sheets, bj, t.a, t.b));
         pf = sh.frames.origin(String(bj.frame), () => frameTile(this.sheets, bj.frame));
       }
-      return { pm, pr, lb, pband, pa, pb, pbs, pf, kind, seam, h: full.h };
+      return { pm, pr, lb: 0, pband, pa, pb, pbs, pf, kind, seam, h: full.h };
     });
+    this.syncLut();
     const CW = cols * fw, CH = Math.ceil(GpuRamps.BATCH / cols) * RAMP_H;
     const org = (k: number) => [(k % cols) * fw, Math.floor(k / cols) * RAMP_H];
     // RA — its own vertex layout (20 floats)
