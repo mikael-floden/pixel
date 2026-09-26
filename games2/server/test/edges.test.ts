@@ -211,7 +211,7 @@ test("a plateau's outline painted in draw order is one closed line, one texel wi
   assert.deepEqual(bad, [], "no end (a hole) and no doubled texel anywhere on the loop");
 });
 
-test("a bridge is the ground continuing: no line where it meets the bank, a line on its sides over the water", { skip }, () => {
+test("a bridge (or a roof) is the ground continuing: no line where it meets the bank, a line on its sides over the water", { skip }, () => {
   const t = resolver(-0.01);
   // Banks at level 1 (x <= 1 and x >= 5), a river at level 0 between them, a bridge deck at level 1 across it on row 2.
   const W = 7, H = 5;
@@ -232,4 +232,8 @@ test("a bridge is the ground continuing: no line where it meets the bank, a line
   assert.equal(mid & (EDGE_N | EDGE_S), EDGE_N | EDGE_S, "the bridge's sides over the water wear the line");
   assert.equal(mid & (EDGE_W | EDGE_E), 0, "and none along the bridge");
   assert.equal(t.deckTop(view, 2, 2, 1) & EDGE_W, 0, "nor where it lands on the bank");
+  // A roof is the same: walked onto from ground of its height, it is that ground.
+  const roofView = { ...(view as object), decks: [{ kind: "roof", ground: "grey_stone", level: 1, cells: [2, 3, 4].map((x) => ({ x, y: 2 })) }] } as never;
+  assert.equal((t.edgeSet(g, L, 1, 2, roofView)?.top ?? 0) & EDGE_E, 0, "ground meets a roof of its height: no line");
+  assert.equal(t.deckTop(roofView, 3, 2, 1) & (EDGE_N | EDGE_S), EDGE_N | EDGE_S, "the roof's edges over lower ground wear the line");
 });

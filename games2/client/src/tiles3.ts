@@ -1544,8 +1544,8 @@ export interface Tiles3DeckCell {
    *  level and paste point (`Tiles3Data.deckBoundary`). */
   boundary?: Tiles3Boundary;
   /** THE OUTLINE ON THE SLAB'S TOP (tiles3draw `edgeCode`: `deckTop` and its
-   *  neighbours' lines, `deckNb`) — a bridge or a cave lid only; "" or absent
-   *  for none. */
+   *  neighbours' lines, `deckNb`) — a bridge, a cave lid, a roof; "" or
+   *  absent for none. */
   edge?: string;
 }
 
@@ -4118,13 +4118,15 @@ export class Tiles3 {
     return a;
   }
 
-  /** Whether a deck that wears the outline (a bridge, a cave lid — ground you
-   *  walk on; a roof is a building's and keeps its own look) stands on (x, y)
-   *  at level `dl`. */
+  /** Whether a deck — a bridge, a cave lid, a roof: any slab a body walks on —
+   *  stands on (x, y) at level `dl`. Every one is GROUND to the player where it
+   *  meets ground of its height (maintainer 2026-09-26: "if a player can walk
+   *  straight onto a roof and they have the same height it is the same ground
+   *  from the player's perspective"). */
   private linedDeckAt(view: World3View, x: number, y: number, dl: number): boolean {
     if (x < 0 || y < 0 || x >= view.width || y >= view.height) return false;
     const dis = this.decksOn(view, x, y);
-    if (dis) for (const j of dis) if (Math.trunc(view.decks[j].level) === dl && view.decks[j].kind !== "roof") return true;
+    if (dis) for (const j of dis) if (Math.trunc(view.decks[j].level) === dl) return true;
     return false;
   }
 

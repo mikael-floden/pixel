@@ -610,14 +610,16 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
     order and fails on any line end, 2x2 or L. Probe:
     `globalThis.__edgeDebug` draws the outer line pure red and the inner pure
     blue (the composer worker too), so a capture can be checked texel by texel.
-  - A BRIDGE IS THE GROUND CONTINUING (his, 2026-09-26): `edgeSet` reads a
+  - A BRIDGE, A CAVE LID OR A ROOF IS THE GROUND CONTINUING (his, 2026-09-26:
+    "if a player can walk straight onto a roof and they have the same height
+    it is the same ground"): `edgeSet` reads a
     neighbour carrying a deck as the surface nearest its own corner, so a bank
-    meeting a bridge at its level draws no line; the bridge's (and a cave
-    lid's) slab top wears one on each side over lower ground (`deckTop`, the
+    meeting a slab at its level draws no line; every slab top wears one on each
+    side over lower ground (`deckTop`, the
     `edge` of `Tiles3DeckCell`, baked on its surface and its transition in
     `opsForDeck`), none where it lands on ground or runs on as bridge, and its
     lines and the bank's meet at the vertex (`deckNb`, and the ground's `edgeNb`
-    asks `deckTop`). A roof keeps the building's own look: no line.
+    asks `deckTop`).
     Not covered: a deck's own courses (no verticals), indoor cut stumps,
     published (non-composed) ramps, and a raise (slopes off).
 - **A ONE-LEVEL RISE IS A RAMP THE BODY WALKS UP; A CLIFF OF TWO KEEPS ITS
