@@ -920,8 +920,8 @@ const CAVE_FALLOFF = 3.0;
 const CAVE_TINT_TILES = false;
 /** Cache world rendering's readback check (WorldScene.wcReadCheck): frames the
  *  camera must have stood still, and the least time between two reads. */
-const WC_READ_STILL = 60;
-const WC_READ_EVERY_MS = 10_000;
+const WC_READ_STILL = 120;
+const WC_READ_EVERY_MS = 30_000;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 /** Texels the exposed band overlaps back into the kept picture (see
  *  scrollTiles3Ground). 1 is what the measured artefact needed; it is a
@@ -5345,6 +5345,10 @@ export class WorldScene extends Phaser.Scene {
    *  dropped the page and every picture goes. Standing still only, one a
    *  WC_READ_EVERY_MS at most. */
   private wcRead = { n: 0, ms: 0, maxMs: 0, blank: 0 };
+  /** WHY TILES WERE REFUSED this window (wcFinal): the whole ground not settled
+   *  (a full repaint pending, the cut up), a slice queued over the box, a cell
+   *  owed a repair, a cell waiting on art — his run says whether it fills. */
+  private wcRefused = { global: 0, slice: 0, owed: 0, art: 0 };
   private wcReadAt = 0;
   private wcStill = 0;
   private wcCamX = NaN;
@@ -6696,7 +6700,7 @@ export class WorldScene extends Phaser.Scene {
        *  what the cache holds and did. */
       worldCache: (on?: boolean) => {
         if (on !== undefined && on !== this.wcOn) this.setWorldCache(on);
-        return { on: this.wcOn, take: this.wc?.take() ?? null, skipped: this.wcSkipped, takes: { ...this.wcTakes }, read: { ...this.wcRead } };
+        return { on: this.wcOn, take: this.wc?.take() ?? null, skipped: this.wcSkipped, takes: { ...this.wcTakes }, read: { ...this.wcRead }, refused: { ...this.wcRefused } };
       },
       /** Live occluder sprites against band images — what the bake removes. */
       bakeCount: () => ({ live: this.occluders.length, bands: this.bake?.images.length ?? 0, displayList: this.children.length }),
@@ -21152,10 +21156,15 @@ export class WorldScene extends Phaser.Scene {
       wcReadMs: rd.n ? +(rd.ms / rd.n).toFixed(2) : 0,
       wcReadMax: +rd.maxMs.toFixed(2),
       wcBlank: rd.blank,
+      wcRefG: this.wcRefused.global,
+      wcRefS: this.wcRefused.slice,
+      wcRefO: this.wcRefused.owed,
+      wcRefA: this.wcRefused.art,
     };
     this.wcSkipped = 0;
     this.wcTakes = { n: 0, ms: 0, maxMs: 0 };
     this.wcRead = { n: 0, ms: 0, maxMs: 0, blank: 0 };
+    this.wcRefused = { global: 0, slice: 0, owed: 0, art: 0 };
     return out;
   }
 
@@ -21271,28 +21280,33 @@ export class WorldScene extends Phaser.Scene {
     const a = this.groundAnchor;
     const f = this.t3?.frame;
     const world = this.world;
-    if (!a || !f || !world || a.mask || this.repaintGroundPending || Number.isNaN(this.lastGround.x)) return false;
+    const ref = this.wcRefused;
+    if (!a || !f || !world || a.mask || this.repaintGroundPending || Number.isNaN(this.lastGround.x)) return !!ref.global++ && false;
     const rx0 = box.x0 - a.ax;
     const ry0 = box.y0 - a.ay;
     const rx1 = box.x1 - a.ax;
     const ry1 = box.y1 - a.ay;
-    for (const q of this.groundSliceQ) if (q.x0 < rx1 && rx0 < q.x1 && q.y0 < ry1 && ry0 < q.y1) return false;
+    for (const q of this.groundSliceQ) if (q.x0 < rx1 && rx0 < q.x1 && q.y0 < ry1 && ry0 < q.y1) return !!ref.slice++ && false;
     const W = world.width;
     const lh = this.geom.lh;
-    const top = this.maxLevel;
+    // an owed cell's repaint can change only its own column up to its own top
+    // storey (t3cellTopLevel, the landing repaint's verified bound), grown by a
+    // tile each way (an op is at most a tile) — the bound cellReach skips by
     const reaches = (idx: number): boolean => {
       const col = idx % W;
       const row = (idx - col) / W;
       const cx = t3columnX(f, col, row);
-      if (cx + T3_TILE <= box.x0 || cx >= box.x1) return false;
-      return t3columnY(f, col, row, top) - T3_TOP_Y - lh < box.y1 && t3columnY(f, col, row, 0) + T3_TILE + lh > box.y0;
+      if (cx + 2 * T3_TILE <= box.x0 || cx - T3_TILE >= box.x1) return false;
+      if (t3columnY(f, col, row, 0) + 2 * T3_TILE + lh <= box.y0) return false;
+      return t3columnY(f, col, row, this.t3cellTopLevel(col, row)) - T3_TOP_Y - lh - T3_TILE < box.y1;
     };
-    for (const k of this.t3boundaryOwed) if (reaches(k)) return false;
-    for (const k of this.t3deckOwed.keys()) if (reaches(k)) return false;
-    for (const k of this.t3dropOwed) if (reaches(k)) return false;
-    for (const k of this.t3stale) if (reaches(k)) return false;
-    for (const k of this.groundDirtyCells) if (reaches(k)) return false;
-    for (const set of this.t3missing.values()) for (const k of set) if (reaches(k)) return false;
+    const owed = (): boolean => !!ref.owed++ && false;
+    for (const k of this.t3boundaryOwed) if (reaches(k)) return owed();
+    for (const k of this.t3deckOwed.keys()) if (reaches(k)) return owed();
+    for (const k of this.t3dropOwed) if (reaches(k)) return owed();
+    for (const k of this.t3stale) if (reaches(k)) return owed();
+    for (const k of this.groundDirtyCells) if (reaches(k)) return owed();
+    for (const set of this.t3missing.values()) for (const k of set) if (reaches(k)) return !!ref.art++ && false;
     return true;
   }
 
