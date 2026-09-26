@@ -6,7 +6,7 @@ import { World, MAP_GEOMETRY, geometryFor } from "./maps";
 import { renderedWorldView, ViewRect } from "./camview";
 import { lightScale } from "./lightscale";
 import { wallWrapExponent } from "./wallwrap";
-import { slopeRule } from "./slopeheight";
+import { slopeHeight, slopeRule } from "./slopeheight";
 import { rampMaskField, slopeRunShares } from "./rampfield";
 import { RAMP_CHAMFER, rampChamfers, rampHeight } from "./tiles3";
 /** How fast a body's light follows its sample (bodyLightAt): a 0.1 s time constant. */
@@ -3061,6 +3061,17 @@ export function buildGlowStamps(
   return out;
 }
 
+/** One view's light, as NightLight.keepView takes it aside. */
+type NightKeep = {
+  w: number; h: number; hScale: number; blockN: { x: number; y: number };
+  hArr: Float32Array; tArr: Float32Array; bArr: Float32Array; gArr: Float32Array; oArr: Uint8Array; pArr: Float32Array; sArrH: Float32Array; sArrG: Float32Array;
+  surf: ImageData; imgL: ImageData; imgG: ImageData; block: ImageData;
+  rampBits?: boolean; baseB?: Uint8Array; rampOcc?: Uint8Array; rampShare: number; rampCells: number; slope: number;
+  sceneryOrig: Map<number, [number, number, number, number, number, number]>; sceneryDil: number[]; sceneryExcl: Map<number, number>;
+  hasSceneryShares: boolean; sceneryStats: { footprints: number; cells: number; gateCells: number; ms: number };
+  stampedFp: SceneryFootprints | undefined | null; stampedShadows: boolean;
+};
+
 export class NightLights {
   private scene: Phaser.Scene;
   private world: World;
@@ -3326,9 +3337,9 @@ export class NightLights {
     this.buildMs = +(performance.now() - tBuild).toFixed(1);
     // HIS SLOPE SWITCH moves the ramps: repacked on its event (applyRamps).
     this.applyRamps();
-    const onSlope = () => this.applyRamps();
+    const onSlope = () => { this.viewKeep.clear(); this.applyRamps(); };
     window.addEventListener("ml-slope-height", onSlope);
-    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => window.removeEventListener("ml-slope-height", onSlope));
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => { window.removeEventListener("ml-slope-height", onSlope); this.viewKeep.clear(); });
     // MIST overlay shader (weather 2): declared uniforms only — the uSun
     // lesson applies here too (an undeclared uniform silently never syncs
     // on real phone GPUs).
@@ -3987,13 +3998,39 @@ export class NightLights {
   private rampShare = 0;
   private rampCells = 0;
   applyRamps(): void {
+    // the build in progress packs its own ramps; asked while it runs (the
+    // switch flipped mid-turn), they are packed again once it is done
+    if (this.building) { this.rampsOwed = true; return; }
+    for (const _ of this.applyRampsSteps()) { /* all of it, now */ }
+  }
+  private rampsOwed = false;
+  /** Each world's ramp mask field for the shares it was asked with — a pure
+   *  pass over the whole world (~27 ms here), so a view's is made once, and a
+   *  neighbour's in idle time before the tap (warmRamps). */
+  private rampMasks = new WeakMap<World, { shares: Uint8Array | null; masks: ReturnType<typeof rampMaskField> }>();
+  private rampMasksOf(world: World, shares: Uint8Array | null): ReturnType<typeof rampMaskField> {
+    const m = this.rampMasks.get(world);
+    if (m && m.shares === shares) return m.masks;
+    const masks = rampMaskField(world, shares);
+    this.rampMasks.set(world, { shares, masks });
+    return masks;
+  }
+  /** A VIEW'S RAMPS, AHEAD OF ITS TURN (idle time): its slope runs and its mask
+   *  field, the two whole-world passes a first visit's build otherwise pays
+   *  inside the swap. Pure: nothing live is touched. */
+  warmRamps(world: World): void {
+    const rule = slopeRule(world);
+    if (rule.slopeHeight > 0 && this.emitList.length < 16 && rule.shares) this.rampMasksOf(world, rule.shares);
+  }
+  private *applyRampsSteps(): Generator<void, void> {
     const T = this.scene.textures;
     if (!T.exists("world-heightmap")) return;
     const tex = T.get("world-heightmap") as Phaser.Textures.CanvasTexture & { mlRampBits?: boolean; mlBaseB?: Uint8Array };
     const texL = T.exists("world-heightmap-linear")
       ? (T.get("world-heightmap-linear") as Phaser.Textures.CanvasTexture & { mlRampOcc?: Uint8Array })
       : null;
-    const rule = slopeRule(this.world);
+    const rule = slopeRule(this.world); // a pass over the world, once per world object (slopeheight's memo)
+    yield;
     const on = rule.slopeHeight > 0 && this.emitList.length < 16;
     if (!on && !tex.mlRampBits && !texL?.mlRampOcc) {
       this.rampShare = 0;
@@ -4004,7 +4041,8 @@ export class NightLights {
     const h = this.world.height;
     // Each cell's share in %: the auto mix's per-run pick, or the switch's own.
     const shares = on ? (rule.shares ?? slopeRunShares(this.world, Math.round(rule.slopeHeight * 100))) : null;
-    const masks = on ? rampMaskField(this.world, shares) : null;
+    const masks = on ? this.rampMasksOf(this.world, shares) : null;
+    yield;
     // A cell's rise in px of the storey: the resolver's (tiles3 slopeSets) rounding.
     const riseAt = (i: number): number => (shares ? Math.max(1, Math.round(RAMP_PITCH_PX * Math.min(1, shares[i] / 100))) : 0);
     const ctx = tex.getContext();
@@ -4021,6 +4059,7 @@ export class NightLights {
     let n = 0;
     let top = 0;
     for (let i = 0; i < w * h; i++) {
+      if ((i & 32767) === 32767) yield;
       const m = masks ? masks[i] : 0;
       if (m) {
         n++;
@@ -4029,6 +4068,7 @@ export class NightLights {
         d[i * 4 + 2] = (m << 4) | r;
       } else d[i * 4 + 2] = baseB[i];
     }
+    yield;
     ctx.putImageData(id, 0, 0);
     tex.refresh();
     tex.mlRampBits = n > 0;
@@ -4041,6 +4081,7 @@ export class NightLights {
       const ld = lid.data;
       let moved = false;
       for (let i = 0; i < w * h; i++) {
+        if ((i & 16383) === 16383) yield;
         const m = masks ? masks[i] : 0;
         // The incline's height at the centre: half the share for an edge, a
         // fold and a diagonal saddle, which all pass 0.5 there.
@@ -4090,10 +4131,30 @@ export class NightLights {
    *  in the rotated grid it points the same way on SCREEN, so every shadow falls
    *  where it always did — the lighting looks the same at every orientation. */
   setWorld(world: World): void {
+    for (const _ of this.setWorldSteps(world)) { /* all of it, now */ }
+  }
+  /** setWorld IN STEPS, for a view turn that must not hold a frame: a first
+   *  visit's build yields between row bands (~200 ms in one piece here). Until
+   *  the last step the maps are half-built — the turn draws nothing of the
+   *  world meanwhile — so the stamps and the slope switch stand down (`building`)
+   *  and the swap stamps right after. Run to the end, it is setWorld exactly. */
+  *setWorldSteps(world: World): Generator<void, void> {
     if (world === this.world) return;
-    this.world = world;
-    this.buildHeightmap(true);
-    this.applyRamps();
+    this.building = true;
+    let took = false;
+    try {
+      this.keepView();
+      this.world = world;
+      yield;
+      took = yield* this.takeViewSteps(world);
+      if (!took) {
+        yield* this.buildHeightmapSteps(true);
+        yield* this.applyRampsSteps();
+      }
+    } finally {
+      this.building = false;
+    }
+    if (this.rampsOwed) { this.rampsOwed = false; this.applyRamps(); }
     // THE ROOM TEXTURE'S CAVE CHANNELS ARE WRITE-ONCE PER WORLD (G = depth from
     // daylight, B = ceiling underside), and a turned world is another layout of
     // the same cells: re-arm both latches and clear them, or the next publish is
@@ -4118,7 +4179,101 @@ export class NightLights {
     }
   }
 
+  /** A VIEW'S LIGHT, KEPT (viewrot.ts): everything the heightmap build, the
+   *  ramps and the scenery stamps derived from one world object — the CPU twins'
+   *  arrays, the four maps' pixels, the packing tags — taken aside when a turn
+   *  leaves that view and put back when a turn returns to it: four re-uploads
+   *  instead of a rebuild (the build, the ramps and the stamps were 120-200 ms
+   *  of every turn's swap here, several times that on a phone). A kept view
+   *  holds only while the slope stop it was packed at holds (the switch clears
+   *  them all); the scenery stamps re-apply themselves if the footprints moved
+   *  (setSceneryOccluders). Keyed by the world OBJECT, which a view keeps. */
+  private viewKeep = new Map<World, NightKeep>();
+  /** The footprints the stamps now in the maps were made from (null: none yet
+   *  since the last build) and the shadows switch they were made under. */
+  private stampedFp: SceneryFootprints | undefined | null = null;
+  private stampedShadows = true;
+  /** A stepped build is under way (setWorldSteps): the maps are half-built. */
+  private building = false;
+  private keepView(): void {
+    const T = this.scene.textures;
+    if (!this.hArr || !this.imgL || !this.imgG || !T.exists("world-heightmap") || !T.exists(BLOCK_KEY)) return;
+    const tex = T.get("world-heightmap") as Phaser.Textures.CanvasTexture & { mlRampBits?: boolean; mlBaseB?: Uint8Array };
+    const texL = T.exists("world-heightmap-linear") ? (T.get("world-heightmap-linear") as Phaser.Textures.CanvasTexture & { mlRampOcc?: Uint8Array }) : null;
+    const bt = T.get(BLOCK_KEY) as Phaser.Textures.CanvasTexture;
+    const w = this.world.width, h = this.world.height;
+    this.viewKeep.set(this.world, {
+      w, h, hScale: this.hScale, blockN: { ...this.blockN },
+      hArr: this.hArr, tArr: this.tArr, bArr: this.bArr, gArr: this.gArr, oArr: this.oArr, pArr: this.pArr, sArrH: this.sArrH, sArrG: this.sArrG,
+      surf: tex.getContext().getImageData(0, 0, w, h), imgL: this.imgL, imgG: this.imgG,
+      block: bt.getContext().getImageData(0, 0, this.blockN.x, this.blockN.y),
+      rampBits: tex.mlRampBits, baseB: tex.mlBaseB, rampOcc: texL?.mlRampOcc, rampShare: this.rampShare, rampCells: this.rampCells, slope: slopeHeight(),
+      sceneryOrig: this.sceneryOrig, sceneryDil: this.sceneryDil, sceneryExcl: this.sceneryExcl, hasSceneryShares: this.hasSceneryShares, sceneryStats: this.sceneryStats,
+      stampedFp: this.stampedFp, stampedShadows: this.stampedShadows,
+    });
+    // what was just kept belongs to the keep: the next build starts its own
+    this.sceneryOrig = new Map();
+    this.sceneryExcl = new Map();
+    this.sceneryDil = [];
+  }
+  private *takeViewSteps(world: World): Generator<void, boolean> {
+    const k = this.viewKeep.get(world);
+    if (!k) return false;
+    this.viewKeep.delete(world);
+    const T = this.scene.textures;
+    if (k.slope !== slopeHeight() || k.w !== world.width || k.h !== world.height) return false;
+    // every map must take its pixels back whole, or none does
+    const fits = (key: string, img: ImageData) => {
+      if (!T.exists(key)) return false;
+      const src = T.get(key).getSourceImage() as { width: number; height: number };
+      return src.width === img.width && src.height === img.height;
+    };
+    if (!fits("world-heightmap", k.surf) || !fits(BLOCK_KEY, k.block) || !fits("world-heightmap-linear", k.imgL) || !fits("world-heightmap-ground", k.imgG)) return false;
+    // the same uploads, filters and order the build ends with — a step each
+    const tex = T.get("world-heightmap") as Phaser.Textures.CanvasTexture & { mlRampBits?: boolean; mlBaseB?: Uint8Array };
+    tex.getContext().putImageData(k.surf, 0, 0);
+    yield;
+    const bt = T.get(BLOCK_KEY) as Phaser.Textures.CanvasTexture;
+    bt.getContext().putImageData(k.block, 0, 0);
+    bt.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    bt.refresh();
+    tex.refresh();
+    yield;
+    const texL = T.get("world-heightmap-linear") as Phaser.Textures.CanvasTexture & { mlRampOcc?: Uint8Array };
+    texL.getContext().putImageData(k.imgL, 0, 0);
+    texL.refresh();
+    texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    yield;
+    const texG = T.get("world-heightmap-ground") as Phaser.Textures.CanvasTexture;
+    texG.getContext().putImageData(k.imgG, 0, 0);
+    texG.refresh();
+    texG.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    if (k.rampBits === undefined) delete tex.mlRampBits; else tex.mlRampBits = k.rampBits;
+    if (k.baseB === undefined) delete tex.mlBaseB; else tex.mlBaseB = k.baseB;
+    if (k.rampOcc === undefined) delete texL.mlRampOcc; else texL.mlRampOcc = k.rampOcc;
+    this.hScale = k.hScale;
+    this.blockN = k.blockN;
+    this.hArr = k.hArr; this.tArr = k.tArr; this.bArr = k.bArr; this.gArr = k.gArr; this.oArr = k.oArr; this.pArr = k.pArr; this.sArrH = k.sArrH; this.sArrG = k.sArrG;
+    this.imgL = k.imgL;
+    this.imgG = k.imgG;
+    this.rampShare = k.rampShare;
+    this.rampCells = k.rampCells;
+    this.sceneryOrig = k.sceneryOrig;
+    this.sceneryDil = k.sceneryDil;
+    this.sceneryExcl = k.sceneryExcl;
+    this.hasSceneryShares = k.hasSceneryShares;
+    this.sceneryStats = k.sceneryStats;
+    this.stampedFp = k.stampedFp;
+    this.stampedShadows = k.stampedShadows;
+    this.shader?.setUniform("uHasProps.value", this.propsFlag());
+    this.setScenerySwitches();
+    return true;
+  }
+
   private buildHeightmap(redraw = false) {
+    for (const _ of this.buildHeightmapSteps(redraw)) { /* all of it, now */ }
+  }
+  private *buildHeightmapSteps(redraw = false): Generator<void, void> {
     if (!redraw && this.scene.textures.exists("world-heightmap")) {
       // Textures outlive this instance (the manager is per game): keep the
       // block grid's size honest for the bindings, or arm nothing.
@@ -4131,6 +4286,7 @@ export class NightLights {
     }
     const w = this.world.width;
     const h = this.world.height;
+    this.stampedFp = null; // new maps carry no stamps yet
     // Emission palette indices: category → position in emitList (+1 in the
     // texture's B channel; 0 = does not glow). Only categories the registry
     // marks emissive get an index.
@@ -4231,6 +4387,7 @@ export class NightLights {
         const occH = Math.max(cell.l + Math.max(solid ? 1 : 0, pl), deckH[r * w + c]);
         if (occH > maxH) maxH = occH;
       }
+      if ((r & 127) === 127) yield;
     }
     const hScale = maxH * 16 <= 255 ? 16 : 255 / maxH;
     this.hScale = hScale;
@@ -4318,8 +4475,11 @@ export class NightLights {
         imgG.data[i] = Math.min(255, groundH * hScale);
         imgG.data[i + 3] = 255;
       }
+      if ((r & 31) === 31) yield;
     }
+    yield;
     ctx.putImageData(img, 0, 0);
+    yield;
     /* THE BLOCK-MAX GRID beside it: max of R over each BLOCK×BLOCK of cells,
      * same byte packing, so the shader's decode of it bounds heightAt exactly. */
     {
@@ -4351,13 +4511,16 @@ export class NightLights {
       btex.refresh();
       this.blockN = { x: bw, y: bh };
     }
+    yield;
     tex!.refresh();
+    yield;
     const texL = canvasFor("world-heightmap-linear", w, h);
     if (texL) {
       texL.getContext().putImageData(imgL, 0, 0);
       texL.refresh();
       texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
     }
+    yield;
     const texG = canvasFor("world-heightmap-ground", w, h);
     if (texG) {
       texG.getContext().putImageData(imgG, 0, 0);
@@ -4450,6 +4613,14 @@ export class NightLights {
    *    itself (153-184 ms there) is untouched. */
   setSceneryOccluders(fp: SceneryFootprints | undefined): void {
     if (!this.hArr || !this.imgL || !this.imgG) return;
+    // half-built maps take no stamps: the swap stamps when the build is done
+    if (this.building) return;
+    if (fp === this.stampedFp && this.sceneryShadows === this.stampedShadows) {
+      // these very stamps are in the maps already (a kept view, turned back to)
+      this.shader?.setUniform("uHasProps.value", this.propsFlag());
+      this.setScenerySwitches();
+      return;
+    }
     const t0 = performance.now();
     const W = this.world.width;
     const Hh = this.world.height;
@@ -4602,6 +4773,8 @@ export class NightLights {
       }
     }
     this.hasSceneryShares = this.sceneryOrig.size > 0;
+    this.stampedFp = fp;
+    this.stampedShadows = this.sceneryShadows;
     this.shader?.setUniform("uHasProps.value", this.propsFlag());
     this.setScenerySwitches();
     stats.gateCells = this.sceneryDil.length;

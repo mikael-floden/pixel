@@ -340,7 +340,9 @@ export class RotFx {
     // between chained quarters it lies over the one still showing the turn
     Object.assign(this.canvas.style, {
       position: "fixed", left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px`,
-      pointerEvents: "none", zIndex: "5", imageRendering: "pixelated", visibility: "hidden",
+      // z 3, the freeze frame's layer: over the world, under everything the
+      // player still uses — the thumb stick (4) vanished under it for every turn
+      pointerEvents: "none", zIndex: "3", imageRendering: "pixelated", visibility: "hidden",
     } as CSSStyleDeclaration);
     const gl = this.canvas.getContext("webgl", { alpha: false, antialias: false, depth: true, premultipliedAlpha: false, preserveDrawingBuffer: false });
     if (!gl) throw new Error("rotfx: no WebGL");

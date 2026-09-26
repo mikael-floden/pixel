@@ -363,7 +363,9 @@ const HURT_MS = 300;
  *  and the velocity the previous quarter ended at (quarters/ms). */
 type TurnDrive = { owed: () => number; v0: number; angle?: (u: number) => void };
 /** One turned orientation's world, kept (WorldScene.viewCache). */
-type ViewCacheEntry = { vw: World; terrain: ReturnType<typeof buildTerrainGrid>; decks: Map<number, { deck: Deck; cell: Deck["cells"][number] }>; hidden: number };
+type ViewCacheEntry = {
+  /** its slope runs and ramp masks are made (NightLights.warmRamps) */
+  rampsWarm?: boolean; vw: World; terrain: ReturnType<typeof buildTerrainGrid>; decks: Map<number, { deck: Deck; cell: Deck["cells"][number] }>; hidden: number };
 /** The turn's upright set of one frame (WorldScene.turnSnap): the objects to hide
  *  for its bodiless twin, the cards, the player's index and the owner map. */
 type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
@@ -1255,6 +1257,10 @@ const GROUND_BAND_MS = 0.0001;
 /** UNUSED SINCE THE SIZE RATCHET WENT (see t3paintSliceStep): the rects stay at
  *  GROUND_SLICE_PX, because the bracket and not the rect area is the cost. */
 const GROUND_SLICE_MS = 2;
+/** A VIEW TURN'S SWAP runs this many ms of its steps a frame (runSliced), and
+ *  paints the new side's ground in bands this tall — a band is one step. */
+const SWAP_SLICE_MS = 6;
+const GROUND_TURN_BAND_PX = 48;
 const GROUND_SLICE_MAX = 768;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
 const GROUND_RING_COMPOSE = 3;
@@ -2326,6 +2332,14 @@ export class WorldScene extends Phaser.Scene {
   private t3ViewCache = new Map<ViewRot, { t3: Tiles3World; cells: WorldScene["t3cells"] }>();
   private t3ViewRules = "";
   private t3View: ViewRot | null = null;
+  /** True while applyViewRot rebuilds for a turn: what does not depend on the
+   *  side the world is seen from (the art loader, the piece manifests, the
+   *  collision documents) is kept rather than made again. */
+  private viewSwapping = false;
+  /** initTiles3 has run in this scene (a later run is a rebuild). */
+  private t3Booted = false;
+  /** A turn's view, whose scenery placements the swap builds in its next step. */
+  private t3SwapView: ReturnType<typeof viewFromParsed> | null = null;
   /** THE RESOLVER ON ANOTHER CORE — see resolveworker.ts. It fills `t3cells`
    *  ahead of the band that needs them; every answer is optional. */
   private t3worker = new ResolveWorker();
@@ -5687,6 +5701,7 @@ export class WorldScene extends Phaser.Scene {
     this.viewDocP = null;
     this.t3ViewCache = new Map();
     this.t3View = null;
+    this.t3Booted = false;
     this.roomOfCellMap = null; // world.rooms — rebuilt lazily by roomOf
     this.roomLitMap = null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
@@ -15319,6 +15334,12 @@ export class WorldScene extends Phaser.Scene {
      * band slice, compose up to GROUND_RING_COMPOSE more textures in the ring,
      * and run a boundary repair. The one frame that most needed to be left
      * alone was the only one nothing stood down for. */
+    // A SLICED VIEW-TURN SWAP IS UNDER WAY (applyViewRot): the ground, the
+    // occluders and everything that paints them wait for its own paint — the
+    // camera moved in its first step, and this latch would have painted the
+    // whole new side in one frame.
+    if (this.swapBusy) this.groundRedrewThisFrame = true;
+    else {
     const groundBefore =
       this.groundSliceStats.runs + this.repaintStats.groundRuns + this.groundFullRuns;
     this.redrawGround();
@@ -15366,6 +15387,7 @@ export class WorldScene extends Phaser.Scene {
       this.ps();
       this.wcStep();
       this.pe("wcStep");
+    }
     }
     // Its own section: the queue's banded uploads (texSubImage2D, artworker.ts)
     // and the frame's texture creations are what it does, and they used to
@@ -20569,6 +20591,14 @@ export class WorldScene extends Phaser.Scene {
       idle(() => { if (!this.turning && this.viewDoc && !this.viewCache.has(k)) this.buildViewEntry(k); });
       return;
     }
+    // ...and their slope runs and ramp masks, the whole-world passes a first
+    // visit's night build would otherwise pay in the swap — one per idle slot
+    for (const k of [normRot(this.viewRot + 1), normRot(this.viewRot + 3)]) {
+      const e = k === 0 ? null : this.viewCache.get(k);
+      if (!e || e.rampsWarm) continue;
+      idle(() => { if (!this.turning && this.night) { this.night.warmRamps(e.vw); e.rampsWarm = true; } });
+      return;
+    }
   }
   private buildViewEntry(k: ViewRot): ViewCacheEntry {
     const st: RotateStats = { hiddenPieces: 0 };
@@ -20583,72 +20613,291 @@ export class WorldScene extends Phaser.Scene {
     return e;
   }
 
-  private async applyViewRot(k: ViewRot): Promise<void> {
+  /** ONE SWAP AT A TIME: a sliced swap spans frames, and a tap back mid-turn
+   *  queues the swap back behind the one still running. */
+  private swapChain: Promise<void> | null = null;
+  /** A sliced swap is under way: the frame loop's ground and occluder upkeep
+   *  stands down until it has painted the new side itself. */
+  private swapBusy = false;
+  private applyViewRot(k: ViewRot, sliced = false): Promise<void> {
+    const prev = this.swapChain;
+    const run: Promise<void> = (async () => {
+      if (prev) await prev.catch(() => { /* its own caller heard it */ });
+      await this.swapNow(k, sliced);
+    })();
+    this.swapChain = run;
+    const clear = () => { if (this.swapChain === run) this.swapChain = null; };
+    run.then(clear, clear);
+    return run;
+  }
+  private async swapNow(k: ViewRot, sliced: boolean): Promise<void> {
     const world = this.world;
     if (!world || k === this.viewRot) return;
     const t0 = performance.now();
-    let vw: World | null = null;
     let vc: ViewCacheEntry | null = null;
     if (k !== 0) vc = await this.viewEntry(k);
-    if (vc) {
-      vw = vc.vw;
-      this.turnLog.hiddenPieces = vc.hidden;
-    }
+    if (vc) this.turnLog.hiddenPieces = vc.hidden;
     const tParse = performance.now();
-    // WHERE A SWAP'S TIME GOES, step by step (turnLog.sw_*): it blocks the main
-    // thread, so every ms here is a frame the turn cannot draw
-    let tStep = tParse;
+    this.turnLog.parseMs = +(tParse - t0).toFixed(1);
+    const steps = this.swapSteps(world, k, vc, sliced);
+    if (!sliced) {
+      for (const _ of steps) { /* all of it, now */ }
+    } else {
+      // THE SWAP IN FRAME-SIZED CHUNKS (maintainer 2026-09-26: "Split up: break
+      // the swap into small per-frame chunks instead of one block"). The world
+      // is not drawn meanwhile — the overlay covers it — and the frame loop's
+      // ground upkeep waits for the swap's own paint.
+      const cam = this.cameras.main;
+      this.swapBusy = true;
+      cam.setVisible(false);
+      try {
+        await this.runSliced(steps);
+      } finally {
+        this.swapBusy = false;
+        cam.setVisible(true);
+      }
+    }
+    this.turnLog.rebuildMs = +(performance.now() - tParse).toFixed(1);
+  }
+
+  /** DRIVE A STEPPED JOB A FEW MS A FRAME (SWAP_SLICE_MS), each frame's share
+   *  in its own animation-frame callback, until it is done. Records the
+   *  largest share (`sw_chunkMax`), their sum (`sw_cpu`) and the frames it
+   *  spanned (`sw_frames`) — the numbers that say whether a frame was held. */
+  private runSliced(g: Generator<void, void>): Promise<void> {
+    return new Promise((res, rej) => {
+      let frames = 0, cpu = 0, worst = 0, big = 0, bigAt = "";
+      const per: Record<string, number> = {};
+      const tick = () => {
+        const t0 = performance.now();
+        let done = false;
+        try {
+          do {
+            const s0 = performance.now(), at = this.swapStep;
+            done = !!g.next().done;
+            const ds = performance.now() - s0;
+            per[at] = (per[at] ?? 0) + ds;
+            if (ds > big) { big = ds; bigAt = at; }
+          } while (!done && performance.now() - t0 < SWAP_SLICE_MS);
+        } catch (e) {
+          rej(e);
+          return;
+        }
+        const ms = performance.now() - t0;
+        frames++; cpu += ms; if (ms > worst) worst = ms;
+        if (done) {
+          this.turnLog.sw_chunkMax = +worst.toFixed(1);
+          this.turnLog.sw_cpu = +cpu.toFixed(1);
+          this.turnLog.sw_frames = frames;
+          this.turnLog.sw_bigStep = `${bigAt}:${big.toFixed(1)}`;
+          this.turnLog.sw_stepCpu = Object.entries(per).map(([k, v]) => `${k}:${v.toFixed(1)}`).join(" ");
+          res();
+          return;
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+  /** Which of the swap's steps is running (runSliced bills its time to it). */
+  private swapStep = "";
+
+  /** THE SWAP'S STEPS, each short (a first visit's night build and the ground
+   *  paint yield inside themselves). Run straight through, it is the one-block
+   *  swap it always was. */
+  private *swapSteps(world: World, k: ViewRot, vc: ViewCacheEntry | null, sliced: boolean): Generator<void, void> {
+    const vw = vc ? vc.vw : null;
+    // WHERE A SWAP'S TIME GOES, step by step (turnLog.sw_*, wall time: across
+    // frames when sliced — sw_chunkMax says what one frame paid)
+    let tStep = performance.now();
     const mark = (name: string) => { const t = performance.now(); this.turnLog[`sw_${name}`] = +(t - tStep).toFixed(1); tStep = t; };
     const kOld = this.viewRot;
+    const piv = this.camGround(this.viewWorld ?? world);
+    const me = this.myId ? this.avatars.get(this.myId) : undefined;
+    const meLift = me ? me.sprite.y - me.ly : 0;
     this.viewRot = k;
     this.viewWorld = vw;
-    // every resolver pick keyed by the SERVER cell: the same world, seen from another side
     const W0 = world.width, H0 = world.height;
-    setPickFrame(k && !PICK_VIEW ? (x, y) => unrotCell(x, y, k, W0, H0) : null);
-    this.night?.setWorld(vw ?? world);
+    this.swapStep = "night";
+    if (this.night) yield* this.night.setWorldSteps(vw ?? world);
     mark("night");
+    this.swapStep = "camera";
     this.viewTerrain = vc ? vc.terrain : null;
     this.viewDeckIndex = vc ? vc.decks : new Map();
     mark("terrain");
+    // THE CAMERA MOVES BEFORE ANYTHING IS PAINTED. The ground and the occluders
+    // are drawn around wherever the camera stands, and it stood where the OLD
+    // view had put it: every turn painted and resolved a whole window of the
+    // new world nobody saw (~150 ms of resolving here), pruned the cells that
+    // view had kept out of its cache, and painted again a frame later where
+    // the chase snapped. The bodies are re-based first; the camera goes onto
+    // mine (or, detached, onto the same ground it looked at).
+    this.rebaseAfterTurn(normRot(k - kOld));
+    if (this.camDetached) {
+      const [sx, sy] = unrotPoint(piv.x, piv.y, kOld, W0, H0);
+      const [bx, by] = rotPoint(sx, sy, k, W0, H0);
+      const { dx, dy, lh } = this.geom;
+      this.cameras.main.centerOn(this.iso.ox + 32 + (bx - by) * dx, this.iso.oy + 10 + (bx + by) * dy - piv.h * lh);
+    } else if (me) {
+      me.sprite.x = me.lx;
+      me.sprite.y = me.ly + meLift;
+      this.camChase.init = false;
+      this.updateChaseCam(0);
+    }
+    this.cameras.main.preRender(); // worldView says where it stands now: the paint reads it
+    mark("camera");
+    yield;
+    this.swapStep = "indoor";
     // INDOORS, THE CUT IS A FUNCTION OF THE VIEW: re-cut for this side before the
     // repaint below, and drop a crossfade layer placed for the old one
     this.destroyIndoorDebris();
     if (this.indoorInside && this.indoorSpace) { this.indoorMaskSig = ""; this.refreshIndoorMask(); }
     mark("indoor");
+    yield;
+    this.swapStep = "stamps";
     // the heightmap rebuild cleared the scenery shadows it had stamped: stamp the turned ones
     if (this.night && this.terrain) this.night.setSceneryOccluders(this.sceneryOn ? this.viewFootprints() : undefined);
     mark("stamps");
-    this.initTiles3();
+    yield;
+    this.swapStep = "tiles3";
+    // every resolver pick keyed by the SERVER cell: the same world, seen from
+    // another side. Switched WITH the resolver, never before: a cell resolved in
+    // between through the old view's resolver would be picked for this side and
+    // kept with that view (t3ViewCache).
+    setPickFrame(this.pickFn(k));
+    this.viewSwapping = true;
+    try { this.initTiles3(); } finally { this.viewSwapping = false; }
     mark("tiles3");
-    this.repaintWorld();
-    mark("repaint");
+    yield;
+    // the view's scenery placements: their own step (initTiles3 leaves them to
+    // the swap on a turn)
+    this.swapStep = "scenery";
+    if (this.t3SwapView) this.initScenery(this.t3SwapView);
+    this.t3SwapView = null;
+    mark("scenery");
+    yield;
+    if (sliced && this.maps3 && this.groundRT) {
+      this.swapStep = "ground";
+      yield* this.groundPaintSteps();
+      mark("ground");
+      yield;
+      this.swapStep = "occluders";
+      this.lastOccl = { x: NaN, y: NaN };
+      this.rebuildOccluders();
+      mark("occluders");
+    } else {
+      this.swapStep = "repaint";
+      this.repaintWorld();
+      mark("repaint");
+    }
+    yield;
+    this.swapStep = "ambient";
     this.bake?.refreshAll();
     this.indoorDirty = true;
     // ambient effects that cache per DRAWN cell (the foam's liquid cells and
     // baked rasters) describe the old orientation now: they drop it on this
     window.dispatchEvent(new CustomEvent("ml-view-turn", { detail: { k } }));
     mark("ambient");
+    yield;
+    this.swapStep = "room";
     this.publishRoom(this.roomMask ? this.roomMask.keys() : null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, this.lastRoomTop);
     mark("room");
-    this.rebaseAfterTurn(normRot(k - kOld));
-    mark("rebase");
     this.camChase.init = false; // the body's screen point jumped: snap onto it, don't crawl
     if (!this.turning) this.inputRot = k; // an instant swap: input follows at once
-    this.turnLog.parseMs = +(tParse - t0).toFixed(1);
-    this.turnLog.rebuildMs = +(performance.now() - tParse).toFixed(1);
+  }
+
+  /** THE NEW SIDE'S GROUND, PAINTED IN BANDS: the texture anchored on the
+   *  window the camera now looks at and every band of it queued, then painted
+   *  one band a step — the scroll's own clipped pass, so the pixels are a full
+   *  paint's (the groundHash gate). repaintWorld's latch resets first; the
+   *  occluders are the swap's next step. */
+  private *groundPaintSteps(): Generator<void, void> {
+    const rt = this.groundRT!;
+    this.groundSliceQ = [];
+    this.groundSliceCtx = null;
+    this.repaintGroundPending = false;
+    this.repaintOccPending = false;
+    this.repaintGroundPartial = false;
+    this.groundDirtyCells = [];
+    this.t3stale.clear();
+    this.t3dropOwed.clear();
+    this.t3drainQueue = [];
+    this.t3missing.clear(); // a new window: what the old one missed is moot
+    const cam = this.cameras.main;
+    const ccx = cam.worldView.centerX, ccy = cam.worldView.centerY;
+    this.lastGround = { x: ccx, y: ccy };
+    const ax = Math.round(ccx - rt.width / 2), ay = Math.round(ccy - rt.height / 2);
+    const mask = this.indoorInside ? this.indoorMask : null;
+    const top = this.indoorTop;
+    const cuts = this.drawKeyed(mask ? this.indoorCut : null);
+    this.t3armRing(ax, ay, rt.width, rt.height);
+    rt.setPosition(ax, ay);
+    rt.clear();
+    this.fillGround(rt, this.groundFillRGB(mask));
+    this.groundAnchor = { ax, ay, mask, top };
+    this.groundSliceCtx = { ax, ay, mask, cuts, top };
+    const IW = rt.width, IH = rt.height;
+    for (let y = 0; y < IH; y += GROUND_TURN_BAND_PX) this.groundSliceQ.push({ x0: 0, y0: y, x1: IW, y1: Math.min(IH, y + GROUND_TURN_BAND_PX) });
+    yield;
+    while (this.groundSliceQ.length && this.groundSliceCtx) {
+      rt.beginDraw();
+      this.groundBracketRect = null;
+      const prevRT = this.groundBatchRT;
+      this.groundBatchRT = rt;
+      try {
+        this.t3paintSliceStep();
+      } finally {
+        this.groundBatchRT = prevRT;
+        this.t3countBatches(rt);
+        this.groundEndDraw(rt, this.groundBracketRect);
+      }
+      yield;
+    }
+    // what a full paint ends with: every parked cell drawn with the art it has,
+    // and the resolution cache kept to this window
+    this.groundLastMode = "full";
+    this.groundFullRuns++;
+    this.t3stale.clear();
+    if (this.groundCacheOn) {
+      const win = this.t3groundWindow(ax, ay, 0, 0, IW, IH);
+      this.t3pruneCache(this.t3windowCells(win.u0, win.u1, win.v0, win.v1));
+    }
+  }
+
+  /** A view's pick frame: its resolver picks keyed by the SERVER cell (the same
+   *  world, seen from another side). */
+  private pickFn(k: ViewRot): ((x: number, y: number) => [number, number]) | null {
+    const w = this.world;
+    return w && k && !PICK_VIEW ? (x, y) => unrotCell(x, y, k, w.width, w.height) : null;
+  }
+
+  /** THE GROUND UNDER THE CAMERA'S CENTRE in the view on screen (a cell point
+   *  and its level), found by inverting the lattice at the level of the cell it
+   *  lands on — the turn's pivot, and where a detached camera looks. */
+  private camGround(vw: World): { x: number; y: number; h: number } {
+    const cam = this.cameras.main, { dx, dy, lh } = this.geom, W = vw.width, H = vw.height;
+    let x = 0, y = 0, h = 0;
+    for (let i = 0; i < 3; i++) {
+      const u = (cam.worldView.centerX - this.iso.ox - 32) / dx, v = (cam.worldView.centerY - this.iso.oy - 10 + h * lh) / dy;
+      x = (u + v) / 2; y = (v - u) / 2;
+      h = vw.rows[Math.max(0, Math.min(H - 1, Math.floor(y)))]?.[Math.max(0, Math.min(W - 1, Math.floor(x)))]?.l ?? 0;
+    }
+    return { x, y, h };
   }
 
   /** The scenery footprints as the DRAWN view sees them. Collision keeps the
    *  server-space set on `terrain`; the night pass stamps shadows into the view's
    *  heightmap, so it gets them turned (cached per set and per turn). */
-  private viewFootprintsMemo: { src: unknown; k: ViewRot; out: unknown } | null = null;
+  private viewFootprintsMemo = new Map<ViewRot, { src: unknown; out: unknown }>();
   private viewFootprints(): NonNullable<typeof this.terrain>["footprints"] | undefined {
     const fp = this.terrain?.footprints;
     if (!fp || !this.world || this.viewRot === 0) return fp;
-    const m = this.viewFootprintsMemo;
-    if (m && m.src === fp && m.k === this.viewRot) return m.out as typeof fp;
+    // one per view, kept: a view turned back to hands the night pass the same
+    // object, which is what tells it its stamps are already in place
+    const m = this.viewFootprintsMemo.get(this.viewRot);
+    if (m && m.src === fp) return m.out as typeof fp;
     const out = rotFootprints(fp, this.viewRot, this.world.width, this.world.height);
-    this.viewFootprintsMemo = { src: fp, k: this.viewRot, out };
+    this.viewFootprintsMemo.set(this.viewRot, { src: fp, out });
     return out;
   }
 
@@ -21101,12 +21350,7 @@ export class WorldScene extends Phaser.Scene {
     // body, so it is where the eye already is), found by inverting the lattice
     // at the level of the cell it lands on.
     const vwA = this.viewWorld ?? world;
-    let px = 0, py = 0, ph = 0;
-    for (let i = 0; i < 3; i++) {
-      const u = (cam.worldView.centerX - this.iso.ox - 32) / dx, v = (cam.worldView.centerY - this.iso.oy - 10 + ph * lh) / dy;
-      px = (u + v) / 2; py = (v - u) / 2;
-      ph = vwA.rows[Math.max(0, Math.min(H - 1, Math.floor(py)))]?.[Math.max(0, Math.min(W - 1, Math.floor(px)))]?.l ?? 0;
-    }
+    const { x: px, y: py, h: ph } = this.camGround(vwA);
     const [sx, sy] = unrotPoint(px, py, kA, W, H);        // the pivot in SERVER space...
     const [bx, by] = rotPoint(sx, sy, kB, W, H);          // ...and in B's view
     let fx: RotFx;
@@ -21146,23 +21390,20 @@ export class WorldScene extends Phaser.Scene {
     // A SWAP THAT THROWS (the turned document's fetch or parse) must not leave the
     // overlay up and `turning` set: every tap and drag would be swallowed forever.
     fw.phase = "swap";
-    try {
-      await this.applyViewRot(kB);
-    } catch (e) {
-      fwEnd();
-      this.parkRotFx(fx);
-      this.turning = false;
-      this.inputRot = this.viewRot;
-      console.warn("[nangijala] view turn failed:", e);
-      return { skipped: `swap failed: ${e}` };
-    }
+    // THE SWAP RUNS UNDER THE OVERLAY, A FEW MS A FRAME (applyViewRot sliced),
+    // while the turn creeps: frame B is taken only once it is done. A swap that
+    // throws (the turned document's fetch or parse) must not leave the overlay
+    // up and `turning` set, or every tap and drag would be swallowed forever.
+    let swapped = false, swapFailed: string | null = null;
+    void this.applyViewRot(kB, true).then(
+      () => { swapped = true; this.turnLog.swapMs = +(performance.now() - t0).toFixed(1); },
+      (e) => { swapFailed = String(e ?? "error"); },
+    );
     let swappedBack = false;
-    if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (bx - by) * dx, this.iso.oy + 10 + (bx + by) * dy - ph * lh);
-    this.turnLog.swapMs = +(performance.now() - t0).toFixed(1);
     drive?.angle?.(0);
     return await new Promise((done) => {
       let clock = 0, last = performance.now(), lastCheck = 0, capturing = false, held = 0;
-      const tWait = performance.now();
+      let tWait = 0; // the settle's clock starts when the swap is done
       // A DRIVEN TURN (the spin bar) MOVES LIKE A BODY: a velocity that carries
       // across quarters, a constant acceleration, and a braking curve that
       // stops it exactly on the goal — so a chain cruises through its quarters
@@ -21227,7 +21468,18 @@ export class WorldScene extends Phaser.Scene {
       const stepInner = () => {
         const rawDt = performance.now() - last;
         const now = performance.now(), dt = Math.min(100, now - last); last = now;
-        fw.phase = backDone ? "back" : bDone ? "run" : capturing ? "capB" : "prep";
+        if (swapFailed) {
+          fwEnd();
+          cam.setVisible(true);
+          this.parkRotFx(fx);
+          this.turning = false;
+          this.inputRot = this.viewRot;
+          console.warn("[nangijala] view turn failed:", swapFailed);
+          done({ ...this.turnLog, skipped: `swap failed: ${swapFailed}` });
+          return;
+        }
+        if (swapped && !tWait) tWait = now;
+        fw.phase = !swapped ? "swap" : backDone ? "back" : bDone ? "run" : capturing ? "capB" : "prep";
         // THE FRAMES A PERSON SEES: the longest gap while preparing and while running
         {
           const key = bDone ? "fr_runMax" : "fr_prepMax";
@@ -21275,8 +21527,7 @@ export class WorldScene extends Phaser.Scene {
             u = 0; v = 0; backDone = true; tBack = now;
             if (camOff) { camOff = false; cam.setVisible(true); }
             this.turnLog.reversed = 1;
-            void this.applyViewRot(kA).then(() => { swappedBack = true; lastCheck = 0; }, (e) => { console.warn("[nangijala] view turn back failed:", e); swappedBack = true; });
-            if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (px - py) * dx, this.iso.oy + 10 + (px + py) * dy - ph * lh);
+            void this.applyViewRot(kA, true).then(() => { swappedBack = true; lastCheck = 0; }, (e) => { console.warn("[nangijala] view turn back failed:", e); swappedBack = true; });
           }
         }
         // While B is still being drawn the clock crawls through mid-turn, where
@@ -21285,10 +21536,12 @@ export class WorldScene extends Phaser.Scene {
         clock = Math.min(ms, clock + dt * rate);
         let raw = clock / ms;
         if (!fx.ready) raw = Math.min(raw, 0.5);
-        // a driven turn checks its B more often and holds it for less: it is
+        // a driven turn checks its B every frame and holds it for two: it is
         // standing nearly still meanwhile, and every check it waits is latency
-        const every = drive ? 60 : 100, hold = drive ? 3 : 5;
-        if (!fx.ready && !capturing && !backDone && now - lastCheck > every) {
+        // (the swap now paints where the camera will be, so the first frames
+        // after it are the real view — 3 checks 60 ms apart were 180 ms of wait)
+        const every = drive ? 0 : 100, hold = drive ? 2 : 5;
+        if (swapped && !fx.ready && !capturing && !backDone && now - lastCheck > every) {
           lastCheck = now;
           held = this.viewSettled() ? held + 1 : 0;
           if (held >= hold || now - tWait > waitB) {
@@ -22784,7 +23037,14 @@ export class WorldScene extends Phaser.Scene {
     this.groundPainted = false;
     this.groundSliceQ = [];
     this.groundSliceCtx = null;
-    this.worldUp = false;
+    // ONLY THE SCENE'S FIRST BUILD TAKES THE WORLD DOWN: its loading hold
+    // (hideLoadingWhenTerrainIsUp) is the one thing that brings it up. A rebuild
+    // mid-session — a view turn, the fade dial, a terrain edit — cleared it with
+    // nothing to set it back, and from then on streaming ran unbudgeted, the
+    // ring prefetch and the boundary retry stood down and a respawn could not
+    // begin (every `worldUp` reader), for the rest of the session.
+    if (!this.t3Booted) this.worldUp = false;
+    this.t3Booted = true;
     this.t3missing.clear();
     this.t3dropOwed.clear();
     // cell indices into the OLD resolver's grid (a view turn re-keys every cell)
@@ -22843,6 +23103,14 @@ export class WorldScene extends Phaser.Scene {
     // changed (tiles3worker optsKey) — a turn used to cost it a full reboot
     this.t3workerBooted = true;
     this.t3worker.init(this.t3workerOpts);
+    if (this.viewSwapping && this.t3load) {
+      // A TURN KEEPS THE LOADER: art paths do not depend on the side, and a new
+      // loader (and a new Phaser LoaderPlugin, and one more shutdown hook) per
+      // turn forgot what was already asked for. The placements are the swap's
+      // next step (t3SwapView), so this one stays short.
+      this.t3SwapView = view;
+      return;
+    }
     this.t3load = new Tiles3Loader({
       loader: this.tiles3LoaderAdapter(),
       textures: this.t3tm,
@@ -25875,7 +26143,13 @@ export class WorldScene extends Phaser.Scene {
         bounds: { x0: 0, y0: 0, x1: world.width, y1: world.height },
       }),
     );
-    this.sceneryPieces = new SceneryPieces({
+    // A TURN KEEPS THE PIECES AND THE COLLISION DOCUMENTS: neither depends on
+    // the side. Made again per turn, every manifest was asked for again, and
+    // /api/scenery-collision landed a moment into the turn with a re-stamp, a
+    // new footprints object (the night pass's stamps all over again) and a
+    // FULL repaint — a second hitch in the middle of every turn.
+    if (this.viewSwapping && this.sceneryPieces && this.sceneryBboxDoc && this.sceneryHitboxDoc) return;
+    if (!(this.viewSwapping && this.sceneryPieces)) this.sceneryPieces = new SceneryPieces({
       fetchJson: (url) =>
         fetch(url).then((r) => {
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
