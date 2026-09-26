@@ -147,6 +147,10 @@
     {
       "at": "2026-09-25T19:30:29+00:00",
       "text": "SHIPPED ff0db3eb35 (live 19:28:49 UTC, fast lane; image behind it): THE MAJOR GC'S EPHEMERONS. tiles3draw's four per-cell WeakMap memos (19,925 of the heap's ~20k ephemerons) are bounded two-generation STRONG memos (genmemo.ts, cap 24,000). V8's own trace (--trace-gc-nvp, headless, 1 MB young gen, the same 120 s tour): major pauses 21-194 ms -> 14-50 ms, 417 -> 226 ms in all, ephemeron marking 125 -> 3.5 ms; promotion unchanged 0.9 MB/s; the price 8.95 MB held. ALSO MEASURED: usedJSHeapSize counts ArrayBuffers in Chrome 141 (+99.6 MB for a 100 MB buffer), so the beacon's heap block is mostly texture pixels. verify-groundbracket is RED ON MAIN without my change (same 404 + the 'vs full' line) - mine to trace next after this unit."
+    },
+    {
+      "at": "2026-09-25T20:02:33+00:00",
+      "text": "SHIPPED a328c157c2 (live 20:00:54 UTC, fast lane): A LOADED IMAGE LETS GO OF ITS LOADER (loaderrelease.ts; FILE_COMPLETE on the terrain loader and the scene's clears the <img>'s onload/onerror - the closure that kept Phaser's File, its XMLHttpRequest and the response Blob as long as the texture): after a 90 s headless tour 1,524 requests / 4,571 handlers / 1,187 Files -> 11 / 16 / 5. Tracing time did not move measurably; it frees memory that counts toward V8's GLOBAL limit. CORRECTION to my 19:28 note (docs rewritten in place): V8 bills an ATOMIC marking loop to mark.ephemeron.marking whatever the ephemerons; what the WeakMap fix measurably removed is the INCREMENTAL pause's leftover (26-62 ms with the linear fallback -> 0.7-9.3 ms). Forced atomic collections mark the whole heap in every build (170-360 ms headless); this run's atomic one fired on the GLOBAL limit (213 MB incl. ArrayBuffers + Blink), not the object limit. Next GC lever when his run says so: the ~37 MB (headless) of composed-texture pixels Phaser keeps for context restore (WebGLTextureWrapper.pixels)."
     }
   ]
 }
