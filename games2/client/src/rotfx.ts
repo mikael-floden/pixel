@@ -134,6 +134,7 @@ void main(){ gl_FragColor = pack(clamp(vNear/800.0 + 0.5, 0.0, 0.9999)); }`;
 const MAIN_VS = `attribute vec3 aP; ${XFORM}
 uniform vec2 uCS; uniform vec2 uShift;          // the camera NOW
 uniform vec2 uCSB; uniform vec2 uShiftB;        // frame B's camera
+uniform vec3 uZoom;                             // x, y: the pivot on screen; z: scale (1 = none)
 varying vec2 vA; varying vec2 vB; varying float vNearA; varying float vNearB;
 void main(){
   vec2 pa = toPx(aP, vec2(1.0, 0.0), vec2(0.0));   // where frame A drew this point
@@ -141,14 +142,16 @@ void main(){
   vA = pa / uSize; vB = pb / uSize;
   vNearA = nearness(aP, vec2(1.0, 0.0)); vNearB = nearness(aP, uCSB);
   float near = nearness(aP, uCS);
-  gl_Position = clipOf(toPx(aP, uCS, uShift), near);
+  vec2 px = toPx(aP, uCS, uShift);
+  gl_Position = clipOf(uZoom.xy + (px - uZoom.xy) * uZoom.z, near);
 }`;
 const MAIN_FS = `precision highp float;
 uniform sampler2D uA; uniform sampler2D uB; uniform sampler2D uDA; uniform sampler2D uDB;
-uniform float uMix; uniform float uHasB;
+uniform float uMix; uniform float uHasB; uniform float uSoft; uniform float uDim;
 varying vec2 vA; varying vec2 vB; varying float vNearA; varying float vNearB;
 float unpack(vec4 c){ return dot(c, vec4(1.0, 1.0/255.0, 1.0/65025.0, 1.0/16581375.0)); }
 bool inside(vec2 uv){ return uv.x >= 0.0 && uv.y >= 0.0 && uv.x <= 1.0 && uv.y <= 1.0; }
+float feather(vec2 uv){ vec2 e = min(uv, 1.0 - uv); return smoothstep(0.0, 0.05, min(e.x, e.y)); }
 void main(){
   // A snapshot's row 0 is the canvas TOP; a render target's row 0 is its BOTTOM.
   float sa = unpack(texture2D(uDA, vec2(vA.x, 1.0 - vA.y)));
@@ -157,11 +160,28 @@ void main(){
   float okA = inside(vA) && (vNearA/800.0 + 0.5) >= sa - eps ? 1.0 : 0.0;
   float okB = uHasB > 0.5 && inside(vB) && (vNearB/800.0 + 0.5) >= sb - eps ? 1.0 : 0.0;
   vec3 ca = texture2D(uA, vA).rgb, cb = texture2D(uB, vB).rgb;
-  float wA = (1.0 - uMix) * okA, wB = uMix * okB;
-  // Seen by neither frame: fall back to whichever frame is nearer in time; the
-  // blur pass smooths it. Seen by one: that one, whatever the mix says.
-  if (wA + wB < 1e-4) { wA = uMix < 0.5 || uHasB < 0.5 ? 1.0 : 0.0; wB = 1.0 - wA; }
-  gl_FragColor = vec4((ca*wA + cb*wB) / (wA + wB), 1.0);
+  // A FRAME'S BORDER IS FEATHERED: seen-and-sharp meets the soft fill below over
+  // a band, not along a hard line.
+  float sA = okA * feather(vA), sB = okB * feather(vB);
+  float wA = (1.0 - uMix) * sA, wB = uMix * sB;
+  vec3 seen = wA + wB >= 1e-4 ? (ca*wA + cb*wB) / (wA + wB) : vec3(0.0);
+  float cover = wA + wB >= 1e-4 ? max(sA, sB) : 0.0;
+  if (cover >= 0.999) { gl_FragColor = vec4(seen, 1.0); return; }
+  // SEEN BY NEITHER FRAME (ground that was off both screens). A clamped sample
+  // repeats one edge texel into a long streak; this takes the frame nearer in time,
+  // AVERAGES the edge region around the clamped point, and dims with the distance
+  // outside, so the periphery reads as blurred motion instead of stretched pixels.
+  bool useA = uMix < 0.5 || uHasB < 0.5;
+  vec2 uv = useA ? vA : vB;
+  vec2 cl = clamp(uv, vec2(0.0), vec2(1.0));
+  vec3 acc = vec3(0.0);
+  for (int i = -2; i <= 2; i++) for (int j = -2; j <= 2; j++) {
+    vec2 q = clamp(cl + vec2(float(i), float(j)) * uSoft, vec2(0.0), vec2(1.0));
+    acc += useA ? texture2D(uA, q).rgb : texture2D(uB, q).rgb;
+  }
+  float away = length(uv - cl);
+  vec3 fill = acc / 25.0 * (1.0 - uDim * smoothstep(0.0, 0.35, away));
+  gl_FragColor = vec4(mix(fill, seen, cover), 1.0);
 }`;
 
 // Pass 4: blur along the ground plane's rotation about the pivot on SCREEN —
@@ -171,6 +191,7 @@ const POST_VS = `attribute vec2 aQ; varying vec2 vQ; void main(){ vQ = aQ; gl_Po
 const POST_FS = `precision highp float;
 uniform sampler2D uT; uniform vec2 uSize; uniform vec2 uPivotPx; uniform float uArc; uniform float uAspect;
 uniform sampler2D uA; uniform sampler2D uB; uniform float uEdge; // 0 = mesh render, -1 = frame A, +1 = frame B
+uniform float uVig; // vignette strength NOW (0 at both ends)
 varying vec2 vQ;
 void main(){
   vec2 s = vec2(vQ.x, 1.0 - vQ.y) * uSize;            // canvas px, y down
@@ -185,6 +206,8 @@ void main(){
     acc += texture2D(uT, vec2(q.x/uSize.x, 1.0 - q.y/uSize.y)).rgb * w; wsum += w;
   }
   vec3 col = acc / wsum;
+  vec2 cc = (s / uSize - 0.5) * vec2(uSize.x / uSize.y, 1.0);
+  col *= 1.0 - uVig * smoothstep(0.18, 0.62, length(cc));
   // At the two ends the overlay IS the frame, pixel for pixel.
   vec2 uv = s / uSize;
   if (uEdge < 0.0) col = mix(col, texture2D(uA, uv).rgb, -uEdge);
@@ -203,8 +226,17 @@ export interface RotFxStart {
   dir: 1 | -1;
 }
 
+/** THE LOOK'S DIALS. `blur` scales the arc (1 = 0.14 rad at peak angular speed);
+ *  `zoom` is the peak of a zoom pulse about the pivot (0.1 = 10% closer at mid-turn,
+ *  which keeps more of the screen on ground a frame actually saw); `soft` is the
+ *  spread (uv) of the average that fills what neither frame saw, `dim` how much it
+ *  darkens toward the far outside; `vignette` darkens the screen's rim at peak speed. */
+export interface RotTune { blur: number; zoom: number; soft: number; dim: number; vignette: number }
+export const ROT_TUNE_DEFAULT: RotTune = { blur: 1, zoom: 0.1, soft: 0.02, dim: 0.35, vignette: 0.28 };
+
 export class RotFx {
   readonly canvas: HTMLCanvasElement;
+  tune: RotTune = { ...ROT_TUNE_DEFAULT };
   private gl: WebGLRenderingContext;
   private progs: { depth: WebGLProgram; main: WebGLProgram; post: WebGLProgram };
   private tex: { A: WebGLTexture; B: WebGLTexture; DA: WebGLTexture; DB: WebGLTexture; M: WebGLTexture };
@@ -356,6 +388,12 @@ export class RotFx {
     gl.uniform2f(gl.getUniformLocation(m, "uShiftB"), this.shiftB[0], this.shiftB[1]);
     gl.uniform1f(gl.getUniformLocation(m, "uMix"), this.hasB ? smooth(0.25, 0.75, u) : 0);
     gl.uniform1f(gl.getUniformLocation(m, "uHasB"), this.hasB ? 1 : 0);
+    gl.uniform1f(gl.getUniformLocation(m, "uSoft"), this.tune.soft);
+    gl.uniform1f(gl.getUniformLocation(m, "uDim"), this.tune.dim);
+    // the zoom pulse follows the turn's angular speed: none at either end
+    const speed = Math.sin(Math.PI * Math.min(1, Math.max(0, u)));
+    const pvz = this.pivotPx(st.projA, st.pivot.h, cs);
+    gl.uniform3f(gl.getUniformLocation(m, "uZoom"), pvz[0] + shift[0], pvz[1] + shift[1], 1 + this.tune.zoom * speed);
     const bind = (unit: number, t: WebGLTexture, name: string, p: WebGLProgram) => {
       gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); gl.uniform1i(gl.getUniformLocation(p, name), unit); };
     bind(0, this.tex.A, "uA", m); bind(1, this.tex.B, "uB", m); bind(2, this.tex.DA, "uDA", m); bind(3, this.tex.DB, "uDB", m);
@@ -369,9 +407,9 @@ export class RotFx {
     gl.uniform2f(gl.getUniformLocation(p, "uSize"), st.projA.w, st.projA.h);
     gl.uniform2f(gl.getUniformLocation(p, "uPivotPx"), pv[0] + shift[0], pv[1] + shift[1]);
     // angular speed of an ease-in-out turn peaks mid-way: the arc follows it
-    const speed = Math.sin(Math.PI * Math.min(1, Math.max(0, u)));
     // `blur` scales the arc; 1 = 0.14 rad at peak angular speed (0.22 read as a swirl wipe, not an orbit)
-    gl.uniform1f(gl.getUniformLocation(p, "uArc"), blur * 0.14 * speed * st.dir);
+    gl.uniform1f(gl.getUniformLocation(p, "uArc"), blur * this.tune.blur * 0.14 * speed * st.dir);
+    gl.uniform1f(gl.getUniformLocation(p, "uVig"), this.tune.vignette * speed);
     gl.uniform1f(gl.getUniformLocation(p, "uAspect"), st.projA.dx / st.projA.dy);
     const edge = u <= 0.06 ? -(1 - u / 0.06) : u >= 0.94 && this.hasB ? (u - 0.94) / 0.06 : 0;
     gl.uniform1f(gl.getUniformLocation(p, "uEdge"), edge);

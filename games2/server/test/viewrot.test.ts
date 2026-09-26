@@ -14,7 +14,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { rotateWorldDoc, rotCell, unrotCell, rotPoint, unrotPoint, rotVec, unrotVec, rotDir8, normRot, rotFootprints, unturnScreenVec, type RotateStats } from "../../client/src/viewrot.js";
-import { leanHeading, octantRunDeg, screenToWorldVector, ISO_GEOMETRY } from "@nangijala/shared";
+import { leanHeading, octantRunDeg, screenToWorldVector, screenLenTurned, gaitSpeed, stepMovement, ISO_GEOMETRY } from "@nangijala/shared";
 
 const WORLD = new URL("../../../maps2/worlds3/the_game/world.json", import.meta.url);
 
@@ -124,4 +124,32 @@ test("the stick on a turned view: the leaned heading walks where the finger poin
     }
   }
   assert.deepEqual(unturnScreenVec(0, 0, 1, dx, dy), [0, 0]);
+});
+
+test("a turned view runs every way at one ON-SCREEN speed (InputMessage.vr), direction untouched", () => {
+  const { dx, dy } = ISO_GEOMETRY;
+  const keys: [number, number][] = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+  const onScreen0 = screenLenTurned(screenToWorldVector(1, 0).x, screenToWorldVector(1, 0).y, 0, dx, dy);
+  for (const k of [0, 1, 2, 3] as const) for (const [kx, ky] of keys) {
+    // the client un-turns the keys: (ax, ay) -> (ay, -ax) per quarter-turn
+    let ax = kx, ay = ky;
+    for (let i = 0; i < k; i++) [ax, ay] = [ay, -ax];
+    const w = screenToWorldVector(ax, ay, ISO_GEOMETRY, k), w0 = screenToWorldVector(ax, ay);
+    // the speed seen on the TURNED screen is the one every key has unturned
+    assert.ok(Math.abs(screenLenTurned(w.x, w.y, k, dx, dy) - onScreen0) < 1e-9, `k=${k} key ${kx},${ky}`);
+    // same way through the world as before: only the length moved
+    const n = Math.hypot(w.x, w.y), n0 = Math.hypot(w0.x, w0.y);
+    assert.ok(Math.abs(w.x / n - w0.x / n0) < 1e-12 && Math.abs(w.y / n - w0.y / n0) < 1e-12);
+    // the gait reads the same screen: a free run measures the same whichever way
+    assert.ok(Math.abs(gaitSpeed(w.x, w.y, 1, k) - gaitSpeed(1 * screenToWorldVector(1, 0).x, screenToWorldVector(1, 0).y, 1)) < 1e-9);
+  }
+  // vr = 0 is exactly the old law, in the step itself
+  const a = stepMovement(100, 100, 0.3, -0.8, true, 0.05, undefined, 1, true);
+  const b = stepMovement(100, 100, 0.3, -0.8, true, 0.05, undefined, 1, true, undefined, undefined, undefined, { viewRot: 0 });
+  assert.deepEqual(a, b);
+  // and at 90 the step's world length is the turned screen's
+  const c = stepMovement(100, 100, 0, -1, false, 1, undefined, 1, true, undefined, undefined, undefined, { viewRot: 1 });
+  const d = stepMovement(100, 100, 1, 0, false, 1, undefined, 1, true);
+  assert.ok(Math.abs(screenLenTurned(c.x - 100, c.y - 100, 1, dx, dy) - screenLenTurned(d.x - 100, d.y - 100, 0, dx, dy)) < 1e-6,
+    "up on the unturned frame, steered at 90 degrees, crosses the screen as fast as right does unturned");
 });

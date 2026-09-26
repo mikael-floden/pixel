@@ -229,7 +229,7 @@ import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
 import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, unrotCell, rotVec, unrotVec, rotFootprints, rotDir8, unturnScreenVec, type ViewRot, type RotateStats } from "../viewrot";
 import { setPickFrame } from "../tiles3";
-import { RotFx, buildRotMesh, easeTurn, type RotProjector } from "../rotfx";
+import { RotFx, buildRotMesh, easeTurn, ROT_TUNE_DEFAULT, type RotProjector, type RotTune } from "../rotfx";
 import { parseWorld as parseWorldDoc } from "@nangijala/shared";
 import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type ResolvedCell } from "../resolveworker";
 import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
@@ -1158,6 +1158,8 @@ interface PendingInput {
   /** The acceleration ramp's factor this window was integrated under
    *  (InputMessage.ac) — replayed under it, like `sm`. */
   ac: number;
+  /** The view it was steered in (InputMessage.vr) — replayed under it, like `sm`. */
+  vr: number;
   at: number;
 }
 
@@ -2183,6 +2185,8 @@ export class WorldScene extends Phaser.Scene {
    *  ground resolver, scenery and the night pass draw; entities reach it through
    *  projectFlat/projectCellCorner, which turn their server-space input. */
   private viewRot: ViewRot = 0;
+  /** The turn's look (rotfx dials); `__ml.turnTune` sets it. */
+  private rotTune: RotTune = { ...ROT_TUNE_DEFAULT };
   /** The rotation INPUT is read in: it follows viewRot, but only once a turn's
    *  overlay has gone — mid-turn the player still sees the old view. */
   private inputRot: ViewRot = 0;
@@ -8226,6 +8230,13 @@ export class WorldScene extends Phaser.Scene {
       viewRot: async (k?: number) => { if (typeof k === "number") await this.applyViewRot(normRot(k)); return this.viewRot; },
       turnView: (dir = 1, ms?: number, waitB?: number, blur?: number) => this.turnView(dir < 0 ? -1 : 1, ms, waitB, blur),
       turnSeek: (u: number | null) => { this.turnPinned = u; return u; },
+      /* THE TURN'S LOOK (rotfx RotTune): no arg reads, an object merges in — on
+       * the turn in flight too, so a pinned frame (turnSeek) can be re-shot under
+       * another setting without turning again. */
+      turnTune: (t?: Partial<RotTune>) => {
+        if (t) { this.rotTune = { ...this.rotTune, ...t }; if (this.rotFx) { this.rotFx.tune = { ...this.rotTune }; } }
+        return { ...this.rotTune };
+      },
       turnInfo: () => ({ turning: this.turning, viewRot: this.viewRot, ready: this.rotFx?.ready ?? false, settled: this.viewSettled(), ...this.turnLog, ...(this.rotFx?.timings ?? {}) }),
       lookAt: (col?: number, row?: number) => {
         const cam = this.cameras.main;
@@ -15290,6 +15301,8 @@ export class WorldScene extends Phaser.Scene {
           /** The acceleration ramp's factor THIS window was integrated under
            *  (InputMessage.ac) — the same rule again. */
           ac: number,
+          /** The view this window was steered in (InputMessage.vr). */
+          vr: number,
         ) => {
           let blocked;
           let sideBlocked;
@@ -15315,7 +15328,7 @@ export class WorldScene extends Phaser.Scene {
               ac;
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
-          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked, { screenSlide: !route });
+          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked, { screenSlide: !route, viewRot: vr });
           rx = r.x;
           ry = r.y;
           /* THE DEEP-SEA CURRENT — the SAME second move the server integrates
@@ -15339,7 +15352,7 @@ export class WorldScene extends Phaser.Scene {
             predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
           }
         };
-        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow, p.sm ?? 1, p.route, p.ac ?? 1);
+        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow, p.sm ?? 1, p.route, p.ac ?? 1, p.vr ?? 0);
         // Integrate the not-yet-sent input tail too, so the local player moves
         // every FRAME (60fps-smooth) instead of only at the 20Hz send tick —
         // under the ramp's mean over the tail, the number the window will be
@@ -15347,7 +15360,7 @@ export class WorldScene extends Phaser.Scene {
         if (this.sendAccum > 0)
           stepLocal(
             this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow,
-            this.curSlowFactor, playerSpeed(), this.lastInput.route, this.rampMean(),
+            this.curSlowFactor, playerSpeed(), this.lastInput.route, this.rampMean(), this.inputRot,
           );
         tx = rx;
         ty = ry;
@@ -15368,7 +15381,7 @@ export class WorldScene extends Phaser.Scene {
         const dv = Math.hypot(tx - av.fx, ty - av.fy);
         if (dt > 0 && dv < RUN_SPEED * 4 * dt + 8) {
           const k = Math.min(1, dt / 0.1);
-          av.gaitSpeed = (av.gaitSpeed ?? 0) * (1 - k) + gaitSpeed(tx - av.fx, ty - av.fy, dt) * k;
+          av.gaitSpeed = (av.gaitSpeed ?? 0) * (1 - k) + gaitSpeed(tx - av.fx, ty - av.fy, dt, this.viewRot) * k; // on the screen it is DRAWN on
         }
         av.gaitRun = moving && li.running && gaitRunning(!!av.gaitRun, av.gaitSpeed ?? 0, WALK_SPEED * playerSpeed());
         running = av.gaitRun;
@@ -18180,6 +18193,7 @@ export class WorldScene extends Phaser.Scene {
       sm: playerSpeed(),
       route: li.route,
       ac,
+      vr: this.inputRot,
       at: performance.now(),
     };
     this.pending.push(rec);
@@ -18192,6 +18206,7 @@ export class WorldScene extends Phaser.Scene {
       ac,
     };
     if (li.route) msg.route = true;
+    if (this.inputRot) msg.vr = this.inputRot; // absent unturned: the wire is unchanged there
     if (this.jumpQueued) {
       msg.jump = true;
       this.jumpQueued = false;
@@ -20544,7 +20559,14 @@ export class WorldScene extends Phaser.Scene {
       checked++;
       for (const o of tex.opsForCell(cell)) if (!this.textures.exists(o.key)) return false;
     }
-    return checked >= 60;
+    if (checked < 60) return false;
+    // ...AND WHAT STANDS ON IT. Walls, courses and decks the occluder pass could
+    // not finish, and scenery stills still streaming: B taken before them ended
+    // the turn on holes, then the live view popped them in under the fade.
+    for (const idx of this.occIncomplete) if (this.t3cellMeets(idx, rect)) return false;
+    const art = this.artQueue();
+    for (const k of this.sceneryAsked) if (!this.textures.exists(k) && art.has(k)) return false;
+    return true;
   }
 
   /** THE TURN (rotfx.ts). Take the frame the renderer just drew (A), swap the
@@ -20578,6 +20600,7 @@ export class WorldScene extends Phaser.Scene {
     const [bx, by] = rotPoint(sx, sy, kB, W, H);          // ...and in B's view
     let fx: RotFx;
     try { fx = new RotFx(cv, cv.width, cv.height); } catch (e) { this.turning = false; await this.applyViewRot(kB); return { skipped: `no overlay: ${e}` }; }
+    fx.tune = { ...this.rotTune };
     this.rotFx = fx;
     const mesh = buildRotMesh((c, r) => vwA.rows[r]?.[c]?.l ?? null, (vwA.decks ?? []) as { level: number; thickness?: number; cells: { col: number; row: number }[] }[], px, py, 26, vwA.width, vwA.height);
     this.turnLog.meshVerts = mesh.n;

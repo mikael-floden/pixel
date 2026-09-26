@@ -1091,6 +1091,9 @@ export class WorldRoom extends Room<WorldState> {
           // THE ACCELERATION RAMP'S FACTOR, clamped here because this is the
           // authority: a slowdown only, never a boost (InputMessage.ac).
           ac: clamp(Number.isFinite(message.ac as number) ? (message.ac as number) : 1, 0, 1),
+          // THE VIEW IT WAS STEERED IN (InputMessage.vr): a quarter-turn count,
+          // taken mod 4 here — it only moves where the on-screen speed is measured.
+          vr: ((Math.round(Number.isFinite(message.vr as number) ? (message.vr as number) : 0) % 4) + 4) % 4,
         });
       } else if (typeof message.seq === "number") {
         player.seq = message.seq; // overloaded queue: drop but still ack
@@ -2071,7 +2074,7 @@ export class WorldRoom extends Room<WorldState> {
             this.worldW,
             this.worldH,
             makeSideBlocked(terrain, ctx, () => player.elev), // corner probes: solids only (no ledge-wedging)
-            { screenSlide: !inp.route },
+            { screenSlide: !inp.route, viewRot: inp.vr ?? 0 },
           );
         } else {
           // No map (the open-world fallback): still the player's own dial and ramp.
@@ -2083,7 +2086,7 @@ export class WorldRoom extends Room<WorldState> {
         // The body's ACTUAL speed over this window (before the position is
         // taken), on the screen, in the walk's units (gaitSpeed): walk vs run
         // follows it, not the flag — see gaitRunning.
-        const actualSpeed = eff > 0 ? gaitSpeed(r.x - player.x, r.y - player.y, eff) : -1;
+        const actualSpeed = eff > 0 ? gaitSpeed(r.x - player.x, r.y - player.y, eff, inp.vr ?? 0) : -1;
         /* THE DEEP-SEA CURRENT. Integrated as a SECOND ordinary move rather
          * than added to the position, so terrain still collides and the sea can
          * never push a body through a wall or onto a cliff. `speed` here is a

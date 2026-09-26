@@ -207,6 +207,13 @@ export interface InputMessage {
    *  Per input like `sm`, so a replayed window integrates under the law it
    *  was sent with. Absent = the thumb's. */
   route?: boolean;
+  /** THE VIEW THIS WINDOW WAS STEERED IN, quarter-turns 0..3 (the client's
+   *  turned view, viewrot.ts). The input's DIRECTION arrives already un-turned;
+   *  this only moves where its uniform ON-SCREEN speed is measured, so a turned
+   *  view runs left/right and up/down at the speeds the unturned one does
+   *  (measured unturned they ran 2.29x and 0.44x at 90/270). Per input like
+   *  `sm`; the server takes it mod 4. Absent = 0. */
+  vr?: number;
 }
 
 /** THE PLAYER-SPEED DIAL's range. The maintainer asked for it to find a good
@@ -392,6 +399,17 @@ export const INPUT_TIME_SLACK = 0.25; // seconds of burst credit
  *  window under the law it was sent with. */
 export interface MoveOpts {
   screenSlide?: boolean;
+  /** The VIEW the input was made in, in quarter-turns (client viewrot.ts): the
+   *  uniform on-screen speed is measured on the screen the player SEES. 0 or
+   *  absent = the unturned view, exactly as before (InputMessage.vr). */
+  viewRot?: number;
+}
+
+/** THE SCREEN LENGTH of a world displacement as a view turned `vr` quarter-turns
+ *  draws it. A quarter-turn maps (x, y) -> (-y, x), which swaps the roles of
+ *  x-y and x+y, so only the PARITY of the turn matters. */
+export function screenLenTurned(x: number, y: number, vr: number, dx = ISO_DX, dy = ISO_DY): number {
+  return (vr & 1) === 1 ? Math.hypot((x + y) * dx, (x - y) * dy) : Math.hypot((x - y) * dx, (x + y) * dy);
 }
 
 export interface MoveResult {
@@ -645,6 +663,10 @@ export function screenToWorldVector(
   ix: number,
   iy: number,
   iso: IsoGeometry = ISO_GEOMETRY,
+  /** The view the screen input was made in (MoveOpts.viewRot): the DIRECTION is
+   *  the unturned frame's (the client un-turns the input), the SPEED is uniform
+   *  on the screen the player sees. */
+  vr = 0,
 ): { x: number; y: number } {
   const wx = ix / iso.dx + iy / iso.dy;
   const wy = iy / iso.dy - ix / iso.dx;
@@ -675,8 +697,8 @@ export function screenToWorldVector(
       uy = Math.sign(uy);
     }
   }
-  // Projected screen-speed factor of this unit world vector.
-  const screenLen = Math.hypot((ux - uy) * iso.dx, (ux + uy) * iso.dy);
+  // Projected screen-speed factor of this unit world vector, on the view it is seen in.
+  const screenLen = screenLenTurned(ux, uy, vr, iso.dx, iso.dy);
   const k = SCREEN_SPEED_REF / screenLen;
   return { x: ux * k, y: uy * k };
 }
@@ -689,8 +711,8 @@ export function screenToWorldVector(
  *  screen-up walk covers 1.6 world units for a screen-right walk's 0.7 — so
  *  the run line at 1.15 walks was 46% of the run along one axis and 29% along
  *  the other, and the same slide ran or walked by which way the wall faced. */
-export function gaitSpeed(dx: number, dy: number, dt: number): number {
-  return dt > 0 ? Math.hypot((dx - dy) * ISO_DX, (dx + dy) * ISO_DY) / SCREEN_SPEED_REF / dt : 0;
+export function gaitSpeed(dx: number, dy: number, dt: number, vr = 0): number {
+  return dt > 0 ? screenLenTurned(dx, dy, vr) / SCREEN_SPEED_REF / dt : 0;
 }
 
 /** Blocked test for a *move*: is entering (toX,toY) from (fromX,fromY) disallowed?
@@ -721,10 +743,10 @@ export type DropFn = (toX: number, toY: number, fromX: number, fromY: number) =>
  *  component the wall leaves, scaled so its SCREEN length never exceeds the
  *  free step's (2026-09-12, the caves: "moving much faster"). Returns the
  *  scale to apply to `m`. */
-function slideCap(mx: number, my: number, sx: number, sy: number): number {
-  const got = Math.hypot((mx - my) * ISO_DX, (mx + my) * ISO_DY);
+function slideCap(mx: number, my: number, sx: number, sy: number, vr = 0): number {
+  const got = screenLenTurned(mx, my, vr);
   if (got < 1e-9) return 0;
-  const want = Math.hypot((sx - sy) * ISO_DX, (sx + sy) * ISO_DY);
+  const want = screenLenTurned(sx, sy, vr);
   return got > want + 1e-9 ? want / got : 1;
 }
 
@@ -749,14 +771,14 @@ function slideCap(mx: number, my: number, sx: number, sy: number): number {
  *  but maybe not as fast as before") — and stood a body on the spawn house's
  *  door post, where the only remainder was 99 screen degrees off the thumb.
  *  Returns the scale to apply to `m`. */
-function slideShare(mx: number, my: number, sx: number, sy: number): number {
+function slideShare(mx: number, my: number, sx: number, sy: number, vr = 0): number {
   const ml = Math.hypot(mx, my);
   const sl = Math.hypot(sx, sy);
   if (ml < 1e-9 || sl < 1e-9) return 0;
   const cos = (sx * mx + sy * my) / (sl * ml);
   if (cos <= 0) return 0;
-  const sScreen = Math.hypot((sx - sy) * ISO_DX, (sx + sy) * ISO_DY);
-  const mScreen = Math.hypot((mx - my) * ISO_DX, (mx + my) * ISO_DY);
+  const sScreen = screenLenTurned(sx, sy, vr);
+  const mScreen = screenLenTurned(mx, my, vr);
   return (sScreen * cos) / mScreen;
 }
 
@@ -788,14 +810,17 @@ export function stepMovement(
   sideBlocked?: BlockedFn,
   opts?: MoveOpts,
 ): MoveResult {
-  const share = opts?.screenSlide ? slideShare : slideCap;
+  const vr = opts?.viewRot ?? 0;
+  const share = opts?.screenSlide
+    ? (mx: number, my: number, sx: number, sy: number) => slideShare(mx, my, sx, sy, vr)
+    : (mx: number, my: number, sx: number, sy: number) => slideCap(mx, my, sx, sy, vr);
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
   const dir = vectorToDirection(ax / len, ay / len); // facing = what the player sees
   let nx: number;
   let ny: number;
   if (screenInput) {
-    const w = screenToWorldVector(ax, ay);
+    const w = screenToWorldVector(ax, ay, ISO_GEOMETRY, vr);
     nx = w.x;
     ny = w.y;
   } else {

@@ -33,6 +33,12 @@ boundary is the whole game.)
   directions, the diagonal grid-axis lock included; the stick bearing turns -90°.
   Input follows `inputRot`, which switches only when a turn's overlay has gone
   (mid-turn the player still sees the old view); taps are swallowed mid-turn.
+- THE ON-SCREEN SPEED IS THE TURNED SCREEN'S: each input carries the view it was
+  steered in (`InputMessage.vr`, the server takes it mod 4; prediction replays each
+  window under its own, like `sm`), and `screenToWorldVector`, `gaitSpeed` and the
+  slide shares measure screen length on that view (`screenLenTurned`: only the
+  turn's parity matters). The direction arrives un-turned; only the length moves.
+  (Measured unturned at 90/270, left/right ran 2.29x and up/down 0.44x.)
 - The stick's lean runs on the screen the finger sees (the VIEW keys and the raw
   bearing), then maps through the world once (`unturnScreenVec`, S R^-k S^-1). A
   quarter-turn of the grid is not a quarter-turn of screen bearings on a 32x14
@@ -113,9 +119,19 @@ camera's centre):
 - what is still approximate (bodies and scenery are not in the mesh, so their
   pixels lie on the ground behind them) is blurred along the ground plane's own
   elliptical arc, peaking at mid-turn; the blur is a dial (`turnView`'s 4th arg).
+THE LOOK (`RotTune`, `__ml.turnTune`, defaults his to change): `blur` scales the
+arc; `zoom` 0.1 is a zoom pulse about the pivot riding the angular speed (keeps
+more of the screen on ground a frame saw); what NEITHER frame saw is a soft 5x5
+average of the nearest frame's edge region (`soft` 0.02 uv), dimmed with the
+distance outside (`dim` 0.35) — a clamped sample streaked one edge texel across the
+bottom third; a frame's border is feathered over 5% so seen-and-sharp meets that
+fill in a band; `vignette` 0.28 darkens the rim at peak speed. (Compared in one
+turn: none / gentle / strong / zoom-only — strong went dark, none streaked.)
 FRAME B WAITS FOR A NON-VACUOUS SETTLE: every art key on the cells in view is a
 texture, no cell in view is owed a repaint, the ground pass has blitted, at least
-60 cells were checked, held for five checks 100 ms apart. (A test that checked
+60 cells were checked, held for five checks 100 ms apart — and no occluder cell in
+view is incomplete and no scenery still is streaming (a B taken on the ground
+alone ended the turn on holes, then the live view popped them in). (A test that checked
 nothing answered "drawn" 20 ms after the swap and B was a half-painted view.)
 
 Hooks: `__ml.viewRot(k)` (instant), `__ml.turnView(dir, ms, waitB, blur)`,
@@ -131,9 +147,6 @@ Hooks: `__ml.viewRot(k)` (instant), `__ml.turnView(dir, ms, waitB, blur)`,
 
 ## Known gaps
 
-- At 90/270 the server's uniform ON-SCREEN speed rule is applied in the unturned
-  frame: left/right would run 2.29x and up/down 0.44x on screen (32/14). Fix =
-  a per-input view rotation that server and prediction both honour.
 - One-sided art: the 96 wall pieces (windows, hearths, hangings) exist only for
   camera-facing walls (all 96 face away at 180°); NPC idle art exists only for
   south/south-west/south-east (faithful rotation freezes all 31 at 90/180 and
