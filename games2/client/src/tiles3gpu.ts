@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 /* THE BOUNDARY ON THE GPU (maintainer 2026-09-26: "we need to both do this and
  * try the GPU transition/boundary render shader again ... The boundary shader
  * needs a test to make sure it produced the same tile we get when the CPU
@@ -858,7 +859,7 @@ export class GpuComposer {
   private flushQueued = false;
   private plates = new Map<string, Pixels | Promise<Pixels>>();
   private src = new Map<string, Promise<Pixels>>();
-  readonly stats = { queued: 0, composed: 0, ramps: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, prepAsked: 0, prepLanded: 0, prepMissed: 0, mainShapes: 0, uploads: { plates: 0, shapes: 0, frames: 0 }, error: "" };
+  readonly stats = { queued: 0, composed: 0, ramps: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, prepAsked: 0, prepLanded: 0, prepMissed: 0, mainShapes: 0, sumsOut: 0, sumsOutMs: 0, uploads: { plates: 0, shapes: 0, frames: 0 }, error: "" };
   constructor(
     private inner: {
       ready(): boolean;
@@ -926,6 +927,29 @@ export class GpuComposer {
    *  draw could not paint yet may be repainted. */
   onReady(cb: () => void): void {
     this.readyCb = cb;
+  }
+  /** THE OUTLINE COLOURS OF EVERY TILE FIRST SEEN SINCE THE LAST CALL, in one
+   *  GPU pass OUTSIDE any ground drawing (the scene calls it each frame before
+   *  it paints): the ground's batch is then never interrupted for them — only
+   *  a tile first met in the middle of a paint still is (groundpipe
+   *  `onBeforeFlush`), and the world warm (the scene's `gpuWarmStep`) meets
+   *  them first. Answers how many tiles were done. */
+  sumsNow(): number {
+    const d = this.directStore, host = this.host();
+    if (!d || !host || !d.pendingSums) return 0;
+    const t0 = performance.now();
+    host.clear();
+    let n = 0;
+    try {
+      n = d.sumsPass();
+    } finally {
+      host.gl.bindFramebuffer(host.gl.FRAMEBUFFER, null);
+      host.rebind();
+      host.dirty();
+    }
+    this.stats.sumsOut += n;
+    this.stats.sumsOutMs += performance.now() - t0;
+    return n;
   }
   /** The resident store, while the direct draw is on. */
   get directStore(): GpuDirect | null {
@@ -1967,6 +1991,23 @@ export class GpuDirect {
   private mapSlot = new Map<string, string>();
   private nextSum = 0;
   private pending: DirectInst[] = [];
+  /** Sums slots by the tile's CONTENT (its 16 floats but the slot): two keys
+   *  that paint the same tile share one slot and one sums computation. */
+  private sumsBySig = new Map<string, number>();
+  /** Give `g` its sums slot: the existing one for the same tile, else a new
+   *  one queued for the sums pass. False = the sums texture is full. */
+  private sumsFor(g: Float32Array, inst: DirectInst): boolean {
+    g[9] = 0;
+    const sig = Array.prototype.join.call(g, ",");
+    const hit = this.sumsBySig.get(sig);
+    if (hit !== undefined) { g[9] = hit; return true; }
+    const s = this.sumSlot();
+    if (s === null) return false;
+    g[9] = s;
+    this.sumsBySig.set(sig, s);
+    this.pending.push(inst);
+    return true;
+  }
   private prog: WebGLProgram;
   private buf: WebGLBuffer;
   private fb: WebGLFramebuffer;
@@ -2028,14 +2069,12 @@ export class GpuDirect {
     const ps = this.slot(this.shared.shapes, shapeKey(j), () => shapeOf(this.sheets, j, a, b));
     const pf = this.slot(this.shared.frames, String(j.frame), () => frameTile(this.sheets, j.frame));
     if (!pa || !pb || !ps || !pf) return null;
-    const s = this.sumSlot();
-    if (s === null) return null;
     const sl = j.slope;
     const shifted = sl?.lift ? (sl.side === "a" ? 2 : 1) : 0;
-    const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], ps[0], ps[1], pf[0], pf[1], 1, s, j.seam ? 1 : 0, sl?.lift ?? 0, shifted, 0, 0, 0]);
+    const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], ps[0], ps[1], pf[0], pf[1], 1, 0, j.seam ? 1 : 0, sl?.lift ?? 0, shifted, 0, 0, 0]);
     const inst = { g, w: this.sheets.fw, h: this.sheets.fh };
+    if (!this.sumsFor(g, inst)) return null;
     this.insts.set(key, inst);
-    this.pending.push(inst);
     this.stats.boundaries++;
     return inst;
   }
@@ -2065,13 +2104,11 @@ export class GpuDirect {
       pf = this.slot(this.shared.frames, String(bj.frame), () => frameTile(this.sheets, bj.frame));
     }
     if (!pband || !pa || !pb || !pbs || !pf) return null;
-    const s = this.sumSlot();
-    if (s === null) return null;
     this.syncLut();
-    const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], pm[0], pm[1], pband[0], pband[1], 2, s, seam, kind, pbs[0], pbs[1], pf[0], pf[1]]);
+    const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], pm[0], pm[1], pband[0], pband[1], 2, 0, seam, kind, pbs[0], pbs[1], pf[0], pf[1]]);
     const inst = { g, w: this.sheets.fw, h: full.h };
+    if (!this.sumsFor(g, inst)) return null;
     this.insts.set(key, inst);
-    this.pending.push(inst);
     this.stats.ramps++;
     return inst;
   }

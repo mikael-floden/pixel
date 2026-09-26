@@ -2384,6 +2384,35 @@ export class Tiles3Textures {
     );
   }
 
+  /** THE DIRECT DRAW'S WORLD WARM (the scene's `gpuWarmStep`): ask the direct
+   *  hook for what this cell would paint directly — its composed ramp, its
+   *  outlined top — so its inputs are resident and its outline colour made
+   *  before the cell is ever painted. Under warm keys: the GPU store shares a
+   *  tile's inputs and colour by CONTENT, so the paint's own keys find them
+   *  ready. Builds nothing, loads no art. A transition is warmed by
+   *  `opsForBoundary`, which asks the same hook. */
+  directWarm(cell: Tiles3Cell): void {
+    const direct = this.directHook();
+    let art = cell.art as PlateLike | undefined;
+    if (!direct || !art || (art as { kind: string }).kind === "liquid") return;
+    if (LIQUID_SET.has(cell.ground)) art = topOnlyOf(art);
+    const e = cell.edge;
+    const mask = e?.top ?? 0;
+    const verts = e && cell.kind !== "wall" ? (e.lo[0] !== EDGE_NONE ? 1 : 0) | (e.lo[1] !== EDGE_NONE ? 2 : 0) | (e.lo[2] !== EDGE_NONE ? 4 : 0) : 0;
+    const nb = e?.nb ?? "";
+    const lined = !!(mask || verts || nb);
+    const code = lined ? edgeCode(mask, verts, nb) : "";
+    const wk = `w:${art.kind}:${art.path}:${art.from ?? ""}:${cell.ground}:${art.mask ?? ""}:${(art as { h?: number }).h ?? ""}:${code}`;
+    if (art.kind === "ramp") {
+      if (!art.from) return;
+      direct.ramp(this.rampJob(wk, art, cell.ground, lined ? { mask, verts, nb } : undefined));
+      return;
+    }
+    if (!lined) return;
+    const side = this.side(art, cell.ground);
+    direct.ramp({ key: wk, top: { kind: "plate", side }, band: side, mask: -1, lh: 0, edge: { mask, verts, nb } });
+  }
+
   /** A LINED VARIANT THAT COULD NOT BE BUILT YET (its plate has not landed):
    *  true while the caller should treat the plain draw as OWED — the ground
    *  marks the cell for a repaint (via `plateRawFallbacks`, the counter its
