@@ -1,0 +1,2824 @@
+{
+ "format": "nangijala-effects-catalog@1",
+ "runtime": "effects/runtime/index.js",
+ "viewer": "effects/viewer/index.html",
+ "families": {
+  "fire": {
+   "label": "Fire",
+   "color": "#e8662c"
+  },
+  "frost": {
+   "label": "Frost",
+   "color": "#6cc3e0"
+  },
+  "storm": {
+   "label": "Storm",
+   "color": "#e3c341"
+  },
+  "arcane": {
+   "label": "Arcane",
+   "color": "#9a6ee0"
+  },
+  "holy": {
+   "label": "Holy",
+   "color": "#e8c46a"
+  },
+  "nature": {
+   "label": "Nature",
+   "color": "#6aad4f"
+  },
+  "poison": {
+   "label": "Poison",
+   "color": "#9ccf3c"
+  },
+  "shadow": {
+   "label": "Shadow",
+   "color": "#8a5bbd"
+  },
+  "earth": {
+   "label": "Earth",
+   "color": "#b08850"
+  },
+  "water": {
+   "label": "Water",
+   "color": "#4f8fe0"
+  },
+  "blood": {
+   "label": "Blood",
+   "color": "#b0303a"
+  },
+  "weapon": {
+   "label": "Weapons",
+   "color": "#a9b2ba"
+  },
+  "monster": {
+   "label": "Monsters",
+   "color": "#c4574a"
+  },
+  "buff": {
+   "label": "Buffs",
+   "color": "#e0a24f"
+  },
+  "status": {
+   "label": "Status",
+   "color": "#d6c25a"
+  },
+  "potion": {
+   "label": "Potions",
+   "color": "#d0609a"
+  },
+  "summon": {
+   "label": "Summoning",
+   "color": "#7d8fe8"
+  }
+ },
+ "count": 31,
+ "effects": [
+  {
+   "id": "arcane/arcane_beam",
+   "key": "effects/library/arcane/arcane_beam",
+   "file": "effects/library/arcane/arcane_beam.js",
+   "name": "Arcane Beam",
+   "kind": "beam",
+   "kindLabel": "Beam",
+   "family": "arcane",
+   "category": "channel",
+   "tags": [
+    "channel",
+    "damage",
+    "single target",
+    "beam"
+   ],
+   "thinking": "A channelled beam is on screen for seconds, so it has to stay interesting without getting noisy. It is built like a neon tube: a one-pixel white-hot core, a violet body in hard bands, and a dithered magenta fringe, with a slow wobble so it feels like held energy rather than a laser. The motion that tells you it is DOING something is the bright pulses that run from the caster to the target, like a pump. It shoots out from the hand over the intro instead of popping in, thins away on release, and both ends are marked: a charged orb in the caster's hand and a crackling splash on the target, which is also where the light sits, so the target is what gets lit. It follows both bodies every frame (from and to may be functions), so the game only starts it and stops it.",
+   "levels": "1-3: a thin wavering violet beam. 4-6: thicker, with energy pulses racing to the target and sparks at the hit. 7-9: a second strand twists around the beam as a helix. 10: a wide, blazing beam with a double helix and a heavy splash.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "beam",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "source",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "splash",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#fbeaff",
+     "label": "Core"
+    },
+    "mid": {
+     "type": "color",
+     "def": "#b36bff",
+     "label": "Beam"
+    },
+    "edge": {
+     "type": "color",
+     "def": "#5a2bd6",
+     "label": "Fringe"
+    }
+   }
+  },
+  {
+   "id": "arcane/arcane_shield",
+   "key": "effects/library/arcane/arcane_shield",
+   "file": "effects/library/arcane/arcane_shield.js",
+   "name": "Arcane Shield",
+   "kind": "aura",
+   "kindLabel": "Aura",
+   "family": "arcane",
+   "category": "buff",
+   "tags": [
+    "shield",
+    "buff",
+    "absorb",
+    "defensive"
+   ],
+   "thinking": "A shield has to be visible around the body without hiding it, so it is a bubble drawn almost entirely in its RIM: a bright one-pixel outline, a glow that thickens toward the edge (the way light gathers at the silhouette of a glass sphere) and nothing in the middle. The far half of the bubble is drawn behind the body and the near half in front, so it reads as a volume the hero stands inside. From level 4 a hex lattice shimmers over the shell in slow waves, which is what makes it read as a force field rather than a soap bubble. It inflates from the body on the intro and snaps away on release.",
+   "levels": "1-3: a thin rim and edge glow. 4-6: a hex lattice shimmers over the shell. 7-9: a larger, brighter bubble. 10: a thick, bright barrier.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "bubble_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "bubble_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "edge": {
+     "type": "color",
+     "def": "#dff1ff",
+     "label": "Rim"
+    },
+    "hex": {
+     "type": "color",
+     "def": "#8fc9ff",
+     "label": "Lattice"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#3d7bff",
+     "label": "Glow"
+    }
+   }
+  },
+  {
+   "id": "arcane/blink",
+   "key": "effects/library/arcane/blink",
+   "file": "effects/library/arcane/blink.js",
+   "name": "Blink",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "arcane",
+   "category": "utility",
+   "tags": [
+    "teleport",
+    "mobility",
+    "escape"
+   ],
+   "thinking": "A blink is two moments and a promise that they are connected. At the old spot the body folds into a vertical slit of violet light that snaps shut, throwing off sparks; at the new spot the same slit tears open and lets the body out, with a ring on the ground to mark the landing. The slits are body-sized so the eye reads \"the person went into that and came out of this\". The game moves the body on the \"peak\" event, which lands while both slits are open, so there is never a frame where the hero is simply missing or doubled. From level 7 a streak of sparks connects the two points, so the path can be followed in a crowd.",
+   "levels": "1-3: two quick slits. 4-6: brighter slits and a landing ring. 7-9: a spark streak joins the two points. 10: a wide rift and a bright landing flash.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body",
+    "ground"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "vanish",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "appear",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "land",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "streak",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Core"
+    },
+    "mid": {
+     "type": "color",
+     "def": "#c58bff",
+     "label": "Rift"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#6a35d6",
+     "label": "Rift edge"
+    }
+   }
+  },
+  {
+   "id": "arcane/channel",
+   "key": "effects/library/arcane/channel",
+   "file": "effects/library/arcane/channel.js",
+   "name": "Channeling",
+   "kind": "aura",
+   "kindLabel": "Aura",
+   "family": "arcane",
+   "category": "channel",
+   "tags": [
+    "channel",
+    "charge",
+    "cast time",
+    "wind-up"
+   ],
+   "thinking": "The cast bar made visible, for any spell with a cast time: energy is being GATHERED, so everything moves inward. Motes are drawn in from a wide ring toward the caster's hands, where an orb grows brighter the longer the channel lasts, orbited by a thin ring that spins faster and faster; a sigil circle turns on the ground. The motion reads even to someone who has never seen the spell, and because the orb keeps growing, you can see how far along the cast is. Stopping it (an interrupt) snaps everything out on the outro. Played on the caster's position; the orb sits at hand height.",
+   "levels": "1-3: a small orb and a few inward motes. 4-6: a ring spins around the orb, more motes. 7-9: a turning sigil on the ground. 10: a storm of motes and a blazing orb.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "ground",
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "sigil",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "gather",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Core"
+    },
+    "mid": {
+     "type": "color",
+     "def": "#b98cff",
+     "label": "Energy"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#5b35c9",
+     "label": "Deep"
+    }
+   }
+  },
+  {
+   "id": "buff/haste",
+   "key": "effects/library/buff/haste",
+   "file": "effects/library/buff/haste.js",
+   "name": "Haste",
+   "kind": "aura",
+   "kindLabel": "Aura",
+   "family": "buff",
+   "category": "buff",
+   "tags": [
+    "buff",
+    "speed",
+    "movement"
+   ],
+   "thinking": "Speed is shown with the oldest trick in animation: motion lines. Short arcs of wind whip around the legs on the ground plane (so they wrap the body in iso, half behind and half in front), at three heights, spinning fast enough to read as a whirl rather than as rings; from level 4, thin speed lines stream upward past the body. It stays light and pale, a buff that is on for a long time must not be louder than the combat around it, and it is kept around the feet where it reads as \"fast feet\" and leaves the body clear.",
+   "levels": "1-3: a single whirl of wind at the feet. 4-6: two whirls and speed lines. 7-9: three whirls. 10: a gale around the legs.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "body"
+   ],
+   "light": false,
+   "layers": [
+    {
+     "id": "wind_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "wind_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "wind": {
+     "type": "color",
+     "def": "#a8e8ff",
+     "label": "Wind"
+    },
+    "edge": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Streak"
+    }
+   }
+  },
+  {
+   "id": "earth/ground_slam",
+   "key": "effects/library/earth/ground_slam",
+   "file": "effects/library/earth/ground_slam.js",
+   "name": "Ground Slam",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "earth",
+   "category": "attack",
+   "tags": [
+    "aoe",
+    "physical",
+    "stun",
+    "monster",
+    "self-centered"
+   ],
+   "thinking": "A slam is weight, and weight is shown by what the ground does, not by light. So this effect is almost entirely NON-emissive: dust, rock and cracks that the night darkens like any other part of the world. It works for a troll's club, a golem's fists or a warrior's leap. On the first frame the cracks shoot out from the point of impact (jagged lines in ground space, so they lie flat on the iso floor), a ring of dust races out to the attack's radius, rocks are flung up and fall back under gravity, and a low dust cloud rolls and settles. Nothing glows, which is exactly why it reads as physical next to the spells.",
+   "levels": "1-3: short cracks and a dust ring. 4-6: longer cracks, flying rocks, a rolling dust cloud. 7-9: a wider radius and a second shock ring. 10: a crater's worth of cracks and a storm of debris.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "radius": "by level",
+   "planes": [
+    "ground",
+    "body"
+   ],
+   "light": false,
+   "layers": [
+    {
+     "id": "cracks",
+     "plane": "ground",
+     "emissive": false
+    },
+    {
+     "id": "wave",
+     "plane": "ground",
+     "emissive": false
+    },
+    {
+     "id": "debris_back",
+     "plane": "body",
+     "emissive": false
+    },
+    {
+     "id": "debris_front",
+     "plane": "body",
+     "emissive": false
+    },
+    {
+     "id": "impact",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "dust_back",
+     "plane": "body",
+     "emissive": false
+    },
+    {
+     "id": "dust_front",
+     "plane": "body",
+     "emissive": false
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "dust": {
+     "type": "color",
+     "def": "#a58b68",
+     "label": "Dust"
+    },
+    "rock": {
+     "type": "color",
+     "def": "#6d5f52",
+     "label": "Rock"
+    },
+    "crack": {
+     "type": "color",
+     "def": "#1c1510",
+     "label": "Cracks"
+    }
+   }
+  },
+  {
+   "id": "fire/burning",
+   "key": "effects/library/fire/burning",
+   "file": "effects/library/fire/burning.js",
+   "name": "Burning",
+   "kind": "aura",
+   "kindLabel": "Aura",
+   "family": "fire",
+   "category": "debuff",
+   "tags": [
+    "debuff",
+    "damage over time",
+    "fire"
+   ],
+   "thinking": "Burning is a status, so it must stay readable for as long as it lasts without hiding the creature wearing it. The trick is to put most of the fire BEHIND the body: a sheet of flame whose tongues rise past the shoulders and head, which the body itself cuts into a burning silhouette. In front there are only low flames at the feet and (from level 7) two tongues climbing the body's sides, so the creature stays visible inside its own fire. The flames are a noise field that scrolls upward and breaks into tongues at the top by itself, coloured with the same five-band ramp as the fireball, one fire language across the library. It scales with the body's height (a burning troll burns bigger than a burning rat) and carries a small flickering light, so a burning enemy in the dark is a lantern you can track.",
+   "levels": "1-3: low flames licking up behind the body and at its feet. 4-6: taller fire and embers drifting up. 7-9: tongues climb the body's sides and the fire rises past the head. 10: the body is engulfed.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "fire_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "fire_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#fff1b8",
+     "label": "Core"
+    },
+    "flame": {
+     "type": "color",
+     "def": "#ff7b22",
+     "label": "Flame"
+    },
+    "ember": {
+     "type": "color",
+     "def": "#b8261a",
+     "label": "Ember"
+    }
+   }
+  },
+  {
+   "id": "fire/fireball",
+   "key": "effects/library/fire/fireball",
+   "file": "effects/library/fire/fireball.js",
+   "name": "Fireball",
+   "kind": "projectile",
+   "kindLabel": "Projectile",
+   "family": "fire",
+   "category": "attack",
+   "tags": [
+    "projectile",
+    "damage",
+    "single target",
+    "explosion"
+   ],
+   "thinking": "The fireball every RPG player already knows how to read, so the work is in the pixels, not the idea. The head is a ball of five hard colour bands (soot, ember, flame, yellow, white) with a turbulent edge, and the tail is flame tongues that stream backwards out of a noise field that scrolls faster than the ball flies. That makes it look pushed through the air rather than slid across the screen. Embers peel off the tail so the path is still readable after the ball has gone. It never trails behind the caster's hand on launch: the tail grows from the hand. The impact reads in three beats: a white flash disk (the frame you feel), a billowing ball that cools down the same ramp, and soot smoke that stays in the world's own light (not emissive), so at night the smoke is dark against the glow. Higher levels spend their budget on heat and debris, not only size.",
+   "levels": "1-3: a small ember bolt with a short tail and a modest pop. 4-6: a bigger ball, shed embers in the tail, debris sparks on impact. 7-9: a white-hot core, a long tail, a burning shock ring racing across the ground, a wider scorch. 10: all of it at full size, with a second shock ring and a debris storm.",
+   "speed": {
+    "cellsPerSecondAtLevel5": 8.89
+   },
+   "events": [
+    "release",
+    "impact",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body",
+    "ground"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "gather",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "orb",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "smoke",
+     "plane": "body",
+     "emissive": false
+    },
+    {
+     "id": "blast",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "ring",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "scorch",
+     "plane": "ground",
+     "emissive": false
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#fff1b8",
+     "label": "Core"
+    },
+    "flame": {
+     "type": "color",
+     "def": "#ff7b22",
+     "label": "Flame"
+    },
+    "ember": {
+     "type": "color",
+     "def": "#b8261a",
+     "label": "Ember"
+    },
+    "soot": {
+     "type": "color",
+     "def": "#2b1a15",
+     "label": "Smoke"
+    },
+    "trail": {
+     "type": "range",
+     "def": 1,
+     "min": 0,
+     "max": 2,
+     "step": 0.05,
+     "label": "Tail length"
+    },
+    "smoke": {
+     "type": "bool",
+     "def": true,
+     "label": "Smoke after the blast"
+    }
+   }
+  },
+  {
+   "id": "fire/meteor",
+   "key": "effects/library/fire/meteor",
+   "file": "effects/library/fire/meteor.js",
+   "name": "Meteor",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "fire",
+   "category": "attack",
+   "tags": [
+    "aoe",
+    "damage",
+    "delayed",
+    "ultimate",
+    "telegraphed"
+   ],
+   "thinking": "The big one, so it is built as a little film in three acts. First the WARNING: a burning circle appears on the ground at exactly the blast radius, its inner ring closing toward the centre like a countdown, which is fair to the target and thrilling for the caster. Then the FALL: a flaming rock streaks in from high on the left, its tail torn by the same backward-streaming flame noise as the fireball, growing brighter as it comes. Then the IMPACT on the \"peak\" event (0.95 s, where the game applies damage): a white flash, a huge billowing blast, a shock ring racing out, flung rocks and embers, and a crater whose cracks glow and cool for seconds afterwards. Soot smoke stays unlit so the night swallows it.",
+   "levels": "1-3: a small rock and a modest blast. 4-6: flung debris and a shock ring. 7-9: a bigger radius, a blinding blast and a glowing crater. 10: a catastrophic impact with a second shock ring.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "radius": "by level",
+   "planes": [
+    "ground",
+    "air",
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "mark",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "fall",
+     "plane": "air",
+     "emissive": true
+    },
+    {
+     "id": "smoke",
+     "plane": "body",
+     "emissive": false
+    },
+    {
+     "id": "blast",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "shock",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "crater",
+     "plane": "ground",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#fff1b8",
+     "label": "Core"
+    },
+    "flame": {
+     "type": "color",
+     "def": "#ff7b22",
+     "label": "Flame"
+    },
+    "ember": {
+     "type": "color",
+     "def": "#b8261a",
+     "label": "Ember"
+    },
+    "rock": {
+     "type": "color",
+     "def": "#3b2a22",
+     "label": "Rock"
+    },
+    "soot": {
+     "type": "color",
+     "def": "#26170f",
+     "label": "Smoke"
+    }
+   }
+  },
+  {
+   "id": "frost/frost_bolt",
+   "key": "effects/library/frost/frost_bolt",
+   "file": "effects/library/frost/frost_bolt.js",
+   "name": "Frost Bolt",
+   "kind": "projectile",
+   "kindLabel": "Projectile",
+   "family": "frost",
+   "category": "attack",
+   "tags": [
+    "projectile",
+    "damage",
+    "slow",
+    "single target"
+   ],
+   "thinking": "Frost's answer to the fireball, built as its opposite so the two never read alike: where fire billows, ice is faceted. The bolt is a hard crystal shard, lit on one face and shaded on the other, that points exactly where it flies, with a thin trail of cold mist and a few sparkles of rime falling off it. The shard stays small and precise even at level 10; power shows in the mist and the shatter. On impact it bursts into splinters, a white flash and a ring of cold vapour, and it leaves a small patch of frost on the ground under the target, which is the visual promise of the slow the spell applies.",
+   "levels": "1-3: a small shard with a short mist trail. 4-6: a longer shard, rime sparkles in the trail, splinters on impact. 7-9: a heavy crystal and a frosted patch on the ground. 10: a lance of ice that shatters into a wide frost patch.",
+   "speed": {
+    "cellsPerSecondAtLevel5": 10.33
+   },
+   "events": [
+    "release",
+    "impact",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body",
+    "ground"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "shard",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "shatter",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "frost",
+     "plane": "ground",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "ice": {
+     "type": "color",
+     "def": "#9fe3ff",
+     "label": "Ice"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#3478c8",
+     "label": "Deep ice"
+    },
+    "rime": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Rime"
+    },
+    "mist": {
+     "type": "color",
+     "def": "#bfe8ff",
+     "label": "Mist"
+    }
+   }
+  },
+  {
+   "id": "frost/frost_nova",
+   "key": "effects/library/frost/frost_nova",
+   "file": "effects/library/frost/frost_nova.js",
+   "name": "Frost Nova",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "frost",
+   "category": "attack",
+   "tags": [
+    "aoe",
+    "damage",
+    "slow",
+    "self-centered"
+   ],
+   "thinking": "A nova has to show its reach, because the reach is the gameplay: the ring that races out over the ground IS the radius the game hits, so it is drawn on the ground plane in the game's own iso ellipse and takes the game's radius when one is given. Frost reads as brittle and sharp, the opposite of fire's billow, so everything here is hard-edged: a crisp rime ring, a frosted floor with a cracked crystal pattern left behind, and (from level 4) a crown of ice spikes that shoot up along the ring and then fall away. The spikes are split into a back half and a front half so they stand behind and in front of the caster correctly. Colours are cold and few (deep blue, ice, white rime) and the light is a short pale-cyan flash, so a nova in a dark cave lights the room for a heartbeat.",
+   "levels": "1-3: a thin rime ring and a light frost on the floor. 4-6: ice spikes burst up along the ring. 7-9: a wider ring, taller spikes, a second inner ring and drifting frost glitter. 10: a full crown of spikes and a frozen crystal floor that lingers.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "radius": "by level",
+   "planes": [
+    "ground",
+    "body",
+    "air"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "floor",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "ring2",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "spikes_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "spikes_front",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "glitter",
+     "plane": "air",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "ice": {
+     "type": "color",
+     "def": "#8fdcf5",
+     "label": "Ice"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#2f6fb3",
+     "label": "Deep ice"
+    },
+    "rime": {
+     "type": "color",
+     "def": "#f2fbff",
+     "label": "Rime"
+    }
+   }
+  },
+  {
+   "id": "holy/heal",
+   "key": "effects/library/holy/heal",
+   "file": "effects/library/holy/heal.js",
+   "name": "Heal",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "holy",
+   "category": "heal",
+   "tags": [
+    "heal",
+    "single target",
+    "support"
+   ],
+   "thinking": "Healing has to read as the opposite of damage at a glance: nothing flies at the body, everything rises out of it. Warm gold over a living green says \"life\" without a word, and the motion is upward and gentle where an attack is fast and inward. Three things carry it: a soft column of light around the body that fades from the feet up, motes that spiral up around the body (half of them pass BEHIND it and half in front, so it wraps around the target instead of sitting on it like a sticker), and a thin rune ring on the ground that says a spell happened here. The few bright motes are four-point twinkles, the classic pixel sparkle. Levels add abundance, not violence.",
+   "levels": "1-3: a faint column and a handful of motes. 4-6: more motes, twinkling stars and the rune ring. 7-9: a taller, brighter column and a second ring. 10: a halo crowns the target as the light peaks.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "ground",
+    "body",
+    "air"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "ring",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "column",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "motes_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "motes_front",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "halo",
+     "plane": "air",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "light": {
+     "type": "color",
+     "def": "#fff0a8",
+     "label": "Light"
+    },
+    "life": {
+     "type": "color",
+     "def": "#86e07a",
+     "label": "Life"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#2f9e62",
+     "label": "Deep"
+    }
+   }
+  },
+  {
+   "id": "holy/healing_circle",
+   "key": "effects/library/holy/healing_circle",
+   "file": "effects/library/holy/healing_circle.js",
+   "name": "Healing Circle",
+   "kind": "zone",
+   "kindLabel": "Zone",
+   "family": "holy",
+   "category": "heal",
+   "tags": [
+    "heal",
+    "aoe",
+    "zone",
+    "support",
+    "over time"
+   ],
+   "thinking": "A zone lasts, so its first job is to show exactly where it is: allies must be able to step into it in the middle of a fight. The rim is therefore a crisp double ring with rune marks between the rings, drawn on the ground at the game's radius, and it draws itself around the circle on the intro like a stroke of chalk (the moment you see the spell being CAST). Inside, a faint dithered fill and a soft pulse that rolls outward every second give it a heartbeat, the rhythm of healing ticks. Gentle motes float up across the area, half behind and half in front of anyone standing in it. It stays quiet enough to stand in for six seconds and still see the fight.",
+   "levels": "1-3: a plain rim and a faint fill. 4-6: rune marks turn slowly between the rings and motes rise. 7-9: a stronger pulse and more motes. 10: a second, counter-rotating ring of runes.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "radius": "by level",
+   "planes": [
+    "ground",
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "circle",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "rise_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "rise_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "light": {
+     "type": "color",
+     "def": "#fff0a8",
+     "label": "Light"
+    },
+    "life": {
+     "type": "color",
+     "def": "#86e07a",
+     "label": "Life"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#2f9e62",
+     "label": "Deep"
+    }
+   }
+  },
+  {
+   "id": "holy/level_up",
+   "key": "effects/library/holy/level_up",
+   "file": "effects/library/holy/level_up.js",
+   "name": "Level Up",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "holy",
+   "category": "utility",
+   "tags": [
+    "level up",
+    "celebration",
+    "reward"
+   ],
+   "thinking": "The one effect the player earns rather than casts, so it is pure celebration and it is gold. A beam of light rises (not falls: this comes from the player, it is their power growing), rings of gold burst out along the ground one after another like a bell struck twice, and a fountain of four-point sparkles spirals up around the body, half behind and half in front. It deliberately avoids anything that looks like damage: no flash-to-white, no debris, no smoke. Here \"level\" is how big a milestone it is (every level, every 10th, a class milestone), so the game can make the rare ones bigger.",
+   "levels": "1-3: a gold beam, one ring, a spray of sparkles. 4-6: a second ring and more sparkles. 7-9: a taller, wider beam. 10: a pillar of gold and a sparkle storm, for the milestones.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body",
+    "ground"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "beam",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "rings",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "rise_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "rise_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "white": {
+     "type": "color",
+     "def": "#fffbe8",
+     "label": "Core"
+    },
+    "gold": {
+     "type": "color",
+     "def": "#ffd24a",
+     "label": "Gold"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#e08a1e",
+     "label": "Deep gold"
+    }
+   }
+  },
+  {
+   "id": "holy/smite",
+   "key": "effects/library/holy/smite",
+   "file": "effects/library/holy/smite.js",
+   "name": "Smite",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "holy",
+   "category": "attack",
+   "tags": [
+    "damage",
+    "single target",
+    "instant",
+    "holy",
+    "undead bane"
+   ],
+   "thinking": "Smite is judgement from above, so its shape is a pillar: a column of light that slams down onto the target from beyond the top of the screen. It arrives as a hair-thin line and blows open to full width in a few frames (the anticipation-then-impact rhythm that makes a hit feel heavy), holds for a beat, and then drains away upward, leaving the ground ringing: a flash disk, a ring that races out, and sun rays drawn flat on the floor. Everything is white and gold with hard edges; holy light should look clean where shadow looks smoky. The light slot is a big warm flash, the moment the whole area is lit by heaven.",
+   "levels": "1-3: a narrow column and a ground flash. 4-6: a wider column, sun rays on the ground, sparks. 7-9: a blinding column and a second, wider ring. 10: a pillar of heaven with a crown of rays.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body",
+    "ground"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "pillar",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "ground",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "sparks",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "white": {
+     "type": "color",
+     "def": "#fffdf0",
+     "label": "Core"
+    },
+    "gold": {
+     "type": "color",
+     "def": "#ffd66b",
+     "label": "Gold"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#d9912b",
+     "label": "Deep gold"
+    }
+   }
+  },
+  {
+   "id": "monster/claw_swipe",
+   "key": "effects/library/monster/claw_swipe",
+   "file": "effects/library/monster/claw_swipe.js",
+   "name": "Claw Swipe",
+   "kind": "melee",
+   "kindLabel": "Melee",
+   "family": "monster",
+   "category": "attack",
+   "tags": [
+    "melee",
+    "monster",
+    "physical",
+    "bleed"
+   ],
+   "thinking": "Every beast with claws needs this, and it has to hit harder than a punch without becoming a light show. Three (at level 7, four) parallel rakes are drawn ACROSS the victim, each one a white-hot line with red edges that is dragged out to full length in a few frames, one claw a hair behind the last, so the eye sees one swipe of a paw rather than three lines. The direction of the rake follows the attacker's direction, so a monster to the left rakes left to right. A spray of dark red flecks sells the damage. Painted in white and red it reads on any creature, in day or night.",
+   "levels": "1-3: three thin, short rakes. 4-6: longer rakes and a spray of flecks. 7-9: four claws. 10: deep, glowing wounds that linger a moment.",
+   "events": [
+    "hit",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body"
+   ],
+   "light": false,
+   "layers": [
+    {
+     "id": "rake",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Core"
+    },
+    "edge": {
+     "type": "color",
+     "def": "#ff4a3a",
+     "label": "Edge"
+    },
+    "blood": {
+     "type": "color",
+     "def": "#8a0f1a",
+     "label": "Flecks"
+    }
+   }
+  },
+  {
+   "id": "nature/entangle",
+   "key": "effects/library/nature/entangle",
+   "file": "effects/library/nature/entangle.js",
+   "name": "Entangle",
+   "kind": "aura",
+   "kindLabel": "Aura",
+   "family": "nature",
+   "category": "debuff",
+   "tags": [
+    "root",
+    "debuff",
+    "crowd control",
+    "nature"
+   ],
+   "thinking": "A root has to answer one question instantly: \"can I move?\" So the vines come up OUT of the ground around the feet and wind in toward the legs, the one image everyone reads as \"stuck\". Each vine grows from a ring around the body, leans in as it climbs and curls in a slow sway, with a dark outline on one edge and alternating leaves, so it looks hand-drawn rather than procedural. Half the vines stand behind the body and half in front, so the target is caught INSIDE them. They are painted, not glowing (plants do not shine), except for the small flowers that open at the top at high level. On release they sink back into the ground.",
+   "levels": "1-3: a few bare vines around the ankles. 4-6: more vines, with leaves. 7-9: vines climb to the waist. 10: a thicket that blooms with glowing flowers.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "body"
+   ],
+   "light": false,
+   "layers": [
+    {
+     "id": "vines_back",
+     "plane": "body",
+     "emissive": false
+    },
+    {
+     "id": "vines_front",
+     "plane": "body",
+     "emissive": false
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "vine": {
+     "type": "color",
+     "def": "#5f9a36",
+     "label": "Vine"
+    },
+    "dark": {
+     "type": "color",
+     "def": "#2c4a1b",
+     "label": "Vine shadow"
+    },
+    "leaf": {
+     "type": "color",
+     "def": "#86c64a",
+     "label": "Leaf"
+    },
+    "bloom": {
+     "type": "color",
+     "def": "#ff9ad6",
+     "label": "Bloom"
+    }
+   }
+  },
+  {
+   "id": "poison/acid_spit",
+   "key": "effects/library/poison/acid_spit",
+   "file": "effects/library/poison/acid_spit.js",
+   "name": "Acid Spit",
+   "kind": "projectile",
+   "kindLabel": "Projectile",
+   "family": "poison",
+   "category": "attack",
+   "tags": [
+    "projectile",
+    "damage over time",
+    "lob",
+    "monster",
+    "ground pool"
+   ],
+   "thinking": "Poison should feel wet and nasty, never clean. The spit is LOBBED on a high arc, which is the silhouette that says \"spit\" rather than \"spell\" (and gives a target a moment to see it coming). The glob wobbles with squash and stretch along its flight, has a dark outline and a single highlight pixel like a real pixel-art drop, and sheds droplets that fall away under gravity. When it lands it splashes up and outward and leaves a bubbling pool of acid on the ground: an irregular puddle with a bright rim and bubbles that swell and pop. The pool is the lingering damage zone, so its size comes from the level and it lasts long enough to be avoided.",
+   "levels": "1-3: a small glob and a small puddle. 4-6: droplets in the air, a bigger splash, bubbling. 7-9: a big glob and a wide, long-lived pool. 10: a torrent of spit that leaves a broad acid lake.",
+   "speed": {
+    "cellsPerSecondAtLevel5": 7.67
+   },
+   "events": [
+    "release",
+    "impact",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body",
+    "ground"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "glob",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "splash",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "pool",
+     "plane": "ground",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "acid": {
+     "type": "color",
+     "def": "#9be83c",
+     "label": "Acid"
+    },
+    "dark": {
+     "type": "color",
+     "def": "#2f5a18",
+     "label": "Dark acid"
+    },
+    "froth": {
+     "type": "color",
+     "def": "#e6ff9a",
+     "label": "Froth"
+    }
+   }
+  },
+  {
+   "id": "poison/poisoned",
+   "key": "effects/library/poison/poisoned",
+   "file": "effects/library/poison/poisoned.js",
+   "name": "Poisoned",
+   "kind": "aura",
+   "kindLabel": "Aura",
+   "family": "poison",
+   "category": "debuff",
+   "tags": [
+    "debuff",
+    "damage over time",
+    "poison",
+    "infection"
+   ],
+   "thinking": "The toxic infection, as a status on a body: it must say \"sick\" from across the screen without the flames of burning or the ice of a slow. Bubbles are the sign: green bubbles rise off the body in a loose cloud, swell as they climb and pop into a little broken ring, like something boiling under the skin, while dark drips run down and fall off. Half the bubbles pass behind the body and half in front. A faint sickly haze hugs the silhouette from level 4. It is slow and irregular on purpose, each bubble on its own clock, because an even rhythm reads as magic and poison should read as nature gone wrong.",
+   "levels": "1-3: a few bubbles. 4-6: more bubbles, drips, and a sickly haze on the body. 7-9: a boiling cloud of bubbles. 10: the body seethes with poison.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "sick_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "sick_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "tox": {
+     "type": "color",
+     "def": "#9be83c",
+     "label": "Poison"
+    },
+    "dark": {
+     "type": "color",
+     "def": "#3b6a1c",
+     "label": "Drips"
+    },
+    "froth": {
+     "type": "color",
+     "def": "#efffb0",
+     "label": "Shine"
+    }
+   }
+  },
+  {
+   "id": "poison/toxic_cloud",
+   "key": "effects/library/poison/toxic_cloud",
+   "file": "effects/library/poison/toxic_cloud.js",
+   "name": "Toxic Cloud",
+   "kind": "zone",
+   "kindLabel": "Zone",
+   "family": "poison",
+   "category": "attack",
+   "tags": [
+    "aoe",
+    "zone",
+    "damage over time",
+    "gas"
+   ],
+   "thinking": "A gas cloud must show where it is dangerous and still let the player see through it. It is built from a handful of fat, lumpy puffs that drift slowly around the zone's centre, each lit from above (a pale top, a sickly middle, a dark underside) like pixel-art smoke. The puffs are a little more than half opaque, so bodies inside are veiled but readable, and they sit on a stained patch of ground at exactly the zone's radius, the honest edge a player can step out of. Half the puffs stand behind the bodies inside and half in front. The gas glows faintly, a miasma: a danger zone you cannot see at night would be unfair, so it never goes dark. Bubbles rise and pop out of the stain.",
+   "levels": "1-3: a few thin puffs over a faint stain. 4-6: a fuller cloud and popping bubbles. 7-9: a wide, dense cloud. 10: a choking fog bank.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "radius": "by level",
+   "planes": [
+    "ground",
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "stain",
+     "plane": "ground",
+     "emissive": false
+    },
+    {
+     "id": "bubbles",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "gas_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "gas_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "gas": {
+     "type": "color",
+     "def": "#7fbf3a",
+     "label": "Gas"
+    },
+    "dark": {
+     "type": "color",
+     "def": "#35601f",
+     "label": "Shadow"
+    },
+    "light": {
+     "type": "color",
+     "def": "#c9f07a",
+     "label": "Highlight"
+    }
+   }
+  },
+  {
+   "id": "potion/healing_potion",
+   "key": "effects/library/potion/healing_potion",
+   "file": "effects/library/potion/healing_potion.js",
+   "name": "Healing Potion",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "potion",
+   "category": "heal",
+   "tags": [
+    "potion",
+    "heal",
+    "item",
+    "consumable"
+   ],
+   "thinking": "Drinking a potion is an item, not a spell, so it must look different from the priest's heal even though both restore health. It is LIQUID: a red ribbon spirals up around the drinker (half behind, half in front), with a dark edge and a shine along its near side, the way a pixel artist draws a glass of wine, while bubbles rise through it. At the top it releases little pixel hearts. The colour is the item's own (red for health, and the same effect in blue makes a mana potion), and the potion's grade is the level, so a Greater Healing Potion spirals longer and throws more hearts.",
+   "levels": "1-3: a short red ribbon and bubbles. 4-6: a longer spiral and a few hearts. 7-9: a spiral that climbs over the head. 10: a fountain of hearts.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "spiral_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "spiral_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "liquid": {
+     "type": "color",
+     "def": "#e2324a",
+     "label": "Liquid"
+    },
+    "dark": {
+     "type": "color",
+     "def": "#7a1024",
+     "label": "Edge"
+    },
+    "shine": {
+     "type": "color",
+     "def": "#ffc4cc",
+     "label": "Shine"
+    }
+   }
+  },
+  {
+   "id": "shadow/life_drain",
+   "key": "effects/library/shadow/life_drain",
+   "file": "effects/library/shadow/life_drain.js",
+   "name": "Life Drain",
+   "kind": "beam",
+   "kindLabel": "Beam",
+   "family": "shadow",
+   "category": "channel",
+   "tags": [
+    "channel",
+    "drain",
+    "heal self",
+    "single target"
+   ],
+   "thinking": "Life drain is a beam that runs BACKWARDS: the caster is not sending something, it is taking. So the motion is the whole design: red motes are pulled out of the victim and stream along a thin, sagging tether into the caster, where they are swallowed in a pulsing red glow. The tether is dark (a painted crimson thread, not a laser) and wavers like something alive. At the victim, a haze of red rises out of the chest; at the caster, the glow brightens with every mote that arrives. Direction of flow is the one thing a player must never misread, so the motes are the brightest thing on screen.",
+   "levels": "1-3: a faint thread and a trickle of motes. 4-6: a steady stream and a red haze rising off the victim. 7-9: a thicker tether and a flood of motes. 10: the tether writhes and the victim bleeds light.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "tether",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "haze",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "absorb",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "blood": {
+     "type": "color",
+     "def": "#e0283c",
+     "label": "Life"
+    },
+    "dark": {
+     "type": "color",
+     "def": "#3a0710",
+     "label": "Tether"
+    },
+    "hot": {
+     "type": "color",
+     "def": "#ffb0a0",
+     "label": "Mote core"
+    }
+   }
+  },
+  {
+   "id": "shadow/shadow_bolt",
+   "key": "effects/library/shadow/shadow_bolt",
+   "file": "effects/library/shadow/shadow_bolt.js",
+   "name": "Shadow Bolt",
+   "kind": "projectile",
+   "kindLabel": "Projectile",
+   "family": "shadow",
+   "category": "attack",
+   "tags": [
+    "projectile",
+    "damage",
+    "curse",
+    "single target"
+   ],
+   "thinking": "Shadow magic is drawn inside out: where fire is brightest in the middle, a shadow bolt is a hole of near-black with a burning violet rim, like light bending around something that should not be there. Its trail is black smoke laced with violet, painted rather than glowing, so it stays dark even at night and reads as absence. The impact is an implosion first (the rim collapses inward) and only then a dark burst outward with shreds of smoke. It is slower than the fireball on purpose, a heavier, more ominous shot.",
+   "levels": "1-3: a small dark orb with a thin rim. 4-6: a smoke trail with violet sparks. 7-9: a big void orb and a double-ringed implosion. 10: a black star that tears the air open on impact.",
+   "speed": {
+    "cellsPerSecondAtLevel5": 8.39
+   },
+   "events": [
+    "release",
+    "impact",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "orb",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "implode",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "void": {
+     "type": "color",
+     "def": "#140a1f",
+     "label": "Void"
+    },
+    "rim": {
+     "type": "color",
+     "def": "#a55cff",
+     "label": "Rim"
+    },
+    "hot": {
+     "type": "color",
+     "def": "#f0c8ff",
+     "label": "Rim highlight"
+    }
+   }
+  },
+  {
+   "id": "status/stunned",
+   "key": "effects/library/status/stunned",
+   "file": "effects/library/status/stunned.js",
+   "name": "Stunned",
+   "kind": "aura",
+   "kindLabel": "Aura",
+   "family": "status",
+   "category": "debuff",
+   "tags": [
+    "stun",
+    "debuff",
+    "crowd control"
+   ],
+   "thinking": "The universal cartoon sign for \"seeing stars\", because a stun must be read in a split second in a crowd and nothing is faster to read than a symbol everyone already knows. Stars circle on a flat orbit just above the head, half passing behind it and half in front, nearer ones drawn bigger (a cheap depth cue that makes the orbit read as a ring in space). They twinkle out of phase. Levels add stars and widen the orbit, so a long heavy stun looks heavier than a short daze.",
+   "levels": "1-3: three small stars. 4-6: four stars on a wider orbit. 7-9: five. 10: six stars in a wide halo.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "planes": [
+    "body"
+   ],
+   "light": false,
+   "layers": [
+    {
+     "id": "stars_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "stars_front",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "star": {
+     "type": "color",
+     "def": "#ffe04a",
+     "label": "Star"
+    },
+    "edge": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Twinkle"
+    }
+   }
+  },
+  {
+   "id": "storm/chain_lightning",
+   "key": "effects/library/storm/chain_lightning",
+   "file": "effects/library/storm/chain_lightning.js",
+   "name": "Chain Lightning",
+   "kind": "chain",
+   "kindLabel": "Chain",
+   "family": "storm",
+   "category": "attack",
+   "tags": [
+    "damage",
+    "multi target",
+    "bounce",
+    "instant"
+   ],
+   "thinking": "Chain lightning is a story told in hops: the eye has to follow it from the caster to the first victim, then to the next and the next, so each hop gets its own arc that appears a beat after the last one lands (the game gets a \"hop\" event per target to apply damage in the same rhythm). Each arc is a jagged bolt that re-rolls its path every few frames, flickers out, and leaves a spark burst on the body it hit. The arcs connect chest to chest, and the light slot follows the newest hop, so a chain racing through a dark forest lights each victim in turn.",
+   "levels": "1-3: a thin, quick arc per hop. 4-6: brighter arcs, bigger impact sparks. 7-9: a second forked strand on every hop. 10: thick arcs that linger and crackle between the victims after the chain has passed.",
+   "events": [
+    "hop",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "arc",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "impact",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Core"
+    },
+    "glow": {
+     "type": "color",
+     "def": "#9ad1ff",
+     "label": "Glow"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#4f6bff",
+     "label": "Deep glow"
+    }
+   }
+  },
+  {
+   "id": "storm/lightning_strike",
+   "key": "effects/library/storm/lightning_strike",
+   "file": "effects/library/storm/lightning_strike.js",
+   "name": "Lightning Strike",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "storm",
+   "category": "attack",
+   "tags": [
+    "damage",
+    "single target",
+    "instant",
+    "stun"
+   ],
+   "thinking": "Lightning is the one effect that must feel instant, so it has no travel at all: the bolt is simply there on frame one, from far above the top of the screen down to the target's feet. What sells it is rhythm, not size. A real strike is a stroke, a dark gap and a re-strike, so the bolt is drawn in two or three hard pulses and each pulse is a NEW jagged path (the random seed steps with time instead of wobbling, which reads as lightning rather than a snake). The core is pure white and one pixel wide, the glow is a dithered blue fringe, and a big but short flash lights the whole area through the light slot: at night the world blinks white. On the ground the strike leaves a burst of light, crawling forks of current along the ground and a scorch that fades.",
+   "levels": "1-3: one thin bolt, two strokes, a small ground flash. 4-6: side branches, sparks, forked current along the ground. 7-9: a thicker bolt, a third stroke and a bigger ground burst. 10: a massive bolt with many branches and a scorch that smoulders with sparks.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body",
+    "air",
+    "ground"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "bolt",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "flash",
+     "plane": "air",
+     "emissive": true
+    },
+    {
+     "id": "burst",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "scorch",
+     "plane": "ground",
+     "emissive": false
+    },
+    {
+     "id": "sparks",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Core"
+    },
+    "glow": {
+     "type": "color",
+     "def": "#8fb8ff",
+     "label": "Glow"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#5b4bd6",
+     "label": "Deep glow"
+    }
+   }
+  },
+  {
+   "id": "summon/summon_arrival",
+   "key": "effects/library/summon/summon_arrival",
+   "file": "effects/library/summon/summon_arrival.js",
+   "name": "Summon Arrival",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "summon",
+   "category": "summon",
+   "tags": [
+    "summon",
+    "spawn",
+    "appear"
+   ],
+   "thinking": "The moment a summoned creature steps into the world. The problem it solves is the pop-in: a sprite that simply appears looks like a bug. So a column of blue-white light erupts from the ground where it will stand and a ring of smoke bursts out around its feet, and the game spawns the creature on the \"peak\" event, when the column is widest and the smoke is thickest, so the creature is revealed by the light draining away rather than popping in. The column scales with the creature's height (pass the summon's height), so a summoned dragon arrives in a bigger pillar than a summoned wolf.",
+   "levels": "1-3: a quick pillar and a puff of smoke. 4-6: a taller pillar and a rolling smoke ring. 7-9: a blinding pillar. 10: a pillar that rises past the screen, and heavy smoke.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body",
+    "ground"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "smoke_back",
+     "plane": "body",
+     "emissive": false
+    },
+    {
+     "id": "pillar",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "ring",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "smoke_front",
+     "plane": "body",
+     "emissive": false
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "line": {
+     "type": "color",
+     "def": "#eef2ff",
+     "label": "Core"
+    },
+    "glow": {
+     "type": "color",
+     "def": "#7d8fe8",
+     "label": "Glow"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#3a3aa8",
+     "label": "Deep"
+    },
+    "smoke": {
+     "type": "color",
+     "def": "#6a6a82",
+     "label": "Smoke"
+    }
+   }
+  },
+  {
+   "id": "summon/summoning_circle",
+   "key": "effects/library/summon/summoning_circle",
+   "file": "effects/library/summon/summoning_circle.js",
+   "name": "Summoning Circle",
+   "kind": "zone",
+   "kindLabel": "Zone",
+   "family": "summon",
+   "category": "summon",
+   "tags": [
+    "summon",
+    "channel",
+    "ritual"
+   ],
+   "thinking": "The ritual before a summon: it tells everyone around that something is about to arrive, and exactly where. It is the classic magic circle, drawn on the ground in the iso ellipse: an outer and an inner ring, a star of straight lines joining points on the circle, and marks between the rings, all of which DRAW themselves on the intro (rings sweep round, the star's lines are ruled one after another). While it channels, the rings turn in opposite directions and a glow breathes in the middle. The game stops it the moment the creature appears, and plays Summon Arrival on the same spot.",
+   "levels": "1-3: two rings and a five-point star. 4-6: rune marks between the rings. 7-9: a wider circle and a rising haze of light. 10: a second star, turning against the first.",
+   "events": [
+    "start",
+    "end"
+   ],
+   "sustained": true,
+   "radius": "by level",
+   "planes": [
+    "ground",
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "circle",
+     "plane": "ground",
+     "emissive": true
+    },
+    {
+     "id": "haze",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "line": {
+     "type": "color",
+     "def": "#d8e2ff",
+     "label": "Lines"
+    },
+    "glow": {
+     "type": "color",
+     "def": "#7d8fe8",
+     "label": "Glow"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#3a3aa8",
+     "label": "Deep"
+    }
+   }
+  },
+  {
+   "id": "weapon/arrow",
+   "key": "effects/library/weapon/arrow",
+   "file": "effects/library/weapon/arrow.js",
+   "name": "Arrow",
+   "kind": "projectile",
+   "kindLabel": "Projectile",
+   "family": "weapon",
+   "category": "attack",
+   "tags": [
+    "projectile",
+    "physical",
+    "bow",
+    "ranged"
+   ],
+   "thinking": "An arrow is the effect a player will see ten thousand times, so it is kept small, fast and exact: a one-pixel shaft, a steel head and two fletching pixels, drawn along its true flight direction every frame (it pitches up, then noses down over a slight arc, like a real shot). Speed is most of the feel: at 15-20 cells per second it crosses a phone screen in about a third of a second, which is too fast to lose and too slow to miss. A faint white motion streak behind it keeps it readable at that speed. The hit is a small puff of splinters and a white tick, deliberately modest so a volley of arrows does not become a light show. Higher levels are faster and flatter shots, then an enchanted, glowing head.",
+   "levels": "1-3: a plain arrow on a visible arc. 4-6: a faster, flatter shot with a longer streak. 7-9: the head glows and leaves a faint light trail. 10: a keen shot wrapped in a spiralling wind trail.",
+   "speed": {
+    "cellsPerSecondAtLevel5": 17.22
+   },
+   "events": [
+    "release",
+    "impact",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "arrow",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "hit",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "shaft": {
+     "type": "color",
+     "def": "#7a5433",
+     "label": "Shaft"
+    },
+    "head": {
+     "type": "color",
+     "def": "#d9e1e8",
+     "label": "Head"
+    },
+    "fletch": {
+     "type": "color",
+     "def": "#efe7d2",
+     "label": "Fletching"
+    },
+    "glow": {
+     "type": "color",
+     "def": "#bff0ff",
+     "label": "Enchant glow"
+    }
+   }
+  },
+  {
+   "id": "weapon/critical_hit",
+   "key": "effects/library/weapon/critical_hit",
+   "file": "effects/library/weapon/critical_hit.js",
+   "name": "Critical Hit",
+   "kind": "burst",
+   "kindLabel": "Burst",
+   "family": "weapon",
+   "category": "impact",
+   "tags": [
+    "impact",
+    "critical",
+    "hit",
+    "any weapon"
+   ],
+   "thinking": "The punctuation mark of combat: it adds nothing to the fight except the feeling that THAT one mattered. It lasts a third of a second and uses the biggest, simplest shape there is, an eight-pointed star of white with a hot yellow and orange rim, that punches out to full size in two frames and then shrinks and turns as it dies. Straight speed lines burst outward from it, the manga convention for impact. It sits at chest height on the victim and is played on top of whatever weapon effect landed the blow (sword, arrow, fist, bite), so a critical reads the same whatever caused it.",
+   "levels": "1-3: a small star. 4-6: a bigger star with speed lines. 7-9: a ring bursts out behind the star. 10: a huge double star.",
+   "events": [
+    "peak",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "star",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "core": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Core"
+    },
+    "hot": {
+     "type": "color",
+     "def": "#ffe066",
+     "label": "Hot"
+    },
+    "edge": {
+     "type": "color",
+     "def": "#ff7a2a",
+     "label": "Rim"
+    }
+   }
+  },
+  {
+   "id": "weapon/sword_slash",
+   "key": "effects/library/weapon/sword_slash",
+   "file": "effects/library/weapon/sword_slash.js",
+   "name": "Sword Slash",
+   "kind": "melee",
+   "kindLabel": "Melee",
+   "family": "weapon",
+   "category": "attack",
+   "tags": [
+    "melee",
+    "physical",
+    "sword",
+    "arc"
+   ],
+   "thinking": "A slash is a smear frame: the one drawing an animator adds so the eye sees the blade's path instead of a sword that teleports. So this is the smear, drawn as the ghost of a blade sweeping a crescent at chest height, in a plane parallel to the ground. That plane is the trick for an isometric game: the same crescent reads right whichever of the eight directions the attacker faces, because the iso projection squashes it exactly like the floor. A white leading edge races ahead and the steel-blue smear behind it thins and fades, the whole swing in a fifth of a second. It is cut into the half in front of the attacker and the half behind, so a slash toward the camera covers the body and one away from it passes behind. The hit spark on the victim lands on the hit event, which is where the game applies damage.",
+   "levels": "1-3: a quick, narrow crescent and a small hit spark. 4-6: a longer reach and sparks off the blade's edge. 7-9: a second, mirrored counter-slash follows the first. 10: a double slash whose edge glows, and a heavy hit flash.",
+   "events": [
+    "hit",
+    "end"
+   ],
+   "sustained": false,
+   "planes": [
+    "body"
+   ],
+   "light": true,
+   "layers": [
+    {
+     "id": "arc_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "arc_front",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "counter_back",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "counter_front",
+     "plane": "body",
+     "emissive": true
+    },
+    {
+     "id": "hit",
+     "plane": "body",
+     "emissive": true
+    }
+   ],
+   "tune": {
+    "size": {
+     "type": "range",
+     "def": 1,
+     "min": 0.5,
+     "max": 2,
+     "step": 0.05,
+     "label": "Size"
+    },
+    "bright": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 2.5,
+     "step": 0.05,
+     "label": "Brightness"
+    },
+    "anim": {
+     "type": "range",
+     "def": 1,
+     "min": 0.25,
+     "max": 3,
+     "step": 0.05,
+     "label": "Animation speed"
+    },
+    "edge": {
+     "type": "color",
+     "def": "#ffffff",
+     "label": "Edge"
+    },
+    "smear": {
+     "type": "color",
+     "def": "#bcd3ea",
+     "label": "Smear"
+    },
+    "deep": {
+     "type": "color",
+     "def": "#5d7ea6",
+     "label": "Smear tail"
+    }
+   }
+  }
+ ]
+}

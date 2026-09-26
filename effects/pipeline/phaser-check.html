@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Effects in Phaser</title>
+<style>html,body{margin:0;background:#111}canvas{display:block;image-rendering:pixelated}</style>
+</head>
+<body>
+<script type="module">
+// The adapter inside a real Phaser 3 scene, set up the way games2 sets its
+// world up: pixelArt, a whole-number camera zoom, bodies sorted by feet y.
+// Driven by effects/pipeline/phaser-check.mjs, which reads window.__check.
+import * as PhaserNS from "/__phaser.esm.js";
+import { createPhaserFx, simpleDepth } from "../runtime/phaser.js";
+import LIBRARY from "../library/index.js";
+
+const Phaser = PhaserNS.default || PhaserNS;
+const q = new URLSearchParams(location.search);
+const IDS = (q.get("ids") || "fire/fireball,frost/frost_nova,arcane/arcane_beam").split(",");
+const ZOOM = Number(q.get("zoom") || 3);
+const W = 360, H = 220;
+const ISO = { dx: 32, dy: 14, cellWu: 32 };
+const origin = { x: 150, y: 20 };
+const project = (x, y) => {
+  const c = x / ISO.cellWu, r = y / ISO.cellWu;
+  return { x: origin.x + (c - r) * ISO.dx, y: origin.y + (c + r) * ISO.dy };
+};
+const check = { frames: 0, glErrors: [], shaderErrors: [], layers: 0, maxLayers: 0, done: false, log: [] };
+window.__check = check;
+
+class World extends Phaser.Scene {
+  preload() {
+    this.load.image("hero", "../../characters2/humans/default_boy/base/east.webp");
+    this.load.image("wolf", "../../monsters/werewolf/rotations/west.webp");
+  }
+  create() {
+    const g = this.add.graphics().setDepth(-1e6);
+    for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) {
+      const p = project(c * 32, r * 32);
+      g.fillStyle((c + r) % 2 ? 0x3a5432 : 0x40593a, 1);
+      g.fillPoints([{ x: p.x, y: p.y }, { x: p.x + 32, y: p.y + 14 }, { x: p.x, y: p.y + 28 }, { x: p.x - 32, y: p.y + 14 }], true);
+    }
+    this.caster = { x: 4.5 * 32, y: 6.5 * 32 };
+    this.target = { x: 7.3 * 32, y: 3.7 * 32 };
+    const hp = project(this.caster.x, this.caster.y), tp = project(this.target.x, this.target.y);
+    this.hero = this.add.image(hp.x, hp.y, "hero").setOrigin(0.5, 0.88).setDepth(hp.y);
+    this.wolf = this.add.image(tp.x, tp.y, "wolf").setOrigin(0.5, 0.9).setDepth(tp.y);
+    const cam = this.cameras.main;
+    cam.setZoom(ZOOM);
+    cam.centerOn((hp.x + tp.x) / 2, (hp.y + tp.y) / 2 - 30);
+    this.fx = createPhaserFx(this, { project, depth: simpleDepth, library: LIBRARY, log: (m) => check.shaderErrors.push(m) });
+    this.fx.warm(IDS);
+    this.cycle = 0;
+    this.playAll();
+    this.time.addEvent({ delay: 2200, loop: true, callback: () => this.playAll() });
+  }
+  playAll() {
+    for (const id of IDS) {
+      const d = this.fx.world.defs.get(id);
+      if (!d) continue;
+      const base = { level: 7, seed: 0.37, height: 88, targetHeight: 110 };
+      if (d.kind === "projectile" || d.kind === "beam" || d.kind === "chain") this.fx.play(id, { ...base, from: this.caster, to: this.target, targets: [this.target], duration: 1.6 });
+      else if (d.kind === "melee") this.fx.play(id, { ...base, at: this.caster, to: this.target });
+      else this.fx.play(id, { ...base, at: d.demo?.on === "caster" ? this.caster : this.target, from: this.caster, duration: 1.6 });
+    }
+  }
+  update() {
+    const gl = this.sys.renderer.gl;
+    const e = gl.getError();
+    if (e) check.glErrors.push(e);
+    check.frames++;
+    check.layers = this.fx.stats.layers;
+    check.maxLayers = Math.max(check.maxLayers, check.layers);
+    check.texels = this.fx.stats.texels;
+    check.reallocs = this.fx.stats.reallocs;
+  }
+}
+
+new Phaser.Game({
+  type: Phaser.WEBGL,
+  width: W * ZOOM,
+  height: H * ZOOM,
+  pixelArt: true,
+  backgroundColor: "#141619",
+  scene: World,
+  banner: false,
+});
+window.__freeze = (ms) => new Promise((r) => setTimeout(r, ms));
+</script>
+</body>
+</html>

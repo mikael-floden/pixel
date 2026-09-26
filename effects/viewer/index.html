@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nangijala Effects</title>
+<link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+<div id="app">
+  <header class="bar">
+    <div class="bar-title">
+      <span class="brand">Effects</span>
+      <span class="count" id="count">—</span>
+    </div>
+    <div class="bar-nav">
+      <button type="button" id="prev" class="icon-btn" aria-label="Previous effect">‹</button>
+      <div class="now">
+        <span class="fam-dot" id="now-dot"></span>
+        <span class="now-name" id="now-name">Loading…</span>
+        <span class="chip" id="now-kind"></span>
+      </div>
+      <button type="button" id="next" class="icon-btn" aria-label="Next effect">›</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stage-col">
+      <div class="stage-wrap" id="stage-wrap">
+        <canvas id="stage" aria-label="The effect playing on a piece of the game world"></canvas>
+        <div class="stage-hint" id="stage-hint">Tap the ground to move the target</div>
+        <div class="stage-err" id="stage-err" hidden></div>
+      </div>
+
+      <div class="transport" role="group" aria-label="Playback">
+        <button type="button" id="play" class="btn primary">Replay</button>
+        <label class="tog"><input type="checkbox" id="loop" checked> Loop</label>
+        <label class="tog"><input type="checkbox" id="night" checked> Night</label>
+        <div class="seg" role="radiogroup" aria-label="Speed">
+          <button type="button" data-slow="1" class="on">1×</button>
+          <button type="button" data-slow="0.5">½×</button>
+          <button type="button" data-slow="0.25">¼×</button>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="Target">
+          <button type="button" data-target="werewolf" class="on">Werewolf</button>
+          <button type="button" data-target="troll">Troll</button>
+          <button type="button" data-target="human">Human</button>
+        </div>
+      </div>
+
+      <div class="level" aria-label="Skill level">
+        <label for="level" class="level-label">Level</label>
+        <input type="range" id="level" min="1" max="10" step="1" value="5" list="level-ticks">
+        <datalist id="level-ticks"><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option><option value="5"></option><option value="6"></option><option value="7"></option><option value="8"></option><option value="9"></option><option value="10"></option></datalist>
+        <output id="level-out" for="level">5</output>
+      </div>
+
+      <article class="notes" id="notes" aria-live="polite"></article>
+    </section>
+
+    <section class="side-col">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Library</h2>
+          <input type="search" id="q" placeholder="Search effects" aria-label="Search effects">
+        </div>
+        <div class="chips" id="families" role="group" aria-label="Filter by element"></div>
+        <ul class="list" id="list"></ul>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Tune</h2>
+          <div class="head-actions">
+            <button type="button" id="reset" class="btn small">Reset</button>
+            <button type="button" id="copy" class="btn small">Copy tuning</button>
+          </div>
+        </div>
+        <div id="tune" class="tune"></div>
+        <textarea id="copy-out" class="copy-out" readonly hidden aria-label="Tuning JSON"></textarea>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>House style</h2></div>
+        <p class="hint">One look for the whole library. Pixel-true draws every effect on the game's own pixel grid.</p>
+        <div class="tune" id="style"></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script type="module" src="viewer.js"></script>
+</body>
+</html>
