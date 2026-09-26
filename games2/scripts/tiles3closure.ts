@@ -13,6 +13,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { parseWorld, ISO_GEOMETRY_MAPS3 } from "../shared/src/index";
 import { Tiles3, isRampSet } from "../client/src/tiles3";
+import { rampMaskRaw, slopeRunShares } from "../client/src/rampfield";
 import type { Frame } from "../client/src/tiles3";
 import {
   Tiles3World,
@@ -142,6 +143,23 @@ export function tiles3ArtClosure(root: string, worldNames: readonly string[]): T
         } catch {
           w.failures++;
         }
+      }
+    }
+    /* AND THE SLOPES THE GAME DRAWS (slopeheight.ts, auto by default): a ramp
+     * on a ground change lifts its composed transition, whose two plates the
+     * rule above — no ramps — may never ask for at that cell. Only the ramp
+     * candidates are resolved again (rampfield `rampMaskRaw`, ~2k cells), under
+     * every share at once (`fixed` 100: the plates do not depend on the height). */
+    const mask = rampMaskRaw(world as never);
+    const tr = new Tiles3({ ...data, slopeHeight: 1, slopeShares: slopeRunShares(world as never, 100), slopeSharesW: world.width });
+    const tw = new Tiles3World({ view, tiles: tr, frame, patterns: data.patterns });
+    for (let i = 0; i < mask.length; i++) {
+      if (!mask[i]) continue;
+      try {
+        const cell = tw.cell(i % world.width, Math.floor(i / world.width));
+        if (cell) cellArtPaths(cell, out);
+      } catch {
+        w.failures++;
       }
     }
     worlds.push(w);

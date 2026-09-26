@@ -629,12 +629,20 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   to jump ... slowly increase elevation"; a stair (an off run) still hops.
   A game rule (`footBoundary`; `slopeHeight` 0 or the parity path keeps
   render3's pools, below 0 lists none). THE PICK (`rampIndexFor`): every corner a cell
-  exactly one level up touches, never a full plateau top; a published
-  storey-height set (`isRampSet`, `RAMP_MIN_PX` 12) comes first and replaces
-  the composition the day one exists. A RAMP WINS OVER A SAME-PLANE BOUNDARY
-  (its frame is taller than the composer's; a stair is a slope before it is
-  a ground change) and the foot yields to it; a cliff of two keeps its foot.
-  Measured on the_game (`slopes.test.ts`): 1,714 of 1,714 one-level rises.
+  exactly one level up touches (`rampJoins`: the same ground, or ANY two dry
+  outdoor grounds — never a liquid, never an indoor floor), never a full
+  plateau top; a published storey-height set (`isRampSet`, `RAMP_MIN_PX` 12)
+  comes first and replaces the composition the day one exists. A RAMP ON A
+  GROUND CHANGE LIFTS THE TRANSITION (maintainer 2026-09-26: "I want boundary
+  tiles to also be able to slope"; a dirt terrace over grass was a stair):
+  `wangSurface` composes the cell's own corner lattice with the foot off —
+  the lattice its flat neighbours read, so the blend meets theirs at every
+  edge — and the ramp's top face is that composed tile (`art.bnd`,
+  tiles3draw `buildBoundaryPixels` then `buildRampPixels`; both plates in
+  the virtual path, so in the key, and in the load list). The half step's
+  4 px sets keep the same-ground rule. The foot yields to a ramp; a cliff
+  of two keeps its foot. Measured on the_game (`slopes.test.ts`): 2,142 of
+  2,142 one-level rises, 538 of them lifting a transition.
   THE PUBLISHED SETS ARE A 4 PX TERRACE ON A 15 PX STOREY (his web-UI
   "terrain height 4px"; measured: tile 15 tops the frame on the library
   diamond, tile 0 sits 4 rows under it) — a hairline at play scale, and the

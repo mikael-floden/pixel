@@ -1152,6 +1152,9 @@ export interface PlateLike {
    *  ramp is built from it, exactly as its flat plate is. */
   fromKind?: string;
   mask?: number;
+  /** A composed ramp on a ground change: the transition whose blend is its top
+   *  face (both plates named in its virtual path, so in its key). */
+  bnd?: Tiles3Boundary;
 }
 
 /** THE CONTENT IDENTITY OF ONE PLATE — what actually went into its pixels, and
@@ -2044,7 +2047,21 @@ export class Tiles3Textures {
           const src = this.sourcePixels(artKey(art.from as string));
           if (!src) return null;
           // The top face from the plate the flat cell draws (conformed when its member is), the band from the art.
-          const top = art.fromKind === "conform" ? buildPlatePixels(this.o.sheets, { kind: "conform", path: art.from as string }, src, this.wallRGB(ground)) : src;
+          let top = art.fromKind === "conform" ? buildPlatePixels(this.o.sheets, { kind: "conform", path: art.from as string }, src, this.wallRGB(ground)) : src;
+          /* A RAMP ON A GROUND CHANGE LIFTS THE COMPOSED TRANSITION (tiles3
+           * `wangSurface`, maintainer 2026-09-26: "I want boundary tiles to also
+           * be able to slope"): the same blend its flat neighbours compose,
+           * built from the same two plates, is the incline's top face. Both
+           * plates must be here; until they are, the null leaves the cell owed
+           * and it is repainted when they land — never a ramp of the wrong
+           * ground. */
+          const bnd = (art as { bnd?: Tiles3Boundary }).bnd;
+          if (bnd) {
+            const a = this.platePixels(bnd.plateA, bnd.a);
+            const bb = this.platePixels(bnd.plateB, bnd.b);
+            if (!a || !bb) return null;
+            top = buildBoundaryPixels(this.o.sheets, bnd, a, bb, this.o.seam !== false);
+          }
           /* NO BAND BELOW THE LEVEL, AT ANY LEVEL, the incline and its side faces kept whole
            * (buildRampPixels; never rampTopOnly). Raised, the cell's own wall stack is the wall
            * there; at level 0 nothing is under the ground, and the ramp's occluder copy — drawn

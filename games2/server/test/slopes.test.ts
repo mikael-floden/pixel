@@ -568,13 +568,14 @@ test("the game rule: every one-level rise of a ground with no published storey s
   const out = t.resolveWindow(view);
   const g = (x: number, y: number) => view.groundAt(x, y);
   const L = (x: number, y: number) => view.levelAt(x, y);
-  let rises = 0, ramps = 0, wrong: string[] = [];
+  let rises = 0, ramps = 0, onBoundary = 0, wrong: string[] = [];
   const paths = new Set<string>();
   for (const c of out.cells) {
     const gr = g(c.x, c.y)!; if (view.isLiquid(gr)) continue;
-    const one = t.slopeIndexAt(g, L, gr, c.x, c.y, c.level, true);
+    const one = t.slopeIndexAt(g, L, gr, c.x, c.y, c.level, true, true); // the ramp rule: onto any dry outdoor ground
     if (!one || one === 15) continue;
     rises++;
+    if ((c.art as { bnd?: unknown } | undefined)?.bnd) onBoundary++;
     const sl = c.slope, art = c.art as { kind: string; path: string; h: number; from?: string; mask?: number } | undefined;
     if (!sl || !sl.ramp || !art || art.kind !== "ramp") { if (wrong.length < 5) wrong.push(`${c.x},${c.y} L${c.level} ${gr}: ${sl ? (sl.ramp ? "ramp but art " + art?.kind : "a bump") : "nothing"}`); continue; }
     ramps++;
@@ -585,7 +586,9 @@ test("the game rule: every one-level rise of a ground with no published storey s
   assert.ok(ramps >= 1500 && ramps === rises, `${ramps} ramps on ${rises} one-level rises`);
   assert.ok(![...paths].some((p) => p.startsWith(SYNTHETIC_RAMP_DIR + "/")), "the load list never names a virtual path");
   assert.ok([...paths].some((p) => /^tiles\//.test(p)), "the load list names the plates the ramps are built from");
-  console.log(`slopes: ${ramps} composed ramps on the_game's ${rises} one-level rises`);
+  // A ramp on a ground change wears the transition (maintainer 2026-09-26: "I want boundary tiles to also be able to slope").
+  assert.ok(onBoundary >= 300, `${onBoundary} ramps lift a composed transition`);
+  console.log(`slopes: ${ramps} composed ramps on the_game's ${rises} one-level rises, ${onBoundary} of them lifting a transition`);
 });
 
 test("buildRampPixels: a raised corner's column tops out one storey higher, a flat corner's stays, no hole inside, the frame is 64 x 61", { skip }, () => {

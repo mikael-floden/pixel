@@ -284,7 +284,8 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   lit each ramp as a flat top plus a wall face and painted a terrace over
   every slope the ground texture holds (measured headless in the slope lab:
   forced off, the terraces vanished). The ramps' corner masks
-  (`rampfield.ts`, the resolver's own rule, pinned against it on every cell
+  (`rampfield.ts`, the resolver's own rule — `rampJoins`, a ramp onto any
+  dry outdoor ground — pinned against it on every cell
   of the_game by `rampfield.test.ts`) ride the HIGH nibble of the surface
   map's B and the cell's OWN rise, in px of the 15 px storey, the low one —
   the auto mix gives every run its own height — so the walk reads both in

@@ -682,6 +682,8 @@ export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void, lid = t
    * diamond from a colour, not a file. */
   if (cell.art && cell.art.kind !== "liquid" && (cell.kind === "field" || cell.dressed))
     out(cell.art.from ?? cell.art.path); // a composed ramp names the plate it is built from; its own path is virtual
+  // ...and a ramp on a ground change names both plates of the transition it lifts.
+  if (cell.art && cell.art.kind === "ramp" && cell.art.bnd) boundaryArtPaths(cell.art.bnd, out);
   /* AND THE FADE'S OWN FILE. A fade is an OVERLAY now, not the cell's art, so
    * nothing else names it — and this one function feeds both the streaming
    * loader and scripts/tiles3closure.ts, which decides what enters the image.

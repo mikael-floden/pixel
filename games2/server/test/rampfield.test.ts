@@ -93,7 +93,7 @@ test("the light's ramp field is the resolver's composed ramp on every cell of th
   console.log(`rampfield: ${ramps} ramps on the_game, corners: ${chamfers} chamfers (diagonal edges), ${folds} folds (square corners)`);
 });
 
-test("the ramp field: a one-level rise of the same ground raises the corners it touches; two levels, another ground or a plateau top do not", () => {
+test("the ramp field: a one-level rise onto any dry outdoor ground raises the corners it touches; two levels, a house floor, a liquid or a plateau top do not", () => {
   // A 4x4 patch, the cell under test at (1,1) on level 2.
   const world = (lv: number[][], gr: string[][] = lv.map((r) => r.map(() => "grass"))) => ({
     width: 4,
@@ -106,8 +106,12 @@ test("the ramp field: a one-level rise of the same ground raises the corners it 
   assert.equal(at(world([[3, 3, 3, 3], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]])), 12);
   // North row two up: a cliff, no ramp.
   assert.equal(at(world([[4, 4, 4, 4], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]])), 0);
-  // The same rise in another ground: no ramp.
-  assert.equal(at(world([[3, 3, 3, 3], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]], [["snow", "snow", "snow", "snow"], ["grass", "grass", "grass", "grass"], ["grass", "grass", "grass", "grass"], ["grass", "grass", "grass", "grass"]])), 0);
+  // The same rise onto ANOTHER dry ground ramps too (maintainer 2026-09-26: "I want boundary tiles to also be able to slope").
+  const upper = (t: string) => [[t, t, t, t], ["grass", "grass", "grass", "grass"], ["grass", "grass", "grass", "grass"], ["grass", "grass", "grass", "grass"]];
+  assert.equal(at(world([[3, 3, 3, 3], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]], upper("snow"))), 12);
+  // ...but never onto a house floor (a house keeps its step) or a liquid (water lies flat).
+  assert.equal(at(world([[3, 3, 3, 3], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]], upper("parquet_floor"))), 0);
+  assert.equal(at(world([[3, 3, 3, 3], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]], upper("water"))), 0);
   // One up all round: a full plateau top, not a ramp.
   assert.equal(at(world([[3, 3, 3, 3], [3, 2, 3, 3], [3, 3, 3, 3], [3, 3, 3, 3]])), 0);
   // A liquid never ramps.

@@ -9,8 +9,9 @@
  *
  *  THE RESOLVER'S OWN RULE, restated here because the light is built from the
  *  world grid, not from resolved cells (resolving all 155k cells of the_game
- *  costs seconds): `Tiles3.slopeIndexAt(…, exactOne)` — a corner is raised by
- *  a touching cell of the SAME ground exactly one level up — and
+ *  costs seconds): `Tiles3.slopeIndexAt(…, exactOne, anyDry)` — a corner is
+ *  raised by a touching cell exactly one level up that the ramp may join
+ *  (`rampJoins`: the same ground, or any two dry outdoor grounds) — and
  *  `rampIndexFor` — never a full plateau top (15), never a liquid (every dry
  *  ground has a composed set while the switch is above 0%). Pinned against
  *  the resolver on every cell of the_game (server/test/rampfield.test.ts):
@@ -18,6 +19,8 @@
  *  SE 1 (tiles3 `rampHeight`).
  *
  *  A cell under a deck is 0: the slab is the surface there, not the ramp. */
+
+import { rampJoins } from "./tiles3";
 
 export interface RampFieldWorld {
   width: number;
@@ -48,7 +51,8 @@ export function rampMaskRaw(w: RampFieldWorld): Uint8Array {
         for (let k = 0; k < 4; k++) {
           const ax = cx - 1 + (k & 1);
           const ay = cy - 1 + (k >> 1);
-          if (L(ax, ay) - zl === 1 && g(ax, ay) === gr) {
+          const ga = g(ax, ay);
+          if (L(ax, ay) - zl === 1 && ga !== null && !liquid.has(ga) && rampJoins(gr, ga)) {
             idx |= 8 >> i;
             break;
           }

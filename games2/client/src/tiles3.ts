@@ -1053,7 +1053,7 @@ export function columnY(f: Frame, x: number, y: number, storey: number): number 
  *  slab. It is a MASK, not a crop — the wall is a vertical extrusion under the
  *  diamond, so no source rectangle expresses it. */
 export type FieldArt =
-  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean; rise?: number; from?: string; fromKind?: string; mask?: number }
+  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean; rise?: number; from?: string; fromKind?: string; mask?: number; bnd?: Tiles3Boundary }
   | { kind: "liquid"; topRGB: [number, number, number]; w: number; h: number; topOnly?: boolean };
 
 /** GROUND PEOPLE WALK ON. Nothing grows where feet keep coming (maintainer
@@ -1168,7 +1168,7 @@ export interface FadePick {
 /** The resolved surface of one cell, before it is placed. `art` is what draws;
  *  the rest is the provenance a fixture and a gate check. */
 export interface Surface3 {
-  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; rise?: number; from?: string; fromKind?: string; mask?: number };
+  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; rise?: number; from?: string; fromKind?: string; mask?: number; bnd?: Tiles3Boundary };
   set?: number;
   memberIndex?: number;
   plate?: PlateArt;
@@ -1290,6 +1290,19 @@ export function rampIsCorner(mask: number): boolean {
  *  fold where the edge turns a square corner (its neighbours there are edge
  *  ramps). `maskAt(dx, dy)` is the neighbour's own ramp mask (0 for none).
  *  The light restates it over its mask field (nightlight `rampChamferAt`). */
+/** DOES A ONE-LEVEL RISE FROM `low` UP TO `high` RAMP? The same ground always
+ *  did; since 2026-09-26 any two DRY OUTDOOR grounds do too (maintainer: "I
+ *  want boundary tiles to also be able to slope" — a dirt terrace over grass
+ *  was a stair, 475 + 333 of the_game's one-level rises). The slope then wears
+ *  the cell's composed transition (`wangSurface`). Never a liquid (water lies
+ *  flat) and never an indoor floor (a house keeps its step). rampfield.ts
+ *  asks the same question for the light. */
+export function rampJoins(low: string, high: string | null): boolean {
+  if (!high) return false;
+  if (high === low) return true;
+  return !LIQUID_TILE_GROUNDS.includes(high) && !LIQUID_TILE_GROUNDS.includes(low) && !INDOOR_GROUNDS.includes(high) && !INDOOR_GROUNDS.includes(low);
+}
+
 export function rampChamfers(mask: number, maskAt: (dx: number, dy: number) => number): boolean {
   const nb = rampCornerNeighbours(mask & 15);
   if (!nb) return false;
@@ -2435,6 +2448,8 @@ export class Tiles3 {
     y: number,
     zl: number,
     exactOne = false,
+    /** The RAMP rule (`rampJoins`): any dry outdoor ground one level up raises the corner. */
+    anyDry = false,
   ): number {
     /* Unrolled over the corner (i = 0..3 -> NW, NE, SW, SE) and the four cells
      * that touch it. Runs on every cell of every window, so it allocates
@@ -2450,7 +2465,7 @@ export class Tiles3 {
         // bridges one storey and no more — two levels stay a cliff and a jump);
         // a bump corner by any higher cell, as before.
         const dl = L(ax, ay) - zl;
-        if ((exactOne ? dl === 1 : dl > 0) && g(ax, ay) === ground) {
+        if (exactOne ? dl === 1 && (anyDry ? rampJoins(ground, g(ax, ay)) : g(ax, ay) === ground) : dl > 0 && g(ax, ay) === ground) {
           idx |= 8 >> i;
           break;
         }
@@ -2475,7 +2490,7 @@ export class Tiles3 {
     // A run the auto mix left a stair wears no ramp (and, ramps on, no half step).
     if (this.data.slopeShares && !(this.rampShareAt(x, y) > 0)) return 0;
     if (!this.slopeSets(ground, true, this.rampShareAt(x, y)).length) return 0;
-    const ridx = this.slopeIndexAt(g, L, ground, x, y, zl, true);
+    const ridx = this.slopeIndexAt(g, L, ground, x, y, zl, true, true);
     if (!ridx || ridx === 15) return 0;
     return this.slopeTile(ground, ridx, x, y, true) ? ridx : 0;
   }
@@ -3336,6 +3351,16 @@ export class Tiles3 {
      * composer's, and a stair is a slope before it is a ground change
      * (maintainer 2026-09-24: "slopes on every single 1 level stair"). */
     const b = rampIdx ? null : this.boundaryAt(view, frame, g, L, x, y, ramp ? { foot: false } : undefined);
+    /* ...AND THE RAMP WEARS THE TRANSITION (maintainer 2026-09-26: "I want
+     * boundary tiles to also be able to slope"). A composed ramp on a cell whose
+     * corner lattice is a ground change is lifted from the COMPOSED tile, not
+     * from its own plate — the same lattice its flat neighbours read, so the
+     * blend meets theirs at every edge, only lifted. The foot is off, as for
+     * any slope: the incline covers the wall's foot. */
+    if (rampIdx && this.data.footBoundary) {
+      const rb = this.boundaryAt(view, frame, g, L, x, y, { foot: false });
+      return this.surface(view, g, L, gr, x, y, zl, rb && rb.boundary.maskFrame !== null ? rb.boundary : undefined);
+    }
     if (b) {
       /* `art` names the cell's OWN half of the composed tile, so a draw layer
        * that has not composed the boundary yet paints something coherent under
@@ -3584,6 +3609,7 @@ export class Tiles3 {
     x: number,
     y: number,
     zl: number,
+    rampBnd?: Tiles3Boundary,
   ): Surface3 {
     const p = this.plateFor(gr, x, y);
     const out: Surface3 = {
@@ -3603,7 +3629,8 @@ export class Tiles3 {
      * the higher cell's cut draws at the level (`slopeLift`, tiles3draw). */
     const sidx = this.slopeIndexAt(g, L, gr, x, y, zl); // any rise: the bump's mask, and the detail veto below
     let sl: SlopePick | null = null;
-    const ridx = sidx ? this.rampIndexFor(g, L, gr, x, y, zl) : 0;
+    // Not gated on `sidx` (same ground only): a ramp may climb onto another ground (rampJoins).
+    const ridx = this.rampIndexFor(g, L, gr, x, y, zl);
     if (ridx) sl = this.slopeTile(gr, ridx, x, y, true);
     if (!sl) {
       if (this.data.footBoundary) {
@@ -3622,13 +3649,14 @@ export class Tiles3 {
         const nMask = (dx: number, dy: number): number => {
           const gn = g(x + dx, y + dy);
           if (!gn || view.isLiquid(gn)) return 0;
-          const m = this.slopeIndexAt(g, L, gn, x + dx, y + dy, L(x + dx, y + dy), true);
+          const m = this.slopeIndexAt(g, L, gn, x + dx, y + dy, L(x + dx, y + dy), true, true);
           return m === 15 ? 0 : m;
         };
         if (rampChamfers(mask, nMask)) mask |= RAMP_CHAMFER;
-        // Unique per member plate AND mask: the key of a composed texture is its content.
-        const path = `${sl.dir}/${String(mask).padStart(2, "0")}/${p.art.path}`;
-        out.art = { kind: "ramp", path, w: TILE, h: sl.h, from: p.art.path, fromKind: p.art.kind, mask };
+        // Unique per member plate AND mask (and transition): the key of a composed texture is its content.
+        const bid = rampBnd ? `x/${rampBnd.maskFrame}/${rampBnd.a}:${rampBnd.plateA.kind}:${rampBnd.plateA.path}/${rampBnd.b}:${rampBnd.plateB.kind}:${rampBnd.plateB.path}/` : "";
+        const path = `${sl.dir}/${String(mask).padStart(2, "0")}/${bid}${p.art.path}`;
+        out.art = { kind: "ramp", path, w: TILE, h: sl.h, from: p.art.path, fromKind: p.art.kind, mask, ...(rampBnd ? { bnd: rampBnd } : {}) };
         out.slope = { ...sl, index: mask, file: path };
       } else out.art = sl.ramp ? { kind: "ramp", path: sl.file, w: TILE, h: sl.h } : { kind: "plate", path: sl.file, w: TILE, h: sl.h, rise: sl.rise };
     }
@@ -3653,7 +3681,7 @@ export class Tiles3 {
      * in their 8-ring (at 1 in 10: 156 and 2,365). A slope cell keeps its slope;
      * the neighbourhood rule is `detailAlone` below. render3 carries the same
      * two clauses (asked of maps2, 2026-09-13). */
-    if (gr === ROOM_FLOOR || sidx) return out;
+    if (gr === ROOM_FLOOR || sidx || ridx) return out;
     const roll = this.detailRoll(gr, x, y);
     if (roll && this.detailAlone(g, L, x, y, roll.u)) {
       const dp = this.detailPool(gr);
