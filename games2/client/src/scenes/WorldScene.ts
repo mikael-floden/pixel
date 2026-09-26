@@ -226,7 +226,8 @@ import {
 } from "../maps";
 import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
-import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, rotFootprints, rotDir8, type ViewRot, type RotateStats } from "../viewrot";
+import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, unrotCell, rotVec, unrotVec, rotFootprints, rotDir8, type ViewRot, type RotateStats } from "../viewrot";
+import { setPickFrame } from "../tiles3";
 import { RotFx, buildRotMesh, easeTurn, type RotProjector } from "../rotfx";
 import { parseWorld as parseWorldDoc } from "@nangijala/shared";
 import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type ResolvedCell } from "../resolveworker";
@@ -2175,6 +2176,9 @@ export class WorldScene extends Phaser.Scene {
    *  ground resolver, scenery and the night pass draw; entities reach it through
    *  projectFlat/projectCellCorner, which turn their server-space input. */
   private viewRot: ViewRot = 0;
+  /** The rotation INPUT is read in: it follows viewRot, but only once a turn's
+   *  overlay has gone — mid-turn the player still sees the old view. */
+  private inputRot: ViewRot = 0;
   private viewWorld: World | null = null;
   /** The fetched world.json, kept once a turn has been asked for (a cache hit). */
   private viewDoc: unknown = null;
@@ -5843,6 +5847,7 @@ export class WorldScene extends Phaser.Scene {
     // stops retargeting — the trip finishes at the last touched point.
     this.input.addPointer(2); // second touch (e.g. resting thumb) must not steer
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
+      if (this.turning) return; // mid-turn the screen shows frames, not the world a tap would land in
       // DEAD: the only thing a press does is ask to come back, and only once
       // the push has landed and the prompt is up. Before that a press is
       // swallowed — a stray tap during the fade must not skip the sequence,
@@ -5908,6 +5913,7 @@ export class WorldScene extends Phaser.Scene {
       this.holdRepathAt = performance.now() + 50;
     });
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => {
+      if (this.turning) return;
       if (p.id !== this.holdPointerId || !p.isDown) return;
       const g = this.pickGround(p.worldX, p.worldY);
       if (!g) return;
@@ -7275,7 +7281,10 @@ export class WorldScene extends Phaser.Scene {
       deepCurrentAtScreen: (wx: number, wy: number) => {
         if (!this.terrain) return null;
         const p = this.pickGround(wx, wy);
-        return p ? deepCurrentAt(this.terrain, p.x, p.y) : null;
+        const c = p ? deepCurrentAt(this.terrain, p.x, p.y) : null;
+        if (!c || !this.viewRot) return c;
+        const [cdx, cdy] = rotVec(c.dx, c.dy, this.viewRot); // server current, drawn in the turned view
+        return { ...c, dx: cdx, dy: cdy };
       },
       // Camera world-view rect (QA: sample effects across the visible world).
       camView: () => {
@@ -8201,7 +8210,7 @@ export class WorldScene extends Phaser.Scene {
        *  resolves with its phase timings; `turnSeek(u)` pins the turn's progress
        *  for screenshots (null lets the clock run and the turn finish). */
       viewRot: async (k?: number) => { if (typeof k === "number") await this.applyViewRot(normRot(k)); return this.viewRot; },
-      turnView: (dir = 1, ms?: number, waitB?: number) => this.turnView(dir < 0 ? -1 : 1, ms, waitB),
+      turnView: (dir = 1, ms?: number, waitB?: number, blur?: number) => this.turnView(dir < 0 ? -1 : 1, ms, waitB, blur),
       turnSeek: (u: number | null) => { this.turnPinned = u; return u; },
       turnInfo: () => ({ turning: this.turning, viewRot: this.viewRot, ready: this.rotFx?.ready ?? false, settled: this.viewSettled(), ...this.turnLog, ...(this.rotFx?.timings ?? {}) }),
       lookAt: (col?: number, row?: number) => {
@@ -13218,6 +13227,7 @@ export class WorldScene extends Phaser.Scene {
         const dSum = (sy * CELL_WU) / this.geom.dy; // Δ(x+y)
         ox = (dSum + dDiff) / 2;
         oy = (dSum - dDiff) / 2;
+        if (this.viewRot) [ox, oy] = unrotVec(ox, oy, this.viewRot); // the screen shows the turned grid
       } else {
         ox = sx;
         oy = sy;
@@ -17194,7 +17204,7 @@ export class WorldScene extends Phaser.Scene {
     // reads screen input in the UNTURNED frame (shared screenToWorldVector). One
     // quarter-turn of the view is (ax, ay) -> (ay, -ax) in key space: exact for all
     // eight directions, the diagonal grid-axis lock included.
-    for (let i = 0; i < this.viewRot; i++) [ax, ay] = [ay, -ax];
+    for (let i = 0; i < this.inputRot; i++) [ax, ay] = [ay, -ax];
     let running = down(k.SHIFT);
     // THE VECTOR THE KEYS ASKED FOR, kept so the stick's lean can tell whether
     // anything deflected the heading afterwards (steer assist, the monster
@@ -17216,7 +17226,7 @@ export class WorldScene extends Phaser.Scene {
       const lean = stickLean();
       const b0 = lean > 0 ? stickHeading() : null;
       // the finger's bearing turns with the keys: -90 degrees a quarter-turn (screen frame, +y down)
-      const bearing = b0 === null ? null : b0 - 90 * this.viewRot;
+      const bearing = b0 === null ? null : b0 - 90 * this.inputRot;
       stickVec = bearing !== null ? leanHeading(ax, ay, bearing, lean) : { ax, ay };
     }
     let deflected = false;
@@ -20269,6 +20279,9 @@ export class WorldScene extends Phaser.Scene {
     const kOld = this.viewRot;
     this.viewRot = k;
     this.viewWorld = vw;
+    // every resolver pick keyed by the SERVER cell: the same world, seen from another side
+    const W0 = world.width, H0 = world.height;
+    setPickFrame(k ? (x, y) => unrotCell(x, y, k, W0, H0) : null);
     this.night?.setWorld(vw ?? world);
     // the heightmap rebuild cleared the scenery shadows it had stamped: stamp the turned ones
     if (this.night && this.terrain) this.night.setSceneryOccluders(this.sceneryOn ? this.viewFootprints() : undefined);
@@ -20279,6 +20292,7 @@ export class WorldScene extends Phaser.Scene {
     this.publishRoom(this.roomMask ? this.roomMask.keys() : null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, this.lastRoomTop);
     this.rebaseAfterTurn(normRot(k - kOld));
     this.camChase.init = false; // the body's screen point jumped: snap onto it, don't crawl
+    if (!this.turning) this.inputRot = k; // an instant swap: input follows at once
     this.turnLog.parseMs = +(tParse - t0).toFixed(1);
     this.turnLog.rebuildMs = +(performance.now() - tParse).toFixed(1);
   }
@@ -20303,6 +20317,12 @@ export class WorldScene extends Phaser.Scene {
    *  arrival and resets the fall. A turn moves every projection at once, so the
    *  anchors are re-based onto the turned projection here, before any update. */
   private rebaseAfterTurn(turn: ViewRot): void {
+    this.dropHold();
+    this.tapMarkerAt = null;
+    if (this.trip && this.tapMarker) {
+      const e = this.trip.target, pr = this.projectFlat(e.x, e.y);
+      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * this.geom.lh);
+    }
     const move = (b: { fx: number; fy: number; lx: number; lyFlat: number; ly: number }) => {
       const g = this.projectFlat(b.fx, b.fy);
       const lift = b.lyFlat - b.ly; // whatever lift the body wore stays on it
@@ -20357,6 +20377,12 @@ export class WorldScene extends Phaser.Scene {
     const t3 = this.t3, tex = this.t3tex, w = this.viewWorld ?? this.world;
     const rect = this.t3viewRect(0);
     if (!t3 || !tex || !w || !rect) return false;
+    // A TEST THAT CHECKED NOTHING PROVES NOTHING. Right after a swap the camera
+    // and the ground anchor have not moved yet, every cell misses the rect, and
+    // the old test answered "drawn" 20 ms in — frame B was then a half-painted
+    // view. It now counts what it checked and needs a real screenful.
+    let checked = 0;
+    if (!this.groundPainted) return false;
     for (const idx of this.t3stale) if (this.t3cellMeets(idx, rect)) return false;
     const cam = this.cameras.main, { dx, dy } = this.geom;
     const u = (cam.worldView.centerX - this.iso.ox - 32) / dx, v = (cam.worldView.centerY - this.iso.oy - 10) / dy;
@@ -20369,16 +20395,17 @@ export class WorldScene extends Phaser.Scene {
       if (this.t3dropOwed.has(idx)) return false;
       const cell = this.t3cellOf(t3, c, r);
       if (!cell) continue;
+      checked++;
       for (const o of tex.opsForCell(cell)) if (!this.textures.exists(o.key)) return false;
     }
-    return true;
+    return checked >= 60;
   }
 
   /** THE TURN (rotfx.ts). Take the frame the renderer just drew (A), swap the
    *  drawn world a quarter-turn, wait until the renderer has DRAWN the new view,
    *  take that frame (B), and orbit between the two on an overlay. Both ends of
    *  the turn are the renderer's own pixels; only the in-between is built. */
-  private async turnView(dir: 1 | -1, ms = 1100, waitB = 3000): Promise<Record<string, number | string>> {
+  private async turnView(dir: 1 | -1, ms = 1100, waitB = 3000, blur = 1): Promise<Record<string, number | string>> {
     const world = this.world;
     if (this.turning || !world) return { skipped: "busy, or no world" };
     const kA = this.viewRot, kB = normRot(kA + dir);
@@ -20417,13 +20444,13 @@ export class WorldScene extends Phaser.Scene {
     if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (bx - by) * dx, this.iso.oy + 10 + (bx + by) * dy - ph * lh);
     this.turnLog.swapMs = +(performance.now() - t0).toFixed(1);
     return await new Promise((done) => {
-      let clock = 0, last = performance.now(), lastCheck = 0, capturing = false;
+      let clock = 0, last = performance.now(), lastCheck = 0, capturing = false, held = 0;
       const tWait = performance.now();
       const finish = () => {
         this.turnLog.totalMs = +(performance.now() - t0).toFixed(1);
         fx.canvas.style.transition = "opacity 120ms linear";
         fx.canvas.style.opacity = "0";
-        window.setTimeout(() => { fx.destroy(); if (this.rotFx === fx) this.rotFx = null; this.turning = false; done({ ...this.turnLog, ...fx.timings }); }, 140);
+        window.setTimeout(() => { fx.destroy(); if (this.rotFx === fx) this.rotFx = null; this.turning = false; this.inputRot = this.viewRot; done({ ...this.turnLog, ...fx.timings }); }, 140);
       };
       const step = () => {
         const now = performance.now(), dt = now - last; last = now;
@@ -20435,7 +20462,8 @@ export class WorldScene extends Phaser.Scene {
         if (!fx.ready) raw = Math.min(raw, 0.5);
         if (!fx.ready && !capturing && now - lastCheck > 100) {
           lastCheck = now;
-          if (this.viewSettled() || now - tWait > waitB) {
+          held = this.viewSettled() ? held + 1 : 0;
+          if (held >= 5 || now - tWait > waitB) {
             capturing = true;
             this.turnLog.bWaitMs = +(now - tWait).toFixed(1);
             this.turnLog.bSettled = now - tWait > waitB ? "timeout" : "settled";
@@ -20443,7 +20471,7 @@ export class WorldScene extends Phaser.Scene {
           }
         }
         const u = this.turnPinned ?? easeTurn(raw);
-        fx.draw(u, 1);
+        fx.draw(u, blur);
         if (this.turnPinned === null && raw >= 1 && fx.ready) { finish(); return; }
         requestAnimationFrame(step);
       };

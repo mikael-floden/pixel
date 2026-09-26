@@ -385,8 +385,26 @@ const NEIGHBOURS8: ReadonlyArray<readonly [number, number]> = [
   [0, -1], [-1, 0], [-1, -1], [1, -1], [-1, 1], [1, 0], [0, 1], [1, 1],
 ];
 
+/** VIEW ROTATION (viewrot.ts): the drawn grid can be a TURNED copy of the world,
+ *  and every pick below hashes cell coordinates. Keyed by the drawn cell, a turn
+ *  would re-roll the world — other sets over whole chunks (the chunk grid does
+ *  not line up once turned), other members, fades and details on every cell.
+ *  So every pick is keyed by the SERVER cell: the same world cell draws the same
+ *  set, member, fade and detail whichever way the view faces. Null (identity)
+ *  unless a turned view installs it — the unturned game and the render3 parity
+ *  fixture never see it. Set per thread: the main thread and the resolve worker
+ *  each install their own. */
+let pickFrame: ((x: number, y: number) => [number, number]) | null = null;
+export function setPickFrame(fn: ((x: number, y: number) => [number, number]) | null): void {
+  pickFrame = fn;
+}
+function pk(x: number, y: number): [number, number] {
+  return pickFrame ? pickFrame(Math.floor(x), Math.floor(y)) : [x, y];
+}
+
 export function regionAt(ground: string, x: number, y: number): string {
-  return `${ground}@${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
+  const [kx, ky] = pk(x, y);
+  return `${ground}@${Math.floor(kx / REGION_CHUNK)},${Math.floor(ky / REGION_CHUNK)}`;
 }
 
 /** Every region id a window touches, and the id of one cell's OWN ground. Kept
@@ -521,9 +539,10 @@ export function pickSet(sets: BaseSet[], ground: string, region: string): BaseSe
  *  the maintainer's REJECTED members already dropped — see `Tiles3.pool`. */
 export function pickMemberIndex(set: BaseSet | null | undefined, x: number, y: number): number {
   if (!set || !set.members.length) return -1;
+  const [kx, ky] = pk(x, y);
   return pickWeighted(
     set.members.map((m) => m.weight),
-    unitHash(`bts1|tile|${set.id}|${x}|${y}`),
+    unitHash(`bts1|tile|${set.id}|${kx}|${ky}`),
   );
 }
 
@@ -1714,7 +1733,8 @@ export class Tiles3 {
      * filter+map form allocated four arrays each time. Same answer as
      * `pickMemberIndex(set, x, y, rejected)`, and the parity fixture proves it. */
     const pool = this.pool(ground, set);
-    const i = pickWeighted(pool.weights, unitHash(`bts1|tile|${set.id}|${ax}|${ay}`));
+    const [kax, kay] = pk(ax, ay);
+    const i = pickWeighted(pool.weights, unitHash(`bts1|tile|${set.id}|${kax}|${kay}`));
     const memberIndex = i < 0 ? -1 : pool.index[i];
     const member = memberIndex >= 0 ? set.members[memberIndex] : null;
     const art =
@@ -2345,7 +2365,8 @@ export class Tiles3 {
     if (cut ? index < 15 : index > 0 && index < (ramp ? 15 : 16)) {
       const sets = this.slopeSets(ground, ramp).filter((st) => this.slopeApproved(st.dir, index));
       if (sets.length) {
-        const st = sets[fnv1a(`slope|${ground}|${Math.floor(x / REGION_CHUNK)}|${Math.floor(y / REGION_CHUNK)}`) % sets.length];
+        const [sx, sy] = pk(x, y);
+        const st = sets[fnv1a(`slope|${ground}|${Math.floor(sx / REGION_CHUNK)}|${Math.floor(sy / REGION_CHUNK)}`) % sets.length];
         const synthetic = st.dir.startsWith(SYNTHETIC_RAMP_DIR + "/");
         const file = synthetic ? `${st.dir}/${(st.post_files as string[])[index]}` : `${st.dir}/post/${(st.post_files as string[])[index]}`;
         // A ramp's frame is the set's published height (never shorter than the
@@ -3417,7 +3438,8 @@ export class Tiles3 {
         }
       }
     if (near) {
-      const rr = lcg((x * 73856093) ^ (y * 19349663));
+      const [rkx, rky] = pk(x, y);
+      const rr = lcg((rkx * 73856093) ^ (rky * 19349663));
       /* A FADE IS A SCATTERED EVENT, NOT A COAT OF PAINT. Stamping the band
        * solid put ONE tile on up to 1,357 cells — the repetition he ruled out.
        * The probability falls off with distance from the switch. */
@@ -3450,7 +3472,7 @@ export class Tiles3 {
        * impossible rather than unlikely — if A beats B then B cannot beat A —
        * and it is four extra LCG draws, no band scan, and order-independent,
        * so the resolver stays a pure function of the cell. */
-      const drawAt = (cx: number, cy: number): number => lcg((cx * 73856093) ^ (cy * 19349663))();
+      const drawAt = (cx: number, cy: number): number => { const [dkx, dky] = pk(cx, cy); return lcg((dkx * 73856093) ^ (dky * 19349663))(); };
       const lonely =
         u < drawAt(x + 1, y) && u < drawAt(x - 1, y) && u < drawAt(x, y + 1) && u < drawAt(x, y - 1);
       let to = near;
@@ -3621,7 +3643,8 @@ export class Tiles3 {
   private detailRoll(gr: string, x: number, y: number): { u: number; pick: number } | null {
     if (gr === ROOM_FLOOR || !this.detailPool(gr).length) return null;
     const rate = this.data.detailRates?.[gr] ?? this.data.detailRate ?? DETAIL_FREQ;
-    const rd = lcg((x * 83492791) ^ (y * 2654435761) ^ 0xd47a);
+    const [dx0, dy0] = pk(x, y);
+    const rd = lcg((dx0 * 83492791) ^ (dy0 * 2654435761) ^ 0xd47a);
     const u = rd();
     return u < rate ? { u, pick: rd() } : null;
   }

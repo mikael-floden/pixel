@@ -13,7 +13,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
-import { rotateWorldDoc, rotCell, rotPoint, unrotPoint, rotVec, unrotVec, rotDir8, normRot, rotFootprints, type RotateStats } from "../../client/src/viewrot.js";
+import { rotateWorldDoc, rotCell, unrotCell, rotPoint, unrotPoint, rotVec, unrotVec, rotDir8, normRot, rotFootprints, type RotateStats } from "../../client/src/viewrot.js";
 
 const WORLD = new URL("../../../maps2/worlds3/the_game/world.json", import.meta.url);
 
@@ -28,6 +28,9 @@ test("a small grid: one quarter-turn clockwise, and back", () => {
     assert.equal(r.ground[ny][nx], doc.ground[y][x]);
   }
   assert.equal(rotateWorldDoc(doc, 0), doc, "k = 0 returns the input itself");
+  // unrotCell is rotCell's exact inverse, on a NON-square grid, for every k
+  for (const k of [0, 1, 2, 3] as const) for (let y = 0; y < 2; y++) for (let x = 0; x < 3; x++)
+    assert.deepEqual(unrotCell(...rotCell(x, y, k, 3, 2), k, 3, 2), [x, y]);
 });
 
 test("vectors, facings and normRot", () => {

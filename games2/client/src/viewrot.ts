@@ -45,6 +45,17 @@ export function rotCell(x: number, y: number, k: ViewRot, w: number, h: number):
   return [x, y];
 }
 
+/** Cell (x, y) of the VIEW grid -> the same cell in the SERVER grid (w x h):
+ *  the exact inverse of rotCell. One turn is (x', y') = (h-1-y, x), so
+ *  (x, y) = (y', h-1-x'); undone in reverse, each against the grid it started from. */
+export function unrotCell(x: number, y: number, k: ViewRot, w: number, h: number): [number, number] {
+  for (let i = k - 1; i >= 0; i--) {
+    const H = i % 2 === 0 ? h : w;
+    [x, y] = [y, H - 1 - x];
+  }
+  return [x, y];
+}
+
 /** A continuous SERVER point (in cells) -> the view grid. */
 export function rotPoint(x: number, y: number, k: ViewRot, w: number, h: number): [number, number] {
   let W = w, H = h;

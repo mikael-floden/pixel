@@ -370,7 +370,8 @@ export class RotFx {
     gl.uniform2f(gl.getUniformLocation(p, "uPivotPx"), pv[0] + shift[0], pv[1] + shift[1]);
     // angular speed of an ease-in-out turn peaks mid-way: the arc follows it
     const speed = Math.sin(Math.PI * Math.min(1, Math.max(0, u)));
-    gl.uniform1f(gl.getUniformLocation(p, "uArc"), blur * 0.22 * speed * st.dir);
+    // `blur` scales the arc; 1 = 0.14 rad at peak angular speed (0.22 read as a swirl wipe, not an orbit)
+    gl.uniform1f(gl.getUniformLocation(p, "uArc"), blur * 0.14 * speed * st.dir);
     gl.uniform1f(gl.getUniformLocation(p, "uAspect"), st.projA.dx / st.projA.dy);
     const edge = u <= 0.06 ? -(1 - u / 0.06) : u >= 0.94 && this.hasB ? (u - 0.94) / 0.06 : 0;
     gl.uniform1f(gl.getUniformLocation(p, "uEdge"), edge);

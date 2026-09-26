@@ -41,7 +41,8 @@ import {
   type Tiles3DocKey,
 } from "./tiles3runtime";
 import type { Tiles3Cell, Tiles3Boundary, Tiles3DeckCell } from "./tiles3";
-import { rotateWorldDoc, normRot } from "./viewrot";
+import { rotateWorldDoc, normRot, unrotCell } from "./viewrot";
+import { setPickFrame } from "./tiles3";
 
 /** Boot: every URL is built by the MAIN thread and handed over. The worker must
  *  not re-derive a URL — staging rewrites `/assets/**` onto a CDN and a second
@@ -119,7 +120,11 @@ async function init(msg: WorkerInit): Promise<void> {
     ),
   ]);
   if (!worldDoc) throw new Error(`world did not load: ${msg.worldUrl}`);
-  const parsed = parseWorld(rotateWorldDoc(worldDoc, normRot(msg.viewRot ?? 0)));
+  const vk = normRot(msg.viewRot ?? 0);
+  const parsed = parseWorld(rotateWorldDoc(worldDoc, vk));
+  // picks keyed by the SERVER cell, exactly as the main thread keys them (tiles3 setPickFrame)
+  const sw = worldDoc?.size?.w ?? 0, sh = worldDoc?.size?.h ?? 0;
+  setPickFrame(vk ? (x, y) => unrotCell(x, y, vk, sw, sh) : null);
   if (!parsed) throw new Error("world did not parse");
   const docs: Partial<Record<Tiles3DocKey, unknown>> = {};
   for (const [k, v] of docEntries) docs[k as Tiles3DocKey] = v;
