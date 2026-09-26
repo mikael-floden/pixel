@@ -4,7 +4,7 @@
 // shader error, or a scene that stops drawing its sprites after the effects'
 // pre-pass (the one way an external renderer breaks a Phaser game).
 //
-//   PHASER=<dir holding phaser/dist> node effects/pipeline/phaser-check.mjs [--ids a/b,c/d] [--out shot.png]
+//   PHASER=<dir holding phaser/dist> node shaders/pipeline/phaser-check.mjs [--ids a/b,c/d] [--out shot.png]
 //
 // Needs playwright-core and phaser (both in games2's devDependencies).
 
@@ -57,7 +57,7 @@ const logs = [];
 page.on("console", (m) => logs.push(`${m.type()}: ${m.text()}`));
 page.on("pageerror", (e) => logs.push(`pageerror: ${e.message}`));
 const ids = arg("ids", "fire/fireball,frost/frost_nova,arcane/arcane_beam");
-await page.goto(`http://127.0.0.1:${srv.address().port}/effects/pipeline/phaser-check.html?ids=${ids}`);
+await page.goto(`http://127.0.0.1:${srv.address().port}/shaders/pipeline/phaser-check.html?ids=${ids}`);
 await page.waitForFunction(() => window.__check && window.__check.frames > 90, null, { timeout: 90000 });
 const res = await page.evaluate(() => window.__check);
 // the scene's own pixels must still be there: sample the canvas for the hero

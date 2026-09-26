@@ -1,7 +1,7 @@
 // THE PHASER ADAPTER (Phaser 3.90, the game's version; WebGL renderer only).
 //
-//   import { createPhaserFx, nangijalaDepth } from "<repo>/effects/runtime/phaser.js";
-//   import LIBRARY from "<repo>/effects/library/index.js";
+//   import { createPhaserFx, nangijalaDepth } from "<repo>/shaders/runtime/phaser.js";
+//   import LIBRARY from "<repo>/shaders/library/index.js";
 //   const fx = createPhaserFx(scene, {
 //     project: (x, y) => worldScene.project(x, y),   // world units -> Phaser world px of that ground point
 //     depth: (d) => ...,                              // optional: the game's own depth rule (default nangijalaDepth)

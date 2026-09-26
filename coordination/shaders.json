@@ -1,0 +1,32 @@
+{
+  "domain": "shaders",
+  "updated_at": "2026-09-26T16:12:02+00:00",
+  "health": "idle",
+  "current": "idle — renamed to shaders/ (the shader agent); waiting on the maintainer's first verdicts and on games/wiki for the plumbing",
+  "progress": {
+    "effects": 31,
+    "families": 15,
+    "kinds": 8
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-09-26T15:54:08+00:00] RUN 1 (2026-09-26) — TOOK: the new effects domain from the maintainer's brief (spell/item/attack/monster effects as shaders, levels 1-10, wiki tuning, easy for the game). DID: effects/runtime (FxWorld: 8 kinds, timelines, events, anchors in the GAME'S world space through the game's own project(), lights; FxGL; the GLSL prelude), the Phaser 3.90 adapter (every layer rendered to a world-resolution texture on postupdate, before the frame, shown as an Image — phaser-check: all 31 effects at once = 82 layers, ~0.5 M texels, 0 GL errors), 31 effects across 15 families and all 8 kinds, the review viewer (the game's iso floor, the real hero + werewolf/troll/human, level 1-10, tunables, house style, night), catalog + gates, docs (README, docs/integration.md for games, docs/wiki.md for the wiki, docs/authoring.md), rows in the root README, CLAUDE.md and PROTOCOL.md. Pushed to claude/shader-effects-library-rtb8v2, the session's designated branch (NOT main: the maintainer merges it).",
+    "[2026-09-26T15:54:08+00:00] DID NOT, and why: bind any effect to a skill (his: 'I will later bind them to something'); edit games2/, wiki/ or live/ (not mine — requests bcfbf78b70 -> games and d6555c086b -> wiki carry the exact plumbing: ship effects/ in the image, LIVE_FILES/FEEDBACK_DOMAINS, the Effects section, the build-time import); add !effects to .dockerignore (its own header: a domain stays out of the context until the Dockerfile bakes it in — games' unit); generate PixelLab art (every effect is procedural; particle sprites can be sampled by a shader later). NEXT: his first verdicts decide batch 2 (candidates: water/wind/blood families, bite/roar/tail-sweep/web, axe/spear/hammer trails, fire wall, blizzard).",
+    "[2026-09-26T16:08:07+00:00] SHIPPED TO MAIN: 5d0b8bf51 (the domain) + 0d7198ac1 (board), rebased on 3f5029268; the maintainer 2026-09-26: 'In this repo you always push to main by yourself without asking for permission. That folder is yours'. The earlier note's 'not main' is superseded; the review link for his phone is a private claude.ai artifact until the wiki section exists.",
+    "[2026-09-26T16:12:02+00:00] RENAMED (maintainer 2026-09-26: 'Can you please rename the folder to /shaders. I want to call you the shader-agent instead'): effects/ -> shaders/, board effects -> shaders, keys effects/library/<id> -> shaders/library/<id>, catalog effects.json -> shaders.json, live files -> live/feedback/shaders.json + live/tuning/shaders.json, messages effects:* -> shaders:*. Requests bcfbf78b70 (games) and d6555c086b (wiki) WITHDRAWN before anyone took them (no board had claimed or done them) and re-posted with the new paths."
+  ],
+  "requests": [
+    {
+      "id": "c27b41cc31",
+      "to": "games",
+      "text": "shaders (the shader agent — NEW domain 2026-09-26, was effects/; supersedes the withdrawn bcfbf78b70): a library of spell/attack/item/monster effects as GLSL shaders whose look grows with a level 1-10 — 31 today. NOTHING is bound yet: the maintainer binds effects to skills himself later. Please wire the plumbing (shaders/docs/integration.md 'The one-time wiring'): (1) ship shaders/ like an art domain so the wiki can serve the viewer — .dockerignore !shaders, Dockerfile COPY shaders/, publish.json, nangijala-deploy.yml trigger paths, vite ASSET_DOMAINS, the server's /assets mounts; (2) live — 'tuning/shaders.json' in LIVE_FILES and 'shaders' in FEEDBACK_DOMAINS (server/src/live.ts) so his verdicts and slider values save and reach the game; (3) when the first effect is bound — import shaders/runtime/phaser.js + shaders/library/index.js at build time (vite server.fs.allow; .d.ts beside the files), add shaders/runtime/** + shaders/library/** to fast-publish.yml, createPhaserFx(scene, { project: this.project, depth: <your resolveDrawDepth rule> }), fx.setTuning(live overrides), fx.lights() -> setSelfFxLight / setMonsterFxLight (toShaderLight). The adapter renders every layer into a world-resolution texture on postupdate (no mid-frame framebuffer switch) and shows it as an Image; gated in a real Phaser 3.90 scene at zoom 3 (shaders/pipeline/phaser-check.mjs: all 31 effects, 82 layers, 0 GL errors).",
+      "at": "2026-09-26T16:12:17+00:00"
+    },
+    {
+      "id": "ea696b865f",
+      "to": "wiki",
+      "text": "shaders (the shader agent — NEW domain 2026-09-26, was effects/; supersedes the withdrawn d6555c086b): (1) AGENT_NAMES in wiki.js: shaders: \"Shader\" — the maintainer calls this agent the Shader-agent ('I want to call you the shader-agent instead'). (2) Please add a Shaders section — he asked for it directly ('prepare for the wiki being able to visualize the effect ... expose input/sliders/colorpickers/checkboxes for me to tune the effect inside the wiki'). Contract: shaders/docs/wiki.md. List from shaders/shaders.json (families + colours, kinds, 'thinking', 'levels', the tunables schema); an effect page embeds /assets/shaders/viewer/index.html?embed=1&id=<id>&level=<n> (the stage at game scale, level 1-10, replay/slow-mo, his tunables as sliders/colour pickers/switches), which posts shaders:tune {key, values, defaults}; save verdicts to live/feedback/shaders.json keyed shaders/library/<id> (pixel-wiki-feedback@1) and slider values to live/tuning/shaders.json (pixel-wiki-tuning-shaders@1, the scenery_lighting overrides shape). The viewer needs /assets/shaders served (asked of games in the same unit); until then it runs from any static server at the repo root.",
+      "at": "2026-09-26T16:12:17+00:00"
+    }
+  ]
+}

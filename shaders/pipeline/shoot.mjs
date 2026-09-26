@@ -3,7 +3,7 @@
 // and the library's gate. Serves the repo root, opens the viewer in sheet
 // mode, waits for it, and writes one PNG per effect.
 //
-//   node effects/pipeline/shoot.mjs [--ids fire/fireball,frost/frost_nova | --all]
+//   node shaders/pipeline/shoot.mjs [--ids fire/fireball,frost/frost_nova | --all]
 //        [--levels 1,5,10] [--frames 6] [--out <dir>] [--day] [--w 240 --h 150]
 //
 // Exit 1 when any shader fails to compile or an effect draws nothing at all.
@@ -29,7 +29,7 @@ const has = (k) => args.includes(`--${k}`);
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json", ".webp": "image/webp", ".png": "image/png" };
 
 async function allIds() {
-  const lib = join(ROOT, "effects/library");
+  const lib = join(ROOT, "shaders/library");
   const out = [];
   for (const fam of await readdir(lib, { withFileTypes: true })) {
     if (!fam.isDirectory() || fam.name.startsWith("_")) continue;
@@ -84,7 +84,7 @@ async function main() {
   }
   const levels = arg("levels", "1,5,10");
   const frames = arg("frames", "6");
-  const out = resolve(arg("out", join(tmpdir(), "effects-shots")));
+  const out = resolve(arg("out", join(tmpdir(), "shaders-shots")));
   await mkdir(out, { recursive: true });
   const srv = await serve();
   const port = srv.address().port;
@@ -101,7 +101,7 @@ async function main() {
     logs.length = 0;
     const q = new URLSearchParams({ sheet: id, levels, frames, w: arg("w", "240"), h: arg("h", "180"), night: has("day") ? "0" : "1" });
     for (const k of ["bands", "zoom", "stepFps", "dither"]) if (arg(k)) q.set(k, arg(k));
-    await page.goto(`http://127.0.0.1:${port}/effects/viewer/index.html?${q}`);
+    await page.goto(`http://127.0.0.1:${port}/shaders/viewer/index.html?${q}`);
     await page.waitForFunction(() => window.__sheet && window.__sheet.done, null, { timeout: 120000 });
     const res = await page.evaluate(() => window.__sheet);
     const bad = res.error || (res.errors && res.errors.length);

@@ -1,6 +1,6 @@
 # Writing an effect — the visual language and the recipe
 
-For the effects agent and its assistant. The library is meant to reach 500+
+For the shader agent and its assistant. The library is meant to reach 500+
 effects, so every one must be quick to write AND unmistakably part of one
 game. The rules below are what the first 31 taught.
 
@@ -61,8 +61,8 @@ game. The rules below are what the first 31 taught.
    `over`. Standard uniforms: `uTime uLife uFade uLevel uLv uSeed uDir uGDir
    uLen uBright`. Snippets: `_shared/snippets.js` (SPARKS, SMOKE, SHOCK, BOLT,
    FLAME, COMET, FLOW, CLOUD, STAR4, MOTE).
-5. `node effects/pipeline/catalog.mjs`, then shoot it and LOOK:
-   `node effects/pipeline/shoot.mjs --ids <id> --levels 1,5,10 --zoom 2`
+5. `node shaders/pipeline/catalog.mjs`, then shoot it and LOOK:
+   `node shaders/pipeline/shoot.mjs --ids <id> --levels 1,5,10 --zoom 2`
    (and `--day` for painted effects: the night hides them). Fix, shoot again.
 6. `phaser-check --ids <id>`: 0 GL errors, 0 shader errors.
 

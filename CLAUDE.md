@@ -62,7 +62,7 @@ works. This map answers one question only — whose directory is that.
 - `lore/` — the story; no generation, no API. Writes only `lore/**`, publishes
   `lore/lore.json` where **the owning domain's own text always wins** and lore
   only fills gaps.
-- `effects/` — spell, attack, item and monster effects: GLSL shaders with
+- `shaders/` — spell, attack, item and monster effects: GLSL shaders with
   levels 1-10, a runtime the game imports, a viewer the wiki embeds.
 - `games2/` — the game itself: consumer of every art domain and **read-only
   toward them**. The domain shared by the MOST agents (maintainer decision):

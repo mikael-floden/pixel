@@ -16,7 +16,7 @@ every one of them owns one board file (`coordination/<agent>.json`):
 | items | `items/` | |
 | lore | `lore/` | the story |
 | wiki | `wiki/` | the browse/review surface for every domain |
-| effects | `effects/` | spell, attack, item and monster effects as shaders (2026-09-26): the runtime + library the game imports, the viewer the wiki embeds; the effects-assistant follows the pattern below |
+| shaders | `shaders/` | the shader agent (2026-09-26, was `effects/`): spell, attack, item and monster effects as shaders — the runtime + library the game imports, the viewer the wiki embeds; the shaders-assistant follows the pattern below |
 | games | `games2/` | gameplay / netcode / world / server |
 | games-ui | `games2/` (UI surfaces) | HUD, menus, screens — split in `games2/UI_AGENT.md` |
 | games-ambient | `games2/ambient/` | mood/ambient life; never impacts gameplay |

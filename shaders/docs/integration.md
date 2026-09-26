@@ -1,15 +1,15 @@
 # Effects in the game — the contract
 
 For the games agents (and anyone binding an effect to a skill, an item or a
-monster attack). The effects domain owns how every effect LOOKS; the game
+monster attack). The shaders domain owns how every effect LOOKS; the game
 owns WHEN it plays, WHERE, on WHOM, and how strong (the level). This file is
 the whole interface.
 
 ## In one minute
 
 ```ts
-import { createPhaserFx, nangijalaDepth, toShaderLight } from "../../../effects/runtime/phaser.js";
-import LIBRARY from "../../../effects/library/index.js";
+import { createPhaserFx, nangijalaDepth, toShaderLight } from "../../../shaders/runtime/phaser.js";
+import LIBRARY from "../../../shaders/library/index.js";
 
 // WorldScene.create()
 this.fx = createPhaserFx(this, {
@@ -169,29 +169,29 @@ ever see its own torch"); they still glow, because their layers are emissive.
 
 ## Tuning, live
 
-The maintainer's tuned values arrive in `live/tuning/effects.json`
-(`overrides["effects/library/<id>"] = { <tunable>: value, ... }`). Apply the
+The maintainer's tuned values arrive in `live/tuning/shaders.json`
+(`overrides["shaders/library/<id>"] = { <tunable>: value, ... }`). Apply the
 table on boot and on every `live:update`:
 
 ```ts
-this.fx.setTuning(liveState["tuning/effects"]?.overrides ?? {});
+this.fx.setTuning(liveState["tuning/shaders"]?.overrides ?? {});
 ```
 
 It changes how new casts look (colours, size, brightness, per-effect
 switches); it never changes gameplay.
 
-## The one-time wiring (games agent) — also on the effects board as a request
+## The one-time wiring (games agent) — also on the shaders board as a request
 
-1. **Bundle**: the client imports `effects/runtime/phaser.js` and
-   `effects/library/index.js` at build time (Vite: allow the repo root in
+1. **Bundle**: the client imports `shaders/runtime/phaser.js` and
+   `shaders/library/index.js` at build time (Vite: allow the repo root in
    `server.fs.allow`; the TS types are `.d.ts` beside the files, no allowJs).
-   Add `effects/runtime/**` and `effects/library/**` to `fast-publish.yml`'s
+   Add `shaders/runtime/**` and `shaders/library/**` to `fast-publish.yml`'s
    paths: a new effect is browser code and ships in the 33 s lane.
-2. **Serve** (for the wiki's viewer): ship `effects/` like an art domain —
-   `.dockerignore` `!effects`, the Dockerfile `COPY effects/ effects/`,
+2. **Serve** (for the wiki's viewer): ship `shaders/` like an art domain —
+   `.dockerignore` `!shaders`, the Dockerfile `COPY shaders/ shaders/`,
    `publish.json`, the deploy workflow's trigger paths, vite's
    `ASSET_DOMAINS`, the server's `/assets/<domain>` mounts.
-3. **Live**: `"tuning/effects.json"` in `LIVE_FILES`, `"effects"` in
+3. **Live**: `"tuning/shaders.json"` in `LIVE_FILES`, `"shaders"` in
    `FEEDBACK_DOMAINS` (server/src/live.ts), so the wiki can save his verdicts
    and slider values and the game receives them.
 4. **Bind** an effect to a skill / an attack only when the maintainer asks

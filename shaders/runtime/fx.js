@@ -40,7 +40,7 @@ export class FxWorld {
     this.cellWu = host.cellWu || DEF_CELL_WU;
     this.defs = new Map();
     this.insts = [];
-    this.tuning = {}; // effect id -> { tunable: value } (live/tuning/effects.json)
+    this.tuning = {}; // effect id -> { tunable: value } (live/tuning/shaders.json)
     this.style = { ...DEFAULT_STYLE, ...(opts.style || {}) };
     this.seq = 1;
     this.log = opts.log || ((m) => console.warn(m));
@@ -55,11 +55,11 @@ export class FxWorld {
     return this;
   }
   /** The maintainer's tuned values, keyed by effect id (or by the repo-path
-   *  key the wiki writes: "effects/library/<id>"). Replaces the whole table. */
+   *  key the wiki writes: "shaders/library/<id>"). Replaces the whole table. */
   setTuning(table) {
     const t = {};
     for (const k in table || {}) {
-      const id = k.replace(/^effects\/library\//, "");
+      const id = k.replace(/^shaders\/library\//, "");
       const { was, updated_at, ...vals } = table[k] || {};
       t[id] = vals;
     }

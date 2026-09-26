@@ -1,8 +1,8 @@
 // The effects review page: pick an effect, drag its level 1-10, tune it,
-// read why it looks the way it does. Standalone (open effects/viewer/ from any
-// static server at the repo root, or /assets/effects/viewer/ in the game), or
+// read why it looks the way it does. Standalone (open shaders/viewer/ from any
+// static server at the repo root, or /assets/shaders/viewer/ in the game), or
 // EMBEDDED in the wiki with ?embed=1 — then it talks to the wiki over
-// postMessage (effects/docs/wiki.md): the wiki saves what the sliders change.
+// postMessage (shaders/docs/wiki.md): the wiki saves what the sliders change.
 //
 // ?sheet=<id>[,<id>]&levels=1,5,10&frames=6 renders a deterministic contact
 // sheet instead (the gate and the agent's own eyes use it).
@@ -34,7 +34,7 @@ const assetUrl = (rel) => (window.__NFX_ASSETS && window.__NFX_ASSETS[rel]) || n
 
 const defs = LIBRARY.slice().sort((a, b) => a.family.localeCompare(b.family) || a.name.localeCompare(b.name));
 const byId = new Map(defs.map((d) => [d.id, d]));
-const keyOf = (id) => `effects/library/${id}`;
+const keyOf = (id) => `shaders/library/${id}`;
 
 // ---------------------------------------------------------------- state ----
 const saved = (() => {
@@ -244,7 +244,7 @@ function select(id) {
   renderTune();
   renderNotes();
   director.play();
-  if (EMBED) post({ type: "effects:selected", id, key: keyOf(id), level: state.level });
+  if (EMBED) post({ type: "shaders:selected", id, key: keyOf(id), level: state.level });
 }
 
 function renderHeader() {
@@ -254,7 +254,7 @@ function renderHeader() {
   $("now-name").textContent = d.name;
   $("now-kind").textContent = KIND_LABEL[d.kind];
   $("now-dot").style.background = FAMILIES[d.family]?.color || "var(--muted)";
-  document.title = `${d.name} · Nangijala Effects`;
+  document.title = `${d.name} · Nangijala Shaders`;
 }
 
 function valueLabel(spec, v) {
@@ -308,7 +308,7 @@ function renderTune() {
       row.classList.toggle("changed", k in (state.tune[d.id] || {}));
       if (director.h && director.h.setTune) director.h.setTune({ [k]: nv });
       persist();
-      if (EMBED) post({ type: "effects:tune", id: d.id, key: keyOf(d.id), values: { ...(state.tune[d.id] || {}) }, defaults: dflt });
+      if (EMBED) post({ type: "shaders:tune", id: d.id, key: keyOf(d.id), values: { ...(state.tune[d.id] || {}) }, defaults: dflt });
       $("copy-out").hidden = true;
     }));
   }
@@ -414,16 +414,16 @@ function post(msg) {
 window.addEventListener("message", (e) => {
   const m = e.data;
   if (!m || typeof m !== "object") return;
-  if (m.type === "effects:open" && byId.has(m.id)) {
+  if (m.type === "shaders:open" && byId.has(m.id)) {
     if (m.level) setLevel(m.level);
     select(m.id);
-  } else if (m.type === "effects:tuning" && m.table) {
-    // the live table (live/tuning/effects.json overrides): it becomes the default
+  } else if (m.type === "shaders:tuning" && m.table) {
+    // the live table (live/tuning/shaders.json overrides): it becomes the default
     fx.setTuning(m.table);
     state.tune = {};
     for (const k of Object.keys(m.table)) {
       const { was, updated_at, ...v } = m.table[k] || {};
-      state.tune[k.replace(/^effects\/library\//, "")] = v;
+      state.tune[k.replace(/^shaders\/library\//, "")] = v;
     }
     renderTune();
     director.play();
@@ -452,7 +452,7 @@ async function boot() {
     targetCache.werewolf = target;
     dummies = await Promise.all([stage.addSprite(url(BODY_DUMMY), "d1"), stage.addSprite(url(BODY_DUMMY), "d2")]);
   } catch (e) {
-    showError(`Could not load the stage's bodies (${e.message}).\nServe the repo root, or open /assets/effects/viewer/.`);
+    showError(`Could not load the stage's bodies (${e.message}).\nServe the repo root, or open /assets/shaders/viewer/.`);
     return;
   }
   fx = createFx(stage.host(() => view), { style: state.style });
@@ -485,7 +485,7 @@ async function boot() {
   $("prev").onclick = () => { const i = defs.findIndex((d) => d.id === state.id); select(defs[(i - 1 + defs.length) % defs.length].id); };
   $("next").onclick = () => { const i = defs.findIndex((d) => d.id === state.id); select(defs[(i + 1) % defs.length].id); };
   $("q").addEventListener("input", (e) => { state.query = e.target.value; renderList(); });
-  $("reset").onclick = () => { delete state.tune[state.id]; persist(); renderTune(); director.play(); if (EMBED) post({ type: "effects:tune", id: state.id, key: keyOf(state.id), values: {}, defaults: tuneDefaults(byId.get(state.id)) }); };
+  $("reset").onclick = () => { delete state.tune[state.id]; persist(); renderTune(); director.play(); if (EMBED) post({ type: "shaders:tune", id: state.id, key: keyOf(state.id), values: {}, defaults: tuneDefaults(byId.get(state.id)) }); };
   $("copy").onclick = copyTuning;
   canvas.addEventListener("pointerdown", (e) => {
     const r = canvas.getBoundingClientRect();
@@ -505,7 +505,7 @@ async function boot() {
   renderStyle();
   director.play();
   renderNotes();
-  if (EMBED) post({ type: "effects:ready", ids: defs.map((d) => d.id) });
+  if (EMBED) post({ type: "shaders:ready", ids: defs.map((d) => d.id) });
 
   let last = performance.now();
   const frame = (now) => {

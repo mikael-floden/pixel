@@ -4,7 +4,7 @@
 // review link the maintainer opens on his phone before the wiki section
 // exists — never committed (it would be a regenerable copy of the domain).
 //
-//   node effects/pipeline/bundle.mjs [--out <file.html>]      (default $TMPDIR/effects-review.html)
+//   node shaders/pipeline/bundle.mjs [--out <file.html>]      (default $TMPDIR/shaders-review.html)
 //
 // Needs esbuild (vite's dependency: games2/node_modules), or NODE_PATH to one.
 
@@ -16,7 +16,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "../..");
 const args = process.argv.slice(2);
-const out = args.includes("--out") ? resolve(args[args.indexOf("--out") + 1]) : join(tmpdir(), "effects-review.html");
+const out = args.includes("--out") ? resolve(args[args.indexOf("--out") + 1]) : join(tmpdir(), "shaders-review.html");
 
 let esbuild;
 const tries = ["esbuild", join(ROOT, "games2/node_modules/esbuild/lib/main.js")];
@@ -42,7 +42,7 @@ const BODIES = [
 ];
 
 const js = (await esbuild.build({
-  entryPoints: [join(ROOT, "effects/viewer/viewer.js")],
+  entryPoints: [join(ROOT, "shaders/viewer/viewer.js")],
   bundle: true,
   format: "esm",
   write: false,
@@ -50,12 +50,12 @@ const js = (await esbuild.build({
   legalComments: "none",
   target: "es2020",
 })).outputFiles[0].text;
-const css = await readFile(join(ROOT, "effects/viewer/viewer.css"), "utf8");
-const html = await readFile(join(ROOT, "effects/viewer/index.html"), "utf8");
+const css = await readFile(join(ROOT, "shaders/viewer/viewer.css"), "utf8");
+const html = await readFile(join(ROOT, "shaders/viewer/index.html"), "utf8");
 const body = html.slice(html.indexOf("<body>") + 6, html.indexOf("<script")).trim();
 const assets = {};
 for (const rel of BODIES) assets[rel] = `data:image/webp;base64,${(await readFile(join(ROOT, rel))).toString("base64")}`;
-const page = `<title>Nangijala Effects</title>
+const page = `<title>Nangijala Shaders</title>
 <meta name="description" content="The effects library: every spell, attack and monster effect, with its level 1-10 and its tunables.">
 <style>
 ${css}

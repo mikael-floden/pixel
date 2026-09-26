@@ -1,7 +1,9 @@
-# effects/ — every spell, attack, item and monster effect
+# shaders/ — every spell, attack, item and monster effect
 
-The **effects agent**'s domain (board `coordination/effects.json`; an
-`effects-assistant` works the same folder under PROTOCOL's two-writer rules).
+The **shader agent**'s domain (Shader-agent on his phone; board
+`coordination/shaders.json`; a `shaders-assistant` works the same folder under
+PROTOCOL's two-writer rules). Named `effects/` until 2026-09-26 (maintainer:
+"I want to call you the shader-agent instead"); history in git.
 It makes the visual effects the game plays when something HAPPENS: spells,
 healing, buffs and debuffs, channels, summons, projectiles and arrows, weapon
 swings, monster attacks, potions. They are **GLSL shaders, not sprite
@@ -19,7 +21,7 @@ batches so each batch learns from his verdicts on the last.
   to whom, how long); it never passes colours, sizes or brightness. Levels 1-10
   are drawn by the effect (`levels` text on every effect says what changes).
   The maintainer's own knobs are TUNABLES (colour pickers, sliders, switches
-  declared per effect), saved to `live/tuning/effects.json`, never a game
+  declared per effect), saved to `live/tuning/shaders.json`, never a game
   parameter (maintainer 2026-09-26: "don't expose a do-anything effect").
 - **World space, the game's projection.** Every position is the game's world
   units + a height in px; the game hands the runtime its own `project(x, y)`.
@@ -50,13 +52,13 @@ batches so each batch learns from his verdicts on the last.
 - **Cache safety (root law).** Hand-written source ships under stable names
   and is served `no-cache`; anything a pipeline regenerates (catalog, future
   sprite sheets) follows the root rule — a regenerated ASSET gets a hashed
-  name. `effects.json` and `library/index.js` are indexes, rebuilt, never
+  name. `shaders.json` and `library/index.js` are indexes, rebuilt, never
   hand-merged.
 
 ## Layout
 
 ```
-effects/
+shaders/
   runtime/          the engine (plain ES modules, zero deps; .d.ts for TS)
     fx.js           FxWorld: kinds, timelines, events, anchors, lights, draw list
     gl.js           FxGL: compiles a layer, draws one box (framework-free)
@@ -68,7 +70,7 @@ effects/
     _shared/        GLSL snippets (sparks, smoke, flame, bolt, comet, flow ...)
     families.js     the families (element/school) and their colours
     index.js        GENERATED: imports every effect
-  effects.json      GENERATED: the catalog (metadata, tunables, thinking; no code)
+  shaders.json      GENERATED: the catalog (metadata, tunables, thinking; no code)
   viewer/           the review page the wiki embeds (index.html, stage.js)
   pipeline/         catalog.mjs, shoot.mjs, phaser-check.mjs (+ .html)
   docs/             integration.md (the game) · wiki.md (the wiki) · authoring.md (writing one)
@@ -76,7 +78,7 @@ effects/
 
 An effect's **id** is its file path in the library (`fire/fireball` =
 `library/fire/fireball.js`); its **key** for feedback and tuning is the repo
-path without extension, `effects/library/fire/fireball`, like every domain's.
+path without extension, `shaders/library/fire/fireball`, like every domain's.
 
 ## The kinds (the game's API is per kind)
 
@@ -99,10 +101,10 @@ Coordinates, depth, speeds, lights, tuning and the wiring checklist:
 ## Run it
 
 ```bash
-node effects/pipeline/catalog.mjs            # rebuild library/index.js + effects.json (--check in a gate)
-python3 -m http.server -d . 8000             # repo root; open /effects/viewer/
-node effects/pipeline/shoot.mjs --ids fire/fireball --levels 1,5,10 --zoom 2   # contact sheets -> $TMPDIR/effects-shots
-PHASER=<node_modules> node effects/pipeline/phaser-check.mjs --ids ...        # the real-Phaser gate
+node shaders/pipeline/catalog.mjs            # rebuild library/index.js + shaders.json (--check in a gate)
+python3 -m http.server -d . 8000             # repo root; open /shaders/viewer/
+node shaders/pipeline/shoot.mjs --ids fire/fireball --levels 1,5,10 --zoom 2   # contact sheets -> $TMPDIR/shaders-shots
+PHASER=<node_modules> node shaders/pipeline/phaser-check.mjs --ids ...        # the real-Phaser gate
 ```
 
 `shoot` and `phaser-check` need playwright-core and a Chromium
@@ -114,16 +116,16 @@ tell a beautiful effect from an ugly one.
 
 ## The review loop
 
-- Verdicts: `live/feedback/effects.json` (keyed `effects/library/<id>`),
+- Verdicts: `live/feedback/shaders.json` (keyed `shaders/library/<id>`),
   read at the start of every run and acted on per `live/docs/review-contract.md`
   (a redo replaces the art and clears the entry in the same unit; an approval
   is never cleared; a rejection removes the effect file, its catalog entry and
   every verdict and tuning entry keyed on it).
-- Tuning: `live/tuning/effects.json` — his slider values; they are the
+- Tuning: `live/tuning/shaders.json` — his slider values; they are the
   effect's look now. When he tunes an effect, bake the values into the
   effect's `def`s only when he asks; the live override already ships them.
 - The wiki section and the file plumbing are asked of the wiki and games
-  agents on this board (see `coordination/effects.json` requests).
+  agents on this board (see `coordination/shaders.json` requests).
 
 ## Rejected (do not retry)
 

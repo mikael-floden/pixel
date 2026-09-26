@@ -1,4 +1,4 @@
-// Types for the effects runtime (effects/docs/integration.md is the contract).
+// Types for the effects runtime (shaders/docs/integration.md is the contract).
 
 /** A point in the GAME'S WORLD SPACE: x, y in world units on the ground (the
  *  server's body coordinates), z = height in world px above the ground there. */
@@ -120,7 +120,7 @@ export declare class FxWorld {
   readonly defs: Map<string, EffectDef>;
   register(def: EffectDef): this;
   registerAll(defs: EffectDef[]): this;
-  /** live/tuning/effects.json `overrides` (keys "effects/library/<id>" or "<id>"). */
+  /** live/tuning/shaders.json `overrides` (keys "shaders/library/<id>" or "<id>"). */
   setTuning(table: Record<string, Record<string, unknown>>): this;
   setStyle(style: Partial<FxStyle>): this;
   play(id: string, p?: FxPlay): FxHandle;
