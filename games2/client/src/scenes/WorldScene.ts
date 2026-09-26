@@ -20609,14 +20609,27 @@ export class WorldScene extends Phaser.Scene {
 
   /** The scenery footprints as the DRAWN view sees them. Collision keeps the
    *  server-space set on `terrain`; the night pass stamps shadows into the view's
-   *  heightmap, so it gets them turned (cached per set and per turn). */
+   *  heightmap (cached per set and per turn).
+   *
+   *  STAMPED FROM THE TURNED PLACEMENTS, NOT TURNED AS SHAPES. A footprint is
+   *  read out of the ART — its hitbox is a screen offset from the piece's anchor
+   *  (measured: ~1.1 cells up-screen) — and a turned view still draws the art
+   *  facing the camera, so the footprint must keep that SCREEN offset. Turning
+   *  the server footprint as a shape turned the offset with it and laid every
+   *  piece's sun shadow and occlusion ~1.5 cells to its side at 90 and 270, and
+   *  behind it at 180 (maintainer 2026-09-26: "After a 90° rotation the scenery
+   *  shadow and ambient occlusion is way off!"). The same stamp the server runs,
+   *  on the view's own grid and the view's placements. */
   private viewFootprintsMemo: { src: unknown; k: ViewRot; out: unknown } | null = null;
   private viewFootprints(): NonNullable<typeof this.terrain>["footprints"] | undefined {
     const fp = this.terrain?.footprints;
     if (!fp || !this.world || this.viewRot === 0) return fp;
     const m = this.viewFootprintsMemo;
     if (m && m.src === fp && m.k === this.viewRot) return m.out as typeof fp;
-    const out = rotFootprints(fp, this.viewRot, this.world.width, this.world.height);
+    const vt = this.viewTerrain;
+    const vw = this.viewWorld;
+    if (vt && vw) stampSceneryCollision(vt, vw.scenery ?? [], this.sceneryBboxDoc, this.sceneryHitboxDoc, ISO_GEOMETRY_MAPS3);
+    const out = (vt && vw ? vt.footprints : undefined) ?? rotFootprints(fp, this.viewRot, this.world.width, this.world.height);
     this.viewFootprintsMemo = { src: fp, k: this.viewRot, out };
     return out;
   }

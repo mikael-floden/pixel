@@ -128,6 +128,12 @@ block-max grid left all three marching against a dead texture (the turned view
 went near-black). The room, cave and cut maps, scenery footprints, torch, fog
 centre, lit copies and campfire light are server-keyed and are re-keyed to the
 view before they reach it (`publishRoom`, `viewFootprints`, `rotFootprints`) —
+THE SCENERY FOOTPRINTS ARE RE-STAMPED, NOT TURNED: `viewFootprints` runs the
+server's `stampSceneryCollision` on the view's grid and placements, because a
+footprint is read out of the camera-facing ART (a fixed SCREEN offset from the
+anchor, ~1.1 cells up-screen); turned as a shape it laid every sun shadow and
+contact shade ~1.5 cells beside its piece at 90/270 (his report, 2026-09-26).
+`rotFootprints` is only the fallback before the view grid exists —
 handed over as-is, "outside the room gets zero ambient" blacked out open river.
 
 ## Indoors
