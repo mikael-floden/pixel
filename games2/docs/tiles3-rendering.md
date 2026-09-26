@@ -577,7 +577,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   a back edge's topmost opaque texel (a plate's rounding and a ramp's lift
   included), a front edge's first band texel under the rim (ground turning
   into wall) — and the INNER line one texel inside; one texel a column is what
-  makes two cells' lines meet at their shared vertex column. A variant that
+  makes two cells' lines meet — and each edge's line runs ONE COLUMN PAST its
+  vertex, because the next cell along a rim is drawn after this one and its
+  corner texel lands on this line's last column (a hole every 32 px, his
+  screenshot). A variant that
   cannot be built yet (its plate not landed) is OWED for `EDGE_OWED_MS`
   (`lineOwed`): the ground counts it in `plateRawFallbacks` so the drop ledger
   repaints the cell, an occluder copy answers null so it is re-walked — a

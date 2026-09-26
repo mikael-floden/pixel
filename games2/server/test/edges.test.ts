@@ -108,7 +108,8 @@ test("the ink: the chosen edges only, the outer line on the last texel of art an
     let last = -1;
     for (let y = 0; y < S.fh; y++) if (S.libTop[y * S.fw + x] > 0) last = y;
     if (last < 0) continue;
-    if (x >= 32) {
+    // x 31 is the bottom vertex's other column: the line runs one column past its vertex (the next cell's corner texel covers the last one).
+    if (x >= 31) {
       assert.equal(at(e, x, last), OUT, `column ${x}: the outer line is the last texel`);
       if (S.libTop[(last - 1) * S.fw + x] > 0) assert.equal(at(e, x, last - 1), IN, `column ${x}: the inner line just inside it`);
     } else assert.equal(at(e, x, last), 255, `column ${x}: another edge, no ink`);

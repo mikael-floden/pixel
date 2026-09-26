@@ -762,8 +762,13 @@ export function edgeTopPixels(sheets: PatternSheets, px: Pixels, mask: number, r
   for (let x = 0; x < Math.min(W, sheets.fw); x++) {
     const t = span[x * 2], b = span[x * 2 + 1];
     if (t < 0) continue;
-    const right = x >= DX;
-    if (mask & (right ? EDGE_N : EDGE_W)) {
+    // THE VERTEX COLUMNS BELONG TO BOTH EDGES: the next cell along a rim is
+    // drawn after this one and its corner texel lands on this line's last
+    // column, so each edge's line runs one column past its vertex — a hole
+    // every 32 px along every rim otherwise (his screenshot, 2026-09-26).
+    const upper = (x >= DX - 1 ? EDGE_N : 0) | (x <= DX ? EDGE_W : 0);
+    const lower = (x >= DX - 1 ? EDGE_E : 0) | (x <= DX ? EDGE_S : 0);
+    if (mask & upper) {
       let y = lift(x, t);
       const y0 = y;
       while (y > y0 - 2 && opaque(x, y - 1)) y--; // art rounded past the rim is still the top
@@ -773,7 +778,7 @@ export function edgeTopPixels(sheets: PatternSheets, px: Pixels, mask: number, r
         if (opaque(x, y + 1)) inner.add((y + 1) * W + x);
       }
     }
-    if (mask & (right ? EDGE_E : EDGE_S)) {
+    if (mask & lower) {
       const y0 = lift(x, b);
       const y = opaque(x, y0 + 1) ? y0 + 1 : y0;
       if (opaque(x, y)) {
@@ -833,9 +838,8 @@ export function clearOutline(sheets: PatternSheets, px: Pixels, mask: number): P
   for (let x = 0; x < Math.min(W, sheets.fw); x++) {
     const t = span[x * 2], b = span[x * 2 + 1];
     if (t < 0) continue;
-    const right = x >= DX;
-    if (mask & (right ? EDGE_N : EDGE_W)) clear(x, t - 2, t + 2);
-    if (mask & (right ? EDGE_E : EDGE_S)) clear(x, b - 2, b + 2);
+    if (mask & ((x >= DX - 1 ? EDGE_N : 0) | (x <= DX ? EDGE_W : 0))) clear(x, t - 2, t + 2);
+    if (mask & ((x >= DX - 1 ? EDGE_E : 0) | (x <= DX ? EDGE_S : 0))) clear(x, b - 2, b + 2);
   }
   return out;
 }
