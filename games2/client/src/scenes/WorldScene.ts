@@ -352,6 +352,9 @@ const ANIM_FPS: Record<string, number> = {
 /** How long the flinch overlay holds at the combat rate: the 5-frame clip at
  *  ANIM_FPS.hurt, rounded up. */
 const HURT_MS = 300;
+/** The turn's upright set of one frame (WorldScene.turnSnap): the objects to hide
+ *  for its bodiless twin, the cards, the player's index and the owner map. */
+type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
 /** THE TURN'S OWNER-MAP COLOUR for upright thing `i` (rotfx BODY_FS matches it within
  *  ~8/255): two 4-bit channels spaced 16 apart, blue a fixed marker — 255 things. */
 function ownerColour(i: number): [number, number, number] {
@@ -20640,7 +20643,7 @@ export class WorldScene extends Phaser.Scene {
    *  `kGrid`'s view grid and their screen y (front-most wins a group). */
   private turnUprights(kGrid: ViewRot) {
     type R = [number, number, number, number];
-    const w = this.world!, vw = this.viewWorld ?? w, cam = this.cameras.main, z = cam.zoom, wv = cam.worldView;
+    const w = this.world!, cam = this.cameras.main, z = cam.zoom, wv = cam.worldView;
     const out: { id: string; objs: Phaser.GameObjects.GameObject[]; own: Phaser.GameObjects.GameObject[]; rect: R; sprite: R; foot: [number, number, number]; footY: number; me: boolean }[] = [];
     const vis = <T,>(o: T | null | undefined): o is T => !!o && (o as unknown as Phaser.GameObjects.Components.Visible).visible;
     const px = (bd: Phaser.Geom.Rectangle, m: number): R => [(bd.x - m - wv.x) * z, (bd.y - m - wv.y) * z, (bd.width + 2 * m) * z, (bd.height + 2 * m) * z];
@@ -20658,7 +20661,9 @@ export class WorldScene extends Phaser.Scene {
         x0 = Math.min(x0, bd.x); y0 = Math.min(y0, bd.y); x1 = Math.max(x1, bd.right); y1 = Math.max(y1, bd.bottom);
       }
       const [fX, fY] = kGrid ? rotPoint(fx / CELL_WU, fy / CELL_WU, kGrid, w.width, w.height) : [fx / CELL_WU, fy / CELL_WU];
-      const ground = vw.rows[Math.floor(fY)]?.[Math.floor(fX)]?.l ?? 0;
+      // the ground under the feet, read at their SERVER cell: B's uprights are
+      // expressed in A's grid while the drawn world is B's
+      const ground = w.rows[Math.floor(fy / CELL_WU)]?.[Math.floor(fx / CELL_WU)]?.l ?? 0;
       out.push({ id, objs, own, rect: px(new Phaser.Geom.Rectangle(x0, y0, x1 - x0, y1 - y0), 3), sprite: px(sb, 1), foot: [fX, fY, Math.max(lvl, ground)], footY: sb.bottom, me }); // bottom: scenery hangs from its top-left
     };
     // WHO each is, the same in A and B: scenery is rebuilt by the swap, so a piece
@@ -20670,29 +20675,47 @@ export class WorldScene extends Phaser.Scene {
     return out;
   }
 
-  /** ONE FRAME WITHOUT THE UPRIGHT THINGS, for the turn: hidden after this frame's
+  /** THE UPRIGHT SET OF THE FRAME ABOUT TO BE DRAWN, taken after that frame's
+   *  update (the positions its render draws): every thing's card and the OWNER
+   *  MAP, so the frame and its cards agree to the pixel. Cut from the NEXT frame
+   *  instead, anything that moved in between kept a rect its frame held nothing
+   *  in — walking NPCs vanished for the whole turn (a slow browser's frame is
+   *  seconds; a phone's 16-33 ms still clipped their edges). */
+  private turnSnap(kGrid: ViewRot): TurnSnap {
+    const ups = this.turnUprights(kGrid);
+    // just before they go, the OWNER MAP: one card per thing, each keeping only
+    // the pixels the painter gave it, so overlapping things neither merge nor double
+    const owners = this.turnOwnerMap(ups.map((u) => u.own));
+    const cards: RotBody[] = ups.map((u, i) => ({ id: u.id, rect: u.rect, sprite: u.sprite, foot: u.foot, own: ownerColour(i).map((c) => c / 255) as [number, number, number] }));
+    return { objs: ups.flatMap((u) => u.objs), cards, me: ups.findIndex((u) => u.me), owners };
+  }
+
+  /** The next frame, its uprights snapped after its update and `take` called on
+   *  its render (the drawing buffer is valid there). */
+  private turnCapture(kGrid: ViewRot, take: () => void): Promise<TurnSnap | null> {
+    return new Promise((res) => {
+      let snap: TurnSnap | null = null;
+      this.events.once(Phaser.Scenes.Events.POST_UPDATE, () => { snap = this.world ? this.turnSnap(kGrid) : null; });
+      this.game.events.once(Phaser.Core.Events.POST_RENDER, () => { take(); res(snap); });
+    });
+  }
+
+  /** ONE FRAME WITHOUT A SNAP'S THINGS, for the turn: hidden after this frame's
    *  update (so no per-frame code re-shows them before the render), the frame is
-   *  handed over on POST_RENDER, and they come back at once. Just before they go,
-   *  the OWNER MAP is drawn: one card per thing, each keeping only the pixels the
-   *  painter gave it, so overlapping things neither merge nor double. */
-  private turnFrameBodiless(kGrid: ViewRot, take: (cards: RotBody[], me: number, owners: { data: Uint8Array; w: number; h: number } | null) => void): Promise<{ groups: RotBody[]; me: number } | null> {
-    if (!this.world) return Promise.resolve(null);
+   *  handed over on POST_RENDER with the snap's cards, and they come back at once.
+   *  Hidden by OBJECT, so one that moved since the snap still leaves the frame. */
+  private turnFrameBodiless(snap: TurnSnap | null, take: (cards: RotBody[], me: number, owners: TurnSnap["owners"]) => void): Promise<{ groups: RotBody[]; me: number } | null> {
+    if (!snap || !this.world) return Promise.resolve(null);
     return new Promise((res) => {
       let hidden: Phaser.GameObjects.Components.Visible[] = [];
-      let result: { groups: RotBody[]; me: number } | null = null;
-      let owners: { data: Uint8Array; w: number; h: number } | null = null;
       this.events.once(Phaser.Scenes.Events.POST_UPDATE, () => {
-        const ups = this.turnUprights(kGrid);
-        owners = this.turnOwnerMap(ups.map((u) => u.own));
-        const cards: RotBody[] = ups.map((u, i) => ({ id: u.id, rect: u.rect, sprite: u.sprite, foot: u.foot, own: ownerColour(i).map((c) => c / 255) as [number, number, number] }));
-        result = { groups: cards, me: ups.findIndex((u) => u.me) };
-        hidden = ups.flatMap((u) => u.objs) as unknown as Phaser.GameObjects.Components.Visible[];
+        hidden = (snap.objs as unknown as Phaser.GameObjects.Components.Visible[]).filter((o) => o.visible);
         for (const o of hidden) o.setVisible(false);
       });
       this.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
-        if (result) take(result.groups, result.me, owners);
+        take(snap.cards, snap.me, snap.owners);
         for (const o of hidden) o.setVisible(true);
-        res(result);
+        res({ groups: snap.cards, me: snap.me });
       });
     });
   }
@@ -20831,16 +20854,16 @@ export class WorldScene extends Phaser.Scene {
     this.rotFx = fx;
     const mesh = buildRotMesh((c, r) => vwA.rows[r]?.[c]?.l ?? null, (vwA.decks ?? []) as { level: number; thickness?: number; cells: { col: number; row: number }[] }[], px, py, 26, vwA.width, vwA.height);
     this.turnLog.meshVerts = mesh.n;
-    // FRAME A — inside the renderer's own frame, while its drawing buffer is valid
-    await new Promise<void>((res) => this.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
+    // FRAME A — inside the renderer's own frame, while its drawing buffer is valid,
+    // its uprights snapped after the same frame's update
+    const snapA = await this.turnCapture(kA, () => {
       fx.start({ frameA: cv, projA: proj(), pivot: { x: px, y: py, h: ph }, mesh, dir });
       fx.draw(0, 0);
-      res();
-    }));
-    // ...AND AGAIN WITHOUT ME, one frame later under the overlay: the difference is
-    // my body as drawn (the waterline crop, the light, the name), carried by the
-    // feet on the orbit's axis; the bodiless frame is what the ground wears.
-    const upA = await this.turnFrameBodiless(kA, (g, me, own) => { fx.setA0(cv, g, me); if (own) fx.setOwners("A", own.data, own.w, own.h); });
+    });
+    // ...AND AGAIN WITHOUT THEM, one frame later under the overlay: the difference
+    // is each thing as drawn (the waterline crop, the light, the name), carried by
+    // its feet; the bodiless frame is what the ground wears.
+    const upA = await this.turnFrameBodiless(snapA, (g, me, own) => { fx.setA0(cv, g, me); if (own) fx.setOwners("A", own.data, own.w, own.h); });
     // ...and once with me turned to the facing BETWEEN (DIRS8 is the ring a
     // quarter-turn steps by two): the camera's 45 degrees shows that side of me
     const meA = this.avatars.get(this.myId);
@@ -20889,10 +20912,8 @@ export class WorldScene extends Phaser.Scene {
             capturing = true;
             this.turnLog.bWaitMs = +(now - tWait).toFixed(1);
             this.turnLog.bSettled = now - tWait > waitB ? "timeout" : "settled";
-            this.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
-              fx.setB(cv, proj(), { x: bx, y: by, h: ph });
-              void this.turnFrameBodiless(kA, (g, me, own) => { fx.setB0(cv, g, me); if (own) fx.setOwners("B", own.data, own.w, own.h); });
-            });
+            void this.turnCapture(kA, () => fx.setB(cv, proj(), { x: bx, y: by, h: ph }))
+              .then((snapB) => this.turnFrameBodiless(snapB, (g, me, own) => { fx.setB0(cv, g, me); if (own) fx.setOwners("B", own.data, own.w, own.h); }));
           }
         }
         const u = this.turnPinned ?? easeTurn(raw);

@@ -148,7 +148,11 @@ did; its name draws on top, as labels do), drawn back to front BEFORE the blur p
 (so it blurs with the scene). Overlaps are settled by an OWNER MAP: the things drawn
 once more as flat colours in the painter's order into an off-screen target, read back
 once, so each card keeps only the pixels it owns (grouping overlaps instead carried
-the player off-centre with the front-most NPC's feet). The player turns through
+the player off-centre with the front-most NPC's feet). THE SET IS TAKEN IN THE FRAME
+IT IS CUT FROM (`turnCapture`: rects and owner map after that frame's update, the
+frame on its render; the bodiless twin hides the same OBJECTS a frame later): cut
+from the next frame, anything that moved in between kept a rect its frame held
+nothing in, and walking NPCs vanished for the whole turn. The player turns through
 THREE facings — A's, the one between (one more frame, shot on A's camera), B's — the
 sides a 90-degree orbit shows; everything else crosses A to B mid-turn, solidly
 (the next card over the last, the last fading only once the next is whole). A
