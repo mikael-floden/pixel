@@ -1246,7 +1246,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.3955,
           "step_max": 0.5994,
           "drift": 5.02,
@@ -1266,7 +1266,7 @@
             128
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
+            "left for HIS eye after 3 rolls: no strike, just a lean: nothing reaches past 0.10 of the body"
           ],
           "sub": "4447db41-963e-4eae-9115-27e45fa4787e",
           "group": "346fe68f-1bc2-4d29-ab33-4b4f22fc8882",
@@ -1284,7 +1284,7 @@
           "generated_at": "2026-09-26T01:20:07+00:00"
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.3351,
           "step_max": 0.4103,
           "drift": 5.6,
@@ -1304,7 +1304,7 @@
             128
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
+            "left for HIS eye after 3 rolls: no strike, just a lean: nothing reaches past 0.13 of the body"
           ],
           "sub": "c418482f-6d9b-4077-b31c-4e243e7c79c7",
           "group": "346fe68f-1bc2-4d29-ab33-4b4f22fc8882",
@@ -1513,6 +1513,45 @@
           "tries": 1,
           "generated_at": "2026-09-25T23:09:29+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.3351,
+          "step_max": 0.4103,
+          "drift": 5.6,
+          "loop": 0.0939,
+          "loop_ratio": 0.28,
+          "travel": 2.88,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.117,
+          "peak": 0.4103,
+          "reach": 0.131,
+          "turn": 0,
+          "end_area": 1.122,
+          "end_iou": null,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "left for HIS eye after 3 rolls: no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
+          "sub": "c418482f-6d9b-4077-b31c-4e243e7c79c7",
+          "group": "346fe68f-1bc2-4d29-ab33-4b4f22fc8882",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 4,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-26T01:20:08+00:00",
+          "source": "south-east"
         }
       },
       "action": "Strike - Quickly lunges forward and strikes once",
@@ -1558,6 +1597,12 @@
           "barb_squid/animations/attack/north-west/01.webp",
           "barb_squid/animations/attack/north-west/02.webp",
           "barb_squid/animations/attack/north-west/03.webp"
+        ],
+        "south-west": [
+          "barb_squid/animations/attack/south-west/00.webp",
+          "barb_squid/animations/attack/south-west/01.webp",
+          "barb_squid/animations/attack/south-west/02.webp",
+          "barb_squid/animations/attack/south-west/03.webp"
         ]
       },
       "strips": {

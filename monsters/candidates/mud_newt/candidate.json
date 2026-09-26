@@ -1711,7 +1711,7 @@
     "die": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1488,
           "step_max": 0.2154,
           "drift": 0.41,
@@ -1731,7 +1731,7 @@
             48
           ],
           "reasons": [
-            "still standing: the last frame matches the base at 0.63 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: still standing: the last frame matches the base at 0.63 (his dies end under 0.60)"
           ],
           "sub": "82f45f6c-e012-4989-9806-1dab96cca7c0",
           "group": "c0da85c8-21eb-4623-8497-5d6d83efc7a3",
@@ -1825,7 +1825,7 @@
           "generated_at": "2026-09-26T00:11:38+00:00"
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1348,
           "step_max": 0.1809,
           "drift": 1.38,
@@ -1845,8 +1845,7 @@
             48
           ],
           "reasons": [
-            "barely falls: last vs first 0.34 — eyeball it",
-            "still standing: the last frame matches the base at 0.70 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: barely falls: last vs first 0.34 — eyeball it; still standing: the last frame matches the base at 0.70 (his dies end under 0.60)"
           ],
           "sub": "ef644cc4-4814-49c8-9774-e3d7d80ed4e9",
           "group": "146f46a1-213d-4907-9464-72a2bc8c56f2",
@@ -1976,6 +1975,45 @@
           "tries": 2,
           "generated_at": "2026-09-26T00:11:38+00:00",
           "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1348,
+          "step_max": 0.1809,
+          "drift": 1.38,
+          "loop": 0.3447,
+          "loop_ratio": 2.56,
+          "travel": 1.1,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.969,
+          "end_iou": 0.702,
+          "canvas": [
+            48,
+            48
+          ],
+          "reasons": [
+            "left for HIS eye after 3 rolls: barely falls: last vs first 0.34 — eyeball it; still standing: the last frame matches the base at 0.70 (his dies end under 0.60)"
+          ],
+          "sub": "ef644cc4-4814-49c8-9774-e3d7d80ed4e9",
+          "group": "146f46a1-213d-4907-9464-72a2bc8c56f2",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away, collapses completely and lies flat on the ground, then fades away entirely",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 7,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-26T01:21:10+00:00",
+          "source": "north-east"
         }
       },
       "action": "Death - Faints, collapses to the ground and fades away",
@@ -2042,6 +2080,15 @@
           "mud_newt/animations/die/west/04.webp",
           "mud_newt/animations/die/west/05.webp",
           "mud_newt/animations/die/west/06.webp"
+        ],
+        "north-west": [
+          "mud_newt/animations/die/north-west/00.webp",
+          "mud_newt/animations/die/north-west/01.webp",
+          "mud_newt/animations/die/north-west/02.webp",
+          "mud_newt/animations/die/north-west/03.webp",
+          "mud_newt/animations/die/north-west/04.webp",
+          "mud_newt/animations/die/north-west/05.webp",
+          "mud_newt/animations/die/north-west/06.webp"
         ]
       },
       "strips": {

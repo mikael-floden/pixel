@@ -1268,7 +1268,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.3805,
           "step_max": 0.4324,
           "drift": 5.29,
@@ -1288,7 +1288,7 @@
             128
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "left for HIS eye after 3 rolls: no strike, just a lean: nothing reaches past 0.09 of the body"
           ],
           "sub": "b41d7ae9-3efd-463c-b47c-a713548fdfe7",
           "group": "001d5846-16c4-42f4-9ba6-2d4c014a68bb",
