@@ -590,8 +590,8 @@ export class RotFx {
     };
     const ownA = this.hasOwn.A ? this.tex.OA : null, ownB = this.hasOwn.B ? this.tex.OB : null;
     this.bodyA.forEach((b, i) => add(b, this.tex.A, this.tex.A0, this.gridPx(b.foot, [1, 0], [0, 0]), onlyA(b) ? soloA : i === this.meA ? aOut : oA, ownA, 0, 0));
-    // the in-between facing's silhouette is not A's: its own pixels, or nobody's
-    if (three) add(this.bodyM!, this.tex.AM, this.tex.A0, this.gridPx(this.bodyM!.foot, [1, 0], [0, 0]), Math.min(mIn, mOut), ownA, 1, 1);
+    // the in-between facing is shot with the player ALONE, so it needs no owner map
+    if (three) add(this.bodyM!, this.tex.AM, this.tex.A0, this.gridPx(this.bodyM!.foot, [1, 0], [0, 0]), Math.min(mIn, mOut), null, -1, 1);
     this.bodyB.forEach((b, i) => add(b, this.tex.B, this.tex.B0, this.gridPx(b.foot, [0, st.dir], this.shiftB), onlyB(b) ? soloB : i === this.meB ? bIn : oB, ownB, 0, 2));
     cards.sort((x, y) => x.near - y.near);
     for (const c of cards) drawBody(c.b, c.w, c.wo, c.taken, c.a, c.own, c.mode);

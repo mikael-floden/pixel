@@ -354,7 +354,7 @@ const ANIM_FPS: Record<string, number> = {
 const HURT_MS = 300;
 /** The turn's upright set of one frame (WorldScene.turnSnap): the objects to hide
  *  for its bodiless twin, the cards, the player's index and the owner map. */
-type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
+type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; mine: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
 /** THE TURN'S OWNER-MAP COLOUR for upright thing `i` (rotfx BODY_FS matches it within
  *  ~8/255): two 4-bit channels spaced 16 apart, blue a fixed marker — 255 things. */
 function ownerColour(i: number): [number, number, number] {
@@ -20698,7 +20698,7 @@ export class WorldScene extends Phaser.Scene {
     // the pixels the painter gave it, so overlapping things neither merge nor double
     const owners = this.turnOwnerMap(ups.map((u) => u.own));
     const cards: RotBody[] = ups.map((u, i) => ({ id: u.id, rect: u.rect, sprite: u.sprite, foot: u.foot, own: ownerColour(i).map((c) => c / 255) as [number, number, number] }));
-    return { objs: ups.flatMap((u) => u.objs), cards, me: ups.findIndex((u) => u.me), owners };
+    return { objs: ups.flatMap((u) => u.objs), mine: ups.find((u) => u.me)?.objs ?? [], cards, me: ups.findIndex((u) => u.me), owners };
   }
 
   /** The next frame, its uprights snapped after its update and `take` called on
@@ -20780,7 +20780,7 @@ export class WorldScene extends Phaser.Scene {
    *  facing's own foot anchor), for the turn's in-between side. The lit copy and
    *  its fog still wear this frame's facing and sit it out; everything comes back
    *  on POST_RENDER, and the animation re-applies its own frame on the next update. */
-  private turnFrameWithFacing(facing: string, take: () => void): Promise<boolean> {
+  private turnFrameWithFacing(facing: string, take: () => void, others: Phaser.GameObjects.GameObject[] = []): Promise<boolean> {
     const me = this.avatars.get(this.myId);
     const key = me ? this.resolveAnim(me.character, "idle", facing) : null;
     const f = key ? this.anims.get(key)?.frames[0]?.frame : null;
@@ -20789,7 +20789,11 @@ export class WorldScene extends Phaser.Scene {
       let restore = () => {};
       this.events.once(Phaser.Scenes.Events.POST_UPDATE, () => {
         const sp = me.sprite, ox = sp.originX, oy = sp.originY, tk = sp.texture.key, fn = sp.frame.name;
-        const hide = [me.lit, me.fog, me.hidden].filter((o): o is NonNullable<typeof o> => !!o && o.visible);
+        // THE PLAYER ALONE: every other upright goes too, so this frame minus the
+        // bodiless one is my turned body and nothing else — cut by the owner map
+        // instead, the new silhouette lost every pixel A had given a neighbour
+        // and the player went to a ghost for the middle of the turn
+        const hide = [me.lit, me.fog, me.hidden, ...(others as (typeof me.lit)[])].filter((o): o is NonNullable<typeof o> => !!o && o.visible && o !== sp);
         sp.setTexture(f.texture.key, f.name);
         this.applyAnchor(sp, me.character, facing, true);
         for (const o of hide) o.setVisible(false);
@@ -20881,7 +20885,8 @@ export class WorldScene extends Phaser.Scene {
     const iA = meA?.dispDir ? DIRS8.indexOf(meA.dispDir as (typeof DIRS8)[number]) : -1;
     if (upA && upA.me >= 0 && iA >= 0) {
       const grp = upA.groups[upA.me];
-      await this.turnFrameWithFacing(DIRS8[(iA + dir + 8) % 8], () => fx.setAM(cv, grp));
+      const mine = new Set(snapA?.mine ?? []);
+      await this.turnFrameWithFacing(DIRS8[(iA + dir + 8) % 8], () => fx.setAM(cv, grp), (snapA?.objs ?? []).filter((o) => !mine.has(o)));
     }
     this.turnLog.uprights = upA ? upA.groups.length : 0;
     this.turnLog.aMs = +(performance.now() - t0).toFixed(1);
