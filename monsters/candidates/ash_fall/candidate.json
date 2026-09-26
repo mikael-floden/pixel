@@ -1300,42 +1300,40 @@
           "generated_at": "2026-09-26T00:14:14+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.4782,
-          "step_max": 0.5517,
-          "drift": 5.43,
-          "loop": 0.7072,
-          "loop_ratio": 1.48,
-          "travel": 1.7,
+          "status": "pass",
+          "step_mean": 0.4213,
+          "step_max": 0.553,
+          "drift": 4.38,
+          "loop": 0.1354,
+          "loop_ratio": 0.32,
+          "travel": 5.3,
           "pin": 0.999,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.7072,
-          "reach": 0.383,
-          "turn": 4,
-          "end_area": 0.898,
+          "peak": 0.55,
+          "reach": 0.333,
+          "turn": 1,
+          "end_area": 0.859,
           "end_iou": null,
           "canvas": [
             96,
             96
           ],
-          "reasons": [
-            "wrapped around the canvas edge: the body is drawn in two pieces"
-          ],
-          "sub": "ded40c18-c1bd-4724-af03-6ec332a1cd6b",
-          "group": "971d00fa-a8ae-4535-9274-a113582a5e41",
+          "reasons": [],
+          "sub": "476b91c0-4736-4fd5-8509-9195eec2c62e",
+          "group": "2949d41f-0caa-4e1b-9481-852b5db73a9d",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "pro",
-          "action": "Strike - Quickly lunges forward and strikes once",
+          "action": "Strike - Quickly lunges forward and strikes once, a controlled strike, only the striking limb moves and the body stays planted",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 4,
-          "rung": 0,
+          "rung": -1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-26T00:14:15+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-26T01:15:06+00:00"
         },
         "east": {
           "status": "pass",
@@ -1522,6 +1520,43 @@
           "tries": 1,
           "generated_at": "2026-09-26T00:14:18+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.4213,
+          "step_max": 0.553,
+          "drift": 4.38,
+          "loop": 0.1354,
+          "loop_ratio": 0.32,
+          "travel": 5.3,
+          "pin": 0.999,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.55,
+          "reach": 0.333,
+          "turn": 1,
+          "end_area": 0.859,
+          "end_iou": null,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "476b91c0-4736-4fd5-8509-9195eec2c62e",
+          "group": "2949d41f-0caa-4e1b-9481-852b5db73a9d",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once, a controlled strike, only the striking limb moves and the body stays planted",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 4,
+          "rung": -1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-26T01:15:06+00:00",
+          "source": "south-east"
         }
       },
       "action": "Strike - Quickly lunges forward and strikes once",
@@ -1567,6 +1602,12 @@
           "ash_fall/animations/attack/north-west/01.webp",
           "ash_fall/animations/attack/north-west/02.webp",
           "ash_fall/animations/attack/north-west/03.webp"
+        ],
+        "south-west": [
+          "ash_fall/animations/attack/south-west/00.webp",
+          "ash_fall/animations/attack/south-west/01.webp",
+          "ash_fall/animations/attack/south-west/02.webp",
+          "ash_fall/animations/attack/south-west/03.webp"
         ]
       },
       "strips": {
@@ -1576,7 +1617,8 @@
         "north-east": "ash_fall/animations/attack__north-east.webp",
         "north": "ash_fall/animations/attack__north.webp",
         "west": "ash_fall/animations/attack__west.webp",
-        "north-west": "ash_fall/animations/attack__north-west.webp"
+        "north-west": "ash_fall/animations/attack__north-west.webp",
+        "south-west": "ash_fall/animations/attack__south-west.webp"
       }
     }
   },
