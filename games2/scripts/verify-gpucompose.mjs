@@ -84,20 +84,50 @@ try {
   // the GPU compositor (tiles3gpu GpuComposer) and landed the worker's way —
   // the painted ground must hash the same as the worker's.
   if (process.env.INTEGRATED !== "0") {
-    const p2 = await (await browser.newContext({ viewport: { width: 393, height: 851 }, serviceWorkers: "block" })).newPage();
-    p2.on("pageerror", (e) => { console.log("PAGEERROR (gpu page)", e.message); bad = true; });
-    await p2.addInitScript((sl) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "H" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); localStorage.setItem("ml-gpu-compose", "1"); if (sl) localStorage.setItem("ml-slope-height3", sl); }, SLOPE);
-    await p2.goto(origin + "/", { waitUntil: "commit" });
-    await p2.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 240000, polling: 250 });
-    await p2.evaluate(() => { try { window.__ml.noAggro(true); } catch {} });
-    for (const [c, r] of walked) { await p2.evaluate(([c, r]) => window.__ml.teleport(c + 0.5, r + 0.5), [c, r]); await settle(p2); }
-    const gpuHash = await hashAt(p2);
+    const OUT = process.env.OUT || "/tmp";
+    const { writeFileSync } = await import("node:fs");
+    const { PNG } = await import("pngjs");
+    const snap = async (pg) => { await settle(pg); const h = await pg.evaluate(() => window.__ml.groundHash()); const s = await pg.evaluate(() => window.__ml.groundSnapshot()); return { h, png: PNG.sync.read(Buffer.from(s.url.split(",")[1], "base64")) }; };
+    const cpuSnap = await snap(page);
+    const walkPage = async (gpu, name) => {
+      const pg = await (await browser.newContext({ viewport: { width: 393, height: 851 }, serviceWorkers: "block" })).newPage();
+      pg.on("pageerror", (e) => { console.log(`PAGEERROR (${name})`, e.message); bad = true; });
+      await pg.addInitScript(([sl, g]) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "H" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); localStorage.setItem("ml-gpu-compose", g ? "1" : "0"); if (sl) localStorage.setItem("ml-slope-height3", sl); }, [SLOPE, gpu]);
+      await pg.goto(origin + "/", { waitUntil: "commit" });
+      await pg.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 240000, polling: 250 });
+      await pg.evaluate(() => { try { window.__ml.noAggro(true); } catch {} });
+      for (const [c, r] of walked) { await pg.evaluate(([c, r]) => window.__ml.teleport(c + 0.5, r + 0.5), [c, r]); await settle(pg); }
+      return pg;
+    };
+    const diff = (A, B, name) => {
+      if (A.width !== B.width || A.height !== B.height) return { n: -1 };
+      const D = new PNG({ width: A.width, height: A.height });
+      let n = 0, box = [1e9, 1e9, -1, -1];
+      for (let i = 0; i < A.data.length; i += 4) {
+        const d = Math.max(Math.abs(A.data[i] - B.data[i]), Math.abs(A.data[i + 1] - B.data[i + 1]), Math.abs(A.data[i + 2] - B.data[i + 2]), Math.abs(A.data[i + 3] - B.data[i + 3]));
+        const k = i / 4, x = k % A.width, y = Math.floor(k / A.width);
+        if (d) { n++; D.data[i] = 255; D.data[i + 3] = 255; box = [Math.min(box[0], x), Math.min(box[1], y), Math.max(box[2], x), Math.max(box[3], y)]; }
+        else { D.data[i] = D.data[i + 1] = D.data[i + 2] = A.data[i] >> 2; D.data[i + 3] = 255; }
+      }
+      writeFileSync(`${OUT}/ground_${name}_diff.png`, PNG.sync.write(D));
+      return { n, box };
+    };
+    // THE CONTROL: another page, switch off — two CPU paints must agree, or the comparison proves nothing
+    const pc = await walkPage(false, "control");
+    const ctl = await snap(pc);
+    const dc = diff(cpuSnap.png, ctl.png, "control");
+    console.log(`control (CPU vs CPU, two pages): ${dc.n} texels differ${dc.n ? " " + JSON.stringify(dc.box) : ""}; anchors ${JSON.stringify(cpuSnap.h.anchor)} ${JSON.stringify(ctl.h.anchor)}`);
+    const p2 = await walkPage(true, "gpu");
+    const gs = await snap(p2);
     const st = await p2.evaluate(() => window.__ml.gpuCompose());
     console.log("gpu compositor on the game page:", JSON.stringify(st));
     if (!st || !st.composed) { console.log("FAIL: the GPU compositor composed nothing on the game page"); bad = true; }
-    if (cpuHash.anchor.x !== gpuHash.anchor.x || cpuHash.anchor.y !== gpuHash.anchor.y || cpuHash.w !== gpuHash.w) console.log(`INCONCLUSIVE: the two grounds are anchored differently (${JSON.stringify(cpuHash.anchor)} vs ${JSON.stringify(gpuHash.anchor)})`);
-    else if (cpuHash.hash !== gpuHash.hash) { console.log(`FAIL: the painted ground differs with GPU transitions on (${cpuHash.hash} vs ${gpuHash.hash})`); bad = true; }
-    else console.log(`ok: the painted ground is identical with GPU transitions on (hash ${gpuHash.hash}, ${gpuHash.w}x${gpuHash.h})`);
+    const dg = diff(cpuSnap.png, gs.png, "gpu");
+    writeFileSync(`${OUT}/ground_cpu.png`, PNG.sync.write(cpuSnap.png));
+    writeFileSync(`${OUT}/ground_gpu.png`, PNG.sync.write(gs.png));
+    if (JSON.stringify(cpuSnap.h.anchor) !== JSON.stringify(gs.h.anchor)) console.log(`INCONCLUSIVE: anchored differently (${JSON.stringify(cpuSnap.h.anchor)} vs ${JSON.stringify(gs.h.anchor)})`);
+    else if (dg.n) { console.log(`FAIL: the painted ground differs with GPU transitions on: ${dg.n} texels ${JSON.stringify(dg.box)} (control ${dc.n}); ${OUT}/ground_gpu_diff.png`); bad = true; }
+    else console.log(`ok: the painted ground is identical with GPU transitions on (${gs.png.width}x${gs.png.height}, control ${dc.n})`);
   }
 } finally {
   await browser.close();
