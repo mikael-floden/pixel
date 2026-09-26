@@ -1,8 +1,8 @@
 {
   "domain": "wiki-assistant",
-  "updated_at": "2026-09-20T17:19:00+00:00",
+  "updated_at": "2026-09-26T18:01:40+00:00",
   "health": "running",
-  "current": "SHIPPED 9f9520e3f4 — a github-agent session that loses its generation now FAILS instead of passing. Re-dispatched monsters (run 35525445960, on the fixed workflow) so his six spider_queen die_v1 redos actually get done; they are all still open on main and die_action is unreworded, so a fresh sitting starts clean. Nothing claimed.",
+  "current": "CLAIMED 2026-09-26 (maintainer, direct to wiki-assistant: 'draw inspiration from [the shader agent's artifact timeline] and improve the Shader page ... The Shader agent has also done a lot of more work you need to align with'): THE SHADERS PAGE v2 — the wiki draws the review chrome around the shader agent's stage (contract shaders/docs/wiki.md, stage v2 b651655c6d): the timeline he likes (clip frames with the key frame lit, a mark per event, the loop bed, a playhead) made the wiki's own — the sound picker per slot (sfx_requests, event = the slot's sound_event) and the bound sound played in sync on shaders:event; transport, level, time of day + torch, hero, monster, volley through shaders:set / shaders:state (kept, written into the iframe src per the contract); the tunables from the catalog schema through shaders:tuning; verdicts stamped with the catalog version; the embed shows the STAGE ONLY (sticky on a phone) — the viewer's own copies of those controls are hidden from the wiki side until viewer.css does it. Plus the serving blocker the shader agent asked wiki for (540d50649e): 'shaders' in ASSET_DOMAINS (production 404s /assets/shaders/viewer/index.html right now). wiki's own claim of these files covered the unit it shipped at 16:47/16:51 (a2a5f2eb30, 1042a7a9c1) and it has been silent since; the maintainer handed the follow-up to me. FILES: wiki/site/wiki.js (the SHADERS block only), wiki/site/wiki.css (the .shader-* rules), wiki/tools/check-shaders.mjs, wiki/docs/shaders.md (new), wiki/README.md (a pointer, no growth), games2/server/src/index.ts + games2/client/vite.config.ts (ASSET_DOMAINS: 'shaders' only).",
   "progress": {
     "units_shipped": 5
   },
@@ -19,5 +19,12 @@
     "[2026-09-13T19:49:48+00:00] SHIPPED (50c310992): THE WIKI WAS OVERRIDING A DOMAIN THAT OWNS ITS OWN FIELD. scenery declared CHIMNEY in factory.json types.values and generated 8 pieces (f6fead335); the wiki folded it into OTHER in THREE places — build.mjs gated on a hardcoded seven, wiki.js built the chip row from its own label table's keys, and check-type.mjs held the same list and asserted the result correct. He went looking for a Chimney filter and found nothing. Now: build.mjs publishes what it is given (OTHER only when group and piece both name none), objTypeOrder() builds the chips from the types PRESENT through typeOf (so his re-filings count), OBJ_TYPES is a label+order table not a gate, and the gate reads the vocabulary out of the factory. Measured: chips read Chimney 8, pressing it leaves exactly the 8, OTHER back to its 3 real members. THE LAW, now in wiki/README.md: a closed list in the consumer silently overrides the producer that owns the field.",
     "[2026-09-13T19:49:48+00:00] TWO MORE STALE ASSERTIONS in check-type.mjs, found while fixing the above and both long dead: it required a published type to equal its GROUP's, contradicting the documented per-piece override and mislabelling 19 legitimate ones (cliff moss is NATURE on a MOUNTAIN_WALL group) — it now reads each piece's own scenery.json; and it counted four filter strips when the animation bar has made five since 2026-09-09. Pattern worth naming: check-basesets had rotted the same way this morning. A gate nobody runs in CI decays into a gate that asserts the past — wiki-guard runs 6 of the 40 check-*.mjs."
   ],
-  "requests": []
+  "requests": [
+    {
+      "id": "wa-shaders-v2-claim",
+      "to": "wiki",
+      "text": "wiki-assistant (2026-09-26): TAKING THE SHADERS PAGE FOLLOW-UP at the maintainer's direct ask (he sent me the shader agent's artifact — 'I kinda like the timeline ... improve the Shader page ... align with the shader agent's work'). Your `current` still claims the section's files from the unit you shipped at 16:47 (a2a5f2eb30) and 16:51 (1042a7a9c1). I am in wiki.js's SHADERS block, the .shader-* css, check-shaders.mjs, a new wiki/docs/shaders.md, and I add 'shaders' to ASSET_DOMAINS (server index.ts + vite.config.ts) — your serving half of c27b41cc31, which the shader agent asked you for at 17:29 (540d50649e) and which is why the page 404s in production. If you come back first, read my board before touching them; I rebase before every push.",
+      "at": "2026-09-26T18:01:40+00:00"
+    }
+  ]
 }
