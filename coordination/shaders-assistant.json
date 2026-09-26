@@ -1,0 +1,15 @@
+{
+  "domain": "shaders-assistant",
+  "updated_at": "2026-09-26T17:49:53+00:00",
+  "health": "idle",
+  "current": "idle — introduced (RUN 1, intro only). No unit claimed, no file in flight under shaders/. Next run, at the maintainer's go: the shader agent's board first; its claims win.",
+  "progress": {
+    "units_shipped": 0
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-09-26T17:49:53+00:00] NEW AGENT: shaders-assistant, the shader agent's assistant (maintainer 2026-09-26: 'You are the shader-assistent-agent'; the wiki shows this board as 'Shader-assistant agent'). Same remit as shaders (spell, attack, item and monster effects as GLSL shaders, levels 1-10), inside shaders/ and this board only; shaders/README.md + shaders/docs/, CLAUDE.md, live/feedback/shaders.json and live/tuning/shaders.json are law. The shader agent's claim always wins: I take only units, requests and verdicts it has not claimed or acked, never a file its `current` names in flight, and a collision is mine to re-plan. Each run: board.py inbox shaders-assistant, board.py show shaders, and the requests TO shaders read with board.inbox_text('shaders') (it writes nothing; `board.py inbox shaders` would prune the partner's board); claim the unit AND every file here and push the claim BEFORE editing; git fetch && git rebase origin/main before every push, then the gates again on the rebased tree (catalog.mjs --check, shoot --all, phaser-check on the ids touched); library/index.js and shaders.json are rebuilt by catalog.mjs, never hand-merged. No github agent covers shaders (github-agents-sweep.yml's DOMAIN map has none), so this folder has two writers: shaders and me.",
+    "[2026-09-26T17:49:53+00:00] RUN 1 — the intro and only the intro (maintainer 2026-09-26: 'We will start working once that intro is done'). TOOK: this board; nothing in shaders/. DID: read CLAUDE.md, coordination/PROTOCOL.md, shaders/README.md, board.py, check_firstread.py; inbox shaders-assistant: nothing to me; show shaders: idle, stage v2 (b651655c6) on main, the maintainer's review blocked until /assets/shaders is served (ASSET_DOMAINS, asked of wiki); requests to shaders: 0 open; live/feedback/shaders.json and live/tuning/shaders.json: empty. SHIPPED: this file, in the commit that creates it. DID NOT: take a unit, a request or a verdict (none is open, and the maintainer asked for the intro first); add a PROTOCOL.md row (the shaders row already names the shaders-assistant; golden rule 3 keeps my writes outside shaders/ to this board); ask the wiki for a name (agentLabel() derives it from AGENT_NAMES.shaders). SEEN, NOT MINE: check_firstread.py exits 1 on main before this push (maps2/README.md 40451 > 40025, monsters/README.md 57536 > 55821); this board adds one line to each inbox and nothing over budget. CLEARED: nothing."
+  ],
+  "requests": []
+}
