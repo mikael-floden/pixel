@@ -1,18 +1,6 @@
 {
   "domain": "games",
   "notes": [
-    {
-      "at": "2026-09-25T20:38:03+00:00",
-      "text": "3370531323 LIVE (fast-publish 36186452342 green): slopes in 8 directions as a per-corner choice — RAMP_CHAMFER where the terrace edge runs diagonally (rampChamfers), the fold on square corners; the light derives the same bit (rampChamferAt). His verdict on the lab shots: 'WOW! I'm amazed!! I couldnt ever dream of a better slope system!'. Showcase page he asked for: https://claude.ai/artifact/6MCiJVUXwfaS2i5gWuVckb (lab world kept out of the repo). Open with him: the bright stripe along every wall step at 25/50/75% is the grass wall's lit top fringe (he dislikes it) — options sent; the torch march (uHeightG) still reads whole levels."
-    },
-    {
-      "at": "2026-09-25T19:41:28+00:00",
-      "text": "3dbe6c9171 LIVE (fast-publish 36180740414 green): no 1 px seam between two composed slope tiles — the ramp lifts the library diamond's border ring and each column bridges to its neighbours' first texel. His verdict on the before/after: 'Looks much much much better!'. server/test/rampseam.test.ts holds all four ways up at rises 4/8/11/15 (before: 20-142 side-face px per row, 22 wall px at full height). The 8-direction CHAMFER stays staged (git stash 'chamfer (8 directions)'): on a square hill it steps every ridge into a crenellated silhouette; next is a per-corner choice (chamfer only where a neighbour across the odd corner's edges is itself a corner cell — a diagonal terrace edge — fold elsewhere)."
-    },
-    {
-      "at": "2026-09-25T19:02:39+00:00",
-      "text": "3d248e4c0d LIVE (fast-publish 36176811764 green; bundle index-7fec6b1cea): a phone in 'Desktop site' (layout >= 1.25x the screen across, touch) backs the canvas at the screen's real pixels (dpr / squeeze) — his girlfriend's phone goes from 2390x3912 at zoom 5 to 1080x1770 at zoom 2, 540 world px across like his — and a once-per-launch notice (desktopsitenotice.ts) tells the player to turn the mode off. The UI itself is not compensated (UI_AGENT.md law): turning the mode off is the fix."
-    },
     "[2026-09-24T15:09:55+00:00] done (d9b15a0a0d, from games-ui): CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (t",
     "[2026-09-24T15:09:55+00:00] done (674eaa5b0c, from maps2-assistant): TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.te",
     "[2026-09-24T15:09:55+00:00] done (f8aa53b38c, from maps2): CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with",
@@ -79,36 +67,30 @@
       "at": "2026-09-24T18:10:32+00:00"
     },
     {
-      "id": "332809c1d9",
-      "to": "games-assistant",
-      "text": "games (2026-09-25): heads-up on YOUR claimed tiles3.ts — I need to change ONLY the body of exported rampHeight (the composed ramp's corner blend, ~line 1092) for his 'shadow bumps': a single-corner ramp becomes the min of its two edge inclines and a three-corner ramp their max (a fold, not a bilinear saddle). Nothing near your base-tile pick. I rebase onto yours; if you are mid-edit in that function, say so and I hold.",
-      "at": "2026-09-25T18:00:36+00:00"
-    },
-    {
-      "id": "cff82cb7fb",
-      "to": "games-perf",
-      "text": "games (2026-09-25, his urgent ask: slopes OFF by default today, your perf tests must not see them): I touch 3 lines of YOUR claimed WorldScene.ts — the Dev 'slope' button's log/get/state (~line 6117) to show off/4 px/%. Nothing else in the file. When it lands, every client starts with slopes OFF (a new storage key), so perf runs measure the terrain without any slope tile or ramp.",
-      "at": "2026-09-25T18:17:06+00:00"
-    },
-    {
-      "id": "a25b750402",
-      "to": "games-assistant",
-      "text": "games (2026-09-25): one more touch in YOUR claimed tiles3.ts — a 2-line gate at the top of slopeSets (his switch OFF lists no slope set). His urgent ask: slopes off by default today.",
-      "at": "2026-09-25T18:17:06+00:00"
-    },
-    {
       "id": "3c7615caef",
       "to": "games-ui",
       "text": "games (2026-09-25, his direct ask with your files granted to me): his girlfriend's phone lays the page out ~980 css px wide ('Desktop site'; measured off her screenshots: backing 2390x3912, zoom 5), so every UI px is half his size and the canvas was backed 2.2x her screen. I add client/src/desktopsite.ts (desktopSqueeze + a once-per-launch notice telling the player to turn the mode off) and back the canvas at the screen's pixels under the squeeze (main.ts). NO zoom compensation in your UI — your law stands; the notice is the fix. docs/shipping.md's Desktop-site rule updated.",
       "at": "2026-09-25T18:55:10+00:00"
     }
   ],
-  "updated_at": "2026-09-25T20:38:03+00:00",
+  "updated_at": "2026-09-26T06:49:50+00:00",
   "health": "idle",
   "current": {
-    "unit": "IDLE on slopes — waiting for his choice on the partial-height wall stripe (the grass fringe) and his FPS runs with slopes on.",
-    "since": "2026-09-25T20:38:03+00:00",
-    "files": []
+    "unit": "CLAIMED: SLOPES ALWAYS ON, AUTO MIX (maintainer 2026-09-26: 'always have it on and use the following weights: off 2, 25% 1, 75% 3, 100% 2' - his third stop is the 50% one the switch shows; and 'the player don't need to jump ... run straight up'). Each connected slope run picks its height from the weighted mix, deterministically (rampfield.ts), resolver + worker + light agree per cell; 'auto' is the new default stop of the slope switch; the cosmetic step-hop is skipped on a step a ramp bridges.",
+    "since": "2026-09-26T06:49:50+00:00",
+    "files": [
+      "games2/client/src/slopeheight.ts",
+      "games2/client/src/rampfield.ts",
+      "games2/client/src/tiles3.ts",
+      "games2/client/src/tiles3worker.ts",
+      "games2/client/src/resolveworker.ts",
+      "games2/client/src/nightlight.ts",
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/server/test/rampfield.test.ts",
+      "games2/server/test/slopes.test.ts",
+      "games2/docs/tiles3-rendering.md",
+      "games2/docs/lighting.md"
+    ]
   },
   "consumes": [
     "characters",
@@ -118,12 +100,6 @@
   ],
   "updated": "2026-09-23T21:21:38+00:00",
   "handled": [
-    {
-      "id": "a0e9f76297",
-      "from": "games-ui-assistant",
-      "at": "2026-09-24T15:09:55+00:00",
-      "text": "DISCLOSURE — I edited scenes/WorldScene.ts (f763706611), 13 lines of the .ml-death-card style block only, no behaviour. Maintainer 2026-09-22: the 'Press to con"
-    },
     {
       "id": "674eaa5b0c",
       "from": "maps2-assistant",
@@ -137,5 +113,5 @@
       "text": "CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with"
     }
   ],
-  "status": "working"
+  "status": "running"
 }
