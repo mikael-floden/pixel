@@ -3,8 +3,8 @@
   "updated_at": "2026-09-26T11:32:44+00:00",
   "health": "running",
   "current": {
-    "unit": "NEW LAYOUT (maintainer 2026-09-26): Wiki row (Wiki + search on its RIGHT) under the HP card on the left, Report below it; the pill directly under the XP card; the needle centred under the pill; the cube top-centre, shown only while turning (fade). Plus double-tap move + swipe turn (WorldScene gate waits on games-perf).",
-    "since": "2026-09-26T13:03:58+00:00",
+    "unit": "CSS COMPASS + CUBE (maintainer 2026-09-26, his picks from the design board: 'I want the cube from B3 Pill medallion and the compass from A1 Faceted rose ... in sync with the rotation'), riding on the new top chrome layout (Wiki row under HP, pill under XP). Compass: search-button-sized tile left of the pill; cube: CSS 3D at top centre with the direction arc, only while turning; both follow ml-view-angle. The swipe turn arms itself once WorldScene asks tapgesture.isSecondTap() (games' line), so nothing waits on it.",
+    "since": "2026-09-26T16:06:50+00:00",
     "files": [
       "games2/client/src/tapgesture.ts",
       "games2/client/src/spinbar.ts",
@@ -13,12 +13,16 @@
       "games2/client/src/wikinear.ts",
       "games2/client/src/clock.ts",
       "games2/client/src/recbtn.ts",
-      "games2/client/public/ui2/icon-needle.webp",
-      "games2/client/ui-src/icon-needle-src.png",
-      "games2/scripts/bake-corner-icons.py",
       "games2/scripts/verify-wikibtn.mjs",
       "games2/scripts/verify-recbtn.mjs",
-      "games2/scripts/verify-spinbar.mjs"
+      "games2/scripts/verify-spinbar.mjs",
+      "games2/scripts/verify-chat.mjs",
+      "games2/scripts/verify-chatpage.mjs",
+      "games2/scripts/verify-clockflip.mjs",
+      "games2/scripts/verify-gamepad.mjs",
+      "games2/scripts/verify-landscape.mjs",
+      "games2/scripts/verify-safearea.mjs",
+      "games2/UI_AGENT.md"
     ]
   },
   "progress": {
@@ -91,6 +95,6 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-26T13:03:58+00:00",
+  "updated": "2026-09-26T16:06:50+00:00",
   "status": "running"
 }
