@@ -81,6 +81,25 @@ ICONS = {
     "record": "none",
     "record-on": "none",
     "report": "centre",
+    "arrow": "none",
+}
+
+# THE SPIN BAR'S ORB (spinbar.ts). His animation arrives as a GIF, which the
+# browser cannot be scrubbed frame by frame, so it is baked into ONE horizontal
+# strip the CSS steps through with background-position — the same "his export ->
+# exact 2x -> /ui2" recipe as the icons, just laid out in a row.
+#   name -> (source, frames kept)
+# THE TRIM (maintainer 2026-09-26: "remove some frames from the gif so it ends
+# on a perfect 90° rotation"). The export is 9 frames; the bar plays the whole
+# strip for one press, so the strip IS the quarter turn and its LAST frame is
+# dropped. Measured first, because the trim had to be aimed: the silhouette is
+# byte-identical in all nine (bbox 20x18 at x6-25,y7-24 every frame), so this is
+# a turntable about the vertical axis and not a tilt, and frames 7 and 8 are the
+# closest non-adjacent pair in the set (the 6->8 join is 15697 against a 24680
+# mean, i.e. the cheapest cut available) — the tail settles. Cutting the END is
+# also what his sentence asks for. Change KEEP and re-run to re-aim it.
+STRIPS = {
+    "spin-orb": ("spin-orb-src.gif", 8),
 }
 
 
@@ -160,6 +179,58 @@ def main() -> int:
                 bad += 1
         else:
             print(f"NEW  icon-{name}.webp  {how:<6} {out.width}x{out.height}  {len(fresh)} bytes")
+            if not write:
+                bad += 1
+        if write:
+            tmp.replace(dst)
+        else:
+            tmp.unlink()
+
+    for name, (srcname, keep) in STRIPS.items():
+        gif = Image.open(SRC / srcname)
+        n = getattr(gif, "n_frames", 1)
+        if keep > n:
+            print(f"FAIL {name}: asked for {keep} frames of a {n}-frame source")
+            bad += 1
+            continue
+        frames = []
+        for i in range(keep):
+            gif.seek(i)
+            f = gif.convert("RGBA")
+            alphas = set(f.tobytes()[3::4])
+            if alphas - {0, 255}:
+                print(f"FAIL {name}: soft alpha in frame {i} — pixel art is binary")
+                bad += 1
+                frames = []
+                break
+            frames.append(f)
+        if not frames:
+            continue
+        w, h = frames[0].size
+        if any(f.size != (w, h) for f in frames):
+            print(f"FAIL {name}: the source frames are not all {w}x{h}")
+            bad += 1
+            continue
+        out = Image.new("RGBA", (w * 2 * len(frames), h * 2), (0, 0, 0, 0))
+        for i, f in enumerate(frames):
+            out.paste(bake(f), (i * w * 2, 0))
+        dst = OUT / f"{name}.webp"
+        tmp = dst.with_suffix(".webp.new")
+        out.save(tmp, "WEBP", lossless=True, method=4, exact=True)
+        fresh = tmp.read_bytes()
+        if Image.open(tmp).convert("RGBA").tobytes() != out.tobytes():
+            print(f"FAIL {name}: the WebP did not round-trip")
+            tmp.unlink()
+            bad += 1
+            continue
+        if dst.exists():
+            same = dst.read_bytes() == fresh
+            print(f"{'ok  ' if same else 'DIFF'} {name}.webp  {len(frames)}/{n} frames  {out.width}x{out.height}  {len(fresh)} bytes")
+            if not same and not write:
+                print("     ^ the shipped file differs from this recipe — re-run with --write only if that is intended")
+                bad += 1
+        else:
+            print(f"NEW  {name}.webp  {len(frames)}/{n} frames  {out.width}x{out.height}  {len(fresh)} bytes")
             if not write:
                 bad += 1
         if write:

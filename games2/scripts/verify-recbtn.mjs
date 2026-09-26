@@ -131,6 +131,8 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
     const r = document.querySelector(".ml-rec").getBoundingClientRect();
     const w = document.querySelector(".ml-wikibtn").getBoundingClientRect();
     const card = document.querySelector(".ml-bars-l").getBoundingClientRect();
+    const barEl = document.querySelector(".ml-spinbar");
+    const bar = barEl ? barEl.getBoundingClientRect() : null;
     const cs = getComputedStyle(document.documentElement);
     const px = (v) => parseFloat(cs.getPropertyValue(v)) || 0;
     return {
@@ -138,6 +140,17 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
       wikiRight: Math.round(innerWidth - px("--gv-right") - w.right),
       cardLeft: Math.round(card.left), recLeft: Math.round(r.left),
       belowCard: Math.round(r.top - card.bottom),
+      // SINCE 2026-09-26 the spin bar holds the line directly under the card
+      // (spinbar.ts) and this button hangs under IT. The law is unchanged —
+      // one margin, everywhere — so it is measured against whatever is
+      // actually above: the bar when it is mounted, the card when it is not.
+      barTop: bar ? Math.round(bar.top) : null,
+      barBottom: bar ? Math.round(bar.bottom) : null,
+      barLeft: bar ? Math.round(bar.left) : null,
+      barRight: bar ? Math.round(bar.right) : null,
+      cardRight: Math.round(card.right),
+      belowBar: bar ? Math.round(r.top - bar.bottom) : null,
+      barBelowCard: bar ? Math.round(bar.top - card.bottom) : null,
     };
   });
   m.left === m.wikiRight
@@ -146,9 +159,24 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
   Math.abs(m.recLeft - m.cardLeft) <= 1
     ? ok(`its left edge lines up with the HP/EP card's (${m.recLeft} vs ${m.cardLeft})`)
     : fail(`Report at x=${m.recLeft}, the card at x=${m.cardLeft} — they must share an edge`);
-  m.belowCard === m.left
-    ? ok(`and it hangs the same ${m.belowCard}px under the card as it keeps to the edge`)
-    : fail(`gap under the card ${m.belowCard}px, edge margin ${m.left}px — one margin, everywhere`);
+  // ONE MARGIN, EVERYWHERE — now across a two-row stack. The spin bar hangs
+  // its margin under the card and this button hangs its margin under the bar;
+  // with no bar mounted the old single gap is the same assertion.
+  const above = m.barBottom === null ? "the card" : "the spin bar";
+  const gap = m.barBottom === null ? m.belowCard : m.belowBar;
+  gap === m.left
+    ? ok(`and it hangs the same ${gap}px under ${above} as it keeps to the edge`)
+    : fail(`gap under ${above} ${gap}px, edge margin ${m.left}px — one margin, everywhere`);
+  if (m.barBottom !== null) {
+    m.barBelowCard === m.left
+      ? ok(`the spin bar keeps that one margin too: ${m.barBelowCard}px under the card`)
+      : fail(`the spin bar sits ${m.barBelowCard}px under the card, edge margin ${m.left}px`);
+    // HIS TWO EDGES (2026-09-26: "The left button should align with the card
+    // left. The right button should align with the card right.")
+    Math.abs(m.barLeft - m.cardLeft) <= 1 && Math.abs(m.barRight - m.cardRight) <= 1
+      ? ok(`and it spans the card exactly: ${m.barLeft}-${m.barRight} against the card's ${m.cardLeft}-${m.cardRight}`)
+      : fail(`spin bar ${m.barLeft}-${m.barRight}, card ${m.cardLeft}-${m.cardRight} — both edges must match`);
+  }
 }
 
 // ── 3. HIS ICON, DECODED, AT ITS AUTHORED GRID; THE LABEL FITS ────────────

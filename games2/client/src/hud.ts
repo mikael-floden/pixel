@@ -21,6 +21,7 @@ import { mountGamepadStick, stickNudgeRange } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountWikiButton } from "./wikibtn";
 import { mountWikiNearButton } from "./wikinear";
+import { mountSpinBar } from "./spinbar";
 import { mountRecordButton } from "./recbtn";
 // the record button's behaviour: it listens for "ml-record" (freezeframe.ts)
 import "./freezeframe";
@@ -268,7 +269,8 @@ export function mountPageFrame() {
   mountBars(); // HP/EP/XP + gold + level, over the top of the game view
   mountWikiButton(); // the wiki drawer's opener, stacked with the clock pill
   mountWikiNearButton(); // 🔍 what am I standing next to — left of the Wiki button
-  mountRecordButton(); // his Report button, under the HP/EP card (recbtn.ts)
+  mountSpinBar(); // the orb between two arrow buttons, on the card's own line (spinbar.ts)
+  mountRecordButton(); // his Report button, ONE STEP BELOW the spin bar now (recbtn.ts)
   document.getElementById("ml-pageframe")?.remove(); // ancient overlay, if any
   // In the WORLD now: landscape becomes a real layout instead of the
   // "rotate your phone" prompt (index.html hides #ml-rotate under this

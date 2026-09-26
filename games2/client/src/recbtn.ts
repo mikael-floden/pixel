@@ -20,6 +20,13 @@
 // view's right edge, this one 10px from its left, both off the --gv-* vars, so
 // the pair sit at equal insets on their own sides.
 //
+// ONE STEP LOWER THAN THE CARD SINCE 2026-09-26: the spin bar took the line
+// directly under it (maintainer: the group goes "under the HP/EP card (over
+// recording if recording is visble)"), so this button clears it by
+// --ml-spin-step — the bar's own outer height plus the one gap, PUBLISHED by
+// spinbar.ts on mount rather than repeated here, so the two cannot disagree
+// and this falls back to the card's own line if the bar is ever not mounted.
+//
 // AND IT IS AS WIDE AS THE CARD ABOVE IT (maintainer 2026-09-19: "The Report
 // button should have the same size as the card over it so it aligns!").
 // --bars-l-w is the HP/EP card's MEASURED width, published by hud.ts's
@@ -71,7 +78,8 @@ function styleOnce() {
   // z 8 is the Wiki row's own layer — this button belongs to that group.
   st.textContent = `
   .${BTN}{position:fixed;left:calc(var(--gv-left,0px) + ${GAP}px);
-    top:calc(${GAP}px + var(--ml-safe-top, 0px) + var(--bars-l-h, 78px) + ${GAP}px);
+    top:calc(${GAP}px + var(--ml-safe-top, 0px) + var(--bars-l-h, 78px) + ${GAP}px
+      + var(--ml-spin-step, 0px));
     z-index:8;width:calc(var(--bars-l-w, ${PILL_W}px) - 2px);height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
     box-shadow:var(--shadow);cursor:pointer;
