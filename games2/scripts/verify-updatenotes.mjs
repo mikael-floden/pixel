@@ -517,8 +517,27 @@ const openIt = async (mine = MY_SHA) => {
     ? ok("a served sha the file already lists never asks GitHub (0 calls through eight sections)")
     : fail(`GitHub was asked ${ghCalls} time(s) while the served sha was inside the file: ${ghUrls.join(" ")}`);
   await page.evaluate(() => window.__mlUpdateNotes.close());
-  await page.evaluate(([n, m]) => window.__mlUpdateNotes.open(n, m), [LANE_SHA, NEW_SHA]);
+  // THE CARD NEVER MEETS THE DOCUMENT EMPTY (maintainer 2026-09-26: "it
+  // starts empty and not with content immidiatly"). This open is the hard
+  // case — GitHub's answer is NOT in hand yet — so a watcher records how many
+  // rows the card carries at the instant it is inserted.
+  await page.evaluate(([n, m]) => {
+    window.__updRowsAtInsert = null;
+    const mo = new MutationObserver(() => {
+      const b = document.querySelector(".ml-upd-back");
+      if (b && window.__updRowsAtInsert === null) {
+        window.__updRowsAtInsert = b.querySelectorAll(".ml-upd-list > .ml-upd-row").length;
+        mo.disconnect();
+      }
+    });
+    mo.observe(document.body, { childList: true });
+    window.__mlUpdateNotes.open(n, m);
+  }, [LANE_SHA, NEW_SHA]);
   await page.waitForFunction(() => document.querySelectorAll(".ml-upd-list > .ml-upd-row").length >= 3, null, { timeout: 8000 }).catch(() => {});
+  const atInsert = await page.evaluate(() => window.__updRowsAtInsert);
+  atInsert === 3
+    ? ok("the card is inserted WITH its rows (3 at the instant it met the document) — never empty first")
+    : fail(`the card met the document with ${atInsert} rows, then filled — it opens empty`);
   const lane = await page.evaluate(() => {
     const back = document.querySelector(".ml-upd-back");
     return {
@@ -554,7 +573,7 @@ const openIt = async (mine = MY_SHA) => {
     : fail(`chip ${lane.chip}, mine-block ${lane.mine}`);
   // …and when GitHub does not answer, the sentence says so instead of "nothing"
   ghMode = "down";
-  await page.evaluate(() => window.__mlUpdateNotes.close());
+  await page.evaluate(() => { window.__mlUpdateNotes.close(); window.__mlUpdateNotes.forget(); });
   await page.evaluate(([n, m]) => window.__mlUpdateNotes.open(n, m), [LANE_SHA, NEW_SHA]);
   await page.waitForFunction(() => /GitHub did not answer/.test(document.querySelector(".ml-upd-sub")?.textContent ?? ""), null, { timeout: 8000 }).catch(() => {});
   const down = await page.evaluate(() => ({

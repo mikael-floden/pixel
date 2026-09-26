@@ -861,7 +861,12 @@ from the games agent), #18 (title/landing screen).
   accident (his screenshot: served `fb1eb5fbc`, a monsters push, over image
   `08f154fef`). When the served sha is in neither `head` nor `commits`,
   `updatenote.ts` fetches the repository's own compare endpoint for
-  `mine...new` (the `repo` field of the file names it; CORS `*`; anonymous, 60
+  `mine...new` — IN `prefetchNotes`, BEFORE THE TOAST (maintainer 2026-09-26:
+  "it starts empty and not with content immidiatly": asked on open, the card
+  met the document empty and filled a moment later), so the card is always
+  inserted WHOLE; a newer deploy since the toast fetches on the tap and
+  inserts when complete, capped at 3 s (the gate records the row count at the
+  instant of insertion) — (the `repo` field of the file names it; CORS `*`; anonymous, 60
   an hour per address — ONE call per dialog OPEN, never per toast, and never
   when the file already lists the served sha), reverses GitHub's oldest-first
   order, reads the chip off the subject's own `token:` prefix when it names a

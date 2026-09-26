@@ -102,12 +102,56 @@ let notesDone = false;
  */
 export function prefetchNotes(): Promise<ReleaseDoc | null> {
   if (!notesPromise)
-    notesPromise = loadNotes().then((d) => {
+    notesPromise = loadNotes().then(async (d) => {
       notesReady = d;
       notesDone = true;
+      // …AND THE LANE'S RANGE WITH THEM (maintainer 2026-09-26: "When the new
+      // version out popup opens it starts empty and not with content
+      // immidiatly"). A lane publish's list is GitHub's answer, not the file's
+      // (loadLaneRange), and it used to be asked on OPEN — so the card met the
+      // document empty and filled a moment later. main.ts awaits this before
+      // it raises the toast, so asking here puts the list in hand before
+      // there is anything to tap. The served sha is read from /version (the
+      // same ~110-byte no-store answer the toast itself is raised on).
+      // Capped: GitHub being slow delays the toast by at most LANE_WAIT_MS.
+      if (d) {
+        try {
+          const res = await fetch(gameUrl("/version"), { cache: "no-store" });
+          const v = res.ok ? ((await res.json()) as { sha?: string }) : null;
+          if (v?.sha && v.sha !== "dev" && laneAhead(d, v.sha)) await withCap(laneFor(d, myBuild(), v.sha));
+        } catch {}
+      }
       return d;
     });
   return notesPromise;
+}
+
+const myBuild = () => (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
+/** The served sha is past the file = a lane publish over this image. */
+function laneAhead(doc: ReleaseDoc, newSha: string): boolean {
+  return !sameSha(doc.head, newSha) && !doc.commits.some((c) => sameSha(c.sha, newSha));
+}
+type Lane = { rows: ReleaseCommit[]; truncated: boolean } | null;
+/** One GitHub call per (mine, new) pair per page, memoised; `laneDone` holds
+ *  the answers already in hand so the dialog can be built synchronously. */
+const lanePromises = new Map<string, Promise<Lane>>();
+const laneDone = new Map<string, Lane>();
+function laneFor(doc: ReleaseDoc, mine: string, newSha: string): Promise<Lane> {
+  const key = `${mine}...${newSha}`;
+  let p = lanePromises.get(key);
+  if (!p) {
+    p = loadLaneRange(doc.repo, mine, newSha).then((r) => {
+      laneDone.set(key, r);
+      return r;
+    });
+    lanePromises.set(key, p);
+  }
+  return p;
+}
+/** A slow GitHub must never hold the toast or the dialog hostage. */
+const LANE_WAIT_MS = 3000;
+function withCap<T>(p: Promise<T>): Promise<T | null> {
+  return Promise.race([p, new Promise<null>((r) => setTimeout(() => r(null), LANE_WAIT_MS))]);
 }
 
 async function loadNotes(): Promise<ReleaseDoc | null> {
@@ -533,39 +577,33 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
     window.removeEventListener("keydown", onKey);
   };
   window.addEventListener("keydown", onKey);
-  // THE CARD IS FILLED BEFORE IT IS INSERTED whenever the notes are already in
-  // hand — which is the ordinary case, because main.ts prefetches them before
-  // it raises the toast. Nothing is measured, nothing is animated: the card
-  // enters the document at its final size, so there is no size to change and
-  // no loading state to show. The `.then` below is the RACE path only (the
-  // dialog opened from a probe, or the fetch is still in the air), and it is
-  // the only path that ever shows the spinner.
+  // THE CARD IS FILLED BEFORE IT IS INSERTED, always. Nothing is measured,
+  // nothing is animated: it enters the document at its final size and with
+  // every row, so there is no size to change and no empty state to see.
+  // SYNCHRONOUS: everything it paints is already in hand when it is called —
+  // the notes, and for a lane publish GitHub's range too (see the open path at
+  // the bottom). No row is ever added after the card meets the document.
   const fill = (doc: ReleaseDoc | null) => {
     if (!doc || !doc.commits.length) {
       sub.textContent = `Your build is ${mine.slice(0, 9)}. The change list is not published for this deploy.`;
       return;
     }
+    if (laneAhead(doc, newSha)) {
+      // A lane publish: GitHub's answer for the whole of mine...new, which is a
+      // superset of the file's slice, never a second list.
+      const lane = laneDone.get(`${mine}...${newSha}`);
+      if (lane && lane.rows.length) return paint(doc, lane.rows, lane.truncated);
+      const { rows, truncated } = sliceSince(doc, mine);
+      if (rows.length) return paint(doc, rows, truncated);
+      sub.textContent = `Your build is ${mine.slice(0, 9)} — a live update on top of it; GitHub did not answer with the list.`;
+      return;
+    }
     const { rows, truncated } = sliceSince(doc, mine);
-    // THE SERVED SHA IS PAST THE FILE = a lane publish over this image (see
-    // loadLaneRange). The file's slice is painted at once if it has anything,
-    // and GitHub's answer for the whole of mine...new replaces it when it
-    // lands — that answer is a superset of the slice, never a second list.
-    const ahead = !sameSha(doc.head, newSha) && !doc.commits.some((c) => sameSha(c.sha, newSha));
-    if (!rows.length && !ahead) {
+    if (!rows.length) {
       sub.textContent = `Your build is ${mine.slice(0, 9)} — nothing listed between it and this one.`;
       return;
     }
-    if (rows.length) paint(doc, rows, truncated);
-    if (!ahead) return;
-    if (!rows.length) sub.textContent = `Your build is ${mine.slice(0, 9)} — a live update on top of it. Asking GitHub what changed…`;
-    void loadLaneRange(doc.repo, mine, newSha).then((lane) => {
-      if (open !== back) return; // closed while GitHub answered
-      if (!lane || !lane.rows.length) {
-        if (!rows.length) sub.textContent = `Your build is ${mine.slice(0, 9)} — a live update on top of it; GitHub did not answer with the list.`;
-        return;
-      }
-      paint(doc, lane.rows, lane.truncated);
-    });
+    paint(doc, rows, truncated);
   };
   const paint = (doc: ReleaseDoc, rows: ReleaseCommit[], truncated: boolean) => {
     areas.replaceChildren();
@@ -664,20 +702,27 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
     }
   };
 
-  if (notesDone) {
+  // THE CARD MEETS THE DOCUMENT WHOLE, OR NOT YET. In hand (the ordinary
+  // case — main.ts awaited prefetchNotes, which also fetched a lane's range,
+  // before raising the toast): fill and insert now. Not in hand (a newer
+  // deploy since the toast, or opened from a probe): the tap is taken, the
+  // missing answer fetched, and the card inserted once it is complete —
+  // capped at LANE_WAIT_MS so the Update button is never withheld for long.
+  const inHand = () =>
+    notesDone && (!notesReady || !laneAhead(notesReady, newSha) || laneDone.has(`${mine}...${newSha}`));
+  const insert = () => {
     loading.remove();
-    fill(notesReady); // …and only THEN does the card meet the document
+    fill(notesReady);
     document.body.appendChild(back);
-    open = back;
-  } else {
-    document.body.appendChild(back);
-    open = back;
-    void prefetchNotes().then((doc) => {
-      if (open !== back) return; // closed while it loaded
-      loading.remove();
-      fill(doc);
-    });
-  }
+  };
+  open = back;
+  if (inHand()) insert();
+  else
+    void (async () => {
+      const doc = await prefetchNotes();
+      if (doc && laneAhead(doc, newSha)) await withCap(laneFor(doc, mine, newSha));
+      if (open === back) insert(); // …unless it was closed while it loaded
+    })();
   return back;
 }
 
@@ -693,6 +738,8 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
     notesPromise = null;
     notesReady = null;
     notesDone = false;
+    lanePromises.clear();
+    laneDone.clear();
   },
   close: closeUpdateNotes,
 };
