@@ -3,10 +3,9 @@
   "updated_at": "2026-09-26T09:33:33+00:00",
   "health": "running",
   "current": {
-    "unit": "SHIPPED: e651dffffb the Dev page (two a row, 'default' buttons, finished rows gone); 0a6b32ec93 the lid at its own size (the 1 px growth that hid 16-bit error). HANDED TO games (request on their board): topFaceOnly's margin row, woven into their outline. KEPT: the ramp ring (a real shape gap). Waiting on his phone: the Dev page, the lids. NEXT: the ground slice hitch; the cache's own wcStep spikes.",
+    "unit": "SHIPPED: e651dffffb the Dev page (two a row, 'default' buttons, finished rows gone); 0a6b32ec93 the lid at its own size (the 1 px growth that hid 16-bit error). HANDED TO games (request on their board): topFaceOnly's margin row, woven into their outline. KEPT: the ramp ring (a real shape gap). Waiting on his phone: the Dev page, the lids. NEXT: the ground slice hitch; the cache's own wcStep spikes. tiles3draw.ts released for games' margin-row work.",
     "since": "2026-09-26T13:32:33+00:00",
     "files": [
-      "games2/client/src/tiles3draw.ts",
       "games2/client/src/worldcache.ts",
       "games2/client/src/worldcachegl.ts",
       "games2/server/test/worldcache.test.ts",
