@@ -9,6 +9,8 @@ import { wallWrapExponent } from "./wallwrap";
 import { slopeRule } from "./slopeheight";
 import { rampMaskField, slopeRunShares } from "./rampfield";
 import { RAMP_CHAMFER, rampChamfers, rampHeight } from "./tiles3";
+/** How fast a body's light follows its sample (bodyLightAt): a 0.1 s time constant. */
+const BODY_LIGHT_EASE_MS = 100;
 /** The storey a composed ramp climbs, in px (ISO_GEOMETRY_MAPS3.lh): a ramp cell
  *  packs its rise in these px into the surface map's B low nibble (rampAt). */
 const RAMP_PITCH_PX = 15;
@@ -4952,7 +4954,44 @@ export class NightLights {
     return this.roomCells.has(idx) || (this.roomCuts?.has(idx) ?? false);
   }
 
-  lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts, groundContact = false, seamAo = true): [number, number, number] {
+  /** THE LIGHT ON A STANDING BODY — a player, a monster, an NPC — for its lit
+   *  copy's tint (maintainer 2026-09-26, walking up a slope: "The player will
+   *  flicker light,dark,light,dark ... the player get it's light from the ground
+   *  I think and the ground is just a tiny patch that is in shadow and the
+   *  entire player gets dark").
+   *
+   *  A BODY IS A VOLUME, NOT A POINT ON THE GROUND. The tint was one `lightAt`
+   *  at the feet, and its sun march skips the samples inside the feet's own
+   *  cell: on an incline the first counted sample is the slope just uphill,
+   *  and crossing each cell flipped it between skipped and a hit — the whole
+   *  figure blinking at the cell rate. Now the SUN is sampled at three heights
+   *  up the body (1/6, 1/2 and 5/6 of `bodyH` levels) and averaged: the ground
+   *  a hand's width higher darkens the feet a little, a terrace shadow the lower
+   *  third, a house's shadow all of it — which is what a shadow on a standing
+   *  figure looks like. The rest of the light (lamps, torches, room, sky) is
+   *  the feet sample, unchanged.
+   *
+   *  AND IT EASES (`BODY_LIGHT_EASE_MS`): what is left of a flip at a real
+   *  shadow's edge is a 0.1 s fade, not a one-frame blink. Per body, keyed by
+   *  its object; a jump of more than two cells (a teleport, a respawn) snaps. */
+  bodyLightAt(key: object, col: number, row: number, z: number, bodyH: number, now: number): [number, number, number] {
+    const l = this.lightAt(col, row, z, false, 0, undefined, false, true, bodyH);
+    let st = this.bodyLight.get(key);
+    if (!st || Math.abs(st.col - col) + Math.abs(st.row - row) > 2 || now - st.t > 1000) {
+      st = { rgb: [l[0], l[1], l[2]], col, row, t: now };
+      this.bodyLight.set(key, st);
+      return l;
+    }
+    const k = 1 - Math.exp(-Math.max(0, now - st.t) / BODY_LIGHT_EASE_MS);
+    for (let i = 0; i < 3; i++) st.rgb[i] += (l[i] - st.rgb[i]) * k;
+    st.col = col;
+    st.row = row;
+    st.t = now;
+    return [st.rgb[0], st.rgb[1], st.rgb[2]];
+  }
+  private bodyLight = new WeakMap<object, { rgb: [number, number, number]; col: number; row: number; t: number }>();
+
+  lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts, groundContact = false, seamAo = true, bodyH = 0): [number, number, number] {
     const W = this.world.width;
     const H = this.world.height;
     const hAt = (c: number, r: number) => {
@@ -5083,7 +5122,15 @@ export class NightLights {
     // my room shades by curSun (eased to 0 with the grade); one outside keeps
     // the world's own strength through the crossing.
     const sunW = hit > 0.5 ? this.curSun[3] : this.curSunOut;
-    const sunOnly = this.sunFactorAt(col, row, z, hit > 0.5 ? this.curSun : [this.curSun[0], this.curSun[1], this.curSun[2], sunW], selfR2, groundContact);
+    const sunV: [number, number, number, number] = hit > 0.5 ? this.curSun : [this.curSun[0], this.curSun[1], this.curSun[2], sunW];
+    // A standing body (bodyLightAt) takes the sun up its height, not at its soles.
+    const sunOnly =
+      bodyH > 0
+        ? (this.sunFactorAt(col, row, z + bodyH / 6, sunV, selfR2, groundContact) +
+            this.sunFactorAt(col, row, z + bodyH / 2, sunV, selfR2, groundContact) +
+            this.sunFactorAt(col, row, z + (bodyH * 5) / 6, sunV, selfR2, groundContact)) /
+          3
+        : this.sunFactorAt(col, row, z, sunV, selfR2, groundContact);
     const sunF = sunOnly * this.cloudFactorAt(wxT, wyT);
     const aur = this.auroraAt(wxT, wyT);
     // OVER MY OWN ROOF (the fragment's overMyRoom): my room's cell, at or above

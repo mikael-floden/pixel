@@ -80,6 +80,7 @@ import {
   isKnownSurface,
   screenToWorldVector,
   PLAYER_RADIUS,
+  CHARACTER_BODY_PX,
   WALK_CLIMB,
   canEnterElev,
   JUMP_CLIMB,
@@ -12707,7 +12708,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.night) {
       // the night pass is on the DRAWN grid: the body's server point, turned once
       const [ovc, ovr] = this.viewRot && this.world ? rotPoint(b.fx / CELL_WU, b.fy / CELL_WU, this.viewRot, this.world.width, this.world.height) : [b.fx / CELL_WU, b.fy / CELL_WU];
-      const l = this.night.lightAt(ovc, ovr, this.litLevelOf(b), false);
+      const l = this.night.bodyLightAt(b, ovc, ovr, this.litLevelOf(b), this.bodyLevels(b), this.time.now); // the body's own light (same frame: same value)
       const ch = (v: number) =>
         Math.min(255, Math.round(255 * (RING_LIGHT_FLOOR + (1 - RING_LIGHT_FLOOR) * Math.min(1, Math.max(0, v)))));
       ringTint = (ch(l[0]) << 16) | (ch(l[1]) << 8) | ch(l[2]);
@@ -18629,6 +18630,14 @@ export class WorldScene extends Phaser.Scene {
     if (wb !== wa) this.chat.addLog("—", `Weather: ${wa || "clear"}`);
   }
 
+  /** How tall a standing body is, in levels (the light's height unit): its
+   *  drawn height over the storey, the frame's padding taken off, at most a
+   *  big character's — a rabbit takes the shadow a rabbit's height takes. */
+  private bodyLevels(b: BodyVisual): number {
+    const px = Math.min(b.sprite.displayHeight * 0.8, CHARACTER_BODY_PX * 1.5);
+    return Math.max(0.5, px / this.geom.lh);
+  }
+
   private litLevelOf(a: BodyVisual): number {
     if (a.swimming && a.surfLevel !== undefined) return a.surfLevel;
     return Math.max(0, a.elev / this.geom.lh);
@@ -18753,7 +18762,8 @@ export class WorldScene extends Phaser.Scene {
     }
     const lvl = this.litLevelOf(b);
     const [bvc, bvr] = this.viewRot && this.world ? rotPoint(b.fx / CELL_WU, b.fy / CELL_WU, this.viewRot, this.world.width, this.world.height) : [b.fx / CELL_WU, b.fy / CELL_WU];
-    const l = this.night!.lightAt(bvc, bvr, lvl, false);
+    // A standing VOLUME's light, eased (nightlight bodyLightAt): the sun up its height, not at its soles.
+    const l = this.night!.bodyLightAt(b, bvc, bvr, lvl, this.bodyLevels(b), this.time.now);
     // DEPTH-FOG applies to BODIES too (maintainer 2026-07-30: a summit
     // monster rendered crisp inside heavy fog — and remote players shared
     // the bug): the lit copy sits ABOVE the overlay, so it bypasses the

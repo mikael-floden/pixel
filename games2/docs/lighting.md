@@ -964,6 +964,21 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   `sceneryLightInfo()`, `sceneryLightShape(needle,x,y)`. Phone GPU cost of
   the per-texel copies and the sparse sun patch is UNMEASURED (SwiftShader
   is no proxy) — `?fps=1` at the town, Night and Day, is the owed number.
+- **A STANDING BODY IS LIT AS A VOLUME, AND ITS LIGHT EASES**
+  (`bodyLightAt`, every lit copy and its outline ring; maintainer
+  2026-09-26, up a slope: "The player will flicker light,dark,light,dark").
+  The tint was one `lightAt` at the feet, and the sun march skips its own
+  cell: on an incline the first counted sample is the slope just uphill, and
+  crossing each cell flipped it — the whole figure blinked at the cell rate.
+  The sun is sampled at 1/6, 1/2 and 5/6 of the body's height (`bodyLevels`:
+  its drawn height over the storey, ~4.7 levels for a person) and averaged:
+  ground a hand's width higher darkens the feet a little, a terrace's shadow
+  the lower third, a house's all of it. Every other term is the feet sample.
+  The result eases with a 0.1 s time constant (`BODY_LIGHT_EASE_MS`); a jump
+  of more than two cells snaps. Measured up a 100% ramp at Day: the old tint
+  dipped 0.97 -> 0.79 at a cell crossing, the new one holds 0.96-0.97
+  (probe: `lightAt(..., bodyH)` along the walk). CPU only — a body's tint has
+  no shader twin; the ground samples are unchanged.
 - **DON'T MARCH A SHADOW NOBODY CAN SEE** (`SHADOW_MARCH_MIN_LIGHT` 0.012,
   nightlight.ts, shader and CPU twin alike): a light skips its 12-sample
   shadow march where its OWN CONTRIBUTION (att × peak channel) falls below
