@@ -233,8 +233,9 @@ VIEW quarters: +1 is the picture clockwise; neither moves the spin goal),
   exists only for south/south-west/south-east (faithful rotation freezes all 31
   at 90/180 and shows their backs at 180 — a taste call); undirected anisotropic
   scenery (beds, rugs, boats) draws its south still from every side.
-- Indoors while turned: the cut-away masks are still read by the drawing loops
-  in server keys.
+- Indoors while turned is BUILT (the cut on the turned grid, every drawing pass
+  on `drawKeyed`, the tap pick un-turning before it reads the cut) but not yet
+  checked on screen inside a house at 90/180/270.
 - The spawn-area debug overlay is not re-placed on a turn; the minimap stays
   north-up.
 - A chained quarter still holds for its frame A (three frames) at the junction,
