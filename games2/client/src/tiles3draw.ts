@@ -2699,26 +2699,22 @@ export class Tiles3Textures {
     return true;
   }
 
-  /** THE LID OF A LOWERED WALL: a composed plate grown by ONE PIXEL on every
-   *  side and a SECOND up and to the right (each new pixel a copy of its
-   *  nearest surface pixel) and darkened
-   *  by his "Lowered wall top darkening" dial (2026-09-18), under a key
-   *  carrying the percentage — its own content-addressed texture, never a
-   *  rewrite of the plate's. Null while the plate itself is not built.
+  /** THE LID OF A LOWERED WALL: a composed plate re-cut to a periodic
+   *  outline and darkened by his "Lowered wall top darkening" dial
+   *  (2026-09-18), under a key carrying the percentage — its own
+   *  content-addressed texture, never a rewrite of the plate's. Null while
+   *  the plate itself is not built.
    *
-   *  GROWN, because a top-face-only plate has no slack sideways: two
-   *  neighbouring lids meet along a 2:1 staircase edge with alternate pixels
-   *  of the FLOOR showing between them (his red marks at 331.8,233.6 and
-   *  205.6,217.5 with the dial at 70%: "you can't leave a 1px seam like
-   *  this"). At 0% the seam was the floor against the roof's own colour and
-   *  read as texture; darkened, it is a dotted line. The second pixel up
-   *  and right is his (2026-09-18 at 308.0,228.7 at 100%: "still 1px too
-   *  small so it jitters when I walk ... grow with 1px in up and right, not
-   *  in all 4 directions") — a 2:1 staircase leaves its last uncovered pixel
-   *  diagonally outside the lid, and one more step in those two directions
-   *  reaches it without laying a second row over the face below. The row
-   *  below the diamond covers the course's flat top rim the same way
-   *  topFaceOnly's margin row does. */
+   *  AT ITS OWN SIZE (maintainer 2026-09-26: "we might be able to draw tiles
+   *  in their correct size now without adding 1px border"). It was grown a
+   *  pixel on every side and a second up and right for his dotted seams
+   *  between lids (331.8,233.6 and 205.6,217.5 at 70%) and "still 1px too
+   *  small so it jitters when I walk" (308.0,228.7) — Phaser's 16-bit vertex
+   *  maths on his Mali putting each lid up to a pixel off, which the growth
+   *  hid and highp.ts ends. In exact maths the re-cut lids already meet in
+   *  one straight staircase (the periodic outline below); headless without
+   *  the growth at those three spots: 0 texels of the page between them, only
+   *  the lid's own 1 px edge moved (41, 590 texels). */
   lid(key: string, dark: number): string | null {
     const pct = Math.round(Math.max(0, Math.min(1, dark)) * 100);
     const dkey = `${key}@lid${pct}`;
@@ -2765,36 +2761,7 @@ export class Tiles3Textures {
             cut[i + 3] = 255;
           }
         }
-        // Two growth passes over the undarkened raster (a grown pixel may
-        // seed the next), then the darkening: pass 0 in all four directions,
-        // pass 1 up and to the right only (a pixel takes the colour of the
-        // opaque neighbour below it or to its left).
-        let src: Uint8ClampedArray = cut;
-        for (let pass = 0; pass < 2; pass++) {
-          const grown = new Uint8ClampedArray(src.length);
-          grown.set(src);
-          for (let y = 0; y < h; y++) {
-            for (let x = 0; x < w; x++) {
-              const i = (y * w + x) * 4;
-              if (src[i + 3] > 0) continue;
-              // Transparent: take the nearest opaque neighbour's colour.
-              const n =
-                pass === 0
-                  ? [x > 0 ? i - 4 : -1, x + 1 < w ? i + 4 : -1, y > 0 ? i - w * 4 : -1, y + 1 < h ? i + w * 4 : -1]
-                  : [x > 0 ? i - 4 : -1, y + 1 < h ? i + w * 4 : -1];
-              for (const j of n) {
-                if (j >= 0 && src[j + 3] > 0) {
-                  grown[i] = src[j];
-                  grown[i + 1] = src[j + 1];
-                  grown[i + 2] = src[j + 2];
-                  grown[i + 3] = 255;
-                  break;
-                }
-              }
-            }
-          }
-          src = grown;
-        }
+        const src = cut;
         const data = new Uint8ClampedArray(src.length);
         for (let i = 0; i < data.length; i += 4) {
           data[i] = src[i] * k;
