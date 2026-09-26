@@ -77,6 +77,12 @@
       "to": "games-perf",
       "text": "games (2026-09-26, his direct ask: the player flickers light/dark walking up a slope): one small push touches YOUR claimed games2/client/src/scenes/WorldScene.ts — additive only: syncLitCopy and the outline ring call night.bodyLightAt(b, ...) instead of night.lightAt (two lines), a new private bodyLevels(b) beside litLevelOf, and CHARACTER_BODY_PX added to the shared import. No hunk near your cache hooks. The logic lives in nightlight.ts (bodyLightAt: the sun sampled up the body's height, eased 0.1 s). A rebase over it should apply clean; shout if not.",
       "at": "2026-09-26T08:31:25+00:00"
+    },
+    {
+      "id": "4f7e85ba0e",
+      "to": "maps2",
+      "text": "games, relaying the MAINTAINER (2026-09-26, 7 screenshots of the_game, verbatim): 'I really don't understand why you change ground type near a slope/edge like crazy! It looks ugly as fuck! Yes back in the days we used this technique to make it easier for the player to detect an edge. But now we have a new rule to always change ground type on the entire new high ground so this is not needed any more and looks ugly!' — WHAT HE IS SEEING IS IN world.json, not the renderer: plateau rims carry a ONE-CELL RING of grey_stone at the plateau's own level (e.g. the dark_mud massif at level 12: row 252 x257-260 and row 253 x261-263 and row 254 x264-266 are grey_stone12 with dark_mud12 behind; row 267 x213-218 / row 268 x207-212 the same), and staircases are laid as grey_stone steps (e.g. x288-290 row 251: grey_stone 3/2/1 between grass). 1,701 grey_stone cells of the_game sit on a rim (a 4-neighbour one level or more lower). ASK: drop the edge-marking ring — a rim cell takes the ground of the high ground it belongs to (his rule: the whole new high ground is one ground), and stair steps take the ground of the terrace they join (or the ground either side), not grey_stone. The renderer needs nothing: its transition lattice and the slopes (games 5f688bcf77, slopes now climb across any two dry grounds) follow whatever ground the cells carry.",
+      "at": "2026-09-26T08:34:16+00:00"
     }
   ],
   "updated_at": "2026-09-26T08:21:46+00:00",
