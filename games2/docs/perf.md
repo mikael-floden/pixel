@@ -761,17 +761,18 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   it draws on its own?"; his choice "Same, plus save to disk"; his rule for
   the disk "only if it's faster to read the cache from disk VS redrawing the
   image"; `client/src/worldcache.ts`, `worldcachegl.ts`,
-  `worldcache.test.ts`). THE SWITCH IS WITHHELD — no Settings row; only the
-  headless probe `__ml.worldCache(on)` turns it on, and off `wc` is null and
-  every path is today's — until a full paint WITH the cache equals one
-  without it texel for texel on the STREAMED ground. (Measured headless at
-  103,182 after a 40-cell walk out and back: 123,757-129,876 texels differ,
-  one-texel shifts of the seams along water diamonds. The cache is not the
-  source: with it off the streamed ground already differs from a forced full
-  paint in 309,755-311,831 texels there, the compose worker off or on — its
-  audit, 703 rasters, 0 different — and a picture freezes what the streamed
-  ground held, so the fix the game corrects at its next full paint would
-  stand. The streamed ground is fixed first.) The world is cut into 8x8-cell TILES (the bake's chunk); a
+  `worldcache.test.ts`). A TEST SWITCH, off by default: Settings→Dev "Cache
+  world rendering" (`ml-worldcache` "1", `__ml.worldCache(on)`) — his A/B is
+  a perf beacon run flipped half way, each window's `wcOn` naming its half;
+  off, `wc` is null and every path is today's. ON, the pictures hold what the
+  STREAMED ground held, and that is not yet a full paint: measured headless at
+  103,182, a full paint with the cache differs from one without it in
+  123,757-129,876 texels, one-texel shifts of the seams along water diamonds,
+  because the streamed ground already differs from a forced full paint there
+  (309,755-320,630 texels with the cache off; the compose worker, audit 703/0,
+  and the tight walk exonerated; `verify-groundbracket.mjs`'s "vs full" fails
+  on main at the first step). The cache is not the default until the
+  streamed ground is exact. The world is cut into 8x8-cell TILES (the bake's chunk); a
   tile's PICTURE is the ground texture's texels whose level-0 cell is one of
   its 64, so the tiles partition the plane — a diamond inscribed in a 512x224
   box (~1.4 of his views wide, half a view tall). TAKEN on the GPU once every

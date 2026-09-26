@@ -161,7 +161,7 @@ import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
 import { FastDepthSort } from "../fastsort";
 import { TerrainBake, bakeParity, type BakeHost, type BakeSink } from "../terrainbake";
-import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, tileBoxOf, tileMask, wcPageKey, wcSlotFrame, type WcFrame, type WcPicture, type WcRect, type WcSlot } from "../worldcache";
+import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, tileBoxOf, tileMask, wcPageKey, wcSlotFrame, wcSwitchOn, type WcFrame, type WcPicture, type WcRect, type WcSlot } from "../worldcache";
 import { WorldCacheGl } from "../worldcachegl";
 import { benchClear, benchDb, benchDecode, benchEncode, benchGet, benchPut, benchSummary, type BenchTile } from "../wcbench";
 import { fadeTune, setFadeTune } from "../fadetune";
@@ -5336,10 +5336,10 @@ export class WorldScene extends Phaser.Scene {
    * `ml-worldcache`): off, `wc` is null and every path below is today's. */
   private wc: WorldCache | null = null;
   private wcGl: WorldCacheGl | null = null;
-  /* THE ROW IS WITHHELD until a full paint with the cache equals one without it
-   * texel for texel on the streamed ground (docs/perf.md): off, every hook
-   * below is inert, and only the headless probe (`__ml.worldCache`) sets it. */
-  private wcOn = false;
+  /* A TEST SWITCH (his order 2026-09-26: "CAN I DO A BEACON PERF RUN AND SWITCH
+   * IT IN THE MIDDLE OF A RUN?"): on, the streamed ground's one-texel seam
+   * shifts (docs/perf.md) persist in the pictures; off, every hook is inert. */
+  private wcOn = wcSwitchOn();
   /** Cells the ground paints skipped for a cached picture, this window. */
   private wcSkipped = 0;
   /** Pages allocated this frame (one at most), and this window's takes. */
@@ -6497,6 +6497,16 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.toggleTerrainBake(),
           get: () => !!this.bake?.on,
           state: () => this.bakeLabel(),
+        },
+        /* CACHE WORLD RENDERING (worldcache.ts; maintainer 2026-09-26): the
+         * phone keeps the ground tiles it has drawn and paints them back
+         * instead of their cells. His A/B: flip it mid-run in a perf beacon
+         * run — every window's `wcOn` says which half it was. */
+        {
+          label: "Cache world rendering",
+          act: () => this.setWorldCache(!this.wcOn),
+          get: () => this.wcOn,
+          state: () => this.wcLabel(),
         },
         /* DISK VS DRAW (wcbench.ts; maintainer 2026-09-26: "I WANT TO KNOW IF
          * ITS FASTER TO DRAW OR LOAD FROM DISK?!"): one tap draws the ground
