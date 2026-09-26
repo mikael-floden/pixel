@@ -289,9 +289,13 @@ export interface RotFxStart {
  *  `zoom` is the peak of a zoom pulse about the pivot (0.1 = 10% closer at mid-turn,
  *  which keeps more of the screen on ground a frame actually saw); `soft` is the
  *  spread (uv) of the average that fills what neither frame saw, `dim` how much it
- *  darkens toward the far outside; `vignette` darkens the screen's rim at peak speed. */
-export interface RotTune { blur: number; zoom: number; soft: number; dim: number; vignette: number }
-export const ROT_TUNE_DEFAULT: RotTune = { blur: 1, zoom: 0.1, soft: 0.02, dim: 0.35, vignette: 0.28 };
+ *  darkens toward the far outside; `vignette` darkens the screen's rim at peak speed;
+ *  `fade` is the HALF-WIDTH (turn progress) of the hand-over from A to B, centred on
+ *  mid-turn where the blur peaks — A's motion lines grow into the middle, B's grow
+ *  out of it, and the two meet there (maintainer 2026-09-26: "motion lines from the
+ *  90° view to meet in the middle so the fade takes place at the max blur"). */
+export interface RotTune { blur: number; zoom: number; soft: number; dim: number; vignette: number; fade: number }
+export const ROT_TUNE_DEFAULT: RotTune = { blur: 1, zoom: 0.1, soft: 0.02, dim: 0.35, vignette: 0.28, fade: 0.06 };
 
 export class RotFx {
   readonly canvas: HTMLCanvasElement;
@@ -505,7 +509,10 @@ export class RotFx {
     gl.uniform2f(gl.getUniformLocation(m, "uShift"), shift[0], shift[1]);
     gl.uniform2f(gl.getUniformLocation(m, "uCSB"), 0, st.dir);
     gl.uniform2f(gl.getUniformLocation(m, "uShiftB"), this.shiftB[0], this.shiftB[1]);
-    gl.uniform1f(gl.getUniformLocation(m, "uMix"), this.hasB ? smooth(0.25, 0.75, u) : 0);
+    // THE FADE AT THE BLUR'S PEAK: A alone before it, B alone after (a fade across
+    // half the turn laid the two views over each other and muddied both sets of lines)
+    const fw = Math.max(0.005, Math.min(0.5, this.tune.fade));
+    gl.uniform1f(gl.getUniformLocation(m, "uMix"), this.hasB ? smooth(0.5 - fw, 0.5 + fw, u) : 0);
     gl.uniform1f(gl.getUniformLocation(m, "uHasB"), this.hasB ? 1 : 0);
     gl.uniform1f(gl.getUniformLocation(m, "uSoft"), this.tune.soft);
     gl.uniform1f(gl.getUniformLocation(m, "uDim"), this.tune.dim);
@@ -526,10 +533,12 @@ export class RotFx {
     // two half-transparent layers read as a ghost dipping out mid-turn. The
     // player: A's facing, the one between, B's; everything else A -> B.
     const hb = this.hasB;
-    const aOut = hb ? 1 - (three ? smooth(0.33, 0.40, u) : smooth(0.5, 0.62, u)) : 1;
+    // everything but the player hands over INSIDE the ground's fade: B's card comes
+    // in over its first half, A's goes over its second
+    const aOut = hb ? 1 - (three ? smooth(0.33, 0.40, u) : smooth(0.5, 0.5 + fw, u)) : 1;
     const mIn = three ? smooth(0.26, 0.33, u) : 0, mOut = three ? 1 - smooth(0.67, 0.74, u) : 0;
-    const bIn = hb ? (three ? smooth(0.60, 0.67, u) : smooth(0.38, 0.5, u)) : 0;
-    const oA = hb ? 1 - smooth(0.5, 0.62, u) : 1, oB = hb ? smooth(0.38, 0.5, u) : 0;
+    const bIn = hb ? (three ? smooth(0.60, 0.67, u) : smooth(0.5 - fw, 0.5, u)) : 0;
+    const oA = hb ? 1 - smooth(0.5, 0.5 + fw, u) : 1, oB = hb ? smooth(0.5 - fw, 0.5, u) : 0;
     // A THING ONLY ONE FRAME SAW has no card to hand over to: it keeps its own the
     // whole turn and the orbit carries it off (or on) screen — handed over at
     // mid-turn, a lamp leaving the view vanished in the middle of the screen. It

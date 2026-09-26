@@ -165,6 +165,13 @@ distance outside (`dim` 0.35) — a clamped sample streaked one edge texel acros
 bottom third; a frame's border is feathered over 5% so seen-and-sharp meets that
 fill in a band; `vignette` 0.28 darkens the rim at peak speed. (Compared in one
 turn: none / gentle / strong / zoom-only — strong went dark, none streaked.)
+THE FADE IS AT THE BLUR'S PEAK (maintainer 2026-09-26: "motion lines from the 90°
+view to meet in the middle so the fade takes place at the max blur"): `fade` 0.06
+is the half-width, in turn progress, of the ground's A-to-B mix, centred on
+mid-turn; before it the screen is A alone (its motion lines growing), after it B
+alone (its lines dying away), and every card but the player's hands over inside
+it. (A fade across half the turn, 0.25-0.75, laid the two views over each other
+for most of the orbit and muddied both sets of lines.)
 FRAME B WAITS FOR A NON-VACUOUS SETTLE: every art key on the cells in view is a
 texture, no cell in view is owed a repaint, the ground pass has blitted, at least
 60 cells were checked, held for five checks 100 ms apart — and no occluder cell in
