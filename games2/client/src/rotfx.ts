@@ -279,6 +279,9 @@ export interface RotBody {
   /** WHO it is, the same in A and B ("p:<session>", "n:<npc>", "m:<monster>",
    *  "s:<feet>"): a thing only one frame saw keeps its one card all turn */
   id?: string;
+  /** Where its thing stands NOW (grid of A, like `foot`), refreshed every draw
+   *  through `RotFx.follow`; absent = where it was taken. */
+  live?: [number, number, number];
 }
 
 export interface RotFxStart {
@@ -317,6 +320,12 @@ export class RotFx {
    *  index the player's group. */
   private bodyA: RotBody[] = [];
   private bodyB: RotBody[] = [];
+  /** WHERE EACH THING IS NOW, asked every draw by its card's id (grid of A):
+   *  a card is drawn at its thing's live feet, so whatever walked on during the
+   *  turn stands where the live view has it when the overlay hands over — taken
+   *  where the frame caught it, a walking NPC jumped a cell at the hand-back.
+   *  null (or an answer of null) = the feet it was taken at. */
+  follow: ((id: string) => [number, number, number] | null) | null = null;
   private meA = -1;
   private meB = -1;
   /** The player's group again, the player at the facing BETWEEN A's and B's (the
@@ -408,7 +417,7 @@ export class RotFx {
     }
     this.sizeTargets(1, 1);
     this.targetsW = 0;
-    this.st = null; this.hasB = false;
+    this.st = null; this.hasB = false; this.follow = null;
     this.bodyA = []; this.bodyB = []; this.bodyM = null; this.meA = this.meB = -1; this.hasOwn = { A: false, B: false };
     Object.assign(this.canvas.style, { transition: "", opacity: "1", visibility: "hidden" });
   }
@@ -600,7 +609,10 @@ export class RotFx {
     const onlyA = (b: RotBody) => hb && b.id !== undefined && !idsB.has(b.id);
     const onlyB = (b: RotBody) => b.id !== undefined && !idsA.has(b.id);
     const soloA = 1 - smooth(0.85, 1, u), soloB = smooth(0, 0.15, u);
-    const feetNow = (b: RotBody) => this.gridPx([b.foot[0], b.foot[1], b.foot[2]], cs, shift);
+    // every card at its thing's feet NOW (follow); its pixels stay where it was taken
+    if (this.follow) for (const b of [...this.bodyA, ...this.bodyB]) b.live = (b.id !== undefined ? this.follow(b.id) : null) ?? undefined;
+    const at = (b: RotBody) => b.live ?? b.foot;
+    const feetNow = (b: RotBody) => this.gridPx(at(b), cs, shift);
     const drawBody = (b: RotBody, withT: WebGLTexture, withoutT: WebGLTexture, taken: [number, number], alpha: number, own: WebGLTexture | null, ownMode: number) => {
       if (alpha < 0.01) return;
       const now = feetNow(b), bp = this.progs.body;
@@ -613,7 +625,7 @@ export class RotFx {
       // above the feet in the frame it was taken in (canvas px -> levels ->
       // nearness, as XFORM's nearness weighs p.z)
       const pr = st.projA;
-      gl.uniform1f(gl.getUniformLocation(bp, "uNearFeet"), this.nearness([b.foot[0], b.foot[1], b.foot[2]], cs) + 0.6);
+      gl.uniform1f(gl.getUniformLocation(bp, "uNearFeet"), this.nearness(at(b), cs) + 0.6);
       gl.uniform1f(gl.getUniformLocation(bp, "uFeetY"), taken[1]);
       gl.uniform1f(gl.getUniformLocation(bp, "uHk"), (2 * pr.dy) / pr.lh / (pr.zoom * pr.lh));
       gl.uniform1f(gl.getUniformLocation(bp, "uAlpha"), alpha);
@@ -643,7 +655,7 @@ export class RotFx {
     const cards: Card[] = [];
     // `order` breaks a tie between the SAME thing's cards (same feet): later stage on top
     const add = (b: RotBody, w: WebGLTexture, wo: WebGLTexture, taken: [number, number], a: number, own: WebGLTexture | null, mode: number, order: number) => {
-      if (a >= 0.01) cards.push({ b, w, wo, taken, a, near: this.nearness(b.foot, cs) + order * 1e-3, own, mode });
+      if (a >= 0.01) cards.push({ b, w, wo, taken, a, near: this.nearness(at(b), cs) + order * 1e-3, own, mode });
     };
     const ownA = this.hasOwn.A ? this.tex.OA : null, ownB = this.hasOwn.B ? this.tex.OB : null;
     this.bodyA.forEach((b, i) => add(b, this.tex.A, this.tex.A0, this.gridPx(b.foot, [1, 0], [0, 0]), onlyA(b) ? soloA : i === this.meA ? aOut : oA, ownA, 0, 0));

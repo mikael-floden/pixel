@@ -87,6 +87,13 @@ as it can, and does that a few ms a frame:
   pick frame switches WITH the resolver, never before: a cell resolved in
   between through the old view's resolver would be picked for the new side and
   kept with the old view.
+- A NEIGHBOUR'S SCENERY IS ASKED FOR BEFORE THE TAP (`prefetchViewScenery`):
+  the still each piece within 24 cells shows from that side, just behind this
+  view's own art (`sceneryTurn` 6.5 — the idle tier never ran while anything
+  streamed: 7 asked, none landed in 4 minutes), and kept out of this view's
+  settle (`sceneryPrefetch`) until its own rebuild asks for it, which raises it. Streamed after B, a first
+  visit's facings popped in as the turn handed back. NPCs need none: they queue
+  all eight directions at spawn (`loadNpcArt`).
 - THE CAMERA MOVES BEFORE ANYTHING IS PAINTED: the bodies are re-based and the
   camera put on the player (detached: on the same ground) with `preRender`, so
   `worldView` already says where the ground and occluders go. Painted where the
@@ -259,7 +266,14 @@ mid-turn, a lamp leaving the view vanished mid-screen. A card samples only what
 its frame saw: a rect past the frame's edge, clamped, drew a striped block.
 THE OVERLAY IS A PICTURE OVER THE WORLD: z 3, the freeze frame's layer — under
 the thumb stick (4), the HUD (4), chat (5) and the pill (8); at z 5 the stick
-vanished for every turn.
+vanished for every turn. It hands back over 120 ms, or 320 ms when B was taken
+on the settle's TIMEOUT: such a B is short of whatever still streamed (a first
+visit's scenery facings, its transitions — 8.8% of the screen at the houses),
+which then faded in instead of popping as the turn stopped.
+A CARD WALKS WITH ITS THING: every draw asks where each card's player, NPC or
+monster stands NOW (`RotFx.follow` -> `turnFootOf`, grid of A) and draws the
+card there, depth and sort included; its pixels stay as taken. At the feet it
+was taken at, whatever walked on during the turn jumped at the hand-back.
 THE LOOK (`RotTune`, `__ml.turnTune`, defaults his to change): `blur` scales the
 arc; `zoom` 0.1 is a zoom pulse about the pivot riding the angular speed (keeps
 more of the screen on ground a frame saw); what NEITHER frame saw is a soft 5x5
