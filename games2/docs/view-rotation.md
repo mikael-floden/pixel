@@ -32,6 +32,10 @@ world's remaining turn — on its own 0.4 s clock it was done before the world
 had begun. A turn that did not happen (dead, no world yet, a swap that threw) is
 retried from `update` a second later. Q / E `.click()` the bar's own buttons, so
 the orb and the view never disagree. The debug hooks keep the eased clock.
+GATE: `scripts/verify-viewturn.mjs` (real taps at his geometry: a two-quarter
+chain covered on every frame, the camera never off uncovered, the cube within a
+frame of the world, a tap back reversing to where it began); `verify-spinbar`
+holds the cube's own clock (`__mlSpinFollow = false`).
 THE DIRECTION IS THE ORB'S: his orb's front face moves RIGHT on a right tap, so
 the world's near side does too — `viewRot - 1` per right quarter (the picture
 turns anticlockwise).
