@@ -374,7 +374,10 @@ pipeline.
   6× pixel art but was upscaled SMOOTHLY (re-baking at 181×105 costs mean
   error 22/255 — it is a soft render). `public/icons/*.png` stay PNG (iOS
   ignores WebP apple-touch-icon).
-- **PWA**: `manifest.webmanifest` (display fullscreen; orientation any —
+- **PWA**: `manifest.webmanifest` (display standalone — the status bar stays
+  up, black via theme_color. Not fullscreen: Android re-shows the hidden bar
+  WHITE on every edge back swipe, which back-turning made constant, maintainer
+  2026-09-26; orientation any —
   see below), `public/sw.js` (passthrough, caches NOTHING — this repo fought
   stale-deploy bugs; the server's Cache-Control is the policy), icons from
   scripts/build-pwa-icons.py (committed). main.ts stashes

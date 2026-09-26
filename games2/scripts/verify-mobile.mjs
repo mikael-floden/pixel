@@ -21,7 +21,10 @@ try {
 
   // ---- 1. PWA surface: manifest + SW + icons reachable and sane ----
   const manifest = await (await fetch(`${BASE}/manifest.webmanifest`)).json();
-  if (manifest.display !== "fullscreen") fail(`manifest.display=${manifest.display}, want fullscreen`);
+  // standalone, not fullscreen (maintainer 2026-09-26): in fullscreen Android
+  // re-shows its hidden status bar WHITE on every edge back swipe.
+  if (manifest.display !== "standalone") fail(`manifest.display=${manifest.display}, want standalone`);
+  if (manifest.display_override) fail("manifest.display_override set — it would override display");
   if (!manifest.icons || manifest.icons.length < 3) fail("manifest icons missing");
   for (const ic of manifest.icons) {
     const r = await fetch(`${BASE}${ic.src}`);
