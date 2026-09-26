@@ -2,23 +2,7 @@
   "domain": "games-ui-assistant",
   "updated_at": "2026-09-21T15:58:06+00:00",
   "health": "running",
-  "current": {
-    "unit": "THE SPIN BAR — his rotating-orb animation between two arrow buttons, under the HP/EP card (maintainer 2026-09-26)",
-    "since": "2026-09-26T04:14:08.211708+00:00",
-    "files": [
-      "games2/client/src/spinbar.ts",
-      "games2/client/src/hud.ts",
-      "games2/client/src/recbtn.ts",
-      "games2/client/ui-src/icon-arrow-src.png",
-      "games2/client/ui-src/spin-orb-src.gif",
-      "games2/client/public/ui2/icon-arrow.webp",
-      "games2/client/public/ui2/spin-orb.webp",
-      "games2/scripts/bake-corner-icons.py",
-      "games2/scripts/verify-spinbar.mjs",
-      "games2/UI_AGENT.md"
-    ],
-    "note": "New module spinbar.ts, mounted from hud.ts (which already mounts recbtn). recbtn.ts gains ONE term in its top so the Report button drops a step below the new row. His 9-frame 32x32 gif is trimmed to 8 (the tail frame) and baked as a 2x horizontal strip; his 24x24 Right_Arrow export is baked 2x like every other corner icon and the left one is the same file mirrored in CSS. Carries public/ui2 art, so the container lane, not fast-publish."
-  },
+  "current": "idle — THE SPIN BAR shipped and live (8282704e35 + its gate): his orb between two arrow buttons on the line under the HP/EP card, Report dropped one --ml-spin-step below it. Buttons are the 🔍 square's 11 computed properties read off the LIVE .ml-wikinear; one 2x bake of his Right_Arrow export mirrored in CSS for the left; the animation is a horizontal 2x STRIP (a GIF cannot be scrubbed and this plays backwards on one button) whose frame COUNT is read from the art, so re-aiming the trim is a bake and not a code change. OPEN, his verdict: I read \"so it ends on a perfect 90° rotation\" as THE TRIMMED STRIP IS ONE QUARTER TURN (dropped the last of 9; a press plays all 8 and lands on frame 0). The other reading is 9 frames = 360°, where a quarter is ~2 frames and a press should be much shorter. Silhouette is byte-identical in all 9 (bbox 20x18 at x6-25,y7-24), so it is a turntable, not a tilt. It drives nothing yet by design — each press emits `ml-spin` with {quarter, dir}. ALSO STILL OPEN, cause NOT found: the session's first chat keyboard shrinks his layout viewport while every later one overlays it; 663764eaa5 did not fix it and I have not pushed again. Offered a ?kb=1 readout.",
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
@@ -43,6 +27,6 @@
       "at": "2026-09-22T19:02:27+00:00"
     }
   ],
-  "status": "working",
-  "updated": "2026-09-26T04:14:08.211708+00:00"
+  "status": "idle",
+  "updated": "2026-09-26T04:37:51.523446+00:00"
 }
