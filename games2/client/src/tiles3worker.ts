@@ -81,7 +81,14 @@ export interface WorkerResolve {
   /** Cell indices, `row * width + col`. */
   cells: Int32Array;
 }
-export type WorkerIn = WorkerInit | WorkerResolve;
+/** Build the resolver for another view orientation AHEAD of a turn, without
+ *  switching to it (the neighbours of the one on screen), from the documents
+ *  this worker already holds. */
+export interface WorkerWarm {
+  type: "warm";
+  viewRot: number;
+}
+export type WorkerIn = WorkerInit | WorkerResolve | WorkerWarm;
 
 export interface ResolvedCell {
   i: number;
@@ -97,43 +104,35 @@ export type WorkerOut =
 let world: { width: number; height: number } | null = null;
 let t3: Tiles3World | null = null;
 let gen = -1;
+/* WHAT A VIEW TURN KEEPS. A turn used to terminate this worker and boot a new
+ * one: the world (737 KB, 262,144 cells) and the thirteen resolver documents
+ * (13.5 MB) fetched and parsed again, the regions flood-filled again, and the
+ * main thread resolving the new view by itself meanwhile — the "preparing"
+ * a person felt in every turn. Now the fetched documents stay (keyed by every
+ * option but the view), and each orientation's resolver is built once and
+ * kept; a turn to a warmed orientation answers "ready" at once. */
+let held: { key: string; worldDoc: unknown; docs: Partial<Record<Tiles3DocKey, unknown>>; opts: WorkerInit } | null = null;
+const byView = new Map<number, { t3: Tiles3World; world: { width: number; height: number }; regionMs: number }>();
+let curView = 0;
 
 const post = (m: WorkerOut, transfer?: Transferable[]) =>
   (self as unknown as { postMessage(m: unknown, t?: Transferable[]): void }).postMessage(m, transfer);
 
-async function init(msg: WorkerInit): Promise<void> {
-  const t0 = performance.now();
-  gen = msg.gen;
-  t3 = null;
-  world = null;
-  /* Fetched HERE rather than cloned from the main thread: the_game's world.json
-   * is 737 KB raw and its parsed form is 262,144 cell objects, so a structured
-   * clone would cost the main thread more than the parse it is saving. The
-   * documents are already `no-cache`-revalidated or content-hash-immutable, so
-   * a second fetch is a 304 or a cache hit, not a second download. */
-  const [worldDoc, docEntries] = await Promise.all([
-    fetch(msg.worldUrl).then((r) => (r.ok ? r.json() : null)),
-    Promise.all(
-      Object.entries(msg.docUrls).map(async ([k, url]) => {
-        try {
-          const r = await fetch(url as string);
-          return [k, r.ok ? await r.json() : undefined] as const;
-        } catch {
-          return [k, undefined] as const;
-        }
-      }),
-    ),
-  ]);
-  if (!worldDoc) throw new Error(`world did not load: ${msg.worldUrl}`);
-  const vk = normRot(msg.viewRot ?? 0);
-  const parsed = parseWorld(rotateWorldDoc(worldDoc, vk));
-  // picks keyed by the SERVER cell, exactly as the main thread keys them (tiles3 setPickFrame)
-  const sw = worldDoc?.size?.w ?? 0, sh = worldDoc?.size?.h ?? 0;
-  setPickFrame(vk && !msg.pickView ? (x, y) => unrotCell(x, y, vk, sw, sh) : null);
+/** Everything a resolver depends on except the view: equal keys share documents. */
+function optsKey(m: WorkerInit): string {
+  return JSON.stringify([m.worldUrl, m.docUrls, m.frame, m.pitch, m.detailRate, m.fadeTune, m.footBoundary, m.deckBoundary, m.slopeStop, m.pickView]);
+}
+
+/** The resolver for orientation `vk`, built from the held documents (cached). */
+function resolverFor(vk: number): { t3: Tiles3World; world: { width: number; height: number }; regionMs: number } {
+  const hit = byView.get(vk);
+  if (hit) return hit;
+  if (!held) throw new Error("no documents held");
+  const msg = held.opts;
+  const worldDoc = held.worldDoc as { size?: { w?: number; h?: number } };
+  const parsed = parseWorld(rotateWorldDoc(worldDoc, vk as 0 | 1 | 2 | 3));
   if (!parsed) throw new Error("world did not parse");
-  const docs: Partial<Record<Tiles3DocKey, unknown>> = {};
-  for (const [k, v] of docEntries) docs[k as Tiles3DocKey] = v;
-  const data = tiles3DataFrom(docs, msg.pitch, () => {});
+  const data = tiles3DataFrom(held.docs, msg.pitch, () => {});
   if (!data) throw new Error("no ground_types/patterns — the resolver cannot be built");
   if (msg.detailRate !== undefined) data.detailRate = msg.detailRate;
   if (msg.fadeTune) data.fadeTune = msg.fadeTune;
@@ -151,10 +150,81 @@ async function init(msg: WorkerInit): Promise<void> {
   /* THE REGION FLOOD FILL — 38 ms over the_game on the dev host, and the single
    * biggest lump of the main thread's own world load. Here it is free. */
   const rT0 = performance.now();
-  t3 = new Tiles3World({ view, tiles: new Tiles3(data), frame: msg.frame, patterns: data.patterns });
-  const regionMs = performance.now() - rT0;
-  world = { width: parsed.width, height: parsed.height };
-  post({ type: "ready", gen, ms: performance.now() - t0, width: parsed.width, height: parsed.height, regionMs });
+  const out = { t3: new Tiles3World({ view, tiles: new Tiles3(data), frame: msg.frame, patterns: data.patterns }), world: { width: parsed.width, height: parsed.height }, regionMs: performance.now() - rT0 };
+  byView.set(vk, out);
+  return out;
+}
+
+/** Picks keyed by the SERVER cell, exactly as the main thread keys them (tiles3 setPickFrame). */
+function pickFrameFor(vk: number, pickView: boolean | undefined): void {
+  const d = held?.worldDoc as { size?: { w?: number; h?: number } } | undefined;
+  const sw = d?.size?.w ?? 0, sh = d?.size?.h ?? 0;
+  setPickFrame(vk && !pickView ? (x, y) => unrotCell(x, y, vk as 0 | 1 | 2 | 3, sw, sh) : null);
+}
+
+async function init(msg: WorkerInit): Promise<void> {
+  const t0 = performance.now();
+  gen = msg.gen;
+  t3 = null;
+  world = null;
+  const key = optsKey(msg);
+  if (!held || held.key !== key) {
+    byView.clear();
+    held = null;
+    /* Fetched HERE rather than cloned from the main thread: the_game's world.json
+     * is 737 KB raw and its parsed form is 262,144 cell objects, so a structured
+     * clone would cost the main thread more than the parse it is saving. The
+     * documents are already `no-cache`-revalidated or content-hash-immutable, so
+     * a second fetch is a 304 or a cache hit, not a second download. */
+    const [worldDoc, docEntries] = await Promise.all([
+      fetch(msg.worldUrl).then((r) => (r.ok ? r.json() : null)),
+      Promise.all(
+        Object.entries(msg.docUrls).map(async ([k, url]) => {
+          try {
+            const r = await fetch(url as string);
+            return [k, r.ok ? await r.json() : undefined] as const;
+          } catch {
+            return [k, undefined] as const;
+          }
+        }),
+      ),
+    ]);
+    if (!worldDoc) throw new Error(`world did not load: ${msg.worldUrl}`);
+    if (msg.gen !== gen) return; // a newer init arrived while this one fetched
+    const docs: Partial<Record<Tiles3DocKey, unknown>> = {};
+    for (const [k, v] of docEntries) docs[k as Tiles3DocKey] = v;
+    held = { key, worldDoc, docs, opts: msg };
+  }
+  const vk = normRot(msg.viewRot ?? 0);
+  curView = vk;
+  pickFrameFor(vk, msg.pickView);
+  const r = resolverFor(vk);
+  t3 = r.t3;
+  world = r.world;
+  post({ type: "ready", gen, ms: performance.now() - t0, width: r.world.width, height: r.world.height, regionMs: r.regionMs });
+  // and the NEIGHBOURS, after the answer: the next turn either way finds its
+  // resolver built (a turn's worth of work done while nobody waits on it)
+  setTimeout(() => {
+    warm({ type: "warm", viewRot: vk + 1 });
+    warm({ type: "warm", viewRot: vk + 3 });
+  }, 0);
+}
+
+/** A neighbour's resolver, built ahead of its turn (idle work in this thread). */
+function warm(msg: WorkerWarm): void {
+  if (!held) return;
+  const vk = normRot(msg.viewRot);
+  if (byView.has(vk)) return;
+  // built under ITS OWN pick frame (picks key by the server cell of that
+  // orientation), then the one on screen is put back
+  pickFrameFor(vk, held.opts.pickView);
+  try {
+    resolverFor(vk);
+  } catch {
+    /* built again, for real, when the turn asks */
+  } finally {
+    pickFrameFor(curView, held.opts.pickView);
+  }
 }
 
 function resolve(msg: WorkerResolve): void {
@@ -206,4 +276,5 @@ self.onmessage = (ev: MessageEvent<WorkerIn>) => {
     return;
   }
   if (msg.type === "resolve") resolve(msg);
+  if (msg.type === "warm") warm(msg);
 };

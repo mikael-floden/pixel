@@ -362,6 +362,8 @@ const HURT_MS = 300;
  *  (read every frame — more than one runs on through at speed, none goes back),
  *  and the velocity the previous quarter ended at (quarters/ms). */
 type TurnDrive = { owed: () => number; v0: number; angle?: (u: number) => void };
+/** One turned orientation's world, kept (WorldScene.viewCache). */
+type ViewCacheEntry = { vw: World; terrain: ReturnType<typeof buildTerrainGrid>; decks: Map<number, { deck: Deck; cell: Deck["cells"][number] }>; hidden: number };
 /** The turn's upright set of one frame (WorldScene.turnSnap): the objects to hide
  *  for its bodiless twin, the cards, the player's index and the owner map. */
 type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
@@ -2319,6 +2321,11 @@ export class WorldScene extends Phaser.Scene {
    *  cached one while a sibling streams. Same retry as the cells' set. */
   private t3deckOwed = new Map<number, number>();
   private t3cells = new Map<number, { cell?: Tiles3Cell | null; boundary?: Tiles3Boundary | null; decks?: Tiles3DeckCell[] }>();
+  /** The resolvers of the views not on screen, with their resolved cells
+   *  (initTiles3), valid under `t3ViewRules`; `t3View` is the one on screen. */
+  private t3ViewCache = new Map<ViewRot, { t3: Tiles3World; cells: WorldScene["t3cells"] }>();
+  private t3ViewRules = "";
+  private t3View: ViewRot | null = null;
   /** THE RESOLVER ON ANOTHER CORE — see resolveworker.ts. It fills `t3cells`
    *  ahead of the band that needs them; every answer is optional. */
   private t3worker = new ResolveWorker();
@@ -5674,6 +5681,12 @@ export class WorldScene extends Phaser.Scene {
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    // a new world: nothing turned from the old one may survive
+    this.viewCache = new Map();
+    this.viewDoc = null;
+    this.viewDocP = null;
+    this.t3ViewCache = new Map();
+    this.t3View = null;
     this.roomOfCellMap = null; // world.rooms — rebuilt lazily by roomOf
     this.roomLitMap = null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
@@ -15138,6 +15151,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.spinGoal !== this.spinAt || this.spinBusy) this.publishSpinAngle(this.spinQ, true);
     // the turn's overlay is made before the first tap, in idle time
     if (!this.rotFxPool.length && this.worldUp && time > this.rotFxWarmAt) { this.rotFxWarmAt = time + 5000; this.prewarmRotFx(); }
+    if (this.worldUp) this.warmViews(time);
     /* Cleared here, set by t3drainSlices. The two stand-down guards below read
      * `groundSliceQ.length` AFTER the drain has already shifted its rects, so
      * the frame that EMPTIES the queue used to look idle to them — and after
@@ -20518,23 +20532,67 @@ export class WorldScene extends Phaser.Scene {
    *  this). The same rebuild the terrain editor does after changing one cell,
    *  for all of them: the resolver (and its worker, and scenery), the night
    *  pass, a full repaint. Simulation is untouched. */
+  /** THE TURNED WORLDS, KEPT: each orientation's parsed world, terrain grid and
+   *  deck index are built once (the parse alone ~45 ms here, a phone several
+   *  times that, on the main thread) and every later turn to it swaps a pointer;
+   *  the neighbours of the view on screen are built in idle time (warmViews). */
+  private viewCache = new Map<ViewRot, ViewCacheEntry>();
+  private viewDocP: Promise<void> | null = null;
+  private async viewEntry(k: ViewRot): Promise<ViewCacheEntry> {
+    const hit = this.viewCache.get(k);
+    if (hit) return hit;
+    if (!this.viewDoc) await this.fetchViewDoc();
+    return this.buildViewEntry(k);
+  }
+  /** The world document the turned views are built from — fetched ONCE, in idle
+   *  time after the world is up (warmViews): fetched at the first tap it held
+   *  that turn's swap for the whole round trip (8.5 s on a busy harness). */
+  private fetchViewDoc(): Promise<void> {
+    const name = this.worldName;
+    return (this.viewDocP ??= fetch(gameUrl(worldFileUrl(name, "world.json")))
+      .then((r) => { if (!r.ok) throw new Error(`world.json answered ${r.status}`); return r.json(); })
+      .then((d) => { if (name === this.worldName) this.viewDoc = d; })
+      .catch((e) => { this.viewDocP = null; throw e; }));
+  }
+  /** THE NEIGHBOURS, BUILT BEFORE THE TAP: once the world is up and nothing
+   *  turns, the document is fetched and each view a quarter away gets its entry
+   *  — one per idle slot, a second apart, so no frame pays for two. */
+  private viewWarmAt = 0;
+  private warmViews(time: number): void {
+    if (this.turning || this.spinBusy || this.spinGoal !== this.spinAt || time < this.viewWarmAt) return;
+    this.viewWarmAt = time + 1000;
+    const ric = (window as unknown as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => void }).requestIdleCallback;
+    const idle = (f: () => void) => (ric ? ric(f, { timeout: 3000 }) : window.setTimeout(f, 200));
+    if (!this.viewDoc) { idle(() => { void this.fetchViewDoc().catch(() => { /* the tap fetches it again */ }); }); return; }
+    for (const k of [normRot(this.viewRot + 1), normRot(this.viewRot + 3)]) {
+      if (k === 0 || this.viewCache.has(k)) continue;
+      idle(() => { if (!this.turning && this.viewDoc && !this.viewCache.has(k)) this.buildViewEntry(k); });
+      return;
+    }
+  }
+  private buildViewEntry(k: ViewRot): ViewCacheEntry {
+    const st: RotateStats = { hiddenPieces: 0 };
+    const vw = parseWorldDoc(rotateWorldDoc(this.viewDoc, k, st)) as World | null;
+    if (!vw) throw new Error("the rotated world did not parse");
+    // same pieces, same order as the server's parse: an index still joins
+    for (const i of st.hiddenIdx ?? []) { const p = vw.scenery?.[i] as { viewHidden?: boolean } | undefined; if (p) p.viewHidden = true; }
+    const decks = new Map<number, { deck: Deck; cell: Deck["cells"][number] }>();
+    for (const d of vw.decks ?? []) for (const c of d.cells) decks.set(c.row * vw.width + c.col, { deck: d, cell: c });
+    const e: ViewCacheEntry = { vw, terrain: buildTerrainGrid(vw.width, vw.height, vw.rows, vw.props, vw.decks), decks, hidden: st.hiddenPieces };
+    this.viewCache.set(k, e);
+    return e;
+  }
+
   private async applyViewRot(k: ViewRot): Promise<void> {
     const world = this.world;
     if (!world || k === this.viewRot) return;
     const t0 = performance.now();
     let vw: World | null = null;
-    if (k !== 0) {
-      if (!this.viewDoc) {
-        const r = await fetch(gameUrl(worldFileUrl(this.worldName, "world.json")));
-        if (!r.ok) throw new Error(`world.json answered ${r.status}`);
-        this.viewDoc = await r.json();
-      }
-      const st: RotateStats = { hiddenPieces: 0 };
-      vw = parseWorldDoc(rotateWorldDoc(this.viewDoc, k, st)) as World | null;
-      if (!vw) throw new Error("the rotated world did not parse");
-      // same pieces, same order as the server's parse: an index still joins
-      for (const i of st.hiddenIdx ?? []) { const p = vw.scenery?.[i] as { viewHidden?: boolean } | undefined; if (p) p.viewHidden = true; }
-      this.turnLog.hiddenPieces = st.hiddenPieces;
+    let vc: ViewCacheEntry | null = null;
+    if (k !== 0) vc = await this.viewEntry(k);
+    if (vc) {
+      vw = vc.vw;
+      this.turnLog.hiddenPieces = vc.hidden;
     }
     const tParse = performance.now();
     // WHERE A SWAP'S TIME GOES, step by step (turnLog.sw_*): it blocks the main
@@ -20549,9 +20607,8 @@ export class WorldScene extends Phaser.Scene {
     setPickFrame(k && !PICK_VIEW ? (x, y) => unrotCell(x, y, k, W0, H0) : null);
     this.night?.setWorld(vw ?? world);
     mark("night");
-    this.viewTerrain = k && vw ? buildTerrainGrid(vw.width, vw.height, vw.rows, vw.props, vw.decks) : null;
-    this.viewDeckIndex.clear();
-    if (k && vw) for (const d of vw.decks ?? []) for (const c of d.cells) this.viewDeckIndex.set(c.row * vw.width + c.col, { deck: d, cell: c });
+    this.viewTerrain = vc ? vc.terrain : null;
+    this.viewDeckIndex = vc ? vc.decks : new Map();
     mark("terrain");
     // INDOORS, THE CUT IS A FUNCTION OF THE VIEW: re-cut for this side before the
     // repaint below, and drop a crossfade layer placed for the old one
@@ -22706,6 +22763,16 @@ export class WorldScene extends Phaser.Scene {
         data.slopeSharesW = sw.width;
       }
     }
+    /* ONE RESOLVER PER VIEW, KEPT (with the cells it resolved): a turn used to
+     * build a new one — the region flood fill over the whole world — and drop
+     * every resolved cell, so the view it turned to was resolved from nothing
+     * on the main thread while the turn ran. A resolver is valid while the
+     * rules it was built under hold; any other rebuild (the fade dials, the
+     * details dial, the slope switch, the live channel) drops them all. */
+    const rules = JSON.stringify([data.fadeTune, data.detailRate, data.slopeHeight, !!data.slopeShares, Object.keys(docs).length, this.worldName]);
+    if (rules !== this.t3ViewRules) { this.t3ViewCache.clear(); this.t3ViewRules = rules; }
+    if (this.t3 && this.t3View !== null && this.t3View !== this.viewRot) this.t3ViewCache.set(this.t3View, { t3: this.t3, cells: this.t3cells });
+    const kept = this.t3ViewCache.get(this.viewRot);
     const tiles = new Tiles3(data);
     const view = viewFromParsed(this.viewWorld ?? world);
     // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
@@ -22728,8 +22795,16 @@ export class WorldScene extends Phaser.Scene {
     this.repaintGroundPartial = false;
     this.t3ringQueue = [];
     this.t3keepIdx = null;
-    this.t3cells.clear(); // a new resolver: nothing cached against the old one may survive
-    this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
+    if (kept) {
+      // the view turned back to: its resolver and every cell it resolved
+      this.t3 = kept.t3;
+      this.t3cells = kept.cells;
+      this.t3ViewCache.delete(this.viewRot);
+    } else {
+      this.t3cells = new Map(); // a new resolver: nothing cached against the old one may survive
+      this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
+    }
+    this.t3View = this.viewRot;
     this.perfSnapResolve(); // a new resolver's counters start at zero
     this.t3regionMs = +(performance.now() - t0).toFixed(1);
     /* AND THE SAME RESOLVER ON ANOTHER CORE. Booted from the URLs THIS thread
@@ -22763,7 +22838,9 @@ export class WorldScene extends Phaser.Scene {
       viewRot: this.viewRot,
       pickView: PICK_VIEW,
     };
-    this.t3worker.stop();
+    // KEPT, NOT RESTARTED: the worker holds its documents and a resolver per
+    // view orientation, and re-fetches only when an option other than the view
+    // changed (tiles3worker optsKey) — a turn used to cost it a full reboot
     this.t3workerBooted = true;
     this.t3worker.init(this.t3workerOpts);
     this.t3load = new Tiles3Loader({
