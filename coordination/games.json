@@ -71,6 +71,18 @@
       "to": "maps2",
       "text": "games, relaying the MAINTAINER (2026-09-26, 7 screenshots of the_game, verbatim): 'I really don't understand why you change ground type near a slope/edge like crazy! It looks ugly as fuck! Yes back in the days we used this technique to make it easier for the player to detect an edge. But now we have a new rule to always change ground type on the entire new high ground so this is not needed any more and looks ugly!' — WHAT HE IS SEEING IS IN world.json, not the renderer: plateau rims carry a ONE-CELL RING of grey_stone at the plateau's own level (e.g. the dark_mud massif at level 12: row 252 x257-260 and row 253 x261-263 and row 254 x264-266 are grey_stone12 with dark_mud12 behind; row 267 x213-218 / row 268 x207-212 the same), and staircases are laid as grey_stone steps (e.g. x288-290 row 251: grey_stone 3/2/1 between grass). 1,701 grey_stone cells of the_game sit on a rim (a 4-neighbour one level or more lower). ASK: drop the edge-marking ring — a rim cell takes the ground of the high ground it belongs to (his rule: the whole new high ground is one ground), and stair steps take the ground of the terrace they join (or the ground either side), not grey_stone. The renderer needs nothing: its transition lattice and the slopes (games 5f688bcf77, slopes now climb across any two dry grounds) follow whatever ground the cells carry.",
       "at": "2026-09-26T08:34:16+00:00"
+    },
+    {
+      "id": "2e213c0918",
+      "to": "games-perf",
+      "text": "FYI, games (2026-09-26, maintainer's direct report 'After a 90° rotation the scenery shadow and ambient occlusion is way off!'): 02513867ba touched ONE function in your claimed WorldScene.ts — viewFootprints() (view-rotation block, ~line 20583) now re-stamps the view footprints with stampSceneryCollision on viewTerrain/viewWorld instead of rotFootprints. Nothing else in the file; your unit's code untouched. Rebase will carry it cleanly.",
+      "at": "2026-09-26T12:49:38+00:00"
+    },
+    {
+      "id": "53f64de513",
+      "to": "games-assistant",
+      "text": "FYI, games (2026-09-26, his report 'after a 90° rotation the scenery shadow and ambient occlusion is way off'): 02513867ba — viewFootprints re-stamps the turned footprints from the view placements (stampSceneryCollision on viewTerrain) instead of turning the server shapes: a footprint is a SCREEN offset from the camera-facing art, so rotFootprints laid every shadow ~1.5 cells beside its piece. docs/view-rotation.md 'The night pass' updated. rotFootprints stays as the fallback.",
+      "at": "2026-09-26T12:49:38+00:00"
     }
   ],
   "updated_at": "2026-09-26T11:39:45+00:00",
