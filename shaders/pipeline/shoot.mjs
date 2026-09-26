@@ -5,6 +5,8 @@
 //
 //   node shaders/pipeline/shoot.mjs [--ids fire/fireball,frost/frost_nova | --all]
 //        [--levels 1,5,10] [--frames 6] [--out <dir>] [--day] [--w 240 --h 150]
+//        [--count 3 --formation fan] [--hero default_girl] [--monster granite_bear]
+//        [--tod 3.5 (0..4: night, morning, day, evening)] [--torch 0]
 //
 // Exit 1 when any shader fails to compile or an effect draws nothing at all.
 // Needs playwright-core (a games2 devDependency) and a Chromium: set
@@ -100,7 +102,7 @@ async function main() {
   for (const id of ids) {
     logs.length = 0;
     const q = new URLSearchParams({ sheet: id, levels, frames, w: arg("w", "240"), h: arg("h", "180"), night: has("day") ? "0" : "1" });
-    for (const k of ["bands", "zoom", "stepFps", "dither"]) if (arg(k)) q.set(k, arg(k));
+    for (const k of ["bands", "zoom", "stepFps", "dither", "count", "formation", "hero", "monster", "tod", "torch"]) if (arg(k)) q.set(k, arg(k));
     await page.goto(`http://127.0.0.1:${port}/shaders/viewer/index.html?${q}`);
     await page.waitForFunction(() => window.__sheet && window.__sheet.done, null, { timeout: 120000 });
     const res = await page.evaluate(() => window.__sheet);

@@ -29,6 +29,7 @@ export default defineEffect({
   id: "holy/healing_circle",
   name: "Healing Circle",
   kind: "zone",
+  stage: { target: null, at: "caster", anim: "spell_channel" },
   family: "holy",
   category: "heal",
   tags: ["heal", "aoe", "zone", "support", "over time"],

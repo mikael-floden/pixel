@@ -1,6 +1,7 @@
 {
  "format": "nangijala-shaders-catalog@1",
  "runtime": "shaders/runtime/index.js",
+ "showcase": "shaders/runtime/showcase.js",
  "viewer": "shaders/viewer/index.html",
  "families": {
   "fire": {
@@ -72,12 +73,576 @@
    "color": "#7d8fe8"
   }
  },
+ "cast_anims": {
+  "spell_wand": {
+   "frames": 4,
+   "fps": 10,
+   "key": 2,
+   "emit": "wand"
+  },
+  "spell_channel": {
+   "frames": 4,
+   "fps": 10,
+   "key": 2,
+   "emit": "hands"
+  },
+  "bow": {
+   "frames": 4,
+   "fps": 10,
+   "key": 2,
+   "emit": "bow"
+  },
+  "sword": {
+   "frames": 4,
+   "fps": 12,
+   "key": 2,
+   "emit": null
+  },
+  "punch": {
+   "frames": 4,
+   "fps": 12,
+   "key": 2,
+   "emit": null
+  },
+  "kick": {
+   "frames": 4,
+   "fps": 12,
+   "key": 2,
+   "emit": null
+  },
+  "attack": {
+   "seconds": 0.7,
+   "keyAt": 0.5,
+   "emit": null
+  }
+ },
+ "formations": {
+  "fan": {
+   "label": "Fan",
+   "about": "leave the hand together a beat apart, bow out to both sides and converge on the target",
+   "kinds": [
+    "projectile"
+   ]
+  },
+  "barrage": {
+   "label": "Barrage",
+   "about": "one after another down the same line, a rapid rhythm of releases and impacts",
+   "kinds": [
+    "projectile"
+   ]
+  },
+  "spread": {
+   "label": "Spread",
+   "about": "a cone: released together, straight lines that land side by side across the target",
+   "kinds": [
+    "projectile"
+   ]
+  },
+  "rain": {
+   "label": "Rain",
+   "about": "lobbed high (projectiles) or dropped (bursts) and scattered over the target area",
+   "kinds": [
+    "projectile",
+    "burst"
+   ]
+  },
+  "ring": {
+   "label": "Ring",
+   "about": "outward in every direction from the caster (projectiles) or a circle around the spot (bursts)",
+   "kinds": [
+    "projectile",
+    "burst"
+   ]
+  },
+  "line": {
+   "label": "Line",
+   "about": "a row marching from the caster to the target, each a beat after the last",
+   "kinds": [
+    "burst"
+   ]
+  }
+ },
+ "cast_points": {
+  "format": "nangijala-shaders-cast-points@1",
+  "frame": {
+   "w": 112,
+   "h": 112
+  },
+  "source": "0b7eb051affafb1c",
+  "heroes": {
+   "default_boy": {
+    "anchors": {
+     "south": {
+      "x": 0.5045,
+      "y": 0.8351
+     },
+     "south-east": {
+      "x": 0.5,
+      "y": 0.8307
+     },
+     "east": {
+      "x": 0.4955,
+      "y": 0.853
+     },
+     "north-east": {
+      "x": 0.4933,
+      "y": 0.8351
+     },
+     "north": {
+      "x": 0.5045,
+      "y": 0.8351
+     },
+     "north-west": {
+      "x": 0.5067,
+      "y": 0.8351
+     },
+     "west": {
+      "x": 0.5045,
+      "y": 0.853
+     },
+     "south-west": {
+      "x": 0.5,
+      "y": 0.8307
+     }
+    },
+    "anims": {
+     "idle": {
+      "folder": "custom-calm-idle",
+      "frames": 4
+     },
+     "spell_wand": {
+      "folder": "custom-spell-with-magic-wand",
+      "frames": 4
+     },
+     "spell_channel": {
+      "folder": "custom-channeled-spell-between-hands-with-both-hands",
+      "frames": 4
+     },
+     "bow": {
+      "folder": "custom-shot-arrow-with-bow",
+      "frames": 4
+     },
+     "sword": {
+      "folder": "custom-swing-a-sword",
+      "frames": 4
+     },
+     "punch": {
+      "folder": "custom-punch",
+      "frames": 4
+     },
+     "kick": {
+      "folder": "custom-high-kick",
+      "frames": 4
+     }
+    },
+    "clips": {
+     "spell_wand": {
+      "frame": 2,
+      "folder": "custom-spell-with-magic-wand",
+      "point": "wand",
+      "dirs": {
+       "south": {
+        "x": 101.2,
+        "y": 43.4,
+        "sx": 44.7,
+        "z": 50.1
+       },
+       "south-east": {
+        "x": 103,
+        "y": 44.4,
+        "sx": 47,
+        "z": 48.7
+       },
+       "east": {
+        "x": 103.9,
+        "y": 43.7,
+        "sx": 48.4,
+        "z": 51.9
+       },
+       "north-east": {
+        "x": 101.4,
+        "y": 43.7,
+        "sx": 46.2,
+        "z": 49.8
+       },
+       "north": {
+        "x": 99.3,
+        "y": 17.8,
+        "sx": 42.8,
+        "z": 75.8
+       },
+       "north-west": {
+        "x": 10.6,
+        "y": 43.7,
+        "sx": -46.2,
+        "z": 49.8
+       },
+       "west": {
+        "x": 3.6,
+        "y": 43.9,
+        "sx": -52.9,
+        "z": 51.6
+       },
+       "south-west": {
+        "x": 9,
+        "y": 44.4,
+        "sx": -47,
+        "z": 48.7
+       }
+      }
+     },
+     "spell_channel": {
+      "frame": 2,
+      "folder": "custom-channeled-spell-between-hands-with-both-hands",
+      "point": "orb",
+      "dirs": {
+       "south": {
+        "x": 57.3,
+        "y": 56.9,
+        "sx": 0.8,
+        "z": 36.7
+       },
+       "south-east": {
+        "x": 62.1,
+        "y": 51.9,
+        "sx": 6.1,
+        "z": 41.2
+       },
+       "east": {
+        "x": 75.3,
+        "y": 57.1,
+        "sx": 19.8,
+        "z": 38.5
+       },
+       "north-east": {
+        "x": 76.6,
+        "y": 46.2,
+        "sx": 21.4,
+        "z": 47.3
+       },
+       "north": {
+        "x": 56.1,
+        "y": 45,
+        "sx": -0.4,
+        "z": 48.6
+       },
+       "north-west": {
+        "x": 38.4,
+        "y": 56.9,
+        "sx": -18.3,
+        "z": 36.6
+       },
+       "west": {
+        "x": 36.7,
+        "y": 57.1,
+        "sx": -19.8,
+        "z": 38.5
+       },
+       "south-west": {
+        "x": 49.9,
+        "y": 51.9,
+        "sx": -6.1,
+        "z": 41.2
+       }
+      }
+     },
+     "bow": {
+      "frame": 2,
+      "folder": "custom-shot-arrow-with-bow",
+      "point": "arrow",
+      "dirs": {
+       "south": {
+        "x": 103.8,
+        "y": 46.5,
+        "sx": 47.3,
+        "z": 47
+       },
+       "south-east": {
+        "x": 104.3,
+        "y": 48.9,
+        "sx": 48.3,
+        "z": 44.1
+       },
+       "east": {
+        "x": 97.2,
+        "y": 47.5,
+        "sx": 41.7,
+        "z": 48
+       },
+       "north-east": {
+        "x": 100.6,
+        "y": 40,
+        "sx": 45.4,
+        "z": 53.5
+       },
+       "north": {
+        "sx": 0,
+        "z": 53.5,
+        "approx": true
+       },
+       "north-west": {
+        "x": 11.4,
+        "y": 40,
+        "sx": -45.4,
+        "z": 53.5
+       },
+       "west": {
+        "x": 14.8,
+        "y": 47.5,
+        "sx": -41.7,
+        "z": 48
+       },
+       "south-west": {
+        "x": 7.7,
+        "y": 48.9,
+        "sx": -48.3,
+        "z": 44.1
+       }
+      }
+     }
+    }
+   },
+   "default_girl": {
+    "anchors": {
+     "south": {
+      "x": 0.5045,
+      "y": 0.8351
+     },
+     "south-east": {
+      "x": 0.5045,
+      "y": 0.8307
+     },
+     "east": {
+      "x": 0.5045,
+      "y": 0.853
+     },
+     "north-east": {
+      "x": 0.4955,
+      "y": 0.853
+     },
+     "north": {
+      "x": 0.5045,
+      "y": 0.8351
+     },
+     "north-west": {
+      "x": 0.5045,
+      "y": 0.853
+     },
+     "west": {
+      "x": 0.4955,
+      "y": 0.853
+     },
+     "south-west": {
+      "x": 0.5,
+      "y": 0.8307
+     }
+    },
+    "anims": {
+     "idle": {
+      "folder": "custom-calm-idle",
+      "frames": 4
+     },
+     "spell_wand": {
+      "folder": "custom-spell-attack-with-magic-wand",
+      "frames": 4
+     },
+     "spell_channel": {
+      "folder": "custom-channeled-spell-between-hands-with-both-hands",
+      "frames": 4
+     },
+     "bow": {
+      "folder": "custom-shot-arrow-with-bow",
+      "frames": 4
+     },
+     "sword": {
+      "folder": "custom-swing-a-sword",
+      "frames": 4
+     },
+     "punch": {
+      "folder": "custom-punch",
+      "frames": 4
+     },
+     "kick": {
+      "folder": "custom-high-kick",
+      "frames": 4
+     }
+    },
+    "clips": {
+     "spell_wand": {
+      "frame": 2,
+      "folder": "custom-spell-attack-with-magic-wand",
+      "point": "wand",
+      "dirs": {
+       "south": {
+        "x": 102.4,
+        "y": 42,
+        "sx": 45.9,
+        "z": 51.5
+       },
+       "south-east": {
+        "x": 102.8,
+        "y": 42.1,
+        "sx": 46.3,
+        "z": 51
+       },
+       "east": {
+        "x": 102.7,
+        "y": 42.1,
+        "sx": 46.2,
+        "z": 53.5
+       },
+       "north-east": {
+        "x": 102.2,
+        "y": 17.6,
+        "sx": 46.7,
+        "z": 77.9
+       },
+       "north": {
+        "x": 102.4,
+        "y": 40.3,
+        "sx": 45.9,
+        "z": 53.2
+       },
+       "north-west": {
+        "x": 9.8,
+        "y": 17.6,
+        "sx": -46.7,
+        "z": 77.9
+       },
+       "west": {
+        "x": 9.3,
+        "y": 42.1,
+        "sx": -46.2,
+        "z": 53.5
+       },
+       "south-west": {
+        "x": 9.2,
+        "y": 42.1,
+        "sx": -46.8,
+        "z": 51
+       }
+      }
+     },
+     "spell_channel": {
+      "frame": 2,
+      "folder": "custom-channeled-spell-between-hands-with-both-hands",
+      "point": "orb",
+      "dirs": {
+       "south": {
+        "x": 56.6,
+        "y": 57.8,
+        "sx": 0.1,
+        "z": 35.7
+       },
+       "south-east": {
+        "x": 67.8,
+        "y": 59.1,
+        "sx": 11.3,
+        "z": 34
+       },
+       "east": {
+        "x": 71.1,
+        "y": 51.8,
+        "sx": 14.6,
+        "z": 43.7
+       },
+       "north-east": {
+        "x": 68.5,
+        "y": 57.4,
+        "sx": 13,
+        "z": 38.1
+       },
+       "north": {
+        "x": 56.7,
+        "y": 52.1,
+        "sx": 0.2,
+        "z": 41.4
+       },
+       "north-west": {
+        "x": 43.5,
+        "y": 57.4,
+        "sx": -13,
+        "z": 38.1
+       },
+       "west": {
+        "x": 40.9,
+        "y": 51.8,
+        "sx": -14.6,
+        "z": 43.7
+       },
+       "south-west": {
+        "x": 44.2,
+        "y": 59.1,
+        "sx": -11.8,
+        "z": 34
+       }
+      }
+     },
+     "bow": {
+      "frame": 2,
+      "folder": "custom-shot-arrow-with-bow",
+      "point": "arrow",
+      "dirs": {
+       "south": {
+        "sx": 0,
+        "z": 44.6,
+        "approx": true
+       },
+       "south-east": {
+        "x": 105.6,
+        "y": 48.5,
+        "sx": 49.1,
+        "z": 44.6
+       },
+       "east": {
+        "x": 104,
+        "y": 43,
+        "sx": 47.5,
+        "z": 52.5
+       },
+       "north-east": {
+        "x": 99.3,
+        "y": 23.1,
+        "sx": 43.8,
+        "z": 72.5
+       },
+       "north": {
+        "x": 11,
+        "y": 43.5,
+        "sx": -45.5,
+        "z": 50
+       },
+       "north-west": {
+        "x": 12.7,
+        "y": 23.1,
+        "sx": -43.8,
+        "z": 72.5
+       },
+       "west": {
+        "x": 8,
+        "y": 43,
+        "sx": -47.5,
+        "z": 52.5
+       },
+       "south-west": {
+        "x": 6.4,
+        "y": 48.5,
+        "sx": -49.6,
+        "z": 44.6
+       }
+      }
+     }
+    }
+   }
+  }
+ },
  "count": 31,
  "effects": [
   {
    "id": "arcane/arcane_beam",
    "key": "shaders/library/arcane/arcane_beam",
    "file": "shaders/library/arcane/arcane_beam.js",
+   "version": "7a48f4b61ceaf92d",
    "name": "Arcane Beam",
    "kind": "beam",
    "kindLabel": "Beam",
@@ -92,10 +657,49 @@
    "thinking": "A channelled beam is on screen for seconds, so it has to stay interesting without getting noisy. It is built like a neon tube: a one-pixel white-hot core, a violet body in hard bands, and a dithered magenta fringe, with a slow wobble so it feels like held energy rather than a laser. The motion that tells you it is DOING something is the bright pulses that run from the caster to the target, like a pump. It shoots out from the hand over the intro instead of popping in, thins away on release, and both ends are marked: a charged orb in the caster's hand and a crackling splash on the target, which is also where the light sits, so the target is what gets lit. It follows both bodies every frame (from and to may be functions), so the game only starts it and stops it.",
    "levels": "1-3: a thin wavering violet beam. 4-6: thicker, with energy pulses racing to the target and sparks at the hit. 7-9: a second strand twists around the beam as a helix. 10: a wide, blazing beam with a double helix and a heavy splash.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": null,
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_channel",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.arcane-arcane_beam.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.arcane-arcane_beam.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.arcane-arcane_beam.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -163,6 +767,7 @@
    "id": "arcane/arcane_shield",
    "key": "shaders/library/arcane/arcane_shield",
    "file": "shaders/library/arcane/arcane_shield.js",
+   "version": "395ca2330d7c2181",
    "name": "Arcane Shield",
    "kind": "aura",
    "kindLabel": "Aura",
@@ -177,10 +782,49 @@
    "thinking": "A shield has to be visible around the body without hiding it, so it is a bubble drawn almost entirely in its RIM: a bright one-pixel outline, a glow that thickens toward the edge (the way light gathers at the silhouette of a glass sphere) and nothing in the middle. The far half of the bubble is drawn behind the body and the near half in front, so it reads as a volume the hero stands inside. From level 4 a hex lattice shimmers over the shell in slow waves, which is what makes it read as a force field rather than a soap bubble. It inflates from the body on the intro and snaps away on release.",
    "levels": "1-3: a thin rim and edge glow. 4-6: a hex lattice shimmers over the shell. 7-9: a larger, brighter bubble. 10: a thick, bright barrier.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": null,
+    "extras": 0,
+    "at": "caster",
+    "reach": null,
+    "move": false,
+    "hold": 2.6,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.arcane-arcane_shield.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.arcane-arcane_shield.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.arcane-arcane_shield.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -243,6 +887,7 @@
    "id": "arcane/blink",
    "key": "shaders/library/arcane/blink",
    "file": "shaders/library/arcane/blink.js",
+   "version": "ba309beb1503dddd",
    "name": "Blink",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -256,10 +901,33 @@
    "thinking": "A blink is two moments and a promise that they are connected. At the old spot the body folds into a vertical slit of violet light that snaps shut, throwing off sparks; at the new spot the same slit tears open and lets the body out, with a ring on the ground to mark the landing. The slits are body-sized so the eye reads \"the person went into that and came out of this\". The game moves the body on the \"peak\" event, which lands while both slits are open, so there is never a frame where the hero is simply missing or doubled. From level 7 a streak of sparks connects the two points, so the path can be followed in a crowd.",
    "levels": "1-3: two quick slits. 4-6: brighter slits and a landing ring. 7-9: a spark streak joins the two points. 10: a wide rift and a bright landing flash.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": null,
+    "extras": 0,
+    "at": "free",
+    "reach": null,
+    "move": true,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Burst",
+     "each": false,
+     "sound_event": "shaders.arcane-blink.peak"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body",
     "ground"
@@ -333,6 +1001,7 @@
    "id": "arcane/channel",
    "key": "shaders/library/arcane/channel",
    "file": "shaders/library/arcane/channel.js",
+   "version": "f778e17f6113752c",
    "name": "Channeling",
    "kind": "aura",
    "kindLabel": "Aura",
@@ -347,10 +1016,49 @@
    "thinking": "The cast bar made visible, for any spell with a cast time: energy is being GATHERED, so everything moves inward. Motes are drawn in from a wide ring toward the caster's hands, where an orb grows brighter the longer the channel lasts, orbited by a thin ring that spins faster and faster; a sigil circle turns on the ground. The motion reads even to someone who has never seen the spell, and because the orb keeps growing, you can see how far along the cast is. Stopping it (an interrupt) snaps everything out on the outro. Played on the caster's position; the orb sits at hand height.",
    "levels": "1-3: a small orb and a few inward motes. 4-6: a ring spins around the orb, more motes. 7-9: a turning sigil on the ground. 10: a storm of motes and a blazing orb.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": null,
+    "extras": 0,
+    "at": "caster",
+    "reach": null,
+    "move": false,
+    "hold": 2.6,
+    "anim": "spell_channel",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.arcane-channel.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.arcane-channel.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.arcane-channel.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "ground",
     "body"
@@ -414,6 +1122,7 @@
    "id": "buff/haste",
    "key": "shaders/library/buff/haste",
    "file": "shaders/library/buff/haste.js",
+   "version": "260e43436c44f2a0",
    "name": "Haste",
    "kind": "aura",
    "kindLabel": "Aura",
@@ -427,10 +1136,49 @@
    "thinking": "Speed is shown with the oldest trick in animation: motion lines. Short arcs of wind whip around the legs on the ground plane (so they wrap the body in iso, half behind and half in front), at three heights, spinning fast enough to read as a whirl rather than as rings; from level 4, thin speed lines stream upward past the body. It stays light and pale, a buff that is on for a long time must not be louder than the combat around it, and it is kept around the feet where it reads as \"fast feet\" and leaves the body clear.",
    "levels": "1-3: a single whirl of wind at the feet. 4-6: two whirls and speed lines. 7-9: three whirls. 10: a gale around the legs.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": null,
+    "extras": 0,
+    "at": "caster",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.buff-haste.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.buff-haste.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.buff-haste.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -488,6 +1236,7 @@
    "id": "earth/ground_slam",
    "key": "shaders/library/earth/ground_slam",
    "file": "shaders/library/earth/ground_slam.js",
+   "version": "7f51d84c119e3775",
    "name": "Ground Slam",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -503,10 +1252,34 @@
    "thinking": "A slam is weight, and weight is shown by what the ground does, not by light. So this effect is almost entirely NON-emissive: dust, rock and cracks that the night darkens like any other part of the world. It works for a troll's club, a golem's fists or a warrior's leap. On the first frame the cracks shoot out from the point of impact (jagged lines in ground space, so they lie flat on the iso floor), a ring of dust races out to the attack's radius, rocks are flung up and fall back under gravity, and a low dust cloud rolls and settles. Nothing glows, which is exactly why it reads as physical next to the spells.",
    "levels": "1-3: short cracks and a dust ring. 4-6: longer cracks, flying rocks, a rolling dust cloud. 7-9: a wider radius and a second shock ring. 10: a crater's worth of cracks and a storm of debris.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "monster",
+    "target": "hero",
+    "extras": 0,
+    "at": "caster",
+    "reach": 1.6,
+    "move": false,
+    "hold": 2.4,
+    "anim": "attack",
+    "monster": "diablo_2",
+    "release": 0.35
+   },
+   "sounds": [
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Burst",
+     "each": false,
+     "sound_event": "shaders.earth-ground_slam.peak"
+    }
+   ],
+   "volley": null,
    "radius": "by level",
    "planes": [
     "ground",
@@ -596,6 +1369,7 @@
    "id": "fire/burning",
    "key": "shaders/library/fire/burning",
    "file": "shaders/library/fire/burning.js",
+   "version": "e9d9160f85a8b984",
    "name": "Burning",
    "kind": "aura",
    "kindLabel": "Aura",
@@ -609,10 +1383,49 @@
    "thinking": "Burning is a status, so it must stay readable for as long as it lasts without hiding the creature wearing it. The trick is to put most of the fire BEHIND the body: a sheet of flame whose tongues rise past the shoulders and head, which the body itself cuts into a burning silhouette. In front there are only low flames at the feet and (from level 7) two tongues climbing the body's sides, so the creature stays visible inside its own fire. The flames are a noise field that scrolls upward and breaks into tongues at the top by itself, coloured with the same five-band ramp as the fireball, one fire language across the library. It scales with the body's height (a burning troll burns bigger than a burning rat) and carries a small flickering light, so a burning enemy in the dark is a lantern you can track.",
    "levels": "1-3: low flames licking up behind the body and at its feet. 4-6: taller fire and embers drifting up. 7-9: tongues climb the body's sides and the fire rises past the head. 10: the body is engulfed.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": null,
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": null,
+    "release": 0
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.fire-burning.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.fire-burning.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.fire-burning.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -675,6 +1488,7 @@
    "id": "fire/fireball",
    "key": "shaders/library/fire/fireball",
    "file": "shaders/library/fire/fireball.js",
+   "version": "28981604bf7aadd4",
    "name": "Fireball",
    "kind": "projectile",
    "kindLabel": "Projectile",
@@ -692,11 +1506,56 @@
     "cellsPerSecondAtLevel5": 8.89
    },
    "events": [
+    "cast",
     "release",
     "impact",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": null,
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "cast",
+     "event": "cast",
+     "label": "Gather — the cast begins",
+     "each": false,
+     "sound_event": "shaders.fire-fireball.cast"
+    },
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it leaves the caster",
+     "each": true,
+     "sound_event": "shaders.fire-fireball.release"
+    },
+    {
+     "slot": "impact",
+     "event": "impact",
+     "label": "Impact",
+     "each": true,
+     "sound_event": "shaders.fire-fireball.impact"
+    }
+   ],
+   "volley": {
+    "formations": [
+     "fan",
+     "barrage",
+     "spread",
+     "rain",
+     "ring"
+    ],
+    "max": 12
+   },
    "planes": [
     "body",
     "ground"
@@ -798,6 +1657,7 @@
    "id": "fire/meteor",
    "key": "shaders/library/fire/meteor",
    "file": "shaders/library/fire/meteor.js",
+   "version": "8e05aeee3e7442bc",
    "name": "Meteor",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -813,10 +1673,47 @@
    "thinking": "The big one, so it is built as a little film in three acts. First the WARNING: a burning circle appears on the ground at exactly the blast radius, its inner ring closing toward the centre like a countdown, which is fair to the target and thrilling for the caster. Then the FALL: a flaming rock streaks in from high on the left, its tail torn by the same backward-streaming flame noise as the fireball, growing brighter as it comes. Then the IMPACT on the \"peak\" event (0.95 s, where the game applies damage): a white flash, a huge billowing blast, a shock ring racing out, flung rocks and embers, and a crater whose cracks glow and cool for seconds afterwards. Soot smoke stays unlit so the night swallows it.",
    "levels": "1-3: a small rock and a modest blast. 4-6: flung debris and a shock ring. 7-9: a bigger radius, a blinding blast and a glowing crater. 10: a catastrophic impact with a second shock ring.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_channel",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it begins",
+     "each": true,
+     "sound_event": "shaders.fire-meteor.release"
+    },
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Peak — it lands / strikes",
+     "each": true,
+     "sound_event": "shaders.fire-meteor.peak"
+    }
+   ],
+   "volley": {
+    "formations": [
+     "rain",
+     "line",
+     "ring"
+    ],
+    "max": 12
+   },
    "radius": "by level",
    "planes": [
     "ground",
@@ -912,6 +1809,7 @@
    "id": "frost/frost_bolt",
    "key": "shaders/library/frost/frost_bolt",
    "file": "shaders/library/frost/frost_bolt.js",
+   "version": "c90728eed93e8a2a",
    "name": "Frost Bolt",
    "kind": "projectile",
    "kindLabel": "Projectile",
@@ -929,11 +1827,56 @@
     "cellsPerSecondAtLevel5": 10.33
    },
    "events": [
+    "cast",
     "release",
     "impact",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": null,
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "cast",
+     "event": "cast",
+     "label": "Gather — the cast begins",
+     "each": false,
+     "sound_event": "shaders.frost-frost_bolt.cast"
+    },
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it leaves the caster",
+     "each": true,
+     "sound_event": "shaders.frost-frost_bolt.release"
+    },
+    {
+     "slot": "impact",
+     "event": "impact",
+     "label": "Impact",
+     "each": true,
+     "sound_event": "shaders.frost-frost_bolt.impact"
+    }
+   ],
+   "volley": {
+    "formations": [
+     "fan",
+     "barrage",
+     "spread",
+     "rain",
+     "ring"
+    ],
+    "max": 12
+   },
    "planes": [
     "body",
     "ground"
@@ -1007,6 +1950,7 @@
    "id": "frost/frost_nova",
    "key": "shaders/library/frost/frost_nova",
    "file": "shaders/library/frost/frost_nova.js",
+   "version": "055e25be1c1725cd",
    "name": "Frost Nova",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -1021,10 +1965,33 @@
    "thinking": "A nova has to show its reach, because the reach is the gameplay: the ring that races out over the ground IS the radius the game hits, so it is drawn on the ground plane in the game's own iso ellipse and takes the game's radius when one is given. Frost reads as brittle and sharp, the opposite of fire's billow, so everything here is hard-edged: a crisp rime ring, a frosted floor with a cracked crystal pattern left behind, and (from level 4) a crown of ice spikes that shoot up along the ring and then fall away. The spikes are split into a back half and a front half so they stand behind and in front of the caster correctly. Colours are cold and few (deep blue, ice, white rime) and the light is a short pale-cyan flash, so a nova in a dark cave lights the room for a heartbeat.",
    "levels": "1-3: a thin rime ring and a light frost on the floor. 4-6: ice spikes burst up along the ring. 7-9: a wider ring, taller spikes, a second inner ring and drifting frost glitter. 10: a full crown of spikes and a frozen crystal floor that lingers.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "caster",
+    "reach": 1.9,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_channel",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Burst",
+     "each": false,
+     "sound_event": "shaders.frost-frost_nova.peak"
+    }
+   ],
+   "volley": null,
    "radius": "by level",
    "planes": [
     "ground",
@@ -1105,6 +2072,7 @@
    "id": "holy/heal",
    "key": "shaders/library/holy/heal",
    "file": "shaders/library/holy/heal.js",
+   "version": "373776e4a3124fb9",
    "name": "Heal",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -1118,10 +2086,40 @@
    "thinking": "Healing has to read as the opposite of damage at a glance: nothing flies at the body, everything rises out of it. Warm gold over a living green says \"life\" without a word, and the motion is upward and gentle where an attack is fast and inward. Three things carry it: a soft column of light around the body that fades from the feet up, motes that spiral up around the body (half of them pass BEHIND it and half in front, so it wraps around the target instead of sitting on it like a sticker), and a thin rune ring on the ground that says a spell happened here. The few bright motes are four-point twinkles, the classic pixel sparkle. Levels add abundance, not violence.",
    "levels": "1-3: a faint column and a handful of motes. 4-6: more motes, twinkling stars and the rune ring. 7-9: a taller, brighter column and a second ring. 10: a halo crowns the target as the light peaks.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": null,
+    "extras": 0,
+    "at": "caster",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_channel",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it begins",
+     "each": false,
+     "sound_event": "shaders.holy-heal.release"
+    },
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Peak — it lands / strikes",
+     "each": false,
+     "sound_event": "shaders.holy-heal.peak"
+    }
+   ],
+   "volley": null,
    "planes": [
     "ground",
     "body",
@@ -1201,6 +2199,7 @@
    "id": "holy/healing_circle",
    "key": "shaders/library/holy/healing_circle",
    "file": "shaders/library/holy/healing_circle.js",
+   "version": "318812e8acad0a0d",
    "name": "Healing Circle",
    "kind": "zone",
    "kindLabel": "Zone",
@@ -1216,10 +2215,49 @@
    "thinking": "A zone lasts, so its first job is to show exactly where it is: allies must be able to step into it in the middle of a fight. The rim is therefore a crisp double ring with rune marks between the rings, drawn on the ground at the game's radius, and it draws itself around the circle on the intro like a stroke of chalk (the moment you see the spell being CAST). Inside, a faint dithered fill and a soft pulse that rolls outward every second give it a heartbeat, the rhythm of healing ticks. Gentle motes float up across the area, half behind and half in front of anyone standing in it. It stays quiet enough to stand in for six seconds and still see the fight.",
    "levels": "1-3: a plain rim and a faint fill. 4-6: rune marks turn slowly between the rings and motes rise. 7-9: a stronger pulse and more motes. 10: a second, counter-rotating ring of runes.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": null,
+    "extras": 0,
+    "at": "caster",
+    "reach": null,
+    "move": false,
+    "hold": 3,
+    "anim": "spell_channel",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.holy-healing_circle.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.holy-healing_circle.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.holy-healing_circle.stop"
+    }
+   ],
+   "volley": null,
    "radius": "by level",
    "planes": [
     "ground",
@@ -1289,6 +2327,7 @@
    "id": "holy/level_up",
    "key": "shaders/library/holy/level_up",
    "file": "shaders/library/holy/level_up.js",
+   "version": "5bd6b1f3d50c49b9",
    "name": "Level Up",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -1302,10 +2341,33 @@
    "thinking": "The one effect the player earns rather than casts, so it is pure celebration and it is gold. A beam of light rises (not falls: this comes from the player, it is their power growing), rings of gold burst out along the ground one after another like a bell struck twice, and a fountain of four-point sparkles spirals up around the body, half behind and half in front. It deliberately avoids anything that looks like damage: no flash-to-white, no debris, no smoke. Here \"level\" is how big a milestone it is (every level, every 10th, a class milestone), so the game can make the rare ones bigger.",
    "levels": "1-3: a gold beam, one ring, a spray of sparkles. 4-6: a second ring and more sparkles. 7-9: a taller, wider beam. 10: a pillar of gold and a sparkle storm, for the milestones.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": null,
+    "extras": 0,
+    "at": "caster",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": null,
+    "release": 0
+   },
+   "sounds": [
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Burst",
+     "each": false,
+     "sound_event": "shaders.holy-level_up.peak"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body",
     "ground"
@@ -1379,6 +2441,7 @@
    "id": "holy/smite",
    "key": "shaders/library/holy/smite",
    "file": "shaders/library/holy/smite.js",
+   "version": "03567ef1558764c9",
    "name": "Smite",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -1394,10 +2457,39 @@
    "thinking": "Smite is judgement from above, so its shape is a pillar: a column of light that slams down onto the target from beyond the top of the screen. It arrives as a hair-thin line and blows open to full width in a few frames (the anticipation-then-impact rhythm that makes a hit feel heavy), holds for a beat, and then drains away upward, leaving the ground ringing: a flash disk, a ring that races out, and sun rays drawn flat on the floor. Everything is white and gold with hard edges; holy light should look clean where shadow looks smoky. The light slot is a big warm flash, the moment the whole area is lit by heaven.",
    "levels": "1-3: a narrow column and a ground flash. 4-6: a wider column, sun rays on the ground, sparks. 7-9: a blinding column and a second, wider ring. 10: a pillar of heaven with a crown of rays.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Burst",
+     "each": true,
+     "sound_event": "shaders.holy-smite.peak"
+    }
+   ],
+   "volley": {
+    "formations": [
+     "rain",
+     "ring"
+    ],
+    "max": 12
+   },
    "planes": [
     "body",
     "ground"
@@ -1466,6 +2558,7 @@
    "id": "monster/claw_swipe",
    "key": "shaders/library/monster/claw_swipe",
    "file": "shaders/library/monster/claw_swipe.js",
+   "version": "fbc1820a8f816adc",
    "name": "Claw Swipe",
    "kind": "melee",
    "kindLabel": "Melee",
@@ -1480,10 +2573,41 @@
    "thinking": "Every beast with claws needs this, and it has to hit harder than a punch without becoming a light show. Three (at level 7, four) parallel rakes are drawn ACROSS the victim, each one a white-hot line with red edges that is dragged out to full length in a few frames, one claw a hair behind the last, so the eye sees one swipe of a paw rather than three lines. The direction of the rake follows the attacker's direction, so a monster to the left rakes left to right. A spray of dark red flecks sells the damage. Painted in white and red it reads on any creature, in day or night.",
    "levels": "1-3: three thin, short rakes. 4-6: longer rakes and a spray of flecks. 7-9: four claws. 10: deep, glowing wounds that linger a moment.",
    "events": [
+    "cast",
+    "release",
     "hit",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "monster",
+    "target": "hero",
+    "extras": 0,
+    "at": null,
+    "reach": 1.25,
+    "move": false,
+    "hold": 2.4,
+    "anim": "attack",
+    "monster": "granite_bear",
+    "release": 0.25
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Swing",
+     "each": false,
+     "sound_event": "shaders.monster-claw_swipe.release"
+    },
+    {
+     "slot": "hit",
+     "event": "hit",
+     "label": "Hit — the blow lands",
+     "each": false,
+     "sound_event": "shaders.monster-claw_swipe.hit"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -1541,6 +2665,7 @@
    "id": "nature/entangle",
    "key": "shaders/library/nature/entangle",
    "file": "shaders/library/nature/entangle.js",
+   "version": "4d0eff59f10b21d9",
    "name": "Entangle",
    "kind": "aura",
    "kindLabel": "Aura",
@@ -1555,10 +2680,49 @@
    "thinking": "A root has to answer one question instantly: \"can I move?\" So the vines come up OUT of the ground around the feet and wind in toward the legs, the one image everyone reads as \"stuck\". Each vine grows from a ring around the body, leans in as it climbs and curls in a slow sway, with a dark outline on one edge and alternating leaves, so it looks hand-drawn rather than procedural. Half the vines stand behind the body and half in front, so the target is caught INSIDE them. They are painted, not glowing (plants do not shine), except for the small flowers that open at the top at high level. On release they sink back into the ground.",
    "levels": "1-3: a few bare vines around the ankles. 4-6: more vines, with leaves. 7-9: vines climb to the waist. 10: a thicket that blooms with glowing flowers.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.nature-entangle.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.nature-entangle.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.nature-entangle.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -1626,6 +2790,7 @@
    "id": "poison/acid_spit",
    "key": "shaders/library/poison/acid_spit",
    "file": "shaders/library/poison/acid_spit.js",
+   "version": "a8eeddbb90b4e7d7",
    "name": "Acid Spit",
    "kind": "projectile",
    "kindLabel": "Projectile",
@@ -1644,11 +2809,50 @@
     "cellsPerSecondAtLevel5": 7.67
    },
    "events": [
+    "cast",
     "release",
     "impact",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "monster",
+    "target": "hero",
+    "extras": 0,
+    "at": null,
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "attack",
+    "monster": "blight_elk",
+    "release": 0.35
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it leaves the caster",
+     "each": true,
+     "sound_event": "shaders.poison-acid_spit.release"
+    },
+    {
+     "slot": "impact",
+     "event": "impact",
+     "label": "Impact",
+     "each": true,
+     "sound_event": "shaders.poison-acid_spit.impact"
+    }
+   ],
+   "volley": {
+    "formations": [
+     "fan",
+     "barrage",
+     "spread",
+     "rain",
+     "ring"
+    ],
+    "max": 12
+   },
    "planes": [
     "body",
     "ground"
@@ -1717,6 +2921,7 @@
    "id": "poison/poisoned",
    "key": "shaders/library/poison/poisoned",
    "file": "shaders/library/poison/poisoned.js",
+   "version": "731e36f1fe253ba8",
    "name": "Poisoned",
    "kind": "aura",
    "kindLabel": "Aura",
@@ -1731,10 +2936,49 @@
    "thinking": "The toxic infection, as a status on a body: it must say \"sick\" from across the screen without the flames of burning or the ice of a slow. Bubbles are the sign: green bubbles rise off the body in a loose cloud, swell as they climb and pop into a little broken ring, like something boiling under the skin, while dark drips run down and fall off. Half the bubbles pass behind the body and half in front. A faint sickly haze hugs the silhouette from level 4. It is slow and irregular on purpose, each bubble on its own clock, because an even rhythm reads as magic and poison should read as nature gone wrong.",
    "levels": "1-3: a few bubbles. 4-6: more bubbles, drips, and a sickly haze on the body. 7-9: a boiling cloud of bubbles. 10: the body seethes with poison.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": null,
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": null,
+    "release": 0
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.poison-poisoned.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.poison-poisoned.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.poison-poisoned.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -1797,6 +3041,7 @@
    "id": "poison/toxic_cloud",
    "key": "shaders/library/poison/toxic_cloud",
    "file": "shaders/library/poison/toxic_cloud.js",
+   "version": "cac5eb7c77f45902",
    "name": "Toxic Cloud",
    "kind": "zone",
    "kindLabel": "Zone",
@@ -1811,10 +3056,49 @@
    "thinking": "A gas cloud must show where it is dangerous and still let the player see through it. It is built from a handful of fat, lumpy puffs that drift slowly around the zone's centre, each lit from above (a pale top, a sickly middle, a dark underside) like pixel-art smoke. The puffs are a little more than half opaque, so bodies inside are veiled but readable, and they sit on a stained patch of ground at exactly the zone's radius, the honest edge a player can step out of. Half the puffs stand behind the bodies inside and half in front. The gas glows faintly, a miasma: a danger zone you cannot see at night would be unfair, so it never goes dark. Bubbles rise and pop out of the stain.",
    "levels": "1-3: a few thin puffs over a faint stain. 4-6: a fuller cloud and popping bubbles. 7-9: a wide, dense cloud. 10: a choking fog bank.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 3,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.poison-toxic_cloud.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.poison-toxic_cloud.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.poison-toxic_cloud.stop"
+    }
+   ],
+   "volley": null,
    "radius": "by level",
    "planes": [
     "ground",
@@ -1889,6 +3173,7 @@
    "id": "potion/healing_potion",
    "key": "shaders/library/potion/healing_potion",
    "file": "shaders/library/potion/healing_potion.js",
+   "version": "441551a20232c5be",
    "name": "Healing Potion",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -1903,10 +3188,40 @@
    "thinking": "Drinking a potion is an item, not a spell, so it must look different from the priest's heal even though both restore health. It is LIQUID: a red ribbon spirals up around the drinker (half behind, half in front), with a dark edge and a shine along its near side, the way a pixel artist draws a glass of wine, while bubbles rise through it. At the top it releases little pixel hearts. The colour is the item's own (red for health, and the same effect in blue makes a mana potion), and the potion's grade is the level, so a Greater Healing Potion spirals longer and throws more hearts.",
    "levels": "1-3: a short red ribbon and bubbles. 4-6: a longer spiral and a few hearts. 7-9: a spiral that climbs over the head. 10: a fountain of hearts.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": null,
+    "extras": 0,
+    "at": "caster",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": null,
+    "release": 0
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it begins",
+     "each": false,
+     "sound_event": "shaders.potion-healing_potion.release"
+    },
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Peak — it lands / strikes",
+     "each": false,
+     "sound_event": "shaders.potion-healing_potion.peak"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -1969,6 +3284,7 @@
    "id": "shadow/life_drain",
    "key": "shaders/library/shadow/life_drain",
    "file": "shaders/library/shadow/life_drain.js",
+   "version": "a117806068a4fe73",
    "name": "Life Drain",
    "kind": "beam",
    "kindLabel": "Beam",
@@ -1983,10 +3299,49 @@
    "thinking": "Life drain is a beam that runs BACKWARDS: the caster is not sending something, it is taking. So the motion is the whole design: red motes are pulled out of the victim and stream along a thin, sagging tether into the caster, where they are swallowed in a pulsing red glow. The tether is dark (a painted crimson thread, not a laser) and wavers like something alive. At the victim, a haze of red rises out of the chest; at the caster, the glow brightens with every mote that arrives. Direction of flow is the one thing a player must never misread, so the motes are the brightest thing on screen.",
    "levels": "1-3: a faint thread and a trickle of motes. 4-6: a steady stream and a red haze rising off the victim. 7-9: a thicker tether and a flood of motes. 10: the tether writhes and the victim bleeds light.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": null,
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_channel",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.shadow-life_drain.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.shadow-life_drain.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.shadow-life_drain.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -2054,6 +3409,7 @@
    "id": "shadow/shadow_bolt",
    "key": "shaders/library/shadow/shadow_bolt",
    "file": "shaders/library/shadow/shadow_bolt.js",
+   "version": "2c5536122d75bc66",
    "name": "Shadow Bolt",
    "kind": "projectile",
    "kindLabel": "Projectile",
@@ -2071,11 +3427,56 @@
     "cellsPerSecondAtLevel5": 8.39
    },
    "events": [
+    "cast",
     "release",
     "impact",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": null,
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "cast",
+     "event": "cast",
+     "label": "Gather — the cast begins",
+     "each": false,
+     "sound_event": "shaders.shadow-shadow_bolt.cast"
+    },
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it leaves the caster",
+     "each": true,
+     "sound_event": "shaders.shadow-shadow_bolt.release"
+    },
+    {
+     "slot": "impact",
+     "event": "impact",
+     "label": "Impact",
+     "each": true,
+     "sound_event": "shaders.shadow-shadow_bolt.impact"
+    }
+   ],
+   "volley": {
+    "formations": [
+     "fan",
+     "barrage",
+     "spread",
+     "rain",
+     "ring"
+    ],
+    "max": 12
+   },
    "planes": [
     "body"
    ],
@@ -2138,6 +3539,7 @@
    "id": "status/stunned",
    "key": "shaders/library/status/stunned",
    "file": "shaders/library/status/stunned.js",
+   "version": "518729ae2c8c864e",
    "name": "Stunned",
    "kind": "aura",
    "kindLabel": "Aura",
@@ -2151,10 +3553,49 @@
    "thinking": "The universal cartoon sign for \"seeing stars\", because a stun must be read in a split second in a crowd and nothing is faster to read than a symbol everyone already knows. Stars circle on a flat orbit just above the head, half passing behind it and half in front, nearer ones drawn bigger (a cheap depth cue that makes the orbit read as a ring in space). They twinkle out of phase. Levels add stars and widen the orbit, so a long heavy stun looks heavier than a short daze.",
    "levels": "1-3: three small stars. 4-6: four stars on a wider orbit. 7-9: five. 10: six stars in a wide halo.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": null,
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": null,
+    "release": 0
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.status-stunned.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.status-stunned.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.status-stunned.stop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -2212,6 +3653,7 @@
    "id": "storm/chain_lightning",
    "key": "shaders/library/storm/chain_lightning",
    "file": "shaders/library/storm/chain_lightning.js",
+   "version": "1e322d82aee2303d",
    "name": "Chain Lightning",
    "kind": "chain",
    "kindLabel": "Chain",
@@ -2226,10 +3668,40 @@
    "thinking": "Chain lightning is a story told in hops: the eye has to follow it from the caster to the first victim, then to the next and the next, so each hop gets its own arc that appears a beat after the last one lands (the game gets a \"hop\" event per target to apply damage in the same rhythm). Each arc is a jagged bolt that re-rolls its path every few frames, flickers out, and leaves a spark burst on the body it hit. The arcs connect chest to chest, and the light slot follows the newest hop, so a chain racing through a dark forest lights each victim in turn.",
    "levels": "1-3: a thin, quick arc per hop. 4-6: brighter arcs, bigger impact sparks. 7-9: a second forked strand on every hop. 10: thick arcs that linger and crackle between the victims after the chain has passed.",
    "events": [
+    "cast",
+    "release",
     "hop",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 2,
+    "at": null,
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it leaves the caster",
+     "each": false,
+     "sound_event": "shaders.storm-chain_lightning.release"
+    },
+    {
+     "slot": "hop",
+     "event": "hop",
+     "label": "Each hop — it strikes a target",
+     "each": true,
+     "sound_event": "shaders.storm-chain_lightning.hop"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -2292,6 +3764,7 @@
    "id": "storm/lightning_strike",
    "key": "shaders/library/storm/lightning_strike",
    "file": "shaders/library/storm/lightning_strike.js",
+   "version": "cc6ca0b0974036d0",
    "name": "Lightning Strike",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -2306,10 +3779,40 @@
    "thinking": "Lightning is the one effect that must feel instant, so it has no travel at all: the bolt is simply there on frame one, from far above the top of the screen down to the target's feet. What sells it is rhythm, not size. A real strike is a stroke, a dark gap and a re-strike, so the bolt is drawn in two or three hard pulses and each pulse is a NEW jagged path (the random seed steps with time instead of wobbling, which reads as lightning rather than a snake). The core is pure white and one pixel wide, the glow is a dithered blue fringe, and a big but short flash lights the whole area through the light slot: at night the world blinks white. On the ground the strike leaves a burst of light, crawling forks of current along the ground and a scorch that fades.",
    "levels": "1-3: one thin bolt, two strokes, a small ground flash. 4-6: side branches, sparks, forked current along the ground. 7-9: a thicker bolt, a third stroke and a bigger ground burst. 10: a massive bolt with many branches and a scorch that smoulders with sparks.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Burst",
+     "each": true,
+     "sound_event": "shaders.storm-lightning_strike.peak"
+    }
+   ],
+   "volley": {
+    "formations": [
+     "rain",
+     "line",
+     "ring"
+    ],
+    "max": 12
+   },
    "planes": [
     "body",
     "air",
@@ -2389,6 +3892,7 @@
    "id": "summon/summon_arrival",
    "key": "shaders/library/summon/summon_arrival",
    "file": "shaders/library/summon/summon_arrival.js",
+   "version": "c83ae4681c3b3c74",
    "name": "Summon Arrival",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -2402,10 +3906,33 @@
    "thinking": "The moment a summoned creature steps into the world. The problem it solves is the pop-in: a sprite that simply appears looks like a bug. So a column of blue-white light erupts from the ground where it will stand and a ring of smoke bursts out around its feet, and the game spawns the creature on the \"peak\" event, when the column is widest and the smoke is thickest, so the creature is revealed by the light draining away rather than popping in. The column scales with the creature's height (pass the summon's height), so a summoned dragon arrives in a bigger pillar than a summoned wolf.",
    "levels": "1-3: a quick pillar and a puff of smoke. 4-6: a taller pillar and a rolling smoke ring. 7-9: a blinding pillar. 10: a pillar that rises past the screen, and heavy smoke.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "spell_wand",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Burst",
+     "each": false,
+     "sound_event": "shaders.summon-summon_arrival.peak"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body",
     "ground"
@@ -2484,6 +4011,7 @@
    "id": "summon/summoning_circle",
    "key": "shaders/library/summon/summoning_circle",
    "file": "shaders/library/summon/summoning_circle.js",
+   "version": "2b773f4ac96c0f5b",
    "name": "Summoning Circle",
    "kind": "zone",
    "kindLabel": "Zone",
@@ -2497,10 +4025,49 @@
    "thinking": "The ritual before a summon: it tells everyone around that something is about to arrive, and exactly where. It is the classic magic circle, drawn on the ground in the iso ellipse: an outer and an inner ring, a star of straight lines joining points on the circle, and marks between the rings, all of which DRAW themselves on the intro (rings sweep round, the star's lines are ruled one after another). While it channels, the rings turn in opposite directions and a glow breathes in the middle. The game stops it the moment the creature appears, and plays Summon Arrival on the same spot.",
    "levels": "1-3: two rings and a five-point star. 4-6: rune marks between the rings. 7-9: a wider circle and a rising haze of light. 10: a second star, turning against the first.",
    "events": [
+    "cast",
+    "release",
     "start",
+    "stop",
     "end"
    ],
    "sustained": true,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": null,
+    "move": false,
+    "hold": 3,
+    "anim": "spell_channel",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Onset — it takes hold",
+     "each": false,
+     "sound_event": "shaders.summon-summoning_circle.release"
+    },
+    {
+     "slot": "channel",
+     "event": "release",
+     "label": "Channel — a bed until it ends",
+     "each": false,
+     "loop": true,
+     "sound_event": "shaders.summon-summoning_circle.channel"
+    },
+    {
+     "slot": "stop",
+     "event": "stop",
+     "label": "Fade — it lets go",
+     "each": false,
+     "sound_event": "shaders.summon-summoning_circle.stop"
+    }
+   ],
+   "volley": null,
    "radius": "by level",
    "planes": [
     "ground",
@@ -2565,6 +4132,7 @@
    "id": "weapon/arrow",
    "key": "shaders/library/weapon/arrow",
    "file": "shaders/library/weapon/arrow.js",
+   "version": "ef1b4447ba84c1b1",
    "name": "Arrow",
    "kind": "projectile",
    "kindLabel": "Projectile",
@@ -2582,11 +4150,49 @@
     "cellsPerSecondAtLevel5": 17.22
    },
    "events": [
+    "cast",
     "release",
     "impact",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": null,
+    "reach": null,
+    "move": false,
+    "hold": 2.4,
+    "anim": "bow",
+    "release": 0.2
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Creation — it leaves the caster",
+     "each": true,
+     "sound_event": "shaders.weapon-arrow.release"
+    },
+    {
+     "slot": "impact",
+     "event": "impact",
+     "label": "Impact",
+     "each": true,
+     "sound_event": "shaders.weapon-arrow.impact"
+    }
+   ],
+   "volley": {
+    "formations": [
+     "fan",
+     "barrage",
+     "spread",
+     "rain",
+     "ring"
+    ],
+    "max": 12
+   },
    "planes": [
     "body"
    ],
@@ -2654,6 +4260,7 @@
    "id": "weapon/critical_hit",
    "key": "shaders/library/weapon/critical_hit",
    "file": "shaders/library/weapon/critical_hit.js",
+   "version": "01976e6549fc1ef6",
    "name": "Critical Hit",
    "kind": "burst",
    "kindLabel": "Burst",
@@ -2668,10 +4275,33 @@
    "thinking": "The punctuation mark of combat: it adds nothing to the fight except the feeling that THAT one mattered. It lasts a third of a second and uses the biggest, simplest shape there is, an eight-pointed star of white with a hot yellow and orange rim, that punches out to full size in two frames and then shrinks and turns as it dies. Straight speed lines burst outward from it, the manga convention for impact. It sits at chest height on the victim and is played on top of whatever weapon effect landed the blow (sword, arrow, fist, bite), so a critical reads the same whatever caused it.",
    "levels": "1-3: a small star. 4-6: a bigger star with speed lines. 7-9: a ring bursts out behind the star. 10: a huge double star.",
    "events": [
+    "cast",
+    "release",
     "peak",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": "target",
+    "reach": 1.25,
+    "move": false,
+    "hold": 2.4,
+    "anim": "sword",
+    "release": 0.167
+   },
+   "sounds": [
+    {
+     "slot": "peak",
+     "event": "peak",
+     "label": "Burst",
+     "each": false,
+     "sound_event": "shaders.weapon-critical_hit.peak"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],
@@ -2729,6 +4359,7 @@
    "id": "weapon/sword_slash",
    "key": "shaders/library/weapon/sword_slash",
    "file": "shaders/library/weapon/sword_slash.js",
+   "version": "ba69cec111f27021",
    "name": "Sword Slash",
    "kind": "melee",
    "kindLabel": "Melee",
@@ -2743,10 +4374,51 @@
    "thinking": "A slash is a smear frame: the one drawing an animator adds so the eye sees the blade's path instead of a sword that teleports. So this is the smear, drawn as the ghost of a blade sweeping a crescent at chest height, in a plane parallel to the ground. That plane is the trick for an isometric game: the same crescent reads right whichever of the eight directions the attacker faces, because the iso projection squashes it exactly like the floor. A white leading edge races ahead and the steel-blue smear behind it thins and fades, the whole swing in a fifth of a second. It is cut into the half in front of the attacker and the half behind, so a slash toward the camera covers the body and one away from it passes behind. The hit spark on the victim lands on the hit event, which is where the game applies damage.",
    "levels": "1-3: a quick, narrow crescent and a small hit spark. 4-6: a longer reach and sparks off the blade's edge. 7-9: a second, mirrored counter-slash follows the first. 10: a double slash whose edge glows, and a heavy hit flash.",
    "events": [
+    "cast",
+    "release",
     "hit",
     "end"
    ],
    "sustained": false,
+   "stage": {
+    "caster": "hero",
+    "target": "monster",
+    "extras": 0,
+    "at": null,
+    "reach": 1.25,
+    "move": false,
+    "hold": 2.4,
+    "anim": "sword",
+    "release": [
+     0.077,
+     0.074,
+     0.071,
+     0.068,
+     0.065,
+     0.062,
+     0.059,
+     0.056,
+     0.053,
+     0.05
+    ]
+   },
+   "sounds": [
+    {
+     "slot": "release",
+     "event": "release",
+     "label": "Swing",
+     "each": false,
+     "sound_event": "shaders.weapon-sword_slash.release"
+    },
+    {
+     "slot": "hit",
+     "event": "hit",
+     "label": "Hit — the blow lands",
+     "each": false,
+     "sound_event": "shaders.weapon-sword_slash.hit"
+    }
+   ],
+   "volley": null,
    "planes": [
     "body"
    ],

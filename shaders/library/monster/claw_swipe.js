@@ -8,6 +8,7 @@ export default defineEffect({
   id: "monster/claw_swipe",
   name: "Claw Swipe",
   kind: "melee",
+  stage: { caster: "monster", target: "hero", anim: "attack", monster: "granite_bear" },
   family: "monster",
   category: "attack",
   tags: ["melee", "monster", "physical", "bleed"],

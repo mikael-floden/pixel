@@ -49,6 +49,7 @@ export default defineEffect({
   id: "fire/burning",
   name: "Burning",
   kind: "aura",
+  stage: { caster: null, anim: null },
   family: "fire",
   category: "debuff",
   tags: ["debuff", "damage over time", "fire"],

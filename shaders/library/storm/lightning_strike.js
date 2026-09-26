@@ -16,6 +16,7 @@ export default defineEffect({
   id: "storm/lightning_strike",
   name: "Lightning Strike",
   kind: "burst",
+  volley: ["rain", "line", "ring"],
   family: "storm",
   category: "attack",
   tags: ["damage", "single target", "instant", "stun"],

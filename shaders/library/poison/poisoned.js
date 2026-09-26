@@ -49,6 +49,7 @@ export default defineEffect({
   id: "poison/poisoned",
   name: "Poisoned",
   kind: "aura",
+  stage: { caster: null, anim: null },
   family: "poison",
   category: "debuff",
   tags: ["debuff", "damage over time", "poison", "infection"],

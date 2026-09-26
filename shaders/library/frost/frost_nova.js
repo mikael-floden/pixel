@@ -42,6 +42,7 @@ export default defineEffect({
   id: "frost/frost_nova",
   name: "Frost Nova",
   kind: "burst",
+  stage: { target: "monster", reach: 1.9, anim: "spell_channel" },
   family: "frost",
   category: "attack",
   tags: ["aoe", "damage", "slow", "self-centered"],

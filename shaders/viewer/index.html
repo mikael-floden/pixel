@@ -32,19 +32,38 @@
         <div class="stage-err" id="stage-err" hidden></div>
       </div>
 
+      <div class="timeline" id="timeline" aria-label="When each sound can play"></div>
+
       <div class="transport" role="group" aria-label="Playback">
         <button type="button" id="play" class="btn primary">Replay</button>
         <label class="tog"><input type="checkbox" id="loop" checked> Loop</label>
-        <label class="tog"><input type="checkbox" id="night" checked> Night</label>
         <div class="seg" role="radiogroup" aria-label="Speed">
           <button type="button" data-slow="1" class="on">1×</button>
           <button type="button" data-slow="0.5">½×</button>
           <button type="button" data-slow="0.25">¼×</button>
         </div>
-        <div class="seg" role="radiogroup" aria-label="Target">
-          <button type="button" data-target="werewolf" class="on">Werewolf</button>
-          <button type="button" data-target="troll">Troll</button>
-          <button type="button" data-target="human">Human</button>
+      </div>
+
+      <div class="stagebar" aria-label="The stage">
+        <div class="sb-row tod-row">
+          <label for="tod" class="level-label">Time</label>
+          <input type="range" id="tod" min="0" max="4" step="0.05" value="0.5">
+          <output id="tod-out" for="tod">Night</output>
+          <label class="tog"><input type="checkbox" id="torch" checked> Torch</label>
+        </div>
+        <div class="sb-row" id="hero-row">
+          <span class="level-label">Hero</span>
+          <div class="seg" id="hero-seg" role="radiogroup" aria-label="Hero"></div>
+        </div>
+        <div class="sb-row" id="monster-row">
+          <label for="monster" class="level-label">Monster</label>
+          <select id="monster" aria-label="Monster"></select>
+        </div>
+        <div class="sb-row" id="volley-row" hidden>
+          <span class="level-label">Volley</span>
+          <div class="seg" id="count-seg" role="radiogroup" aria-label="How many"></div>
+          <div class="seg" id="formation-seg" role="radiogroup" aria-label="Formation"></div>
+          <p class="hint" id="formation-about"></p>
         </div>
       </div>
 

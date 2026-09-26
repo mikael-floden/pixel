@@ -29,6 +29,7 @@ export default defineEffect({
   id: "holy/level_up",
   name: "Level Up",
   kind: "burst",
+  stage: { anim: null },
   family: "holy",
   category: "utility",
   tags: ["level up", "celebration", "reward"],

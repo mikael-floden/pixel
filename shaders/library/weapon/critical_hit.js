@@ -7,6 +7,7 @@ export default defineEffect({
   id: "weapon/critical_hit",
   name: "Critical Hit",
   kind: "burst",
+  stage: { reach: 1.25, anim: "sword" },
   family: "weapon",
   category: "impact",
   tags: ["impact", "critical", "hit", "any weapon"],

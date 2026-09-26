@@ -39,6 +39,13 @@ batches so each batch learns from his verdicts on the last.
 - **Emissive or painted, decided per layer.** A light source (fire, magic,
   lightning) is `emissive` and the night never dims it; matter (smoke, dust,
   rock, vines) is painted and the night darkens it like the world.
+- **Every effect is staged as it is meant to be seen.** Its `stage` recipe
+  says who casts it (hero or monster), who it lands on, and the caster's clip
+  (`characters2/animation_map.json` state); the spell leaves on that clip's
+  key frame from the wand tip measured on the art (`castpoints.py`). The
+  viewer, the wiki and the game read the same recipe — a preview is never a
+  guess (maintainer 2026-09-26: "the spell should be emitted in sync with
+  the animation").
 - **Every effect explains itself.** `thinking` (why it looks like this) and
   `levels` (what 1 to 10 changes) are required and gated
   (`catalog.mjs`, >= 120 chars of thinking). They are what the wiki shows him.
@@ -60,19 +67,23 @@ batches so each batch learns from his verdicts on the last.
 ```
 shaders/
   runtime/          the engine (plain ES modules, zero deps; .d.ts for TS)
-    fx.js           FxWorld: kinds, timelines, events, anchors, lights, draw list
+    fx.js           FxWorld: kinds, timelines, events, anchors, lights, draw list, volleys
+    volley.js       the formations (fan, barrage, spread, rain, ring, line)
+    showcase.js     the staging recipe: layout(), showcase(), castFrom(), facingOf()
     gl.js           FxGL: compiles a layer, draws one box (framework-free)
     glsl.js         the shader prelude: hashes, noise, SDFs, ring/iso helpers, bands, dither
-    define.js       defineEffect + level curves (lv, tier) + layer boxes
+    define.js       defineEffect, level curves, layer boxes, CAST_ANIMS, stage + sound slots
     phaser.js       THE GAME ADAPTER (Phaser 3.90): pre-pass textures + Images
     index.js        the public entry
   library/          THE EFFECTS: <family>/<name>.js, one effect per file
     _shared/        GLSL snippets (sparks, smoke, flame, bolt, comet, flow ...)
     families.js     the families (element/school) and their colours
     index.js        GENERATED: imports every effect
-  shaders.json      GENERATED: the catalog (metadata, tunables, thinking; no code)
-  viewer/           the review page the wiki embeds (index.html, stage.js)
-  pipeline/         catalog.mjs, shoot.mjs, phaser-check.mjs (+ .html)
+    cast_points.js  GENERATED (castpoints.py): wand tips / orbs / arrows per hero, clip, facing
+  shaders.json      GENERATED: the catalog (metadata, stage, sounds, tunables, thinking; no code)
+  viewer/           THE STAGE the wiki embeds: index.html, viewer.js, stage.js (the game's
+                    light), bodies.js (the heroes and shipped monsters it casts with)
+  pipeline/         catalog.mjs, castpoints.py, shoot.mjs, phaser-check.mjs (+ .html), bundle.mjs
   docs/             integration.md (the game) · wiki.md (the wiki) · authoring.md (writing one)
 ```
 
@@ -82,16 +93,21 @@ path without extension, `shaders/library/fire/fireball`, like every domain's.
 
 ## The kinds (the game's API is per kind)
 
-| kind | the game passes | events | ends |
+| kind | the game passes | its own events | ends |
 |---|---|---|---|
-| `projectile` | from, to (fn = homing), height, targetHeight | release, impact | itself (`h.flightTime` known at once) |
+| `projectile` | from, to (fn = homing), height, targetHeight | impact | itself (`h.flightTime` known at once) |
 | `burst` | at, from (direction), height | peak | itself |
 | `melee` | at (attacker), to (victim), height | hit | itself |
 | `chain` | from, targets[] | hop(i) | itself |
-| `beam` | from, to (fns), duration | start | `stop()` / duration |
-| `aura` | at (fn: the body), height, duration | start | `stop()` / duration |
-| `zone` | at, radius (cells), duration | start | `stop()` / duration |
-| `screen` | duration | start | `stop()` / duration |
+| `beam` | from, to (fns), duration | start, stop | `stop()` / duration |
+| `aura` | at (fn: the body), height, duration | start, stop | `stop()` / duration |
+| `zone` | at, radius (cells), duration | start, stop | `stop()` / duration |
+| `screen` | duration | start, stop | `stop()` / duration |
+
+Every kind also takes `release` (s to the clip's key frame), and
+projectiles and opted-in bursts `count` + `formation` (a volley); every kind
+fires `cast`, `release`, its own events and `end`, each with an index (which
+copy, which hop).
 
 Coordinates, depth, speeds, lights, tuning and the wiring checklist:
 **`docs/integration.md`**. Embedding, verdicts and the tuning file:
@@ -102,6 +118,7 @@ Coordinates, depth, speeds, lights, tuning and the wiring checklist:
 
 ```bash
 node shaders/pipeline/catalog.mjs            # rebuild library/index.js + shaders.json (--check in a gate)
+python3 shaders/pipeline/castpoints.py       # re-measure the wand tips when a hero changes (the catalog gate says when)
 python3 -m http.server -d . 8000             # repo root; open /shaders/viewer/
 node shaders/pipeline/shoot.mjs --ids fire/fireball --levels 1,5,10 --zoom 2   # contact sheets -> $TMPDIR/shaders-shots
 PHASER=<node_modules> node shaders/pipeline/phaser-check.mjs --ids ...        # the real-Phaser gate
@@ -109,7 +126,8 @@ PHASER=<node_modules> node shaders/pipeline/phaser-check.mjs --ids ...        # 
 
 `shoot` and `phaser-check` need playwright-core and a Chromium
 (`/opt/pw-browsers` in the agent image), `phaser-check` needs phaser 3.90 —
-both are games2 devDependencies. **Before every push**: `catalog.mjs --check`,
+both are games2 devDependencies. `bundle.mjs` builds the one-file review
+page (never committed). **Before every push**: `catalog.mjs --check`,
 `shoot --all` (a shader that fails to compile fails it) and `phaser-check`
 with the ids you touched (0 GL errors). Look at the sheets — a gate cannot
 tell a beautiful effect from an ugly one.

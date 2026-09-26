@@ -1,4 +1,4 @@
-# Effects in the game — the contract
+# Shaders in the game — the contract
 
 For the games agents (and anyone binding an effect to a skill, an item or a
 monster attack). The shaders domain owns how every effect LOOKS; the game
@@ -19,15 +19,19 @@ this.fx = createPhaserFx(this, {
 });
 this.fx.warm(["weapon/arrow", "fire/fireball"]); // compile what is bound, at load
 
-// a skill fires
+// a skill fires: start the hero's clip and the effect in the SAME frame
+const def = this.fx.defs.get("fire/fireball");
+playClip(me, def.stage.anim, CAST_ANIMS[def.stage.anim].fps);   // spell_wand at 10 fps, once
 const h = this.fx.play("fire/fireball", {
   level: skill.level,                                  // 1..10
-  from: () => ({ x: me.x, y: me.y }),                  // functions are re-read every frame
-  to: () => ({ x: mob.x, y: mob.y }),
+  from: castFrom({ x: me.x, y: me.y }, me.heroId, def.stage.anim, me.facing), // the wand tip
+  to: () => ({ x: mob.x, y: mob.y }),                  // functions are re-read every frame
   height: 88, targetHeight: mob.drawnHeight,           // drawn heights, px
   owner: "self",
+  release: castRelease(def, skill.level),              // it leaves on the clip's key frame
+  count: skill.missiles, formation: "fan",             // a volley (optional)
 });
-h.on("impact", () => showHit(mob));                   // or schedule at h.flightTime
+h.on("impact", (i) => showHit(mob));                  // i = which copy; or schedule at h.impacts[i]
 ```
 
 The adapter hooks the scene's `postupdate` itself (after the game has moved
@@ -52,6 +56,9 @@ if the game wants to call it at a precise point.
   ring, a zone's rim, a slam's reach are drawn on the ground in the game's iso
   ellipse at exactly the radius the server hits. Omit `radius` and the effect
   uses its own by level.
+- **A cast point is a SCREEN offset**: `from: { x, y, sx, z }` draws `sx` px
+  right of and `z` px above the feet — the wand tip of a clip's key frame is
+  where the ART draws it, whatever the world direction (`castFrom`, below).
 - **Screen space** is only the `screen` plane (camera-fixed overlays; none in
   the library yet). Everything else is world space.
 - A position may be a **function**: it is read every frame (a homing bolt, an
@@ -59,26 +66,91 @@ if the game wants to call it at a precise point.
 
 ## Kinds — what to pass, what comes back
 
-| kind | play() takes | events | lifetime |
+| kind | play() takes | its own events | lifetime |
 |---|---|---|---|
-| `projectile` | `from`, `to`, `height`, `targetHeight` [+ `speed` or `flightTime`] | `release` (leaves the hand), `impact` | ends itself; `h.flightTime` is known on play |
+| `projectile` | `from`, `to`, `height`, `targetHeight` [+ `speed` or `flightTime`] | `impact` | ends itself; `h.flightTime` is known on play |
 | `burst` | `at`, [`from` = its direction], `height` | `peak` (the moment to apply it) | ends itself |
 | `melee` | `at` (attacker), `to` (victim) or `dir`, `height`, `targetHeight` | `hit` (the contact frame) | ends itself |
-| `chain` | `from`, `targets: [...]` | `hop` (arg = index into targets) | ends itself |
-| `beam` | `from`, `to`, [`duration`] | `start` | `h.stop()` or duration, then its outro |
-| `aura` | `at` (the body, a function), `height`, [`duration`] | `start` | `h.stop()` or duration |
-| `zone` | `at`, `radius`, [`duration`] | `start` | `h.stop()` or duration |
-| `screen` | [`duration`] | `start` | `h.stop()` or duration |
+| `chain` | `from`, `targets: [...]` | `hop` (i = index into targets) | ends itself |
+| `beam` | `from`, `to`, [`duration`] | `start`, `stop` | `h.stop()` or duration, then its outro |
+| `aura` | `at` (the body, a function), `height`, [`duration`] | `start`, `stop` | `h.stop()` or duration |
+| `zone` | `at`, `radius`, [`duration`] | `start`, `stop` | `h.stop()` or duration |
+| `screen` | [`duration`] | `start`, `stop` | `h.stop()` or duration |
 
-Every handle: `on(event, fn)`, `set({ at, from, to, level, radius, ... })`
-(retarget, re-level a running effect), `stop()` (outro), `kill()` (gone now),
-`done`, `duration`. Every kind also fires `end`. An unknown id returns a dead
-handle and logs once; it never throws in a frame.
+Every kind also fires, in order: `cast` (play() — the clip starts), `release`
+(the spell leaves the caster), its own events, and `end`. A listener gets
+`(i, handle, event)`: `i` = which copy of a volley, which hop of a chain,
+else 0. `h.timeline()` (or `fx.timeline(id, params)` without playing) lists
+every scheduled event in seconds from play(). Every handle: `on(event, fn)`,
+`set({ at, from, to, level, radius, ... })` (retarget, re-level a running
+effect), `stop()` (outro; before the release it never appears), `kill()`
+(gone now), `done`, `duration`, `releaseAt`, `impactAt`, `releases[]`,
+`impacts[]`. An unknown id returns a dead handle and logs once; it never
+throws in a frame.
+
+## Cast sync — the clip and the spell
+
+- **Each effect names its clip** (`def.stage.anim`, catalog `stage.anim`):
+  the `characters2/animation_map.json` state the hero plays — `spell_wand`,
+  `spell_channel`, `bow`, `sword`, `punch`, `kick` — or a monster's
+  `attack`. Every hero clip is 4 frames; on frame 2 (the KEY frame) the wand
+  thrusts and sparks, the bow looses, the blade and fist land.
+- **The rates** (`CAST_ANIMS`): the spell and bow clips at 10 fps (the
+  game's registered rate for them today — nothing triggers them yet), sword,
+  punch and kick at 12 (the game's punch rate). A monster's attack lasts
+  0.7 s whatever its frame count (the game's rule); its key is mid-clip.
+- **Start both in the same frame and pass `release`**: `castRelease(def,
+  level)` = seconds from the clip's start to the key frame (a melee's blow
+  LANDS on it: its swing starts earlier by its `hitAt`). A projectile's
+  gather fills that time at the hand; every other kind waits unseen and
+  starts on it. Omit `release` and an effect starts at once (its own windup).
+- **Cast from the art**: `castFrom(body, hero, anim, facing)` returns the
+  `from` for the wand tip / orb between the hands / arrow in flight, measured
+  on each hero's key frame per facing against the game's foot anchor
+  (`shaders/library/cast_points.js`, `python3 shaders/pipeline/castpoints.py`
+  — the catalog gate fails if the hero frames change under it). PixelLab's
+  south-facing wand points screen-right, the north one up: a fixed
+  "0.55 of the height" misses the wand by up to 50 px.
+- A channel clip (`spell_channel`) on a sustained effect holds its last frame
+  until the effect's `stop`; a one-shot clip returns to idle.
+
+## Volleys — several copies in a formation
+
+`count` (2-12) plays that many copies as ONE handle; `formation` picks how
+they fly — the skill decides how many, the effect owns the shape:
+
+| formation | kinds | what it does |
+|---|---|---|
+| `fan` | projectile | leave a beat apart, bow out to both sides, converge on the target |
+| `barrage` | projectile | one after another down the same line |
+| `spread` | projectile | a cone: straight lines landing side by side across the target |
+| `rain` | projectile, burst | lobbed high / dropped, scattered over the target area |
+| `ring` | projectile, burst | outward in every direction / a circle around the spot |
+| `line` | burst | a row marching from the caster to the target |
+
+Every projectile supports every projectile formation; a burst only the ones
+it lists (catalog `volley.formations`: meteor and lightning strike rain, line
+and ring; smite rain and ring). Every copy fires its own `release`,
+`impact` / `peak` with its index; `h.impacts[i]` / `h.releases[i]` give the
+times up front. Only the first copy gathers at the hand, and the copies share
+ONE light (their centre, reach and summed colour, capped), so a volley still
+fits one reserved slot.
+
+## Sounds
+
+Each effect lists its sound slots (`def.sounds`, catalog `sounds`) with the
+game's audio event for each: `soundEvent(id, slot)` =
+`shaders.<family>-<name>.<slot>` (`shaders.fire-fireball.impact`). Emit it
+with `gameAudio.event(...)` on the runtime event the slot names (`slot.event`;
+per copy when `slot.each`); a `loop` slot (a sustained effect's `channel`)
+runs from its `release` to its `stop`. The wiki binds the sounds
+(`live/tuning/sfx_requests.json` -> the composer).
 
 ## Timing and speed
 
 - **Flight time** = max(minFlight, ground distance in cells / speed), plus the
-  effect's windup (a few frames of gathering at the hand). It is fixed at
+  effect's windup (a few frames of gathering at the hand — or the `release`
+  passed, so the flight starts on the clip's key frame). It is fixed at
   `play()` and returned as `h.flightTime`, so the game can schedule damage
   without waiting for an event. **If the server decides the arrival, pass it**
   (`flightTime: seconds`) and the visual lands exactly then. With `to` as a

@@ -47,6 +47,16 @@ game. The rules below are what the first 31 taught.
    `levels`, `tune` (colours first, then feature switches), the kind's timing
    (`dur`, `speed`, `windup`, `intro`/`outro`, `hopDelay`, `hitAt`, `peakAt`),
    `radius` if it has a ground reach, `light`, and `layers`.
+   Then how it is SEEN — `stage` overrides what the kind defaults to
+   (define.js `stageOf`): `caster` / `target` ("hero" | "monster" | null — a
+   status has no caster, a monster attack is cast by a monster at the hero),
+   `at` ("caster" | "target" | "free"), `reach` (cells, melee distance),
+   `anim` (the caster's clip: spell_wand | spell_channel | bow | sword |
+   punch | kick | attack | null — a big spell channels, an arrow uses the
+   bow), `monster` (a shipped monster that suits it). A burst that can fall
+   as several declares `volley: ["rain", "line", "ring"]`; a projectile gets
+   every projectile formation unless `volley: false`. The sound slots follow
+   from the kind and the timing — nothing to declare.
 3. A layer: `id`, `phase` (projectile: windup | flight | impact; melee: swing |
    hit; chain: hop | impact; sustained: intro | loop | outro | sustain; burst:
    main), `plane`, `emissive`, `at` (anchor: from | to | at | head | impact |
@@ -63,7 +73,8 @@ game. The rules below are what the first 31 taught.
    FLAME, COMET, FLOW, CLOUD, STAR4, MOTE).
 5. `node shaders/pipeline/catalog.mjs`, then shoot it and LOOK:
    `node shaders/pipeline/shoot.mjs --ids <id> --levels 1,5,10 --zoom 2`
-   (and `--day` for painted effects: the night hides them). Fix, shoot again.
+   (and `--day` for painted effects: the night hides them; `--count 3
+   --formation fan` for a volley). Fix, shoot again.
 6. `phaser-check --ids <id>`: 0 GL errors, 0 shader errors.
 
 ## Traps already paid for

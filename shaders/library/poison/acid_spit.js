@@ -9,6 +9,7 @@ export default defineEffect({
   id: "poison/acid_spit",
   name: "Acid Spit",
   kind: "projectile",
+  stage: { caster: "monster", target: "hero", anim: "attack", monster: "blight_elk" },
   family: "poison",
   category: "attack",
   tags: ["projectile", "damage over time", "lob", "monster", "ground pool"],

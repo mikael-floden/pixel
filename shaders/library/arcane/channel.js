@@ -7,6 +7,7 @@ export default defineEffect({
   id: "arcane/channel",
   name: "Channeling",
   kind: "aura",
+  stage: { anim: "spell_channel" },
   family: "arcane",
   category: "channel",
   tags: ["channel", "charge", "cast time", "wind-up"],

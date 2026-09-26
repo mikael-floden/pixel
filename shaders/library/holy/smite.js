@@ -9,6 +9,7 @@ export default defineEffect({
   id: "holy/smite",
   name: "Smite",
   kind: "burst",
+  volley: ["rain", "ring"],
   family: "holy",
   category: "attack",
   tags: ["damage", "single target", "instant", "holy", "undead bane"],

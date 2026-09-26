@@ -28,6 +28,7 @@ export default defineEffect({
   id: "status/stunned",
   name: "Stunned",
   kind: "aura",
+  stage: { caster: null, anim: null },
   family: "status",
   category: "debuff",
   tags: ["stun", "debuff", "crowd control"],

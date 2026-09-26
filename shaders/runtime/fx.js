@@ -4,7 +4,9 @@
 //   fx.register(def)                      // or registerAll(library)
 //   const h = fx.play("fire/fireball", { level: 7, from, to, owner: "self" });
 //   h.flightTime                          // s from play() to impact — schedule damage on it
-//   h.on("impact", () => ...)             // or listen
+//   h.on("impact", (i) => ...)            // or listen (i = which copy / which hop, else 0)
+//   fx.play(id, { ..., release: 0.25 })   // leave the hand on the cast animation's release frame
+//   fx.play(id, { ..., count: 3, formation: "fan" })   // a volley (see volley.js)
 //   fx.update(dtSeconds)                  // once per frame
 //   fx.drawList()                         // what to draw this frame (renderers consume it)
 //   fx.lights()                           // what may light the world this frame
@@ -18,7 +20,8 @@
 // returning {x, y, z}: it is re-read every frame (a homing bolt, an aura on a
 // walking body).
 
-import { STANDARD_TUNE, tuneDefaults } from "./define.js";
+import { tuneDefaults } from "./define.js";
+import { FORMATIONS, formationsOf, MAX_VOLLEY } from "./volley.js";
 
 const DEF_CELL_WU = 32;
 const DEF_BASIS = [32, 14, -32, 14]; // px per cell: world +x, world +y (unturned view)
@@ -71,16 +74,42 @@ export class FxWorld {
     return this;
   }
 
-  /** Start an effect. Unknown id -> a harmless dead handle (logged once). */
+  /** Start an effect. Unknown id -> a harmless dead handle (logged once).
+   *  `count` > 1 plays a VOLLEY in `formation` (see volley.js): one handle,
+   *  every copy's release / impact / peak fired with its index. */
   play(id, params = {}) {
+    const made = this.make(id, params);
+    if (made) for (const i of made.insts) this.insts.push(i);
+    return made ? made.handle : deadHandle(id);
+  }
+
+  /** The schedule play() WOULD run, without playing it: [{ event, index, t }]
+   *  in seconds from play(), sorted. A sustained effect without a duration
+   *  has no stop/end yet. (The wiki's timeline and sound preview read this.) */
+  timeline(id, params = {}) {
+    const made = this.make(id, params);
+    return made ? made.handle.timeline() : [];
+  }
+
+  make(id, params) {
     const def = this.defs.get(id);
     if (!def) {
-      this.log(`[effects] unknown effect "${id}"`);
-      return deadHandle(id);
+      this.log(`[shaders] unknown effect "${id}"`);
+      return null;
+    }
+    const n = Math.max(1, Math.min(MAX_VOLLEY, Math.round(Number(params.count) || 1)));
+    if (n > 1) {
+      const forms = formationsOf(def);
+      if (forms.length) {
+        const f = forms.includes(params.formation) ? params.formation : forms[0];
+        if (params.formation && params.formation !== f) this.log(`[shaders] ${id}: no formation "${params.formation}", playing "${f}"`);
+        const v = new FxVolley(this, def, params, n, f);
+        return { insts: v.children, handle: v.handle };
+      }
+      this.log(`[shaders] ${id} plays no volley; count ${n} ignored`);
     }
     const inst = new FxInstance(this, def, params, this.seq++);
-    this.insts.push(inst);
-    return inst.handle;
+    return { insts: [inst], handle: inst.handle };
   }
 
   /** Advance every effect by dt seconds; fire events; drop finished ones. */
@@ -112,21 +141,34 @@ export class FxWorld {
   /** Lights this frame, strongest first. Each: { x, y (wu), z (px), radius
    *  (cells), color [r,g,b] (intensity folded in, may exceed 1), flicker,
    *  weight, owner, id }. The game binds lights()[0] of its owner to the
-   *  reserved slot (games2 lightslots.ts setSelfFxLight / setMonsterFxLight). */
+   *  reserved slot (games2 lightslots.ts setSelfFxLight / setMonsterFxLight).
+   *  A volley is ONE light (its copies merged), so it fits one slot. */
   lights(filter) {
     const out = [];
+    const groups = new Map();
     for (const i of this.insts) {
       const l = i.light();
-      if (l && (!filter || filter(l))) out.push(l);
+      if (!l) continue;
+      if (!i.group) {
+        out.push(l);
+        continue;
+      }
+      let a = groups.get(i.group);
+      if (!a) groups.set(i.group, (a = []));
+      a.push(l);
     }
-    out.sort((a, b) => b.weight - a.weight);
-    return out;
+    for (const [g, ls] of groups) out.push(ls.length === 1 ? ls[0] : mergeLights(ls, g.handle, this.cellWu));
+    const res = filter ? out.filter(filter) : out;
+    res.sort((a, b) => b.weight - a.weight);
+    return res;
   }
 
   // --- geometry helpers shared by instances ---
+  /** A position's screen point. `sx` shifts it sideways in screen px: the
+   *  wand tip of a cast animation is a SCREEN offset from the feet. */
   screenOf(P) {
     const g = this.host.project(P.x, P.y);
-    return { x: g.x, y: g.y - (P.z || 0) };
+    return { x: g.x + (P.sx || 0), y: g.y - (P.z || 0) };
   }
   groundOf(P) {
     return this.host.project(P.x, P.y);
@@ -150,10 +192,166 @@ export class FxWorld {
 
 function deadHandle(id) {
   const h = {
-    id, kind: "none", seq: 0, flightTime: 0, impactAt: 0, duration: 0, done: true,
-    on() { return h; }, set() { return h; }, stop() {}, kill() {},
+    id, kind: "none", seq: 0, count: 0, formation: null, flightTime: 0, impactAt: 0, releaseAt: 0,
+    impacts: [], releases: [], duration: 0, done: true, time: 0,
+    on() { return h; }, set() { return h; }, setTune() { return h; }, stop() {}, kill() {}, timeline() { return []; },
   };
   return h;
+}
+
+/** Call the listeners of `ev`. The first argument is the INDEX: which copy
+ *  of a volley, which hop of a chain, else 0. */
+function callListeners(list, ev, idx, handle, world, id) {
+  for (const [n, fn] of list) {
+    if (n === ev || n === "*") {
+      try {
+        fn(idx, handle, ev);
+      } catch (e) {
+        world.log(`[shaders] listener for ${id} ${ev} threw: ${e}`);
+      }
+    }
+  }
+}
+
+/** A volley's copies as one light: at their weighted centre, reaching over
+ *  their spread, their colours summed but capped (one slot must not blind). */
+function mergeLights(ls, handle, cellWu) {
+  let W = 0, x = 0, y = 0, z = 0, r = 0, fl = 0, peak = 0;
+  const c = [0, 0, 0];
+  for (const l of ls) {
+    const w = l.weight || 1e-3;
+    W += w; x += l.x * w; y += l.y * w; z += l.z * w;
+    r = Math.max(r, l.radius);
+    fl = Math.max(fl, l.flicker);
+    for (let k = 0; k < 3; k++) c[k] += l.color[k];
+    peak = Math.max(peak, l.color[0], l.color[1], l.color[2]);
+  }
+  x /= W; y /= W; z /= W;
+  let spread = 0;
+  for (const l of ls) spread = Math.max(spread, Math.hypot(l.x - x, l.y - y));
+  const m = Math.max(c[0], c[1], c[2]), cap = peak * 1.6;
+  if (m > cap) for (let k = 0; k < 3; k++) c[k] *= cap / m;
+  const radius = r + (0.8 * spread) / cellWu;
+  return { id: ls[0].id, owner: ls[0].owner, handle, x, y, z, radius, color: c, flicker: fl, weight: Math.max(c[0], c[1], c[2]) * radius };
+}
+
+/** A volley: n copies of one effect in a formation, one handle for all. */
+class FxVolley {
+  constructor(world, def, p, n, formation) {
+    this.world = world;
+    this.def = def;
+    this.n = n;
+    this.formation = formation;
+    this.listeners = [];
+    this.ended = false;
+    // what the game may move while it flies (set({ from, to, at }))
+    this.p = { from: p.from, to: p.to, at: p.at ?? p.to ?? p.from };
+    const seed = p.seed === undefined ? Math.random() : p.seed;
+    const burst = def.kind === "burst";
+    const F = read(burst ? p.from ?? this.p.at : p.from) || read(this.p.at) || { x: 0, y: 0 };
+    const T = read(burst ? this.p.at : p.to) || F;
+    const D = Math.hypot(T.x - F.x, T.y - F.y) / world.cellWu;
+    const g = D > 1e-3 ? norm(T.x - F.x, T.y - F.y) : [Math.SQRT1_2, -Math.SQRT1_2];
+    const ctx = { D, g, seed, cellWu: world.cellWu };
+    const offs = [];
+    for (let i = 0; i < n; i++) offs.push(FORMATIONS[formation].at(i, n, ctx, def.kind) || {});
+    const d0 = Math.min(...offs.map((o) => o.delay || 0));
+    for (const o of offs) o.delay = (o.delay || 0) - d0;
+    this.children = [];
+    const R = p.release > 0 ? p.release : 0;
+    let W = 0; // the first copy's release: the rest are timed from it
+    for (let i = 0; i < n; i++) {
+      const o = offs[i];
+      const land = o.land || [0, 0];
+      const cp = { ...p, count: undefined, formation: undefined, seed: (seed + i * 0.618034) % 1 };
+      if (!burst) {
+        cp.from = () => read(this.p.from);
+        if (o.dest) {
+          const dest = { x: F.x + o.dest[0], y: F.y + o.dest[1], z: o.ground ? 0 : undefined };
+          cp.to = dest;
+        } else {
+          cp.to = () => {
+            const q = read(this.p.to);
+            return q && { x: q.x + land[0], y: q.y + land[1], z: o.ground ? 0 : q.z };
+          };
+        }
+        cp.bow = o.bow || 0;
+        cp.arcAdd = o.arc || 0;
+        if (i > 0) {
+          cp.release = W + o.delay;
+          cp.gather = false; // one gather at the hand, not n stacked ones
+        }
+      } else {
+        const shift = (P) => () => {
+          const q = read(P);
+          return q && { x: q.x + land[0], y: q.y + land[1], z: q.z };
+        };
+        cp.at = shift(this.p.at);
+        cp.to = this.p.to !== undefined ? shift(this.p.to) : undefined;
+        cp.release = R + o.delay;
+      }
+      const inst = new FxInstance(world, def, cp, world.seq++, this, i);
+      if (i === 0) W = inst.releaseT - inst.origin;
+      this.children.push(inst);
+    }
+    this.handle = this.makeHandle();
+  }
+
+  relay(ev, idx, inst) {
+    if (ev === "cast" && inst.index !== 0) return;
+    if (ev === "end") {
+      if (this.ended || !this.children.every((c) => c.dead)) return;
+      this.ended = true;
+      idx = 0; // the volley's end, not a copy's
+    }
+    callListeners(this.listeners, ev, idx, this.handle, this.world, this.def.id);
+  }
+
+  makeHandle() {
+    const self = this, C = this.children, kind = this.def.kind;
+    const hs = C.map((c) => c.handle);
+    const min = (a) => (a.length ? Math.min(...a) : 0);
+    return {
+      id: this.def.id,
+      kind,
+      seq: hs[0].seq,
+      owner: hs[0].owner,
+      count: this.n,
+      formation: this.formation,
+      releases: hs.map((h) => h.releaseAt),
+      impacts: kind === "projectile" ? hs.map((h) => h.impactAt) : [],
+      releaseAt: min(hs.map((h) => h.releaseAt)),
+      flightTime: min(hs.map((h) => h.impactAt)),
+      impactAt: min(hs.map((h) => h.impactAt)),
+      get duration() { return Math.max(...hs.map((h) => h.duration)); },
+      get done() { return C.every((c) => c.dead); },
+      // a finished copy stops its clock: the volley's is the latest one's
+      get time() { return Math.max(...hs.map((h) => h.time)); },
+      on(ev, fn) { self.listeners.push([ev, fn]); return this; },
+      set(q) {
+        for (const k of ["from", "to", "at"]) if (q[k] !== undefined) self.p[k] = q[k];
+        const { from, to, at, ...rest } = q;
+        for (const h of hs) h.set(rest);
+        return this;
+      },
+      stop() { for (const h of hs) h.stop(); },
+      kill() { for (const h of hs) h.kill(); },
+      setTune(t) { for (const h of hs) h.setTune(t); return this; },
+      timeline() {
+        const out = [];
+        let end = 0;
+        for (const h of hs) {
+          for (const e of h.timeline()) {
+            if (e.event === "cast" && e.index !== 0) continue;
+            if (e.event === "end") { end = Math.max(end, e.t); continue; }
+            out.push(e);
+          }
+        }
+        if (end > 0) out.push({ event: "end", index: 0, t: end });
+        return out.sort((a, b) => a.t - b.t);
+      },
+    };
+  }
 }
 
 // Inverse ground basis for the shader: local px (y UP) -> cells, column-major.
@@ -169,16 +367,20 @@ const norm = (x, y) => {
   return n > 1e-6 ? [x / n, y / n] : [1, 0];
 };
 
+const ONE_SHOT = new Set(["projectile", "melee", "burst", "chain"]);
+
 class FxInstance {
-  constructor(world, def, p, seq) {
+  constructor(world, def, p, seq, group = null, index = 0) {
     this.world = world;
     this.def = def;
     this.seq = seq;
-    this.T = 0;
+    this.group = group;
+    this.index = index;
     this.dead = false;
     this.stopAt = Infinity;
     this.listeners = [];
     this.fired = new Set();
+    this.oneShot = ONE_SHOT.has(def.kind);
     const level = clampLevel(p.level);
     this.p = {
       level,
@@ -196,6 +398,13 @@ class FxInstance {
       speed: p.speed,
       flightTime: p.flightTime,
       tune: p.tune,
+      // s from play() to the moment the spell leaves the caster: the cast
+      // animation's release frame. A projectile's gather fills it; every
+      // other kind waits, unseen, and starts on it.
+      release: p.release,
+      bow: p.bow || 0, // volley: cells of sideways bulge
+      arcAdd: p.arcAdd || 0, // volley: px of extra arc
+      gather: p.gather !== false, // volley: only the first copy gathers
     };
     // A position's z defaults to where the body holds a spell / takes a hit:
     // the caster's hand (0.55 of its height), the target's chest (0.5).
@@ -207,10 +416,17 @@ class FxInstance {
     this.radius = this.p.radius ?? val(def.radius, this.base, 1.5);
     this.base.radius = this.radius;
     this.plan();
+    // Instance time runs from `origin`: negative while a non-projectile waits
+    // for its release, so every window below still starts at 0.
+    this.T = this.origin;
     this.handle = this.makeHandle();
   }
 
   // ---- the timeline: phase windows [start, end) in instance seconds ----
+  // Events, in firing order: cast (play() — the cast animation starts),
+  // release (the spell leaves the caster), then the kind's own: impact,
+  // hit, peak, hop:<k>, start; sustained kinds also fire stop (the outro
+  // begins) from update(); every kind ends with end.
   plan() {
     const d = this.def, s = this.base, P = {};
     const layerDur = (phase) => {
@@ -218,9 +434,11 @@ class FxInstance {
       for (const L of d.layers) if (L.phase === phase) m = Math.max(m, val(L.delay, s, 0) + val(L.dur, s, 0));
       return m;
     };
+    const R = this.p.release > 0 ? this.p.release : 0;
+    this.origin = -R;
     switch (d.kind) {
       case "projectile": {
-        const W = val(d.windup, s, 0);
+        const W = this.p.release >= 0 ? this.p.release : val(d.windup, s, 0);
         const from = read(this.p.from) || { x: 0, y: 0 }, to = read(this.p.to) || from;
         const cells = Math.hypot(to.x - from.x, to.y - from.y) / this.world.cellWu;
         const speed = Math.max(0.5, this.p.speed ?? val(d.speed, s, 10));
@@ -228,7 +446,9 @@ class FxInstance {
         const I = Math.max(val(d.impactDur, s, 0), layerDur("impact"));
         P.windup = [0, W]; P.flight = [W, W + F]; P.impact = [W + F, W + F + I];
         this.flight = F; this.impactT = W + F; this.end = W + F + I;
-        this.events = [["release", W], ["impact", W + F]];
+        this.origin = 0; // a projectile's wait IS its windup: the gather shows
+        this.releaseT = W;
+        this.events = [["cast", 0], ["release", W], ["impact", W + F]];
         break;
       }
       case "melee": {
@@ -237,6 +457,7 @@ class FxInstance {
         const I = layerDur("hit");
         P.swing = [0, D]; P.hit = [H, H + I];
         this.end = Math.max(D, H + I);
+        this.hitT = H;
         this.events = [["hit", H]];
         break;
       }
@@ -267,7 +488,26 @@ class FxInstance {
         this.events = [["start", I]];
       }
     }
+    if (d.kind !== "projectile") {
+      this.releaseT = 0;
+      this.events.unshift(["cast", this.origin], ["release", 0]);
+    }
     this.P = P;
+  }
+
+  /** The schedule, in seconds from play(). */
+  timeline() {
+    const o = this.origin, out = [];
+    for (const [name, t] of this.events) {
+      const k = name.indexOf(":");
+      out.push({ event: k < 0 ? name : name.slice(0, k), index: k < 0 ? this.index : Number(name.slice(k + 1)), t: t - o });
+    }
+    if (this.oneShot) out.push({ event: "end", index: this.index, t: this.end - o });
+    else if (isFinite(this.stopAt)) {
+      out.push({ event: "stop", index: this.index, t: this.stopAt - o });
+      out.push({ event: "end", index: this.index, t: this.stopAt + this.outro - o });
+    }
+    return out.sort((a, b) => a.t - b.t);
   }
 
   // sustained kinds recompute their windows from stopAt each frame
@@ -278,8 +518,7 @@ class FxInstance {
   }
 
   get finished() {
-    const kind = this.def.kind;
-    if (kind === "projectile" || kind === "melee" || kind === "burst" || kind === "chain") return this.T >= this.end;
+    if (this.oneShot) return this.T >= this.end;
     return this.T >= this.stopAt + this.outro;
   }
 
@@ -293,6 +532,10 @@ class FxInstance {
         this.emit(name);
       }
     }
+    if (!this.oneShot && !this.fired.has("stop") && this.T >= this.stopAt) {
+      this.fired.add("stop");
+      this.emit("stop");
+    }
     if (this.finished && !this.dead) {
       this.dead = true;
       this.emit("end");
@@ -300,32 +543,35 @@ class FxInstance {
   }
 
   emit(name) {
-    const [ev, arg] = name.split(":");
-    for (const [n, fn] of this.listeners) {
-      if (n === ev || n === "*") {
-        try {
-          fn(arg === undefined ? undefined : Number(arg), this.handle, ev);
-        } catch (e) {
-          this.world.log(`[effects] listener for ${this.def.id} ${ev} threw: ${e}`);
-        }
-      }
-    }
+    const k = name.indexOf(":");
+    const ev = k < 0 ? name : name.slice(0, k);
+    const idx = k < 0 ? this.index : Number(name.slice(k + 1));
+    if (this.group) this.group.relay(ev, idx, this);
+    else callListeners(this.listeners, ev, idx, this.handle, this.world, this.def.id);
   }
 
   makeHandle() {
     const self = this;
     const kind = this.def.kind;
+    const o = this.origin;
+    const hitT = kind === "projectile" ? this.impactT - o : kind === "melee" ? this.hitT - o : 0;
     return {
       id: this.def.id,
       kind,
       seq: this.seq,
       owner: this.p.owner,
+      count: 1,
+      formation: null,
+      /** Seconds from play() to the release (the spell leaves the caster). */
+      releaseAt: this.releaseT - o,
       /** Seconds from play() to impact (projectile), to the hit (melee). */
-      flightTime: kind === "projectile" ? this.impactT : kind === "melee" ? this.events[0][1] : 0,
-      impactAt: kind === "projectile" ? this.impactT : kind === "melee" ? this.events[0][1] : 0,
-      get duration() { return kind === "projectile" || kind === "melee" || kind === "burst" || kind === "chain" ? self.end : self.stopAt + self.outro; },
+      flightTime: hitT,
+      impactAt: hitT,
+      releases: [this.releaseT - o],
+      impacts: kind === "projectile" ? [hitT] : [],
+      get duration() { return (self.oneShot ? self.end : self.stopAt + self.outro) - o; },
       get done() { return self.dead; },
-      get time() { return self.T; },
+      get time() { return self.T - o; },
       on(ev, fn) { self.listeners.push([ev, fn]); return this; },
       set(p) {
         for (const k of ["at", "from", "to", "dir", "targets", "height"]) if (p[k] !== undefined) self.p[k] = p[k];
@@ -336,15 +582,19 @@ class FxInstance {
         if (p.radius !== undefined) self.radius = self.base.radius = p.radius;
         return this;
       },
-      /** A sustained effect plays its outro; a one-shot is cut short. */
+      /** A sustained effect plays its outro; a one-shot is cut short; one
+       *  still waiting for its release never appears. */
       stop() {
-        if (kind === "beam" || kind === "aura" || kind === "zone" || kind === "screen") {
+        if (self.T < 0) self.dead = true;
+        else if (!self.oneShot) {
           if (self.T < self.stopAt) self.stopAt = self.T;
         } else self.dead = true;
       },
       kill() { self.dead = true; },
       /** Live-edit tunables of the running effect (the wiki's sliders). */
       setTune(t) { Object.assign(self.tune, t); return this; },
+      /** [{ event, index, t }]: every event, in seconds from play(). */
+      timeline() { return self.timeline(); },
     };
   }
 
@@ -352,7 +602,7 @@ class FxInstance {
   pt(P, dz) {
     const q = read(P);
     if (!q) return null;
-    return { x: q.x, y: q.y, z: q.z ?? dz };
+    return { x: q.x, y: q.y, z: q.z ?? dz, sx: q.sx || 0 };
   }
 
   flightU() {
@@ -365,20 +615,35 @@ class FxInstance {
     const d = this.def, s = this.base, w = this.world;
     const F = this.pt(this.p.from, this.zFrom), G = this.pt(this.p.to, this.zTo) || F;
     const a = w.screenOf(F), b = w.screenOf(G);
-    const arc = val(d.arc, s, 0);
+    const arc = val(d.arc, s, 0) + this.p.arcAdd;
     const [amp, cyc] = val(d.wave, s, [0, 0]);
-    let x = a.x + (b.x - a.x) * u, y = a.y + (b.y - a.y) * u;
-    y -= arc * 4 * u * (1 - u);
-    let vx = b.x - a.x, vy = b.y - a.y - arc * 4 * (1 - 2 * u);
+    // a volley's sideways bulge: `bow` cells to the left of travel, on the
+    // GROUND (so it sorts and lights where it flies), drawn through the basis
+    let bgx = 0, bgy = 0, bsx = 0, bsy = 0;
+    if (this.p.bow) {
+      const [ux, uy] = norm(G.x - F.x, G.y - F.y);
+      const B = w.basisAt(F);
+      const cx = -uy * this.p.bow, cy = ux * this.p.bow; // cells
+      bgx = cx * w.cellWu; bgy = cy * w.cellWu;
+      bsx = cx * B[0] + cy * B[2]; bsy = cx * B[1] + cy * B[3];
+    }
+    const path = (v) => {
+      const e = 4 * v * (1 - v);
+      return [a.x + (b.x - a.x) * v + bsx * e, a.y + (b.y - a.y) * v - arc * e + bsy * e];
+    };
+    let [x, y] = path(u);
+    // the nose follows the path's tangent (not the wave's wiggle)
+    const p0 = path(Math.max(0, u - 0.01)), p1 = path(Math.min(1, u + 0.01));
+    const [dx, dy] = norm(p1[0] - p0[0], -(p1[1] - p0[1]));
     if (amp) {
       const [nx, ny] = norm(-(b.y - a.y), b.x - a.x);
       const env = Math.sin(Math.PI * u);
       const off = amp * env * Math.sin(u * cyc * Math.PI * 2 + s.seed * 6.28);
       x += nx * off; y += ny * off;
     }
-    const gx = F.x + (G.x - F.x) * u, gy = F.y + (G.y - F.y) * u;
-    const z = F.z + (G.z - F.z) * u + arc * 4 * u * (1 - u);
-    const [dx, dy] = norm(vx, -vy);
+    const e = 4 * u * (1 - u);
+    const gx = F.x + (G.x - F.x) * u + bgx * e, gy = F.y + (G.y - F.y) * u + bgy * e;
+    const z = F.z + (G.z - F.z) * u + arc * e;
     return { x, y, gx, gy, z, dir: [dx, dy] };
   }
 
@@ -548,6 +813,7 @@ class FxInstance {
       for (const L of d.layers) {
         if (d.kind !== "chain" && hop > 0) break;
         if (d.kind === "chain" && hop > 0 && L.phase !== "hop" && L.phase !== "impact") continue;
+        if (!this.p.gather && L.phase === "windup") continue;
         if (L.when && !L.when(this.base)) continue;
         const s = this.stateFor(L, hop);
         if (!s) continue;
@@ -631,7 +897,7 @@ class FxInstance {
   /** This effect's light this frame, or null. */
   light() {
     const d = this.def;
-    if (!d.light) return null;
+    if (!d.light || this.T < 0) return null;
     const phases = this.phases();
     let name = null;
     for (const k in phases) {
@@ -639,6 +905,7 @@ class FxInstance {
       if (this.T >= a && this.T < b && k !== "sustain") { name = k; break; }
     }
     if (!name) name = this.defaultPhase();
+    if (name === "windup" && !this.p.gather) return null;
     const win = phases[name] || [0, 1];
     const s = Object.assign({}, this.base, {
       phase: name,

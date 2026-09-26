@@ -1,16 +1,63 @@
-// THE STAGE — a small piece of the game's world to judge an effect on: the
-// game's own iso projection (32/14 px per cell step, 32 wu per cell), a
-// grass floor, the real hero and a real monster at the size the game draws
-// them, and a night that works the way the game's does (the world darkens,
-// emissive layers do not, the effect's light lights the floor).
+// THE STAGE — a small piece of the game's world to judge an effect on, drawn
+// the way the game draws it:
+//  - the game's iso projection (32/14 px per cell step, 32 wu per cell);
+//  - the real hero and monsters at the size the game draws them, pinned at
+//    the game's foot anchor, playing their real clips (idle at the game's
+//    6 fps; the cast clip started with the effect, so the spell leaves on its
+//    key frame);
+//  - the game's LIGHT (games2 WorldScene + nightlight.ts, ported verbatim):
+//    ambient by time of day (TIME_PHASES / blendPhases), point lights with
+//    att = (1 - d/r)^2 over cells, the height drop 0.6 per level, flicker and
+//    ember rim, summed and capped at 1.25, MULTIPLIED into the world. Bodies
+//    take the light at their feet (the game's lit-copy tint); a painted layer
+//    the light at its ground point; an emissive layer is never darkened (the
+//    game draws it above its darkness, at 900_001+). The reserved slots decide
+//    WHICH lights: the hero's torch, one self-cast effect light, one monster
+//    one (lightslots.ts) — a second fireball in flight lights nothing.
+// Not modelled: terrain occlusion (the stage is flat), clouds, the sun's
+// shadows, indoor grades.
 //
 // Rendering order is the painter's: ground, then ground-plane layers, then
-// bodies and body-plane layers sorted by the ground y they stand on, then air
-// and screen layers.
+// bodies and body-plane layers by the ground y they stand on, then air and
+// screen layers.
 
 import { FxGL, blendPremultiplied, viewMatrix } from "../runtime/gl.js";
+import { toShaderLight } from "../runtime/phaser.js";
 
-export const ISO = { dx: 32, dy: 14, cellWu: 32 };
+export const ISO = { dx: 32, dy: 14, cellWu: 32, levelPx: 15 };
+
+/** WorldScene TIME_PHASES: what unlit art is multiplied by. Night is the
+ *  calibrated reference. u = phase index + progress, 0..4. */
+export const TIME_PHASES = [
+  { name: "Night", ambient: [0.075, 0.09, 0.14] },
+  { name: "Morning", ambient: [0.61, 0.43, 0.4] },
+  { name: "Day", ambient: [1.0, 1.0, 1.0] },
+  { name: "Evening", ambient: [0.74, 0.55, 0.37] },
+];
+
+/** WorldScene blendPhases, verbatim: linear between MID-phase anchors (at
+ *  u = i + 0.5 the look is exactly phase i). torchF: 0 at full Day. */
+export function blendPhases(u) {
+  const N = TIME_PHASES.length;
+  const v = u - 0.5;
+  const k = Math.floor(v);
+  const w = v - k;
+  const i0 = ((k % N) + N) % N;
+  const i1 = (i0 + 1) % N;
+  const a0 = TIME_PHASES[i0].ambient, a1 = TIME_PHASES[i1].ambient;
+  const L = (x, y) => x + (y - x) * w;
+  return {
+    ambient: [L(a0[0], a1[0]), L(a0[1], a1[1]), L(a0[2], a1[2])],
+    torchF: L(i0 === 2 ? 0 : 1, i1 === 2 ? 0 : 1),
+  };
+}
+
+/** The hero's own torch (WorldScene): waist-high, radius 6 cells. */
+export const TORCH = { radius: 6, z: 0.55, color: [0.85, 0.58, 0.32], flicker: 0.35 };
+
+const MAX_L = 4;
+const LIGHT_DROP = 0.6; // nightlight.ts: levels of height count 0.6 of a cell
+const CAP = 1.25; // nightlight.ts: min(light, vec3(1.25))
 
 const SPRITE_VS = `precision highp float;
 attribute vec2 aPos;
@@ -21,28 +68,63 @@ void main() {
   vUv = aPos; vW = w;
   gl_Position = vec4(w * uView.xy + uView.zw, 0.0, 1.0);
 }`;
+// the light function is nightlight.ts's per-light block with occlusion 1
 const SPRITE_FS = `precision highp float;
 uniform sampler2D uTex;
 uniform vec3 uAmb;
-uniform vec4 uL[4];
-uniform vec3 uLc[4];
-uniform float uFeetY;
+uniform vec4 uL[${MAX_L}];
+uniform vec4 uLc[${MAX_L}];
+uniform float uT;
+uniform vec2 uOrigin;
+uniform vec3 uTint;
 uniform float uGround;
 varying vec2 vUv; varying vec2 vW;
+vec3 lightAt(vec2 cell, float z) {
+  vec3 L = uAmb;
+  for (int i = 0; i < ${MAX_L}; i++) {
+    if (uL[i].w <= 0.0) continue;
+    vec2 d = cell - uL[i].xy;
+    float dzl = (uL[i].z - z) * ${LIGHT_DROP.toFixed(2)};
+    float dist = sqrt(dot(d, d) + dzl * dzl);
+    float att = clamp(1.0 - dist / uL[i].w, 0.0, 1.0);
+    att *= att;
+    float fl = uLc[i].w, fi = float(i);
+    float flick = 1.0 - fl * 0.10 * (0.5 + 0.5 * sin(uT * 2.9 + fi * 5.3)) - fl * 0.05 * sin(uT * 7.1 + fi * 11.1);
+    float emb = smoothstep(0.35, 0.95, min(1.0, dist / uL[i].w)) * clamp(fl * 1.2, 0.0, 1.0);
+    L += mix(uLc[i].rgb, uLc[i].rgb * vec3(0.95, 0.30, 0.12), emb) * att * flick;
+  }
+  return min(L, vec3(${CAP.toFixed(2)}));
+}
 void main() {
   vec4 c = texture2D(uTex, vUv);
-  vec2 sp = uGround > 0.5 ? vW : vec2(vW.x, uFeetY);
-  vec3 L = uAmb;
-  for (int i = 0; i < 4; i++) {
-    if (uL[i].z <= 0.0) continue;
-    vec2 d = (sp - uL[i].xy) * vec2(1.0, 2.2857);
-    float f = clamp(1.0 - length(d) / uL[i].z, 0.0, 1.0);
-    L += uLc[i] * f * f;
+  vec3 L = uTint;
+  if (uGround > 0.5) {
+    float a = (vW.x - uOrigin.x) / ${ISO.dx.toFixed(1)}, b = (vW.y - uOrigin.y) / ${ISO.dy.toFixed(1)};
+    L = lightAt(vec2(a + b, b - a) * 0.5, 0.0);
   }
   gl_FragColor = vec4(c.rgb * L, c.a);
 }`;
 
-export const NIGHT_AMBIENT = [0.2, 0.24, 0.4];
+/** The same light on the CPU (a body's tint, a painted layer's). */
+export function lightAtCell(col, row, z, amb, lights, t) {
+  const out = [amb[0], amb[1], amb[2]];
+  lights.forEach((l, i) => {
+    if (!(l.radius > 0)) return;
+    const dzl = (l.z - z) * LIGHT_DROP;
+    const dist = Math.hypot(col - l.col, row - l.row, dzl);
+    let att = Math.max(0, Math.min(1, 1 - dist / l.radius));
+    att *= att;
+    if (att <= 0.001) return;
+    const fl = l.flicker || 0;
+    const flick = 1 - fl * 0.1 * (0.5 + 0.5 * Math.sin(t * 2.9 + i * 5.3)) - fl * 0.05 * Math.sin(t * 7.1 + i * 11.1);
+    const d01 = Math.min(1, dist / l.radius);
+    const s = Math.max(0, Math.min(1, (d01 - 0.35) / 0.6));
+    const emb = s * s * (3 - 2 * s) * Math.min(1, fl * 1.2);
+    const eb = [0.95, 0.3, 0.12];
+    for (let c = 0; c < 3; c++) out[c] += l.color[c] * (1 - emb + eb[c] * emb) * att * flick;
+  });
+  return out.map((v) => Math.min(CAP, v));
+}
 
 export class Stage {
   constructor(canvas, opts = {}) {
@@ -52,10 +134,12 @@ export class Stage {
     this.gl = gl;
     this.fxgl = new FxGL(gl, { log: opts.log });
     this.origin = { x: 0, y: 0 }; // screen px of world (0, 0)
-    this.sprites = [];
+    this.bodies = [];
+    this.textures = new Map(); // url -> Promise<{ tex, w, h, img }>
     this.groundTex = null;
     this.groundRect = null;
     this.spriteProg = this.makeSpriteProgram();
+    this.lastLights = [];
   }
 
   project(x, y) {
@@ -86,7 +170,10 @@ export class Stage {
     gl.bindAttribLocation(p, 0, "aPos");
     gl.linkProgram(p);
     const loc = (n) => gl.getUniformLocation(p, n);
-    return { p, uRect: loc("uRect"), uView: loc("uView"), uTex: loc("uTex"), uAmb: loc("uAmb"), uL: loc("uL"), uLc: loc("uLc"), uFeetY: loc("uFeetY"), uGround: loc("uGround") };
+    return {
+      p, uRect: loc("uRect"), uView: loc("uView"), uTex: loc("uTex"), uAmb: loc("uAmb"), uL: loc("uL"), uLc: loc("uLc"),
+      uT: loc("uT"), uOrigin: loc("uOrigin"), uTint: loc("uTint"), uGround: loc("uGround"),
+    };
   }
 
   texture(source) {
@@ -103,8 +190,70 @@ export class Stage {
     return t;
   }
 
-  /** Paint the grass floor for a world rect (pixel art, one texel per world px). */
+  /** One image as a texture, loaded once per url. */
+  image(url) {
+    let p = this.textures.get(url);
+    if (!p) {
+      p = loadImage(url).then((img) => ({ img, tex: this.texture(img), w: img.width, h: img.height }));
+      this.textures.set(url, p);
+      p.catch(() => this.textures.delete(url));
+    }
+    return p;
+  }
+
+  /** THE WIKI'S FLOOR PLAN (message shaders:ground): the ground's
+   *  highest-weight base set, one member per cell already drawn by the
+   *  members' weights — every choice the game makes is made by the wiki, the
+   *  stage only paints it. Resolves once the tiles are loaded; a newer plan
+   *  wins over one still loading. */
+  async setGroundPlan(plan) {
+    const ticket = (this.planTicket = (this.planTicket || 0) + 1);
+    const tiles = await Promise.all(plan.tiles.map((t) => loadImage(t.url).then((img) => ({ img, apex: apexRow(img) }))));
+    if (ticket !== this.planTicket) return false;
+    this.groundPlan = { ...plan, tiles };
+    if (this.groundRect) this.buildGround(this.groundRect);
+    return true;
+  }
+
+  /** Paint the floor for a world rect (one texel per world px): the plan's
+   *  tiles if there is one, else a procedural grass. */
   buildGround(rect) {
+    if (this.groundPlan) return this.paintPlan(rect);
+    return this.paintGrass(rect);
+  }
+
+  /** Tiles3 art on the game's lattice: a plate's top diamond is 64x28 with
+   *  its apex on the image's top opaque row (a 64x46 plate: row 0, and 18
+   *  rows of wall below that the next row's tiles cover); the apex of cell
+   *  (c, r) is the projection of its corner (c, r). Painter's order by c + r. */
+  paintPlan(rect) {
+    const w = Math.ceil(rect.w), h = Math.ceil(rect.h);
+    const cv = document.createElement("canvas");
+    cv.width = w; cv.height = h;
+    const g = cv.getContext("2d");
+    g.imageSmoothingEnabled = false;
+    const P = this.groundPlan, { cols, rows, cells } = P.grid;
+    const corners = [[rect.x, rect.y], [rect.x + w, rect.y], [rect.x, rect.y + h], [rect.x + w, rect.y + h]].map(([x, y]) => this.unproject(x, y));
+    const cs = corners.map((q) => q.x / ISO.cellWu), rs = corners.map((q) => q.y / ISO.cellWu);
+    const c0 = Math.floor(Math.min(...cs)) - 2, c1 = Math.ceil(Math.max(...cs)) + 2;
+    const r0 = Math.floor(Math.min(...rs)) - 2, r1 = Math.ceil(Math.max(...rs)) + 2;
+    const list = [];
+    for (let c = c0; c <= c1; c++) for (let r = r0; r <= r1; r++) list.push([c, r]);
+    list.sort((a, b) => a[0] + a[1] - (b[0] + b[1]) || a[1] - b[1]);
+    const mod = (v, n) => ((v % n) + n) % n;
+    for (const [c, r] of list) {
+      const t = P.tiles[cells[mod(r, rows) * cols + mod(c, cols)]];
+      if (!t) continue;
+      const ax = this.origin.x + (c - r) * ISO.dx - rect.x, ay = this.origin.y + (c + r) * ISO.dy - rect.y;
+      if (ax < -ISO.dx * 2 || ax > w + ISO.dx * 2 || ay < -t.img.height || ay > h + ISO.dy * 2) continue;
+      g.drawImage(t.img, Math.round(ax - t.img.width / 2), Math.round(ay - t.apex));
+    }
+    if (this.groundTex) this.gl.deleteTexture(this.groundTex);
+    this.groundTex = this.texture(cv);
+    this.groundRect = { x: rect.x, y: rect.y, w, h };
+  }
+
+  paintGrass(rect) {
     const w = Math.ceil(rect.w), h = Math.ceil(rect.h);
     const cv = document.createElement("canvas");
     cv.width = w; cv.height = h;
@@ -141,20 +290,32 @@ export class Stage {
     this.groundRect = { x: rect.x, y: rect.y, w, h };
   }
 
-  /** A body: an image whose feet stand on world point (x, y). The feet are
-   *  MEASURED (lowest opaque row, its centre) so any canvas size works. */
-  async addSprite(url, name) {
-    const img = await loadImage(url);
-    const feet = measureFeet(img);
-    const s = { name, img, tex: this.texture(img), w: img.width, h: img.height, feet, x: 0, y: 0, visible: true, top: feet.top };
-    this.sprites.push(s);
-    return s;
+  /** A body on the stage: its feet at screen (x, y); `frame` = the texture to
+   *  draw ({ tex, w, h }) and `anchor` = the feet inside it (frame px). */
+  addBody(name) {
+    const b = { name, x: 0, y: 0, visible: false, frame: null, anchor: { x: 0, y: 0 } };
+    this.bodies.push(b);
+    return b;
   }
 
-  /** Draw one frame. view = world rect, vp = viewport in canvas px. */
+  /** The lights of this frame, as the game's slots would carry them:
+   *  [torch?, selfFx?, monsterFx?] -> nightlight ShaderLights (cells, levels). */
+  slotLights(fx, torch) {
+    const out = [];
+    if (torch) out.push(torch);
+    if (fx) {
+      const self = fx.lights((l) => l.owner !== "monster")[0];
+      const mon = fx.lights((l) => l.owner === "monster")[0];
+      for (const l of [self, mon]) if (l) out.push(toShaderLight(l, { cellWu: ISO.cellWu, levelPx: ISO.levelPx }));
+    }
+    return out.slice(0, MAX_L);
+  }
+
+  /** Draw one frame. view = world rect, vp = viewport in canvas px, u = time
+   *  of day (0..4), torch = the hero's torch as a ShaderLight or null. */
   render(fx, opts) {
     const gl = this.gl;
-    const { view, vp, night = false, pixel = true, clear = true } = opts;
+    const { view, vp, u = 0.5, torch = null, clear = true, t = performance.now() / 1000 } = opts;
     const scale = vp.w / view.w;
     gl.viewport(vp.x, vp.y, vp.w, vp.h);
     gl.enable(gl.SCISSOR_TEST);
@@ -166,43 +327,41 @@ export class Stage {
     const V = viewMatrix(view.x, view.y, scale, vp.w, vp.h);
     blendPremultiplied(gl);
     const list = fx ? fx.drawList() : [];
-    // lights: the effects' own, as the game's reserved slot would carry them
-    const lights = fx ? fx.lights().slice(0, 4) : [];
-    const amb = night ? NIGHT_AMBIENT : [1, 1, 1];
-    const L = new Float32Array(16), Lc = new Float32Array(12);
+    const amb = blendPhases(u).ambient;
+    const lights = this.slotLights(fx, torch);
+    this.lastLights = lights;
+    const L = new Float32Array(4 * MAX_L), Lc = new Float32Array(4 * MAX_L);
     lights.forEach((l, i) => {
-      const g = this.project(l.x, l.y);
-      L.set([g.x, g.y - 0, l.radius * 45.25, 1], i * 4);
-      const k = night ? 1 : 0.35;
-      Lc.set([l.color[0] * k, l.color[1] * k, l.color[2] * k], i * 3);
+      L.set([l.col, l.row, l.z, l.radius], i * 4);
+      Lc.set([l.color[0], l.color[1], l.color[2], l.flicker || 0], i * 4);
     });
-    const lightAt = (x, y) => {
-      const out = [...amb];
-      lights.forEach((l, i) => {
-        const dx = x - L[i * 4], dy = (y - L[i * 4 + 1]) * 2.2857;
-        const f = Math.max(0, 1 - Math.hypot(dx, dy) / L[i * 4 + 2]);
-        out[0] += Lc[i * 3] * f * f; out[1] += Lc[i * 3 + 1] * f * f; out[2] += Lc[i * 3 + 2] * f * f;
-      });
-      return out;
+    const cellOf = (sx, sy) => {
+      const w = this.unproject(sx, sy);
+      return [w.x / ISO.cellWu, w.y / ISO.cellWu];
     };
+    const tintAt = (sx, sy) => {
+      const [c, r] = cellOf(sx, sy);
+      return lightAtCell(c, r, 0, amb, lights, t);
+    };
+    const U = { V, amb, L, Lc, t };
     // ground
-    if (this.groundTex) this.drawSprite(this.groundTex, this.groundRect, V, amb, L, Lc, 0, true);
+    if (this.groundTex) this.drawSprite(this.groundTex, this.groundRect, U, [1, 1, 1], true);
     // bodies + layers, painter's order
     const items = [];
     for (const d of list) items.push({ k: "fx", d, y: d.sortY, p: d.plane, o: d.order });
-    for (const s of this.sprites) if (s.visible) items.push({ k: "sp", s, y: s.y, p: "body", o: 0.5 });
+    for (const b of this.bodies) if (b.visible && b.frame) items.push({ k: "b", b, y: b.y, p: "body", o: 0.5 });
     const PO = { ground: 0, body: 1, air: 2, screen: 3 };
     items.sort((a, b) => PO[a.p] - PO[b.p] || a.y - b.y || a.o - b.o);
     for (const it of items) {
-      if (it.k === "sp") {
-        const s = it.s;
-        const rect = { x: s.x - s.feet.x, y: s.y - s.feet.y, w: s.w, h: s.h };
-        this.drawSprite(s.tex, rect, V, amb, L, Lc, s.y, false);
+      if (it.k === "b") {
+        const b = it.b, f = b.frame;
+        const rect = { x: Math.round(b.x - b.anchor.x), y: Math.round(b.y - b.anchor.y), w: f.w, h: f.h };
+        this.drawSprite(f.tex, rect, U, tintAt(b.x, b.y), false);
       } else {
         const d = it.d;
-        if (!d.emissive) d.std.uTint = lightAt(d.ax, d.groundY);
+        if (!d.emissive) d.std.uTint = tintAt(d.ax, d.groundY);
         else delete d.std.uTint;
-        this.fxgl.draw(d, V, pixel ? 0 : 0);
+        this.fxgl.draw(d, V, 0);
         blendPremultiplied(gl);
       }
     }
@@ -210,18 +369,20 @@ export class Stage {
     return list.length;
   }
 
-  drawSprite(tex, rect, V, amb, L, Lc, feetY, isGround) {
+  drawSprite(tex, rect, U, tint, isGround) {
     const gl = this.gl, P = this.spriteProg;
     gl.useProgram(P.p);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.uniform1i(P.uTex, 0);
     gl.uniform4f(P.uRect, rect.x, rect.y, rect.w, rect.h);
-    gl.uniform4fv(P.uView, V);
-    gl.uniform3fv(P.uAmb, amb);
-    gl.uniform4fv(P.uL, L);
-    gl.uniform3fv(P.uLc, Lc);
-    gl.uniform1f(P.uFeetY, feetY);
+    gl.uniform4fv(P.uView, U.V);
+    gl.uniform3fv(P.uAmb, U.amb);
+    gl.uniform4fv(P.uL, U.L);
+    gl.uniform4fv(P.uLc, U.Lc);
+    gl.uniform1f(P.uT, U.t);
+    gl.uniform2f(P.uOrigin, this.origin.x, this.origin.y);
+    gl.uniform3fv(P.uTint, tint);
     gl.uniform1f(P.uGround, isGround ? 1 : 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.fxgl.quad);
     gl.enableVertexAttribArray(0);
@@ -240,7 +401,19 @@ export function loadImage(url) {
   });
 }
 
-/** Lowest opaque row of an image and the centre of its pixels there. */
+/** The first row with any opaque pixel: a tile's diamond apex. */
+function apexRow(img) {
+  const c = document.createElement("canvas");
+  c.width = img.width; c.height = img.height;
+  const g = c.getContext("2d");
+  g.drawImage(img, 0, 0);
+  const d = g.getImageData(0, 0, c.width, c.height).data;
+  for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 64) return y;
+  return 0;
+}
+
+/** Lowest opaque row of an image and the centre of its pixels there — the
+ *  feet of a monster frame (heroes use the game's measured anchor). */
 export function measureFeet(img) {
   const c = document.createElement("canvas");
   c.width = img.width; c.height = img.height;
@@ -250,7 +423,8 @@ export function measureFeet(img) {
   let bottom = -1, top = -1;
   for (let y = c.height - 1; y >= 0 && bottom < 0; y--) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 128) { bottom = y; break; }
   for (let y = 0; y < c.height && top < 0; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 128) { top = y; break; }
-  let x0 = c.width, x1 = 0;
+  let x0 = c.width, x1 = 0, w0 = c.width, w1 = 0;
   for (let y = Math.max(0, bottom - 4); y <= bottom; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 128) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); }
-  return { x: (x0 + x1 + 1) / 2, y: bottom + 1, top, height: bottom + 1 - top };
+  for (let y = Math.max(0, top); y <= bottom; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 128) { w0 = Math.min(w0, x); w1 = Math.max(w1, x); }
+  return { x: (x0 + x1 + 1) / 2, y: bottom + 1, top, height: bottom + 1 - top, width: w1 + 1 - w0 };
 }

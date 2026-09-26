@@ -32,6 +32,7 @@ export default defineEffect({
   id: "holy/heal",
   name: "Heal",
   kind: "burst",
+  stage: { anim: "spell_channel" },
   family: "holy",
   category: "heal",
   tags: ["heal", "single target", "support"],

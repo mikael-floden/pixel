@@ -7,6 +7,7 @@ export default defineEffect({
   id: "summon/summoning_circle",
   name: "Summoning Circle",
   kind: "zone",
+  stage: { anim: "spell_channel" },
   family: "summon",
   category: "summon",
   tags: ["summon", "channel", "ritual"],

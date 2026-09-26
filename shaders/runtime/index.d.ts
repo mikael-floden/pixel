@@ -1,14 +1,20 @@
 // Types for the effects runtime (shaders/docs/integration.md is the contract).
 
 /** A point in the GAME'S WORLD SPACE: x, y in world units on the ground (the
- *  server's body coordinates), z = height in world px above the ground there. */
-export interface FxPoint { x: number; y: number; z?: number }
+ *  server's body coordinates), z = height in world px above the ground there,
+ *  sx = a SCREEN-x shift in px (a cast clip's wand tip: see castFrom). */
+export interface FxPoint { x: number; y: number; z?: number; sx?: number }
 /** A point, or a function read every frame (a body that moves). */
 export type FxPos = FxPoint | (() => FxPoint | null | undefined);
 
 export type FxKind = "burst" | "projectile" | "beam" | "chain" | "aura" | "zone" | "melee" | "screen";
 export type FxPlane = "ground" | "body" | "air" | "screen";
-export type FxEvent = "release" | "impact" | "peak" | "hit" | "hop" | "start" | "end" | "*";
+/** In firing order: cast (play()), release (it leaves the caster), then the
+ *  kind's own (impact / hit / peak / hop / start), stop (a sustained effect's
+ *  outro begins), end. */
+export type FxEvent = "cast" | "release" | "impact" | "peak" | "hit" | "hop" | "start" | "stop" | "end" | "*";
+/** A volley's formation (volley.js): the skill picks how many, the effect owns how they fly. */
+export type FxFormation = "fan" | "barrage" | "spread" | "rain" | "ring" | "line";
 
 export interface FxHost {
   /** World units -> the Phaser world px of that GROUND point (terrain lift and view rotation included). */
@@ -50,22 +56,41 @@ export interface FxPlay {
   seed?: number;
   /** Per-cast tunable overrides (the wiki's sliders use this; the game normally does not). */
   tune?: Record<string, number | string | boolean>;
+  /** Seconds from play() to the moment the spell leaves the caster: the cast
+   *  clip's key frame (castRelease). A projectile's gather fills it; every other
+   *  kind waits unseen and starts on it. Default: the effect's own windup / 0. */
+  release?: number;
+  /** A VOLLEY: this many copies (2..12) in `formation` — one handle, every
+   *  copy's release / impact / peak fired with its index. */
+  count?: number;
+  formation?: FxFormation;
 }
+
+/** One scheduled event, seconds from play(). */
+export interface FxTimelineEvent { event: Exclude<FxEvent, "*">; index: number; t: number }
 
 export interface FxHandle {
   readonly id: string;
   readonly kind: FxKind | "none";
   readonly seq: number;
   readonly owner?: string;
-  /** Seconds from play() to the impact (projectile) or the hit (melee). Schedule damage on it. */
+  /** Seconds from play() to the (first) impact (projectile) or the hit (melee). Schedule damage on it. */
   readonly flightTime: number;
   readonly impactAt: number;
+  /** Seconds from play() to the (first) release. */
+  readonly releaseAt: number;
+  /** Per copy of a volley (one entry for a single cast): release / impact times. */
+  readonly releases: number[];
+  readonly impacts: number[];
+  /** 1 for a single cast; a volley's count and formation. */
+  readonly count: number;
+  readonly formation: FxFormation | null;
   /** Seconds until the effect ends (Infinity for a sustained effect not yet stopped). */
   readonly duration: number;
   readonly done: boolean;
   readonly time: number;
-  /** "impact" | "hit" | "peak" | "hop" (arg = hop index) | "release" | "start" | "end" | "*". */
-  on(ev: FxEvent, fn: (arg: number | undefined, h: FxHandle, ev: string) => void): FxHandle;
+  /** i = which copy of a volley / which hop of a chain, else 0. */
+  on(ev: FxEvent, fn: (i: number, h: FxHandle, ev: string) => void): FxHandle;
   /** Move / retarget / re-level a running effect. */
   set(p: Partial<Pick<FxPlay, "at" | "from" | "to" | "dir" | "targets" | "height" | "level" | "radius">>): FxHandle;
   /** Sustained kinds play their outro; one-shots are cut. */
@@ -73,6 +98,8 @@ export interface FxHandle {
   /** Gone this frame, no outro. */
   kill(): void;
   setTune(t: Record<string, number | string | boolean>): FxHandle;
+  /** Every scheduled event, sorted (a sustained effect not yet stopped has no stop/end). */
+  timeline(): FxTimelineEvent[];
 }
 
 /** One layer to draw this frame. Box in Phaser world px (top-left, y down). */
@@ -107,9 +134,30 @@ export interface FxLight {
 
 export interface FxStyle { pixel: boolean; bands: number; dither: boolean; stepFps: number; bright: number }
 
+export type CastAnim = "spell_wand" | "spell_channel" | "bow" | "sword" | "punch" | "kick" | "attack";
+
+/** Who is on stage and how the effect is played there (define.js stageOf). */
+export interface FxStage {
+  caster: "hero" | "monster" | null;
+  target: "monster" | "hero" | null;
+  extras: number;
+  at: "caster" | "target" | "free" | null;
+  reach: number | null;
+  move: boolean;
+  hold: number;
+  anim: CastAnim | null;
+  /** A shipped monster id that suits the effect (a caster that claws, spits, slams). */
+  monster?: string;
+}
+
+/** A moment a sound can be bound to. */
+export interface FxSoundSlot { slot: string; event: Exclude<FxEvent, "*">; label: string; each: boolean; loop?: true }
+
 export interface EffectDef {
   id: string; name: string; kind: FxKind; family: string; category: string; tags: string[];
   thinking: string; levels: string;
+  stage: FxStage;
+  sounds: FxSoundSlot[];
   tune: Record<string, { type: "color" | "range" | "bool" | "select"; def: unknown; min?: number; max?: number; step?: number; label?: string; options?: string[] }>;
   layers: { id: string; plane: FxPlane; emissive: boolean }[];
   [k: string]: unknown;
@@ -124,6 +172,8 @@ export declare class FxWorld {
   setTuning(table: Record<string, Record<string, unknown>>): this;
   setStyle(style: Partial<FxStyle>): this;
   play(id: string, p?: FxPlay): FxHandle;
+  /** The schedule play() would run, without playing it. */
+  timeline(id: string, p?: FxPlay): FxTimelineEvent[];
   update(dtSeconds: number): void;
   drawList(out?: LayerDraw[]): LayerDraw[];
   lights(filter?: (l: FxLight) => boolean): FxLight[];
@@ -143,6 +193,35 @@ export declare class FxGL {
 export declare function blendPremultiplied(gl: WebGLRenderingContext): void;
 export declare function viewMatrix(vx: number, vy: number, scale: number, tw: number, th: number, flipY?: boolean): number[];
 export declare function defineEffect(def: Record<string, unknown>): EffectDef;
+/** The hero / monster clips effects are cast with: 4 frames at fps, key = the release frame. */
+export declare const CAST_ANIMS: Record<CastAnim, { frames?: number; fps?: number; key?: number; seconds?: number; keyAt?: number; emit: "wand" | "hands" | "bow" | null }>;
+/** Seconds from a clip's start to its key frame. */
+export declare function keyTime(anim: CastAnim): number;
+/** The play() `release` that meets the effect's cast clip at `level`. */
+export declare function castRelease(def: EffectDef, level?: number, anim?: CastAnim | null): number;
+export declare function stageOf(def: Record<string, unknown>): FxStage;
+export declare function soundsOf(def: Record<string, unknown>): FxSoundSlot[];
+/** The game's sound event of one slot: "shaders.<family>-<name>.<slot>". */
+export declare function soundEvent(id: string, slot: string): string;
+export declare const FORMATIONS: Record<FxFormation, { kinds: FxKind[]; label: string; about: string }>;
+export declare function formationsOf(def: EffectDef): FxFormation[];
+export declare const MAX_VOLLEY: number;
+export type Facing = "south" | "south-east" | "east" | "north-east" | "north" | "north-west" | "west" | "south-west";
+export declare const FACINGS: Facing[];
+/** The art's facing for a SCREEN direction (x right, y down). */
+export declare function facingOf(dx: number, dy: number): Facing;
+/** A hero's cast point (wand tip / orb / arrow) as play()'s `from`. */
+export declare function castFrom(body: FxPoint & { scale?: number }, hero: string, anim: CastAnim, facing: Facing): FxPoint;
+export interface ShowcaseBody extends FxPoint { kind?: "hero" | "monster"; height?: number; hero?: string; facing?: Facing; scale?: number }
+export interface ShowcaseBodies { caster: ShowcaseBody | null; target: ShowcaseBody | null; extras: ShowcaseBody[]; free: FxPoint }
+/** Where the bodies stand for an effect (world units). */
+export declare function layout(def: EffectDef, o: { origin: FxPoint; dir?: [number, number]; range?: number; cellWu?: number; pad?: number }): ShowcaseBodies;
+/** Play an effect the way it is meant to be seen; start `cast` (the caster's clip) with it. */
+export declare function showcase(fx: FxWorld, def: EffectDef, bodies: ShowcaseBodies, opts?: { level?: number; seed?: number; tune?: FxPlay["tune"]; count?: number; formation?: FxFormation; owner?: string }): {
+  handle: FxHandle;
+  cast: { anim: CastAnim; release: number; frames?: number; fps?: number; key?: number; seconds?: number; keyAt?: number; emit: string | null } | null;
+  move: FxPoint | null;
+};
 export declare function tuneDefaults(def: EffectDef): Record<string, unknown>;
 export declare const STANDARD_TUNE: EffectDef["tune"];
 export declare const KINDS: FxKind[];

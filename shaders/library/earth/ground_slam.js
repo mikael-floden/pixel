@@ -38,6 +38,7 @@ export default defineEffect({
   id: "earth/ground_slam",
   name: "Ground Slam",
   kind: "burst",
+  stage: { caster: "monster", target: "hero", at: "caster", reach: 1.6, anim: "attack", monster: "diablo_2" },
   family: "earth",
   category: "attack",
   tags: ["aoe", "physical", "stun", "monster", "self-centered"],

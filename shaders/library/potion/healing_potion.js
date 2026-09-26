@@ -58,6 +58,7 @@ export default defineEffect({
   id: "potion/healing_potion",
   name: "Healing Potion",
   kind: "burst",
+  stage: { anim: null },
   family: "potion",
   category: "heal",
   tags: ["potion", "heal", "item", "consumable"],

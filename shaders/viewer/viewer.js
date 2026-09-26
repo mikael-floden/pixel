@@ -1,33 +1,40 @@
-// The effects review page: pick an effect, drag its level 1-10, tune it,
-// read why it looks the way it does. Standalone (open shaders/viewer/ from any
-// static server at the repo root, or /assets/shaders/viewer/ in the game), or
-// EMBEDDED in the wiki with ?embed=1 — then it talks to the wiki over
-// postMessage (shaders/docs/wiki.md): the wiki saves what the sliders change.
+// The Shaders review stage: pick an effect, drag its level 1-10, tune it,
+// read why it looks the way it does — rendered the way the game renders it
+// (stage.js): the real hero casting with its real clip, the spell leaving on
+// the clip's key frame from the measured wand tip, a real monster to hit,
+// the game's light by time of day with the hero's torch.
+//
+// Standalone (open shaders/viewer/ from a static server at the repo root, or
+// /assets/shaders/viewer/ in the game), or EMBEDDED in the wiki with ?embed=1:
+// then it talks to the wiki over postMessage (shaders/docs/wiki.md) — the wiki
+// saves what the sliders change and plays the sounds bound to the events it
+// is told about. Every stage setting also lives in the URL, so an iframe the
+// wiki re-renders comes back exactly as it was.
 //
 // ?sheet=<id>[,<id>]&levels=1,5,10&frames=6 renders a deterministic contact
 // sheet instead (the gate and the agent's own eyes use it).
 
 import { createFx, DEFAULT_STYLE } from "../runtime/fx.js";
-import { tuneDefaults } from "../runtime/define.js";
-import { Stage, ISO } from "./stage.js";
+import { tuneDefaults, CAST_ANIMS, soundEvent } from "../runtime/define.js";
+import { FORMATIONS, formationsOf } from "../runtime/volley.js";
+import { layout, showcase, facingOf } from "../runtime/showcase.js";
+import { Stage, ISO, TORCH, blendPhases, TIME_PHASES, measureFeet } from "./stage.js";
 import LIBRARY from "../library/index.js";
+import { CAST_POINTS } from "../library/cast_points.js";
 import { FAMILIES, KIND_LABEL } from "../library/families.js";
+import { HEROES, MONSTERS, EXTRA_MONSTER } from "./bodies.js";
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const EMBED = params.has("embed");
 const SHEET = params.get("sheet");
-const STORE = "nfx-viewer-v1";
+const STORE = "nfx-viewer-v2";
 const ROOT = new URL("../../", import.meta.url); // the repo root (or /assets/)
 
-const BODY_CASTER = "characters2/humans/default_boy/base/east.webp";
-const TARGETS = {
-  werewolf: { label: "Werewolf", url: "monsters/werewolf/rotations/west.webp" },
-  troll: { label: "Crag troll", url: "monsters/crag_troll/rotations/west.webp" },
-  human: { label: "Human", url: "characters2/humans/default_girl/base/west.webp" },
-};
-const BODY_TARGET = TARGETS.werewolf.url;
-const BODY_DUMMY = "characters2/humans/default_girl/base/south-west.webp";
+const HERO_PX = 88; // games2 CHARACTER_BODY_PX
+const HERO_W = 44; // a person's drawn width: what a melee reach is measured against
+const HERO_IDLE_FPS = 6; // games2 ANIM_FPS.idle
+const CAST_HOLD = 0.2; // s a finished one-shot clip holds its last frame
 
 // A single-file build (pipeline/bundle.mjs) carries the bodies inline.
 const assetUrl = (rel) => (window.__NFX_ASSETS && window.__NFX_ASSETS[rel]) || new URL(rel, ROOT).href;
@@ -40,28 +47,140 @@ const keyOf = (id) => `shaders/library/${id}`;
 const saved = (() => {
   try { return JSON.parse(localStorage.getItem(STORE) || "{}"); } catch { return {}; }
 })();
+const pick = (k, ok, dflt) => {
+  const q = params.get(k);
+  if (q !== null && ok(q)) return q;
+  return saved[k] !== undefined && ok(String(saved[k])) ? saved[k] : dflt;
+};
+const num = (lo, hi) => (v) => Number(v) >= lo && Number(v) <= hi;
 const state = {
-  id: params.get("id") && byId.has(params.get("id")) ? params.get("id") : saved.id && byId.has(saved.id) ? saved.id : defs[0]?.id,
-  level: Number(params.get("level")) || saved.level || 5,
-  loop: saved.loop ?? true,
-  night: saved.night ?? true,
-  slow: 1,
+  id: pick("id", (v) => byId.has(v), defs[0]?.id),
+  level: Number(pick("level", num(1, 10), 5)),
+  tod: Number(params.get("night") === "1" ? 0.5 : params.get("night") === "0" ? 2.5 : pick("tod", num(0, 4), 0.5)),
+  torch: String(pick("torch", (v) => v === "0" || v === "1" || v === "true" || v === "false", "1")) !== "0" && String(pick("torch", () => true, "1")) !== "false",
+  hero: pick("hero", (v) => v in HEROES, "default_boy"),
+  monster: params.get("target") in MONSTERS ? params.get("target") : pick("monster", (v) => v in MONSTERS, Object.keys(MONSTERS)[0]),
+  count: Number(pick("count", num(1, 6), 1)),
+  formation: pick("formation", (v) => v in FORMATIONS, "fan"),
+  speed: Number(pick("speed", (v) => ["1", "0.5", "0.25"].includes(String(v)), 1)),
+  loop: String(pick("loop", () => true, "1")) !== "0" && String(pick("loop", () => true, "1")) !== "false",
   family: "all",
   query: "",
   style: { ...DEFAULT_STYLE, ...(saved.style || {}) },
   tune: saved.tune || {}, // id -> { key: value } (only what differs from the default)
+  monsterPicked: params.has("monster") || params.get("target") in MONSTERS, // an explicit pick beats an effect's hint
 };
+const STAGE_KEYS = ["id", "level", "tod", "torch", "hero", "monster", "count", "formation", "speed", "loop"];
+const stageState = () => Object.fromEntries(STAGE_KEYS.map((k) => [k, state[k]]));
 const persist = () => {
   try {
-    localStorage.setItem(STORE, JSON.stringify({ id: state.id, level: state.level, loop: state.loop, night: state.night, style: state.style, tune: state.tune }));
+    localStorage.setItem(STORE, JSON.stringify({ ...stageState(), style: state.style, tune: state.tune }));
   } catch {}
+  if (EMBED) post({ type: "shaders:state", state: stageState() });
 };
+
+// --------------------------------------------------------------- actors ----
+// A body that plays the game's clips. Frames are loaded per (clip, facing)
+// on first use; until they arrive the body shows what it had.
+class Actor {
+  constructor(stage, body) {
+    this.stage = stage;
+    this.body = body;
+    this.kind = null; // "hero" | "monster"
+    this.id = null;
+    this.facing = "east";
+    this.clip = null; // { name, fps, once, t0, hold, frames }
+    this.cache = new Map();
+    this.height = HERO_PX;
+  }
+  async setHero(id) {
+    if (this.kind === "hero" && this.id === id) return;
+    this.kind = "hero"; this.id = id; this.cache.clear(); this.height = HERO_PX; this.width = HERO_W;
+    await this.idle(0);
+  }
+  async setMonster(id) {
+    if (this.kind === "monster" && this.id === id) return;
+    this.kind = "monster"; this.id = id; this.cache.clear();
+    this.manifest = await fetch(assetUrl(`monsters/${id}/monster.json`)).then((r) => r.json());
+    await this.idle(0);
+    const f = await this.frames("idle");
+    this.height = f.feet.height;
+    this.width = f.feet.width;
+  }
+  /** Frame urls of a clip for the current facing. */
+  urls(name) {
+    if (this.kind === "hero") {
+      const a = CAST_POINTS.heroes[this.id]?.anims[name];
+      if (!a) return [];
+      return Array.from({ length: a.frames }, (_, i) => `characters2/humans/${this.id}/animations/${a.folder}/${this.facing}/${i}.webp`);
+    }
+    const st = this.manifest?.states?.[name] ?? name;
+    const d = this.manifest?.animations?.[st]?.directions?.[this.facing];
+    if (d?.frame_paths?.length) return d.frame_paths.map((p) => `monsters/${p}`);
+    const rot = this.manifest?.rotations?.[this.facing];
+    return rot ? [`monsters/${rot}`] : [];
+  }
+  async frames(name) {
+    const key = `${name}|${this.facing}`;
+    let c = this.cache.get(key);
+    if (!c) {
+      c = (async () => {
+        const fr = await Promise.all(this.urls(name).map((u) => this.stage.image(assetUrl(u))));
+        let anchor, feet;
+        if (this.kind === "hero") {
+          const a = CAST_POINTS.heroes[this.id].anchors[this.facing];
+          anchor = { x: a.x * CAST_POINTS.frame.w, y: a.y * CAST_POINTS.frame.h };
+        } else {
+          feet = measureFeet(fr[0].img);
+          anchor = { x: feet.x, y: feet.y };
+        }
+        return { frames: fr, anchor, feet };
+      })();
+      this.cache.set(key, c);
+    }
+    return c;
+  }
+  async face(facing) {
+    if (this.facing === facing) return;
+    this.facing = facing;
+    if (this.clip) await this.frames(this.clip.name).catch(() => {});
+  }
+  async idle(t) {
+    const fps = this.kind === "hero" ? HERO_IDLE_FPS : null;
+    await this.playClip("idle", { t, fps, once: false });
+  }
+  /** Start a clip at clock time t. fps null = the monster rule (per count). */
+  async playClip(name, { t, fps, once, hold = 0, then = null }) {
+    const f = await this.frames(name).catch(() => null);
+    if (!f || !f.frames.length) return;
+    const n = f.frames.length;
+    const rate = fps ?? (name === "attack" ? Math.max(5, n / 0.7) : n <= 6 ? 4 : 7); // WorldScene's monster rates
+    this.clip = { name, fps: rate, once, t0: t, hold, then, f };
+  }
+  update(t) {
+    const c = this.clip;
+    if (!c) return;
+    const n = c.f.frames.length;
+    let i = Math.floor((t - c.t0) * c.fps);
+    if (c.once) {
+      if (i >= n && c.then && t - c.t0 >= n / c.fps + c.hold) {
+        const next = c.then;
+        c.then = null;
+        next(t);
+      }
+      i = Math.max(0, Math.min(n - 1, i));
+    } else i = ((i % n) + n) % n;
+    this.body.frame = c.f.frames[i];
+    this.body.anchor = c.f.anchor;
+  }
+}
 
 // ---------------------------------------------------------------- stage ----
 const canvas = $("stage");
 let stage, fx, view = { x: 0, y: 0, w: 360, h: 210 }, vp = { x: 0, y: 0, w: 360, h: 210 };
-let caster, target, dummies = [];
-const pos = { caster: { x: 0, y: 0 }, target: { x: 0, y: 0 } };
+let actors = {}; // caster, target, x1, x2
+const pos = { origin: { x: 0, y: 0 }, target: null };
+let clock = 0; // stage seconds (speed-scaled)
 
 function showError(msg) {
   const e = $("stage-err");
@@ -96,97 +215,156 @@ function layoutWorld(W, H) {
   // the caster stands at a quarter of the width; the world grid is the game's
   const cast = { c: 4.5, r: 7.5 };
   stage.origin = { x: Math.round(0.24 * W - (cast.c - cast.r) * ISO.dx), y: Math.round(0.74 * H - (cast.c + cast.r) * ISO.dy) };
-  pos.caster = { x: cast.c * ISO.cellWu, y: cast.r * ISO.cellWu };
-  if (!pos.targetSet) {
-    const k = (0.5 * W) / (2 * ISO.dx);
-    pos.target = { x: (cast.c + k) * ISO.cellWu, y: (cast.r - k) * ISO.cellWu };
-  }
+  pos.origin = { x: cast.c * ISO.cellWu, y: cast.r * ISO.cellWu };
+  pos.range = (0.5 * W) / (2 * ISO.dx) * Math.SQRT2;
   stage.buildGround(view);
 }
 
 // ------------------------------------------------------------- director ----
-const HOLD = 2.4; // s a sustained effect runs before the viewer stops it
+// It stages the effect with runtime/showcase.js — the same recipe the wiki
+// and the game read — and starts the caster's clip in the same frame, so the
+// spell leaves on the clip's key frame.
 const director = {
-  h: null, wait: 0, t: 0,
-  play() {
+  h: null, sc: null, wait: 0, events: [], timeline: [], def: null, playing: 0,
+  async play() {
     const def = byId.get(state.id);
     if (!def || !fx) return;
+    const ticket = ++this.playing;
     fx.clear();
     fx.setStyle(state.style);
+    const S = def.stage;
+    // where everyone stands: the recipe's layout toward the (tapped) target
+    const O = pos.origin;
+    let dir = [Math.SQRT1_2, -Math.SQRT1_2], range = pos.range;
+    if (pos.target) {
+      const dx = pos.target.x - O.x, dy = pos.target.y - O.y, n = Math.hypot(dx, dy);
+      if (n > 8) { dir = [dx / n, dy / n]; range = n / ISO.cellWu; }
+    }
+    // who plays each role (the recipe's roles; positions come after, once
+    // the bodies' widths are known)
+    const roles = layout(def, { origin: O, dir, range, cellWu: ISO.cellWu });
+    const want = S.monster && MONSTERS[S.monster] && !state.monsterPicked ? S.monster : state.monster;
+    const setups = [];
+    for (const role of ["caster", "target"]) {
+      const b = roles[role], A = actors[role];
+      A.body.visible = false;
+      A.world = null;
+      if (!b) continue;
+      setups.push(b.kind === "hero" ? A.setHero(state.hero) : A.setMonster(want));
+    }
+    roles.extras.forEach((_, i) => setups.push(actors[`x${i + 1}`].setMonster(EXTRA_MONSTER)));
+    for (const k of ["x1", "x2"]) actors[k].body.visible = false;
+    try { await Promise.all(setups); } catch (e) { showError(`Could not load a body (${e.message}).`); return; }
+    if (ticket !== this.playing) return;
+    // a body wider than a person pushes a melee reach out by the difference
+    const half = (k) => (roles[k] ? Math.max(0, (actors[k].width || HERO_W) - HERO_W) / 2 : 0);
+    const pad = (half("caster") + half("target")) / (ISO.dx * Math.SQRT2);
+    const bodies = layout(def, { origin: O, dir, range, cellWu: ISO.cellWu, pad });
+    for (const role of ["caster", "target"]) if (bodies[role]) actors[role].world = bodies[role];
+    // facings: the caster at the target, the victims at the caster
+    const scr = (p) => stage.project(p.x, p.y);
+    const faceTo = (from, to) => { const a = scr(from), b = scr(to); return facingOf(b.x - a.x, b.y - a.y); };
+    const C = bodies.caster, T = bodies.target;
+    if (C) { C.facing = T ? faceTo(C, T) : "south-east"; C.hero = actors.caster.kind === "hero" ? state.hero : undefined; }
+    if (T) T.facing = C ? faceTo(T, C) : "south-west";
+    const placed = [["caster", C], ["target", T], ["x1", bodies.extras[0]], ["x2", bodies.extras[1]]];
+    await Promise.all(placed.map(async ([k, b]) => {
+      if (!b) return;
+      const A = actors[k];
+      await A.face(b.facing || (C ? faceTo(b, C) : "south-west"));
+      const p = scr(b);
+      A.body.x = p.x; A.body.y = p.y; A.body.visible = true;
+      b.height = A.height;
+    }));
+    // the caster's clip is loaded BEFORE the effect starts: clip and spell
+    // share their first frame, so the key frame IS the release
+    const A = actors.caster;
+    if (C && S.anim) await A.frames(S.anim).catch(() => null);
+    if (ticket !== this.playing) return;
     const tune = { ...(state.tune[def.id] || {}) };
     const seed = Math.random();
-    const demo = def.demo || {};
-    const lvl = state.level;
-    const C = { ...pos.caster }, T = { ...pos.target };
-    let tgt = T;
-    if (def.kind === "melee" || demo.close) {
-      // close in: melee reads at arm's length, not across the stage
-      const dx = T.x - C.x, dy = T.y - C.y, n = Math.hypot(dx, dy) || 1, reach = (demo.dist ?? 1.25) * ISO.cellWu;
-      tgt = { x: C.x + (dx / n) * reach, y: C.y + (dy / n) * reach };
+    const forms = formationsOf(def);
+    const count = forms.length ? state.count : 1;
+    const formation = forms.includes(state.formation) ? state.formation : forms[0];
+    const sc = showcase(fx, def, bodies, { level: state.level, seed, tune, count, formation });
+    this.sc = sc;
+    this.h = sc.handle;
+    this.def = def;
+    this.t0 = clock;
+    this.events = [];
+    this.timeline = this.h.timeline();
+    if (sc.cast && C) {
+      const sustained = !["projectile", "melee", "burst", "chain"].includes(def.kind);
+      const holdChannel = sustained && sc.cast.anim === "spell_channel";
+      A.playClip(sc.cast.anim, { t: clock, fps: sc.cast.fps ?? null, once: true, hold: holdChannel ? Infinity : CAST_HOLD, then: (t) => A.idle(t) });
+      if (holdChannel) this.h.on("stop", () => { if (A.clip && A.clip.hold === Infinity) A.idle(clock); });
+    } else if (C) A.idle(clock);
+    if (sc.move) {
+      const P = scr(sc.move);
+      this.h.on("peak", () => { A.body.x = P.x; A.body.y = P.y; });
     }
-    placeBodies(C, tgt, def);
-    const H = caster.feet.height, TH = target.feet.height;
-    const common = { level: lvl, seed, tune, owner: "self" };
-    const onCaster = demo.on === "caster" || (def.kind === "aura" && demo.on !== "target");
-    switch (def.kind) {
-      case "projectile":
-        this.h = fx.play(def.id, { ...common, from: C, to: tgt, height: H, targetHeight: TH });
-        break;
-      case "beam":
-        this.h = fx.play(def.id, { ...common, from: C, to: tgt, height: H, targetHeight: TH, duration: demo.hold ?? HOLD });
-        break;
-      case "chain":
-        this.h = fx.play(def.id, { ...common, from: C, to: tgt, targets: [tgt, ...dummies.filter((d) => d.visible).map((d) => ({ x: d.wx, y: d.wy }))], height: H, targetHeight: TH });
-        break;
-      case "melee":
-        this.h = fx.play(def.id, { ...common, at: C, to: tgt, height: H, targetHeight: TH });
-        break;
-      case "burst": {
-        let at = onCaster ? C : tgt;
-        if (demo.dest === "free") {
-          // a free spot: between the two bodies, a step toward the camera
-          at = { x: (C.x + tgt.x) / 2 + 1.1 * ISO.cellWu, y: (C.y + tgt.y) / 2 + 1.1 * ISO.cellWu };
-        }
-        this.h = fx.play(def.id, { ...common, at, from: C, to: onCaster || demo.dest ? undefined : tgt, height: onCaster || demo.dest ? H : TH, targetHeight: TH });
-        if (demo.move) {
-          const P = stage.project(at.x, at.y);
-          this.h.on("peak", () => { caster.x = P.x; caster.y = P.y; });
-        }
-        break;
+    this.h.on("*", (i, h, ev) => {
+      this.events.push({ event: ev, index: i, t: h.time });
+      if (EMBED) {
+        const slots = def.sounds.filter((s) => s.event === ev && (!s.loop || ev === "release"));
+        post({ type: "shaders:event", id: def.id, key: keyOf(def.id), event: ev, index: i, t: +h.time.toFixed(3), slots: slots.map((s) => ({ slot: s.slot, loop: !!s.loop, sound_event: soundEvent(def.id, s.slot) })) });
+        if (ev === "stop" && def.sounds.some((s) => s.loop)) post({ type: "shaders:event", id: def.id, key: keyOf(def.id), event: "channel-end", index: 0, t: +h.time.toFixed(3), slots: [{ slot: "channel", loop: true, sound_event: soundEvent(def.id, "channel") }] });
       }
-      case "aura":
-        this.h = fx.play(def.id, { ...common, at: onCaster ? C : tgt, height: onCaster ? H : TH, duration: demo.hold ?? HOLD });
-        break;
-      case "zone":
-        this.h = fx.play(def.id, { ...common, at: onCaster ? C : tgt, from: C, height: H, duration: demo.hold ?? HOLD + 0.6 });
-        break;
-      default:
-        this.h = fx.play(def.id, { ...common, at: C, duration: demo.hold ?? HOLD });
-    }
+    });
     this.wait = 0;
-    this.t = 0;
+    if (!SHEET) {
+      renderTimeline();
+      renderNotes();
+    }
+    if (EMBED) post({ type: "shaders:timeline", id: def.id, key: keyOf(def.id), events: this.timeline, sounds: def.sounds.map((s) => ({ ...s, sound_event: soundEvent(def.id, s.slot) })) });
   },
   tick(dt) {
     if (!this.h) return;
-    this.t += dt;
     if (this.h.done) {
       this.wait += dt;
-      if (state.loop && this.wait > 0.7) this.play();
+      if (state.loop && this.wait > 0.8) this.play();
     }
   },
 };
 
-function placeBodies(C, T, def) {
-  caster.x = stage.project(C.x, C.y).x; caster.y = stage.project(C.x, C.y).y;
-  target.x = stage.project(T.x, T.y).x; target.y = stage.project(T.x, T.y).y;
-  const chain = def.kind === "chain";
-  dummies.forEach((d, i) => {
-    d.visible = chain;
-    const off = [[0.6, 1.4], [-0.9, -1.3]][i];
-    d.wx = T.x + off[0] * ISO.cellWu; d.wy = T.y + off[1] * ISO.cellWu;
-    const p = stage.project(d.wx, d.wy);
-    d.x = p.x; d.y = p.y;
-  });
+// ------------------------------------------------------------ timeline ----
+// When each sound-bindable moment happens, and the caster's clip frames.
+const EV_CLASS = { cast: "ev-cast", release: "ev-rel", impact: "ev-imp", hit: "ev-imp", peak: "ev-imp", hop: "ev-imp", start: "ev-sus", stop: "ev-sus", end: "ev-end" };
+function renderTimeline() {
+  const box = $("timeline");
+  const d = director.def, h = director.h;
+  if (!d || !h) return;
+  const tl = director.timeline;
+  const end = Math.max(0.5, ...tl.map((e) => e.t), isFinite(h.duration) ? h.duration : 0);
+  const pct = (t) => `${Math.max(0, Math.min(100, (t / end) * 100)).toFixed(2)}%`;
+  const cast = director.sc?.cast;
+  let frames = "";
+  if (cast) {
+    const n = cast.frames || 4, fps = cast.fps || n / (cast.seconds || 0.7);
+    for (let i = 0; i < n; i++) frames += `<i class="fr${i === (cast.key ?? Math.floor(n * (cast.keyAt ?? 0.5))) ? " key" : ""}" style="left:${pct(i / fps)};width:${pct(1 / fps)}"></i>`;
+  }
+  const marks = tl.filter((e) => e.event !== "end").map((e) => `<b class="mk ${EV_CLASS[e.event] || ""}" style="left:${pct(e.t)}" title="${esc(e.event)}${e.index ? " " + (e.index + 1) : ""} ${e.t.toFixed(2)} s"></b>`).join("");
+  const loopSlot = d.sounds.find((s) => s.loop);
+  const rel = tl.find((e) => e.event === "release"), stp = tl.find((e) => e.event === "stop");
+  const bed = loopSlot && rel ? `<span class="bed" style="left:${pct(rel.t)};width:${pct((stp ? stp.t : end) - rel.t)}"></span>` : "";
+  const counts = {};
+  for (const e of tl) counts[e.event] = (counts[e.event] || 0) + 1;
+  const slots = d.sounds.map((s) => {
+    const at = tl.filter((e) => e.event === s.event);
+    const when = s.loop ? `${(rel?.t ?? 0).toFixed(2)}–${stp ? stp.t.toFixed(2) : "…"} s` : at.map((e) => e.t.toFixed(2)).join(", ") + " s";
+    return `<li><span class="sw ${s.loop ? "ev-sus" : EV_CLASS[s.event] || ""}"></span><span class="sl">${esc(s.label)}${!s.loop && at.length > 1 ? ` <em>×${at.length}</em>` : ""}</span><span class="sw-t">${esc(when)}</span><code>${esc(soundEvent(d.id, s.slot))}</code></li>`;
+  }).join("");
+  box.innerHTML = `
+    <div class="tl-track">${bed}${frames ? `<div class="tl-frames" title="the caster's clip; the lit frame is the key frame">${frames}</div>` : ""}${marks}<span class="tl-head" id="tl-head"></span></div>
+    <div class="tl-scale"><span>0</span><span>${end.toFixed(2)} s</span></div>
+    <ul class="tl-slots">${slots}</ul>`;
+}
+function tickTimeline() {
+  const h = director.h, head = $("tl-head");
+  if (!h || !head) return;
+  const tl = director.timeline;
+  const end = Math.max(0.5, ...tl.map((e) => e.t), isFinite(h.duration) ? h.duration : 0);
+  head.style.left = `${Math.min(100, (h.time / end) * 100).toFixed(2)}%`;
 }
 
 // ------------------------------------------------------------------- UI ----
@@ -242,9 +420,9 @@ function select(id) {
   renderHeader();
   renderList();
   renderTune();
-  renderNotes();
+  renderStageControls();
   director.play();
-  if (EMBED) post({ type: "shaders:selected", id, key: keyOf(id), level: state.level });
+  if (EMBED) post({ type: "shaders:selected", id, key: keyOf(id), level: state.level, version: VERSIONS[id] });
 }
 
 function renderHeader() {
@@ -335,20 +513,73 @@ function renderStyle() {
   }
 }
 
+/** A segmented control: options [[value, label]], `on` = current value. */
+function seg(box, options, on, onPick) {
+  box.textContent = "";
+  for (const [v, label] of options) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.className = String(v) === String(on) ? "on" : "";
+    b.onclick = () => onPick(v);
+    box.append(b);
+  }
+}
+
+function phaseName(u) {
+  const i = Math.floor(((u % 4) + 4) % 4);
+  return TIME_PHASES[i].name;
+}
+
+/** The stage row: who is on stage, the volley, the time of day. */
+function renderStageControls() {
+  const d = byId.get(state.id);
+  const S = d.stage;
+  const hasHero = S.caster === "hero" || S.target === "hero";
+  const hasMonster = S.caster === "monster" || S.target === "monster" || S.at === "target";
+  $("hero-row").hidden = !hasHero;
+  $("monster-row").hidden = !hasMonster;
+  seg($("hero-seg"), Object.entries(HEROES), state.hero, (v) => { state.hero = v; persist(); renderStageControls(); director.play(); });
+  const cur = S.monster && MONSTERS[S.monster] && !state.monsterPicked ? S.monster : state.monster;
+  const sel = $("monster");
+  sel.textContent = "";
+  for (const [k, label] of Object.entries(MONSTERS)) {
+    const o = document.createElement("option");
+    o.value = k; o.textContent = label;
+    sel.append(o);
+  }
+  sel.value = cur;
+  const forms = formationsOf(d);
+  $("volley-row").hidden = !forms.length;
+  if (forms.length) {
+    seg($("count-seg"), [1, 2, 3, 4, 5, 6].map((n) => [n, n === 1 ? "1" : `×${n}`]), state.count, (v) => { state.count = Number(v); persist(); renderStageControls(); director.play(); });
+    const f = forms.includes(state.formation) ? state.formation : forms[0];
+    seg($("formation-seg"), forms.map((k) => [k, FORMATIONS[k].label]), f, (v) => { state.formation = v; persist(); renderStageControls(); director.play(); });
+    $("formation-seg").hidden = state.count < 2;
+    $("formation-about").textContent = state.count > 1 ? FORMATIONS[f].about : "";
+  }
+  $("tod").value = state.tod;
+  $("tod-out").textContent = phaseName(state.tod);
+  $("torch").checked = state.torch;
+}
+
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 }
 
 function usage(d) {
   const L = `level: ${state.level}`;
+  const S = d.stage;
+  const rel = S.caster && S.anim ? `, release: ${d.kind === "melee" ? "castRelease(def, level)" : (CAST_ANIMS[S.anim].seconds ? CAST_ANIMS[S.anim].seconds * CAST_ANIMS[S.anim].keyAt : CAST_ANIMS[S.anim].key / CAST_ANIMS[S.anim].fps).toFixed(2)}` : "";
+  const vol = formationsOf(d).length ? `\n// a volley: add count: 3, formation: "${formationsOf(d)[0]}" — every copy fires its own events` : "";
   switch (d.kind) {
-    case "projectile": return `const h = fx.play("${d.id}", { ${L}, from: caster, to: target,\n  height: casterPx, targetHeight: targetPx, owner: "self" });\nh.on("impact", () => applyDamage());   // or schedule at h.flightTime`;
-    case "beam": return `const h = fx.play("${d.id}", { ${L}, from: caster, to: () => target,\n  height: casterPx, targetHeight: targetPx });\n// every frame the target moves: nothing (to is read each frame)\nh.stop();                                 // when the channel ends`;
-    case "chain": return `fx.play("${d.id}", { ${L}, from: caster, targets: [t1, t2, t3] })\n  .on("hop", (i) => applyDamage(targets[i]));`;
-    case "melee": return `fx.play("${d.id}", { ${L}, at: attacker, to: victim, height: attackerPx })\n  .on("hit", () => applyDamage());`;
-    case "aura": return `const h = fx.play("${d.id}", { ${L}, at: () => body, height: bodyPx });\nh.stop();                                 // when the buff ends`;
-    case "zone": return `fx.play("${d.id}", { ${L}, at: spot, radius: cells, duration: seconds });`;
-    case "burst": return `fx.play("${d.id}", { ${L}, at: spot, from: source, height: bodyPx })\n  .on("peak", () => applyEffect());`;
+    case "projectile": return `const h = fx.play("${d.id}", { ${L}, from: castFrom(caster, hero, "${S.anim}", facing),\n  to: target, height: casterPx, targetHeight: targetPx, owner: "self"${rel} });\nh.on("impact", (i) => applyDamage());   // or schedule at h.impacts[i]${vol}`;
+    case "beam": return `const h = fx.play("${d.id}", { ${L}, from: caster, to: () => target,\n  height: casterPx, targetHeight: targetPx${rel} });\n// every frame the target moves: nothing (to is read each frame)\nh.stop();                                 // when the channel ends`;
+    case "chain": return `fx.play("${d.id}", { ${L}, from: caster, targets: [t1, t2, t3]${rel} })\n  .on("hop", (i) => applyDamage(targets[i]));`;
+    case "melee": return `fx.play("${d.id}", { ${L}, at: attacker, to: victim, height: attackerPx${rel} })\n  .on("hit", () => applyDamage());`;
+    case "aura": return `const h = fx.play("${d.id}", { ${L}, at: () => body, height: bodyPx${rel} });\nh.stop();                                 // when the buff ends`;
+    case "zone": return `fx.play("${d.id}", { ${L}, at: spot, radius: cells, duration: seconds${rel} });`;
+    case "burst": return `fx.play("${d.id}", { ${L}, at: spot, from: source, height: bodyPx${rel} })\n  .on("peak", (i) => applyEffect());${vol}`;
     default: return `const h = fx.play("${d.id}", { ${L} }); h.stop();`;
   }
 }
@@ -356,6 +587,7 @@ function usage(d) {
 function renderNotes() {
   const d = byId.get(state.id);
   const h = director.h;
+  const S = d.stage;
   const facts = [];
   facts.push(`<span>Kind <b>${esc(KIND_LABEL[d.kind])}</b></span>`);
   facts.push(`<span>Element <b>${esc(FAMILIES[d.family]?.label || d.family)}</b></span>`);
@@ -365,6 +597,7 @@ function renderNotes() {
     facts.push(`<span>Speed <b>${sp.toFixed(1)} cells/s</b></span>`);
   }
   if (h && isFinite(h.duration) && h.duration > 0) facts.push(`<span>Lasts <b>${h.duration.toFixed(2)} s</b></span>`);
+  if (S.caster && S.anim) facts.push(`<span>Cast <b>${esc(S.anim.replace("_", " "))}</b>, leaves at <b>${(h?.releaseAt ?? 0).toFixed(2)} s</b></span>`);
   const planes = [...new Set(d.layers.map((L) => L.plane))].join(", ");
   facts.push(`<span>Draws on <b>${esc(planes)}</b></span>`);
   facts.push(`<span>Light <b>${d.light ? "yes" : "no"}</b></span>`);
@@ -373,7 +606,7 @@ function renderNotes() {
     ${d.levels ? `<div><h3>Levels 1 to 10</h3><p>${esc(d.levels)}</p></div>` : ""}
     <div class="facts">${facts.join("")}</div>
     <div><h3>In the game</h3><pre>${esc(usage(d))}</pre></div>
-    <div class="key">${esc(keyOf(d.id))}</div>`;
+    <div class="key">${esc(keyOf(d.id))} · v ${esc(VERSIONS[d.id] || "—")}</div>`;
 }
 
 function copyTuning() {
@@ -391,32 +624,46 @@ function copyTuning() {
   }
 }
 
-// A different body to hit: a small human, the werewolf, a huge troll. Effects
-// size themselves to the body's height, so this is how that is judged.
-const targetCache = {};
-async function setTarget(key) {
-  const T = TARGETS[key];
-  if (!T || !stage) return;
-  let s = targetCache[key];
-  if (!s) {
-    s = await stage.addSprite(assetUrl(T.url), key);
-    targetCache[key] = s;
-  }
-  for (const o of Object.values(targetCache)) o.visible = false;
-  s.visible = true;
-  target = s;
-}
-
 // ------------------------------------------------------------ embedding ----
+// Same origin only: the wiki and this page are both served from the game.
+let VERSIONS = {};
 function post(msg) {
-  try { if (window.parent !== window) window.parent.postMessage(msg, "*"); } catch {}
+  try { if (window.parent !== window) window.parent.postMessage(msg, location.origin); } catch {}
+}
+function applyState(s) {
+  let replay = false;
+  if (s.level !== undefined) { setLevel(s.level); replay = true; }
+  if (s.tod !== undefined && Number(s.tod) >= 0 && Number(s.tod) <= 4) state.tod = Number(s.tod);
+  if (s.torch !== undefined) state.torch = !!s.torch && s.torch !== "0";
+  if (s.hero in HEROES && s.hero !== state.hero) { state.hero = s.hero; replay = true; }
+  if (s.monster in MONSTERS && s.monster !== state.monster) { state.monster = s.monster; state.monsterPicked = true; replay = true; }
+  if (s.count !== undefined && Number(s.count) >= 1 && Number(s.count) <= 6) { state.count = Number(s.count); replay = true; }
+  if (s.formation in FORMATIONS) { state.formation = s.formation; replay = true; }
+  if ([1, 0.5, 0.25].includes(Number(s.speed))) state.speed = Number(s.speed);
+  if (s.loop !== undefined) state.loop = !!s.loop;
+  return replay;
 }
 window.addEventListener("message", (e) => {
+  if (e.origin !== location.origin || e.source !== window.parent) return;
   const m = e.data;
   if (!m || typeof m !== "object") return;
   if (m.type === "shaders:open" && byId.has(m.id)) {
-    if (m.level) setLevel(m.level);
+    applyState(m);
+    syncControls();
     select(m.id);
+  } else if (m.type === "shaders:ground" && m.tiles?.length && m.grid?.cells?.length) {
+    // the wiki's floor plan: its base-set choices, painted as they are
+    stage.setGroundPlan(m).then((ok) => { if (ok) post({ type: "shaders:ground-painted", ground: m.ground, set: m.set?.id }); }).catch((err) => console.warn(`[shaders] ground plan: ${err.message}`));
+  } else if (m.type === "shaders:time") {
+    // the game's clock: u = phase + progress (0..4), or t = 0..1 of the cycle
+    const u = m.u !== undefined ? Number(m.u) : Number(m.t) * 4;
+    if (u >= 0 && u <= 4) { state.tod = u; renderStageControls(); persist(); }
+  } else if (m.type === "shaders:set") {
+    const replay = applyState(m.state || {});
+    syncControls();
+    renderStageControls();
+    persist();
+    if (replay) director.play();
   } else if (m.type === "shaders:tuning" && m.table) {
     // the live table (live/tuning/shaders.json overrides): it becomes the default
     fx.setTuning(m.table);
@@ -434,7 +681,23 @@ function setLevel(v) {
   state.level = Math.max(1, Math.min(10, Math.round(v)));
   $("level").value = state.level;
   $("level-out").textContent = state.level;
-  persist();
+}
+
+function syncControls() {
+  $("level").value = state.level;
+  $("level-out").textContent = state.level;
+  $("loop").checked = state.loop;
+  for (const o of document.querySelectorAll("[data-slow]")) o.classList.toggle("on", Number(o.dataset.slow) === state.speed);
+}
+
+/** The hero's torch as the game carries it: at the hero, faded by day. */
+function torchLight() {
+  if (!state.torch) return null;
+  const hero = ["caster", "target"].map((k) => actors[k]).find((A) => A.kind === "hero" && A.body.visible);
+  if (!hero?.world) return null;
+  const f = blendPhases(state.tod).torchF;
+  if (f <= 0.01) return null;
+  return { col: hero.world.x / ISO.cellWu, row: hero.world.y / ISO.cellWu, z: TORCH.z, radius: TORCH.radius, color: TORCH.color.map((c) => c * f), flicker: TORCH.flicker };
 }
 
 // ----------------------------------------------------------------- boot ----
@@ -446,41 +709,25 @@ async function boot() {
     showError(`This page needs WebGL.\n${e.message}`);
     return;
   }
-  const url = assetUrl;
-  try {
-    [caster, target] = await Promise.all([stage.addSprite(url(BODY_CASTER), "caster"), stage.addSprite(url(BODY_TARGET), "target")]);
-    targetCache.werewolf = target;
-    dummies = await Promise.all([stage.addSprite(url(BODY_DUMMY), "d1"), stage.addSprite(url(BODY_DUMMY), "d2")]);
-  } catch (e) {
-    showError(`Could not load the stage's bodies (${e.message}).\nServe the repo root, or open /assets/shaders/viewer/.`);
-    return;
-  }
+  for (const k of ["caster", "target", "x1", "x2"]) actors[k] = new Actor(stage, stage.addBody(k));
   fx = createFx(stage.host(() => view), { style: state.style });
   fx.registerAll(defs);
+  fetch(assetUrl("shaders/shaders.json")).then((r) => r.json()).then((c) => {
+    VERSIONS = Object.fromEntries(c.effects.map((e) => [e.id, e.version]));
+    renderNotes();
+  }).catch(() => {});
   fit();
   window.addEventListener("resize", () => { clearTimeout(fit.t); fit.t = setTimeout(fit, 120); });
 
-  $("level").value = state.level;
-  $("level-out").textContent = state.level;
-  $("level").addEventListener("input", (e) => { setLevel(Number(e.target.value)); renderNotes(); director.play(); });
-  $("loop").checked = state.loop;
+  syncControls();
+  $("level").addEventListener("input", (e) => { setLevel(Number(e.target.value)); persist(); director.play(); });
   $("loop").addEventListener("change", (e) => { state.loop = e.target.checked; persist(); if (state.loop && director.h?.done) director.play(); });
-  $("night").checked = state.night;
-  $("night").addEventListener("change", (e) => { state.night = e.target.checked; persist(); });
+  $("tod").addEventListener("input", (e) => { state.tod = Number(e.target.value); $("tod-out").textContent = phaseName(state.tod); persist(); });
+  $("torch").addEventListener("change", (e) => { state.torch = e.target.checked; persist(); });
+  $("monster").addEventListener("change", (e) => { state.monster = e.target.value; state.monsterPicked = true; persist(); director.play(); });
   $("play").onclick = () => director.play();
   for (const b of document.querySelectorAll("[data-slow]")) {
-    b.onclick = () => {
-      state.slow = Number(b.dataset.slow);
-      for (const o of document.querySelectorAll("[data-slow]")) o.classList.toggle("on", o === b);
-    };
-  }
-  for (const b of document.querySelectorAll("[data-target]")) {
-    b.onclick = async () => {
-      const key = b.dataset.target;
-      for (const o of document.querySelectorAll("[data-target]")) o.classList.toggle("on", o === b);
-      await setTarget(key);
-      director.play();
-    };
+    b.onclick = () => { state.speed = Number(b.dataset.slow); syncControls(); persist(); };
   }
   $("prev").onclick = () => { const i = defs.findIndex((d) => d.id === state.id); select(defs[(i - 1 + defs.length) % defs.length].id); };
   $("next").onclick = () => { const i = defs.findIndex((d) => d.id === state.id); select(defs[(i + 1) % defs.length].id); };
@@ -491,9 +738,7 @@ async function boot() {
     const r = canvas.getBoundingClientRect();
     const sx = ((e.clientX - r.left) / r.width) * view.w + view.x;
     const sy = ((e.clientY - r.top) / r.height) * view.h + view.y;
-    const w = stage.unproject(sx, sy);
-    pos.target = w;
-    pos.targetSet = true;
+    pos.target = stage.unproject(sx, sy);
     $("stage-hint").hidden = true;
     director.play();
   });
@@ -503,26 +748,29 @@ async function boot() {
   renderHeader();
   renderTune();
   renderStyle();
+  renderStageControls();
   director.play();
-  renderNotes();
-  if (EMBED) post({ type: "shaders:ready", ids: defs.map((d) => d.id) });
+  if (EMBED) post({ type: "shaders:ready", ids: defs.map((d) => d.id), state: stageState() });
 
   let last = performance.now();
   const frame = (now) => {
-    const dt = Math.min(0.1, (now - last) / 1000) * state.slow;
+    const dt = Math.min(0.1, (now - last) / 1000) * state.speed;
     last = now;
+    clock += dt;
     director.tick(dt);
     fx.update(dt);
+    for (const A of Object.values(actors)) A.update(clock);
     try {
-      stage.render(fx, { view, vp, night: state.night });
+      stage.render(fx, { view, vp, u: state.tod, torch: torchLight(), t: clock });
     } catch (e) {
       showError(String(e.stack || e));
       return;
     }
+    tickTimeline();
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
-  window.__nfx = { fx, stage, state, director, select, setLevel, errors: () => [...stage.fxgl.errors] };
+  window.__nfx = { fx, stage, state, director, actors, select, setLevel, applyState, errors: () => [...stage.fxgl.errors] };
 }
 
 // ---------------------------------------------------------- sheet mode ----
@@ -530,16 +778,17 @@ async function boot() {
  *  a sustained effect's intro, body and outro; anything else evenly. */
 function keyTimes(d, h, n, stopAt) {
   if (d.kind === "projectile") {
-    const I = h.impactAt, F = Math.max(0.05, I);
-    const base = [0.4 * F, 0.8 * F, I + 0.03, I + 0.09, I + 0.18, I + 0.32, I + 0.55, I + 0.9, I + 1.4, I + 2];
+    const I = h.impactAt, R = h.releaseAt, F = Math.max(0.05, I - R);
+    const base = [R + 0.4 * F, R + 0.8 * F, I + 0.03, I + 0.09, I + 0.18, I + 0.32, I + 0.55, I + 0.9, I + 1.4, I + 2];
     return base.slice(0, n);
   }
+  const R = h.releaseAt || 0;
   if (!isFinite(h.duration)) {
     const span = stopAt + 0.45;
-    return Array.from({ length: n }, (_, i) => ((i + 0.5) / n) * span);
+    return Array.from({ length: n }, (_, i) => R + ((i + 0.5) / n) * span);
   }
-  const span = Math.min(h.duration, Math.max(1.2, h.duration));
-  return Array.from({ length: n }, (_, i) => ((i + 0.5) / n) * span);
+  const span = Math.max(1.2, h.duration - R);
+  return Array.from({ length: n }, (_, i) => R + ((i + 0.5) / n) * span);
 }
 
 // A grid: one row per (effect, level), `frames` columns across the effect's
@@ -552,7 +801,7 @@ async function sheet() {
   const levels = (params.get("levels") || "1,5,10").split(",").map(Number);
   const frames = Number(params.get("frames") || 6);
   const W = Number(params.get("w") || 240), H = Number(params.get("h") || 180);
-  const night = params.get("night") !== "0";
+  const u = state.tod;
   const cv = document.createElement("canvas");
   cv.width = W * frames; cv.height = H * ids.length * levels.length;
   cv.id = "sheet";
@@ -562,19 +811,16 @@ async function sheet() {
   cv.style.height = `${cv.height * zoom}px`;
   document.body.append(cv);
   const st = new Stage(cv, { preserve: true, log: (m) => console.warn(m) });
-  const url = assetUrl;
-  const [c, t] = await Promise.all([st.addSprite(url(BODY_CASTER), "caster"), st.addSprite(url(BODY_TARGET), "target")]);
-  const ds = await Promise.all([st.addSprite(url(BODY_DUMMY), "d1"), st.addSprite(url(BODY_DUMMY), "d2")]);
-  caster = c; target = t; dummies = ds; stage = st;
+  stage = st;
+  for (const k of ["caster", "target", "x1", "x2"]) actors[k] = new Actor(st, st.addBody(k));
   const style = { ...DEFAULT_STYLE };
   for (const k of ["bands", "stepFps"]) if (params.has(k)) style[k] = Number(params.get(k));
   if (params.has("dither")) style.dither = params.get("dither") !== "0";
   view = { x: 0, y: 0, w: W, h: H };
   const cast = { c: 3.2, r: 6.2 };
   st.origin = { x: Math.round(0.2 * W - (cast.c - cast.r) * ISO.dx), y: Math.round(0.78 * H - (cast.c + cast.r) * ISO.dy) };
-  pos.caster = { x: cast.c * ISO.cellWu, y: cast.r * ISO.cellWu };
-  const k = (0.56 * W) / (2 * ISO.dx);
-  pos.target = { x: (cast.c + k) * ISO.cellWu, y: (cast.r - k) * ISO.cellWu };
+  pos.origin = { x: cast.c * ISO.cellWu, y: cast.r * ISO.cellWu };
+  pos.range = ((0.56 * W) / (2 * ISO.dx)) * Math.SQRT2;
   st.buildGround(view);
   const report = [];
   let row = 0;
@@ -584,14 +830,13 @@ async function sheet() {
       fx = createFx(st.host(() => view), { style });
       fx.register(d);
       state.id = id; state.level = lvl;
+      clock = 0;
       const origRandom = Math.random;
       Math.random = () => 0.37;
-      director.play();
+      await director.play();
       Math.random = origRandom;
       const h = director.h;
-      const total = isFinite(h.duration) ? h.duration : (d.demo?.hold ?? HOLD) + 0.4;
-      if (!isFinite(h.duration)) h.stop && setTimeout(() => {}, 0);
-      const stopAt = d.demo?.hold ?? HOLD;
+      const stopAt = d.stage.hold;
       const times = keyTimes(d, h, frames, stopAt);
       let tNow = 0;
       for (let f = 0; f < frames; f++) {
@@ -600,13 +845,14 @@ async function sheet() {
           const step = Math.min(1 / 120, tf - tNow);
           fx.update(step);
           tNow += step;
-          if (!isFinite(h.duration) && tNow >= stopAt && !h._stopped) { h.stop(); h._stopped = true; }
+          clock = tNow;
         }
+        for (const A of Object.values(actors)) A.update(clock);
         // WebGL's viewport y is from the bottom
         const vpy = cv.height - (row + 1) * H;
-        st.render(fx, { view, vp: { x: f * W, y: vpy, w: W, h: H }, night, clear: true });
+        st.render(fx, { view, vp: { x: f * W, y: vpy, w: W, h: H }, u, torch: torchLight(), clear: true, t: clock });
       }
-      report.push({ id, level: lvl, duration: total, layers: fx.drawList().length });
+      report.push({ id, level: lvl, duration: h.duration, layers: fx.drawList().length, release: h.releaseAt });
       row++;
     }
   }

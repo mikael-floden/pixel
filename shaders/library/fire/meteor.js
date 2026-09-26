@@ -15,6 +15,8 @@ export default defineEffect({
   id: "fire/meteor",
   name: "Meteor",
   kind: "burst",
+  stage: { anim: "spell_channel" },
+  volley: ["rain", "line", "ring"],
   family: "fire",
   category: "attack",
   tags: ["aoe", "damage", "delayed", "ultimate", "telegraphed"],

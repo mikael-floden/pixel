@@ -8,6 +8,7 @@ export default defineEffect({
   id: "weapon/arrow",
   name: "Arrow",
   kind: "projectile",
+  stage: { anim: "bow" },
   family: "weapon",
   category: "attack",
   tags: ["projectile", "physical", "bow", "ranged"],
