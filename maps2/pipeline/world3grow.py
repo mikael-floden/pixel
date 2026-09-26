@@ -6260,8 +6260,8 @@ class Grow:
               "black_rock": ("black_rock", "grey_stone"),
               "ice": ("ice", "snow")}
     # A ONE-LEVEL STEP IS A SLOPE, NOT A CLIFF: 15 px, walkable both ways,
-    # graded by the tiles domain's slope sets where they exist, and nothing is
-    # lost by misjudging it. Only a drop of two or more must read.
+    # drawn by the game as a ramp composed from the cell's own plate, and
+    # nothing is lost by misjudging it. Only a drop of two or more must read.
     STEP = 2
     TERRACE_MIN = 6   # smaller never recolours: it painted five lone grey cells
 

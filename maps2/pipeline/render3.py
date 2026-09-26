@@ -36,11 +36,10 @@ semantics only — see world3.py):
     tile rejected AS A PAIR can still be a top-approved detail — the two
     reviews are independent. Rolled at DETAIL_FREQ per cell and conformed,
     so a detail's foreign lava/ice/sand wall can never leak into a field.
-  * slopes: tiles3/slopes@1 — a Wang set on ELEVATION (bit = that corner is
-    raised) in the same 64x46 frame as a plate. A cell takes the graded tile
-    when its OWN ground rises beside it. Every published set is a 4px
-    sub-storey grade: it softens the foot of a rise, it cannot bridge a 17px
-    storey (storey-height sets requested from tiles).
+  * slopes: NONE. The slope tile library is retired (maintainer 2026-09-26:
+    the game composes each ramp from the cell's own plate), so a rise draws
+    here as the plain stair it is in the data. The game's picture of a
+    one-level rise is its own and this renderer does not reproduce it.
   * toggles: live/tuning/tile_walls.json `top_only` (this tile's wall is
     unusable) PAIRED WITH live/tuning/top_walls.json `wall` (the wall it
     borrows instead), and live/tuning/tile_tops.json `own_top` (keep the
@@ -337,9 +336,12 @@ except Exception:
 
 
 def slope_index(g, L, ground, x, y, zl):
-    """THE SLOPE BITMASK for one cell (the game's `slopeIndexAt`): the corner
-    bit is set when a cell touching that corner is HIGHER and made of the SAME
-    ground. Corner order is the Wang order - NW, NE, SW, SE - bit `8 >> i`."""
+    """THE RISE MASK for one cell (the game's `slopeIndexAt`, any rise): the
+    corner bit is set when a cell touching that corner is HIGHER and made of
+    the SAME ground. Corner order is the Wang order - NW, NE, SW, SE - bit
+    `8 >> i`. It draws nothing here any more: it is the game's DETAIL VETO
+    (a detail never lands on a cell its own ground rises beside), kept so the
+    details this renderer rolls are the ones the game rolls."""
     idx = 0
     for bit, (cxx, cyy) in enumerate(((x, y), (x + 1, y),
                                       (x, y + 1), (x + 1, y + 1))):
@@ -563,69 +565,6 @@ except (OSError, ValueError):
     TOPS = {}
 BASE = json.load(open(os.path.join(REPO, "live", "tuning", "base_tiles.json"))).get("overrides", {})
 WALL_OV = json.load(open(os.path.join(REPO, "live", "tuning", "tile_walls.json"))).get("overrides", {})
-
-# -- slopes (tiles3/slopes@1) --------------------------------------------------
-# "One ground raised into a plateau with a graded edge down to ITSELF. NOT a
-# transition between two materials - the Wang bit means a corner is RAISED.
-# Index 0 flat, index 15 full plateau top." 15 grounds x 15 seeds, 64x46 -
-# the SAME frame as a plate, and index 15's alpha is the published silhouette
-# byte for byte, so a slope drops straight into the surface slot. The height
-# lives INSIDE the art: every published set is elevation 4px, a sub-storey
-# grade, which is what softens the foot of a rise.
-SLOPES = json.load(open(os.path.join(REPO, "tiles", "slopes", "index.json")))
-
-
-def _slope_approved(setdir, index):
-    """HIS VERDICT, PER TILE. Slope verdicts are keyed
-    tiles/slopes/<ground>/<set>/tile_NN in live/feedback/tiles.json. He has
-    judged 15 of the 225 sets (all 16 tiles of each, 13 grounds); the other
-    210 are UNJUDGED and must never be drawn — picking across all 15 seeds
-    per ground meant roughly 14 of every 15 slope tiles came from a set he
-    had never seen (his catch, 2026-08-30: "I kinda got the feeling you used
-    a slope I never approved")."""
-    k = f"{setdir.strip('/')}/tile_{index:02d}"
-    return FB.get(k, {}).get("status") == "approved"
-
-
-_SLOPE_BY_GROUND = {}
-for _s in SLOPES["sets"]:
-    # ONLY COMPLETE SETS. Measured over the published library: 9 of the 225
-    # sets ship fewer than 16 post files (7-15), and 122 of 3,553 files are
-    # 64x30 instead of the 64x46 the frame requires (slime and water worst).
-    # A short set indexed by a Wang bitmask is an IndexError; a 30-row tile
-    # cannot be masked by the 46-row silhouette. Reported to the tiles agent.
-    if _s.get("complete") and len(_s.get("post_files") or []) == 16 \
-            and any(_slope_approved(_s["dir"], _i) for _i in range(16)):
-        _SLOPE_BY_GROUND.setdefault(_s["ground"], []).append(_s)
-for _g in _SLOPE_BY_GROUND:
-    _SLOPE_BY_GROUND[_g].sort(key=lambda s: s["dir"])
-
-
-def slope_tile(ground, index, x, y):
-    """The slope tile for this corner bitmask, seed chosen per AREA so a
-    hillside keeps one boundary character (same reasoning as a base set's
-    region)."""
-    sets = [s for s in _SLOPE_BY_GROUND.get(ground, [])
-            if _slope_approved(s["dir"], index)]
-    if not sets or not (0 < index < 16):
-        return None            # unjudged ground (light_soil, water): no slope
-    si = (fnv1a(f"slope|{ground}|{x // 24}|{y // 24}") % len(sets))
-    st = sets[si]
-    rel = os.path.join(st["dir"], "post", st["post_files"][index])
-    ck = ("slope", rel)
-    if ck not in _tile_cache:
-        f = os.path.join(REPO, rel)
-        if not os.path.isfile(f):
-            return None
-        im = Image.open(f).convert("RGBA")
-        if im.size != (TILE, 46):
-            _tile_cache[ck] = None     # a mis-sized publication: fall back
-            return None                # to the flat plate, never crash
-        im.info["k"] = ck
-        _tile_cache[ck] = im
-    return _tile_cache[ck]
-
-
 
 
 def _hex(h):
@@ -1655,17 +1594,8 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 plain x-over-x review tile and ignored the sets he tunes.
                 'I kinda expected everything from using the base tile sets.'"""
                 t = plate_img(gr, region_at(x, y, gr), x, y)
-                # SLOPE: where this ground rises to ITSELF beside the cell,
-                # the surface takes the graded Wang tile instead of the flat
-                # plate — the corner bit is set when a cell touching that
-                # corner is higher and made of the same ground. This is what
-                # makes a path uphill read as a climb instead of a stack of
-                # flat diamonds (maintainer 2026-08-30).
+                # the game's detail veto (below): its own ground rises beside it
                 sidx = slope_index(g, L, gr, x, y, zl)
-                if sidx:
-                    sl = slope_tile(gr, sidx, x, y)
-                    if sl is not None:
-                        t = sl
                 # FADE BAND - THE GAME'S RULE (tiles3.ts fadeFor, maintainer
                 # 2026-09-09; the parity fixture holds this equal at the
                 # resolver's constants: reach FADE_BAND, amount 1, falloff 1).
@@ -1727,7 +1657,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 # wherever no fade landed (a band cell whose roll failed
                 # included), never on the room floor (the game's rule: a
                 # parquet room is one floor, not a floor with pebbles),
-                # NEVER ON A RAMP (a slope cell keeps its graded tile) and
+                # NEVER ON A RISE (the game draws its ramp there) and
                 # NEVER TOUCHING ANOTHER (`detail_alone`) - the game's three
                 # clauses of 2026-09-13, at his 1-in-100 (`DETAIL_FREQ`).
                 if gr == "parquet_floor" or sidx:
