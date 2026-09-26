@@ -507,6 +507,48 @@ def _client_or_none():
 
 # --- reconcile --------------------------------------------------------------
 
+
+def drop_graduated(cid, client, verbose=True):
+    """Remove a ROSTER monster he removed in the wiki. The MONSTER tag comes off
+    on PixelLab — the tag is ground truth both ways, so an untagged monster is
+    not a monster and sync never brings it back — then the roster entry, the
+    folder, the animation-map line and every verdict on it go. The PixelLab
+    record itself is KEPT (untagged): re-tagging MONSTER restores it by sync,
+    so a mis-tap costs one sync, not the art."""
+    import sync as _sync
+    roster = _sync.load_roster()
+    entry = next((m for m in roster if m["id"] == cid), None)
+    pid = (entry or {}).get("pixellab_id") or ((mirror.read_manifest(cid) or {}).get("source") or {}).get("pixellab_id")
+    if pid:
+        try:
+            obj = (entry or {}).get("kind") == "object"
+            rec = client.get_object(pid) if obj else client.get_character(pid)
+            tags = [t for t in (rec.get("tags") or []) if str(t).upper() != "MONSTER"]
+            (client.set_object_tags if obj else client.set_character_tags)(pid, tags)
+        except PixelLabError as e:
+            # untag failed: leave everything, the next save retries. Deleting the
+            # folder of a still-tagged monster would only be undone by sync.
+            print(f"  {cid}: could not untag on PixelLab ({e}) — retried on the next save")
+            return False
+    _sync.write_roster([m for m in roster if m["id"] != cid])
+    shutil.rmtree(os.path.join(ROOT, cid), ignore_errors=True)
+    _sync.build_animation_map([meta for _mid, meta in mirror.iter_manifests()])
+    doc = json.load(open(FEEDBACK))
+    ent = doc.get("entries") or {}
+    drop = [k for k in ent if k == f"monsters/{cid}" or k.startswith(f"monsters/{cid}#")]
+    for k in drop:
+        ent.pop(k)
+    doc["entries"] = ent
+    doc["updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    tmp = FEEDBACK + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(doc, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    os.replace(tmp, FEEDBACK)
+    if verbose:
+        print(f"  REMOVED roster monster {cid} (untagged {pid}, folder and {len(drop)} verdict(s) gone)")
+    return True
+
 def reconcile(cfg, client=None, apply=True, verbose=True, tags=False, graduate=True):
     """HIS REMOVALS ARE THE GROUND TRUTH, BOTH WAYS. Run before every command
     that shows or generates candidates (maintainer 2026-09-18: "I have also
@@ -573,6 +615,25 @@ def reconcile(cfg, client=None, apply=True, verbose=True, tags=False, graduate=T
         cmd_drop(ns)
         cfg.clear(); cfg.update(load_cfg())
         onDisk -= remove
+
+    # A REMOVAL ON A GRADUATED MONSTER IS ACTED ON TOO (2026-09-26: "If I remove
+    # a monster will the github-agent start and remove it?" — it would not: only
+    # candidate folders were read, so his verdict on a roster monster sat there
+    # forever). Same key, `monsters/<id>`, whose folder is the roster monster.
+    gone = set()
+    for k, v in ent.items():
+        if "#" in k or not k.startswith("monsters/") or k.startswith("monsters/candidates/"):
+            continue
+        cid = k.split("/")[-1]
+        if (v.get("status") == "rejected" and cid not in onDisk
+                and os.path.isfile(os.path.join(ROOT, cid, "monster.json"))):
+            gone.add(cid)
+    if gone and apply:
+        if client is None:
+            print(f"  graduated removals waiting for a PixelLab client: {sorted(gone)}")
+        else:
+            for cid in sorted(gone):
+                drop_graduated(cid, client, verbose=verbose)
 
     # A KEY IS AN ADDRESS, NOT AN ID. This used to compare the bare id
     # (`seed_husk`) against the roster, so `monsters/candidates/seed_husk` —

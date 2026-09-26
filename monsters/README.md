@@ -903,6 +903,12 @@ python monsters/pipeline/sync.py --only <id> # limit mirroring to one monster
 - `pipeline/refill.py` — puts back a facing he approved that the move to the
   roster lost, from the candidate folder or from git history at the candidate
   path. Never regenerates: new pixels would reset his verdict.
+- **A removal is acted on the moment he saves it, candidate OR graduated**
+  (`reconcile`, run by `monsters-graduate.yml` on every feedback push). A
+  graduated monster (`drop_graduated`): MONSTER tag off on PixelLab (the
+  record is kept, so re-tagging restores it), roster entry, folder,
+  animation-map line and every verdict on it gone. (Only candidate folders
+  were read before: a removal on a roster monster sat forever, 2026-09-26.)
 - `pipeline/redos.py` — HIS REDO IS ACTED ON THE MOMENT HE SAVES IT, candidate
   or graduated: run by `monsters-graduate.yml` on every feedback push. A live
   redo is one whose `art` stamp is the strip on disk now. A candidate goes

@@ -573,6 +573,10 @@ class PixelLabClient:
         """REPLACES the character's tag list (PATCH semantics on PixelLab)."""
         return self._request("PATCH", f"characters/{character_id}/tags", json={"tags": list(tags)})
 
+    def set_object_tags(self, object_id, tags):
+        """REPLACES the object's tag list (same PATCH as scenery's client)."""
+        return self._request("PATCH", f"objects/{object_id}/tags", json={"tags": list(tags)})
+
     def delete_character(self, character_id):
         return self._request("DELETE", f"characters/{character_id}")
 
