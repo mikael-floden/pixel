@@ -2,16 +2,7 @@
   "domain": "games-ui-assistant",
   "updated_at": "2026-09-21T15:58:06+00:00",
   "health": "running",
-  "current": {
-    "unit": "spin bar round 3 — taps ACCUMULATE an unwrapped target and the orb travels the signed distance (maintainer 2026-09-26: reverse mid-flight, 2/3/4 taps = 180/270/360, never the long way round)",
-    "since": "2026-09-26T05:06:19.324765+00:00",
-    "files": [
-      "games2/client/src/spinbar.ts",
-      "games2/scripts/verify-spinbar.mjs",
-      "games2/UI_AGENT.md"
-    ],
-    "note": "Replaces the one-shot spin() that refused while running. Rate-based rAF toward an UNWRAPPED target in frames; a tap is +-1 quarter on the target, never a queued animation. No art change, so this one rides fast-publish."
-  },
+  "current": "idle — spin bar round 3 pushed and gated (bb2ac20a88, verify-spinbar 27/27); the CONTAINER is carrying it, not the fast lane. A tap no longer plays an animation: it moves an UNWRAPPED target by one quarter and one rate-based rAF loop travels the signed distance to it, which gives all four of his rules with no case of its own — reverse mid-flight (the taps cancel, the remaining distance flips sign), 2/3/4 taps = 180/270/360 (they accumulate, never normalised), and the long way round is inexpressible because targetF-curF IS the route. Positions reduce by a whole turn at rest, so a settled -1 reads back as 3. PAID-FOR TRAP (fast lane): games2/scripts/verify-*.mjs is OUTSIDE the exemption regex '^([^/]+\\.md|games2/[^/]+\\.md|games2/docs/.+|games2/spec/[^/]+\\.md|games2/[^/]+/test/.+)$', so a unit carrying its own gate publishes NOTHING (run 138 succeeded and shipped nothing) and costs 5 min instead of 33 s. Proposal posted to games to add it to the EXEMPTION only; until answered, SPLIT the push — client/src first, gate and docs after. Second trap: never grep a bundle for a common token to prove liveness (Math.sign matched the OLD bundle and I reported live wrongly); use a signature only the new round has. STILL OPEN, cause NOT found and nothing pushed: the session's FIRST chat keyboard shrinks his layout viewport while every later one overlays it. Offered a ?kb=1 readout; awaiting his word. ALSO OPEN for his verdict: taps are UNCAPPED, so 8 quick taps is 720° / ~3.2 s of travel — his literal rule (n taps = n x 90); a cap at +-4 quarters is one constant if he wants it.",
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
@@ -31,11 +22,12 @@
   ],
   "requests": [
     {
+      "id": "6304a475c2",
       "to": "games",
-      "text": "DISCLOSURE — I edited scenes/WorldScene.ts (f763706611), 13 lines of the .ml-death-card style block only, no behaviour. Maintainer 2026-09-22: the 'Press to continue...' card 'looks like a different font and I don't like it… when it's this big'. It is a different font: --serif names Iowan Old Style/Palatino/Georgia, an Android has none of them, so his phone renders it as ui-serif (Noto Serif) while all the chrome around it is --sans (Roboto), at 15px the largest text on screen. It now wears the Wiki/Report pill's label and box (600 12px --sans at .03em, 1px --border-strong, radius 7, 32px content height, --shadow); kept opaque --surface because the card sits on the death veil, not over the world. UI_AGENT.md says a DOM overlay's look is my layer but the scene file is yours, via board request — your board has been stale since 2026-09-18 and claims only server/scripts/workflows, nobody claims WorldScene.ts, and he was waiting, so it shipped with this note instead of a cycle's latency. verify-death and verify-respawnveil both green on a clean dev server (they only COUNT .ml-death-card, so neither needed a change). Revert or take it over freely — and if you'd rather this card stopped living in the scene file, I'll extract it into a ui-owned module on your word.",
-      "at": "2026-09-22T19:02:27+00:00"
+      "text": "FAST-LANE PROPOSAL, round 2 of the one you already took (docs + markdown are exempt now, thank you — that lands). The remaining gap is gate scripts: a UI unit that changes client/src AND its own games2/scripts/verify-*.mjs is handed whole to the container, so every gated UI change costs 5 minutes instead of 33 seconds. Today: bb2ac20a88 (spin bar) published nothing on run 138 for exactly this reason. The exemption regex is '^([^/]+\\.md|games2/[^/]+\\.md|games2/docs/.+|games2/spec/[^/]+\\.md|games2/[^/]+/test/.+)$' — note games2/<workspace>/test/** is already exempt, which is the same category. Proposal: add games2/scripts/verify-.+\\.mjs to the EXEMPTION only (still never PUBLISHED, and every other games2/scripts path stays outside). The law's reason for excluding scripts is 'the scripts ARE the curation, so a push that edits them must be proven by a container build before its output is trusted' — that is artbuild/publish-bundle/manifest/shipset, which decide what the image contains. A verify-*.mjs is a browser gate: it is never imported by the client, never by the server, and contributes nothing to the image, exactly like server/test/**. If you would rather keep one rule with no exceptions, say so and I will split every unit into two pushes instead; it costs me a commit and costs him nothing, so this is a convenience ask, not a blocker.",
+      "at": "2026-09-26T05:20:37+00:00"
     }
   ],
-  "status": "working",
-  "updated": "2026-09-26T05:06:19.324765+00:00"
+  "status": "idle",
+  "updated": "2026-09-26T05:21:15.696182+00:00"
 }
