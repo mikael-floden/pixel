@@ -4043,8 +4043,34 @@ export class NightLights {
     return { share: this.rampShare, cells: this.rampCells };
   }
 
-  private buildHeightmap() {
-    if (this.scene.textures.exists("world-heightmap")) {
+  /** VIEW ROTATION (viewrot.ts): light and shade a rotated copy of the world.
+   *  The heightmap is a pure function of the world, and the shaders hold its
+   *  textures BY KEY, so the same canvases are redrawn in place (a square world
+   *  keeps its size under a quarter-turn) rather than deleted and re-bound. The
+   *  sun's cast direction is a GRID vector and is deliberately NOT rotated: read
+   *  in the rotated grid it points the same way on SCREEN, so every shadow falls
+   *  where it always did — the lighting looks the same at every orientation. */
+  setWorld(world: World): void {
+    if (world === this.world) return;
+    this.world = world;
+    this.buildHeightmap(true);
+    this.applyRamps();
+    // Belt to the in-place redraw: re-bind by key, so no shader can keep a
+    // texture object that a redraw replaced.
+    for (const sh of [this.mistShader, this.depthFogShader, this.shader]) {
+      if (!sh) continue;
+      sh.setSampler2D("uHeight", "world-heightmap");
+      if (this.scene.textures.exists(BLOCK_KEY)) {
+        sh.setSampler2D("uHBlock", BLOCK_KEY, 6);
+        sh.setUniform("uHBlockN.value", { x: this.blockN.x, y: this.blockN.y });
+      }
+      if (sh !== this.mistShader && this.scene.textures.exists("world-heightmap-linear")) sh.setSampler2D("uHeightL", "world-heightmap-linear", 1);
+      if (sh !== this.mistShader && this.scene.textures.exists("world-heightmap-ground")) sh.setSampler2D("uHeightG", "world-heightmap-ground", 5);
+    }
+  }
+
+  private buildHeightmap(redraw = false) {
+    if (!redraw && this.scene.textures.exists("world-heightmap")) {
       // Textures outlive this instance (the manager is per game): keep the
       // block grid's size honest for the bindings, or arm nothing.
       const bt = this.scene.textures.get(BLOCK_KEY);
@@ -4066,7 +4092,17 @@ export class NightLights {
         this.emitList.push(entry);
       }
     }
-    const tex = this.scene.textures.createCanvas("world-heightmap", w, h);
+    const canvasFor = (key: string, cw: number, ch: number): Phaser.Textures.CanvasTexture | null => {
+      if (redraw && this.scene.textures.exists(key)) {
+        const t = this.scene.textures.get(key) as Phaser.Textures.CanvasTexture;
+        const src = t.getSourceImage() as { width: number; height: number };
+        if (src.width === cw && src.height === ch) return t;
+        this.scene.textures.remove(key); // a non-square world changed size: rebuild it
+      }
+      return this.scene.textures.createCanvas(key, cw, ch);
+    };
+    if (redraw) this.emitList = []; // re-pushed below in the same order: the palette indices are unchanged
+    const tex = canvasFor("world-heightmap", w, h);
     const ctx = tex!.getContext();
     const img = ctx.createImageData(w, h); // surface (terrain-only heights)
     const imgL = ctx.createImageData(w, h); // occlusion (terrain + solids)
@@ -4229,8 +4265,11 @@ export class NightLights {
     {
       const bw = Math.ceil(w / BLOCK);
       const bh = Math.ceil(h / BLOCK);
-      if (this.scene.textures.exists(BLOCK_KEY)) this.scene.textures.remove(BLOCK_KEY);
-      const btex = this.scene.textures.createCanvas(BLOCK_KEY, bw, bh)!;
+      // On a REDRAW (a view turn) the grid is repainted in place: every shader
+      // bound it by key when it was built, and a removed texture leaves them
+      // marching against a dead one — that painted the turned view near-black.
+      if (!redraw && this.scene.textures.exists(BLOCK_KEY)) this.scene.textures.remove(BLOCK_KEY);
+      const btex = canvasFor(BLOCK_KEY, bw, bh)!;
       const bctx = btex.getContext();
       const bimg = bctx.createImageData(bw, bh);
       for (let by = 0; by < bh; by++)
@@ -4253,13 +4292,13 @@ export class NightLights {
       this.blockN = { x: bw, y: bh };
     }
     tex!.refresh();
-    const texL = this.scene.textures.createCanvas("world-heightmap-linear", w, h);
+    const texL = canvasFor("world-heightmap-linear", w, h);
     if (texL) {
       texL.getContext().putImageData(imgL, 0, 0);
       texL.refresh();
       texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
     }
-    const texG = this.scene.textures.createCanvas("world-heightmap-ground", w, h);
+    const texG = canvasFor("world-heightmap-ground", w, h);
     if (texG) {
       texG.getContext().putImageData(imgG, 0, 0);
       texG.refresh();
@@ -4267,7 +4306,7 @@ export class NightLights {
     }
     // Palette texture: 2 texels per entry — texel 0 = colour, texel 1 =
     // (strength, self, anim mode 0/100/200). NEAREST so indices read exact.
-    if (this.emitList.length) {
+    if (this.emitList.length && !(redraw && this.scene.textures.exists("emission-palette"))) {
       const pw = this.emitList.length * 2;
       const ptex = this.scene.textures.createCanvas("emission-palette", pw, 1);
       if (ptex) {

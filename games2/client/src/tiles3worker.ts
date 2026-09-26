@@ -41,6 +41,7 @@ import {
   type Tiles3DocKey,
 } from "./tiles3runtime";
 import type { Tiles3Cell, Tiles3Boundary, Tiles3DeckCell } from "./tiles3";
+import { rotateWorldDoc, normRot } from "./viewrot";
 
 /** Boot: every URL is built by the MAIN thread and handed over. The worker must
  *  not re-derive a URL — staging rewrites `/assets/**` onto a CDN and a second
@@ -62,6 +63,11 @@ export interface WorkerInit {
   footBoundary?: boolean;
   deckBoundary?: boolean;
   slopeHeight?: number;
+  /** VIEW ROTATION (viewrot.ts): quarter-turns the DRAWN world is rotated by.
+   *  The worker fetches world.json itself, so it must rotate it itself - with
+   *  the same function the main thread uses - or it resolves the unrotated
+   *  world and answers for the wrong cells. */
+  viewRot?: number;
 }
 export interface WorkerResolve {
   type: "resolve";
@@ -113,7 +119,7 @@ async function init(msg: WorkerInit): Promise<void> {
     ),
   ]);
   if (!worldDoc) throw new Error(`world did not load: ${msg.worldUrl}`);
-  const parsed = parseWorld(worldDoc);
+  const parsed = parseWorld(rotateWorldDoc(worldDoc, normRot(msg.viewRot ?? 0)));
   if (!parsed) throw new Error("world did not parse");
   const docs: Partial<Record<Tiles3DocKey, unknown>> = {};
   for (const [k, v] of docEntries) docs[k as Tiles3DocKey] = v;

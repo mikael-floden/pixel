@@ -226,6 +226,9 @@ import {
 } from "../maps";
 import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
+import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, rotFootprints, rotDir8, type ViewRot, type RotateStats } from "../viewrot";
+import { RotFx, buildRotMesh, easeTurn, type RotProjector } from "../rotfx";
+import { parseWorld as parseWorldDoc } from "@nangijala/shared";
 import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type ResolvedCell } from "../resolveworker";
 import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
 import { detailEvery, detailRate, setDetailEvery } from "../detailrate";
@@ -2166,6 +2169,20 @@ export class WorldScene extends Phaser.Scene {
   private tapMarkerAt: { x: number; y: number } | null = null;
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
+  /** VIEW ROTATION (viewrot.ts): quarter-turns the DRAWN world is rotated by.
+   *  RENDER-ONLY — `world`, `terrain`, prediction and everything sent to the
+   *  server stay in SERVER space. `viewWorld` (null when unrotated) is what the
+   *  ground resolver, scenery and the night pass draw; entities reach it through
+   *  projectFlat/projectCellCorner, which turn their server-space input. */
+  private viewRot: ViewRot = 0;
+  private viewWorld: World | null = null;
+  /** The fetched world.json, kept once a turn has been asked for (a cache hit). */
+  private viewDoc: unknown = null;
+  private rotFx: RotFx | null = null;
+  private turning = false;
+  /** Debug: a pinned turn progress for screenshots (`__ml.turnSeek`); null = the clock. */
+  private turnPinned: number | null = null;
+  private turnLog: Record<string, number | string> = {};
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
   private worldW = WORLD_WIDTH; // this world's extent in world units (grid×CELL_WU)
   private worldH = WORLD_HEIGHT;
@@ -5771,7 +5788,7 @@ export class WorldScene extends Phaser.Scene {
     this.atmo.setPreset("night");
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
-        this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
+        this.night = new NightLights(this, this.viewWorld ?? this.world, this.iso, this.maxLevel, this.emission);
         this.night.setLidDark(wallTopDark()); // his wall-top dial darkens the room's wall tops in the light too
         /* `?nightcal=N` — the night pass's calibration pattern from the PHONE
          * (the same as `__ml.nightCal(0, 1, N)`): 4 faces/tops, 5 the light
@@ -5784,7 +5801,7 @@ export class WorldScene extends Phaser.Scene {
         this.night.atmoOff = !this.fogOn;
         // Footprints stamped before the night existed (the boot restamp, or docs
         // that landed first) become occluders now; later stamps re-apply themselves.
-        this.night.setSceneryOccluders(this.terrain?.footprints);
+        this.night.setSceneryOccluders(this.viewFootprints());
       } catch (err) {
         console.warn("[nangijala] shader night unavailable:", err);
         this.night = undefined;
@@ -5951,6 +5968,9 @@ export class WorldScene extends Phaser.Scene {
       (text) => this.sendRoom("chat", { text }),
       () => (this.input.keyboard!.enabled = true),
     );
+    // VIEW TURN (viewrot.ts / rotfx.ts): Q turns the view left, E right.
+    this.input.keyboard!.on("keydown-Q", () => { if (!this.chat?.open) void this.turnView(-1); });
+    this.input.keyboard!.on("keydown-E", () => { if (!this.chat?.open) void this.turnView(1); });
     this.input.keyboard!.on("keydown-ENTER", () => {
       if (!this.chat.open) {
         this.input.keyboard!.enabled = false;
@@ -7139,6 +7159,22 @@ export class WorldScene extends Phaser.Scene {
         return { on: this.collisionOn, footprints: g?.footprints?.n ?? 0, navCells: nav, propCells: props };
       },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
+      /** VIEW-space twins of pickAt/surfaceAt (viewrot.ts), for effects that work
+       *  on the DRAWN lattice (the foam layer). pickAt answers the SERVER point
+       *  under a pixel — what a tap walks to — and surfaceAt takes one; in a
+       *  turned view the drawn cell under that pixel is the turned one. */
+      pickAtView: (wx: number, wy: number) => {
+        const p = this.pickGround(wx, wy);
+        if (!p || !this.viewRot || !this.world) return p;
+        const [vx, vy] = rotPoint(p.x / CELL_WU, p.y / CELL_WU, this.viewRot, this.world.width, this.world.height);
+        return { ...p, x: vx * CELL_WU, y: vy * CELL_WU };
+      },
+      surfaceAtView: (x: number, y: number) => {
+        if (!this.terrain) return null;
+        if (!this.viewRot || !this.world) return surfaceAtWorld(this.terrain, x, y);
+        const [sx, sy] = unrotPoint(x / CELL_WU, y / CELL_WU, this.viewRot, this.world.width, this.world.height);
+        return surfaceAtWorld(this.terrain, sx * CELL_WU, sy * CELL_WU);
+      },
       caveDbg: () => ({
         depth: this.caveDepth ? this.caveDepth.size : -1,
         under: this.caveUnder.size,
@@ -8116,8 +8152,10 @@ export class WorldScene extends Phaser.Scene {
         const cam = this.cameras.main;
         const cell = this.world.rows[row]?.[col];
         if (!cell) return null;
-        const wx = this.iso.ox + (col - row) * dx;
-        const wy = this.iso.oy + (col + row) * dy - cell.l * lh;
+        // a SERVER cell: drawn where the view has turned it
+        const [vc, vr] = this.viewRot ? rotCell(col, row, this.viewRot, this.world.width, this.world.height) : [col, row];
+        const wx = this.iso.ox + (vc - vr) * dx;
+        const wy = this.iso.oy + (vc + vr) * dy - cell.l * lh;
         return {
           x: (wx - cam.worldView.x) * cam.zoom,
           y: (wy - cam.worldView.y) * cam.zoom,
@@ -8158,6 +8196,14 @@ export class WorldScene extends Phaser.Scene {
         (window as any).__ml.lookAt(poi.x, poi.y);
         return poi;
       },
+      /** VIEW ROTATION (viewrot.ts, rotfx.ts). `viewRot(k)` draws the world turned
+       *  k quarter-turns NOW; `turnView(dir, ms)` animates one quarter-turn and
+       *  resolves with its phase timings; `turnSeek(u)` pins the turn's progress
+       *  for screenshots (null lets the clock run and the turn finish). */
+      viewRot: async (k?: number) => { if (typeof k === "number") await this.applyViewRot(normRot(k)); return this.viewRot; },
+      turnView: (dir = 1, ms?: number, waitB?: number) => this.turnView(dir < 0 ? -1 : 1, ms, waitB),
+      turnSeek: (u: number | null) => { this.turnPinned = u; return u; },
+      turnInfo: () => ({ turning: this.turning, viewRot: this.viewRot, ready: this.rotFx?.ready ?? false, settled: this.viewSettled(), ...this.turnLog, ...(this.rotFx?.timings ?? {}) }),
       lookAt: (col?: number, row?: number) => {
         const cam = this.cameras.main;
         if (col === undefined || row === undefined) {
@@ -8168,8 +8214,10 @@ export class WorldScene extends Phaser.Scene {
         this.camDetached = true;
         const { dx, dy, lh } = this.geom;
         const cell = this.world?.rows[row]?.[col];
-        const wx = this.iso.ox + (col - row) * dx + dx;
-        const wy = this.iso.oy + (col + row) * dy + dy - (cell?.l ?? 0) * lh;
+        // a SERVER cell: drawn where the view has turned it
+        const [vc, vr] = this.world && this.viewRot ? rotCell(col, row, this.viewRot, this.world.width, this.world.height) : [col, row];
+        const wx = this.iso.ox + (vc - vr) * dx + dx;
+        const wy = this.iso.oy + (vc + vr) * dy + dy - (cell?.l ?? 0) * lh;
         cam.centerOn(wx, wy);
         return { x: wx, y: wy, t: cell?.t ?? null, l: cell?.l ?? 0 };
       },
@@ -14056,9 +14104,10 @@ export class WorldScene extends Phaser.Scene {
    * arrived yet (it rides the deferred batch), so a turn never blinks a
    * placeholder — it simply completes when the art lands. */
   private setNpcDir(npc: NpcAvatar, dir: string) {
-    npc.dir = dir;
+    npc.dir = dir; // the LOGICAL facing, in the unturned frame: every comparison reads this
     const def = npc.def;
-    const baseKey = `npc:${def.id}:${dir}`;
+    const show = rotDir8(dir, this.viewRot); // ...and what is DRAWN is it in the turned view (viewrot.ts)
+    const baseKey = `npc:${def.id}:${show}`;
     // THE ORIGIN MOVES WITH THE ROTATION IT BELONGS TO, NEVER AHEAD OF IT.
     // Every facing has its own measured foot anchor, so applying the new one
     // while the old rotation is still on screen shifts the drawn body off the
@@ -14067,17 +14116,17 @@ export class WorldScene extends Phaser.Scene {
     // turn then completes late at worst, which is invisible.
     if (this.textures.exists(baseKey)) {
       npc.sprite.setTexture(baseKey);
-      const a = def.anchors?.[dir];
+      const a = def.anchors?.[show];
       if (a) npc.sprite.setOrigin(a.x, a.y);
     }
-    const frames = def.idle?.[dir] ?? 0;
-    const animKey = `npcanim:${def.id}:${dir}`;
+    const frames = def.idle?.[show] ?? 0;
+    const animKey = `npcanim:${def.id}:${show}`;
     npc.animKey = null;
     npc.pendingAnim = undefined;
     npc.holdUntil = 0;
     if (frames > 0 && def.idleAnim) {
       const keys: string[] = [];
-      for (let i = 0; i < frames; i++) keys.push(`npcf:${def.id}:${dir}:${i}`);
+      for (let i = 0; i < frames; i++) keys.push(`npcf:${def.id}:${show}:${i}`);
       if (this.anims.exists(animKey)) npc.animKey = animKey;
       else npc.pendingAnim = { key: animKey, frames: keys };
     }
@@ -16220,8 +16269,8 @@ export class WorldScene extends Phaser.Scene {
           // instead of blowing out) — that is what survives the death veil.
           const k = tf * (1 + (DEATH_TORCH_BOOST - 1) * deathTorch);
           sl.push({
-            col: me.fx / CELL_WU,
-            row: me.fy / CELL_WU,
+            col: this.viewRot ? rotPoint(me.fx / CELL_WU, me.fy / CELL_WU, this.viewRot, this.world!.width, this.world!.height)[0] : me.fx / CELL_WU,
+            row: this.viewRot ? rotPoint(me.fx / CELL_WU, me.fy / CELL_WU, this.viewRot, this.world!.width, this.world!.height)[1] : me.fy / CELL_WU,
             z: this.litLevelOf(me) + 0.55,
             radius: 6,
             color: [0.85 * k, 0.58 * k, 0.32 * k],
@@ -16452,8 +16501,9 @@ export class WorldScene extends Phaser.Scene {
       // horizontal distance term.
       const meAv = this.avatars.get(this.myId);
       const playerZ = meAv ? Math.max(0, meAv.elev / this.geom.lh) : 0;
-      const playerCol = meAv ? meAv.fx / CELL_WU : 0;
-      const playerRow = meAv ? meAv.fy / CELL_WU : 0;
+      const [playerCol, playerRow] = !meAv ? [0, 0]
+        : this.viewRot && this.world ? rotPoint(meAv.fx / CELL_WU, meAv.fy / CELL_WU, this.viewRot, this.world.width, this.world.height)
+        : [meAv.fx / CELL_WU, meAv.fy / CELL_WU];
       // The glow stamps as the field paints them this frame (stampsToDraw: a
       // slot holder's pool crossfades out under its light, a sealed room's
       // pool wears the room's gain). The glow RT repaints from this array
@@ -17138,6 +17188,13 @@ export class WorldScene extends Phaser.Scene {
     const k = this.keys;
     let ax = (down(k.D) || down(k.RIGHT) ? 1 : 0) - (down(k.A) || down(k.LEFT) ? 1 : 0);
     let ay = (down(k.S) || down(k.DOWN) ? 1 : 0) - (down(k.W) || down(k.UP) ? 1 : 0);
+    // VIEW ROTATION (viewrot.ts): the keys (and the stick, which synthesizes them)
+    // name SCREEN directions of the TURNED view, while everything below — steer
+    // assist, the autopilot, prediction, and the input the server integrates —
+    // reads screen input in the UNTURNED frame (shared screenToWorldVector). One
+    // quarter-turn of the view is (ax, ay) -> (ay, -ax) in key space: exact for all
+    // eight directions, the diagonal grid-axis lock included.
+    for (let i = 0; i < this.viewRot; i++) [ax, ay] = [ay, -ax];
     let running = down(k.SHIFT);
     // THE VECTOR THE KEYS ASKED FOR, kept so the stick's lean can tell whether
     // anything deflected the heading afterwards (steer assist, the monster
@@ -17157,7 +17214,9 @@ export class WorldScene extends Phaser.Scene {
     let stickVec: { ax: number; ay: number } | null = null;
     if (this.keysActive) {
       const lean = stickLean();
-      const bearing = lean > 0 ? stickHeading() : null;
+      const b0 = lean > 0 ? stickHeading() : null;
+      // the finger's bearing turns with the keys: -90 degrees a quarter-turn (screen frame, +y down)
+      const bearing = b0 === null ? null : b0 - 90 * this.viewRot;
       stickVec = bearing !== null ? leanHeading(ax, ay, bearing, lean) : { ax, ay };
     }
     let deflected = false;
@@ -17381,7 +17440,7 @@ export class WorldScene extends Phaser.Scene {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
       const col = Math.floor((u + v) / 2);
       const row = Math.floor((v - u) / 2);
-      const cell = this.world.rows[row]?.[col];
+      const cell = (this.viewWorld ?? this.world).rows[row]?.[col];
       if (!cell || cell.l < l) continue; // this cell draws no top/face here
       const s = surfaceFor(cell.t);
       return cell.l === l && s.standable && !s.swimmable; // a walkable TOP, not a face/water
@@ -17430,7 +17489,7 @@ export class WorldScene extends Phaser.Scene {
     for (let l = this.maxLevel; l >= 1; l--) {
       const v = (gy - this.iso.oy - dy + l * lh) / dy;
       const c = (u + v) / 2, r = (v - u) / 2;
-      const cell = this.world.rows[Math.floor(r)]?.[Math.floor(c)];
+      const cell = (this.viewWorld ?? this.world).rows[Math.floor(r)]?.[Math.floor(c)];
       if (cell && cell.l >= l) { col = c; row = r; L = l; cellL = cell.l; break; } // L = DRAWN level (ramps up a face); cellL = the column's TOP (cell.l) — lifts a flyer's shadow off the face onto the flat top
     }
     const z = L + altPx / lh;
@@ -17451,7 +17510,11 @@ export class WorldScene extends Phaser.Scene {
       this.indoorInside &&
       this.indoorMask &&
       z >= this.indoorCeil &&
-      (this.indoorMask.get(Math.floor(row) * this.world.width + Math.floor(col)) ?? 0) !== 0
+      (this.indoorMask.get(
+        this.viewRot
+          ? Math.floor(unrotPoint(col, row, this.viewRot, this.world.width, this.world.height)[1]) * this.world.width + Math.floor(unrotPoint(col, row, this.viewRot, this.world.width, this.world.height)[0])
+          : Math.floor(row) * this.world.width + Math.floor(col),
+      ) ?? 0) !== 0
     )
       return {
         l: [0, 0, 0], fog: 0, fogCol: [0, 0, 0],
@@ -17555,8 +17618,9 @@ export class WorldScene extends Phaser.Scene {
     const scanTop = drawn && !cuts ? this.indoorTop : this.maxLevel;
     for (let l = scanTop; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
-      const col = (u + v) / 2;
-      const row = (v - u) / 2;
+      let col = (u + v) / 2;
+      let row = (v - u) / 2;
+      if (this.viewRot) [col, row] = unrotPoint(col, row, this.viewRot, this.world.width, this.world.height); // the screen shows the TURNED grid
       const ci = Math.floor(col);
       const ri = Math.floor(row);
       const cell = this.world.rows[ri]?.[ci];
@@ -17625,21 +17689,23 @@ export class WorldScene extends Phaser.Scene {
     let bestD = Infinity;
     for (let dr = -4; dr <= 4; dr++)
       for (let dc = -4; dc <= 4; dc++) {
-        const c = c0 + dc;
+        const c = c0 + dc; // a VIEW cell: where it draws is measured in the view...
         const r = r0 + dr;
-        const cell = this.world.rows[r]?.[c];
+        let sc = c, sr = r; // ...and what it IS is read in server space
+        if (this.viewRot) { const q = unrotPoint(c + 0.5, r + 0.5, this.viewRot, g.width, g.height); sc = Math.floor(q[0]); sr = Math.floor(q[1]); }
+        const cell = this.world.rows[sr]?.[sc];
         if (!cell) continue;
         const surf = surfaceFor(cell.t);
         if (!surf.standable) continue;
-        if (g.blocked[r * g.width + c]) continue;
-        if (this.hiddenCaveCell(c, r, cell.l)) continue;
+        if (g.blocked[sr * g.width + sc]) continue;
+        if (this.hiddenCaveCell(sc, sr, cell.l)) continue;
         // Where this cell's surface DRAWS, against the pixel we are aiming at.
         const sy = this.iso.oy + (c + r) * dy + dy - cell.l * lh;
         const sx = this.iso.ox + (c - r) * dx + tile / 2;
         const d = Math.hypot(sx - wx, sy - wy);
         if (d < bestD) {
           bestD = d;
-          best = { x: (c + 0.5) * CELL_WU, y: (r + 0.5) * CELL_WU, lvl: cell.l };
+          best = { x: (sc + 0.5) * CELL_WU, y: (sr + 0.5) * CELL_WU, lvl: cell.l };
         }
       }
     return best;
@@ -18164,6 +18230,10 @@ export class WorldScene extends Phaser.Scene {
     want: string,
     allTurns = false, // monsters: EVERY turn size needs persistence (anti-thrash)
   ): string {
+    // `want` is a SCREEN facing of the unturned frame (server facings and
+    // faceDirWorld alike); what is DISPLAYED is the same world direction in the
+    // turned view: +2 in the ring per quarter-turn (viewrot.ts).
+    want = rotDir8(want, this.viewRot);
     const cur = (av.dispDir ??= want);
     if (want === cur) {
       av.pendDir = undefined;
@@ -18454,8 +18524,11 @@ export class WorldScene extends Phaser.Scene {
     let depth = b.lyFlat + 0.5; // painter y at the flat (unlifted) ground
     let coverOut: number | undefined;
     if (this.world) {
-      const colf = b.fx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
-      const rowf = b.fy / CELL_WU;
+      // 1 cell = CELL_WU world units (any world size). SERVER in, compared with
+      // VIEW occluder cells below: turned here, once, for every caller.
+      const [colf, rowf] = this.viewRot
+        ? rotPoint(b.fx / CELL_WU, b.fy / CELL_WU, this.viewRot, this.world.width, this.world.height)
+        : [b.fx / CELL_WU, b.fy / CELL_WU];
       // Sprite bounds = the MEASURED opaque art box (+4px margin for walk
       // frames dipping past the idle anchor). The drawn figure is ~30x68px
       // inside a 128px frame — testing the whole frame let raised cells 2-3
@@ -18527,7 +18600,8 @@ export class WorldScene extends Phaser.Scene {
       return null;
     }
     const lvl = this.litLevelOf(b);
-    const l = this.night!.lightAt(b.fx / CELL_WU, b.fy / CELL_WU, lvl, false);
+    const [bvc, bvr] = this.viewRot && this.world ? rotPoint(b.fx / CELL_WU, b.fy / CELL_WU, this.viewRot, this.world.width, this.world.height) : [b.fx / CELL_WU, b.fy / CELL_WU];
+    const l = this.night!.lightAt(bvc, bvr, lvl, false);
     // DEPTH-FOG applies to BODIES too (maintainer 2026-07-30: a summit
     // monster rendered crisp inside heavy fog — and remote players shared
     // the bug): the lit copy sits ABOVE the overlay, so it bypasses the
@@ -18552,7 +18626,7 @@ export class WorldScene extends Phaser.Scene {
       b.fog?.setVisible(false);
       return null;
     }
-    const fog = this.night!.depthFogAtFoot(sp0.x, sp0.y, Math.floor(lvl), b.fx / CELL_WU, b.fy / CELL_WU);
+    const fog = this.night!.depthFogAtFoot(sp0.x, sp0.y, Math.floor(lvl), bvc, bvr);
     const r = Math.min(255, Math.round(((baseTint >> 16) & 0xff) * Math.min(1, l[0])));
     const g = Math.min(255, Math.round(((baseTint >> 8) & 0xff) * Math.min(1, l[1])));
     const bl = Math.min(255, Math.round((baseTint & 0xff) * Math.min(1, l[2])));
@@ -19308,6 +19382,16 @@ export class WorldScene extends Phaser.Scene {
    *  roof), while a spawn zone traces the rim it actually sits on. Coordinates
    *  are continuous CELLS, so a body's world point works too (px / CELL_WU). */
   private projectCellCorner(col: number, row: number, level: number): { x: number; y: number } {
+    // SERVER-space corner/point in: turn it to where it is DRAWN.
+    if (this.viewRot && this.world) {
+      const [c, r] = rotPoint(col, row, this.viewRot, this.world.width, this.world.height);
+      return this.projectCellCornerView(c, r, level);
+    }
+    return this.projectCellCornerView(col, row, level);
+  }
+
+  /** projectCellCorner for a VIEW-space point (a piece of the drawn world). */
+  private projectCellCornerView(col: number, row: number, level: number): { x: number; y: number } {
     const f = this.t3?.frame;
     if (f) return { x: anchorX(f, col, row), y: anchorY(f, col, row, level) };
     const { dx, dy, lh, tile } = this.geom;
@@ -19397,7 +19481,7 @@ export class WorldScene extends Phaser.Scene {
       // A draw-time input (caveTint) the kept ground picture may predate: the
       // next redraw paints in full rather than scrolling an untinted picture.
       this.lastGround = { x: NaN, y: NaN };
-      this.night?.setRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth, this.caveUnder);
+      this.publishRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth, this.caveUnder);
     }
     const av = this.avatars.get(this.myId);
     if (!g || !av || av.surfLevel === undefined) {
@@ -20159,6 +20243,214 @@ export class WorldScene extends Phaser.Scene {
    *  construction, so the streaming flags are cleared first — without that,
    *  an art batch landing beside a state change cost a second, identical full
    *  pass on the following frame (review, 2026-09-02). */
+  /** Draw the world turned `k` quarter-turns, NOW — no animation (turnView wraps
+   *  this). The same rebuild the terrain editor does after changing one cell,
+   *  for all of them: the resolver (and its worker, and scenery), the night
+   *  pass, a full repaint. Simulation is untouched. */
+  private async applyViewRot(k: ViewRot): Promise<void> {
+    const world = this.world;
+    if (!world || k === this.viewRot) return;
+    const t0 = performance.now();
+    let vw: World | null = null;
+    if (k !== 0) {
+      if (!this.viewDoc) {
+        const r = await fetch(gameUrl(worldFileUrl(this.worldName, "world.json")));
+        if (!r.ok) throw new Error(`world.json answered ${r.status}`);
+        this.viewDoc = await r.json();
+      }
+      const st: RotateStats = { hiddenPieces: 0 };
+      vw = parseWorldDoc(rotateWorldDoc(this.viewDoc, k, st)) as World | null;
+      if (!vw) throw new Error("the rotated world did not parse");
+      // same pieces, same order as the server's parse: an index still joins
+      for (const i of st.hiddenIdx ?? []) { const p = vw.scenery?.[i] as { viewHidden?: boolean } | undefined; if (p) p.viewHidden = true; }
+      this.turnLog.hiddenPieces = st.hiddenPieces;
+    }
+    const tParse = performance.now();
+    const kOld = this.viewRot;
+    this.viewRot = k;
+    this.viewWorld = vw;
+    this.night?.setWorld(vw ?? world);
+    // the heightmap rebuild cleared the scenery shadows it had stamped: stamp the turned ones
+    if (this.night && this.terrain) this.night.setSceneryOccluders(this.sceneryOn ? this.viewFootprints() : undefined);
+    this.initTiles3();
+    this.repaintWorld();
+    this.bake?.refreshAll();
+    this.indoorDirty = true;
+    this.publishRoom(this.roomMask ? this.roomMask.keys() : null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, this.lastRoomTop);
+    this.rebaseAfterTurn(normRot(k - kOld));
+    this.camChase.init = false; // the body's screen point jumped: snap onto it, don't crawl
+    this.turnLog.parseMs = +(tParse - t0).toFixed(1);
+    this.turnLog.rebuildMs = +(performance.now() - tParse).toFixed(1);
+  }
+
+  /** The scenery footprints as the DRAWN view sees them. Collision keeps the
+   *  server-space set on `terrain`; the night pass stamps shadows into the view's
+   *  heightmap, so it gets them turned (cached per set and per turn). */
+  private viewFootprintsMemo: { src: unknown; k: ViewRot; out: unknown } | null = null;
+  private viewFootprints(): NonNullable<typeof this.terrain>["footprints"] | undefined {
+    const fp = this.terrain?.footprints;
+    if (!fp || !this.world || this.viewRot === 0) return fp;
+    const m = this.viewFootprintsMemo;
+    if (m && m.src === fp && m.k === this.viewRot) return m.out as typeof fp;
+    const out = rotFootprints(fp, this.viewRot, this.world.width, this.world.height);
+    this.viewFootprintsMemo = { src: fp, k: this.viewRot, out };
+    return out;
+  }
+
+  /** A TURN IS NOT A TELEPORT. Every body eases its drawn anchors (lx, lyFlat)
+   *  toward its projected point, and a jump of more than two cells takes the
+   *  teleport branch — which cancels a tap trip and the hold, marks a relocation
+   *  arrival and resets the fall. A turn moves every projection at once, so the
+   *  anchors are re-based onto the turned projection here, before any update. */
+  private rebaseAfterTurn(turn: ViewRot): void {
+    const move = (b: { fx: number; fy: number; lx: number; lyFlat: number; ly: number }) => {
+      const g = this.projectFlat(b.fx, b.fy);
+      const lift = b.lyFlat - b.ly; // whatever lift the body wore stays on it
+      b.lx = g.x; b.lyFlat = g.y; b.ly = g.y - lift;
+    };
+    // ...and a displayed facing turns with the view, so nobody waits out the
+    // monsters' anti-thrash persistence to face the way they already faced.
+    const face = (b: { dispDir?: string; pendDir?: string }) => {
+      if (b.dispDir) b.dispDir = rotDir8(b.dispDir, turn);
+      if (b.pendDir) b.pendDir = rotDir8(b.pendDir, turn);
+    };
+    for (const av of this.avatars.values()) { move(av as unknown as Parameters<typeof move>[0]); face(av as unknown as Parameters<typeof face>[0]); }
+    for (const mv of this.monsters.values()) { move(mv as unknown as Parameters<typeof move>[0]); face(mv as unknown as Parameters<typeof face>[0]); }
+    for (const npc of this.npcs.values()) {
+      const n = npc as unknown as Parameters<typeof move>[0] & { sprite?: Phaser.GameObjects.Sprite };
+      move(n);
+      n.sprite?.setPosition(n.lx, n.ly);
+      if (npc.dir) this.setNpcDir(npc, npc.dir); // same logical facing, the turned view's art
+    }
+  }
+
+  /** THE ROOM, CAVE AND CUT MAPS ARE SERVER-KEYED (built from `terrain` around
+   *  the body's server position); the night pass writes them into a texture on
+   *  the DRAWN grid. In a turned view each key is re-keyed to the same cell's
+   *  view index — handed over as-is they landed on unrelated cells, and "outside
+   *  the room gets zero ambient" blacked out a patch of open river. */
+  private lastRoomTop = 0;
+  private viewIdx(i: number): number {
+    const w = this.world!;
+    const c = i % w.width, r = (i - c) / w.width;
+    const [vc, vr] = rotCell(c, r, this.viewRot, w.width, w.height);
+    return vr * (this.viewWorld ?? w).width + vc;
+  }
+  private viewKeyed<T>(m: Map<number, T> | null | undefined): Map<number, T> | undefined {
+    if (!m) return undefined;
+    const out = new Map<number, T>();
+    for (const [i, v] of m) out.set(this.viewIdx(i), v);
+    return out;
+  }
+  private publishRoom(cells: Iterable<number> | null, depth?: Map<number, number>, under?: Map<number, number>, cuts?: Map<number, number> | null, top = 0): void {
+    this.lastRoomTop = top;
+    if (!this.night) return;
+    if (!this.viewRot || !this.world) { this.night.setRoom(cells, depth, under, cuts, top); return; }
+    this.night.setRoom(cells ? Array.from(cells, (i) => this.viewIdx(i)) : null, this.viewKeyed(depth), this.viewKeyed(under), cuts ? this.viewKeyed(cuts) : cuts, top);
+  }
+
+  /** Is what the camera shows DRAWN? No stale cell in view, no cell in view owed
+   *  a repaint, and every art key the ground pass puts on a cell in view is a
+   *  registered texture. (The art queue itself prefetches the whole world, so
+   *  "queue empty" is the wrong test.) The turn waits for this to take frame B. */
+  private viewSettled(): boolean {
+    const t3 = this.t3, tex = this.t3tex, w = this.viewWorld ?? this.world;
+    const rect = this.t3viewRect(0);
+    if (!t3 || !tex || !w || !rect) return false;
+    for (const idx of this.t3stale) if (this.t3cellMeets(idx, rect)) return false;
+    const cam = this.cameras.main, { dx, dy } = this.geom;
+    const u = (cam.worldView.centerX - this.iso.ox - 32) / dx, v = (cam.worldView.centerY - this.iso.oy - 10) / dy;
+    const c0 = Math.round((u + v) / 2), r0 = Math.round((v - u) / 2);
+    // raised ground is drawn from cells further down the lattice: look further that way
+    for (let r = r0 - 16; r <= r0 + 34; r++) for (let c = c0 - 16; c <= c0 + 34; c++) {
+      if (c < 0 || r < 0 || c >= w.width || r >= w.height) continue;
+      const idx = r * w.width + c;
+      if (!this.t3cellMeets(idx, rect)) continue;
+      if (this.t3dropOwed.has(idx)) return false;
+      const cell = this.t3cellOf(t3, c, r);
+      if (!cell) continue;
+      for (const o of tex.opsForCell(cell)) if (!this.textures.exists(o.key)) return false;
+    }
+    return true;
+  }
+
+  /** THE TURN (rotfx.ts). Take the frame the renderer just drew (A), swap the
+   *  drawn world a quarter-turn, wait until the renderer has DRAWN the new view,
+   *  take that frame (B), and orbit between the two on an overlay. Both ends of
+   *  the turn are the renderer's own pixels; only the in-between is built. */
+  private async turnView(dir: 1 | -1, ms = 1100, waitB = 3000): Promise<Record<string, number | string>> {
+    const world = this.world;
+    if (this.turning || !world) return { skipped: "busy, or no world" };
+    const kA = this.viewRot, kB = normRot(kA + dir);
+    if (this.game.renderer.type !== Phaser.WEBGL) { await this.applyViewRot(kB); return { skipped: "canvas renderer: turned instantly" }; }
+    this.turning = true;
+    this.turnLog = { from: kA, to: kB, ms };
+    const t0 = performance.now();
+    const cv = this.game.canvas, cam = this.cameras.main, { dx, dy, lh } = this.geom;
+    const W = world.width, H = world.height;
+    const proj = (): RotProjector => ({ ox: this.iso.ox, oy: this.iso.oy, dx, dy, lh, camX: cam.worldView.x, camY: cam.worldView.y, zoom: cam.zoom, w: cv.width, h: cv.height });
+    // THE PIVOT: the ground under the camera's centre (the camera follows the
+    // body, so it is where the eye already is), found by inverting the lattice
+    // at the level of the cell it lands on.
+    const vwA = this.viewWorld ?? world;
+    let px = 0, py = 0, ph = 0;
+    for (let i = 0; i < 3; i++) {
+      const u = (cam.worldView.centerX - this.iso.ox - 32) / dx, v = (cam.worldView.centerY - this.iso.oy - 10 + ph * lh) / dy;
+      px = (u + v) / 2; py = (v - u) / 2;
+      ph = vwA.rows[Math.max(0, Math.min(H - 1, Math.floor(py)))]?.[Math.max(0, Math.min(W - 1, Math.floor(px)))]?.l ?? 0;
+    }
+    const [sx, sy] = unrotPoint(px, py, kA, W, H);        // the pivot in SERVER space...
+    const [bx, by] = rotPoint(sx, sy, kB, W, H);          // ...and in B's view
+    let fx: RotFx;
+    try { fx = new RotFx(cv, cv.width, cv.height); } catch (e) { this.turning = false; await this.applyViewRot(kB); return { skipped: `no overlay: ${e}` }; }
+    this.rotFx = fx;
+    const mesh = buildRotMesh((c, r) => vwA.rows[r]?.[c]?.l ?? null, (vwA.decks ?? []) as { level: number; thickness?: number; cells: { col: number; row: number }[] }[], px, py, 26, vwA.width, vwA.height);
+    this.turnLog.meshVerts = mesh.n;
+    // FRAME A — inside the renderer's own frame, while its drawing buffer is valid
+    await new Promise<void>((res) => this.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
+      fx.start({ frameA: cv, projA: proj(), pivot: { x: px, y: py, h: ph }, mesh, dir });
+      fx.draw(0, 0);
+      res();
+    }));
+    this.turnLog.aMs = +(performance.now() - t0).toFixed(1);
+    await this.applyViewRot(kB);
+    if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (bx - by) * dx, this.iso.oy + 10 + (bx + by) * dy - ph * lh);
+    this.turnLog.swapMs = +(performance.now() - t0).toFixed(1);
+    return await new Promise((done) => {
+      let clock = 0, last = performance.now(), lastCheck = 0, capturing = false;
+      const tWait = performance.now();
+      const finish = () => {
+        this.turnLog.totalMs = +(performance.now() - t0).toFixed(1);
+        fx.canvas.style.transition = "opacity 120ms linear";
+        fx.canvas.style.opacity = "0";
+        window.setTimeout(() => { fx.destroy(); if (this.rotFx === fx) this.rotFx = null; this.turning = false; done({ ...this.turnLog, ...fx.timings }); }, 140);
+      };
+      const step = () => {
+        const now = performance.now(), dt = now - last; last = now;
+        // While B is still being drawn the clock crawls through mid-turn, where
+        // the blur is strongest, instead of stopping dead.
+        const rate = !fx.ready && clock / ms > 0.42 ? 0.15 : 1;
+        clock = Math.min(ms, clock + dt * rate);
+        let raw = clock / ms;
+        if (!fx.ready) raw = Math.min(raw, 0.5);
+        if (!fx.ready && !capturing && now - lastCheck > 100) {
+          lastCheck = now;
+          if (this.viewSettled() || now - tWait > waitB) {
+            capturing = true;
+            this.turnLog.bWaitMs = +(now - tWait).toFixed(1);
+            this.turnLog.bSettled = now - tWait > waitB ? "timeout" : "settled";
+            this.game.events.once(Phaser.Core.Events.POST_RENDER, () => fx.setB(cv, proj(), { x: bx, y: by, h: ph }));
+          }
+        }
+        const u = this.turnPinned ?? easeTurn(raw);
+        fx.draw(u, 1);
+        if (this.turnPinned === null && raw >= 1 && fx.ready) { finish(); return; }
+        requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
   private repaintWorld() {
     this.groundSliceQ = [];
     this.groundSliceCtx = null;
@@ -20338,7 +20630,7 @@ export class WorldScene extends Phaser.Scene {
     // WITHOUT an entry at its full, deck-inflated height, because that is
     // what the renderer paints now (see nightlight heightAt / setRoom).
     this.ps();
-    this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, top);
+    this.publishRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, top);
     this.pe("roomTex");
     return true;
   }
@@ -20601,7 +20893,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.indoorGrade() === 0 && !this.indoorInside) {
       if (this.roomMask) {
         this.roomMask = null;
-        this.night?.setRoom(null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
+        this.publishRoom(null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
       }
       // THE EXIT LANDS. The debris is fully opaque, i.e. the picture already
       // equals the real outdoor geometry — swap the real thing in underneath
@@ -21113,7 +21405,7 @@ export class WorldScene extends Phaser.Scene {
     data.deckBoundary = true;
     data.slopeHeight = slopeHeight() / 100; // his slope switch; "ml-slope-height" rebuilds the resolver
     const tiles = new Tiles3(data);
-    const view = viewFromParsed(world);
+    const view = viewFromParsed(this.viewWorld ?? world);
     // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
     // on the_game's 512x512. Per camera window it would be faster and WRONG: a
     // region id is `<ground>@<lexicographic minimum cell>`, so a window-local
@@ -21163,6 +21455,7 @@ export class WorldScene extends Phaser.Scene {
       footBoundary: true,
       deckBoundary: true,
       slopeHeight: slopeHeight() / 100,
+      viewRot: this.viewRot,
     };
     this.t3worker.stop();
     this.t3workerBooted = true;
@@ -22299,7 +22592,7 @@ export class WorldScene extends Phaser.Scene {
    *  at this cell can change lies at or below it (`reaches` uses the same
    *  column, verified texel-identical by verify-groundbracket). */
   private t3cellTopLevel(col: number, row: number): number {
-    let lv = this.world?.rows[row]?.[col]?.l ?? 0;
+    let lv = (this.viewWorld ?? this.world)?.rows[row]?.[col]?.l ?? 0;
     const t3 = this.t3;
     if (t3) {
       const c = this.t3cellOf(t3, col, row);
@@ -23791,7 +24084,7 @@ export class WorldScene extends Phaser.Scene {
     only?: Set<number>,
   ): number {
     const t3 = this.t3;
-    const world = this.world;
+    const world = this.viewWorld ?? this.world; // the walk is over the DRAWN grid
     const tex = this.ensureTiles3Textures();
     if (!t3 || !world || !tex) return 0;
     const { dx, dy, lh, tile: tileSize } = this.geom;
@@ -24145,7 +24438,7 @@ export class WorldScene extends Phaser.Scene {
    * has paid for that one. */
 
   private initScenery(view: { levelAt: (x: number, y: number) => number }) {
-    const world = this.world;
+    const world = this.viewWorld ?? this.world; // what is DRAWN (viewrot.ts)
     if (!this.sceneryOn) return; // Settings "scenery" — see sceneryOn
     if (!world?.scenery?.length || !this.t3) return;
     this.scenery = new SceneryIndex(
@@ -24161,7 +24454,10 @@ export class WorldScene extends Phaser.Scene {
         // roof when the cut takes it (SceneryPlacement.onDeck).
         deckAt: (cx, cy) => {
           const t = this.terrain;
-          if (!t || cx < 0 || cy < 0 || cx >= t.width || cy >= t.height) return -1;
+          if (!t) return -1;
+          // a VIEW cell; the terrain grid is SERVER-keyed
+          if (this.viewRot) { const [sx, sy] = unrotPoint(cx + 0.5, cy + 0.5, this.viewRot, t.width, t.height); cx = Math.floor(sx); cy = Math.floor(sy); }
+          if (cx < 0 || cy < 0 || cx >= t.width || cy >= t.height) return -1;
           return t.deck[cy * t.width + cx] ?? -1;
         },
         width: world.width,
@@ -24239,7 +24535,7 @@ export class WorldScene extends Phaser.Scene {
     // Footprints are the pieces' LIGHT occluders as well as their collision, so
     // the switch has to reach here or a world with no scenery drawn would still
     // pay for every scenery shadow the night pass casts.
-    this.night?.setSceneryOccluders(this.sceneryOn ? this.terrain.footprints : undefined);
+    this.night?.setSceneryOccluders(this.sceneryOn ? this.viewFootprints() : undefined);
     // The lit copies' VOLUMES are keyed on the hitbox too (attachSceneryShape):
     // poison the occluder latch so the next frame re-attaches them under the
     // new keys, and drop the maps built from the tile-radius fallback now that
@@ -24400,7 +24696,7 @@ export class WorldScene extends Phaser.Scene {
   private setSceneryShadows(on: boolean): void {
     if (!this.night) return;
     this.night.sceneryShadows = on;
-    this.night.setSceneryOccluders(this.terrain?.footprints);
+    this.night.setSceneryOccluders(this.viewFootprints());
   }
 
   /** A `lit` placement's light — derived from its LIT art once per texture
@@ -24473,7 +24769,7 @@ export class WorldScene extends Phaser.Scene {
     if (block && !fromBlock) return; // the manifest says strength 0: no light
     if (!rec && !fromBlock) return; // no block and nothing bright in the art
     const params = fromBlock ?? rec!.params;
-    const world = this.world!;
+    const world = this.viewWorld ?? this.world!; // the piece's cells are VIEW cells
     /* THE LEVEL THE PIECE STANDS ON, not the ground under it — the same feet
      * rule the sprite, its lit copy and its cover record take (see feetLevel).
      * Reading the cell's terrain put a chimney's own fire six storeys below its
@@ -24496,7 +24792,10 @@ export class WorldScene extends Phaser.Scene {
     let sealed = false;
     for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
       const nl = world.rows[srow + dr]?.[scol + dc]?.l ?? lvl;
-      if (this.roomVerdictAt(scol + dc, srow + dr, nl)) { sealed = true; break; }
+      // the room test is SERVER-keyed: ask it about the same cell, un-turned
+      let qc = scol + dc, qr = srow + dr;
+      if (this.viewRot && this.world) { const q = unrotPoint(qc + 0.5, qr + 0.5, this.viewRot, this.world.width, this.world.height); qc = Math.floor(q[0]); qr = Math.floor(q[1]); }
+      if (this.roomVerdictAt(qc, qr, nl)) { sealed = true; break; }
     }
     const id = `s3:${p.i}`;
     const pr = params;
@@ -25202,7 +25501,7 @@ export class WorldScene extends Phaser.Scene {
        * The offset from the drawn anchor to the drawn hitbox centre is the
        * same in both frames (the level lift cancels), so this is that centre's
        * flat painter line, exactly as a body standing on it would get. */
-      const hbDepth = this.projectFlat(p.x * CELL_WU, p.y * CELL_WU).y + (hbY - fit.ay);
+      const hbDepth = this.projectFlatView(p.x * CELL_WU, p.y * CELL_WU).y + (hbY - fit.ay); // scenery is VIEW-space
       /* FLAT ON THE GROUND (`collision: false`): a rug is floor, not an object.
        * It draws in the flat band under everything, it gets NO LIT COPY (the
        * copy exists to lift a standing object above the darkness overlay so it
@@ -25456,7 +25755,7 @@ export class WorldScene extends Phaser.Scene {
          * him in open ground (maintainer: "the player get a wall hack border
          * even if it's obvious here that the Scenery is behind the player").
          * A rug rounds to 0 levels and can never occlude; a tree is several. */
-        top: (world.rows[srow]?.[scol]?.l ?? 0) + Math.max(0, Math.round((piece.worldPxHeight ?? 0) / lh)),
+        top: ((this.viewWorld ?? world).rows[srow]?.[scol]?.l ?? 0) + Math.max(0, Math.round((piece.worldPxHeight ?? 0) / lh)),
         solid: true,
         point: true,
         depth: hbDepth,
@@ -25513,7 +25812,7 @@ export class WorldScene extends Phaser.Scene {
            * stood at z 0.5 with cover 8518 against its own 8452..8536, cropped
            * 66 px down an 84 px sprite. */
           lvl: feetLevel,
-          fx: p.x * CELL_WU,
+          fx: (this.viewRot && this.world ? unrotPoint(p.x, p.y, this.viewRot, this.world.width, this.world.height)[0] : p.x) * CELL_WU,
           fy: p.y * CELL_WU,
         });
       drawn++;
@@ -26308,8 +26607,8 @@ export class WorldScene extends Phaser.Scene {
    * (`solid` is vestigial — the one caller always passes false.) */
   private stackFrom(col: number, row: number, l: number, solid: boolean): number {
     if (solid) return l;
-    const lE = this.world?.rows[row]?.[col + 1]?.l ?? -1;
-    const lS = this.world?.rows[row + 1]?.[col]?.l ?? -1;
+    const lE = (this.viewWorld ?? this.world)?.rows[row]?.[col + 1]?.l ?? -1;
+    const lS = (this.viewWorld ?? this.world)?.rows[row + 1]?.[col]?.l ?? -1;
     return Math.max(0, Math.min(l, Math.min(lE, lS) + 1));
   }
 
@@ -27505,12 +27804,30 @@ export class WorldScene extends Phaser.Scene {
    * only `lvl` steps at cell boundaries. */
   private projectFlat(px: number, py: number): { x: number; y: number; lvl: number } {
     if (!this.world) return { x: px, y: py, lvl: 0 };
+    if (this.viewRot) {
+      // SERVER-space in (a body, a server cell): its level is the server cell's;
+      // only WHERE it is drawn turns with the view.
+      const W = this.world.width, H = this.world.height;
+      const col = Math.max(0, Math.min(W - 0.001, px / CELL_WU));
+      const row = Math.max(0, Math.min(H - 0.001, py / CELL_WU));
+      const lvl = this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0;
+      const [vc, vr] = rotPoint(col, row, this.viewRot, W, H);
+      const { dx, dy, tile } = this.geom;
+      return { x: this.iso.ox + (vc - vr) * dx + tile / 2, y: this.iso.oy + (vc + vr) * dy + dy, lvl };
+    }
+    return this.projectFlatView(px, py);
+  }
+
+  /** projectFlat for a VIEW-space point (scenery, anything read off the drawn world). */
+  private projectFlatView(px: number, py: number): { x: number; y: number; lvl: number } {
+    if (!this.world) return { x: px, y: py, lvl: 0 };
+    const vw = this.viewWorld ?? this.world;
     const { dx, dy, tile } = this.geom;
-    const W = this.world.width;
-    const H = this.world.height;
+    const W = vw.width;
+    const H = vw.height;
     const col = Math.max(0, Math.min(W - 0.001, px / CELL_WU)); // 1 cell = CELL_WU wu
     const row = Math.max(0, Math.min(H - 0.001, py / CELL_WU));
-    const lvl = this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0;
+    const lvl = vw.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0;
     return {
       x: this.iso.ox + (col - row) * dx + tile / 2,
       y: this.iso.oy + (col + row) * dy + dy,
@@ -27654,8 +27971,9 @@ export class WorldScene extends Phaser.Scene {
   private rampLiftPx(x: number, y: number, level: number): number {
     const t3 = this.t3;
     if (!t3) return 0;
-    const col = Math.floor(x / CELL_WU);
-    const row = Math.floor(y / CELL_WU);
+    const [fx, fy] = this.viewRot && this.world ? rotPoint(x / CELL_WU, y / CELL_WU, this.viewRot, this.world.width, this.world.height) : [x / CELL_WU, y / CELL_WU];
+    const col = Math.floor(fx);
+    const row = Math.floor(fy);
     const cell = this.t3cellOf(t3, col, row);
     const sl = cell?.slope;
     if (!cell || !sl || cell.level !== level) return 0;
@@ -27663,7 +27981,7 @@ export class WorldScene extends Phaser.Scene {
     // 4 px on every published set) — the feet follow the art either way. On a
     // CUT cell the plate sits `cut` px below its level and `index` names the
     // corners that stay up, so the feet drop toward the lowered ones.
-    return rampHeight(sl.index, x / CELL_WU - col, y / CELL_WU - row) * sl.rise - (sl.cut ?? 0); // a ramp's rise IS its climb (a composed one its share of the storey)
+    return rampHeight(sl.index, fx - col, fy - row) * sl.rise - (sl.cut ?? 0); // a ramp's rise IS its climb (a composed one its share of the storey)
   }
 
   private stepElevation(av: Avatar, target: number, dt: number): void {

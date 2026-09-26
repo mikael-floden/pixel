@@ -106,6 +106,8 @@ export class ResolveWorker {
     footBoundary?: boolean;
     deckBoundary?: boolean;
     slopeHeight?: number;
+    /** View rotation in quarter-turns (viewrot.ts) - the worker rotates its own fetch. */
+    viewRot?: number;
   }): void {
     this.gen++;
     this.pending.clear();

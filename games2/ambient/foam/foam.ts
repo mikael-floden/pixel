@@ -322,7 +322,8 @@ export function foamFeature(): AmbientFeature {
     const i = idx(c, r);
     const known = liquidness.get(i);
     if (known !== undefined) return known;
-    const f = ml()?.surfaceAt as undefined | ((x: number, y: number) => { swimmable?: boolean } | null);
+    // the DRAWN cell's liquidness: in a turned view (viewrot.ts) the view twin
+    const f = (ml()?.surfaceAtView ?? ml()?.surfaceAt) as undefined | ((x: number, y: number) => { swimmable?: boolean } | null);
     let v = false;
     try {
       v = !!f?.((c + 0.5) * 32, (r + 0.5) * 32)?.swimmable;
@@ -447,7 +448,7 @@ export function foamFeature(): AmbientFeature {
   /** The picker answers per CELL, so asking it per 2x2 block loses nothing
    *  a plateau's diamond edge does not already blur, and costs a quarter. */
   const visibleAt = (x: CellRec) => {
-    const f = ml()?.pickAt as undefined | ((wx: number, wy: number) => { x: number; y: number; lvl: number } | null);
+    const f = (ml()?.pickAtView ?? ml()?.pickAt) as undefined | ((wx: number, wy: number) => { x: number; y: number; lvl: number } | null);
     const seen = new Map<number, boolean>();
     return (X: number, Y: number): boolean => {
       if (!f) return true;
@@ -593,7 +594,7 @@ export function foamFeature(): AmbientFeature {
     const t0 = performance.now();
     // Learn the lattice from any cell if we have none yet (a cheap first probe).
     if (Number.isNaN(ox)) {
-      const f = ml()?.pickAt as undefined | ((wx: number, wy: number) => { x: number; y: number } | null);
+      const f = (ml()?.pickAtView ?? ml()?.pickAt) as undefined | ((wx: number, wy: number) => { x: number; y: number } | null);
       let p: { x: number; y: number } | null = null;
       try {
         p = f ? f(view.centerX, view.centerY) : null;
@@ -610,7 +611,7 @@ export function foamFeature(): AmbientFeature {
     // own pass, and the world's whole height is never walked on speculation.
     const levels = new Set<number>([0]);
     {
-      const f = ml()?.pickAt as undefined | ((wx: number, wy: number) => { lvl: number } | null);
+      const f = (ml()?.pickAtView ?? ml()?.pickAt) as undefined | ((wx: number, wy: number) => { lvl: number } | null);
       if (f)
         for (let i = 0; i < LEVEL_SAMPLES; i++)
           for (let j = 0; j < LEVEL_SAMPLES; j++) {

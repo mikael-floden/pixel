@@ -956,6 +956,7 @@ export function buildPlacements(
   const kept: { p: ScenerySpec; i: number }[] = [];
   (scenery ?? []).forEach((p, i) => {
     if (!p || !p.piece || !Number.isFinite(p.x) || !Number.isFinite(p.y)) return;
+    if ((p as { viewHidden?: boolean }).viewHidden) return; // turned to face away in a rotated view (viewrot.ts)
     if (!inBounds(p, b)) return;
     kept.push({ p, i });
   });
