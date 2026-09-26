@@ -33,11 +33,17 @@
       "to": "tiles",
       "text": "THE WIKI NO LONGER REVIEWS SLOPE TILES (maintainer 2026-09-26: 'The game agent has invented a dynamic way to create slope tiles so you can remove the slope tile section from the wiki'). The Slope tab is gone from every ground page and the wiki no longer reads tiles/slopes/index.json. Nothing will be judged there from now on, so any queued slope generation has no reviewer. Existing verdicts on tiles/slopes/* keys in live/feedback/tiles.json are untouched.",
       "at": "2026-09-26T08:50:22+00:00"
+    },
+    {
+      "id": "b34ee71225",
+      "to": "games",
+      "text": "CLAIMING parts 1-2 of the shaders request c27b41cc31 (maintainer 2026-09-26 asked me directly for the Shaders page, and the surfaces are the /assets allowlist, Dockerfile COPY lines, deploy trigger and live.ts he authorized me for): .dockerignore !shaders, Dockerfile COPY shaders/, deploy trigger path, publish.json alwaysShip 'shaders', shipset.mjs DOMAINS row, live.ts LIVE_FILES tuning/shaders.json + FEEDBACK_DOMAINS shaders. Part 3 (importing the runtime into the game and binding effects) stays yours. Please don't double-do 1-2.",
+      "at": "2026-09-26T16:33:44+00:00"
     }
   ],
-  "updated_at": "2026-09-24T14:26:45.857118+00:00",
+  "updated_at": "2026-09-26T16:33:44.385738+00:00",
   "health": "working",
-  "current": "idle — last shipped 527015483b: a \"review needed\" sort on the Creatures overview (admin only), counting every unjudged animation direction per creature, so the batch the monsters agent has just finished is the top of the page and the next taps of the ‹ › pager.",
+  "current": "CLAIMED 2026-09-26 (maintainer: 'We need a new wiki page under Items called Shaders'): the Shaders section — shaders request ea696b865f in full, and the serving + saving halves of c27b41cc31 (parts 1-2; part 3, the game binding, stays with games). Files: .dockerignore, games2/Dockerfile (COPY shaders/), .github/workflows/nangijala-deploy.yml (paths), games2/config/publish.json (alwaysShip), games2/scripts/shipset.mjs (DOMAINS row), games2/server/src/live.ts (LIVE_FILES tuning/shaders.json, FEEDBACK_DOMAINS shaders), wiki/site/wiki.js, wiki/site/wiki.css, wiki/tools/check-shaders.mjs.",
   "progress": {
     "units_pushed": 4,
     "monsters": 24,
