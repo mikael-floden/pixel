@@ -85,12 +85,17 @@
       "at": "2026-09-26T08:34:16+00:00"
     }
   ],
-  "updated_at": "2026-09-26T08:21:46+00:00",
+  "updated_at": "2026-09-26T08:54:24+00:00",
   "health": "idle",
   "current": {
-    "unit": "LANDED (5f688bcf77): BOUNDARY TILES SLOPE — a one-level rise onto any dry outdoor ground ramps (tiles3 rampJoins; never a liquid or an indoor floor), and the ramp lifts the cell's composed transition (art.bnd). the_game: 2,142 rises, 538 lifting a transition. The closure resolves the ramp candidates again so the image ships their plates (rides the container). Watching his reports.",
-    "since": "2026-09-26T08:21:46+00:00",
-    "files": []
+    "unit": "CLAIMED: NO TRANSITIONS IN THE MIDDLE OF STAIRS (maintainer 2026-09-26, 294.4,247.8: 'Why do you put transition/boundary tiles in the middle of the stairs ... we don't have the space todo it in a nice looking way in a staircase'). Game rule only (parity path untouched): the cliff-foot vote needs a wall of 2+ levels (a 1-level riser is a step), and a corner one storey off votes only where a ramp joins the two levels.",
+    "since": "2026-09-26T08:54:24+00:00",
+    "files": [
+      "games2/client/src/tiles3.ts",
+      "games2/server/test/slopes.test.ts",
+      "games2/server/test/tiles3foot.test.ts",
+      "games2/docs/tiles3-rendering.md"
+    ]
   },
   "consumes": [
     "characters",
