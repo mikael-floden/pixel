@@ -73,12 +73,27 @@
       "at": "2026-09-25T18:55:10+00:00"
     }
   ],
-  "updated_at": "2026-09-26T07:14:51+00:00",
+  "updated_at": "2026-09-26T08:12:04+00:00",
   "health": "idle",
   "current": {
-    "unit": "LANDED (85c9d87340): SLOPES ALWAYS ON, AS HIS MIX — each slope run (8-connected ramp cells) picks off 2 / 25% 1 / 50% 3 / 100% 2 (rampfield.ts SLOPE_MIX, hashed from the run's size, levels and grounds, never its position: main thread, worker, light and every view rotation agree); 'auto' is the default stop (key ml-slope-height3); the light reads each cell's own rise from the B low nibble in the fetch it already made; a step a ramp bridges plays no step-hop. Watching his reports.",
-    "since": "2026-09-26T07:14:51+00:00",
-    "files": []
+    "unit": "CLAIMED: BOUNDARY TILES SLOPE TOO (maintainer 2026-09-26: 'I want boundary tiles to also be able to slope'). A one-level rise between two dry grounds becomes a ramp; the ramp is lifted from the cell's composed transition (its own ground at the low corners, the higher ground at the raised ones), and a ramp on a same-plane boundary keeps its blend. Resolver + light rule (rampfield) + mix runs agree.",
+    "since": "2026-09-26T08:12:04+00:00",
+    "files": [
+      "games2/client/src/tiles3.ts",
+      "games2/client/src/tiles3draw.ts",
+      "games2/client/src/tiles3runtime.ts",
+      "games2/client/src/rampfield.ts",
+      "games2/client/src/nightlight.ts",
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/client/src/tiles3worker.ts",
+      "games2/client/src/composeworker.ts",
+      "games2/server/test/rampfield.test.ts",
+      "games2/server/test/slopes.test.ts",
+      "games2/server/test/rampseam.test.ts",
+      "games2/docs/tiles3-rendering.md",
+      "games2/docs/lighting.md",
+      "games2/scripts/tiles3closure.ts"
+    ]
   },
   "consumes": [
     "characters",
