@@ -20719,6 +20719,18 @@ export class WorldScene extends Phaser.Scene {
   private groundWarmStats = { jobs: 0, cells: 0, short: 0, ms: 0, slices: 0, maxSliceMs: 0, resolverMs: 0, resolveMs: 0, composeMs: 0, dataMs: 0, slopeMs: 0 };
   private warmViewGround(sides: ViewRot[]): boolean {
     const w = this.world, rt = this.groundRT, me = this.myId ? this.avatars.get(this.myId) : undefined;
+    /* NEAREST SIDE FIRST, ALWAYS: a job on a farther side yields to a nearer one
+     * that owes work (its cells stay kept, so it resumes cheaply). Without this a
+     * turn and a turn back left the far side's job running and the other side one
+     * tap away unprepared: 1,202 transitions owed on its turn, measured. */
+    if (this.groundWarm && w && me) {
+      const at = sides.indexOf(this.groundWarm.k);
+      for (let i = 0; i < at; i++) {
+        const k = sides[i];
+        const [x, y] = k ? rotPoint(me.fx / CELL_WU, me.fy / CELL_WU, k, w.width, w.height) : [me.fx / CELL_WU, me.fy / CELL_WU];
+        if (this.groundWarmDone.get(k) !== `${Math.floor(x / GROUND_WARM_MOVE)},${Math.floor(y / GROUND_WARM_MOVE)}`) { this.groundWarm = null; break; }
+      }
+    }
     if (this.groundWarm) return true;
     if (!w || !rt || !me || !this.t3 || !this.t3tex || !this.maps3 || !this.t3compose.ready() || this.indoorInside) return false;
     for (const k of sides) {
