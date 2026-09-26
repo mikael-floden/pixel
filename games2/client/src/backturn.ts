@@ -38,7 +38,7 @@
 
 const EDGE_PX = 48;
 const EDGE_MS = 1500;
-const NOTE_MS = 1800;
+const NOTE_MS = 6000;
 /** Hold after the back fires: Android's preview springs back to full size. */
 const SETTLE_MS = 600;
 /** A gesture Android took and then abandoned never tells the page: give up. */
@@ -69,6 +69,10 @@ export function mountBackTurn(): void {
     clearTimeout(holdTimer);
     holdTimer = window.setTimeout(release, HOLD_MAX_MS);
     if (held) return;
+    tape = [size()];
+    tapeT0 = performance.now();
+    tapeUntil = tapeT0 + 8000;
+    noteBase = "";
     const w = window.innerWidth, h = window.innerHeight;
     const undo: Array<() => void> = [];
     pin(document.documentElement, w, h, undo);
@@ -84,7 +88,26 @@ export function mountBackTurn(): void {
     for (const u of undo) u();
     if (window.innerWidth !== w || window.innerHeight !== h) window.dispatchEvent(new Event("resize"));
   }
-  const swallow = (e: Event) => { if (held) e.stopImmediatePropagation(); };
+  // SIZE TAPE (diagnostic, 2026-09-26: the layout still jumped on his phone
+  // with the hold live): every window size seen from the edge touch-down to
+  // TAPE_MS later, marked held (swallowed) or LIVE (reached the game), shown
+  // under the note so his screenshot says what the window did.
+  let tape: string[] = [];
+  let tapeT0 = 0;
+  let tapeUntil = 0;
+  let noteBase = "";
+  const size = () => `${window.innerWidth}×${window.innerHeight}`;
+  const swallow = (e: Event) => {
+    const now = performance.now();
+    if (e.type === "resize" && e.currentTarget === window && now < tapeUntil) {
+      const s = size();
+      if (!tape[tape.length - 1]?.startsWith(s + " ") && tape[tape.length - 1] !== s) {
+        tape.push(`${s} ${held ? "held" : "LIVE"} +${((now - tapeT0) / 1000).toFixed(1)}s`);
+        if (noteBase) note(noteBase);
+      }
+    }
+    if (held) e.stopImmediatePropagation();
+  };
   window.addEventListener("resize", swallow, { capture: true });
   window.visualViewport?.addEventListener("resize", swallow, { capture: true });
   window.visualViewport?.addEventListener("scroll", swallow, { capture: true });
@@ -115,10 +138,10 @@ export function mountBackTurn(): void {
         "position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--ml-safe-top,0px) + 10px);z-index:9999;" +
         "padding:6px 10px;border-radius:7px;border:1px solid var(--border-strong);" +
         "background:var(--surface);color:var(--ink);font:600 13px/1.3 system-ui,sans-serif;" +
-        "box-shadow:var(--shadow);pointer-events:none;white-space:nowrap;transition:opacity .25s";
+        "box-shadow:var(--shadow);pointer-events:none;white-space:pre-line;text-align:center;transition:opacity .25s";
       document.body.appendChild(el);
     }
-    el.textContent = text;
+    el.textContent = tape.length ? `${text}\n${tape.join(" → ")}` : text;
     el.style.opacity = "1";
     clearTimeout(noteTimer);
     noteTimer = window.setTimeout(() => el && (el.style.opacity = "0"), NOTE_MS);
@@ -135,6 +158,7 @@ export function mountBackTurn(): void {
     const edge = d ? (d.x <= EDGE_PX ? "left" : w - d.x <= EDGE_PX ? "right" : null) : null;
     const dir: "left" | "right" = edge === "left" ? "right" : edge === "right" ? "left" : DEFAULT_DIR;
     document.querySelector<HTMLElement>(`.ml-spinbtn.${dir}`)?.click();
-    note(edge ? `Back from the ${edge.toUpperCase()} edge → turned ${dir}` : `Back (edge not seen) → turned ${dir}`);
+    noteBase = edge ? `Back from the ${edge.toUpperCase()} edge → turned ${dir}` : `Back (edge not seen) → turned ${dir}`;
+    note(noteBase);
   });
 }
