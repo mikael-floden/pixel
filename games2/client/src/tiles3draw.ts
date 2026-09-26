@@ -2122,6 +2122,20 @@ export type ComposeJob =
    *  while the factory's `deferPlates` is up (a band pass, the ring). */
   | { kind: "plate"; key: string; side: ComposeSide };
 
+/** A COMPOSED RAMP handed to the GPU compositor (tiles3gpu.ts): the raster
+ *  `rampRaster` builds — and, with `edge`, its lined variant (`edgedTop`) —
+ *  described by its inputs. `top` is what the incline lifts: the plate (a
+ *  conformed side, or the raw art: `kind` "raw") or the transition the flat
+ *  neighbours compose; `band` the raw art under the side faces. */
+export interface RampJob {
+  key: string;
+  top: { kind: "plate"; side: ComposeSide } | { kind: "boundary"; job: Extract<ComposeJob, { kind: "boundary" }> };
+  band: ComposeSide;
+  mask: number;
+  lh: number;
+  edge?: { mask: number; verts: number; nb: string };
+}
+
 /** Something that composes OFF THE FRAME THREAD (composeclient.ts). The
  *  factory hands it a job when `ready()` and draws the plain plate until the
  *  raster comes back through `landRemote`; not ready means the factory
@@ -2135,6 +2149,11 @@ export interface Tiles3TexturesOpts {
   /** THE COMPOSE WORKER, and the routed URL of a repo-relative art path it
    *  needs to fetch a plate itself. Both or neither. */
   remote?: RemoteComposer;
+  /** THE GPU COMPOSITOR'S RAMPS (Settings -> Dev "GPU transitions"): answers
+   *  true when it took the job — the raster lands later under `job.key` and the
+   *  caller draws as it does for a plate still streaming (owed, repainted).
+   *  False (or absent): built here, as always. */
+  gpuRamp?: (job: RampJob) => boolean;
   artUrl?: (path: string) => string;
   /** The storey pitch the occluder pass stacks faces at (`geom.lh`) — the wall
    *  foot band is placed from it. Defaults to the shipped 16. */
@@ -2329,6 +2348,7 @@ export class Tiles3Textures {
     const vkey = this.variantKey(key, edgeCode(mask, verts, nb), "e");
     const hit = this.ensureHit(vkey);
     if (hit) return hit;
+    if (art.kind === "ramp" && art.from && this.o.gpuRamp && this.o.artUrl && this.o.gpuRamp(this.rampJob(vkey, art, cell.ground, { mask, verts, nb }))) return key;
     return (
       this.ensure(vkey, () => {
         const ramp = art.kind === "ramp" && art.from ? { mask: art.mask ?? 0, lh: Math.max(0, ((art as { h?: number }).h ?? PLATE_H) - PLATE_H) } : undefined;
@@ -2612,8 +2632,10 @@ export class Tiles3Textures {
       /* A COMPOSED RAMP is built from its member plate under its own virtual
        * key; the raw file branch below is a PUBLISHED storey-height set. */
       if (art.from) {
-        const built = this.ensureHit(key) ?? this.ensure(key, () => this.rampRaster(art, ground));
-        return built;
+        const hit = this.ensureHit(key);
+        if (hit) return hit;
+        if (this.o.gpuRamp && this.o.artUrl && this.o.gpuRamp(this.rampJob(key, art, ground))) return null;
+        return this.ensure(key, () => this.rampRaster(art, ground));
       }
       if (!art.topOnly) return this.o.textures.exists(key) ? key : null;
       /* ON A WALL CELL the ramp goes on the cap TOP FACE ONLY, like any
@@ -2626,6 +2648,18 @@ export class Tiles3Textures {
       });
     }
     return this.plateRest(art, ground, key, skey);
+  }
+
+  /** `rampRaster`'s inputs as a GPU job (the same top, band, mask and rise). */
+  private rampJob(key: string, art: PlateLike, ground: string, edge?: RampJob["edge"]): RampJob {
+    const from = art.from as string;
+    const raw = (): ComposeSide => ({ kind: "raw", path: from, topOnly: false, url: this.o.artUrl!(from), wall: this.wallRGB(ground) });
+    const bnd = (art as { bnd?: Tiles3Boundary }).bnd;
+    const top: RampJob["top"] = bnd
+      ? { kind: "boundary", job: { kind: "boundary", key: "", frame: bnd.maskFrame as number, seam: this.o.seam !== false, topOnly: !!bnd.topOnly, noWall: !!bnd.noWall, a: this.side(bnd.plateA, bnd.a), b: this.side(bnd.plateB, bnd.b), slope: bnd.slope } }
+      : { kind: "plate", side: art.fromKind === "conform" ? this.side({ kind: "conform", path: from } as PlateLike, ground) : raw() };
+    const lh = Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK);
+    return { key, top, band: raw(), mask: art.mask ?? 0, lh, ...(edge ? { edge } : {}) };
   }
 
   /** A COMPOSED RAMP'S RASTER (`art.from` names its member plate). */

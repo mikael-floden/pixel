@@ -85,6 +85,7 @@ test("every composed ramp of the_game, rebuilt from its GPU shape and shade tabl
           onBoundary++;
         }
         const lh = Math.max(0, (art.h ?? PLATE_H) - PLATE_H);
+        if (process.env.GPURAMP_SIZES) console.log(`size lh=${lh} src=${src.w}x${src.h} top=${top.w}x${top.h} fromKind=${art.fromKind ?? "-"}`);
         const mask = art.mask ?? 0;
         const want = buildRampPixels(sheets, top, mask, lh, src, false);
         const shape = rampShapeOf(sheets, mask, lh, top, src, false);

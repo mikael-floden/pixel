@@ -37,6 +37,7 @@ import {
   buildBoundaryPixels,
   buildPlatePixels,
   buildRampPixels,
+  edgeTopPixels,
   withEdge,
   rint,
   newPixels,
@@ -45,6 +46,8 @@ import {
   EDGE_SHADE,
   EDGE_SHADE_IN,
   type ComposeJob,
+  type ComposeSide,
+  type RampJob,
   type PatternSheets,
   type Pixels,
 } from "./tiles3draw";
@@ -333,14 +336,14 @@ function texture(gl: WebGLRenderingContext, w: number, h: number, data: Uint8Arr
  *  ONCE (texSubImage2D of that slot only), never again. Full, it starts over
  *  (every slot is re-uploaded on its next use) — a session never fills the
  *  plate or frame atlas, and the shape atlas holds 1,408 shapes. */
-class SlotAtlas {
+export class SlotAtlas {
   readonly tex: WebGLTexture;
   readonly w: number;
   readonly h: number;
   private slots = new Map<string, number>();
   private readonly cap: number;
   private readonly cols: number;
-  constructor(private gl: WebGLRenderingContext, private fw: number, private fh: number, size = 2048) {
+  constructor(private gl: WebGLRenderingContext, readonly fw: number, readonly fh: number, size = 2048) {
     this.cols = Math.floor(size / fw);
     const rows = Math.floor(size / fh);
     this.cap = this.cols * rows;
@@ -378,6 +381,37 @@ class SlotAtlas {
   }
 }
 
+/** THE COMPOSITOR'S STANDING RESOURCES, one set per context, shared by the
+ *  boundary and ramp passes: the plates (64x64 slots: a ramp samples the raw
+ *  64x64 art), the boundary shapes, the mask/seam frames, the seam table. */
+export class GpuShared {
+  readonly plates: SlotAtlas;
+  readonly shapes: SlotAtlas;
+  readonly frames: SlotAtlas;
+  readonly tone: WebGLTexture;
+  constructor(readonly gl: WebGLRenderingContext, sheets: PatternSheets) {
+    const { fw, fh, tone } = sheets;
+    this.plates = new SlotAtlas(gl, fw, PLATE_SLOT_H);
+    this.shapes = new SlotAtlas(gl, fw, fh);
+    this.frames = new SlotAtlas(gl, fw, fh, 1024);
+    const lut = new Uint8Array(256 * 4);
+    for (let v = 0; v < 256; v++) { lut[v * 4] = rint(v * tone); lut[v * 4 + 3] = 255; }
+    this.tone = texture(gl, 256, 1, lut);
+  }
+  /** A plate's slot, its pixels uploaded the first time (padded to the slot). */
+  plate(id: string, px: () => Pixels): [number, number] {
+    return this.plates.origin(id, () => padTo(px(), this.plates));
+  }
+}
+/** Plate slots are this tall: the raw art a ramp samples is 64x64. */
+const PLATE_SLOT_H = 64;
+function padTo(p: Pixels, a: { fw: number; fh: number }): Uint8Array {
+  const out = new Uint8Array(a.fw * a.fh * 4);
+  const w = Math.min(p.w, a.fw), h = Math.min(p.h, a.fh);
+  for (let y = 0; y < h; y++) out.set(p.data.subarray(y * p.w * 4, (y * p.w + w) * 4), y * a.fw * 4);
+  return out;
+}
+
 /** One tile to compose: the ids and pixels of its two plates (pixels are read
  *  only the first time an id is seen), the job. */
 export interface GpuTile {
@@ -406,6 +440,7 @@ export class GpuBoundaries {
   private pC: WebGLProgram;
   private buf: WebGLBuffer;
   private fb: WebGLFramebuffer;
+  readonly shared: GpuShared;
   private plates: SlotAtlas;
   private shapes: SlotAtlas;
   private frames: SlotAtlas;
@@ -418,7 +453,7 @@ export class GpuBoundaries {
   static readonly BATCH = 128;
   private readonly cols = 32;
   readonly stats = { tiles: 0, batches: 0, ms: 0 };
-  constructor(gl: WebGLRenderingContext, private sheets: PatternSheets) {
+  constructor(gl: WebGLRenderingContext, private sheets: PatternSheets, shared?: GpuShared) {
     this.gl = gl;
     const { fw, fh, tone } = sheets;
     this.pA = compile(gl, VERT, FRAG_A);
@@ -426,12 +461,11 @@ export class GpuBoundaries {
     this.pC = compile(gl, VERT, FRAG_C);
     this.buf = gl.createBuffer()!;
     this.fb = gl.createFramebuffer()!;
-    this.plates = new SlotAtlas(gl, fw, fh);
-    this.shapes = new SlotAtlas(gl, fw, fh);
-    this.frames = new SlotAtlas(gl, fw, fh, 1024);
-    const lut = new Uint8Array(256 * 4);
-    for (let v = 0; v < 256; v++) { lut[v * 4] = rint(v * tone); lut[v * 4 + 3] = 255; }
-    this.tone = texture(gl, 256, 1, lut);
+    this.shared = shared ?? new GpuShared(gl, sheets);
+    this.plates = this.shared.plates;
+    this.shapes = this.shared.shapes;
+    this.frames = this.shared.frames;
+    this.tone = this.shared.tone;
     const CW = this.cols * fw, CH = Math.ceil(GpuBoundaries.BATCH / this.cols) * fh;
     this.comp = texture(gl, CW, CH, null);
     this.out = texture(gl, CW, CH, null);
@@ -465,8 +499,8 @@ export class GpuBoundaries {
     const per = tiles.map((t) => {
       const ia = t.ia ?? `${sideId(t.job.a)}|${t.job.a.wall.join(",")}`;
       const ib = t.ib ?? `${sideId(t.job.b)}|${t.job.b.wall.join(",")}`;
-      const pa = this.plates.origin(ia, () => u8(t.a));
-      const pb = this.plates.origin(ib, () => u8(t.b));
+      const pa = this.shared.plate(ia, () => t.a);
+      const pb = this.shared.plate(ib, () => t.b);
       const ps = this.shapes.origin(shapeKey(t.job), () => shapeOf(this.sheets, t.job, t.a, t.b));
       const pf = this.frames.origin(String(t.job.frame), () => frameTile(this.sheets, t.job.frame));
       const sl = t.job.slope;
@@ -622,6 +656,11 @@ export interface ParityReport {
   inked: number;
   /** Slope boundaries compared. */
   slopes: number;
+  /** Composed ramps compared (lined variants, ramps lifting a transition). */
+  ramps: number;
+  rampsIdentical: number;
+  rampsLined: number;
+  rampsOnTransition: number;
   examples: { key: string; texels: number; first: { x: number; y: number; cpu: number[]; gpu: number[] } }[];
 }
 
@@ -630,7 +669,7 @@ export interface ParityReport {
  *  byte — all four channels, every texel, transparent ones included. */
 export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<ParityReport> {
   const jobs = [...seenJobs.values()].slice(-max);
-  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, opaque: 0, inked: 0, slopes: 0, examples: [] };
+  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, opaque: 0, inked: 0, slopes: 0, ramps: 0, rampsIdentical: 0, rampsLined: 0, rampsOnTransition: 0, examples: [] };
   const src = new Map<string, Promise<Pixels>>();
   const plate = async (s: BoundaryJob["a"]) => {
     let p = src.get(s.url);
@@ -650,9 +689,47 @@ export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<Pari
   const gl = canvas.getContext("webgl", { premultipliedAlpha: false, antialias: false });
   if (!gl) throw new Error("tiles3gpu: no WebGL");
   const gpu = new GpuBoundaries(gl, sheets);
+  // THE RAMPS (every ramp the factory asked for, lined variants included)
+  {
+    const gr = new GpuRamps(gl, sheets, gpu.shared);
+    const rt: RampTile[] = [], rc: Pixels[] = [];
+    const rawOf = async (s: ComposeSide) => { let p = src.get(s.url); if (!p) src.set(s.url, (p = decodeUrl(s.url))); return p; };
+    const plateOfSide = async (s: ComposeSide) => (s.kind === "raw" ? rawOf(s) : plate(s as BoundaryJob["a"]));
+    for (const j of [...seenRampJobs.values()].slice(-max)) {
+      try {
+        const band = await rawOf(j.band);
+        const t: RampTile = j.top.kind === "plate" ? { job: j, band, top: await plateOfSide(j.top.side) } : { job: j, band, a: await plate(j.top.job.a), b: await plate(j.top.job.b) };
+        rc.push(rampCpu(sheets, t));
+        rt.push(t);
+      } catch { rep.failedInputs++; }
+    }
+    const got: Pixels[] = [];
+    for (let i = 0; i < rt.length; i += GpuRamps.BATCH) got.push(...gr.compose(rt.slice(i, i + GpuRamps.BATCH)));
+    for (let k = 0; k < rt.length; k++) {
+      rep.ramps++;
+      if (rt[k].job.edge) rep.rampsLined++;
+      if (rt[k].job.top.kind === "boundary") rep.rampsOnTransition++;
+      const c = rc[k].data, g = got[k].data;
+      let n = 0, first: ParityReport["examples"][number]["first"] | null = null;
+      if (c.length !== g.length) n = -1;
+      else for (let i = 0; i < c.length; i += 4) {
+        if (c[i + 3]) rep.opaque++;
+        const d = Math.max(Math.abs(c[i] - g[i]), Math.abs(c[i + 1] - g[i + 1]), Math.abs(c[i + 2] - g[i + 2]), Math.abs(c[i + 3] - g[i + 3]));
+        if (!d) continue;
+        n++;
+        rep.maxDiff = Math.max(rep.maxDiff, d);
+        if (!first) first = { x: (i / 4) % sheets.fw, y: Math.floor(i / 4 / sheets.fw), cpu: [c[i], c[i + 1], c[i + 2], c[i + 3]], gpu: [g[i], g[i + 1], g[i + 2], g[i + 3]] };
+      }
+      if (!n) { rep.rampsIdentical++; continue; }
+      rep.tilesDiffering++;
+      rep.texelsDiffering += Math.max(0, n);
+      if (rep.examples.length < 8) rep.examples.push({ key: "ramp " + rt[k].job.key, texels: n, first: first ?? { x: -1, y: -1, cpu: [rc[k].w, rc[k].h], gpu: [got[k].w, got[k].h] } });
+    }
+    rep.gpuMs += +gr.stats.ms.toFixed(1);
+  }
   const out: Pixels[] = [];
   for (let i = 0; i < tiles.length; i += GpuBoundaries.BATCH) out.push(...gpu.compose(tiles.slice(i, i + GpuBoundaries.BATCH)));
-  rep.gpuMs = +gpu.stats.ms.toFixed(1);
+  rep.gpuMs += +gpu.stats.ms.toFixed(1);
   for (let k = 0; k < tiles.length; k++) {
     rep.compared++;
     const c = cpu[k].data, g = out[k].data;
@@ -725,10 +802,13 @@ export class GpuComposer {
   on = gpuComposeEnabled();
   private gpu: GpuBoundaries | null = null;
   private queue: BoundaryJob[] = [];
+  private ramps: RampJob[] = [];
+  private rampPending = new Set<string>();
+  private gpuR: GpuRamps | null = null;
   private flushQueued = false;
   private plates = new Map<string, Pixels | Promise<Pixels>>();
   private src = new Map<string, Promise<Pixels>>();
-  readonly stats = { queued: 0, composed: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, uploads: { plates: 0, shapes: 0, frames: 0 }, error: "" };
+  readonly stats = { queued: 0, composed: 0, ramps: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, uploads: { plates: 0, shapes: 0, frames: 0 }, error: "" };
   constructor(
     private inner: { ready(): boolean; compose(job: ComposeJob): void },
     private sheets: () => PatternSheets | null,
@@ -738,7 +818,18 @@ export class GpuComposer {
     return this.inner.ready();
   }
   get pending(): number {
-    return this.queue.length;
+    return this.queue.length + this.ramps.length;
+  }
+  /** The factory's ramp hook (Tiles3TexturesOpts.gpuRamp): true = taken. */
+  ramp(job: RampJob): boolean {
+    noteRampJob(job); // the parity gate's sample, on or off
+    if (!this.on || !this.sheets() || !this.host()) return false;
+    if (this.rampPending.has(job.key)) return true;
+    this.rampPending.add(job.key);
+    this.ramps.push(job);
+    this.stats.queued++;
+    this.schedule();
+    return true;
   }
   compose(job: ComposeJob): void {
     noteJob(job);
@@ -756,7 +847,7 @@ export class GpuComposer {
     requestAnimationFrame(() => {
       this.flushQueued = false;
       this.flush(1, GPU_SHAPE_MS);
-      if (this.queue.length > this.stats.waitingPlates) this.schedule();
+      if (this.pending > this.stats.waitingPlates) this.schedule();
     });
   }
   private plateOf(s: BoundaryJob["a"], sheets: PatternSheets): Pixels | null {
@@ -787,7 +878,7 @@ export class GpuComposer {
   }
   private flush(batches: number, shapeMs: number): number {
     const sheets = this.sheets(), host = this.host();
-    if (!this.queue.length || !sheets || !host) return 0;
+    if ((!this.queue.length && !this.ramps.length) || !sheets || !host) return 0;
     if (!this.on) { this.giveBack(); return 0; }
     let landed = 0;
     host.clear();
@@ -795,6 +886,7 @@ export class GpuComposer {
       if (!this.gpu) this.gpu = new GpuBoundaries(host.gl, sheets);
       const gl = host.gl, gpu = this.gpu, { fw, fh } = sheets;
       const s0 = performance.now();
+      this.stats.waitingPlates = 0;
       for (let b = 0; b < batches && this.queue.length; b++) {
         const take: GpuTile[] = [], later: BoundaryJob[] = [];
         let waiting = 0;
@@ -808,6 +900,7 @@ export class GpuComposer {
         }
         this.stats.waitingPlates = waiting;
         this.queue = later;
+        void 0;
         if (!take.length) break;
         const t0 = performance.now();
         const made: { key: string; wrapper: unknown }[] = [];
@@ -826,6 +919,50 @@ export class GpuComposer {
         landed += made.length;
         this.stats.composed += made.length;
       }
+      // THE RAMPS, the same way: a batch of what is ready, copied GPU to GPU
+      if (!this.gpuR) this.gpuR = new GpuRamps(gl, sheets, gpu.shared);
+      const gr = this.gpuR;
+      for (let b = 0; b < batches && this.ramps.length; b++) {
+        const take: RampTile[] = [], later: RampJob[] = [];
+        let waiting = 0;
+        for (const j of this.ramps) {
+          if (take.length >= GpuRamps.BATCH) { later.push(j); continue; }
+          const band = this.plateOf(j.band as BoundaryJob["a"], sheets);
+          let t: RampTile | null = null;
+          if (j.top.kind === "plate") {
+            const top = this.plateOf(j.top.side as BoundaryJob["a"], sheets);
+            if (band && top) t = { job: j, band, top };
+          } else {
+            const a = this.plateOf(j.top.job.a, sheets), bb = this.plateOf(j.top.job.b, sheets);
+            if (band && a && bb) t = { job: j, band, a, b: bb };
+          }
+          if (!t) { later.push(j); waiting++; continue; }
+          if (!rampShapeReady(sheets, j) && performance.now() - s0 > shapeMs) { later.push(j); continue; }
+          rampFullShape(sheets, t);
+          take.push(t);
+        }
+        this.stats.waitingPlates += waiting;
+        this.ramps = later;
+        if (!take.length) break;
+        const t0 = performance.now();
+        const made: { key: string; wrapper: unknown }[] = [];
+        gr.compose(take, {
+          kind: "copy",
+          each: (k, x, y) => {
+            const h = gr.heightOf(take[k]);
+            const t = host.newTexture(fw, h);
+            gl.bindTexture(gl.TEXTURE_2D, t.gl);
+            gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, x, y, fw, h);
+            made.push({ key: take[k].job.key, wrapper: t.wrapper });
+          },
+        }, true);
+        this.stats.ms += performance.now() - t0;
+        this.stats.batches++;
+        for (const m of made) { this.rampPending.delete(m.key); host.land(m.key, m.wrapper); }
+        landed += made.length;
+        this.stats.composed += made.length;
+        this.stats.ramps += made.length;
+      }
       this.stats.shapeMs += performance.now() - s0;
       this.stats.uploads = gpu.uploads;
     } catch (e) {
@@ -840,7 +977,20 @@ export class GpuComposer {
   }
   private giveBack(): void {
     for (const j of this.queue.splice(0)) { this.stats.fellBack++; this.inner.compose(j); }
+    // a ramp has no worker: its key is simply not built, and the factory builds
+    // it here the next time a paint asks (the hook now answers false)
+    this.ramps = [];
+    this.rampPending.clear();
   }
+}
+
+function rampShapeReady(sheets: PatternSheets, j: RampJob): boolean {
+  return !!rampFullMemo.get(sheets)?.has(rampJobShapeKey(j));
+}
+export const seenRampJobs = new Map<string, RampJob>();
+function noteRampJob(j: RampJob): void {
+  if (seenRampJobs.size >= 3000) seenRampJobs.delete(seenRampJobs.keys().next().value as string);
+  seenRampJobs.set(j.key, j);
 }
 
 /** Is this job's shape already made (no CPU work to compose it)? */
@@ -849,6 +999,7 @@ function gpuShapeReady(sheets: PatternSheets, j: BoundaryJob): boolean {
 }
 
 async function buildPlate(sheets: PatternSheets, s: BoundaryJob["a"], src: Pixels): Promise<Pixels> {
+  if (s.kind === "raw") return src; // a ramp's band (and a clean ramp's top): the art itself
   return buildPlatePixels(sheets, { kind: s.kind, path: s.path, topOnly: s.topOnly, rise: s.rise }, src, s.wall);
 }
 
@@ -983,4 +1134,353 @@ export function rampFromShape(shape: RampShape, top: Pixels, band: Pixels): Pixe
     o[i * 4 + 3] = shape.map[i * 4 + 3];
   }
   return out;
+}
+
+/* -- ramps on the GPU ---------------------------------------------------------- */
+
+/** A ramp tile's slot: 64x64 (the tallest ramp is 64x61). */
+const RAMP_H = 64;
+
+export interface RampTile {
+  job: RampJob;
+  band: Pixels;
+  /** The plate a plate-topped ramp lifts. */
+  top?: Pixels;
+  /** The two plates a transition-topped ramp's transition composes. */
+  a?: Pixels;
+  b?: Pixels;
+}
+
+const rampFullMemo = new WeakMap<PatternSheets, Map<string, { map: Uint8Array; rows: Uint8Array; shape: RampShape; h: number }>>();
+const plateIdOf = (s: ComposeSide) => `${sideId(s as BoundaryJob["a"])}|${s.wall.join(",")}`;
+
+function rampTopId(j: RampJob): string {
+  return j.top.kind === "plate" ? "p:" + plateIdOf(j.top.side) : "b:" + shapeKey(j.top.job) + "|" + plateIdOf(j.top.job.a) + "|" + plateIdOf(j.top.job.b);
+}
+export function rampJobShapeKey(j: RampJob): string {
+  const e = j.edge ? `${j.edge.mask},${j.edge.verts},${j.edge.nb}` : "";
+  return `${rampShapeKey(j.mask, j.lh, rampTopId(j), plateIdOf(j.band), false)}|${e}`;
+}
+
+/** The top raster's ALPHA (all a ramp's shape reads of it): the plate's, or the
+ *  transition's (its shape's final alpha). */
+function rampTopAlpha(sheets: PatternSheets, t: RampTile): Pixels {
+  if (t.job.top.kind === "plate") return t.top!;
+  const sh = shapeOf(sheets, t.job.top.job, t.a, t.b);
+  const out = newPixels(sheets.fw, sheets.fh);
+  for (let i = 0; i < sheets.fw * sheets.fh; i++) out.data[i * 4 + 3] = sh[i * 4 + 3];
+  return out;
+}
+
+/** A ramp's full shape: the lift (rampShapeOf), then — for a lined variant —
+ *  the outline over its alpha (edgeTopPixels over a grey probe), as the ink
+ *  classes of the boundary shape: map texel = (src x, src y, class + 4·which,
+ *  final alpha); rows texel = (shade row lo, hi). */
+export function rampFullShape(sheets: PatternSheets, t: RampTile): { map: Uint8Array; rows: Uint8Array; shape: RampShape; h: number } {
+  let m = rampFullMemo.get(sheets);
+  if (!m) rampFullMemo.set(sheets, (m = new Map()));
+  const key = rampJobShapeKey(t.job);
+  const hit = m.get(key);
+  if (hit) return hit;
+  const j = t.job;
+  const shape = rampShapeOf(sheets, j.mask, j.lh, rampTopAlpha(sheets, t), t.band, false, rampShapeKey(j.mask, j.lh, rampTopId(j), plateIdOf(j.band), false));
+  const W = shape.w, H = shape.h;
+  const map = new Uint8Array(sheets.fw * RAMP_H * 4), rows = new Uint8Array(sheets.fw * RAMP_H * 4);
+  let post: Pixels | null = null;
+  const outer = Math.round(PROBE * (1 - EDGE_ALPHA) + PROBE * EDGE_SHADE * EDGE_ALPHA);
+  const inner = Math.round(PROBE * (1 - EDGE_ALPHA_IN) + PROBE * EDGE_SHADE_IN * EDGE_ALPHA_IN);
+  if (j.edge) {
+    const grey = newPixels(W, H);
+    for (let i = 0; i < W * H; i++) {
+      const a = shape.map[i * 4 + 3];
+      if (!a) continue;
+      grey.data[i * 4] = grey.data[i * 4 + 1] = grey.data[i * 4 + 2] = PROBE;
+      grey.data[i * 4 + 3] = a;
+    }
+    post = edgeTopPixels(sheets, grey, j.edge.mask, { mask: j.mask, lh: j.lh }, j.edge.verts, j.edge.nb);
+  }
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      const i = y * W + x, o = (y * sheets.fw + x) * 4;
+      const a0 = shape.map[i * 4 + 3];
+      if (!a0) continue;
+      let cls = 0, a1 = a0;
+      if (post) {
+        a1 = post.data[i * 4 + 3];
+        const v = post.data[i * 4];
+        cls = a1 === 0 ? 3 : v === outer ? 1 : v === inner ? 2 : v === PROBE ? 0 : 255;
+        if (cls === 255) throw new Error(`tiles3gpu: ramp outline texel ${x},${y} inked to ${v}, neither line`);
+      }
+      map[o] = shape.map[i * 4];
+      map[o + 1] = shape.map[i * 4 + 1];
+      map[o + 2] = cls + 4 * shape.map[i * 4 + 2];
+      map[o + 3] = a1;
+      const r = shape.row[i];
+      if (r >= 0) { rows[o] = r & 255; rows[o + 1] = r >> 8; }
+      rows[o + 3] = 255;
+    }
+  const out = { map, rows, shape, h: H };
+  m.set(key, out);
+  return out;
+}
+
+/** RA: the ramp composite — per texel its source (the top, lifted and shaded
+ *  through its row of the CPU's rounding; or the band, raw), alpha from the map;
+ *  a transition top is itself read through its boundary shape and composed. */
+const FRAG_RA = COMMON + `
+uniform sampler2D uMap; uniform vec2 uMapSize;
+uniform sampler2D uRows; uniform vec2 uRowsSize;
+uniform sampler2D uLut; uniform vec2 uLutSize;
+uniform sampler2D uBShapes; uniform vec2 uBShapesSize;
+// vA: top plate (xy) or plate A (xy) / plate B (zw); vB: map slot (xy), band plate (zw)
+// vC: boundary shape slot (xy); vD: frame slot (xy); aux in vE: (topKind 0 plate 1 boundary, seam)
+varying vec4 vE;
+void main() {
+  vec2 l = floor(vLocal);
+  vec4 m = bytes(at(uMap, uMapSize, vB.xy + l));
+  float cls = mod(m.z, 4.0), which = floor(m.z / 4.0);
+  if (m.w == 0.0 && cls != 3.0) { gl_FragColor = vec4(0.0); return; }
+  vec2 src = m.xy;
+  if (which == 2.0) { gl_FragColor = vec4(bytes(at(uPlates, uPlatesSize, vB.zw + src)).rgb, m.w) / 255.0; return; }
+  vec3 t;
+  if (vE.x < 0.5) {
+    t = bytes(at(uPlates, uPlatesSize, vA.xy + src)).rgb;
+  } else {
+    vec4 s = bytes(at(uBShapes, uBShapesSize, vC.xy + src));
+    vec2 bs = s.xy;
+    vec4 f = bytes(at(uFrames, uFramesSize, vD.xy + bs));
+    vec4 p = f.x > 127.0 ? at(uPlates, uPlatesSize, vA.zw + bs) : at(uPlates, uPlatesSize, vA.xy + bs);
+    t = bytes(p).rgb;
+    if (vE.y > 0.5 && f.y > 127.0)
+      t = vec3(b8(at(uTone, vec2(256.0, 1.0), vec2(t.r, 0.0)).r), b8(at(uTone, vec2(256.0, 1.0), vec2(t.g, 0.0)).r), b8(at(uTone, vec2(256.0, 1.0), vec2(t.b, 0.0)).r));
+  }
+  vec4 rw = bytes(at(uRows, uRowsSize, vB.xy + l));
+  float row = rw.x + rw.y * 256.0 + vE.z;
+  vec3 o = vec3(b8(at(uLut, uLutSize, vec2(t.r, row)).r), b8(at(uLut, uLutSize, vec2(t.g, row)).g), b8(at(uLut, uLutSize, vec2(t.b, row)).r));
+  gl_FragColor = vec4(o, m.w) / 255.0;
+}`;
+
+const VERT_R = `
+precision highp float;
+attribute vec2 aPos; attribute vec2 aLocal;
+attribute vec4 aA; attribute vec4 aB; attribute vec2 aC; attribute vec2 aD; attribute vec4 aE;
+uniform vec2 uTarget;
+varying vec2 vLocal; varying vec4 vA; varying vec4 vB; varying vec2 vC; varying vec2 vD; varying vec4 vE;
+void main() {
+  vLocal = aLocal; vA = aA; vB = aB; vC = aC; vD = aD; vE = aE;
+  gl_Position = vec4(aPos / uTarget * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+/** THE RAMPS on the shared resources: map/rows/LUT slots uploaded once per
+ *  shape, a 64-row slot per tile, the boundary passes' sums (B) and ink (C). */
+export class GpuRamps {
+  private gl: WebGLRenderingContext;
+  private pA: WebGLProgram;
+  private pB: WebGLProgram;
+  private pC: WebGLProgram;
+  private buf: WebGLBuffer;
+  private fb: WebGLFramebuffer;
+  private maps: SlotAtlas;
+  private rows: SlotAtlas;
+  private lut: WebGLTexture;
+  private lutRows = 0;
+  private lutAt = new Map<string, number>();
+  private comp: WebGLTexture;
+  private out: WebGLTexture;
+  private sums: WebGLTexture;
+  private verts: Float32Array;
+  static readonly BATCH = 64;
+  private readonly cols = 32;
+  private static readonly LUT_ROWS = 4096;
+  readonly stats = { tiles: 0, batches: 0, ms: 0 };
+  constructor(gl: WebGLRenderingContext, private sheets: PatternSheets, readonly shared: GpuShared) {
+    this.gl = gl;
+    const { fw } = sheets;
+    this.pA = compile(gl, VERT_R, FRAG_RA);
+    this.pB = compile(gl, VERT, FRAG_B.replace("__FH__", String(RAMP_H)).replace("__FW__", String(fw)));
+    this.pC = compile(gl, VERT, FRAG_C);
+    this.buf = gl.createBuffer()!;
+    this.fb = gl.createFramebuffer()!;
+    this.maps = new SlotAtlas(gl, fw, RAMP_H);
+    this.rows = new SlotAtlas(gl, fw, RAMP_H);
+    this.lut = texture(gl, 256, GpuRamps.LUT_ROWS, null);
+    const CW = this.cols * fw, CH = Math.ceil(GpuRamps.BATCH / this.cols) * RAMP_H;
+    this.comp = texture(gl, CW, CH, null);
+    this.out = texture(gl, CW, CH, null);
+    this.sums = texture(gl, GpuRamps.BATCH * 3, 1, null);
+    this.verts = new Float32Array(GpuRamps.BATCH * 6 * 20);
+  }
+  get uploads(): { maps: number; lutRows: number } {
+    return { maps: this.maps.uploads, lutRows: this.lutRows };
+  }
+  /** The shape's shade rows in the LUT texture (appended once). */
+  private lutBase(key: string, shape: RampShape): number {
+    let b = this.lutAt.get(key);
+    if (b !== undefined) return b;
+    if (this.lutRows + shape.shades.length > GpuRamps.LUT_ROWS) { this.lutAt.clear(); this.lutRows = 0; }
+    b = this.lutRows;
+    const gl = this.gl;
+    gl.bindTexture(gl.TEXTURE_2D, this.lut);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    if (shape.shades.length) gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, b, 256, shape.shades.length, gl.RGBA, gl.UNSIGNED_BYTE, shape.lut);
+    this.lutRows += shape.shades.length;
+    this.lutAt.set(key, b);
+    return b;
+  }
+  compose(tiles: RampTile[], sink: GpuSink = { kind: "read" }, premultiply = false): Pixels[] {
+    const gl = this.gl, { fw, fh } = this.sheets, sh = this.shared;
+    const N = tiles.length;
+    if (!N) return [];
+    if (N > GpuRamps.BATCH) throw new Error(`tiles3gpu: a ramp batch holds ${GpuRamps.BATCH}`);
+    const t0 = performance.now();
+    const cols = this.cols;
+    const per = tiles.map((t) => {
+      const j = t.job;
+      const full = rampFullShape(this.sheets, t);
+      const sk = rampJobShapeKey(j);
+      const pm = this.maps.origin(sk, () => full.map);
+      const pr = this.rows.origin(sk, () => full.rows);
+      const lb = this.lutBase(rampShapeKey(j.mask, j.lh, rampTopId(j), plateIdOf(j.band), false), full.shape);
+      const pband = sh.plate(plateIdOf(j.band), () => t.band);
+      let pa = [0, 0], pb = [0, 0], pbs = [0, 0], pf = [0, 0], kind = 0, seam = 0;
+      if (j.top.kind === "plate") pa = sh.plate(plateIdOf(j.top.side), () => t.top!);
+      else {
+        const bj = j.top.job;
+        kind = 1;
+        seam = bj.seam ? 1 : 0;
+        pa = sh.plate(plateIdOf(bj.a), () => t.a!);
+        pb = sh.plate(plateIdOf(bj.b), () => t.b!);
+        pbs = sh.shapes.origin(shapeKey(bj), () => shapeOf(this.sheets, bj, t.a, t.b));
+        pf = sh.frames.origin(String(bj.frame), () => frameTile(this.sheets, bj.frame));
+      }
+      return { pm, pr, lb, pband, pa, pb, pbs, pf, kind, seam, h: full.h };
+    });
+    const CW = cols * fw, CH = Math.ceil(GpuRamps.BATCH / cols) * RAMP_H;
+    const org = (k: number) => [(k % cols) * fw, Math.floor(k / cols) * RAMP_H];
+    // RA — its own vertex layout (20 floats)
+    {
+      const v = this.verts;
+      let o = 0;
+      for (let k = 0; k < N; k++) {
+        const p = per[k];
+        const [x0, y0] = org(k);
+        const row = [0, 0, 0, 0, p.pa[0], p.pa[1], p.pb[0], p.pb[1], p.pm[0], p.pm[1], p.pband[0], p.pband[1], p.pbs[0], p.pbs[1], p.pf[0], p.pf[1], p.kind, p.seam, p.lb, 0];
+        const corner = (x: number, y: number, lx: number, ly: number) => { row[0] = x; row[1] = y; row[2] = lx; row[3] = ly; v.set(row, o); o += 20; };
+        const x1 = x0 + fw, y1 = y0 + RAMP_H;
+        corner(x0, y0, 0, 0); corner(x1, y0, fw, 0); corner(x0, y1, 0, RAMP_H);
+        corner(x1, y0, fw, 0); corner(x1, y1, fw, RAMP_H); corner(x0, y1, 0, RAMP_H);
+      }
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.comp, 0);
+      gl.viewport(0, 0, CW, CH);
+      gl.disable(gl.BLEND); gl.disable(gl.DEPTH_TEST); gl.disable(gl.SCISSOR_TEST); gl.disable(gl.STENCIL_TEST); gl.disable(gl.CULL_FACE);
+      gl.colorMask(true, true, true, true);
+      gl.useProgram(this.pA);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
+      gl.bufferData(gl.ARRAY_BUFFER, v.subarray(0, o), gl.STREAM_DRAW);
+      const names: [string, number, number][] = [["aPos", 2, 0], ["aLocal", 2, 2], ["aA", 4, 4], ["aB", 4, 8], ["aC", 2, 12], ["aD", 2, 14], ["aE", 4, 16]];
+      for (const [n, size, off] of names) { const loc = gl.getAttribLocation(this.pA, n); if (loc >= 0) { gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 80, off * 4); } }
+      gl.uniform2f(gl.getUniformLocation(this.pA, "uTarget"), CW, CH);
+      const tex = (name: string, unit: number, t: WebGLTexture, w: number, h: number) => {
+        const loc = gl.getUniformLocation(this.pA, name);
+        if (!loc) return;
+        gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); gl.uniform1i(loc, unit);
+        const sz = gl.getUniformLocation(this.pA, name + "Size");
+        if (sz) gl.uniform2f(sz, w, h);
+      };
+      tex("uPlates", 0, sh.plates.tex, sh.plates.w, sh.plates.h);
+      tex("uFrames", 2, sh.frames.tex, sh.frames.w, sh.frames.h);
+      tex("uTone", 3, sh.tone, 256, 1);
+      tex("uMap", 4, this.maps.tex, this.maps.w, this.maps.h);
+      tex("uRows", 5, this.rows.tex, this.rows.w, this.rows.h);
+      tex("uLut", 6, this.lut, 256, GpuRamps.LUT_ROWS);
+      tex("uBShapes", 7, sh.shapes.tex, sh.shapes.w, sh.shapes.h);
+      gl.drawArrays(gl.TRIANGLES, 0, o / 20);
+      for (const [n] of names) { const loc = gl.getAttribLocation(this.pA, n); if (loc >= 0) gl.disableVertexAttribArray(loc); }
+    }
+    // B and C with the boundary layout (16 floats): the map atlas is C's "shapes"
+    const v = this.verts;
+    const quads = (rect: (k: number) => [number, number, number, number], lw: number, lh2: number, fix: (k: number, row: number[]) => void) => {
+      let o = 0;
+      for (let k = 0; k < N; k++) {
+        const [x0, y0, x1, y1] = rect(k);
+        const p = per[k];
+        const [cx, cy] = org(k);
+        const row = [0, 0, 0, 0, 0, 0, 0, 0, p.pm[0], p.pm[1], 0, 0, cx, cy, 0, 0];
+        fix(k, row);
+        const corner = (x: number, y: number, lx: number, ly: number) => { row[0] = x; row[1] = y; row[2] = lx; row[3] = ly; v.set(row, o); o += 16; };
+        corner(x0, y0, 0, 0); corner(x1, y0, lw, 0); corner(x0, y1, 0, lh2);
+        corner(x1, y0, lw, 0); corner(x1, y1, lw, lh2); corner(x0, y1, 0, lh2);
+      }
+      return o;
+    };
+    const run = (prog: WebGLProgram, target: WebGLTexture, tw: number, th: number, count: number, bind: () => void) => {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, target, 0);
+      gl.viewport(0, 0, tw, th);
+      gl.useProgram(prog);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
+      gl.bufferData(gl.ARRAY_BUFFER, v.subarray(0, count), gl.STREAM_DRAW);
+      const names: [string, number, number][] = [["aPos", 2, 0], ["aLocal", 2, 2], ["aA", 4, 4], ["aB", 4, 8], ["aC", 2, 12], ["aD", 2, 14]];
+      for (const [n, size, off] of names) { const loc = gl.getAttribLocation(prog, n); if (loc >= 0) { gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 64, off * 4); } }
+      gl.uniform2f(gl.getUniformLocation(prog, "uTarget"), tw, th);
+      const tex = (name: string, unit: number, t: WebGLTexture, w: number, h: number) => {
+        const loc = gl.getUniformLocation(prog, name);
+        if (!loc) return;
+        gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); gl.uniform1i(loc, unit);
+        const sz = gl.getUniformLocation(prog, name + "Size");
+        if (sz) gl.uniform2f(sz, w, h);
+      };
+      tex("uShapes", 1, this.maps.tex, this.maps.w, this.maps.h);
+      tex("uComp", 4, this.comp, CW, CH);
+      tex("uSums", 5, this.sums, GpuRamps.BATCH * 3, 1);
+      bind();
+      gl.drawArrays(gl.TRIANGLES, 0, count / 16);
+      for (const [n] of names) { const loc = gl.getAttribLocation(prog, n); if (loc >= 0) gl.disableVertexAttribArray(loc); }
+    };
+    const tileRect = (k: number): [number, number, number, number] => { const [x, y] = org(k); return [x, y, x + fw, y + RAMP_H]; };
+    let n = quads((k) => [3 * k, 0, 3 * k + 3, 1], 3, 1, () => {});
+    run(this.pB, this.sums, GpuRamps.BATCH * 3, 1, n, () => {});
+    n = quads(tileRect, fw, RAMP_H, (k, row) => { row[4] = 3 * k; });
+    run(this.pC, this.out, CW, CH, n, () => {
+      gl.uniform4f(gl.getUniformLocation(this.pC, "uInk"), 2, 5, 21, 0);
+      gl.uniform4f(gl.getUniformLocation(this.pC, "uInk2"), 11, 20, 27, 0);
+      gl.uniform1f(gl.getUniformLocation(this.pC, "uPma"), premultiply ? 1 : 0);
+    });
+    const res: Pixels[] = [];
+    if (sink.kind === "read") {
+      const raw = new Uint8Array(CW * CH * 4);
+      gl.readPixels(0, 0, CW, CH, gl.RGBA, gl.UNSIGNED_BYTE, raw);
+      for (let k = 0; k < N; k++) {
+        const [ox, oy] = org(k);
+        const H = per[k].h;
+        const px = newPixels(fw, H);
+        for (let y = 0; y < H; y++) px.data.set(raw.subarray(((oy + y) * CW + ox) * 4, ((oy + y) * CW + ox + fw) * 4), y * fw * 4);
+        res.push(px);
+      }
+    } else {
+      for (let k = 0; k < N; k++) { const [ox, oy] = org(k); sink.each(k, ox, oy); }
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    this.stats.tiles += N;
+    this.stats.batches++;
+    this.stats.ms += performance.now() - t0;
+    void fh;
+    return res;
+  }
+  /** The composed tile's height (the texture it is copied into). */
+  heightOf(t: RampTile): number {
+    return rampFullShape(this.sheets, t).h;
+  }
+}
+
+/** The CPU's own raster for a ramp job (the parity gate's reference): `rampRaster`
+ *  then, for a lined variant, `edgeTopPixels` — from the same decoded inputs. */
+export function rampCpu(sheets: PatternSheets, t: RampTile): Pixels {
+  const j = t.job;
+  const top = j.top.kind === "plate" ? t.top! : buildBoundaryPixels(sheets, { maskFrame: j.top.job.frame, topOnly: j.top.job.topOnly, noWall: j.top.job.noWall, slope: j.top.job.slope }, t.a!, t.b!, j.top.job.seam);
+  const base = buildRampPixels(sheets, top, j.mask, j.lh, t.band, false);
+  return j.edge ? edgeTopPixels(sheets, base, j.edge.mask, { mask: j.mask, lh: j.lh }, j.edge.verts, j.edge.nb) : base;
 }

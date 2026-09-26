@@ -43,14 +43,14 @@ try {
       if (c) n.cells++;
       if (c?.slope) { n.slope++; if (c.slope.ramp) n.ramp++; }
       if (b) n.bnd++;
-      if (b && b.slope) got.push([x, y]);
+      if (c?.slope) got.push([x, y]); // a composed ramp (and any slope transition)
     }
     console.log("[scan]", JSON.stringify(n));
     const picked = [];
     for (const [x, y] of got) if (!picked.some(([a, b]) => Math.abs(a - x) + Math.abs(b - y) < 30)) picked.push([x, y]);
     return { total: got.length, picked: picked.slice(0, +(window.__gateSlopeSpots || 8)) };
   });
-  console.log(`slope boundaries in the world: ${slopeSpots.total}; visiting ${slopeSpots.picked.length}: ${slopeSpots.picked.map((p) => p.join(",")).join(" ")}`);
+  console.log(`slope cells in the world: ${slopeSpots.total}; visiting ${slopeSpots.picked.length}: ${slopeSpots.picked.map((p) => p.join(",")).join(" ")}`);
   const walked = [...SPOTS, ...slopeSpots.picked];
   for (const [c, r] of walked) {
     await page.evaluate(([c, r]) => window.__ml.teleport(c + 0.5, r + 0.5), [c, r]);
@@ -77,8 +77,9 @@ try {
   const rep = await page.evaluate(() => window.__ml.gpuParity());
   console.log(JSON.stringify(rep, null, 1));
   if (!rep.compared || !rep.opaque || !rep.inked) { console.log(`FAIL: vacuous (${rep.compared} tiles, ${rep.opaque} opaque texels, ${rep.inked} inked)`); bad = true; }
+  else if (!rep.ramps || !rep.rampsLined) { console.log(`FAIL: no ramp compared (${rep.ramps} ramps, ${rep.rampsLined} lined)`); bad = true; }
   else if (rep.tilesDiffering) { console.log(`FAIL: ${rep.tilesDiffering} of ${rep.compared} tiles differ (${rep.texelsDiffering} texels, max ${rep.maxDiff})`); bad = true; }
-  else console.log(`ok: ${rep.compared} boundaries identical byte for byte (${rep.slopes} on slopes; ${rep.opaque} opaque texels, ${rep.inked} of them outline ink; ${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
+  else console.log(`ok: ${rep.compared} boundaries and ${rep.ramps} ramps (${rep.rampsLined} lined, ${rep.rampsOnTransition} lifting a transition) identical byte for byte (${rep.slopes} on slopes; ${rep.opaque} opaque texels, ${rep.inked} of them outline ink; ${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
   // ── THE GAME WITH THE SWITCH ON: every transition on the ground composed by
   // the GPU compositor (tiles3gpu GpuComposer) and landed the worker's way —
   // the painted ground must hash the same as the worker's.

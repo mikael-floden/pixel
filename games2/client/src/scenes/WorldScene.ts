@@ -2365,6 +2365,8 @@ export class WorldScene extends Phaser.Scene {
       land: (key, wr) => {
         if (!this.textures.exists(key)) this.textures.addGLTexture(key, wr as never);
         this.t3tex?.landRemote(key, none);
+        // a transition has its own retry (t3boundaryOwed); a ramp was a DROP, and drops drain
+        if (!key.startsWith("t3x:")) this.t3remoteLanded = true;
       },
     };
     return this.gpuHostMemo;
@@ -23450,6 +23452,7 @@ export class WorldScene extends Phaser.Scene {
       textures: this.t3tm,
       sheets: this.t3sheets,
       remote: this.t3gpuc,
+      gpuRamp: (job) => this.t3gpuc.ramp(job),
       artUrl: (path) => docUrl(path, this.t3route),
       pitch: this.geom.lh, // the occluder pass's storey pitch: where a face ends, for the wall-foot band
 
