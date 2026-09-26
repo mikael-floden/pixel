@@ -44,10 +44,13 @@ const ghToken = () => process.env.WIKI_GITHUB_TOKEN || "";
 // "composer-music" is the MUSIC BENCH's channel (maintainer 2026-08-22): one
 // file carrying verdicts at three levels — a whole track, one take of it, and
 // one phrase of one take — keyed composer/music/<track>, …__v03 and …__v03#5.
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "composer-music", "bindings"] as const;
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "composer-music", "bindings", "shaders"] as const;
 // repo path (under live/) -> state key
 const LIVE_FILES: Record<string, string> = {
   "tuning/monsters.json": "tuning/monsters",
+  // HIS SHADER KNOBS: per-effect colour/slider/switch overrides written from
+  // the wiki's Shaders page, applied live by the game (shaders/docs/wiki.md).
+  "tuning/shaders.json": "tuning/shaders",
   "tuning/constants.json": "tuning/constants",
   // The Game Master's "add this sound to that event" requests, written by the
   // wiki, consumed by the composer (games-audio) agent. See live/README.md.

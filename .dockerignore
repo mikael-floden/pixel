@@ -50,6 +50,9 @@ music/**/*.wav
 # candidate sheets in tiles/matrix are gitignored and never enter the context.
 !tiles
 !lore
+# The shader agent's effects: the wiki's Shaders page embeds its viewer from
+# /assets/shaders/viewer/ (ES modules must be served with JS MIME types).
+!shaders
 !wiki
 !live
 # THE AGENT BOARDS, for their NAMES only (~200 KB of JSON). The wiki's Agents

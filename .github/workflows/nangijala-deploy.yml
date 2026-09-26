@@ -47,6 +47,7 @@ on:
       - "monsters/**"
       - "items/**"
       - "lore/**"
+      - "shaders/**"
       # Wiki SITE changes deploy; data.json refreshes must NOT restart prod
       # (prod rebuilds data.json inside the image anyway). live/** is the
       # runtime channel — NEVER a deploy trigger (live-notify.yml handles it).

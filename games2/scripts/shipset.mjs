@@ -267,7 +267,7 @@ for (const p of [...ship]) {
 // ------------------------------------------------------------- reporting ----
 const DOMAINS = [
   "characters2", "maps2", "scenery", "monsters",
-  "items", "sounds", "music", "lore", "wiki", "live",
+  "items", "sounds", "music", "lore", "wiki", "live", "shaders",
 ];
 
 function domainOf(p) {

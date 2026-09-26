@@ -57,6 +57,9 @@ COPY games2/scripts/shipset.mjs games2/scripts/shipset.mjs
 COPY sounds/ sounds/
 COPY music/ music/
 COPY lore/ lore/
+# The shader agent's effect library + its viewer, which the wiki's Shaders page
+# embeds from /assets/shaders/viewer/ (0.6 MB of plain ES modules).
+COPY shaders/ shaders/
 COPY items/ items/
 COPY characters2/ characters2/
 COPY wiki/ wiki/
