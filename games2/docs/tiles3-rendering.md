@@ -642,7 +642,19 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   the virtual path, so in the key, and in the load list). The half step's
   4 px sets keep the same-ground rule. The foot yields to a ramp; a cliff
   of two keeps its foot. Measured on the_game (`slopes.test.ts`): 2,142 of
-  2,142 one-level rises, 538 of them lifting a transition.
+  2,142 one-level rises. ONLY A FULL RAMP LIFTS
+  ONE, AND A STEP NEVER WEARS A TRANSITION (maintainer 2026-09-26 on a
+  staircase at 294.4,247.8: "Why do you put transition/boundary tiles in the
+  middle of the stairs ... we don't have the space todo it in a nice looking
+  way in a staircase"): with the ramps on, `boundaryAt` composes nothing for a
+  cell with a one-level rise at a corner unless it is a 100% ramp — a stair or
+  a 25/50% ramp is a one-cell tread, and any Wang blend on it (two flights side
+  by side, a landing, a riser's stone) was a blob mid-step; a corner a storey
+  off votes only where a FULL ramp joins the two levels (else the level change
+  is the edge — his one-ground-to-the-edge rule, maps2 01ea2d5f95); and the
+  cliff-foot vote needs a wall of two storeys or more (a one-storey riser is a
+  step). The_game: boundaries 10,684 -> ~10,360; `slopes.test.ts` pins that no
+  step wears one. The half step and the parity path keep the old rules.
   THE PUBLISHED SETS ARE A 4 PX TERRACE ON A 15 PX STOREY (his web-UI
   "terrain height 4px"; measured: tile 15 tops the frame on the library
   diamond, tile 0 sits 4 rows under it) — a hairline at play scale, and the

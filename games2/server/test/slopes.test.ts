@@ -685,3 +685,36 @@ test("a composed ramp on a raised cell keeps its whole lifted surface and side f
     assert.ok(opaque >= 924, `mask ${mask}: the whole top face survives (${opaque} texels)`);
   }
 });
+
+// A STEP NEVER WEARS A TRANSITION (maintainer 2026-09-26 on a staircase at
+// 294.4,247.8: "Why do you put transition/boundary tiles in the middle of the
+// stairs like this? ... we don't have the space todo it in a nice looking way
+// in a staircase"). Under the auto mix, a cell with a one-level rise at a
+// corner composes no boundary; only a FULL ramp lifts one (a fade up a
+// continuous slope), a partial ramp or a stair keeps its own plate.
+test("on the_game under the auto mix: no stair or partial-ramp tread wears a transition; only full ramps lift one", { skip: skip || (!existsSync(WORLD) && "no world") }, async () => {
+  const { slopeRunShares } = await import("../../client/src/rampfield.js");
+  const doc = JSON.parse(readFileSync(WORLD, "utf8"));
+  const parsed = parseWorld(doc)!;
+  const t = resolver([], {}, true, undefined, 1);
+  (t as unknown as { data: { slopeShares: Uint8Array; slopeSharesW: number } }).data.slopeShares = slopeRunShares(parsed);
+  (t as unknown as { data: { slopeShares: Uint8Array; slopeSharesW: number } }).data.slopeSharesW = parsed.width;
+  const view = viewFromDoc(doc);
+  const g = (x: number, y: number) => view.groundAt(x, y);
+  const L = (x: number, y: number) => view.levelAt(x, y);
+  const wrong: string[] = [];
+  let steps = 0, full = 0;
+  for (const c of t.resolveWindow(view).cells) {
+    const gr = g(c.x, c.y);
+    if (!gr || view.isLiquid(gr)) continue;
+    const up = t.slopeIndexAt(g, L, gr, c.x, c.y, c.level, true, true);
+    if (!up || up === 15) continue;
+    steps++;
+    const bnd = (c.art as { bnd?: unknown } | undefined)?.bnd;
+    const isFull = !!c.slope?.ramp && t.rampShareAt(c.x, c.y) >= 1;
+    if (bnd && isFull) full++;
+    if (c.boundary || (bnd && !isFull)) if (wrong.length < 5) wrong.push(`${c.x},${c.y} L${c.level} ${gr} share ${t.rampShareAt(c.x, c.y)}: ${c.boundary ? "boundary" : "lifted transition"}`);
+  }
+  assert.deepEqual(wrong, [], "a step wears its own plate");
+  assert.ok(steps >= 1500 && full > 0, `${steps} step cells, ${full} full ramps lifting a transition`);
+});

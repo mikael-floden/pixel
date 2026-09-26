@@ -1856,7 +1856,11 @@ export class Tiles3 {
         const wx = cx + dx;
         const wy = cy + dy;
         if (wx < 0 || wy < 0 || wx >= view.width || wy >= view.height) continue;
-        if (L(wx, wy) <= z0) continue;
+        /* A WALL, NOT A STEP: the foot transition is for a face of two storeys
+         * or more (maintainer 2026-09-26: "this is true for bigger walls, we
+         * don't have the space todo it in a nice looking way in a staircase") —
+         * a one-storey riser put a blob of its stone on every tread. */
+        if (L(wx, wy) - z0 < (this.rampsOn() ? 2 : 1)) continue;
         const hg = g(wx, wy);
         if (!hg || view.isLiquid(hg)) continue;
         if (Math.min(L(wx + 1, wy), L(wx, wy + 1)) !== z0) continue;
@@ -3121,6 +3125,21 @@ export class Tiles3 {
       if (f0 || f1 || f2 || f3) feet = [f0, f1, f2, f3];
     }
     if (!feet && g0 === g1 && g0 === g2 && g0 === g3) return null;
+    /* A STEP NEVER WEARS A TRANSITION (a GAME rule, with the foot; maintainer
+     * 2026-09-26 on a staircase at 294.4,247.8: "Why do you put
+     * transition/boundary tiles in the middle of the stairs like this? ... we
+     * don't have the space todo it in a nice looking way in a staircase"). A
+     * tread is one cell deep, so any Wang blend on it — two flights of
+     * different ground side by side, a landing's ground, a riser's stone — is
+     * a blob in the middle of the step. A step is a cell with a one-level rise
+     * at a corner (the ramp rule, `slopeIndexAt(…, anyDry)`), a stair or a
+     * PARTIAL ramp (25/50%: a tread and a riser still). Only a FULL ramp is
+     * one continuous surface, and there the blend runs up it as a fade
+     * (`wangSurface`). The ground changes at the step's edge, hard. */
+    if (this.data.footBoundary && this.rampsOn() && !view.isLiquid(g0)) {
+      const up = this.slopeIndexAt(g, L, g0, x, y, z0, true, true);
+      if (up && up !== 15 && !(this.rampIndexFor(g, L, g0, x, y, z0) && this.rampShareAt(x, y) >= 1)) return null;
+    }
     /* THE LEVEL FOLD (see the doc comment): a corner that is not on this cell's
      * plane is not on this tile, so it votes with this cell's own ground. When
      * every corner shares the level this is the identity and nothing changes. */
@@ -3197,8 +3216,28 @@ export class Tiles3 {
      * tile that is "not 100% water or 100% beach" (2026-09-09). Only a liquid
      * corner standing off the plane of the cell it would paint is folded away.
      * render3 `wang_surface` carries the same clause (maps2, 2026-09-11). */
+    /* ...AND ONLY WHERE A SLOPE JOINS THE TWO LEVELS (a GAME rule, with the
+     * foot; maintainer 2026-09-26 on a staircase: "Why do you put
+     * transition/boundary tiles in the middle of the stairs like this? ... we
+     * don't have the space todo it in a nice looking way in a staircase"). A
+     * tread is one cell deep, so a neighbouring flight's or landing's ground
+     * voted in a storey away drew a blob of it in the middle of every step;
+     * and his rule is now one ground to the edge of every terrace (maps2
+     * 01ea2d5f95), so a level change is itself the edge. Where a FULL ramp joins
+     * the two levels (this cell or the corner's wears one) the surface is
+     * continuous and the blend runs up it — a transition slope. The
+     * parity path (footBoundary off) and the half step keep render3's one-storey vote. */
+    const rampHere = (i: number): boolean => {
+      if (!this.data.footBoundary || !this.rampsOn() || zs[i] === z0) return true;
+      // A FULL ramp: a partial one (25/50%) still has a riser, the level change is its edge.
+      if (this.rampIndexFor(g, L, g0, x, y, z0) && this.rampShareAt(x, y) >= 1) return true;
+      const cx = x + (i & 1);
+      const cy = y + (i >> 1);
+      const gc = g(cx, cy);
+      return !!gc && L(cx, cy) === zs[i] && !!this.rampIndexFor(g, L, gc, cx, cy, zs[i]) && this.rampShareAt(cx, cy) >= 1;
+    };
     let gs: (string | null)[] = [g0, gz[0], gz[1], gz[2]].map((gv, i) =>
-      Math.abs(zs[i] - z0) <= BOUNDARY_STEP && (zs[i] === z0 || !view.isLiquid(gv as string)) ? gv : g0,
+      Math.abs(zs[i] - z0) <= BOUNDARY_STEP && (zs[i] === z0 || !view.isLiquid(gv as string)) && rampHere(i) ? gv : g0,
     );
     /* The foot overrides the fold: the face is ON this plane by construction. */
     let ownRef: string | null = null; // the cell's own ground when its corner was lent away
