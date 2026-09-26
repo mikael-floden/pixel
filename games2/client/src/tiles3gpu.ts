@@ -1,0 +1,532 @@
+/* THE BOUNDARY ON THE GPU (maintainer 2026-09-26: "we need to both do this and
+ * try the GPU transition/boundary render shader again ... The boundary shader
+ * needs a test to make sure it produced the same tile we get when the CPU
+ * produces it!").
+ *
+ * A composed boundary (tiles3draw `buildBoundaryPixels` + `withEdge`) splits
+ * into two things of very different kinds:
+ *   - its SHAPE — for every output texel, which composite texel it copies (the
+ *     top face's margin row and a capped wall copy their column's bottom
+ *     surface texel), its final alpha (the silhouette, the top face, the cut
+ *     above a back edge's line), and whether the outline inks it (outer, inner).
+ *     That is geometry: it depends on (topOnly, the outline code) and never on
+ *     the art;
+ *   - its COLOURS — two plates, a Wang mask frame and the seam.
+ * The shape is taken from the CPU code ITSELF (`shapeOf`): the real
+ * `buildBoundaryPixels` and `withEdge` run once per shape over synthetic plates
+ * whose texels are their own coordinates, so whatever the CPU pipeline does to
+ * a raster's geometry, the shape says exactly that — a change there cannot
+ * leave this behind. The colours are three batched GPU passes:
+ *   A. the composite: per output texel, the plate the mask picks at its source
+ *      texel, the seam through a 256-entry table of the CPU's own `rint`
+ *      (float32 lands on the wrong side of the .5 ties rint exists for);
+ *   B. the outline's tone: the sum of the composite over the tile's opaque
+ *      texels (the CPU inks in the raster's MEAN colour), exact in integers;
+ *   C. the ink, in exact integer arithmetic (see `FRAG_C`).
+ * Slope boundaries (a shifted side, holes) are not taken: `supported` says no
+ * and the CPU composes them as before.
+ *
+ * WebGL1, no extensions: every value is an integer stored in RGBA8, every
+ * sample is NEAREST at a texel centre. */
+import {
+  buildBoundaryPixels,
+  withEdge,
+  rint,
+  newPixels,
+  EDGE_ALPHA,
+  EDGE_ALPHA_IN,
+  EDGE_SHADE,
+  EDGE_SHADE_IN,
+  type ComposeJob,
+  type PatternSheets,
+  type Pixels,
+} from "./tiles3draw";
+
+export type BoundaryJob = Extract<ComposeJob, { kind: "boundary" }>;
+
+/** Can the GPU compose this job? (Slopes and a missing mask frame cannot.) */
+export function supported(j: BoundaryJob): boolean {
+  return !j.slope && typeof j.frame === "number" && j.frame >= 0;
+}
+
+/* -- the shape, from the CPU's own code ------------------------------------ */
+
+/** A shape: fw*fh texels, RGBA = (source x, source y, ink class, final alpha).
+ *  Ink class 0 none, 1 outer line, 2 inner line, 3 cut by the outline (alpha 0,
+ *  the composite's rgb kept — the CPU clears alpha only). A texel with final
+ *  alpha 0 and class 0 is (0,0,0,0). */
+export type Shape = Uint8Array;
+
+const shapeMemo = new WeakMap<PatternSheets, Map<string, Shape>>();
+
+export function shapeKey(j: Pick<BoundaryJob, "topOnly" | "noWall" | "edge">): string {
+  return `${j.topOnly ? 1 : 0}|${j.noWall ? 1 : 0}|${j.edge ?? ""}`;
+}
+
+/** The probe tone: a uniform grey the outline's two inks move to two known
+ *  values (outer 122, inner 164) — anything else is "not inked". */
+const PROBE = 200;
+
+export function shapeOf(sheets: PatternSheets, j: Pick<BoundaryJob, "topOnly" | "noWall" | "edge">): Shape {
+  let m = shapeMemo.get(sheets);
+  if (!m) shapeMemo.set(sheets, (m = new Map()));
+  const key = shapeKey(j);
+  const hit = m.get(key);
+  if (hit) return hit;
+  const { fw, fh } = sheets;
+  // Two plates whose every texel IS its coordinate: whichever side the mask
+  // picks, the composite at (x, y) reads (x, y). The seam is off: it would
+  // scale the coordinates (the GPU applies it at the source texel itself).
+  const coord = newPixels(fw, fh);
+  for (let y = 0; y < fh; y++)
+    for (let x = 0; x < fw; x++) {
+      const i = (y * fw + x) * 4;
+      coord.data[i] = x;
+      coord.data[i + 1] = y;
+      coord.data[i + 2] = 0;
+      coord.data[i + 3] = 255;
+    }
+  const pre = buildBoundaryPixels(sheets, { maskFrame: 0, topOnly: j.topOnly, noWall: j.noWall }, coord, coord, false);
+  // The outline over a uniform raster of the same alpha: its cuts are alpha,
+  // its lines move the grey to one of two values.
+  const grey: Pixels = { w: pre.w, h: pre.h, data: new Uint8ClampedArray(pre.data) };
+  for (let i = 0; i < grey.data.length; i += 4) if (grey.data[i + 3] > 0) grey.data[i] = grey.data[i + 1] = grey.data[i + 2] = PROBE;
+  const post = withEdge(sheets, grey, j.edge);
+  const outer = Math.round(PROBE * (1 - EDGE_ALPHA) + PROBE * EDGE_SHADE * EDGE_ALPHA);
+  const inner = Math.round(PROBE * (1 - EDGE_ALPHA_IN) + PROBE * EDGE_SHADE_IN * EDGE_ALPHA_IN);
+  const s = new Uint8Array(fw * fh * 4);
+  for (let i = 0; i < fw * fh; i++) {
+    const a0 = pre.data[i * 4 + 3];
+    const a1 = post.data[i * 4 + 3];
+    if (a0 === 0) continue; // (0,0,0,0): nothing there before the outline either
+    s[i * 4] = pre.data[i * 4];
+    s[i * 4 + 1] = pre.data[i * 4 + 1];
+    const v = post.data[i * 4];
+    s[i * 4 + 2] = a1 === 0 ? 3 : v === outer ? 1 : v === inner ? 2 : v === PROBE ? 0 : 255;
+    s[i * 4 + 3] = a1;
+    if (s[i * 4 + 2] === 255) throw new Error(`tiles3gpu: shape ${key} texel ${i} inked to ${v}, neither line`);
+  }
+  m.set(key, s);
+  return s;
+}
+
+/** A mask frame as a texture tile: R = the mask bit, G = the seam bit (255/0). */
+function frameTile(sheets: PatternSheets, frame: number): Uint8Array {
+  const { fw, fh } = sheets;
+  const out = new Uint8Array(fw * fh * 4);
+  for (let y = 0; y < fh; y++)
+    for (let x = 0; x < fw; x++) {
+      const i = (y * fw + x) * 4;
+      out[i] = sheets.maskBit(frame, x, y) ? 255 : 0;
+      out[i + 1] = sheets.borderBit(frame, x, y) ? 255 : 0;
+      out[i + 3] = 255;
+    }
+  return out;
+}
+
+/* -- the shaders ------------------------------------------------------------ */
+
+const VERT = `
+precision highp float;
+attribute vec2 aPos;    // destination, in target texels
+attribute vec2 aLocal;  // the tile's own texel coordinate (0..fw, 0..fh)
+attribute vec4 aA;      // plate A origin (xy), plate B origin (zw), in plate-atlas texels
+attribute vec4 aB;      // shape origin (xy), frame origin (zw), in shape/frame-atlas texels
+attribute vec2 aC;      // composite origin in the composite target (pass B, C); seam flag
+uniform vec2 uTarget;
+varying vec2 vLocal;
+varying vec4 vA;
+varying vec4 vB;
+varying vec2 vC;
+void main() {
+  vLocal = aLocal; vA = aA; vB = aB; vC = aC;
+  gl_Position = vec4(aPos / uTarget * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+const COMMON = `
+precision highp float;
+uniform sampler2D uPlates; uniform vec2 uPlatesSize;
+uniform sampler2D uShapes; uniform vec2 uShapesSize;
+uniform sampler2D uFrames; uniform vec2 uFramesSize;
+uniform sampler2D uTone;   // 256x1: the CPU's rint(v * tone)
+uniform sampler2D uComp; uniform vec2 uCompSize;
+uniform sampler2D uSums; uniform vec2 uSumsSize;
+varying vec2 vLocal;
+varying vec4 vA;
+varying vec4 vB;
+varying vec2 vC;
+vec4 at(sampler2D t, vec2 size, vec2 px) { return texture2D(t, (px + 0.5) / size); }
+float b8(float v) { return floor(v * 255.0 + 0.5); }
+vec4 bytes(vec4 v) { return floor(v * 255.0 + 0.5); }
+`;
+
+/** A: the composite at the shape's source texel, final alpha from the shape;
+ *  written as bytes. The ink class rides along in nothing: C reads the shape. */
+const FRAG_A = COMMON + `
+void main() {
+  vec2 l = floor(vLocal);
+  vec4 s = bytes(at(uShapes, uShapesSize, vB.xy + l));
+  if (s.w == 0.0 && s.z != 3.0) { gl_FragColor = vec4(0.0); return; }
+  vec2 src = s.xy;
+  vec4 f = bytes(at(uFrames, uFramesSize, vB.zw + src));
+  vec4 p = f.x > 127.0 ? at(uPlates, uPlatesSize, vA.zw + src) : at(uPlates, uPlatesSize, vA.xy + src);
+  vec3 rgb = bytes(p).rgb;
+  if (vC.y > 0.5 && f.y > 127.0) {
+    rgb = vec3(b8(at(uTone, vec2(256.0, 1.0), vec2(rgb.r, 0.0)).r),
+               b8(at(uTone, vec2(256.0, 1.0), vec2(rgb.g, 0.0)).r),
+               b8(at(uTone, vec2(256.0, 1.0), vec2(rgb.b, 0.0)).r));
+  }
+  gl_FragColor = vec4(rgb, s.w) / 255.0;
+}`;
+
+/** B: three texels per tile — the sums of the composite's r, g, b and the count
+ *  of opaque texels, each a 24-bit integer as three bytes: texel 0 = r's bytes
+ *  and n's low byte, texel 1 = g's and n's middle, texel 2 = b's and n's high.
+ *  Sums reach 2012 x 255 = 513,060 < 2^24: exact in float32. */
+const FRAG_B = COMMON + `
+void main() {
+  float part = floor(vLocal.x);
+  float sr = 0.0, sg = 0.0, sb = 0.0, n = 0.0;
+  for (int y = 0; y < __FH__; y++) {
+    for (int x = 0; x < __FW__; x++) {
+      vec2 l = vec2(float(x), float(y));
+      vec4 c = bytes(at(uComp, uCompSize, vC.xy + l));
+      if (c.w > 0.0) { sr += c.r; sg += c.g; sb += c.b; n += 1.0; }
+    }
+  }
+  float v = part < 0.5 ? sr : (part < 1.5 ? sg : sb);
+  float nb = part < 0.5 ? mod(n, 256.0) : (part < 1.5 ? mod(floor(n / 256.0), 256.0) : floor(n / 65536.0));
+  gl_FragColor = vec4(mod(v, 256.0), mod(floor(v / 256.0), 256.0), floor(v / 65536.0), nb) / 255.0;
+}`;
+
+/** C: the ink, EXACTLY as the CPU's `inkAt` rounds it: out = round(d(1-a) +
+ *  (S/n)·shade·a). With the published constants that is, for the outer line,
+ *  0.4·d + 0.21·S/n and for the inner 0.55·d + 0.27·S/n — split into integer
+ *  parts and exact remainders so no float32 product ever leaves 2^24:
+ *    0.4d  = floor(2d/5)   + (2d mod 5)/5
+ *    0.55d = floor(11d/20) + (11d mod 20)/20
+ *    q·S/(100n) = floor(..) + r/(100n)       (q = 21 or 27; qS < 2^24)
+ *  and the fractions are compared against 1/2 in integers. */
+const FRAG_C = COMMON + `
+uniform vec4 uInk; // outer: (d numerator, d denominator, S factor); inner in uInk2
+uniform vec4 uInk2;
+float sum24(vec4 t) { return t.x + t.y * 256.0 + t.z * 65536.0; }
+float ink(float d, float S, float n, vec4 k) {
+  // d * k.x / k.y  +  S * k.z / (100 n), rounded half up
+  float dn = d * k.x;
+  float q1 = floor(dn / k.y);
+  float r1 = dn - q1 * k.y;
+  if (r1 < 0.0) { q1 -= 1.0; r1 += k.y; }
+  if (r1 >= k.y) { q1 += 1.0; r1 -= k.y; }
+  float num = S * k.z;
+  float den = 100.0 * n;
+  float q2 = floor(num / den);
+  float r2 = num - q2 * den;
+  if (r2 < 0.0) { q2 -= 1.0; r2 += den; }
+  if (r2 >= den) { q2 += 1.0; r2 -= den; }
+  // frac = r1/k.y + r2/den ; compare 2*(r1*den + r2*k.y) against k.y*den
+  float lhs = 2.0 * (r1 * den + r2 * k.y);
+  float rhs = k.y * den;
+  // lhs >= 2*rhs means the fractions summed past a whole: one unit, then round
+  float whole = lhs >= 2.0 * rhs ? 1.0 : 0.0;
+  float rest = lhs - whole * 2.0 * rhs;
+  return q1 + q2 + whole + (rest >= rhs ? 1.0 : 0.0);
+}
+void main() {
+  vec2 l = floor(vLocal);
+  vec4 c = bytes(at(uComp, uCompSize, vC.xy + l));
+  vec4 s = bytes(at(uShapes, uShapesSize, vB.xy + l));
+  if (s.z != 1.0 && s.z != 2.0) { gl_FragColor = c / 255.0; return; }
+  // the tile's sums (pass B), three texels at its index
+  vec2 si = vec2(vA.x, 0.0);
+  vec4 t0 = bytes(at(uSums, uSumsSize, si));
+  vec4 t1 = bytes(at(uSums, uSumsSize, si + vec2(1.0, 0.0)));
+  vec4 t2 = bytes(at(uSums, uSumsSize, si + vec2(2.0, 0.0)));
+  float n = t0.w + t1.w * 256.0 + t2.w * 65536.0;
+  if (n == 0.0) { gl_FragColor = c / 255.0; return; }
+  vec4 k = s.z == 1.0 ? uInk : uInk2;
+  vec3 o = vec3(ink(c.r, sum24(t0), n, k), ink(c.g, sum24(t1), n, k), ink(c.b, sum24(t2), n, k));
+  gl_FragColor = vec4(o, c.w) / 255.0;
+}`;
+
+/* -- the compositor --------------------------------------------------------- */
+
+/** One tile to compose: its two plates (conformed, fw x fh), the job. */
+export interface GpuTile {
+  a: Pixels;
+  b: Pixels;
+  job: BoundaryJob;
+}
+
+function compile(gl: WebGLRenderingContext, vs: string, fs: string): WebGLProgram {
+  const mk = (t: number, src: string) => {
+    const s = gl.createShader(t)!;
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(`tiles3gpu: shader: ${gl.getShaderInfoLog(s)}`);
+    return s;
+  };
+  const p = gl.createProgram()!;
+  gl.attachShader(p, mk(gl.VERTEX_SHADER, vs));
+  gl.attachShader(p, mk(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(`tiles3gpu: link: ${gl.getProgramInfoLog(p)}`);
+  return p;
+}
+
+function texture(gl: WebGLRenderingContext, w: number, h: number, data: Uint8Array | null): WebGLTexture {
+  const t = gl.createTexture()!;
+  gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return t;
+}
+
+/** Packs fixed-size tiles into one atlas upload. */
+function atlas(tiles: Uint8Array[], fw: number, fh: number, cols: number): { data: Uint8Array; w: number; h: number } {
+  const rows = Math.max(1, Math.ceil(tiles.length / cols));
+  const w = fw * cols, h = fh * rows;
+  const data = new Uint8Array(w * h * 4);
+  tiles.forEach((t, k) => {
+    const ox = (k % cols) * fw, oy = Math.floor(k / cols) * fh;
+    for (let y = 0; y < fh; y++) data.set(t.subarray(y * fw * 4, (y + 1) * fw * 4), ((oy + y) * w + ox) * 4);
+  });
+  return { data, w, h };
+}
+
+/** THE COMPOSITOR on a WebGL1 context: `compose` draws a batch of tiles and
+ *  reads them back (the parity gate's use; the game's will draw into textures). */
+export class GpuBoundaries {
+  private gl: WebGLRenderingContext;
+  private pA: WebGLProgram;
+  private pB: WebGLProgram;
+  private pC: WebGLProgram;
+  private buf: WebGLBuffer;
+  readonly stats = { tiles: 0, ms: 0 };
+  constructor(gl: WebGLRenderingContext, private sheets: PatternSheets) {
+    this.gl = gl;
+    this.pA = compile(gl, VERT, FRAG_A);
+    this.pB = compile(gl, VERT, FRAG_B.replace("__FH__", String(sheets.fh)).replace("__FW__", String(sheets.fw)));
+    this.pC = compile(gl, VERT, FRAG_C);
+    this.buf = gl.createBuffer()!;
+  }
+
+  /** Compose `tiles` (all `supported`), answering one raster each. */
+  compose(tiles: GpuTile[]): Pixels[] {
+    const gl = this.gl, { fw, fh, tone } = this.sheets;
+    const t0 = performance.now();
+    const N = tiles.length;
+    if (!N) return [];
+    const cols = Math.max(1, Math.min(32, Math.floor(4096 / fw)));
+    // inputs: plates (two per tile), shapes and frames (deduplicated)
+    const plates: Uint8Array[] = [];
+    const shapeIdx = new Map<string, number>(), shapes: Uint8Array[] = [];
+    const frameIdx = new Map<number, number>(), frames: Uint8Array[] = [];
+    const per = tiles.map((t) => {
+      const ia = plates.push(new Uint8Array(t.a.data.buffer, t.a.data.byteOffset, t.a.data.byteLength)) - 1;
+      const ib = plates.push(new Uint8Array(t.b.data.buffer, t.b.data.byteOffset, t.b.data.byteLength)) - 1;
+      const sk = shapeKey(t.job);
+      let is = shapeIdx.get(sk);
+      if (is === undefined) { is = shapes.push(shapeOf(this.sheets, t.job)) - 1; shapeIdx.set(sk, is); }
+      let iff = frameIdx.get(t.job.frame);
+      if (iff === undefined) { iff = frames.push(frameTile(this.sheets, t.job.frame)) - 1; frameIdx.set(t.job.frame, iff); }
+      return { ia, ib, is, iff, seam: t.job.seam ? 1 : 0 };
+    });
+    const org = (k: number) => [(k % cols) * fw, Math.floor(k / cols) * fh];
+    const P = atlas(plates, fw, fh, cols), S = atlas(shapes, fw, fh, cols), F = atlas(frames, fw, fh, cols);
+    const lut = new Uint8Array(256 * 4);
+    for (let v = 0; v < 256; v++) { lut[v * 4] = rint(v * tone); lut[v * 4 + 3] = 255; }
+    const texP = texture(gl, P.w, P.h, P.data), texS = texture(gl, S.w, S.h, S.data), texF = texture(gl, F.w, F.h, F.data), texT = texture(gl, 256, 1, lut);
+    const outCols = cols, outRows = Math.ceil(N / outCols);
+    const CW = outCols * fw, CH = outRows * fh;
+    const texComp = texture(gl, CW, CH, null), texOut = texture(gl, CW, CH, null), texSums = texture(gl, N * 3, 1, null);
+    const fb = gl.createFramebuffer()!;
+    // vertex data: 6 verts per quad, 2+2+4+4+2 = 14 floats each
+    const quads = (rect: (k: number) => [number, number, number, number], local: (k: number) => [number, number]) => {
+      const v = new Float32Array(N * 6 * 14);
+      let o = 0;
+      for (let k = 0; k < N; k++) {
+        const [x0, y0, x1, y1] = rect(k);
+        const [lw, lh] = local(k);
+        const p = per[k];
+        const [ax, ay] = org(p.ia), [bx, by] = org(p.ib), [sx, sy] = org(p.is), [fx, fy] = org(p.iff), [cx, cy] = org(k);
+        const corner = (x: number, y: number, lx: number, ly: number) => {
+          v.set([x, y, lx, ly, ax, ay, bx, by, sx, sy, fx, fy, cx, cy], o);
+          o += 14;
+        };
+        corner(x0, y0, 0, 0); corner(x1, y0, lw, 0); corner(x0, y1, 0, lh);
+        corner(x1, y0, lw, 0); corner(x1, y1, lw, lh); corner(x0, y1, 0, lh);
+      }
+      return v;
+    };
+    const run = (prog: WebGLProgram, target: WebGLTexture, tw: number, th: number, verts: Float32Array, bind: () => void) => {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, target, 0);
+      gl.viewport(0, 0, tw, th);
+      gl.disable(gl.BLEND);
+      gl.disable(gl.DEPTH_TEST);
+      gl.disable(gl.SCISSOR_TEST);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.useProgram(prog);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
+      gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STREAM_DRAW);
+      const attr = (name: string, size: number, off: number) => {
+        const loc = gl.getAttribLocation(prog, name);
+        if (loc < 0) return;
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 14 * 4, off * 4);
+      };
+      attr("aPos", 2, 0); attr("aLocal", 2, 2); attr("aA", 4, 4); attr("aB", 4, 8); attr("aC", 2, 12);
+      gl.uniform2f(gl.getUniformLocation(prog, "uTarget"), tw, th);
+      const tex = (name: string, unit: number, t: WebGLTexture, w: number, h: number) => {
+        gl.activeTexture(gl.TEXTURE0 + unit);
+        gl.bindTexture(gl.TEXTURE_2D, t);
+        gl.uniform1i(gl.getUniformLocation(prog, name), unit);
+        const sz = gl.getUniformLocation(prog, name + "Size");
+        if (sz) gl.uniform2f(sz, w, h);
+      };
+      tex("uPlates", 0, texP, P.w, P.h); tex("uShapes", 1, texS, S.w, S.h); tex("uFrames", 2, texF, F.w, F.h); tex("uTone", 3, texT, 256, 1);
+      bind();
+      gl.drawArrays(gl.TRIANGLES, 0, verts.length / 14);
+    };
+    const bindTex = (prog: WebGLProgram, name: string, unit: number, t: WebGLTexture, w: number, h: number) => {
+      gl.activeTexture(gl.TEXTURE0 + unit);
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.uniform1i(gl.getUniformLocation(prog, name), unit);
+      const sz = gl.getUniformLocation(prog, name + "Size");
+      if (sz) gl.uniform2f(sz, w, h);
+    };
+    // A: composite. aC.y carries the seam flag; aC.xy's composite origin is not read.
+    const tileRect = (k: number): [number, number, number, number] => { const [x, y] = org(k); return [x, y, x + fw, y + fh]; };
+    const vA = quads(tileRect, () => [fw, fh]);
+    for (let k = 0; k < N; k++) for (let c = 0; c < 6; c++) vA[(k * 6 + c) * 14 + 13] = per[k].seam;
+    run(this.pA, texComp, CW, CH, vA, () => {});
+    // B: sums, three texels per tile at x = 3k
+    const vB = quads((k) => [3 * k, 0, 3 * k + 3, 1], () => [3, 1]);
+    run(this.pB, texSums, N * 3, 1, vB, () => bindTex(this.pB, "uComp", 4, texComp, CW, CH));
+    // C: ink. aA.x carries the tile's sums texel (3k).
+    const vC = quads(tileRect, () => [fw, fh]);
+    for (let k = 0; k < N; k++) for (let c = 0; c < 6; c++) vC[(k * 6 + c) * 14 + 4] = 3 * k;
+    run(this.pC, texOut, CW, CH, vC, () => {
+      bindTex(this.pC, "uComp", 4, texComp, CW, CH);
+      bindTex(this.pC, "uSums", 5, texSums, N * 3, 1);
+      // outer: 0.4 d = 2/5 d, 0.21 S/n ; inner: 0.55 d = 11/20 d, 0.27 S/n
+      gl.uniform4f(gl.getUniformLocation(this.pC, "uInk"), 2, 5, 21, 0);
+      gl.uniform4f(gl.getUniformLocation(this.pC, "uInk2"), 11, 20, 27, 0);
+    });
+    const raw = new Uint8Array(CW * CH * 4);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.readPixels(0, 0, CW, CH, gl.RGBA, gl.UNSIGNED_BYTE, raw);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    for (const t of [texP, texS, texF, texT, texComp, texOut, texSums]) gl.deleteTexture(t);
+    gl.deleteFramebuffer(fb);
+    const out: Pixels[] = [];
+    for (let k = 0; k < N; k++) {
+      const [ox, oy] = org(k);
+      const px = newPixels(fw, fh);
+      for (let y = 0; y < fh; y++) px.data.set(raw.subarray(((oy + y) * CW + ox) * 4, ((oy + y) * CW + ox + fw) * 4), y * fw * 4);
+      out.push(px);
+    }
+    this.stats.tiles += N;
+    this.stats.ms += performance.now() - t0;
+    return out;
+  }
+}
+
+/** The ink constants the shader's integer form assumes — a change to the CPU's
+ *  outline constants must change FRAG_C with them, and the gate says so. */
+export function inkConstantsHold(): boolean {
+  const eq = (a: number, b: number) => Math.abs(a - b) < 1e-12;
+  return eq(1 - EDGE_ALPHA, 2 / 5) && eq(EDGE_SHADE * EDGE_ALPHA, 0.21) && eq(1 - EDGE_ALPHA_IN, 11 / 20) && eq(EDGE_SHADE_IN * EDGE_ALPHA_IN, 0.27);
+}
+
+/* -- the parity gate --------------------------------------------------------- */
+
+/** Every boundary job the compose worker is handed, for the parity gate
+ *  (`__ml.gpuParity`); bounded, newest kept. */
+export const seenJobs = new Map<string, BoundaryJob>();
+export function noteJob(j: ComposeJob): void {
+  if (j.kind !== "boundary") return;
+  if (seenJobs.size >= 6000) seenJobs.delete(seenJobs.keys().next().value as string);
+  seenJobs.set(j.key, j);
+}
+
+async function decodeUrl(url: string): Promise<Pixels> {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${r.status} ${url}`);
+  const bmp = await createImageBitmap(await r.blob());
+  const cv = new OffscreenCanvas(bmp.width, bmp.height);
+  const ctx = cv.getContext("2d", { willReadFrequently: true }) as OffscreenCanvasRenderingContext2D;
+  ctx.drawImage(bmp, 0, 0);
+  const id = ctx.getImageData(0, 0, bmp.width, bmp.height);
+  bmp.close();
+  return { w: id.width, h: id.height, data: new Uint8ClampedArray(id.data) };
+}
+
+export interface ParityReport {
+  jobs: number;
+  unsupported: number;
+  failedInputs: number;
+  compared: number;
+  identical: number;
+  tilesDiffering: number;
+  texelsDiffering: number;
+  maxDiff: number;
+  gpuMs: number;
+  examples: { key: string; texels: number; first: { x: number; y: number; cpu: number[]; gpu: number[] } }[];
+}
+
+/** THE GATE: every boundary job seen, composed by the CPU (the worker's own
+ *  functions over the same decoded files) and by the GPU, compared byte for
+ *  byte — all four channels, every texel, transparent ones included. */
+export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<ParityReport> {
+  const { buildPlatePixels } = await import("./tiles3draw");
+  const jobs = [...seenJobs.values()].slice(-max);
+  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, examples: [] };
+  const src = new Map<string, Promise<Pixels>>();
+  const plate = async (s: BoundaryJob["a"]) => {
+    let p = src.get(s.url);
+    if (!p) src.set(s.url, (p = decodeUrl(s.url)));
+    return buildPlatePixels(sheets, { kind: s.kind, path: s.path, topOnly: s.topOnly, rise: s.rise }, await p, s.wall);
+  };
+  const tiles: GpuTile[] = [];
+  const cpu: Pixels[] = [];
+  for (const j of jobs) {
+    if (!supported(j)) { rep.unsupported++; continue; }
+    let a: Pixels, b: Pixels;
+    try { [a, b] = await Promise.all([plate(j.a), plate(j.b)]); } catch { rep.failedInputs++; continue; }
+    tiles.push({ a, b, job: j });
+    cpu.push(withEdge(sheets, buildBoundaryPixels(sheets, { maskFrame: j.frame, topOnly: j.topOnly, noWall: j.noWall, slope: j.slope }, a, b, j.seam), j.edge));
+  }
+  const canvas = document.createElement("canvas");
+  const gl = canvas.getContext("webgl", { premultipliedAlpha: false, antialias: false });
+  if (!gl) throw new Error("tiles3gpu: no WebGL");
+  const gpu = new GpuBoundaries(gl, sheets);
+  const out: Pixels[] = [];
+  for (let i = 0; i < tiles.length; i += 256) out.push(...gpu.compose(tiles.slice(i, i + 256)));
+  rep.gpuMs = +gpu.stats.ms.toFixed(1);
+  for (let k = 0; k < tiles.length; k++) {
+    rep.compared++;
+    const c = cpu[k].data, g = out[k].data;
+    let n = 0, first: ParityReport["examples"][number]["first"] | null = null;
+    for (let i = 0; i < c.length; i += 4) {
+      const d = Math.max(Math.abs(c[i] - g[i]), Math.abs(c[i + 1] - g[i + 1]), Math.abs(c[i + 2] - g[i + 2]), Math.abs(c[i + 3] - g[i + 3]));
+      if (!d) continue;
+      n++;
+      rep.maxDiff = Math.max(rep.maxDiff, d);
+      if (!first) first = { x: (i / 4) % sheets.fw, y: Math.floor(i / 4 / sheets.fw), cpu: [c[i], c[i + 1], c[i + 2], c[i + 3]], gpu: [g[i], g[i + 1], g[i + 2], g[i + 3]] };
+    }
+    if (!n) { rep.identical++; continue; }
+    rep.tilesDiffering++;
+    rep.texelsDiffering += n;
+    if (rep.examples.length < 8 && first) rep.examples.push({ key: tiles[k].job.key, texels: n, first });
+  }
+  return rep;
+}

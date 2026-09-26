@@ -1,3 +1,4 @@
+import { gpuParity } from "../tiles3gpu";
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { trackGap, arrivalHz, remoteChaseRate } from "../remoterate";
@@ -8439,6 +8440,11 @@ export class WorldScene extends Phaser.Scene {
         }
         ctx.putImageData(im, 0, 0);
         return { png: cv.toDataURL("image/png"), items: o.items, owned, w: o.w, h: o.h, cam: [this.cameras.main.width, this.cameras.main.height], canvas: [this.game.canvas.width, this.game.canvas.height] };
+      },
+      gpuParity: async (max?: number) => {
+        const sheets = this.t3sheets;
+        if (!sheets) throw new Error("no pattern sheets yet");
+        return gpuParity(sheets, max);
       },
       turnWarm: () => ({ ...this.groundWarmStats, busy: this.groundWarm ? { k: this.groundWarm.k, at: this.groundWarm.at, of: this.groundWarm.todo.length, pass: this.groundWarm.pass } : null, done: Object.fromEntries(this.groundWarmDone), views: [...this.viewCache.keys()], resolvers: [...this.t3ViewCache.keys()], inflight: this.t3tex?.inflightCount() ?? -1 }),
       turnInfo: () => ({ turning: this.turning, viewRot: this.viewRot, ready: this.rotFx?.ready ?? false, settled: this.viewSettled(), spinGoal: this.spinGoal, spinAt: this.spinAt, ...this.turnLog, ...(this.rotFx?.timings ?? {}) }),

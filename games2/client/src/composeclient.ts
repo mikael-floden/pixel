@@ -9,6 +9,7 @@
  *  THE SWITCH IS A SWITCH, not a query parameter (an installed PWA has no URL
  *  bar): `ml-compose-worker` in localStorage, `__ml.composeWorker(on?)`.
  *  DEFAULT ON — the fallback is the same picture a frame later. */
+import { noteJob } from "./tiles3gpu";
 import type { PatternsDoc } from "./tiles3";
 import { gapBill, gapOn } from "./gapledger";
 import type { ComposeJob, Pixels, RemoteComposer } from "./tiles3draw";
@@ -115,6 +116,7 @@ export class ComposeWorker implements RemoteComposer {
    *  forty compositions costs one message. */
   compose(job: ComposeJob): void {
     if (!this.isReady || !this.w) return;
+    noteJob(job); // the GPU parity gate's sample (tiles3gpu.ts)
     this.batch.push(job);
     this.stats.queued++;
     if (this.flushQueued) return;
