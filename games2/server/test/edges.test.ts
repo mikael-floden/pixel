@@ -210,3 +210,26 @@ test("a plateau's outline painted in draw order is one closed line, one texel wi
   assert.ok(n > 500, `the outline is drawn (${n} texels)`);
   assert.deepEqual(bad, [], "no end (a hole) and no doubled texel anywhere on the loop");
 });
+
+test("a bridge is the ground continuing: no line where it meets the bank, a line on its sides over the water", { skip }, () => {
+  const t = resolver(-0.01);
+  // Banks at level 1 (x <= 1 and x >= 5), a river at level 0 between them, a bridge deck at level 1 across it on row 2.
+  const W = 7, H = 5;
+  const lvl = (x: number, y: number) => (x <= 1 || x >= 5 ? 1 : 0);
+  const view = {
+    width: W,
+    height: H,
+    decks: [{ kind: "bridge", ground: "grey_stone", level: 1, cells: [2, 3, 4].map((x) => ({ x, y: 2 })) }],
+    levelAt: (x: number, y: number) => lvl(x, y),
+    groundAt: (x: number, y: number) => (x < 0 || y < 0 || x >= W || y >= H ? null : "grass"),
+  } as never;
+  const g = (x: number, y: number) => (x < 0 || y < 0 || x >= W || y >= H ? null : "grass");
+  const L = (x: number, y: number) => lvl(x, y);
+  assert.equal((t.edgeSet(g, L, 1, 2, view)?.top ?? 0) & EDGE_E, 0, "the bank meets the bridge: no line");
+  assert.equal((t.edgeSet(g, L, 1, 1, view)?.top ?? 0) & EDGE_E, EDGE_E, "the bank beside it drops to the water: a line");
+  assert.equal((t.edgeSet(g, L, 5, 2, view)?.top ?? 0) & EDGE_W, 0, "the far bank meets it too: no line");
+  const mid = t.deckTop(view, 3, 2, 1);
+  assert.equal(mid & (EDGE_N | EDGE_S), EDGE_N | EDGE_S, "the bridge's sides over the water wear the line");
+  assert.equal(mid & (EDGE_W | EDGE_E), 0, "and none along the bridge");
+  assert.equal(t.deckTop(view, 2, 2, 1) & EDGE_W, 0, "nor where it lands on the bank");
+});

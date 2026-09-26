@@ -1543,6 +1543,10 @@ export interface Tiles3DeckCell {
   /** The composed transition this slab cell wears OVER its surface, at its own
    *  level and paste point (`Tiles3Data.deckBoundary`). */
   boundary?: Tiles3Boundary;
+  /** THE OUTLINE ON THE SLAB'S TOP (tiles3draw `edgeCode`: `deckTop` and its
+   *  neighbours' lines, `deckNb`) — a bridge or a cave lid only; "" or absent
+   *  for none. */
+  edge?: string;
 }
 
 export interface Tiles3Window {
@@ -2448,12 +2452,28 @@ export class Tiles3 {
    *  ground beside it, is a hard edge and wears one ("I don't want it when it
    *  connects to the ground ... but the side of the slope is still a hard edge
    *  and need the border"; not a blanket "no line on a 100% ramp"). */
-  edgeSet(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number): CellEdges | undefined {
+  edgeSet(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number, view?: World3View): CellEdges | undefined {
     const gr = g(x, y);
     if (!gr || LIQUID_TILE_GROUNDS.includes(gr)) return undefined;
     const EPS = 0.05;
     const me = [0, 1, 2, 3].map((k) => this.cornerHeight(g, L, x, y, k) as number);
-    const h = (nx: number, ny: number, k: number): number | null => this.cornerHeight(g, L, nx, ny, k);
+    /* A BRIDGE IS THE GROUND CONTINUING (maintainer 2026-09-26: "A bridge from
+     * the players perspective is just the ground continuing so no border should
+     * be drawn separating the bridge from the ground"): a neighbour carrying a
+     * deck answers the surface nearest this corner — the deck where it meets
+     * this ground flush, the ground under it otherwise. The deck's own outer
+     * edges are the deck's. */
+    const h = (nx: number, ny: number, k: number, mine?: number): number | null => {
+      const c = this.cornerHeight(g, L, nx, ny, k);
+      const dis = view && c !== null ? this.decksOn(view, nx, ny) : undefined;
+      if (!dis || mine === undefined) return c;
+      let best = c as number;
+      for (const j of dis) {
+        const d = view!.decks[j].level;
+        if (Math.abs(d - mine) < Math.abs(best - mine)) best = d;
+      }
+      return best;
+    };
     let top = 0;
     // [bit, my corners, neighbour, its corners at the same two points, a back edge]
     const edges: [number, number, number, number, number, number, number, boolean][] = [
@@ -2463,8 +2483,8 @@ export class Tiles3 {
       [EDGE_E, 1, 3, x + 1, y, 0, 2, false],
     ];
     for (const [bit, c1, c2, nx, ny, n1, n2, back] of edges) {
-      const a = h(nx, ny, n1);
-      const b = h(nx, ny, n2);
+      const a = h(nx, ny, n1, me[c1]);
+      const b = h(nx, ny, n2, me[c2]);
       if (a === null || b === null) continue; // the map's edge draws nothing
       const d1 = me[c1] - a;
       const d2 = me[c2] - b;
@@ -2474,8 +2494,8 @@ export class Tiles3 {
     const lo: [number, number, number] = [EDGE_NONE, EDGE_NONE, EDGE_NONE];
     // A corner's vertical: the face that meets it on each side stands clear of its neighbour.
     const vert = (i: 0 | 1 | 2, k: number, ax: number, ay: number, ak: number, bx: number, by: number, bk: number) => {
-      const a = h(ax, ay, ak);
-      const b = h(bx, by, bk);
+      const a = h(ax, ay, ak, me[k]);
+      const b = h(bx, by, bk, me[k]);
       if (a === null || b === null) return;
       if (me[k] > a + EPS && me[k] > b + EPS) lo[i] = Math.min(a, b); // to the LOWER ground: the cell in front hides the rest (his green circles 2026-09-26, a riser corner stopping short of the step below)
     };
@@ -2493,7 +2513,7 @@ export class Tiles3 {
    *  cells are ramps), so each cell carries the lines of its eight same-level
    *  neighbours, a ramp's incline with them. "" when none has one — decided
    *  without asking them when the 5x5 round the cell is all one level. */
-  edgeNb(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number): string {
+  edgeNb(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number, view?: World3View): string {
     const z = L(x, y);
     let mixed = false;
     for (let dy = -2; dy <= 2 && !mixed; dy++) for (let dx = -2; dx <= 2 && !mixed; dx++) if (g(x + dx, y + dy) && L(x + dx, y + dy) !== z) mixed = true;
@@ -2503,8 +2523,13 @@ export class Tiles3 {
     for (let i = 0; i < EDGE_NB_STEPS.length; i++) {
       const [dx, dy] = EDGE_NB_STEPS[i];
       const nx = x + dx, ny = y + dy;
+      const deck = view ? this.deckTop(view, nx, ny, z) : 0;
+      if (deck) {
+        out.push(`${i}.${deck}`);
+        continue;
+      }
       if (!g(nx, ny) || L(nx, ny) !== z) continue;
-      const top = this.edgeSet(g, L, nx, ny)?.top ?? 0;
+      const top = this.edgeSet(g, L, nx, ny, view)?.top ?? 0;
       if (!top) continue;
       const geo = this.edgeGeom(g, L, nx, ny);
       if (geo === null) continue;
@@ -3012,7 +3037,7 @@ export class Tiles3 {
     }
     if (zl === 0) {
       this.dress(cell, this.wangSurface(view, frame, g, L, gr, x, y, zl), false);
-      this.outline(cell, g, L);
+      this.outline(cell, g, L, view);
       return cell;
     }
 
@@ -3114,15 +3139,15 @@ export class Tiles3 {
      * unexposed cell never paints a wall band onto flat ground. */
     this.dress(cell, this.wangSurface(view, frame, g, L, gr, x, y, zl), true);
     cell.dressed = dressed;
-    this.outline(cell, g, L);
+    this.outline(cell, g, L, view);
     return cell;
   }
 
   /** The cell's outline, a GAME rule (with the foot; the parity path draws none). */
-  private outline(cell: Tiles3Cell, g: (x: number, y: number) => string | null, L: (x: number, y: number) => number): void {
+  private outline(cell: Tiles3Cell, g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, view?: World3View): void {
     if (!this.data.footBoundary) return;
-    const e = this.edgeSet(g, L, cell.x, cell.y);
-    const nb = this.edgeNb(g, L, cell.x, cell.y);
+    const e = this.edgeSet(g, L, cell.x, cell.y, view);
+    const nb = this.edgeNb(g, L, cell.x, cell.y, view);
     if (e) cell.edge = nb ? { ...e, nb } : e;
     else if (nb) cell.edge = { top: 0, lo: [EDGE_NONE, EDGE_NONE, EDGE_NONE], nb };
   }
@@ -3476,9 +3501,9 @@ export class Tiles3 {
     const pa = opts?.plateOf?.(sa) ?? this.plateFor(sa, x, y);
     const pb = opts?.plateOf?.(sb) ?? this.plateFor(sb, x, y);
     // The cell's outline rides its composed tile (a deck's slab draws none: `plateOf`).
-    const edgeSet = this.data.footBoundary && !opts?.plateOf ? this.edgeSet(g, L, x, y) : undefined;
+    const edgeSet = this.data.footBoundary && !opts?.plateOf ? this.edgeSet(g, L, x, y, view) : undefined;
     // The top's edges (bits 0-3) and, above them, the riser's verticals (tiles3draw `withEdge`).
-    const edgeNb = this.data.footBoundary && !opts?.plateOf ? this.edgeNb(g, L, x, y) : "";
+    const edgeNb = this.data.footBoundary && !opts?.plateOf ? this.edgeNb(g, L, x, y, view) : "";
     // tiles3draw `edgeCode`: the top's edges and the riser's verticals, then the neighbours' lines through its corners.
     const own = edgeSet ? edgeSet.top | ((edgeSet.lo[0] !== EDGE_NONE ? 1 : 0) | (edgeSet.lo[1] !== EDGE_NONE ? 2 : 0) | (edgeSet.lo[2] !== EDGE_NONE ? 4 : 0)) << 4 : 0;
     const edgeTop = own || edgeNb ? `${own}${edgeNb ? "n" + edgeNb : ""}` : "";
@@ -4093,6 +4118,64 @@ export class Tiles3 {
     return a;
   }
 
+  /** Whether a deck that wears the outline (a bridge, a cave lid — ground you
+   *  walk on; a roof is a building's and keeps its own look) stands on (x, y)
+   *  at level `dl`. */
+  private linedDeckAt(view: World3View, x: number, y: number, dl: number): boolean {
+    if (x < 0 || y < 0 || x >= view.width || y >= view.height) return false;
+    const dis = this.decksOn(view, x, y);
+    if (dis) for (const j of dis) if (Math.trunc(view.decks[j].level) === dl && view.decks[j].kind !== "roof") return true;
+    return false;
+  }
+
+  /** A SLAB'S TOP EDGES, as `CellEdges.top`: a line on each side standing over
+   *  lower ground (a bridge's side over the water), or a back side under
+   *  higher ground, and NONE where the slab meets ground or more slab at its
+   *  own level — a bridge is the ground continuing (maintainer 2026-09-26:
+   *  "the bridge edge should have a border, but not where it connects with
+   *  the ground"). 0 where no lined deck stands at `dl`. */
+  deckTop(view: World3View, x: number, y: number, dl: number): number {
+    if (!this.linedDeckAt(view, x, y, dl)) return 0;
+    const EPS = 0.05;
+    const surf = (cx: number, cy: number): number | null => {
+      if (cx < 0 || cy < 0 || cx >= view.width || cy >= view.height) return null;
+      if (this.linedDeckAt(view, cx, cy, dl)) return dl;
+      let best = view.levelAt(cx, cy);
+      const dis = this.decksOn(view, cx, cy);
+      if (dis) for (const j of dis) if (Math.abs(view.decks[j].level - dl) < Math.abs(best - dl)) best = view.decks[j].level;
+      return best;
+    };
+    let top = 0;
+    for (const [bit, nx, ny, back] of [
+      [EDGE_N, x, y - 1, true],
+      [EDGE_W, x - 1, y, true],
+      [EDGE_S, x, y + 1, false],
+      [EDGE_E, x + 1, y, false],
+    ] as const) {
+      const n = surf(nx, ny);
+      if (n === null) continue;
+      if (n < dl - EPS || (back && n > dl + EPS)) top |= bit;
+    }
+    return top;
+  }
+
+  /** The lines of a slab cell's eight neighbours at its level (`CellEdges.nb`
+   *  format): more slab, or flat ground at the slab's level — where a bridge's
+   *  side runs on into the bank's rim, the two lines meet at the vertex. */
+  deckNb(view: World3View, x: number, y: number, dl: number): string {
+    const g = (cx: number, cy: number): string | null => (cx < 0 || cy < 0 || cx >= view.width || cy >= view.height ? null : view.groundAt(cx, cy));
+    const L = (cx: number, cy: number): number => (cx < 0 || cy < 0 || cx >= view.width || cy >= view.height ? 0 : view.levelAt(cx, cy));
+    const out: string[] = [];
+    for (let i = 0; i < EDGE_NB_STEPS.length; i++) {
+      const [dx, dy] = EDGE_NB_STEPS[i];
+      const nx = x + dx, ny = y + dy;
+      let top = this.deckTop(view, nx, ny, dl);
+      if (!top && g(nx, ny) && L(nx, ny) === dl && this.edgeGeom(g, L, nx, ny) === 0) top = this.edgeSet(g, L, nx, ny, view)?.top ?? 0;
+      if (top) out.push(`${i}.${top}`);
+    }
+    return out.join("_");
+  }
+
   private deckCells(view: World3View, frame: Frame): Tiles3DeckCell[] {
     const out: Tiles3DeckCell[] = [];
     view.decks.forEach((dk, di) => {
@@ -4232,6 +4315,10 @@ export class Tiles3 {
       });
       if (b) boundary = b.boundary;
     }
+    const dTop = this.data.footBoundary ? this.deckTop(view, x, y, dl) : 0;
+    const dNb = this.data.footBoundary && this.linedDeckAt(view, x, y, dl) ? this.deckNb(view, x, y, dl) : "";
+    const edge = dTop || dNb ? `${dTop}${dNb ? "n" + dNb : ""}` : "";
+    if (edge && boundary) boundary = { ...boundary, edge };
     return {
       deck: di,
       kind: dk.kind ?? null,
@@ -4256,6 +4343,7 @@ export class Tiles3 {
       surfaceMember: p.memberIndex,
       surfaceY: columnY(frame, x, y, dl),
       ...(boundary ? { boundary } : {}),
+      ...(edge ? { edge } : {}),
     };
   }
 }

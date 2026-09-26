@@ -3154,7 +3154,21 @@ export class Tiles3Textures {
     // A slab whose surface did not resolve draws its courses alone — the cap
     // tile, the pre-fix look — never a hole.
     if (d.surface && d.ground) {
-      const key = this.plate({ kind: d.surface.kind, path: d.surface.path, topOnly: true }, d.ground);
+      const art = { kind: d.surface.kind, path: d.surface.path, topOnly: true } as PlateLike;
+      let key = this.plate(art, d.ground);
+      // A bridge's or a cave lid's outline (tiles3 `deckTop`), baked like a ground top's.
+      if (key && d.edge) {
+        const p = edgeParts(d.edge);
+        const vkey = this.variantKey(key, d.edge, "e");
+        const plain = key;
+        key =
+          this.ensureHit(vkey) ??
+          this.ensure(vkey, () => {
+            const base = this.platePixels(art, d.ground);
+            return base ? edgeTopPixels(this.o.sheets, base, p.mask, undefined, 0, p.nb) : null;
+          }) ??
+          plain;
+      }
       if (key) ops.push({ key, x: d.sx, y: d.surfaceY, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "deck" });
     }
     /* ...AND ITS TRANSITION OVER THAT, top-face-only at the slab's own level
