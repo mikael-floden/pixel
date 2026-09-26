@@ -33,6 +33,7 @@ is simultaneously the product and the communication channel.
 | [`music/`](music/) | Background score — ElevenLabs Music; every track ships beat-grid/section/key metadata so the game can sync SFX to it | [`music/README.md`](music/README.md) |
 | [`items/`](items/) | Items — everything with an item-type tag on PixelLab (`MISC`, `SOUL`, `CONSUMABLE`, `SWORD`, `BOW`, `WAND`, `ARMOR`), with game metadata per item | [`items/README.md`](items/README.md) |
 | [`lore/`](lore/) | The story — the GM-facing "red line" backbone, player chapters, and per-entity lore for every other domain, published as `lore/lore.json` | [`lore/README.md`](lore/README.md) |
+| [`effects/`](effects/) | Every spell, attack, item and monster effect — GLSL shaders whose look grows with a level 1-10, a runtime the game imports and a review viewer the wiki embeds | [`effects/README.md`](effects/README.md) |
 | [`monsters/`](monsters/) | Monsters — everything tagged `MONSTER` on PixelLab, with canonical idle/walk/angry/attack/die states | [`monsters/README.md`](monsters/README.md) |
 | [`games2/`](games2/) | The game itself — Colyseus server + Phaser client, consumer of all art domains (shared by several agents and their assistants) | [`games2/README.md`](games2/README.md) |
 | [`wiki/`](wiki/) | The in-game wiki — browse every asset, rate/approve/tune (maintainer's control room) | [`wiki/README.md`](wiki/README.md) |
