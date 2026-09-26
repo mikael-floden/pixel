@@ -1,21 +1,22 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-26T06:43:13+00:00",
+  "updated_at": "2026-09-26T09:33:33+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED — CACHE WORLD RENDERING (his order 2026-09-26; his choice 'Same, plus save to disk'; his rule 'only if it's faster to read the cache from disk VS redrawing the image'): a Settings->Dev button, OFF by default (off = today's code path exactly). The phone keeps the 8x8-cell ground tiles it has drawn — taken on the GPU from the ground texture once final (measured pixel-exact on 6 tiles, 0.1-0.2 ms a take), drawn last over their diamonds, a cell's paint skipped when every tile its art reaches is cached; an edit drops only the tiles it reaches; per view orientation; 96 MB cap. MEASURED per tile on his screen: redraw 6.8 ms of frame vs 0.5 from disk (0.4 upload + 0.1 draw, + ~25 ms off the frame), ~0.1 from memory; 10.7 KB lossless a tile on disk (~26 MB the island). WorldScene.ts is also claimed by games (boundary slopes): my hooks are additive and switch-gated, announced on their board, one push keeping both intents (the precedent games-assistant set with me today). || ALSO IN FLIGHT: the fog fix (ambient mount/zonefield/masklattice) waits on its gates and the full suite.",
+    "unit": "CLAIMED — CACHE WORLD RENDERING + the DISK VS DRAW test (his orders 2026-09-26: 'Cache world rendering' Settings->Dev, off by default; 'HOW DO WE TEST IF YOU DID AN IMPROVEMENT ON MY PHONE?' / 'I WANT TO KNOW IF ITS FASTER TO DRAW OR LOAD FROM DISK?!'). (1) A Settings->Dev button 'Disk vs draw test': one tap draws the ground tiles nearest the view into the spare texture (the live ground and ledgers untouched), saves them to this phone's disk and loads them back, timing each step on HIS phone, and checks the pictures come back texel for texel; result in the chat and the beacon (wb* counts). (2) The memory cache itself ships only when a full paint with it equals one without it texel for texel — the headless check currently shows the STREAMED ground differing from a full paint at water-edge seams (a 1-texel shift), which the cache would freeze; bisecting (compose worker audit / worker off). WorldScene.ts hooks stay additive and switch-gated.",
     "files": [
+      "games2/client/src/worldcache.ts",
+      "games2/client/src/worldcachegl.ts",
+      "games2/client/src/wcbench.ts",
+      "games2/server/test/worldcache.test.ts",
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/docs/perf.md",
       "games2/ambient/runtime/mount.ts",
       "games2/ambient/runtime/masklattice.ts",
       "games2/ambient/runtime/zonefield.ts",
       "games2/server/test/masklattice.test.ts",
-      "games2/ambient/README.md",
-      "games2/docs/perf.md",
       "games2/server/test/zonefield.test.ts",
-      "games2/client/src/worldcache.ts",
-      "games2/server/test/worldcache.test.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/client/src/worldcachegl.ts"
+      "games2/ambient/README.md"
     ]
   },
   "progress": {
