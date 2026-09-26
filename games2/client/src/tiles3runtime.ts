@@ -501,7 +501,10 @@ export const TILES3_DOCS = {
   patterns: "tiles/patterns/index.json",
   review: "tiles/review/manifest.json",
   fades: "tiles/fades/index.json",
-  slopes: "tiles/slopes/index.json",
+  /* NO tiles/slopes/index.json: the slope library is retired (tiles c637189626)
+   * — the game composes every ramp from the cell's own plate. A document here is
+   * fetched on every world load, so a retired one is a permanent 404, and the
+   * fast lane's gate (verify-fastbundle) refuses to publish past it. */
   /** His reviewed detail library (flavour "detail" sheets, one motif centred
    *  on its own ground) — the detail pool reads it against his `#top`
    *  verdicts. In the image: ship-tiles3 copies every document the closure
@@ -554,7 +557,7 @@ export function tiles3DataFrom(
     wallSets: (wallSetsDoc as unknown as { pools?: Record<string, { cost: number; tiles: string[] }[]> }).pools,
     basePromotions: docs.basePromotions?.overrides,
     fades: docs.fades as FadesDoc | undefined,
-    slopes: docs.slopes as SlopesDoc | undefined,
+    slopes: undefined, // the retired library (TILES3_DOCS): every ramp is composed
     tops: docs.tops as TopsDoc | undefined,
     topWallOverrides: docs.topWalls?.overrides,
     topOverrides: docs.tileTops?.overrides,
