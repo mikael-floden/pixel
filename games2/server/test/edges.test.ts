@@ -10,7 +10,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { EDGE_E, EDGE_N, EDGE_NONE, EDGE_S, EDGE_W, Tiles3 } from "../../client/src/tiles3.js";
-import { EDGE_ALPHA, EDGE_ALPHA_IN, courseEdgeBits, edgeCoursePixels, edgeTopPixels, patternSheetPaths, patternSheets, type Pixels } from "../../client/src/tiles3draw.js";
+import { EDGE_ALPHA, EDGE_ALPHA_IN, EDGE_SHADE, EDGE_SHADE_IN, courseEdgeBits, edgeCoursePixels, edgeTopPixels, patternSheetPaths, patternSheets, type Pixels } from "../../client/src/tiles3draw.js";
 // @ts-expect-error plain mjs
 import { imgRGBA } from "../../scripts/imagelib.mjs";
 
@@ -99,8 +99,9 @@ test("the ink: the chosen edges only, the outer line on the last texel of art an
   // A white top face in the library diamond, nothing else.
   const white: Pixels = { w: S.fw, h: S.fh, data: new Uint8ClampedArray(S.fw * S.fh * 4) };
   for (let i = 0; i < S.fw * S.fh; i++) if (S.libTop[i] > 0) white.data.fill(255, i * 4, i * 4 + 4);
-  const OUT = Math.round(255 * (1 - EDGE_ALPHA) + 14 * EDGE_ALPHA);
-  const IN = Math.round(255 * (1 - EDGE_ALPHA_IN) + 14 * EDGE_ALPHA_IN);
+  // On an all-white raster the tile's mean is white, so the line is white darkened: the same RELATIVE shade on any ground.
+  const OUT = Math.round(255 * (1 - EDGE_ALPHA) + 255 * EDGE_SHADE * EDGE_ALPHA);
+  const IN = Math.round(255 * (1 - EDGE_ALPHA_IN) + 255 * EDGE_SHADE_IN * EDGE_ALPHA_IN);
   const at = (a: Pixels, x: number, y: number) => a.data[(y * a.w + x) * 4];
   const e = edgeTopPixels(S, white, EDGE_E);
   for (let x = 0; x < S.fw; x++) {
@@ -133,6 +134,10 @@ test("the ink: the chosen edges only, the outer line on the last texel of art an
   assert.equal(at(k, 32, 45), OUT);
   assert.equal(at(k, 31, 20), 255, "no crease above the bottom vertex");
   // The cap trimmed on the up-right edge: nothing above the diamond there, the up-left untouched.
+  // Relative, not absolute: on a mid-grey course the outer line is that grey darkened by the same share.
+  const grey: Pixels = { w: 64, h: 64, data: new Uint8ClampedArray(64 * 64 * 4).fill(128) };
+  for (let i = 3; i < grey.data.length; i += 4) grey.data[i] = 255;
+  assert.equal(at(edgeCoursePixels(S, grey, 1), 0, 30), Math.round(128 * (1 - EDGE_ALPHA) + 128 * EDGE_SHADE * EDGE_ALPHA));
   const t = edgeCoursePixels(S, course, 16);
   assert.equal(t.data[(5 * 64 + 40) * 4 + 3], 0);
   assert.equal(t.data[(5 * 64 + 20) * 4 + 3], 255);

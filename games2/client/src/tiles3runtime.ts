@@ -63,7 +63,7 @@ import { slopeLift,
   type PatternSheets,
   type TextureManagerLike,
   type Tiles3Blit,
-  type Tiles3Textures,
+  Tiles3Textures,
   type UrlRoute,
 } from "./tiles3draw";
 /* THE WALL SIGNATURES ARE BUNDLED, not fetched. They are generated from the
@@ -752,7 +752,7 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
     if (!cap?.path) return null;
     const k = artKey(cap.path);
     // The cap course with the outline's verticals, as the ground pass drew it.
-    return tex.exists(k) ? t3.edgedCourse(k, courseEdgeBits(cell, cell.level)) : null;
+    return tex.exists(k) ? owedCourse(t3, k, courseEdgeBits(cell, cell.level)) : null;
   }
   const art = cell.art;
   if (!art) return null;
@@ -761,10 +761,23 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
    * wall band back on the water this pass exists to keep clean. */
   if (art.kind === "conform" || art.topOnly) {
     const k = t3.plate(art, cell.ground);
-    return k ? t3.edgedTop(cell, k) : null; // the outline, as the ground pass draws it
+    return k ? owedTop(t3, cell, k) : null; // the outline, as the ground pass draws it
   }
   const k = plateKey(art, cell.ground);
-  return tex.exists(k) ? t3.edgedTop(cell, k) : null;
+  return tex.exists(k) ? owedTop(t3, cell, k) : null;
+}
+
+/** `edgedTop` for an occluder copy: NULL while the lined variant is owed
+ *  (`Tiles3Textures.lineOwed`), so the copy stays incomplete and is re-walked
+ *  when the art lands — never a plain copy frozen over the lined ground. */
+function owedTop(t3: Tiles3Textures, cell: Tiles3Cell, plain: string): string | null {
+  const k = t3.edgedTop(cell, plain);
+  return k === plain && Tiles3Textures.wantsTopLine(cell) && t3.lineOwed(plain) ? null : k;
+}
+/** `edgedCourse` for an occluder copy, owed the same way. */
+function owedCourse(t3: Tiles3Textures, plain: string, bits: number): string | null {
+  const k = t3.edgedCourse(plain, bits);
+  return k === plain && bits && t3.lineOwed(plain) ? null : k;
 }
 
 /** THE MAINTAINER'S SET ON A WALL'S CAP — the second image the occluder copy
@@ -795,7 +808,7 @@ export function dressKey(t3: Tiles3Textures, cell: Tiles3Cell): { key: string; x
   const art = cell.art;
   if (!art || art.kind === "liquid") return null;
   const plain = t3.plate(art, cell.ground);
-  const key = plain ? t3.edgedTop(cell, plain) : null; // the outline, as the ground pass draws it
+  const key = plain ? owedTop(t3, cell, plain) : null; // the outline, as the ground pass draws it
   // A RAISE HANGS ITS PLATE `rise` ROWS UP (tiles3draw slopeLift) — the same
   // anchor the ground pass paints it at. Without it this sprite landed on top
   // of the ground texture at the plain anchor, the sunk picture over the
@@ -883,9 +896,9 @@ export function faceKeyAt(
 /** The course WITH THE OUTLINE'S VERTICALS for this storey (tiles3draw
  *  `courseEdgeBits`), built by the live texture factory drawing into `tex` —
  *  the variant the ground pass draws, so an occluder copy matches it. */
-function edgedFace(tex: TextureManagerLike, cell: Tiles3Cell, key: string, storey: number): string {
+function edgedFace(tex: TextureManagerLike, cell: Tiles3Cell, key: string, storey: number): string | null {
   if (!cell.edge) return key;
   const t3 = liveTextures();
   if (!t3 || t3.textureManager !== tex) return key;
-  return t3.edgedCourse(key, courseEdgeBits(cell, storey));
+  return owedCourse(t3, key, courseEdgeBits(cell, storey));
 }

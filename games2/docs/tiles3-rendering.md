@@ -568,12 +568,20 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   BAKED into lined texture variants (key `|e<n>`, `|v<n>`, `|x<n>`: a new picture
   is a new key), so the ground pass and every occluder copy draw one raster
   and the outline costs zero fill (his phone is fill-bound; a per-pixel depth
-  outline was rejected for that). `edgeTopPixels`: per COLUMN, the OUTER line
-  (`EDGE_ALPHA` 0.7) on the last texel of art — a back edge's topmost opaque
-  texel (a plate's rounding and a ramp's lift included), a front edge's first
-  band texel under the rim (ground turning into wall) — and the INNER line
-  (`EDGE_ALPHA_IN` 0.35) one texel inside; one texel a column is what makes
-  two cells' lines meet at their shared vertex column. A riser in a plate's own
+  outline was rejected for that). THE INK IS THE TILE'S OWN MEAN COLOUR
+  darkened (`EDGE_SHADE` 0.35 at `EDGE_ALPHA` 0.6 outer, `EDGE_SHADE_IN` 0.6 at
+  `EDGE_ALPHA_IN` 0.45 inner: ~0.61 and ~0.82 of the tile's tone), his "less
+  extreme ... similar regardless of the background tile" (a fixed black ink
+  read heavy on sand, vanished on mud, and a dark art texel under it read as a
+  hole). `edgeTopPixels`: per COLUMN, the OUTER line on the last texel of art —
+  a back edge's topmost opaque texel (a plate's rounding and a ramp's lift
+  included), a front edge's first band texel under the rim (ground turning
+  into wall) — and the INNER line one texel inside; one texel a column is what
+  makes two cells' lines meet at their shared vertex column. A variant that
+  cannot be built yet (its plate not landed) is OWED for `EDGE_OWED_MS`
+  (`lineOwed`): the ground counts it in `plateRawFallbacks` so the drop ledger
+  repaints the cell, an occluder copy answers null so it is re-walked — a
+  plain draw left there was a permanent gap in the line (his screenshot). A riser in a plate's own
   band and a ramp's side faces take their verticals there too (`verts`, bits
   4-6 of a boundary's `edge`). `edgeCoursePixels`: corners down each row's
   outermost texel (inner beside it), the crease both middle columns, and the

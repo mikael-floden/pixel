@@ -673,27 +673,48 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
 /* -- the edge outline ------------------------------------------------------- */
 
 /** THE OUTLINE'S INK (maintainer 2026-09-26: "a 1px near-black (somewhat
- *  transparent) border", then "a 2px wide border with the inner border being
- *  lighter ... the light border should always join up with the light border on
- *  the other tile, the dark with the dark"): near-black, the OUTER line on the
- *  last pixel of art at EDGE_ALPHA, the INNER line beside it at EDGE_ALPHA_IN. */
-export const EDGE_RGB: readonly [number, number, number] = [14, 12, 10];
-export const EDGE_ALPHA = 0.7;
-export const EDGE_ALPHA_IN = 0.35;
+ *  transparent) border", then "2px wide with the inner border lighter ... the
+ *  light border joins the light border on the other tile, the dark the dark",
+ *  then "less extreme, more transparency, and similar regardless of the
+ *  background tile"). The line is the TILE'S OWN MEAN COLOUR darkened by
+ *  EDGE_SHADE, laid over each texel at EDGE_ALPHA: one even colour along the
+ *  edge whatever the texture does under it, and the same RELATIVE darkening
+ *  on sand as on mud (a fixed black ink read heavy on light ground and
+ *  vanished on dark). Outer ~0.61 of the tile's tone, inner ~0.82. (Not a fixed
+ *  near-black: his "look similar regardless of background".) */
+export const EDGE_SHADE = 0.35;
+export const EDGE_ALPHA = 0.6;
+export const EDGE_SHADE_IN = 0.6;
+export const EDGE_ALPHA_IN = 0.45;
+/** How long a lined variant that cannot be built yet keeps its cell owed. */
+export const EDGE_OWED_MS = 10000;
 
-function inkAt(d: Uint8ClampedArray, i: number, a: number): void {
+function inkAt(d: Uint8ClampedArray, i: number, a: number, rgb: readonly number[]): void {
   if (d[i + 3] === 0) return; // only over art: a hole stays a hole
-  d[i] = Math.round(d[i] * (1 - a) + EDGE_RGB[0] * a);
-  d[i + 1] = Math.round(d[i + 1] * (1 - a) + EDGE_RGB[1] * a);
-  d[i + 2] = Math.round(d[i + 2] * (1 - a) + EDGE_RGB[2] * a);
+  d[i] = Math.round(d[i] * (1 - a) + rgb[0] * a);
+  d[i + 1] = Math.round(d[i + 1] * (1 - a) + rgb[1] * a);
+  d[i + 2] = Math.round(d[i + 2] * (1 - a) + rgb[2] * a);
 }
 
 /** One outline: texel indices for the outer and the inner line, each inked
  *  once (a vertex on two edges, or where a line meets a crease), the outer
- *  winning over the inner. */
+ *  winning over the inner, both in the raster's own mean colour darkened. */
 function inkLines(px: Pixels, outer: Set<number>, inner: Set<number>): void {
-  for (const k of inner) if (!outer.has(k)) inkAt(px.data, k * 4, EDGE_ALPHA_IN);
-  for (const k of outer) inkAt(px.data, k * 4, EDGE_ALPHA);
+  const d = px.data;
+  let r = 0, g = 0, b = 0, n = 0;
+  for (let i = 0; i < d.length; i += 4)
+    if (d[i + 3] > 0) {
+      r += d[i];
+      g += d[i + 1];
+      b += d[i + 2];
+      n++;
+    }
+  if (!n) return;
+  const mean = [r / n, g / n, b / n];
+  const out = mean.map((v) => v * EDGE_SHADE);
+  const inn = mean.map((v) => v * EDGE_SHADE_IN);
+  for (const k of inner) if (!outer.has(k)) inkAt(d, k * 4, EDGE_ALPHA_IN, inn);
+  for (const k of outer) inkAt(d, k * 4, EDGE_ALPHA, out);
 }
 
 /** The library top face's first and last row per column (`libTop`, the diamond
@@ -2107,6 +2128,30 @@ export class Tiles3Textures {
     );
   }
 
+  /** A LINED VARIANT THAT COULD NOT BE BUILT YET (its plate has not landed):
+   *  true while the caller should treat the plain draw as OWED — the ground
+   *  marks the cell for a repaint (via `plateRawFallbacks`, the counter its
+   *  drop ledger already reads) and an occluder copy stays incomplete, so the
+   *  line appears when the art lands instead of a permanent gap (his screenshot
+   *  2026-09-26). Given up after EDGE_OWED_MS, so a source that can never be
+   *  read back is drawn plain rather than repainted forever. */
+  lineOwed(plain: string): boolean {
+    const now = typeof performance !== "undefined" ? performance.now() : 0;
+    const t0 = this.lineMiss.get(plain);
+    if (t0 === undefined) {
+      this.lineMiss.set(plain, now);
+      return true;
+    }
+    return now - t0 < EDGE_OWED_MS;
+  }
+  private lineMiss = new Map<string, number>();
+
+  /** Whether `cell`'s surface wears a line (`edgedTop` would make a variant). */
+  static wantsTopLine(cell: Tiles3Cell): boolean {
+    const e = cell.edge;
+    return !!e && (!!e.top || (cell.kind !== "wall" && e.lo.some((v) => v !== EDGE_NONE)));
+  }
+
   /** `${key}|<tag><n>`, built once per key and n: this runs per edge cell per
    *  paint, and a fresh template string per call is a rehash per call. */
   private variantKey(key: string, n: number, tag: "e" | "v" | "x"): string {
@@ -2750,11 +2795,17 @@ export class Tiles3Textures {
         const plain = key;
         if (op.role === "surface") {
           key = this.edgedTop(cell, key, art && art.kind !== "liquid" && liquidGround ? topOnlyOf(art) : (art as PlateLike | undefined));
-          if (key === plain && (cell.edge.top || (cell.kind !== "wall" && cell.edge.lo.some((v) => v !== EDGE_NONE)))) lined = false;
+          if (key === plain && Tiles3Textures.wantsTopLine(cell)) {
+            lined = false;
+            if (this.lineOwed(plain)) this.plateRawFallbacks++;
+          }
         } else if (op.role === "wall" && op.storey !== undefined) {
           const bits = courseEdgeBits(cell, op.storey);
           key = this.edgedCourse(key, bits);
-          if (bits && key === plain) lined = false;
+          if (bits && key === plain) {
+            lined = false;
+            if (this.lineOwed(plain)) this.plateRawFallbacks++;
+          }
         }
       }
       if (key !== op.key && !out) out = base.slice(0, i);
