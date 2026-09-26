@@ -237,6 +237,9 @@ uniform vec4 uSpr; uniform float uPart; // the sprite's own rect; 0 = the sprite
 uniform sampler2D uOwn; uniform vec3 uOwnCol; uniform float uOwnMode; // -1 = no map; 0 = mine; 1 = mine or nobody's
 varying vec2 vUV; varying vec2 vPx;
 void main(){
+  // ONLY WHAT THE FRAME SAW: a thing half off the edge has a rect past it, and a
+  // clamped sample there smeared the edge column into a striped block mid-turn
+  if (any(lessThan(vUV, vec2(0.0))) || any(greaterThan(vUV, vec2(1.0)))) discard;
   bool inSpr = vPx.x >= uSpr.x && vPx.y >= uSpr.y && vPx.x < uSpr.x + uSpr.z && vPx.y < uSpr.y + uSpr.w;
   if (inSpr != (uPart < 0.5)) discard;
   if (uOwnMode > -0.5) {
@@ -265,6 +268,9 @@ export interface RotBody {
   foot: [number, number, number];
   /** its colour in the frame's OWNER MAP (0..1), which settles every overlap */
   own?: [number, number, number];
+  /** WHO it is, the same in A and B ("p:<session>", "n:<npc>", "m:<monster>",
+   *  "s:<feet>"): a thing only one frame saw keeps its one card all turn */
+  id?: string;
 }
 
 export interface RotFxStart {
@@ -524,6 +530,14 @@ export class RotFx {
     const mIn = three ? smooth(0.26, 0.33, u) : 0, mOut = three ? 1 - smooth(0.67, 0.74, u) : 0;
     const bIn = hb ? (three ? smooth(0.60, 0.67, u) : smooth(0.38, 0.5, u)) : 0;
     const oA = hb ? 1 - smooth(0.5, 0.62, u) : 1, oB = hb ? smooth(0.38, 0.5, u) : 0;
+    // A THING ONLY ONE FRAME SAW has no card to hand over to: it keeps its own the
+    // whole turn and the orbit carries it off (or on) screen — handed over at
+    // mid-turn, a lamp leaving the view vanished in the middle of the screen. It
+    // only fades at the far end (it moved, or went behind something, meanwhile).
+    const idsA = new Set(this.bodyA.map((b) => b.id)), idsB = new Set(this.bodyB.map((b) => b.id));
+    const onlyA = (b: RotBody) => hb && b.id !== undefined && !idsB.has(b.id);
+    const onlyB = (b: RotBody) => b.id !== undefined && !idsA.has(b.id);
+    const soloA = 1 - smooth(0.85, 1, u), soloB = smooth(0, 0.15, u);
     const feetNow = (b: RotBody) => this.gridPx([b.foot[0], b.foot[1], b.foot[2]], cs, shift);
     const drawBody = (b: RotBody, withT: WebGLTexture, withoutT: WebGLTexture, taken: [number, number], alpha: number, own: WebGLTexture | null, ownMode: number) => {
       if (alpha < 0.01) return;
@@ -566,10 +580,10 @@ export class RotFx {
       if (a >= 0.01) cards.push({ b, w, wo, taken, a, near: this.nearness(b.foot, cs) + order * 1e-3, own, mode });
     };
     const ownA = this.hasOwn.A ? this.tex.OA : null, ownB = this.hasOwn.B ? this.tex.OB : null;
-    this.bodyA.forEach((b, i) => add(b, this.tex.A, this.tex.A0, this.gridPx(b.foot, [1, 0], [0, 0]), i === this.meA ? aOut : oA, ownA, 0, 0));
+    this.bodyA.forEach((b, i) => add(b, this.tex.A, this.tex.A0, this.gridPx(b.foot, [1, 0], [0, 0]), onlyA(b) ? soloA : i === this.meA ? aOut : oA, ownA, 0, 0));
     // the in-between facing's silhouette is not A's: its own pixels, or nobody's
     if (three) add(this.bodyM!, this.tex.AM, this.tex.A0, this.gridPx(this.bodyM!.foot, [1, 0], [0, 0]), Math.min(mIn, mOut), ownA, 1, 1);
-    this.bodyB.forEach((b, i) => add(b, this.tex.B, this.tex.B0, this.gridPx(b.foot, [0, st.dir], this.shiftB), i === this.meB ? bIn : oB, ownB, 0, 2));
+    this.bodyB.forEach((b, i) => add(b, this.tex.B, this.tex.B0, this.gridPx(b.foot, [0, st.dir], this.shiftB), onlyB(b) ? soloB : i === this.meB ? bIn : oB, ownB, 0, 2));
     cards.sort((x, y) => x.near - y.near);
     for (const c of cards) drawBody(c.b, c.w, c.wo, c.taken, c.a, c.own, c.mode);
     // pass 4 — blur along the ground-plane arc, onto the overlay

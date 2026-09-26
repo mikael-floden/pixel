@@ -1,6 +1,22 @@
 # View rotation — the world drawn N, W, S or E up
 
-Branch-only (`claude/rotate-view-real-renderer`); not on main, not live.
+LIVE, on the spin bar's arrows, not behind a switch (maintainer 2026-09-26: "Put
+it on the buttons always. We will fix any bugs and move forward.").
+
+## The spin bar drives it
+
+`spinbar.ts` is games-ui's and knows nothing of the world; WorldScene listens.
+A tap on `.ml-spinbtn.left/.right` moves a GOAL one quarter as the finger lifts
+(the bar's own `ml-spin` fires only when the orb rests, 360 ms a quarter later),
+and `ml-spin {quarter}` then settles the goal on the orb's quarter. The view
+chases the goal a quarter at a time (`chaseSpin`): each turn's end starts the
+next, a chained quarter runs 800 ms instead of 1100, a tap back undoes what is
+still owed, and a turn that did not happen (dead, no world yet, a swap that
+threw) is retried from `update` a second later. Q / E `.click()` the bar's own
+buttons, so the orb and the view never disagree.
+THE DIRECTION IS THE ORB'S: his orb's front face moves RIGHT on a right tap, so
+the world's near side does too — `viewRot - 1` per right quarter (the picture
+turns anticlockwise).
 
 ## The one rule: RENDER-ONLY
 
@@ -134,7 +150,13 @@ once more as flat colours in the painter's order into an off-screen target, read
 once, so each card keeps only the pixels it owns (grouping overlaps instead carried
 the player off-centre with the front-most NPC's feet). The player turns through
 THREE facings — A's, the one between (one more frame, shot on A's camera), B's — the
-sides a 90-degree orbit shows; everything else crosses A to B mid-turn.
+sides a 90-degree orbit shows; everything else crosses A to B mid-turn, solidly
+(the next card over the last, the last fading only once the next is whole). A
+thing only ONE frame saw (leaving or entering the view) is matched by name
+(`RotBody.id`; scenery by its server feet, which the swap's rebuild keeps) and
+keeps its one card all turn, fading only at the far end — handed over at
+mid-turn, a lamp leaving the view vanished mid-screen. A card samples only what
+its frame saw: a rect past the frame's edge, clamped, drew a striped block.
 THE LOOK (`RotTune`, `__ml.turnTune`, defaults his to change): `blur` scales the
 arc; `zoom` 0.1 is a zoom pulse about the pivot riding the angular speed (keeps
 more of the screen on ground a frame saw); what NEITHER frame saw is a soft 5x5
@@ -150,9 +172,10 @@ view is incomplete and no scenery still is streaming (a B taken on the ground
 alone ended the turn on holes, then the live view popped them in). (A test that checked
 nothing answered "drawn" 20 ms after the swap and B was a half-painted view.)
 
-Hooks: `__ml.viewRot(k)` (instant), `__ml.turnView(dir, ms, waitB, blur)`,
+Hooks: `__ml.viewRot(k)` (instant), `__ml.turnView(dir, ms, waitB, blur)` (in
+VIEW quarters: +1 is the picture clockwise; neither moves the spin goal),
 `__ml.turnSeek(u)` (pin progress for screenshots), `__ml.turnInfo()`,
-`__ml.pickAtView/surfaceAtView` (view-space twins for the foam layer). Keys: Q / E.
+`__ml.pickAtView/surfaceAtView` (view-space twins for the foam layer).
 
 ## Measured (headless Chrome, maintainer's screen 393x851 @2.75, software GL)
 
@@ -172,3 +195,5 @@ Hooks: `__ml.viewRot(k)` (instant), `__ml.turnView(dir, ms, waitB, blur)`,
   in server keys.
 - The spawn-area debug overlay is not re-placed on a turn; the minimap stays
   north-up.
+- A chained turn pauses between quarters (each quarter re-takes its A), and a
+  tap back mid-turn finishes that quarter before it turns back.

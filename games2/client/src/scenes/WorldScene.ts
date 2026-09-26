@@ -2206,6 +2206,15 @@ export class WorldScene extends Phaser.Scene {
   private viewDoc: unknown = null;
   private rotFx: RotFx | null = null;
   private turning = false;
+  /** THE SPIN BAR DRIVES THE TURN (maintainer 2026-09-26: "Put it on the buttons
+   *  always"). Both in the ORB'S quarters, unwrapped, a right tap +1: `spinGoal`
+   *  is where the taps put it, `spinAt` where the view has turned to. His orb's
+   *  front moves RIGHT on a right tap, so the world's near side does too — the
+   *  view turns -1 (picture anticlockwise) per right quarter. */
+  private spinGoal = 0;
+  private spinAt = 0;
+  private spinBusy = false;
+  private spinRetryAt = 0;
   /** Debug: a pinned turn progress for screenshots (`__ml.turnSeek`); null = the clock. */
   private turnPinned: number | null = null;
   private turnLog: Record<string, number | string> = {};
@@ -5997,9 +6006,37 @@ export class WorldScene extends Phaser.Scene {
       (text) => this.sendRoom("chat", { text }),
       () => (this.input.keyboard!.enabled = true),
     );
-    // VIEW TURN (viewrot.ts / rotfx.ts): Q turns the view left, E right.
-    this.input.keyboard!.on("keydown-Q", () => { if (!this.chat?.open) void this.turnView(-1); });
-    this.input.keyboard!.on("keydown-E", () => { if (!this.chat?.open) void this.turnView(1); });
+    // VIEW TURN (viewrot.ts / rotfx.ts), DRIVEN BY THE SPIN BAR (spinbar.ts is
+    // games-ui's; this only listens). A tap moves the goal a quarter as the
+    // finger lifts — the bar's `ml-spin` fires once the orb RESTS, 360 ms a
+    // quarter later — and `ml-spin` then settles the goal on the orb's quarter
+    // (a tap the orb refused before its strip loaded is taken back there).
+    const onSpinTap = (e: Event) => {
+      const b = (e.target as Element | null)?.closest?.(".ml-spinbtn");
+      if (b) this.spinBy(b.classList.contains("left") ? -1 : 1);
+    };
+    const onSpinRest = (e: Event) => {
+      const q = (e as CustomEvent<{ quarter?: number }>).detail?.quarter;
+      if (typeof q !== "number") return;
+      const off = normRot(q - this.spinGoal);
+      if (off) this.spinBy(off === 1 ? 1 : off === 3 ? -1 : 2 * (Math.sign(this.spinGoal - this.spinAt) || 1));
+    };
+    document.addEventListener("click", onSpinTap, true);
+    window.addEventListener("ml-spin", onSpinRest);
+    this.events.once("shutdown", () => {
+      document.removeEventListener("click", onSpinTap, true);
+      window.removeEventListener("ml-spin", onSpinRest);
+    });
+    // Q / E PRESS THE BAR'S OWN BUTTONS, so the orb and the view never disagree;
+    // with no bar mounted they move the goal themselves.
+    const spinKey = (dir: 1 | -1) => {
+      if (this.chat?.open) return;
+      const b = document.querySelector<HTMLElement>(`.ml-spinbtn.${dir < 0 ? "left" : "right"}`);
+      if (b) b.click();
+      else this.spinBy(dir);
+    };
+    this.input.keyboard!.on("keydown-Q", () => spinKey(-1));
+    this.input.keyboard!.on("keydown-E", () => spinKey(1));
     this.input.keyboard!.on("keydown-ENTER", () => {
       if (!this.chat.open) {
         this.input.keyboard!.enabled = false;
@@ -8259,7 +8296,7 @@ export class WorldScene extends Phaser.Scene {
         ctx.putImageData(im, 0, 0);
         return { png: cv.toDataURL("image/png"), items: o.items, owned, w: o.w, h: o.h, cam: [this.cameras.main.width, this.cameras.main.height], canvas: [this.game.canvas.width, this.game.canvas.height] };
       },
-      turnInfo: () => ({ turning: this.turning, viewRot: this.viewRot, ready: this.rotFx?.ready ?? false, settled: this.viewSettled(), ...this.turnLog, ...(this.rotFx?.timings ?? {}) }),
+      turnInfo: () => ({ turning: this.turning, viewRot: this.viewRot, ready: this.rotFx?.ready ?? false, settled: this.viewSettled(), spinGoal: this.spinGoal, spinAt: this.spinAt, ...this.turnLog, ...(this.rotFx?.timings ?? {}) }),
       lookAt: (col?: number, row?: number) => {
         const cam = this.cameras.main;
         if (col === undefined || row === undefined) {
@@ -14987,6 +15024,9 @@ export class WorldScene extends Phaser.Scene {
     // run — bumping it in the flush instead would make every probe read
     // "this body has no surface" one tick too early.
     this.coverTick++;
+    // A spin goal the view has not reached (a turn refused while dead, or asked
+    // before the world was up) is retried here, at most once a second.
+    if (this.spinGoal !== this.spinAt && !this.spinBusy && !this.turning && time >= this.spinRetryAt) this.chaseSpin();
     /* Cleared here, set by t3drainSlices. The two stand-down guards below read
      * `groundSliceQ.length` AFTER the drain has already shifted its rects, so
      * the frame that EMPTIES the queue used to look idle to them — and after
@@ -20601,12 +20641,12 @@ export class WorldScene extends Phaser.Scene {
   private turnUprights(kGrid: ViewRot) {
     type R = [number, number, number, number];
     const w = this.world!, vw = this.viewWorld ?? w, cam = this.cameras.main, z = cam.zoom, wv = cam.worldView;
-    const out: { objs: Phaser.GameObjects.GameObject[]; own: Phaser.GameObjects.GameObject[]; rect: R; sprite: R; foot: [number, number, number]; footY: number; me: boolean }[] = [];
+    const out: { id: string; objs: Phaser.GameObjects.GameObject[]; own: Phaser.GameObjects.GameObject[]; rect: R; sprite: R; foot: [number, number, number]; footY: number; me: boolean }[] = [];
     const vis = <T,>(o: T | null | undefined): o is T => !!o && (o as unknown as Phaser.GameObjects.Components.Visible).visible;
     const px = (bd: Phaser.Geom.Rectangle, m: number): R => [(bd.x - m - wv.x) * z, (bd.y - m - wv.y) * z, (bd.width + 2 * m) * z, (bd.height + 2 * m) * z];
     // `labels` (names) belong to the thing and draw on top; `extra` (lit copies,
     // fog, outlines) share the sprite's silhouette and are only hidden
-    const push = (sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image, extra: (Phaser.GameObjects.GameObject | null | undefined)[], fx: number, fy: number, lvl: number, me: boolean, labels: (Phaser.GameObjects.GameObject | null | undefined)[] = []) => {
+    const push = (id: string, sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image, extra: (Phaser.GameObjects.GameObject | null | undefined)[], fx: number, fy: number, lvl: number, me: boolean, labels: (Phaser.GameObjects.GameObject | null | undefined)[] = []) => {
       if (!vis(sprite)) return;
       const sb = sprite.getBounds();
       if (sb.right < wv.x || sb.x > wv.right || sb.bottom < wv.y || sb.y > wv.bottom) return; // off screen
@@ -20619,12 +20659,14 @@ export class WorldScene extends Phaser.Scene {
       }
       const [fX, fY] = kGrid ? rotPoint(fx / CELL_WU, fy / CELL_WU, kGrid, w.width, w.height) : [fx / CELL_WU, fy / CELL_WU];
       const ground = vw.rows[Math.floor(fY)]?.[Math.floor(fX)]?.l ?? 0;
-      out.push({ objs, own, rect: px(new Phaser.Geom.Rectangle(x0, y0, x1 - x0, y1 - y0), 3), sprite: px(sb, 1), foot: [fX, fY, Math.max(lvl, ground)], footY: sb.bottom, me }); // bottom: scenery hangs from its top-left
+      out.push({ id, objs, own, rect: px(new Phaser.Geom.Rectangle(x0, y0, x1 - x0, y1 - y0), 3), sprite: px(sb, 1), foot: [fX, fY, Math.max(lvl, ground)], footY: sb.bottom, me }); // bottom: scenery hangs from its top-left
     };
-    for (const [id, av] of this.avatars) push(av.sprite, [av.lit, av.fog, av.hidden], av.fx, av.fy, this.litLevelOf(av), id === this.myId, [av.label, id === this.myId ? this.posLabel : null]);
-    for (const n of this.npcs.values()) push(n.sprite, [n.lit, n.fog, n.hidden], n.fx, n.fy, n.surfLevel ?? 0, false);
-    for (const mv of this.monsters.values()) push(mv.sprite, [mv.lit, mv.fog, mv.hidden], mv.fx, mv.fy, mv.surfLevel ?? 0, false);
-    for (const r of this.scnResolve) push(r.img, [r.lo?.img, r.lo?.fog], r.fx, r.fy, r.lvl, false);
+    // WHO each is, the same in A and B: scenery is rebuilt by the swap, so a piece
+    // is named by its SERVER feet, which no turn moves
+    for (const [id, av] of this.avatars) push(`p:${id}`, av.sprite, [av.lit, av.fog, av.hidden], av.fx, av.fy, this.litLevelOf(av), id === this.myId, [av.label, id === this.myId ? this.posLabel : null]);
+    for (const [id, n] of this.npcs) push(`n:${id}`, n.sprite, [n.lit, n.fog, n.hidden], n.fx, n.fy, n.surfLevel ?? 0, false);
+    for (const [id, mv] of this.monsters) push(`m:${id}`, mv.sprite, [mv.lit, mv.fog, mv.hidden], mv.fx, mv.fy, mv.surfLevel ?? 0, false);
+    for (const r of this.scnResolve) push(`s:${Math.round(r.fx)},${Math.round(r.fy)},${r.lvl}`, r.img, [r.lo?.img, r.lo?.fog], r.fx, r.fy, r.lvl, false);
     return out;
   }
 
@@ -20642,7 +20684,7 @@ export class WorldScene extends Phaser.Scene {
       this.events.once(Phaser.Scenes.Events.POST_UPDATE, () => {
         const ups = this.turnUprights(kGrid);
         owners = this.turnOwnerMap(ups.map((u) => u.own));
-        const cards: RotBody[] = ups.map((u, i) => ({ rect: u.rect, sprite: u.sprite, foot: u.foot, own: ownerColour(i).map((c) => c / 255) as [number, number, number] }));
+        const cards: RotBody[] = ups.map((u, i) => ({ id: u.id, rect: u.rect, sprite: u.sprite, foot: u.foot, own: ownerColour(i).map((c) => c / 255) as [number, number, number] }));
         result = { groups: cards, me: ups.findIndex((u) => u.me) };
         hidden = ups.flatMap((u) => u.objs) as unknown as Phaser.GameObjects.Components.Visible[];
         for (const o of hidden) o.setVisible(false);
@@ -20724,6 +20766,33 @@ export class WorldScene extends Phaser.Scene {
         restore();
         res(true);
       });
+    });
+  }
+
+  /** A spin-bar tap (or Q / E): the goal moves `n` quarters, the view follows. */
+  private spinBy(n: number): void {
+    this.spinGoal += n;
+    this.chaseSpin();
+  }
+
+  /** One quarter toward the spin bar's goal; each turn's end asks for the next,
+   *  so taps during a turn chain (a quarter at a time, quicker when more are
+   *  owed) and a tap back undoes the rest. A turn that did not happen (dead, no
+   *  world yet, a swap that threw) is retried from update() a second later. */
+  private chaseSpin(): void {
+    const d = Math.sign(this.spinGoal - this.spinAt);
+    if (!d || this.spinBusy || this.turning || !this.world) return;
+    this.spinBusy = true;
+    const k0 = this.viewRot;
+    const after = () => {
+      this.spinBusy = false;
+      if (this.viewRot === k0) { this.spinRetryAt = this.time.now + 1000; return; }
+      this.spinAt += d;
+      this.chaseSpin();
+    };
+    this.turnView(d > 0 ? -1 : 1, Math.abs(this.spinGoal - this.spinAt) > 1 ? 800 : 1100).then(after, (e) => {
+      console.warn("[nangijala] view turn failed:", e);
+      after();
     });
   }
 
