@@ -1,3 +1,5 @@
+import { gpuParity, GpuComposer, setGpuComposeEnabled, type GpuHost } from "../tiles3gpu";
+import { GroundPipeline, GROUND_PIPELINE } from "../groundpipe";
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { trackGap, arrivalHz, remoteChaseRate } from "../remoterate";
@@ -362,6 +364,8 @@ const HURT_MS = 300;
  *  (read every frame — more than one runs on through at speed, none goes back),
  *  and the velocity the previous quarter ended at (quarters/ms). */
 type TurnDrive = { owed: () => number; v0: number; angle?: (u: number) => void };
+/** One turned orientation's world, kept (WorldScene.viewCache). */
+type ViewCacheEntry = { vw: World; terrain: ReturnType<typeof buildTerrainGrid>; decks: Map<number, { deck: Deck; cell: Deck["cells"][number] }>; hidden: number };
 /** The turn's upright set of one frame (WorldScene.turnSnap): the objects to hide
  *  for its bodiless twin, the cards, the player's index and the owner map. */
 type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
@@ -1253,6 +1257,13 @@ const GROUND_BAND_MS = 0.0001;
 /** UNUSED SINCE THE SIZE RATCHET WENT (see t3paintSliceStep): the rects stay at
  *  GROUND_SLICE_PX, because the bracket and not the rect area is the cost. */
 const GROUND_SLICE_MS = 2;
+/** A SIDE ONE TAP AWAY, PREPARED BEFORE THE TAP (warmViewGround): the compose
+ *  worker's backlog above which it waits (the view on screen's own compositions
+ *  never queue behind a warm's) and how far the player walks (cells) before a
+ *  side is prepared again. */
+const GROUND_WARM_BACKLOG = 48;
+const GROUND_WARM_MOVE = 6;
+const GROUND_WARM_FRAME_MS = 1.5;
 const GROUND_SLICE_MAX = 768;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
 const GROUND_RING_COMPOSE = 3;
@@ -1374,7 +1385,7 @@ const T3_REMOTE_DRAIN_MS = 400;
  *  else in this queue, and behind my own clips none of 43 had landed 5 s
  *  after they were asked for (measured headless) — the avatar is not on
  *  screen yet, so its clips can follow. */
-const ART_PRIO = { sceneryBoot: -1, mine: 0, fight: 1, fightAngry: 1.5, sceneryStill: 1.75, walk: 2, idle: 3, npc: 4, blood: 4, weapons: 5, chars: 6, combatEarly: 7, sceneryAnim: 8, angryEarly: 9 } as const;
+const ART_PRIO = { sceneryBoot: -1, mine: 0, fight: 1, fightAngry: 1.5, sceneryStill: 1.75, walk: 2, sceneryTurn: 2.5, idle: 3, npc: 4, blood: 4, weapons: 5, chars: 6, combatEarly: 7, sceneryAnim: 8, angryEarly: 9 } as const;
 const CAM_ZOOM_OUT = 0.32; // fraction of base zoom shed at full run speed (maintainer: "stronger", twice)
 const CAM_ZOOM_REF_WU = 124; // ≈ run world-speed (175 px/s side-view · √½)
 const CAM_ZOOM_TAU_OUT = 0.45; // s — ease toward zoomed-out while speeding up
@@ -2314,12 +2325,74 @@ export class WorldScene extends Phaser.Scene {
    *  cached one while a sibling streams. Same retry as the cells' set. */
   private t3deckOwed = new Map<number, number>();
   private t3cells = new Map<number, { cell?: Tiles3Cell | null; boundary?: Tiles3Boundary | null; decks?: Tiles3DeckCell[] }>();
+  /** The resolvers of the views not on screen, with their resolved cells
+   *  (initTiles3, warmViewGround), valid under `t3ViewRules`; `t3View` is the
+   *  one on screen. */
+  private t3ViewCache = new Map<ViewRot, { t3: Tiles3World; cells: WorldScene["t3cells"] }>();
+  private t3ViewRules = "";
+  private t3View: ViewRot | null = null;
+  /** True while applyViewRot rebuilds for a turn: what does not depend on the
+   *  side the world is seen from (the art loader, the piece manifests, the
+   *  collision documents) is kept rather than made again. */
+  private viewSwapping = false;
+  /** initTiles3 has run in this scene (a later run is a rebuild). */
+  private t3Booted = false;
   /** THE RESOLVER ON ANOTHER CORE — see resolveworker.ts. It fills `t3cells`
    *  ahead of the band that needs them; every answer is optional. */
   private t3worker = new ResolveWorker();
   /** THE COMPOSE WORKER (composeworker.ts) — booted with the composed-texture
    *  factory, stopped with the scene. */
   private t3compose = new ComposeWorker();
+  /** THE GPU COMPOSITOR (tiles3gpu.ts), his switch "GPU transitions": the
+   *  worker's boundary jobs composed on the GPU, landing the worker's way. */
+  private t3gpuc = new GpuComposer(this.t3compose, () => this.t3sheets, () => this.gpuHost(), () => {
+    const p = this.cache.json.get("t3doc:patterns") as { patterns?: { row: number }[] } | undefined;
+    const cols = 16;
+    return (p?.patterns ?? []).flatMap((q) => Array.from({ length: cols }, (_, w) => q.row * cols + w));
+  });
+  private gpuHostMemo: GpuHost | null = null;
+  /** THE GROUND PIPELINE (groundpipe.ts): the ground RT draws through it while
+   *  the direct draw is on, so a transition, ramp or lined top is one quad of
+   *  the ground's own batch. */
+  private groundPipe: GroundPipeline | null = null;
+  /** The compositor's share of Phaser's renderer: its GL context (the pipeline
+   *  flushed and set aside around the raw GL, put back after), a texture of the
+   *  renderer's own per tile, registered like any other and landed with the
+   *  factory (landRemote clears the in-flight mark; the key already exists). */
+  private gpuHost(): GpuHost | null {
+    if (this.gpuHostMemo) return this.gpuHostMemo;
+    const r = this.game?.renderer as Phaser.Renderer.WebGL.WebGLRenderer | undefined;
+    if (!r || r.type !== Phaser.WEBGL || !r.gl) return null;
+    const gl = r.gl;
+    const none = { w: 0, h: 0, data: new Uint8ClampedArray(0) };
+    this.gpuHostMemo = {
+      gl,
+      clear: () => r.pipelines.clear(),
+      rebind: () => r.pipelines.rebind(),
+      newTexture: (w, h) => {
+        const wr = r.createTexture2D(0, gl.NEAREST, gl.NEAREST, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.RGBA, null as never, w, h, true);
+        return { wrapper: wr, gl: wr.webGLTexture as WebGLTexture };
+      },
+      land: (key, wr) => {
+        if (!this.textures.exists(key)) this.textures.addGLTexture(key, wr as never);
+        this.t3tex?.landRemote(key, none);
+        // a transition has its own retry (t3boundaryOwed); a ramp was a DROP, and drops drain
+        if (!key.startsWith("t3x:")) this.t3remoteLanded = true;
+      },
+      dirty: () => {
+        const cur = r.pipelines.current as unknown as { activeTextures?: unknown[] } | null;
+        if (cur?.activeTextures) cur.activeTextures.length = 0;
+      },
+      groundPipe: (direct) => {
+        let p = r.pipelines.get(GROUND_PIPELINE) as unknown as GroundPipeline | undefined;
+        if (!p) p = r.pipelines.add(GROUND_PIPELINE, new GroundPipeline(this.game)) as unknown as GroundPipeline;
+        p.direct = direct;
+        if (this.t3sheets) p.fh = this.t3sheets.fh;
+        this.groundPipe = p;
+      },
+    };
+    return this.gpuHostMemo;
+  }
   /** Boot options for `t3worker`, applied on first use — see initTiles3. */
   private t3workerOpts: Parameters<ResolveWorker["init"]>[0] | null = null;
   private t3workerBooted = false;
@@ -2359,6 +2432,9 @@ export class WorldScene extends Phaser.Scene {
   private sceneryLoadedAs = new Map<string, SceneryPackRec | null>();
   private sceneryPackOn = sceneryPackEnabled();
   private sceneryAsked = new Set<string>();
+  /** Stills asked for a view NOT on screen (prefetchViewScenery): not streaming
+   *  for this view until its own rebuild asks for them. */
+  private sceneryPrefetch = new Set<string>();
   private sceneryQueue: [string, string][] = [];
   private sceneryRebuilds = 0; // the boot hold waits for the first one
   /** Scenery ART files (not manifests) queued and finished — the loading bar's
@@ -3194,7 +3270,7 @@ export class WorldScene extends Phaser.Scene {
         why: final ? "flush" : moved ? "moved" : bad ? "bad" : "still", // why this window was sent at all
         // The two dials under measurement: the upload budget (Settings "upload
         // budget", KB a frame) and the render resolution (1/r of the backing).
-        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}${this.t3compose.stats.state === "ready" ? "/cw" : ""}`,
+        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}${this.t3compose.stats.state === "ready" ? "/cw" : ""}${this.t3gpuc.on ? "/gpu" : ""}`,
 
         /* THE RUN'S OWN SETTINGS, so two runs compare (2026-09-19): the fade
          * dials (the resolver's scan is (2·reach+1)² neighbours a cell and the
@@ -3420,6 +3496,7 @@ export class WorldScene extends Phaser.Scene {
       // THE AMBIENT EFFECTS' OWN COST, per feature (`perfAmbientTake`).
       ambient: ambientBlock,
       // THE COMPOSE WORKER, whole: its state, its counters and why it missed.
+      gpuCompose: { on: this.t3gpuc.on, ...this.t3gpuc.stats, ms: +this.t3gpuc.stats.ms.toFixed(1), shapeMs: +this.t3gpuc.stats.shapeMs.toFixed(1) },
       compose: { ...this.t3compose.stats, workerMs: Math.round(this.t3compose.stats.workerMs), applyMs: +this.t3compose.stats.applyMs.toFixed(1) },
       /* EVERY ZONE CROSSING OF THIS WINDOW, from HIS device — the only place
        * the hand-off can be judged, because a headless run binds the new room
@@ -5674,6 +5751,15 @@ export class WorldScene extends Phaser.Scene {
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    // a new world: nothing turned from the old one may survive
+    this.viewCache = new Map();
+    this.viewDoc = null;
+    this.viewDocP = null;
+    this.t3ViewCache = new Map();
+    this.groundWarm = null;
+    this.groundWarmDone.clear();
+    this.t3View = null;
+    this.t3Booted = false;
     this.roomOfCellMap = null; // world.rooms — rebuilt lazily by roomOf
     this.roomLitMap = null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
@@ -6297,6 +6383,24 @@ export class WorldScene extends Phaser.Scene {
           state: () => (this.night?.testPattern === 5 ? "on" : "off"),
           atDefault: () => this.night?.testPattern !== 5,
           reset: () => void (this.night?.testPattern === 5 && (this.night.testPattern = 0)),
+        },
+        /* GPU TRANSITIONS (maintainer 2026-09-26: "try the GPU transition/boundary
+         * render shader again ... needs a test to make sure it produced the same
+         * tile"): the transition tiles composed by the GPU compositor
+         * (tiles3gpu.ts) instead of the compose worker — byte for byte the same
+         * tiles, `scripts/verify-gpucompose.mjs`. Remembered; the beacon's `sim`
+         * carries `/gpu` while it is on. */
+        {
+          label: "GPU transitions",
+          act: () => {
+            const on = !this.t3gpuc.on;
+            this.t3gpuc.on = on;
+            setGpuComposeEnabled(on);
+            if (on) this.t3gpuc.prepare();
+            this.chat.addLog("—", `GPU transitions: ${on ? "on" : "off"}`);
+          },
+          get: () => this.t3gpuc.on,
+          state: () => (this.t3gpuc.on ? "on" : "off"),
         },
         /* SLOPE — how high the composed slope climbs (slopeheight.ts): auto
          * (the default) each slope run picks from his mix, off no slope at
@@ -8408,6 +8512,22 @@ export class WorldScene extends Phaser.Scene {
         ctx.putImageData(im, 0, 0);
         return { png: cv.toDataURL("image/png"), items: o.items, owned, w: o.w, h: o.h, cam: [this.cameras.main.width, this.cameras.main.height], canvas: [this.game.canvas.width, this.game.canvas.height] };
       },
+      gpuCompose: () => {
+        const d = this.t3gpuc.directStore;
+        const p = this.groundPipe;
+        return {
+          on: this.t3gpuc.on,
+          pending: this.t3gpuc.pending,
+          ...this.t3gpuc.stats,
+          direct: d ? { tiles: d.size, ...d.stats, quads: p?.stats.direct ?? 0, sumsPassesPipe: p?.stats.sumsPasses ?? 0, sumsMs: +(p?.stats.sumsMs ?? 0).toFixed(1) } : null,
+        };
+      },
+      gpuParity: async (max?: number) => {
+        const sheets = this.t3sheets;
+        if (!sheets) throw new Error("no pattern sheets yet");
+        return gpuParity(sheets, max);
+      },
+      turnWarm: () => ({ ...this.groundWarmStats, busy: this.groundWarm ? { k: this.groundWarm.k, at: this.groundWarm.at, of: this.groundWarm.todo.length, pass: this.groundWarm.pass } : null, done: Object.fromEntries(this.groundWarmDone), views: [...this.viewCache.keys()], resolvers: [...this.t3ViewCache.keys()], inflight: this.t3tex?.inflightCount() ?? -1 }),
       turnInfo: () => ({ turning: this.turning, viewRot: this.viewRot, ready: this.rotFx?.ready ?? false, settled: this.viewSettled(), spinGoal: this.spinGoal, spinAt: this.spinAt, ...this.turnLog, ...(this.rotFx?.timings ?? {}) }),
       lookAt: (col?: number, row?: number) => {
         const cam = this.cameras.main;
@@ -15141,6 +15261,8 @@ export class WorldScene extends Phaser.Scene {
     if (this.spinGoal !== this.spinAt && !this.spinBusy && !this.turning && time >= this.spinRetryAt) this.chaseSpin();
     // ...and while one is owed the spin bar's cube hears where the world stands
     if (this.spinGoal !== this.spinAt || this.spinBusy) this.publishSpinAngle(this.spinQ, true);
+    // the sides one tap away are prepared before the tap, in spare time
+    if (this.worldUp) this.warmViews(time);
     /* Cleared here, set by t3drainSlices. The two stand-down guards below read
      * `groundSliceQ.length` AFTER the drain has already shifted its rects, so
      * the frame that EMPTIES the queue used to look idle to them — and after
@@ -15345,6 +15467,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     this.t3retryBoundaries();
+    this.warmFrameStep(); // a side one tap away, on what the frame left (warmViewGround)
     this.pe("prefetch");
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
@@ -20517,6 +20640,325 @@ export class WorldScene extends Phaser.Scene {
    *  construction, so the streaming flags are cleared first — without that,
    *  an art batch landing beside a state change cost a second, identical full
    *  pass on the following frame (review, 2026-09-02). */
+  /** THE TURNED WORLDS, KEPT: each orientation's parsed world, terrain grid and
+   *  deck index are built once (the parse alone ~45 ms here, a phone several
+   *  times that, on the main thread) and every later turn to it swaps a pointer;
+   *  the neighbours of the view on screen are built in idle time (warmViews). */
+  private viewCache = new Map<ViewRot, ViewCacheEntry>();
+  private viewDocP: Promise<void> | null = null;
+  private async viewEntry(k: ViewRot): Promise<ViewCacheEntry> {
+    const hit = this.viewCache.get(k);
+    if (hit) return hit;
+    if (!this.viewDoc) await this.fetchViewDoc();
+    return this.buildViewEntry(k);
+  }
+  /** The world document the turned views are built from — fetched ONCE, in idle
+   *  time after the world is up (warmViews): fetched at the first tap it held
+   *  that turn's swap for the whole round trip (8.5 s on a busy harness). */
+  private fetchViewDoc(): Promise<void> {
+    const name = this.worldName;
+    return (this.viewDocP ??= fetch(gameUrl(worldFileUrl(name, "world.json")))
+      .then((r) => { if (!r.ok) throw new Error(`world.json answered ${r.status}`); return r.json(); })
+      .then((d) => { if (name === this.worldName) this.viewDoc = d; })
+      .catch((e) => { this.viewDocP = null; throw e; }));
+  }
+  private buildViewEntry(k: ViewRot): ViewCacheEntry {
+    const st: RotateStats = { hiddenPieces: 0 };
+    const vw = parseWorldDoc(rotateWorldDoc(this.viewDoc, k, st)) as World | null;
+    if (!vw) throw new Error("the rotated world did not parse");
+    // same pieces, same order as the server's parse: an index still joins
+    for (const i of st.hiddenIdx ?? []) { const p = vw.scenery?.[i] as { viewHidden?: boolean } | undefined; if (p) p.viewHidden = true; }
+    const decks = new Map<number, { deck: Deck; cell: Deck["cells"][number] }>();
+    for (const d of vw.decks ?? []) for (const c of d.cells) decks.set(c.row * vw.width + c.col, { deck: d, cell: c });
+    const e: ViewCacheEntry = { vw, terrain: buildTerrainGrid(vw.width, vw.height, vw.rows, vw.props, vw.decks), decks, hidden: st.hiddenPieces };
+    this.viewCache.set(k, e);
+    return e;
+  }
+
+  /** THE SIDES ONE TAP AWAY, READY BEFORE THE TAP (maintainer 2026-09-26, Fix 1
+   *  of the view turn: "we need to both do this and try the GPU transition").
+   *  A turn to a side never seen used to owe ~800 transitions at once, and the
+   *  landing repair lets 12 a frame land (T3_BOUNDARY_LAND): over 2 s at 30 Hz
+   *  of either waiting (the lag) or not (the checkerboard). Once the world is up
+   *  and nothing turns, one step per idle slot, a second apart so no frame pays
+   *  for two: the world document is fetched; each neighbour's turned world is
+   *  built; its scenery stills are asked for; and then, continuously while the
+   *  player moves, its ground round the player is resolved and composed
+   *  (warmViewGround). The far side (a double tap) comes after both. */
+  private viewWarmAt = 0;
+  private viewArtAt = 0;
+  /** Dev A/B (`localStorage ml-turn-warm = "0"`): no side prepared before the tap. */
+  private turnWarmOn = ((): boolean => { try { return localStorage.getItem("ml-turn-warm") !== "0"; } catch { return true; } })();
+  private warmViews(time: number): void {
+    if (!this.turnWarmOn || this.turning || this.spinBusy || this.spinGoal !== this.spinAt || time < this.viewWarmAt || this.relocate) return;
+    this.viewWarmAt = time + 1000;
+    const idle = (f: () => void) => {
+      const ric = (window as unknown as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => void }).requestIdleCallback;
+      if (ric) ric(f, { timeout: 3000 });
+      else window.setTimeout(f, 200);
+    };
+    if (!this.viewDoc) { idle(() => { void this.fetchViewDoc().catch(() => { /* the tap fetches it again */ }); }); return; }
+    const sides = this.warmSides();
+    for (const k of sides) {
+      if (k === 0 || this.viewCache.has(k)) continue;
+      idle(() => { if (!this.turning && this.viewDoc && !this.viewCache.has(k)) this.buildViewEntry(k); });
+      return;
+    }
+    if (time >= this.viewArtAt) {
+      this.viewArtAt = time + 4000;
+      idle(() => { if (!this.turning) for (const k of sides) this.prefetchViewScenery(k); });
+    }
+    this.warmViewGround(sides);
+  }
+  /** The sides to prepare, nearest first: the two one tap away, then the far one. */
+  private warmSides(): ViewRot[] {
+    return [normRot(this.viewRot + 1), normRot(this.viewRot + 3), normRot(this.viewRot + 2)];
+  }
+  /** A NEIGHBOUR'S SCENERY, ASKED BEFORE THE TAP: the still each piece round the
+   *  player shows from that side (its turned facing), behind this view's own
+   *  stills and my walk (sceneryTurn 2.5). A first turn's frame B was taken
+   *  before those landed and they popped in as the turn handed back. Asked
+   *  again by the view's own rebuild when it comes on screen, which raises
+   *  them (needScenery). */
+  private prefetchViewScenery(k: ViewRot): void {
+    const w = this.world, pieces = this.sceneryPieces;
+    const vw = k === 0 ? w : this.viewCache.get(k)?.vw;
+    const me = this.myId ? this.avatars.get(this.myId) : undefined;
+    if (!this.sceneryOn || !w || !vw || !pieces || !me) return;
+    const [px, py] = k ? rotPoint(me.fx / CELL_WU, me.fy / CELL_WU, k, w.width, w.height) : [me.fx / CELL_WU, me.fy / CELL_WU];
+    const R = 24; // cells round the player in that view's grid: a screen and its margin
+    const art = this.artQueue();
+    for (const p of vw.scenery ?? []) {
+      if (!p?.piece || (p as { viewHidden?: boolean }).viewHidden) continue;
+      if (Math.abs(p.x - px) > R || Math.abs(p.y - py) > R) continue;
+      const piece = pieces.get(p.piece);
+      if (piece === undefined) { void pieces.request(p.piece); continue; }
+      if (piece === null) continue;
+      const q = p as { lit?: boolean; state?: string; dir?: string }; // the parsed spec carries them (scenery3 ScenerySpec)
+      const sprite = facedSprite(stateFor(piece, q.lit, q.state), q.dir);
+      const key = this.sKey(sprite);
+      if (this.textures.exists(key) || this.sceneryAsked.has(key)) continue;
+      this.sceneryAsked.add(key);
+      this.sceneryPrefetch.add(key);
+      art.request({ key, url: this.sceneryUrl(sprite), prio: ART_PRIO.sceneryTurn });
+    }
+  }
+
+  /** ONE CELL AS THE GROUND PASS WILL DRAW IT, drawn nowhere: its art asked for
+   *  (`need`), every composition it wears built — or, with the compose worker,
+   *  posted to it (plates too: deferPlates, as the ring asks) — and whether ALL
+   *  of it is here, by the paint's own owed tests: a dropped op or a raw plate
+   *  (t3dropOwed), a transition not composed (t3boundaryOwed), a slab's
+   *  (t3deckOwed). */
+  private composeCell(
+    tex: Tiles3Textures,
+    t3: Tiles3World,
+    col: number,
+    row: number,
+    need: ((p: string | null | undefined) => void) | null,
+  ): boolean {
+    const r0 = performance.now();
+    const cell = this.t3cellOf(t3, col, row);
+    if (!cell) return true;
+    const b = this.t3boundaryOf(t3, col, row);
+    const decks = this.t3decksOf(t3, col, row);
+    const r1 = performance.now();
+    this.groundWarmStats.resolveMs += r1 - r0;
+    if (need) {
+      cellArtPaths(cell, need, false);
+      if (b) boundaryArtPaths(b, need);
+      for (const d of decks) deckArtPaths(d, need);
+    }
+    const drops = tex.droppedOps, raw = tex.plateRawFallbacks, defer = tex.deferPlates;
+    let ok = true;
+    tex.deferPlates = this.groundDeferOn && composeWorkerEnabled();
+    try {
+      const bop = b ? tex.opsForBoundary(b) : null;
+      if (b && !bop) ok = false;
+      if (bop && cell.kind === "field" && !this.noTransitions) tex.overlayOps(cell);
+      else cellBlits(tex, this.t3tm, cell, undefined);
+      for (const d of decks) {
+        tex.opsForDeck(d);
+        if (d.boundary && !tex.opsForBoundary(d.boundary)) ok = false;
+      }
+    } catch {
+      return true; // the paint warns about it; nothing to wait for
+    } finally {
+      tex.deferPlates = defer;
+      this.groundWarmStats.composeMs += performance.now() - r1;
+    }
+    return ok && tex.droppedOps === drops && tex.plateRawFallbacks === raw;
+  }
+
+  /** A NEIGHBOUR'S GROUND, COMPOSED BEFORE THE TAP. The view a quarter away gets
+   *  its resolver now (kept in t3ViewCache — the one its turn restores in
+   *  initTiles3), the window its camera will paint (the ground texture's, margin
+   *  included) is resolved into that view's own cells, and everything those
+   *  cells wear is asked for and composed on the worker (composeCell) — in idle
+   *  slices of at most a few ms, never while the compose worker is busy with the
+   *  view on screen. A turn to it then finds its ground here: every cell
+   *  resolved, every transition a texture, the art loaded. Again for a side only
+   *  once the player has walked GROUND_WARM_MOVE cells. */
+  private groundWarm: { k: ViewRot; key: string; kept: { t3: Tiles3World; cells: WorldScene["t3cells"] }; todo: [number, number][]; at: number; short: [number, number][]; pass: number; wait: number } | null = null;
+  private groundWarmDone = new Map<ViewRot, string>();
+  private slopeWarm = new WeakSet<World>();
+  /** What the warm did, for the probes (`__ml.turnWarm()`). */
+  private groundWarmStats = { jobs: 0, cells: 0, short: 0, ms: 0, slices: 0, maxSliceMs: 0, resolverMs: 0, resolveMs: 0, composeMs: 0, dataMs: 0, slopeMs: 0 };
+  private warmViewGround(sides: ViewRot[]): boolean {
+    const w = this.world, rt = this.groundRT, me = this.myId ? this.avatars.get(this.myId) : undefined;
+    /* NEAREST SIDE FIRST, ALWAYS: a job on a farther side yields to a nearer one
+     * that owes work (its cells stay kept, so it resumes cheaply). Without this a
+     * turn and a turn back left the far side's job running and the other side one
+     * tap away unprepared: 1,202 transitions owed on its turn, measured. */
+    if (this.groundWarm && w && me) {
+      const at = sides.indexOf(this.groundWarm.k);
+      for (let i = 0; i < at; i++) {
+        const k = sides[i];
+        const [x, y] = k ? rotPoint(me.fx / CELL_WU, me.fy / CELL_WU, k, w.width, w.height) : [me.fx / CELL_WU, me.fy / CELL_WU];
+        if (this.groundWarmDone.get(k) !== `${Math.floor(x / GROUND_WARM_MOVE)},${Math.floor(y / GROUND_WARM_MOVE)}`) { this.groundWarm = null; break; }
+      }
+    }
+    if (this.groundWarm) return true;
+    if (!w || !rt || !me || !this.t3 || !this.t3tex || !this.maps3 || !this.t3compose.ready() || this.indoorInside) return false;
+    for (const k of sides) {
+      const vw = k === 0 ? w : this.viewCache.get(k)?.vw;
+      if (!vw) continue;
+      // where that view's camera will stand: on me
+      const [x, y] = k ? rotPoint(me.fx / CELL_WU, me.fy / CELL_WU, k, w.width, w.height) : [me.fx / CELL_WU, me.fy / CELL_WU];
+      const key = `${Math.floor(x / GROUND_WARM_MOVE)},${Math.floor(y / GROUND_WARM_MOVE)}`;
+      if (this.groundWarmDone.get(k) === key) continue;
+      let kept = this.t3ViewCache.get(k);
+      if (!kept) {
+        /* THE SLOPE MIX FIRST, IN A SLOT OF ITS OWN: a whole-world pass (73 of
+         * the 79 ms a side's resolver cost here), memoised per world, so the
+         * data and the resolver below are the next slot's and cost ~6 ms. */
+        const r0 = performance.now();
+        if (!this.slopeWarm.has(vw)) {
+          slopeRule(vw as never);
+          this.slopeWarm.add(vw);
+          this.groundWarmStats.slopeMs += performance.now() - r0;
+          return true;
+        }
+        const r1 = performance.now();
+        const built = this.tiles3DataFor(vw, false);
+        this.groundWarmStats.dataMs += performance.now() - r1;
+        if (!built || built.rules !== this.t3ViewRules) continue; // the rules moved: the turn builds it
+        setPickFrame(this.pickFn(k));
+        try {
+          kept = { t3: new Tiles3World({ view: viewFromParsed(vw), tiles: new Tiles3(built.data), frame: this.tiles3Frame(), patterns: built.data.patterns }), cells: new Map() };
+        } finally {
+          setPickFrame(this.pickFn(this.viewRot));
+        }
+        this.t3ViewCache.set(k, kept);
+        this.groundWarmStats.resolverMs += performance.now() - r0;
+        return true; // the resolver was this slot's work; its ground is the next one's
+      }
+      const lvl = vw.rows[Math.floor(y)]?.[Math.floor(x)]?.l ?? 0;
+      const { dx, dy, lh } = this.geom;
+      const ax = Math.round(this.iso.ox + 32 + (x - y) * dx - rt.width / 2);
+      const ay = Math.round(this.iso.oy + 10 + (x + y) * dy - lvl * lh - rt.height / 2);
+      const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
+      /* WHAT THE TURN WILL SHOW FIRST: the cells whose art meets the screen that
+       * side's camera will frame (frame B waits on exactly those, viewSettled),
+       * nearest the player first; then the margin the texture paints for the
+       * walk after it. */
+      const cc = Math.floor(x), cr = Math.floor(y);
+      const vw0 = this.cameras.main.worldView;
+      const scr = this.t3groundWindow(Math.round(ax + rt.width / 2 - vw0.width / 2), Math.round(ay + rt.height / 2 - vw0.height / 2), 0, 0, Math.ceil(vw0.width), Math.ceil(vw0.height));
+      const rank = ([c, r]: [number, number]) => {
+        const u = c - r, v = c + r;
+        const on = u >= scr.u0 && u <= scr.u1 && v >= scr.v0 && v <= scr.v1;
+        return (on ? 0 : 100000) + Math.abs(c - cc) + Math.abs(r - cr);
+      };
+      const todo = this.t3windowCells(win.u0, win.u1, win.v0, win.v1).sort((a, b) => rank(a) - rank(b));
+      // bounded like the view on screen's own cache: that window, not the walk
+      const inWin = new Set(todo.map(([c, r]) => r * w.width + c));
+      for (const i of kept.cells.keys()) if (!inWin.has(i)) kept.cells.delete(i);
+      this.groundWarm = { k, key, kept, todo, at: 0, short: [], pass: 0, wait: 0 };
+      this.groundWarmStats.jobs++;
+      this.warmGroundSlice();
+      return true;
+    }
+    return false;
+  }
+  /** THE WARM'S WORK, `budget` ms of it: from an idle slot (warmGroundSlice) and
+   *  from the frame loop (warmFrameStep). Answers whether the job is still on. */
+  private warmWork(budget: number): boolean {
+    const job = this.groundWarm;
+    if (!job) return false;
+    // the turn came first, or the rules moved under it: the swap does the rest
+    const tex = this.t3tex;
+    if (this.turning || this.viewRot === job.k || this.t3ViewCache.get(job.k) !== job.kept || !this.world || !tex) { this.groundWarm = null; return false; }
+    if (performance.now() < job.wait) return true;
+    // the view on screen first: its own compositions never queue behind a warm's
+    if (tex.inflightCount() > GROUND_WARM_BACKLOG || this.groundSliceQ.length) return true;
+    const load = this.t3load, in0 = tex.inflightCount(), t0 = performance.now();
+    const need = (p: string | null | undefined) => { if (p && load) load.need(p); };
+    const live = this.t3cells;
+    this.t3cells = job.kept.cells; // the neighbour's own cells (t3cellOf reads the view on screen's)
+    setPickFrame(this.pickFn(job.k));
+    let n = 0;
+    try {
+      while (job.at < job.todo.length && performance.now() - t0 < budget && tex.inflightCount() - in0 < GROUND_WARM_BACKLOG) {
+        const [c, r] = job.todo[job.at++];
+        n++;
+        if (!this.composeCell(tex, job.kept.t3, c, r, job.pass ? null : need)) job.short.push([c, r]);
+      }
+    } finally {
+      this.t3cells = live;
+      setPickFrame(this.pickFn(this.viewRot));
+    }
+    const ms = performance.now() - t0;
+    const st = this.groundWarmStats;
+    st.cells += n; st.ms += ms; st.slices++; st.maxSliceMs = Math.max(st.maxSliceMs, ms);
+    if (!job.pass && load && load.stats.pending === 0) load.flush();
+    if (job.at < job.todo.length) return true;
+    // a pass is over: what was short is looked at again once the worker has had it
+    if (job.short.length && job.pass < 4) {
+      if (!job.pass) st.short += job.short.length;
+      job.todo = job.short;
+      job.short = [];
+      job.at = 0;
+      job.pass++;
+      job.wait = performance.now() + 250;
+      return true;
+    }
+    this.groundWarmDone.set(job.k, job.key);
+    this.groundWarm = null;
+    return false;
+  }
+  /** Idle slots, chained while the job lasts: as much as the browser says is
+   *  idle, less a millisecond, at most 10 (a slice cannot be interrupted). */
+  private warmGroundSlice(): void {
+    const job = this.groundWarm;
+    if (!job) return;
+    type Idle = { timeRemaining(): number };
+    const ric = (window as unknown as { requestIdleCallback?: (f: (d: Idle) => void, o?: { timeout: number }) => void }).requestIdleCallback;
+    const run = (dl?: Idle) => {
+      if (this.groundWarm !== job) return;
+      const budget = dl ? Math.min(10, dl.timeRemaining() - 1) : 2;
+      if (budget < 1 || this.warmWork(budget)) {
+        if (ric) ric(run, { timeout: 1000 });
+        else window.setTimeout(run, 16);
+      }
+    };
+    if (ric) ric(run, { timeout: 1000 });
+    else window.setTimeout(run, 16);
+  }
+  /** AND A FIXED SHARE OF EVERY FRAME THAT PAINTED NO GROUND (GROUND_WARM_FRAME_MS):
+   *  idle slots alone starve when the frame leaves none — measured headless, a
+   *  slot came only on its 1 s timeout, 315 cells in 90 s. */
+  private warmFrameStep(): void {
+    if (!this.groundWarm || this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
+    this.warmWork(GROUND_WARM_FRAME_MS);
+  }
+  /** A view's pick frame: its resolver picks keyed by the SERVER cell (the same
+   *  world, seen from another side). */
+  private pickFn(k: ViewRot): ((x: number, y: number) => [number, number]) | null {
+    const w = this.world;
+    return w && k && !PICK_VIEW ? (x, y) => unrotCell(x, y, k, w.width, w.height) : null;
+  }
+
   /** Draw the world turned `k` quarter-turns, NOW — no animation (turnView wraps
    *  this). The same rebuild the terrain editor does after changing one cell,
    *  for all of them: the resolver (and its worker, and scenery), the night
@@ -20525,20 +20967,10 @@ export class WorldScene extends Phaser.Scene {
     const world = this.world;
     if (!world || k === this.viewRot) return;
     const t0 = performance.now();
-    let vw: World | null = null;
-    if (k !== 0) {
-      if (!this.viewDoc) {
-        const r = await fetch(gameUrl(worldFileUrl(this.worldName, "world.json")));
-        if (!r.ok) throw new Error(`world.json answered ${r.status}`);
-        this.viewDoc = await r.json();
-      }
-      const st: RotateStats = { hiddenPieces: 0 };
-      vw = parseWorldDoc(rotateWorldDoc(this.viewDoc, k, st)) as World | null;
-      if (!vw) throw new Error("the rotated world did not parse");
-      // same pieces, same order as the server's parse: an index still joins
-      for (const i of st.hiddenIdx ?? []) { const p = vw.scenery?.[i] as { viewHidden?: boolean } | undefined; if (p) p.viewHidden = true; }
-      this.turnLog.hiddenPieces = st.hiddenPieces;
-    }
+    let vc: ViewCacheEntry | null = null;
+    if (k !== 0) vc = await this.viewEntry(k);
+    const vw: World | null = vc ? vc.vw : null;
+    if (vc) this.turnLog.hiddenPieces = vc.hidden;
     const tParse = performance.now();
     const kOld = this.viewRot;
     this.viewRot = k;
@@ -20547,17 +20979,22 @@ export class WorldScene extends Phaser.Scene {
     const W0 = world.width, H0 = world.height;
     setPickFrame(k && !PICK_VIEW ? (x, y) => unrotCell(x, y, k, W0, H0) : null);
     this.night?.setWorld(vw ?? world);
-    this.viewTerrain = k && vw ? buildTerrainGrid(vw.width, vw.height, vw.rows, vw.props, vw.decks) : null;
-    this.viewDeckIndex.clear();
-    if (k && vw) for (const d of vw.decks ?? []) for (const c of d.cells) this.viewDeckIndex.set(c.row * vw.width + c.col, { deck: d, cell: c });
+    this.viewTerrain = vc ? vc.terrain : null;
+    this.viewDeckIndex = vc ? vc.decks : new Map();
     // INDOORS, THE CUT IS A FUNCTION OF THE VIEW: re-cut for this side before the
     // repaint below, and drop a crossfade layer placed for the old one
     this.destroyIndoorDebris();
     if (this.indoorInside && this.indoorSpace) { this.indoorMaskSig = ""; this.refreshIndoorMask(); }
     // the heightmap rebuild cleared the scenery shadows it had stamped: stamp the turned ones
     if (this.night && this.terrain) this.night.setSceneryOccluders(this.sceneryOn ? this.viewFootprints() : undefined);
-    this.initTiles3();
+    this.viewSwapping = true;
+    try {
+      this.initTiles3();
+    } finally {
+      this.viewSwapping = false;
+    }
     this.repaintWorld();
+    this.gpuSettleOwed();
     this.bake?.refreshAll();
     this.indoorDirty = true;
     // ambient effects that cache per DRAWN cell (the foam's liquid cells and
@@ -20569,6 +21006,27 @@ export class WorldScene extends Phaser.Scene {
     if (!this.turning) this.inputRot = k; // an instant swap: input follows at once
     this.turnLog.parseMs = +(tParse - t0).toFixed(1);
     this.turnLog.rebuildMs = +(performance.now() - tParse).toFixed(1);
+  }
+
+  /** A PAINT THAT MUST NOT OWE (a view turn): with "GPU transitions" on, every
+   *  transition the paint just asked for is composed NOW, in a few GPU batches,
+   *  and the cells it left plain are repainted at once — rather than landing 12
+   *  cells a frame through the retry (T3_BOUNDARY_LAND), which is what made a
+   *  fresh side fill in over seconds. Plates not decoded yet stay owed and land
+   *  the ordinary way. */
+  private gpuSettleOwed(): void {
+    if (!this.t3gpuc.on || !this.t3boundaryOwed.size) return;
+    const t0 = performance.now();
+    const landed = this.t3gpuc.flushNow();
+    if (!landed) return;
+    const owed = [...this.t3boundaryOwed];
+    this.groundRepaintWhy = "gpu";
+    this.repaintTiles3Cells(owed);
+    this.groundRepaintWhy = "other";
+    this.occRelanded = true;
+    this.turnLog.gpuLanded = landed;
+    this.turnLog.gpuOwedLeft = this.t3boundaryOwed.size;
+    this.turnLog.gpuMs = +(performance.now() - t0).toFixed(1);
   }
 
   /** The scenery footprints as the DRAWN view sees them. Collision keeps the
@@ -20768,7 +21226,8 @@ export class WorldScene extends Phaser.Scene {
       if (c < 0 || r < 0 || c >= w.width || r >= w.height) continue;
       const idx = r * w.width + c;
       if (!this.t3cellMeets(idx, rect)) continue;
-      if (this.t3dropOwed.has(idx)) return false;
+      // a cell painted without its transition (on the worker still) is not drawn
+      if (this.t3dropOwed.has(idx) || this.t3boundaryOwed.has(idx) || this.t3deckOwed.has(idx)) return false;
       const cell = this.t3cellOf(t3, c, r);
       if (!cell) continue;
       checked++;
@@ -20780,7 +21239,7 @@ export class WorldScene extends Phaser.Scene {
     // the turn on holes, then the live view popped them in under the fade.
     for (const idx of this.occIncomplete) if (this.t3cellMeets(idx, rect)) return false;
     const art = this.artQueue();
-    for (const k of this.sceneryAsked) if (!this.textures.exists(k) && art.has(k)) return false;
+    for (const k of this.sceneryAsked) if (!this.sceneryPrefetch.has(k) && !this.textures.exists(k) && art.has(k)) return false;
     return true;
   }
 
@@ -22451,9 +22910,10 @@ export class WorldScene extends Phaser.Scene {
    *  after setupStreamingGround has set `iso`. A missing ground_types or
    *  patterns index leaves `t3` null and the world renders as empty ground —
    *  loudly, because a silent fall-through here is a black map. */
-  private initTiles3() {
-    const world = this.world;
-    if (!world) return;
+  /** THE DATA A RESOLVER OVER `sw` (the drawn world, turned or not) IS BUILT
+   *  FROM, and the rules it holds under — initTiles3's and the ground warm's
+   *  alike, so a resolver built before a turn is the one the turn would build. */
+  private tiles3DataFor(sw: World, warn: boolean): { data: NonNullable<ReturnType<typeof tiles3DataFrom>>; rules: string } | null {
     const docs: Partial<Record<Tiles3DocKey, unknown>> = {};
     const absent: string[] = [];
     for (const k of Object.keys(TILES3_DOCS) as Tiles3DocKey[]) {
@@ -22461,14 +22921,14 @@ export class WorldScene extends Phaser.Scene {
       if (doc === undefined) absent.push(TILES3_DOCS[k]);
       docs[k] = doc;
     }
-    if (absent.length) console.warn(`[nangijala] tiles3: documents did not load: ${absent.join(", ")}`);
+    if (warn && absent.length) console.warn(`[nangijala] tiles3: documents did not load: ${absent.join(", ")}`);
     // The pitch is the MEASURED one (shared ISO_GEOMETRY_MAPS3.lh = 15) and the
     // frame is already built with it — `checkTiles3Pitch` re-measures off the
     // real art once it lands and says so if the two ever disagree.
-    const data = tiles3DataFrom(docs, this.geom.lh, (m) => console.warn(m));
+    const data = tiles3DataFrom(docs, this.geom.lh, (m) => { if (warn) console.warn(m); });
     if (!data) {
-      console.warn("[nangijala] tiles3: no ground_types/patterns — this world cannot resolve any art");
-      return;
+      if (warn) console.warn("[nangijala] tiles3: no ground_types/patterns — this world cannot resolve any art");
+      return null;
     }
     data.fadeTune = fadeTune(); // the Settings fade dials; "ml-fade-tune" rebuilds the resolver
     data.detailRate = detailRate(); // the Settings details dial; "ml-detail-rate" rebuilds it the same way
@@ -22479,7 +22939,6 @@ export class WorldScene extends Phaser.Scene {
     {
       // His slope switch — auto (the default) is the per-run mix, over the world
       // this resolver draws (turned or not); "ml-slope-height" rebuilds it.
-      const sw = this.viewWorld ?? world;
       const sr = slopeRule(sw as never);
       data.slopeHeight = sr.slopeHeight;
       if (sr.shares) {
@@ -22487,6 +22946,24 @@ export class WorldScene extends Phaser.Scene {
         data.slopeSharesW = sw.width;
       }
     }
+    return { data, rules: JSON.stringify([data.fadeTune, data.detailRate, data.slopeHeight, !!data.slopeShares, Object.keys(docs).filter((k) => docs[k as Tiles3DocKey] !== undefined).length, this.worldName]) };
+  }
+
+  private initTiles3() {
+    const world = this.world;
+    if (!world) return;
+    const built = this.tiles3DataFor(this.viewWorld ?? world, true);
+    if (!built) return;
+    const { data, rules } = built;
+    /* ONE RESOLVER PER VIEW, KEPT (with the cells it resolved): a turn used to
+     * build a new one and drop every resolved cell, so the view it turned to was
+     * resolved from nothing on the main thread while the turn ran. A resolver is
+     * valid while the rules it was built under hold; any other rebuild (the fade
+     * dials, the details dial, the slope switch, the live channel) drops them
+     * all, and a rebuild that is not a turn drops the one on screen too. */
+    if (rules !== this.t3ViewRules || !this.viewSwapping) { this.t3ViewCache.clear(); this.t3ViewRules = rules; this.groundWarmDone.clear(); this.groundWarm = null; }
+    else if (this.t3 && this.t3View !== null && this.t3View !== this.viewRot) this.t3ViewCache.set(this.t3View, { t3: this.t3, cells: this.t3cells });
+    const kept = this.t3ViewCache.get(this.viewRot);
     const tiles = new Tiles3(data);
     const view = viewFromParsed(this.viewWorld ?? world);
     // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
@@ -22498,7 +22975,14 @@ export class WorldScene extends Phaser.Scene {
     this.groundPainted = false;
     this.groundSliceQ = [];
     this.groundSliceCtx = null;
-    this.worldUp = false;
+    // ONLY THE SCENE'S FIRST BUILD TAKES THE WORLD DOWN: its loading hold
+    // (hideLoadingWhenTerrainIsUp) is the one thing that brings it up. A rebuild
+    // mid-session — a view turn, the fade dial, a terrain edit — cleared it with
+    // nothing to set it back, and from then on streaming ran unbudgeted, the
+    // ring prefetch and the boundary retry stood down and a respawn could not
+    // begin (every `worldUp` reader), for the rest of the session.
+    if (!this.t3Booted) this.worldUp = false;
+    this.t3Booted = true;
     this.t3missing.clear();
     this.t3dropOwed.clear();
     // cell indices into the OLD resolver's grid (a view turn re-keys every cell)
@@ -22509,8 +22993,16 @@ export class WorldScene extends Phaser.Scene {
     this.repaintGroundPartial = false;
     this.t3ringQueue = [];
     this.t3keepIdx = null;
-    this.t3cells.clear(); // a new resolver: nothing cached against the old one may survive
-    this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
+    if (kept) {
+      // the view turned to was seen, or prepared, before: its resolver and every cell it resolved
+      this.t3 = kept.t3;
+      this.t3cells = kept.cells;
+      this.t3ViewCache.delete(this.viewRot);
+    } else {
+      this.t3cells = new Map(); // a new resolver: nothing cached against the old one may survive
+      this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
+    }
+    this.t3View = this.viewRot;
     this.perfSnapResolve(); // a new resolver's counters start at zero
     this.t3regionMs = +(performance.now() - t0).toFixed(1);
     /* AND THE SAME RESOLVER ON ANOTHER CORE. Booted from the URLs THIS thread
@@ -22547,6 +23039,13 @@ export class WorldScene extends Phaser.Scene {
     this.t3worker.stop();
     this.t3workerBooted = true;
     this.t3worker.init(this.t3workerOpts);
+    // A TURN KEEPS THE LOADER: art paths do not depend on the side, and a new
+    // loader per turn forgot what was already asked for (and what the sides
+    // prepared before the tap had asked for) and fetched it again.
+    if (this.viewSwapping && this.t3load) {
+      this.initScenery(view);
+      return;
+    }
     this.t3load = new Tiles3Loader({
       loader: this.tiles3LoaderAdapter(),
       textures: this.t3tm,
@@ -22774,6 +23273,10 @@ export class WorldScene extends Phaser.Scene {
       if (!key.startsWith("t3x:")) this.t3remoteLanded = true;
     });
     this.t3compose.onMissed((key) => this.t3tex?.remoteMissed(key));
+    // a plate or shape the direct draw was waiting for: its dropped cells drain
+    this.t3gpuc.onReady(() => {
+      this.t3remoteLanded = true;
+    });
     {
       const p = patternSheetPaths(patterns);
       this.t3compose.init({
@@ -22781,10 +23284,14 @@ export class WorldScene extends Phaser.Scene {
         sheets: { silhouette: docUrl(p.silhouette, this.t3route), masks: docUrl(p.masks, this.t3route), border: docUrl(p.border, this.t3route) },
       });
     }
+    // the GPU compositor and every mask frame, now, with the factory — never at a first transition
+    this.t3gpuc.prepare();
     this.t3tex = new Tiles3Textures({
       textures: this.t3tm,
       sheets: this.t3sheets,
-      remote: this.t3compose,
+      remote: this.t3gpuc,
+      gpuRamp: (job) => this.t3gpuc.ramp(job),
+      gpuDirect: { active: () => !!this.t3gpuc.directStore, boundary: (job) => this.t3gpuc.directBoundary(job), ramp: (job) => this.t3gpuc.directRamp(job) },
       artUrl: (path) => docUrl(path, this.t3route),
       pitch: this.geom.lh, // the occluder pass's storey pitch: where a face ends, for the wall-foot band
 
@@ -22937,6 +23444,18 @@ export class WorldScene extends Phaser.Scene {
        * liquid has, and why water showed this worst and longest. */
       if (dx + op.sw <= clip.x0 || dy + op.sh <= clip.y0 || dx >= clip.x1 || dy >= clip.y1) {
         this.groundCulled++;
+        return;
+      }
+    }
+    /* THE DIRECT DRAW: a transition, ramp or lined top the GPU paints from
+     * what is resident — one quad of this batch, no texture (groundpipe.ts). */
+    const store = this.t3gpuc.directStore;
+    if (store && this.groundPipe) {
+      const inst = store.get(op.key);
+      if (inst) {
+        const dt = rt.texture as unknown as { pipeline: unknown; camera: { matrix: Phaser.GameObjects.Components.TransformMatrix } };
+        if (dt.pipeline !== this.groundPipe) dt.pipeline = this.groundPipe;
+        this.groundPipe.batchDirect(inst, dx, dy, op.sx, op.sy, op.sw, op.sh, tint, dt.camera.matrix);
         return;
       }
     }
@@ -24161,7 +24680,7 @@ export class WorldScene extends Phaser.Scene {
        * frame; nothing is deleted that was not repaired. */
       const d0 = tex.stats.deferred;
       if (b.topOnly) raisedRepair = true;
-      if (!tex.boundary(b)) {
+      if (!tex.opsForBoundary(b)) {
         /* WHICH `null` THIS IS DECIDES WHETHER TO STOP OR TO SKIP, and getting
          * it wrong wedges the repair. `boundary()` answers null for three
          * reasons: the budget refused it (then everything after it this frame
@@ -25247,7 +25766,13 @@ export class WorldScene extends Phaser.Scene {
       const r0 = tex.plateRawFallbacks;
       const m0 = tex.stats.missing;
       const f0 = tex.stats.deferred;
-      walkCell();
+      // an occluder copy is a SPRITE: it needs real textures, never the ground's direct draw
+      tex.wantTextures = true;
+      try {
+        walkCell();
+      } finally {
+        tex.wantTextures = false;
+      }
       if (tex.droppedOps !== d0 || tex.plateRawFallbacks !== r0 || tex.stats.missing !== m0 || tex.stats.deferred !== f0)
         st.incomplete = true;
       if (this.bakeSink) {
@@ -25581,7 +26106,13 @@ export class WorldScene extends Phaser.Scene {
         bounds: { x0: 0, y0: 0, x1: world.width, y1: world.height },
       }),
     );
-    this.sceneryPieces = new SceneryPieces({
+    // A TURN KEEPS THE PIECES AND THE COLLISION DOCUMENTS: neither depends on
+    // the side. Made again per turn, every manifest was asked for again, and
+    // /api/scenery-collision landed a moment into the turn with a re-stamp, a
+    // new footprints object (the night pass's stamps all over again) and a
+    // FULL repaint — a second hitch in the middle of every turn.
+    if (this.viewSwapping && this.sceneryPieces && this.sceneryBboxDoc && this.sceneryHitboxDoc) return;
+    if (!(this.viewSwapping && this.sceneryPieces)) this.sceneryPieces = new SceneryPieces({
       fetchJson: (url) =>
         fetch(url).then((r) => {
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -26231,7 +26762,9 @@ export class WorldScene extends Phaser.Scene {
   private needScenery(spritePath: string): boolean {
     const key = this.sKey(spritePath);
     if (this.textures.exists(key)) return true;
-    if (!this.sceneryAsked.has(key)) {
+    // a still prefetched for another view is asked again at this view's
+    // priority: the art queue raises it and chains this landing's repaint
+    if (!this.sceneryAsked.has(key) || this.sceneryPrefetch.delete(key)) {
       this.sceneryAsked.add(key);
       this.sceneryQueue.push([key, this.sceneryUrl(spritePath)]);
     }

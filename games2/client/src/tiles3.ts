@@ -1447,6 +1447,28 @@ export const EDGE_S = 4;
 export const EDGE_E = 8;
 export const EDGE_NONE = -99;
 /** The eight neighbours of `CellEdges.nb`, in its order (tiles3draw `EDGE_NB`). */
+/** THE HAND-OVER PROTOCOL (maintainer 2026-09-26: "You just need a protocol for
+ *  where the line should be handed over/meet and you will have 0 gaps!"). Per
+ *  EDGE_NB_STEPS neighbour, the edges of its whose line touches a corner this
+ *  cell shares with it — the only neighbour lines that can reach a texel this
+ *  cell shows (where it paints over an earlier neighbour's line end, or where a
+ *  later neighbour's line end decides how the join is thinned). Everything a
+ *  cell's outline depends on is then: its own edges, its geometry, and these
+ *  bits — a small fixed set (the_game: 462 flat + 339 ramp combinations).
+ *  Measured on the_game: every one of its 16,746 flat and 1,159 ramp cells with
+ *  neighbour lines paints the same visible texels as with every neighbour edge
+ *  (server/test/edgeprotocol.test.ts). */
+export const EDGE_HANDOVER: readonly number[] = [
+  4 | 8, // NW: its bottom corner is my top — its S and E edges
+  2 | 4 | 8, // N: its left corner is my top, its bottom my right — W, S, E
+  2 | 4, // NE: its left corner is my right — W, S
+  1 | 4 | 8, // W: its right corner is my top, its bottom my left — N, S, E
+  1 | 2 | 4, // E: its top corner is my right, its left my bottom — N, W, S
+  1 | 8, // SW: its right corner is my left — N, E
+  1 | 2 | 8, // S: its top corner is my left, its right my bottom — N, W, E
+  1 | 2, // SE: its top corner is my bottom — N, W
+];
+
 export const EDGE_NB_STEPS: readonly (readonly [number, number])[] = [
   [-1, -1],
   [0, -1],
@@ -2513,7 +2535,7 @@ export class Tiles3 {
    *  cells are ramps), so each cell carries the lines of its eight same-level
    *  neighbours, a ramp's incline with them. "" when none has one — decided
    *  without asking them when the 5x5 round the cell is all one level. */
-  edgeNb(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number, view?: World3View): string {
+  edgeNb(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number, view?: World3View, full = false): string {
     const z = L(x, y);
     let mixed = false;
     for (let dy = -2; dy <= 2 && !mixed; dy++) for (let dx = -2; dx <= 2 && !mixed; dx++) if (g(x + dx, y + dy) && L(x + dx, y + dy) !== z) mixed = true;
@@ -2529,7 +2551,8 @@ export class Tiles3 {
         continue;
       }
       if (!g(nx, ny) || L(nx, ny) !== z) continue;
-      const top = this.edgeSet(g, L, nx, ny, view)?.top ?? 0;
+      // THE HAND-OVER (EDGE_HANDOVER): only a neighbour's edges that touch a corner it shares with this cell
+      const top = (this.edgeSet(g, L, nx, ny, view)?.top ?? 0) & (full ? 15 : EDGE_HANDOVER[i]);
       if (!top) continue;
       const geo = this.edgeGeom(g, L, nx, ny);
       if (geo === null) continue;

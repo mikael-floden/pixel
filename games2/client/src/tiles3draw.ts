@@ -2122,6 +2122,20 @@ export type ComposeJob =
    *  while the factory's `deferPlates` is up (a band pass, the ring). */
   | { kind: "plate"; key: string; side: ComposeSide };
 
+/** A COMPOSED RAMP handed to the GPU compositor (tiles3gpu.ts): the raster
+ *  `rampRaster` builds — and, with `edge`, its lined variant (`edgedTop`) —
+ *  described by its inputs. `top` is what the incline lifts: the plate (a
+ *  conformed side, or the raw art: `kind` "raw") or the transition the flat
+ *  neighbours compose; `band` the raw art under the side faces. */
+export interface RampJob {
+  key: string;
+  top: { kind: "plate"; side: ComposeSide } | { kind: "boundary"; job: Extract<ComposeJob, { kind: "boundary" }> };
+  band: ComposeSide;
+  mask: number;
+  lh: number;
+  edge?: { mask: number; verts: number; nb: string };
+}
+
 /** Something that composes OFF THE FRAME THREAD (composeclient.ts). The
  *  factory hands it a job when `ready()` and draws the plain plate until the
  *  raster comes back through `landRemote`; not ready means the factory
@@ -2135,6 +2149,19 @@ export interface Tiles3TexturesOpts {
   /** THE COMPOSE WORKER, and the routed URL of a repo-relative art path it
    *  needs to fetch a plate itself. Both or neither. */
   remote?: RemoteComposer;
+  /** THE GPU COMPOSITOR'S RAMPS (Settings -> Dev "GPU transitions"): answers
+   *  true when it took the job — the raster lands later under `job.key` and the
+   *  caller draws as it does for a plate still streaming (owed, repainted).
+   *  False (or absent): built here, as always. */
+  gpuRamp?: (job: RampJob) => boolean;
+  /** THE DIRECT DRAW (tiles3gpu "THE DIRECT DRAW", Settings -> Dev "GPU
+   *  transitions"): true = the ground pipeline can paint this transition /
+   *  ramp / lined top under `job.key` from what is resident on the GPU — no
+   *  texture is made, the key is drawn by the ground pass as a direct quad.
+   *  False = not yet (its plates or shape are still being prepared). Only the
+   *  ground pass asks (`wantTextures` off); a caller that needs a real texture
+   *  (the occluder copies) gets the texture path. */
+  gpuDirect?: { active(): boolean; boundary(job: Extract<ComposeJob, { kind: "boundary" }>): boolean; ramp(job: RampJob): boolean };
   artUrl?: (path: string) => string;
   /** The storey pitch the occluder pass stacks faces at (`geom.lh`) — the wall
    *  foot band is placed from it. Defaults to the shipped 16. */
@@ -2327,8 +2354,27 @@ export class Tiles3Textures {
     const nb = e?.nb ?? "";
     if ((!mask && !verts && !nb) || !art || (art as { kind: string }).kind === "liquid") return key;
     const vkey = this.variantKey(key, edgeCode(mask, verts, nb), "e");
+    const direct = this.directHook();
+    if (direct) {
+      // ON THE GPU, DRAWN DIRECTLY: a composed ramp with its outline, or a flat
+      // top with its outline (a RampJob with mask -1); `key` (plain) until ready
+      if (art.kind === "ramp" && art.from) return direct.ramp(this.rampJob(vkey, art, cell.ground, { mask, verts, nb })) ? vkey : key;
+      if (art.kind !== "ramp") {
+        const side = this.side(art as PlateLike, cell.ground);
+        return direct.ramp({ key: vkey, top: { kind: "plate", side }, band: side, mask: -1, lh: 0, edge: { mask, verts, nb } }) ? vkey : key;
+      }
+    }
     const hit = this.ensureHit(vkey);
     if (hit) return hit;
+    if (this.o.gpuRamp && this.o.artUrl) {
+      // ON THE GPU (Settings -> Dev "GPU transitions"): a composed ramp with its
+      // outline, or a flat top with its outline (a RampJob with mask -1)
+      if (art.kind === "ramp" && art.from && this.o.gpuRamp(this.rampJob(vkey, art, cell.ground, { mask, verts, nb }))) return key;
+      if (art.kind !== "ramp") {
+        const side = this.side(art as PlateLike, cell.ground);
+        if (this.o.gpuRamp({ key: vkey, top: { kind: "plate", side }, band: side, mask: -1, lh: 0, edge: { mask, verts, nb } })) return key;
+      }
+    }
     return (
       this.ensure(vkey, () => {
         const ramp = art.kind === "ramp" && art.from ? { mask: art.mask ?? 0, lh: Math.max(0, ((art as { h?: number }).h ?? PLATE_H) - PLATE_H) } : undefined;
@@ -2377,6 +2423,20 @@ export class Tiles3Textures {
    *  same cells several times a second, and a lined cell would otherwise build
    *  a new array each time. Textures are never evicted in play (`limit: 0`). */
   private edgedOps = new GenMemo<Tiles3Cell, Tiles3Blit[]>(CELL_MEMO_CAP);
+  /** The same memo for the direct draw's keys (a lined top there is a direct
+   *  key, never a texture: the two must not meet). */
+  private edgedOpsDirect = new GenMemo<Tiles3Cell, Tiles3Blit[]>(CELL_MEMO_CAP);
+  /** Set by a caller that must get REAL TEXTURES (the occluder copies are
+   *  sprites): the direct draw is not asked while it is up. */
+  wantTextures = false;
+  /** The direct hook while it applies. */
+  private directHook(): Tiles3TexturesOpts["gpuDirect"] | null {
+    return this.o.gpuDirect && this.o.artUrl && !this.wantTextures && this.o.gpuDirect.active() ? this.o.gpuDirect : null;
+  }
+  /** A boundary's job, as the worker and the GPU compositors take it. */
+  private boundaryJob(b: Tiles3Boundary, key: string): Extract<ComposeJob, { kind: "boundary" }> {
+    return { kind: "boundary", key, frame: b.maskFrame as number, seam: this.o.seam !== false, topOnly: !!b.topOnly, noWall: !!b.noWall, a: this.side(b.plateA, b.a), b: this.side(b.plateB, b.b), slope: b.slope, edge: b.edge };
+  }
 
   /** A WALL COURSE WITH ITS VERTICALS (`courseEdgeBits`), or `key` itself. */
   edgedCourse(key: string, bits: string): string {
@@ -2612,8 +2672,12 @@ export class Tiles3Textures {
       /* A COMPOSED RAMP is built from its member plate under its own virtual
        * key; the raw file branch below is a PUBLISHED storey-height set. */
       if (art.from) {
-        const built = this.ensureHit(key) ?? this.ensure(key, () => this.rampRaster(art, ground));
-        return built;
+        const direct = this.directHook();
+        if (direct) return direct.ramp(this.rampJob(key, art, ground)) ? key : null;
+        const hit = this.ensureHit(key);
+        if (hit) return hit;
+        if (this.o.gpuRamp && this.o.artUrl && this.o.gpuRamp(this.rampJob(key, art, ground))) return null;
+        return this.ensure(key, () => this.rampRaster(art, ground));
       }
       if (!art.topOnly) return this.o.textures.exists(key) ? key : null;
       /* ON A WALL CELL the ramp goes on the cap TOP FACE ONLY, like any
@@ -2626,6 +2690,18 @@ export class Tiles3Textures {
       });
     }
     return this.plateRest(art, ground, key, skey);
+  }
+
+  /** `rampRaster`'s inputs as a GPU job (the same top, band, mask and rise). */
+  private rampJob(key: string, art: PlateLike, ground: string, edge?: RampJob["edge"]): RampJob {
+    const from = art.from as string;
+    const raw = (): ComposeSide => ({ kind: "raw", path: from, topOnly: false, url: this.o.artUrl!(from), wall: this.wallRGB(ground) });
+    const bnd = (art as { bnd?: Tiles3Boundary }).bnd;
+    const top: RampJob["top"] = bnd
+      ? { kind: "boundary", job: { kind: "boundary", key: "", frame: bnd.maskFrame as number, seam: this.o.seam !== false, topOnly: !!bnd.topOnly, noWall: !!bnd.noWall, a: this.side(bnd.plateA, bnd.a), b: this.side(bnd.plateB, bnd.b), slope: bnd.slope } }
+      : { kind: "plate", side: art.fromKind === "conform" ? this.side({ kind: "conform", path: from } as PlateLike, ground) : raw() };
+    const lh = Math.max(0, (art as { h?: number }).h ? ((art as { h?: number }).h as number) - PLATE_H : ISO_LH_FALLBACK);
+    return { key, top, band: raw(), mask: art.mask ?? 0, lh, ...(edge ? { edge } : {}) };
   }
 
   /** A COMPOSED RAMP'S RASTER (`art.from` names its member plate). */
@@ -2831,8 +2907,9 @@ export class Tiles3Textures {
    *  than substituted: a hole this frame is a hole, and the next window fills
    *  it; a fallback tile is a wrong picture that nothing ever corrects. */
   opsForCell(cell: Tiles3Cell): Tiles3Blit[] {
+    const memo = this.directHook() ? this.edgedOpsDirect : this.edgedOps;
     if (cell.edge && (this.o.limit ?? 0) === 0) {
-      const hit = this.edgedOps.get(cell);
+      const hit = memo.get(cell);
       if (hit !== undefined) return hit;
     }
     const base = cellOps(cell);
@@ -2992,7 +3069,7 @@ export class Tiles3Textures {
       if (out) out.push(key === op.key ? op : { ...op, key });
     }
     const done = out ?? base;
-    if (cell.edge && lined && this.droppedOps === drops0 && (this.o.limit ?? 0) === 0) this.edgedOps.set(cell, done);
+    if (cell.edge && lined && this.droppedOps === drops0 && (this.o.limit ?? 0) === 0) memo.set(cell, done);
     return done;
   }
 
@@ -3090,6 +3167,8 @@ export class Tiles3Textures {
   opsForBoundary(b: Tiles3Boundary): Tiles3Blit | null {
     const op = boundaryOp(b, this.o.seam !== false);
     if (!op) return null;
+    const direct = this.directHook();
+    if (direct && typeof b.maskFrame === "number" && b.maskFrame >= 0) return direct.boundary(this.boundaryJob(b, op.key)) ? op : null;
     return this.boundary(b) ? op : null;
   }
 

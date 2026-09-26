@@ -9,10 +9,11 @@
  *  THE SWITCH IS A SWITCH, not a query parameter (an installed PWA has no URL
  *  bar): `ml-compose-worker` in localStorage, `__ml.composeWorker(on?)`.
  *  DEFAULT ON — the fallback is the same picture a frame later. */
+import { noteJob } from "./tiles3gpu";
 import type { PatternsDoc } from "./tiles3";
 import { gapBill, gapOn } from "./gapledger";
 import type { ComposeJob, Pixels, RemoteComposer } from "./tiles3draw";
-import type { ComposeOut } from "./composeworker";
+import type { ComposeOut, GpuPrepReq } from "./composeworker";
 
 const KEY = "ml-compose-worker";
 
@@ -75,6 +76,19 @@ export class ComposeWorker implements RemoteComposer {
     this.onMiss = cb;
   }
 
+  /** THE GPU COMPOSITOR'S PREP on this worker (plates, shapes): asked in one
+   *  message a call, answered one message each, to `onPrep`. False while the
+   *  worker is not ready (the caller does the work itself). */
+  prep(reqs: GpuPrepReq[]): boolean {
+    if (!this.isReady || !this.w || !reqs.length) return false;
+    this.w.postMessage({ type: "gpuprep", gen: this.gen, reqs });
+    return true;
+  }
+  onPrep(cb: (m: Extract<ComposeOut, { type: "gpuplate" | "gpushape" | "gpurshape" | "gpumiss" }>) => void): void {
+    this.onPrepCb = cb;
+  }
+  private onPrepCb: ((m: Extract<ComposeOut, { type: "gpuplate" | "gpushape" | "gpurshape" | "gpumiss" }>) => void) | null = null;
+
   /** Boot (or re-boot) against a pattern library. Every raster still in flight
    *  from the previous generation is dropped on arrival. */
   init(opts: { patterns: PatternsDoc; sheets: { silhouette: string; masks: string; border: string } }): void {
@@ -115,6 +129,7 @@ export class ComposeWorker implements RemoteComposer {
    *  forty compositions costs one message. */
   compose(job: ComposeJob): void {
     if (!this.isReady || !this.w) return;
+    noteJob(job); // the GPU parity gate's sample (tiles3gpu.ts)
     this.batch.push(job);
     this.stats.queued++;
     if (this.flushQueued) return;
@@ -160,6 +175,10 @@ export class ComposeWorker implements RemoteComposer {
       const why = m.error.replace(/\?v=[^ ]*/, "").slice(0, 120);
       if (this.stats.missSample.length < 6 && !this.stats.missSample.includes(why)) this.stats.missSample.push(why);
       this.onMiss?.(m.key, m.error);
+      return;
+    }
+    if (m.type === "gpuplate" || m.type === "gpushape" || m.type === "gpurshape" || m.type === "gpumiss") {
+      this.onPrepCb?.(m);
       return;
     }
     const t0 = performance.now();
