@@ -129,6 +129,20 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   10px margins and reaches neither the card above nor the Report button below,
   which the gate asserts by `elementFromPoint` rather than by reading the CSS
   back.
+  **TAPS ACCUMULATE ONTO AN UNWRAPPED TARGET; one loop travels the signed
+  distance to it** (maintainer 2026-09-26). A tap is not a queued animation —
+  it moves `targetF` by one quarter — and all four of his rules fall out of
+  that with no case of its own: a reverse tap mid-flight cancels on the target,
+  so the remaining distance flips sign and the next frame walks back ("change
+  animation direction immidiatly and go back to the original position"); taps
+  ACCUMULATE, so 2/3/4 of them are 180/270/360° of travel rather than a target
+  normalised to where it started; and the long way round is INEXPRESSIBLE,
+  because `targetF - curF` is the route ("always the shortest rotation towards
+  the goal"). Motion is rate-based off the rAF clock with `dt` clamped to
+  200 ms, so a backgrounded tab resumes instead of teleporting. Both positions
+  are reduced by a whole turn once it settles — same frame, same quarter, small
+  numbers — so a settled `-1` reads back as `3`; `ml-spin` fires ONCE per rest,
+  not once per tap, because four quick taps are one journey.
   The orb is `pointer-events:none` with no role — "the gif should be in the
   middle (not a button)". It drives nothing yet, deliberately: a press emits
   `ml-spin` with the new quarter and direction, so whatever it ends up turning

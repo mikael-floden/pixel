@@ -148,36 +148,107 @@ await page.waitForFunction(() => window.__mlSpin && window.__mlSpin().frames > 0
     ? ok(`the strip carries every frame of his export (${frames} of ${authored}) — a closed loop keeps all of them`)
     : fail(`the strip has ${frames} frames of his ${authored}: trimming a closed loop puts a double-step at the cut`);
 
-  const press = async (sel) => {
-    // spin() takes its lock synchronously inside the handler, so this reads
-    // the lock rather than racing the starved compositor for a frame.
-    const during = await page.evaluate((s) => {
-      const before = window.__mlSpin().quarter;
-      document.querySelector(s).click();
-      return { before, ...window.__mlSpin() };
-    }, sel);
-    await page.waitForFunction(() => !window.__mlSpin().spinning, null, { timeout: 10000 });
-    return { during, after: await page.evaluate(() => window.__mlSpin()) };
+  // A TAP MOVES THE TARGET, it does not queue an animation — everything below
+  // is that one fact. The target arithmetic is synchronous inside the click
+  // handler, so these arms read it directly instead of racing the compositor.
+  const tap = (sel, n = 1) => page.evaluate(([s, n]) => {
+    const before = window.__mlSpin();
+    for (let i = 0; i < n; i++) document.querySelector(s).click();
+    return { before, after: window.__mlSpin() };
+  }, [sel, n]);
+  // 60s, and it is not slack: the loop clamps dt to 200 ms so a backgrounded
+  // tab cannot teleport the orb, and this harness's frames are ~1 s apart, so
+  // every real second of travel costs about five here. A 360° journey is 1.6 s
+  // on a phone and ~8 s in this browser. Do not tighten it back to a number
+  // that looks like the animation's own duration.
+  const settle = async () => {
+    await page.waitForFunction(() => !window.__mlSpin().spinning, null, { timeout: 60000 });
+    return page.evaluate(() => window.__mlSpin());
   };
 
-  const right = await press(".ml-spinbtn.right");
-  right.during.spinning && right.during.quarter === right.during.before
-    ? ok(`a press starts the animation and holds the quarter until it lands`)
-    : fail(`after the click spinning=${right.during.spinning}, quarter ${right.during.before}->${right.during.quarter} — the quarter must only turn over at the end`);
-  right.after.quarter === 1 && right.after.frame === 0
-    ? ok(`right turns one quarter and ends on frame 0 — "a perfect 90° rotation"`)
-    : fail(`right left it at quarter ${right.after.quarter}, frame ${right.after.frame} (wanted quarter 1, frame 0)`);
+  {
+    const t = await tap(".ml-spinbtn.right");
+    t.after.targetQ - t.before.targetQ === 1 && t.after.spinning
+      ? ok(`one tap puts the target a quarter ahead at once and starts the travel`)
+      : fail(`one tap moved the target ${t.after.targetQ - t.before.targetQ} quarters, spinning=${t.after.spinning}`);
+    const r = await settle();
+    r.quarter === 1 && r.frame === 0 && r.curQ === r.targetQ
+      ? ok(`right lands a quarter on, on frame 0 — "a perfect 90° rotation"`)
+      : fail(`right settled at quarter ${r.quarter}, frame ${r.frame}, curQ ${r.curQ} vs targetQ ${r.targetQ}`);
+    const l = await tap(".ml-spinbtn.left"); void l;
+    const back = await settle();
+    back.quarter === 0 && back.frame === 0
+      ? ok(`left plays it backwards and returns it (quarter 0, frame 0)`)
+      : fail(`left settled at quarter ${back.quarter}, frame ${back.frame}`);
+  }
 
-  const left = await press(".ml-spinbtn.left");
-  left.after.quarter === 0 && left.after.frame === 0
-    ? ok(`left plays it backwards and returns it (quarter 0, frame 0)`)
-    : fail(`left left it at quarter ${left.after.quarter}, frame ${left.after.frame} (wanted quarter 0, frame 0)`);
+  // ── TAPS ACCUMULATE: "twice… 180°. 3 taps = 270°. 4 taps = 360°" ─────────
+  for (const [n, deg] of [[2, 180], [3, 270], [4, 360]]) {
+    const t = await tap(".ml-spinbtn.right", n);
+    const moved = t.after.targetQ - t.before.targetQ;
+    moved === n
+      ? ok(`${n} quick taps ask for ${deg}° of travel (target moved ${moved} quarters, not normalised to ${deg % 360}°)`)
+      : fail(`${n} taps moved the target ${moved} quarters — they must accumulate to ${deg}°`);
+    const r = await settle();
+    r.curQ === r.targetQ && r.frame === 0 && r.quarter === ((n % 4) + 4) % 4
+      ? ok(`…and it travels all of it, landing on frame 0 at quarter ${r.quarter}`)
+      : fail(`after ${n} taps it settled at curQ ${r.curQ} (target ${r.targetQ}), frame ${r.frame}, quarter ${r.quarter}`);
+    // put it back for the next round, in one journey
+    await tap(".ml-spinbtn.left", n);
+    await settle();
+  }
 
-  for (let i = 0; i < 4; i++) await press(".ml-spinbtn.right");
-  const round = await page.evaluate(() => window.__mlSpin());
-  round.quarter === 0 && round.frame === 0
-    ? ok(`and four of them come back round to where it started`)
-    : fail(`four right presses ended at quarter ${round.quarter}, frame ${round.frame}`);
+  // A settled position is reduced by a whole turn (spinbar.ts), so -1 quarter
+  // reads back as 3. Mid-flight values are unwrapped; settled ones are not.
+  const wrapQ = (q) => ((q % 4) + 4) % 4;
+
+  // ── REVERSING MID-FLIGHT ─────────────────────────────────────────────────
+  // "if the player presses the left arrow and then the right arrow during the
+  // animation the animation should change animation direction immidiatly and
+  // go back to the original position."
+  // Driven as a FOUR-quarter journey, not one: a single quarter is ~2 frames
+  // on this starved harness and the interrupt can fall between polls. Four is
+  // the same code path with room to actually catch it in flight.
+  {
+    const home = (await page.evaluate(() => window.__mlSpin())).targetQ;
+    await tap(".ml-spinbtn.left", 4);
+    await page.waitForFunction(
+      (h) => { const s = window.__mlSpin(); return s.spinning && s.curQ < h - 0.2; },
+      home, { timeout: 30000, polling: 50 },
+    ).catch(() => fail("the orb never showed up mid-flight — nothing to interrupt"));
+    const mid = await tap(".ml-spinbtn.right", 4);
+    mid.after.targetQ === home
+      ? ok(`tapping the other way mid-flight puts the target straight back (${mid.before.targetQ} -> ${mid.after.targetQ})`)
+      : fail(`the reverse taps left the target at ${mid.after.targetQ}, not the original ${home}`);
+    mid.after.curQ < home && mid.after.curQ > home - 4
+      ? ok(`…while the orb is still part-way round (curQ ${mid.after.curQ.toFixed(2)}), so it has a short way home`)
+      : fail(`at the reverse tap the orb was at curQ ${mid.after.curQ} — expected between ${home - 4} and ${home}`);
+    const r = await settle();
+    r.curQ === wrapQ(home) && r.frame === 0
+      ? ok(`and it turns round on the spot rather than finishing the lap: back at curQ ${r.curQ}, frame 0`)
+      : fail(`after the reversal it settled at curQ ${r.curQ}, frame ${r.frame} — wanted ${wrapQ(home)} and frame 0`);
+  }
+
+  // ── NEVER THE LONG WAY ROUND ─────────────────────────────────────────────
+  // "the rotation should always [take] the shortest rotation towards the goal
+  // and not spin around if going backwards is a shorter rotational distance."
+  // With an UNWRAPPED target the long way is not expressible, so the arm is
+  // that the travel equals the target's own distance — never that plus a turn.
+  {
+    const a = await page.evaluate(() => window.__mlSpin());
+    await tap(".ml-spinbtn.left", 3);
+    await tap(".ml-spinbtn.right", 2); // net one quarter left, asked in two bursts
+    const t = await page.evaluate(() => window.__mlSpin());
+    t.targetQ === a.targetQ - 1
+      ? ok(`bursts net out on the target (3 left + 2 right = one quarter left)`)
+      : fail(`3 left + 2 right left the target at ${t.targetQ}, not ${a.targetQ - 1}`);
+    const r = await settle();
+    r.curQ === wrapQ(a.targetQ - 1) && r.frame === 0
+      ? ok(`…and the orb travels exactly that, never a turn more (curQ ${r.curQ})`)
+      : fail(`it settled at curQ ${r.curQ}, wanted ${wrapQ(a.targetQ - 1)}`);
+    await tap(".ml-spinbtn.right");
+    await settle();
+  }
 }
 
 // ── 6. THE TARGET IS BIGGER THAN THE BUTTON ────────────────────────────────
