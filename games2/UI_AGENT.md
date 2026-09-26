@@ -754,6 +754,17 @@ from the games agent), #18 (title/landing screen).
   box itself is the test); and a dev build stamps no `?v=`, so an icon's cache
   stamp is asserted as a RELATIONSHIP with the other /ui2 icons, never as a
   presence.
+- **BACK TURNS THE WORLD** (`backturn.ts`, maintainer 2026-09-26: "Can you catch
+  the browser 'back'? So a back will rotate instead?" … "Try to implement it
+  instead! And we will see if it works"). In the world one history entry is
+  held; a back pops it and presses the spin bar's arrow (the one path the cube
+  and WorldScene both take). From the LEFT edge (touch-down ≤48 px in, ≤1.5 s
+  before) = the right arrow, from the RIGHT edge the left arrow; edge not seen
+  (Android gesture nav can take the swipe first) = the right arrow. A 1.8 s note
+  says which — the open question on his phone. The entry is re-held on the next
+  TAP, never from popstate: Chrome skips entries added without a user gesture,
+  so a second back with no tap between leaves the page. The Wiki drawer's own
+  entry sits above this one and wins. Not on the select screen.
 - **THE UPDATE POPUP LISTS WHAT CHANGED, AND THE LIST IS THE WIKI'S**
   (`updatenote.ts`, maintainer 2026-09-18: "I want it to list everything that
   has changed from the version I'm currently at to the version I'm about to
