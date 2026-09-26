@@ -756,6 +756,92 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `occTint(occImage(...))` matches the regex that rewrote the eight emission
   sites — rewrite before inserting. Beacon row `bake` (chunks baked/live/
   waiting, images, atlases, ms, peak, bakes, evictions, dirtied, ops).
+- **CACHE WORLD RENDERING: THE PHONE KEEPS THE GROUND IT HAS DRAWN**
+  (maintainer 2026-09-26: "Why can't the player maintain a world image cache
+  it draws on its own?"; his choice "Same, plus save to disk"; his rule for
+  the disk "only if it's faster to read the cache from disk VS redrawing the
+  image"; `client/src/worldcache.ts`, `worldcachegl.ts`,
+  `worldcache.test.ts`). THE SWITCH IS WITHHELD — no Settings row; only the
+  headless probe `__ml.worldCache(on)` turns it on, and off `wc` is null and
+  every path is today's — until a full paint WITH the cache equals one
+  without it texel for texel on the STREAMED ground. (Measured headless at
+  103,182 after a 40-cell walk out and back: 123,757-129,876 texels differ,
+  one-texel shifts of the seams along water diamonds. The cache is not the
+  source: with it off the streamed ground already differs from a forced full
+  paint in 309,755-311,831 texels there, the compose worker off or on — its
+  audit, 703 rasters, 0 different — and a picture freezes what the streamed
+  ground held, so the fix the game corrects at its next full paint would
+  stand. The streamed ground is fixed first.) The world is cut into 8x8-cell TILES (the bake's chunk); a
+  tile's PICTURE is the ground texture's texels whose level-0 cell is one of
+  its 64, so the tiles partition the plane — a diamond inscribed in a 512x224
+  box (~1.4 of his views wide, half a view tall). TAKEN on the GPU once every
+  texel of the box is final (`wcFinal`: no full repaint pending, no slice
+  queued over it, no cell whose column can reach it owed a landing, a
+  composition, a deck, a dropped op or a parked repaint — the paint's own
+  ledgers, never a guess, each owed cell bounded by its OWN top storey and a
+  tile's margin, not the world's top: 40 storeys of margin refused every tile
+  in a 600 px strip over one cell that could not draw; 4 candidates asked a
+  frame, a refused one rests 15; the refusals are counted by reason):
+  `copyTexSubImage2D` of the box into a slot of a 1024^2 page and four corner
+  triangles cleared outside the diamond — exact, because on the_game's
+  whole-origin lattice no texel centre lies on a diamond edge; one take a
+  frame, never on a frame that painted ground. USED by every ground paint
+  (full, slice, cell): a cell is skipped — not resolved, not drawn — when its
+  tile and every tile its art can reach are pictured (`cellReach`: its column
+  up to its tile's highest storey, `t3cellTopLevel`, grown by a tile each way
+  — the tight band pass's own bound; separating axes, held texel by texel in
+  the test), and the pictures meeting the rect grown by a tile are drawn
+  LAST, cropped to it. The ground texture is opaque (a whole-texture fill
+  first), so a picture's diamond replaces exactly and its clear corners change
+  nothing. (Not a 5x5 square of tiles round the tile: that reached ±1,024 px
+  sideways for a column 192 px wide, and no window ever held it — nothing
+  skipped.) DROPPED: an edit drops the tiles its cells' art reaches up to the
+  world's top storey (`dirtyEdit`) and repaints with the rest standing
+  (`repaintWorld(true)`); a dial, the resolver, a view turn, the night's first
+  build, the cave depth and a sheet landing drop all; the indoor cut suspends
+  them, and the cut's repaints keep the outdoor pictures; a lost context, a
+  TAB-IN and a bfcache restore drop every page (a GPU that reclaims the
+  ground's framebuffer reclaims theirs — never a blank picture), and so does a
+  blank centre found by the standing-still readback (`wcReadCheck`: 120 still
+  frames, one read a 30 s at most — a synchronous GL read, WebGL1 has no
+  async one; its ms are what a disk save costs this phone, the number the
+  disk waits on). CAP 96 MB of pages (192 pictures, ~60
+  of his views); the least recently used far one gives its slot; one page
+  allocated a frame. MEASURED (headless, his screen): a take 0.1-0.2 ms, every
+  texel of 6 tiles equal (`wctake`); a full paint over 32-36 pictures skipped
+  583-586 cells; after an edit a full paint with the cache equals one without
+  it (0 texels). Beacon
+  counts `wcOn wcTiles wcMb wcSkip wcTakes wcTakeMax wcReadN wcReadMs
+  wcReadMax wcBlank`, and the refusals `wcRefG` (a full repaint pending, the
+  cut up) `wcRefS` (a slice queued) `wcRefO` (a cell owed a repair) `wcRefA`
+  (a cell waiting on art). TRAP (headless): the terrain loader lands about a
+  file a FRAME and a batch counts only at its COMPLETE, so at SwiftShader's
+  4-5 fps a fresh spot owes art for minutes and nearly every tile is refused —
+  starved, not wrong; the phone's own counters are the verdict.
+- **DISK VS DRAW IS MEASURED ON HIS PHONE, NOT ARGUED** (maintainer
+  2026-09-26: "I WANT TO KNOW IF ITS FASTER TO DRAW OR LOAD FROM DISK?!";
+  `client/src/wcbench.ts`, `WorldScene.runDiskDrawTest`, Settings→Dev "Disk
+  vs draw test", `__ml.diskDrawTest()`). One tap, for the 8 tiles wholly
+  inside the ground texture nearest its centre, one a frame: DRAW — the
+  tile's rect painted into the SPARE texture as a band pass paints it
+  (plates built on the frame, the cache bypassed), three times (the first
+  builds what was not cached; the median of the others is a revisit's), the
+  owed ledgers and paint counters put back, so the live ground and its
+  repairs are untouched; SAVE — the tile's texels read off the GPU (the
+  frame pays that: WebGL1 has no async read), the diamond kept, a lossless
+  WebP encoded and written to IndexedDB by the browser; LOAD — read and
+  decoded by the browser, uploaded on the frame, read back and compared
+  inside the diamond. The medians land in the chat and the beacon (`wbN
+  wbDraw wbDraw1 wbLoad wbLoadBg wbSave wbSaveBg wbKb wbBad`); the scratch
+  database is emptied. The draw is the CHEAPEST a draw ever is (art resident,
+  cells resolved): after a restart the art is fetched and decoded again too.
+  Headless (his screen, SwiftShader, two runs) at 103,182: draw 5.9-10.2 ms
+  a tile on the frame (7.4-15.1 the first time), load 0.5-0.7 on the frame
+  + 4.6-12.2 in the browser, save 797-1,674 on the frame (SwiftShader's
+  synchronous read — the phone's number is the one that decides) + 54-91,
+  6.3-6.4 KB a tile, every texel back the same; with the world scene paused
+  around it, the live ground texture and every owed ledger hash the same
+  before and after the test.
 - **FRAME PACING: A STEADY 30 WHEN 60 CANNOT BE HELD** (maintainer
   2026-09-24, "The FPS is not stable! Think outside the box";
   `client/src/pacing.ts`, `pacing.test.ts`). His 16:50 run on 0b274482:
