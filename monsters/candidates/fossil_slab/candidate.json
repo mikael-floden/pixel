@@ -1626,7 +1626,7 @@
     "die": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0233,
           "step_max": 0.0353,
           "drift": 2.04,
@@ -1646,9 +1646,7 @@
             120
           ],
           "reasons": [
-            "frozen: silhouette moves 0.023 per frame",
-            "still standing: the last frame is only 0.05 of the silhouette away from the first — no collapse",
-            "still standing: the last frame matches the base at 0.95 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: frozen: silhouette moves 0.023 per frame; still standing: the last frame is only 0.05 of the silhouette away from the first — no collapse; still standing: the last frame matches the base at 0.95 (his dies end under 0.60)"
           ],
           "sub": "83f5cd49-bfd3-45be-89c2-0097861cfb2d",
           "group": "9fd2fec9-872a-446c-a602-3aecc914bc8f",
@@ -1666,7 +1664,7 @@
           "generated_at": "2026-09-26T02:36:15+00:00"
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0108,
           "step_max": 0.0359,
           "drift": 1.39,
@@ -1686,9 +1684,7 @@
             120
           ],
           "reasons": [
-            "frozen: silhouette moves 0.011 per frame",
-            "still standing: the last frame is only 0.02 of the silhouette away from the first — no collapse",
-            "still standing: the last frame matches the base at 0.98 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: frozen: silhouette moves 0.011 per frame; still standing: the last frame is only 0.02 of the silhouette away from the first — no collapse; still standing: the last frame matches the base at 0.98 (his dies end under 0.60)"
           ],
           "sub": "b9b91277-27e1-42c8-9794-507d2d0d7222",
           "group": "586c4ce0-d8f2-409e-be60-be061550c13e",
@@ -1783,7 +1779,7 @@
           "generated_at": "2026-09-26T01:14:08+00:00"
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0309,
           "step_max": 0.0646,
           "drift": 4.53,
@@ -1803,9 +1799,7 @@
             120
           ],
           "reasons": [
-            "frozen: silhouette moves 0.031 per frame",
-            "still standing: the last frame is only 0.16 of the silhouette away from the first — no collapse",
-            "still standing: the last frame matches the base at 0.85 (his dies end under 0.60)"
+            "left for HIS eye after 3 rolls: frozen: silhouette moves 0.031 per frame; still standing: the last frame is only 0.16 of the silhouette away from the first — no collapse; still standing: the last frame matches the base at 0.85 (his dies end under 0.60)"
           ],
           "sub": "bc6a53d9-e96c-4bff-976c-8a59d071ad28",
           "group": "7a37d53e-4923-44a6-9fe3-ea2744a4083a",
@@ -1900,6 +1894,45 @@
           "tries": 2,
           "generated_at": "2026-09-26T01:14:08+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0108,
+          "step_max": 0.0359,
+          "drift": 1.39,
+          "loop": 0.018,
+          "loop_ratio": 1.67,
+          "travel": 0.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.984,
+          "end_iou": 0.982,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "left for HIS eye after 3 rolls: frozen: silhouette moves 0.011 per frame; still standing: the last frame is only 0.02 of the silhouette away from the first — no collapse; still standing: the last frame matches the base at 0.98 (his dies end under 0.60)"
+          ],
+          "sub": "b9b91277-27e1-42c8-9794-507d2d0d7222",
+          "group": "586c4ce0-d8f2-409e-be60-be061550c13e",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away, collapses completely and lies flat on the ground, then fades away entirely",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 7,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-26T02:36:15+00:00",
+          "source": "south-east"
         }
       },
       "action": "Death - Faints, collapses to the ground and fades away",
@@ -1966,6 +1999,15 @@
           "fossil_slab/animations/die/north-west/04.webp",
           "fossil_slab/animations/die/north-west/05.webp",
           "fossil_slab/animations/die/north-west/06.webp"
+        ],
+        "south-west": [
+          "fossil_slab/animations/die/south-west/00.webp",
+          "fossil_slab/animations/die/south-west/01.webp",
+          "fossil_slab/animations/die/south-west/02.webp",
+          "fossil_slab/animations/die/south-west/03.webp",
+          "fossil_slab/animations/die/south-west/04.webp",
+          "fossil_slab/animations/die/south-west/05.webp",
+          "fossil_slab/animations/die/south-west/06.webp"
         ]
       },
       "strips": {
