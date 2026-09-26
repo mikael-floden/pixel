@@ -33,6 +33,8 @@
  * WebGL1, no extensions: every value is an integer stored in RGBA8, every
  * sample is NEAREST at a texel centre. */
 import { DX, DY, rampHeight } from "./tiles3";
+import type { ComposeOut, GpuPrepReq } from "./composeworker";
+type GpuPrepOut = Extract<ComposeOut, { type: "gpuplate" | "gpushape" | "gpurshape" | "gpumiss" }>;
 import {
   buildBoundaryPixels,
   buildPlatePixels,
@@ -839,14 +841,42 @@ export class GpuComposer {
   private flushQueued = false;
   private plates = new Map<string, Pixels | Promise<Pixels>>();
   private src = new Map<string, Promise<Pixels>>();
-  readonly stats = { queued: 0, composed: 0, ramps: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, uploads: { plates: 0, shapes: 0, frames: 0 }, error: "" };
+  readonly stats = { queued: 0, composed: 0, ramps: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, prepAsked: 0, prepLanded: 0, prepMissed: 0, mainShapes: 0, uploads: { plates: 0, shapes: 0, frames: 0 }, error: "" };
   constructor(
-    private inner: { ready(): boolean; compose(job: ComposeJob): void },
+    private inner: {
+      ready(): boolean;
+      compose(job: ComposeJob): void;
+      /** The worker's prep (composeclient `prep`/`onPrep`); absent = done here. */
+      prep?(reqs: GpuPrepReq[]): boolean;
+      onPrep?(cb: (m: GpuPrepOut) => void): void;
+    },
     private sheets: () => PatternSheets | null,
     private host: () => GpuHost | null,
     /** Every mask frame the patterns define (preloaded with the compositor). */
     private frames: () => number[] = () => [],
-  ) {}
+  ) {
+    inner.onPrep?.((m) => this.onPrep(m));
+  }
+  /** Asked of the worker and not answered yet (plate ids, shape keys). */
+  private asked = new Set<string>();
+  private onPrep(m: GpuPrepOut): void {
+    const sheets = this.sheets();
+    if (!sheets) return;
+    if (m.type === "gpuplate") this.plates.set(m.id, { w: m.w, h: m.h, data: new Uint8ClampedArray(m.data) });
+    else if (m.type === "gpushape") putShape(sheets, m.key, new Uint8Array(m.data));
+    else if (m.type === "gpurshape") putRampShape(sheets, m.key, m.h, new Uint8Array(m.map), new Float64Array(m.shades));
+    else { this.stats.prepMissed++; this.stats.error = m.error.slice(0, 160); }
+    if (m.type !== "gpumiss") { this.asked.delete(m.type === "gpuplate" ? m.id : m.key); this.stats.prepLanded++; }
+    this.schedule();
+  }
+  /** Ask the worker once; false = it cannot (not ready): do it here. */
+  private ask(id: string, req: GpuPrepReq): boolean {
+    if (this.asked.has(id)) return true;
+    if (!this.inner.prep?.([req])) return false;
+    this.asked.add(id);
+    this.stats.prepAsked++;
+    return true;
+  }
   /** MADE AT LOAD, not at the first transition: the compositor, its standing
    *  resources and every mask/seam frame. Called by the scene once the pattern
    *  sheets are resident; harmless to call again. */
@@ -906,6 +936,8 @@ export class GpuComposer {
     const id = `${sideId(s)}|${s.wall.join(",")}`;
     const hit = this.plates.get(id);
     if (hit && !(hit instanceof Promise)) return hit;
+    // decoded and conformed on the WORKER (its own memo), never here while it can
+    if (hit === undefined && this.ask(id, { kind: "plate", id, side: s as ComposeSide })) return null;
     if (hit === undefined) {
       let p = this.src.get(s.url);
       if (!p) {
@@ -946,7 +978,11 @@ export class GpuComposer {
           if (take.length >= GpuBoundaries.BATCH) { later.push(j); continue; }
           const a = this.plateOf(j.a, sheets), bb = this.plateOf(j.b, sheets);
           if (!a || !bb) { later.push(j); waiting++; continue; }
-          if (!gpuShapeReady(sheets, j) && performance.now() - s0 > shapeMs) { later.push(j); continue; }
+          if (!gpuShapeReady(sheets, j)) {
+            // the shape is the WORKER's to make; here only when it cannot, and within budget
+            if (this.ask(shapeKey(j), { kind: "bshape", key: shapeKey(j), job: j }) || performance.now() - s0 > shapeMs) { later.push(j); waiting++; continue; }
+            this.stats.mainShapes++;
+          }
           shapeOf(sheets, j, a, bb);
           take.push({ a, b: bb, job: j });
         }
@@ -989,7 +1025,14 @@ export class GpuComposer {
             if (band && a && bb) t = { job: j, band, a, b: bb };
           }
           if (!t) { later.push(j); waiting++; continue; }
-          if (!rampShapeReady(sheets, j) && performance.now() - s0 > shapeMs) { later.push(j); continue; }
+          const bj = j.top.kind === "boundary" ? j.top.job : null;
+          const need = !rampShapeReady(sheets, j) || (bj && !gpuShapeReady(sheets, bj));
+          if (need) {
+            const rk = rampJobShapeKey(j);
+            const asked = (rampShapeReady(sheets, j) || this.ask(rk, { kind: "rshape", key: rk, job: j })) && (!bj || gpuShapeReady(sheets, bj) || this.ask(shapeKey(bj), { kind: "bshape", key: shapeKey(bj), job: bj }));
+            if (asked || performance.now() - s0 > shapeMs) { later.push(j); waiting++; continue; }
+            this.stats.mainShapes++;
+          }
           rampFullShape(sheets, t);
           take.push(t);
         }
@@ -1043,6 +1086,34 @@ export const seenRampJobs = new Map<string, RampJob>();
 function noteRampJob(j: RampJob): void {
   if (seenRampJobs.size >= 3000) seenRampJobs.delete(seenRampJobs.keys().next().value as string);
   seenRampJobs.set(j.key, j);
+}
+
+/** A shape made elsewhere (the compose worker), put where `shapeOf` finds it. */
+export function putShape(sheets: PatternSheets, key: string, s: Shape): void {
+  let m = shapeMemo.get(sheets);
+  if (!m) shapeMemo.set(sheets, (m = new Map()));
+  m.set(key, s);
+}
+/** A ramp shape made by the compose worker: its map as-is, its shades (values,
+ *  -1 = none) turned into rows of THIS thread's table. */
+export function putRampShape(sheets: PatternSheets, key: string, h: number, map: Uint8Array, shades: Float64Array): void {
+  let m = rampFullMemo.get(sheets);
+  if (!m) rampFullMemo.set(sheets, (m = new Map()));
+  const fw = sheets.fw;
+  const rows = new Uint8Array(fw * RAMP_H * 4);
+  const row = new Int32Array(fw * h).fill(-1);
+  for (let y = 0; y < RAMP_H; y++)
+    for (let x = 0; x < fw; x++) {
+      const i = y * fw + x;
+      if (map[i * 4 + 3] || map[i * 4 + 2] % 4 === 3) rows[i * 4 + 3] = 255;
+      const srb = shades[i * 2];
+      if (srb < 0) continue;
+      const r = shadeRow(srb, shades[i * 2 + 1]);
+      rows[i * 4] = r & 255;
+      rows[i * 4 + 1] = r >> 8;
+      if (y < h) row[i] = r;
+    }
+  m.set(key, { map, rows, shape: { w: fw, h, map, row }, h });
 }
 
 /** Is this job's shape already made (no CPU work to compose it)? */

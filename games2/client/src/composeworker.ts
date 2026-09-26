@@ -29,9 +29,11 @@ import {
   patternSheets,
   type ComposeJob,
   type ComposeSide,
+  type RampJob,
   type PatternSheets,
   type Pixels,
 } from "./tiles3draw";
+import { rampFullShape, shapeOf, SHADE_ROWS, type RampTile } from "./tiles3gpu";
 
 export interface ComposeInit {
   type: "init";
@@ -46,12 +48,29 @@ export interface ComposeReq {
   gen: number;
   jobs: ComposeJob[];
 }
-export type ComposeIn = ComposeInit | ComposeReq;
+/** THE GPU COMPOSITOR'S PREP (tiles3gpu GpuComposer), off the frame thread: a
+ *  plate's pixels (decoded and conformed once, here, as for a boundary), a
+ *  boundary's shape, a ramp's shape — each the same functions the frame
+ *  thread would run, answered once per id. */
+export type GpuPrepReq =
+  | { kind: "plate"; id: string; side: ComposeSide }
+  | { kind: "bshape"; key: string; job: Extract<ComposeJob, { kind: "boundary" }> }
+  | { kind: "rshape"; key: string; job: RampJob };
+export interface GpuPrep {
+  type: "gpuprep";
+  gen: number;
+  reqs: GpuPrepReq[];
+}
+export type ComposeIn = ComposeInit | ComposeReq | GpuPrep;
 export type ComposeOut =
   | { type: "ready"; gen: number; ms: number }
   | { type: "failed"; gen: number; error: string }
   | { type: "composed"; gen: number; key: string; w: number; h: number; data: ArrayBuffer; ms: number }
-  | { type: "miss"; gen: number; key: string; error: string };
+  | { type: "miss"; gen: number; key: string; error: string }
+  | { type: "gpuplate"; gen: number; id: string; w: number; h: number; data: ArrayBuffer }
+  | { type: "gpushape"; gen: number; key: string; data: ArrayBuffer }
+  | { type: "gpurshape"; gen: number; key: string; h: number; map: ArrayBuffer; shades: ArrayBuffer }
+  | { type: "gpumiss"; gen: number; id: string; error: string };
 
 let gen = 0;
 let sheets: PatternSheets | null = null;
@@ -146,8 +165,52 @@ async function compose(g: number, j: ComposeJob): Promise<void> {
   }
 }
 
+/** A plate's pixels as the GPU uploads them: conformed like a boundary's side,
+ *  or the raw art (`kind` "raw": a ramp's band, a clean ramp's top). */
+function gpuPlate(side: ComposeSide): Promise<Pixels> {
+  return side.kind === "raw" ? decode(side.url) : plate(side);
+}
+
+async function gpuPrep(g: number, r: GpuPrepReq): Promise<void> {
+  try {
+    if (!sheets) throw new Error("not ready");
+    if (r.kind === "plate") {
+      const px = await gpuPlate(r.side);
+      if (g !== gen) return;
+      const data = new Uint8ClampedArray(px.data).buffer as ArrayBuffer; // a copy: the memo keeps its own
+      post({ type: "gpuplate", gen: g, id: r.id, w: px.w, h: px.h, data }, [data]);
+    } else if (r.kind === "bshape") {
+      const [a, b] = r.job.slope ? await Promise.all([plate(r.job.a), plate(r.job.b)]) : [undefined, undefined];
+      if (g !== gen) return;
+      const data = new Uint8Array(shapeOf(sheets, r.job, a, b)).buffer as ArrayBuffer;
+      post({ type: "gpushape", gen: g, key: r.key, data }, [data]);
+    } else {
+      const j = r.job;
+      const band = await gpuPlate(j.band);
+      const t: RampTile = j.top.kind === "plate" ? { job: j, band, top: await gpuPlate(j.top.side) } : { job: j, band, a: await plate(j.top.job.a), b: await plate(j.top.job.b) };
+      if (g !== gen) return;
+      const full = rampFullShape(sheets, t);
+      // the shade of every top texel as VALUES: the frame thread keeps its own table
+      const shades = new Float64Array(sheets.fw * 64 * 2).fill(-1);
+      for (let y = 0; y < full.h; y++)
+        for (let x = 0; x < full.shape.w; x++) {
+          const r0 = full.shape.row[y * full.shape.w + x];
+          if (r0 < 0) continue;
+          const [srb, sg] = SHADE_ROWS[r0];
+          shades[(y * sheets.fw + x) * 2] = srb;
+          shades[(y * sheets.fw + x) * 2 + 1] = sg;
+        }
+      const map = new Uint8Array(full.map).buffer as ArrayBuffer;
+      post({ type: "gpurshape", gen: g, key: r.key, h: full.h, map, shades: shades.buffer as ArrayBuffer }, [map, shades.buffer as ArrayBuffer]);
+    }
+  } catch (e) {
+    post({ type: "gpumiss", gen: g, id: r.kind === "plate" ? r.id : r.key, error: String((e as Error)?.message ?? e) });
+  }
+}
+
 self.onmessage = (ev: MessageEvent<ComposeIn>) => {
   const m = ev.data;
   if (m.type === "init") init(m).catch((e) => post({ type: "failed", gen: m.gen, error: String((e as Error)?.message ?? e) }));
   else if (m.type === "compose" && m.gen === gen) for (const j of m.jobs) void compose(m.gen, j);
+  else if (m.type === "gpuprep" && m.gen === gen) for (const r of m.reqs) void gpuPrep(m.gen, r);
 };
