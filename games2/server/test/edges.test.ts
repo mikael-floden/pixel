@@ -73,19 +73,27 @@ test("a two-storey block on flat ground: rims on its outward edges, the foot beh
   assert.equal(courseEdgeBits(cell, 0), "", "the storey at ground level is under the ground in front");
 });
 
-test("a full (100%) ramp draws no border, and the terrace it climbs to meets it with none; a stair keeps its edges", { skip }, () => {
+test("a full (100%) ramp meets the ground and the terrace with no border, its exposed side keeps one; a stair keeps its edges", { skip }, () => {
   // A one-storey terrace north of a strip of ground: a straight rise, every cell of the strip a ramp.
   const lv = Array.from({ length: 6 }, (_, y) => Array.from({ length: 8 }, () => (y <= 2 ? 1 : 0)));
   const { g, L } = grid(lv);
   const full = resolver(1);
   assert.ok(full.rampIndexFor(g, L, "grass", 3, 3, 0), "the cell below the rise is a ramp");
-  assert.equal(full.edgeSet(g, L, 3, 3), undefined, "a 100% ramp draws no border");
+  const mid = full.edgeSet(g, L, 3, 3);
+  assert.equal((mid?.top ?? 0) & (EDGE_N | EDGE_S), 0, "a 100% ramp meets the terrace above and the ground below flush: no border there");
   assert.equal((full.edgeSet(g, L, 3, 2)?.top ?? 0) & EDGE_S, 0, "the terrace's rim over a full ramp is not an edge: the surfaces meet");
   const stair = resolver(-0.01);
   assert.equal((stair.edgeSet(g, L, 3, 2)?.top ?? 0) & EDGE_S, EDGE_S, "slopes off: the terrace's rim is an edge");
   assert.equal((stair.edgeSet(g, L, 3, 3)?.top ?? 0) & EDGE_N, EDGE_N, "and the step below has its foot line");
   const half = resolver(0.5);
   assert.equal((half.edgeSet(g, L, 3, 2)?.top ?? 0) & EDGE_S, EDGE_S, "a 50% ramp leaves a riser: the rim above it is an edge");
+  // A slope on a ledge: ground at level 1 for x >= 2 with a level-2 terrace north of it, and a drop to level 0 west of x 2.
+  const lv2 = Array.from({ length: 6 }, (_, y) => Array.from({ length: 8 }, (_, x) => (x < 2 ? 0 : y <= 2 ? 2 : 1)));
+  const r = grid(lv2);
+  assert.ok(full.rampIndexFor(r.g, r.L, "grass", 3, 3, 1), "the ledge below the terrace is a ramp");
+  const side = full.edgeSet(r.g, r.L, 2, 3);
+  assert.equal((side?.top ?? 0) & EDGE_W, EDGE_W, "the ramp's side over the drop is a hard edge: it wears the line");
+  assert.equal((full.edgeSet(r.g, r.L, 3, 3)?.top ?? 0) & (EDGE_N | EDGE_S), 0, "where it meets the terrace and the ledge, none");
 });
 
 test("the ink: the chosen edges only, the outer line on the last texel of art and a lighter inner line inside it; a course's corners and crease; the cap trimmed to the diamond", { skip }, () => {

@@ -556,7 +556,8 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   stop. verify-tiles3 still walks to its scenery window instead of `lookAt`;
   that is belt and braces now, not a requirement.)
 - **EVERY VISIBLE EDGE WEARS A 2 PX OUTLINE, EACH LINE ONE TEXEL WIDE AND
-  JOINED ONLY DIAGONALLY, WITH NO HOLE; A 100% RAMP WEARS NONE** (maintainer
+  JOINED ONLY DIAGONALLY, WITH NO HOLE; A 100% RAMP WEARS NONE WHERE IT MEETS
+  THE GROUND, ONE ON ITS SIDE** (maintainer
   2026-09-26: "a 1px near-black (somewhat transparent) border at every visible
   edge ... where the ground becomes wall or where a left wall becomes a right
   wall", "2px wide with the inner border lighter; light joins light, dark joins
@@ -567,8 +568,11 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   `lo[3]`: the left corner, the crease, the right corner, each running down to
   the LOWER of the two grounds at that corner — the cell in front hides the
   rest; to the higher one it stopped mid-riser, his circles), from corner
-  SURFACE heights with the ramp rise in, so a full ramp is flush and draws
-  nothing and a 50% ramp keeps its riser. The ink is BAKED into lined texture
+  SURFACE heights with the ramp rise in, so a full ramp is flush with the
+  ground below and the terrace above and draws nothing there, its SIDE over
+  lower ground is a hard edge and wears the line ("the side of the slope is
+  still a hard edge and need the border" — not a blanket no-line on a 100%
+  ramp, which is what shipped first), and a 50% ramp keeps its riser. The ink is BAKED into lined texture
   variants (key `|e<code>`, `|v<spec>`, `|x<code>`: a new picture is a new key),
   so the ground pass and every occluder copy draw one raster and the outline
   costs zero fill (his phone is fill-bound; a per-pixel depth outline was

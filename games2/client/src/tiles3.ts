@@ -2443,12 +2443,14 @@ export class Tiles3 {
   }
 
   /** THE OUTLINE ONE CELL DRAWS (`CellEdges`, maintainer 2026-09-26). A full
-   *  ramp draws none ("When a slope is at 100% no border should be drawn"). */
+   *  ramp meets the ground below and the terrace above flush, so the corner
+   *  heights draw no line there — but its SIDE, where it stands above the
+   *  ground beside it, is a hard edge and wears one ("I don't want it when it
+   *  connects to the ground ... but the side of the slope is still a hard edge
+   *  and need the border"; not a blanket "no line on a 100% ramp"). */
   edgeSet(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number): CellEdges | undefined {
     const gr = g(x, y);
     if (!gr || LIQUID_TILE_GROUNDS.includes(gr)) return undefined;
-    const z = L(x, y);
-    if (this.rampsOn() && this.rampIndexFor(g, L, gr, x, y, z) && this.rampShareAt(x, y) >= 1) return undefined;
     const EPS = 0.05;
     const me = [0, 1, 2, 3].map((k) => this.cornerHeight(g, L, x, y, k) as number);
     const h = (nx: number, ny: number, k: number): number | null => this.cornerHeight(g, L, nx, ny, k);
