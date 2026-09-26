@@ -1,8 +1,8 @@
 {
   "domain": "shaders",
-  "updated_at": "2026-09-26T16:12:02+00:00",
-  "health": "idle",
-  "current": "idle — renamed to shaders/ (the shader agent); waiting on the maintainer's first verdicts and on games/wiki for the plumbing",
+  "updated_at": "2026-09-26T16:44:58+00:00",
+  "health": "working",
+  "current": "WORKING — the Shaders wiki page contract (the maintainer's brief to the wiki agent, 2026-09-26): per-effect stage (who casts, who is hit, the play recipe), cast sync (characters2 animation_map state + release frame + wand-tip/orb points measured from the hero frames), sound slots (cast/release/impact/hit/peak/hop/channel/stop), volleys (count + formation, per-projectile events). Files: shaders/runtime/** (fx.js, define.js, index.js, index.d.ts, new showcase.js), shaders/library/** (stage/cast/volley fields), shaders/pipeline/** (catalog.mjs, new castpoints script), shaders/shaders.json, shaders/viewer/**, shaders/docs/**, shaders/README.md. Nothing outside shaders/ and this board.",
   "progress": {
     "effects": 31,
     "families": 15,
