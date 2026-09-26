@@ -147,9 +147,10 @@ const quarterOf = (f: number) => (frames ? ((Math.round(f / frames) % 4) + 4) % 
 let worldLag: number | null = null;
 let worldBusy = false;
 let worldAt = 0;
-/** Longer than a quarter's frame-A captures and its swap, during which the world
- *  publishes nothing but is still turning. */
-const WORLD_STALE_MS = 1500;
+/** A LAST RESORT only: the world re-publishes every frame while a turn is owed
+ *  (through its captures, its swap, a refused turn's retries) and says `busy:
+ *  false` at rest, so silence this long means the world is gone. */
+const WORLD_STALE_MS = 5000;
 window.addEventListener("ml-view-angle", (e) => {
   // verify-spinbar sets this: it gates the cube's OWN arithmetic, and a
   // software browser turning the world would set its pace

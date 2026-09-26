@@ -15044,6 +15044,8 @@ export class WorldScene extends Phaser.Scene {
     // A spin goal the view has not reached (a turn refused while dead, or asked
     // before the world was up) is retried here, at most once a second.
     if (this.spinGoal !== this.spinAt && !this.spinBusy && !this.turning && time >= this.spinRetryAt) this.chaseSpin();
+    // ...and while one is owed the spin bar's cube hears where the world stands
+    if (this.spinGoal !== this.spinAt || this.spinBusy) this.publishSpinAngle(this.spinQ, true);
     /* Cleared here, set by t3drainSlices. The two stand-down guards below read
      * `groundSliceQ.length` AFTER the drain has already shifted its rects, so
      * the frame that EMPTIES the queue used to look idle to them — and after
@@ -20803,8 +20805,13 @@ export class WorldScene extends Phaser.Scene {
    *  two cannot drift (maintainer 2026-09-26: "it's not in sync with the cube
    *  rotation"). `busy` false is the rest, where the cube lands. */
   private publishSpinAngle(q: number, busy: boolean): void {
+    this.spinQ = q;
     window.dispatchEvent(new CustomEvent("ml-view-angle", { detail: { q, goal: this.spinGoal, busy } }));
   }
+  /** The world's last published angle (bar quarters): re-published every frame
+   *  while a turn is owed — through a quarter's captures and swap, a refused turn's
+   *  retries — so the cube never mistakes a busy world for a silent one. */
+  private spinQ = 0;
 
   private chaseSpin(): void {
     const d = Math.sign(this.spinGoal - this.spinAt);
