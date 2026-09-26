@@ -23489,7 +23489,7 @@ export class WorldScene extends Phaser.Scene {
       sheets: this.t3sheets,
       remote: this.t3gpuc,
       gpuRamp: (job) => this.t3gpuc.ramp(job),
-      gpuDirect: { boundary: (job) => this.t3gpuc.directBoundary(job), ramp: (job) => this.t3gpuc.directRamp(job) },
+      gpuDirect: { active: () => !!this.t3gpuc.directStore, boundary: (job) => this.t3gpuc.directBoundary(job), ramp: (job) => this.t3gpuc.directRamp(job) },
       artUrl: (path) => docUrl(path, this.t3route),
       pitch: this.geom.lh, // the occluder pass's storey pitch: where a face ends, for the wall-foot band
 

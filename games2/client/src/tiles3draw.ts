@@ -2161,7 +2161,7 @@ export interface Tiles3TexturesOpts {
    *  False = not yet (its plates or shape are still being prepared). Only the
    *  ground pass asks (`wantTextures` off); a caller that needs a real texture
    *  (the occluder copies) gets the texture path. */
-  gpuDirect?: { boundary(job: Extract<ComposeJob, { kind: "boundary" }>): boolean; ramp(job: RampJob): boolean };
+  gpuDirect?: { active(): boolean; boundary(job: Extract<ComposeJob, { kind: "boundary" }>): boolean; ramp(job: RampJob): boolean };
   artUrl?: (path: string) => string;
   /** The storey pitch the occluder pass stacks faces at (`geom.lh`) — the wall
    *  foot band is placed from it. Defaults to the shipped 16. */
@@ -2431,7 +2431,7 @@ export class Tiles3Textures {
   wantTextures = false;
   /** The direct hook while it applies. */
   private directHook(): Tiles3TexturesOpts["gpuDirect"] | null {
-    return this.o.gpuDirect && this.o.artUrl && !this.wantTextures ? this.o.gpuDirect : null;
+    return this.o.gpuDirect && this.o.artUrl && !this.wantTextures && this.o.gpuDirect.active() ? this.o.gpuDirect : null;
   }
   /** A boundary's job, as the worker and the GPU compositors take it. */
   private boundaryJob(b: Tiles3Boundary, key: string): Extract<ComposeJob, { kind: "boundary" }> {
