@@ -92,7 +92,9 @@ try {
     const walkPage = async (gpu, name) => {
       const pg = await (await browser.newContext({ viewport: { width: 393, height: 851 }, serviceWorkers: "block" })).newPage();
       pg.on("pageerror", (e) => { console.log(`PAGEERROR (${name})`, e.message); bad = true; });
-      await pg.addInitScript(([sl, g]) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "H" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); localStorage.setItem("ml-gpu-compose", g ? "1" : "0"); if (sl) localStorage.setItem("ml-slope-height3", sl); }, [SLOPE, gpu]);
+      // A NAME OF ITS OWN: one name is one live session (the server's law), and
+      // the control page still holds its seat while this one joins.
+      await pg.addInitScript(([sl, g, nm]) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: nm })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); localStorage.setItem("ml-gpu-compose", g ? "1" : "0"); if (sl) localStorage.setItem("ml-slope-height3", sl); }, [SLOPE, gpu, name === "gpu" ? "Gpu" : "Ctl"]);
       await pg.goto(origin + "/", { waitUntil: "commit" });
       await pg.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 600000, polling: 250 });
       await pg.evaluate(() => { try { window.__ml.noAggro(true); } catch {} });
