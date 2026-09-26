@@ -330,9 +330,11 @@ export class RotFx {
     this.canvas = document.createElement("canvas");
     this.canvas.width = w; this.canvas.height = h;
     const r = over.getBoundingClientRect();
+    // HIDDEN UNTIL IT HAS DRAWN: a fresh WebGL canvas composites blank, and
+    // between chained quarters it lies over the one still showing the turn
     Object.assign(this.canvas.style, {
       position: "fixed", left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px`,
-      pointerEvents: "none", zIndex: "5", imageRendering: "pixelated",
+      pointerEvents: "none", zIndex: "5", imageRendering: "pixelated", visibility: "hidden",
     } as CSSStyleDeclaration);
     const gl = this.canvas.getContext("webgl", { alpha: false, antialias: false, depth: true, premultipliedAlpha: false, preserveDrawingBuffer: false });
     if (!gl) throw new Error("rotfx: no WebGL");
@@ -622,6 +624,7 @@ export class RotFx {
     gl.viewport(0, 0, st.projA.w, st.projA.h);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     gl.disableVertexAttribArray(a);
+    if (this.canvas.style.visibility === "hidden") this.canvas.style.visibility = "visible";
   }
 
   destroy(): void {
