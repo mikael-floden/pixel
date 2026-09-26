@@ -20712,6 +20712,7 @@ export class WorldScene extends Phaser.Scene {
    *  once the player has walked GROUND_WARM_MOVE cells. */
   private groundWarm: { k: ViewRot; key: string; kept: { t3: Tiles3World; cells: WorldScene["t3cells"] }; todo: [number, number][]; at: number; short: [number, number][]; pass: number } | null = null;
   private groundWarmDone = new Map<ViewRot, string>();
+  private slopeWarm = new WeakSet<World>();
   /** What the warm did, for the probes (`__ml.turnWarm()`). */
   private groundWarmStats = { jobs: 0, cells: 0, short: 0, ms: 0, slices: 0, maxSliceMs: 0, resolverMs: 0, resolveMs: 0, composeMs: 0, dataMs: 0, slopeMs: 0 };
   private warmViewGround(sides: ViewRot[]): boolean {
@@ -20727,10 +20728,17 @@ export class WorldScene extends Phaser.Scene {
       if (this.groundWarmDone.get(k) === key) continue;
       let kept = this.t3ViewCache.get(k);
       if (!kept) {
+        /* THE SLOPE MIX FIRST, IN A SLOT OF ITS OWN: a whole-world pass (73 of
+         * the 79 ms a side's resolver cost here), memoised per world, so the
+         * data and the resolver below are the next slot's and cost ~6 ms. */
         const r0 = performance.now();
-        slopeRule(vw as never); // memoised per world: its own share of the bill, measured
+        if (!this.slopeWarm.has(vw)) {
+          slopeRule(vw as never);
+          this.slopeWarm.add(vw);
+          this.groundWarmStats.slopeMs += performance.now() - r0;
+          return true;
+        }
         const r1 = performance.now();
-        this.groundWarmStats.slopeMs += r1 - r0;
         const built = this.tiles3DataFor(vw, false);
         this.groundWarmStats.dataMs += performance.now() - r1;
         if (!built || built.rules !== this.t3ViewRules) continue; // the rules moved: the turn builds it
@@ -20790,7 +20798,9 @@ export class WorldScene extends Phaser.Scene {
       // the view on screen first: its own compositions never queue behind a warm's
       if (tex.inflightCount() > GROUND_WARM_BACKLOG || this.groundSliceQ.length) { later(run, 100); return; }
       const load = this.t3load, in0 = tex.inflightCount(), t0 = performance.now();
-      const budget = dl ? Math.max(1, Math.min(4, dl.timeRemaining() - 1)) : 2; // ms this slice may take
+      // what the browser says is idle, less a millisecond, at most 10 (a slice
+      // cannot be interrupted, and one cell's resolve can run a few ms)
+      const budget = dl ? Math.max(1, Math.min(10, dl.timeRemaining() - 1)) : 2;
       const need = (p: string | null | undefined) => { if (p && load) load.need(p); };
       const live = this.t3cells;
       this.t3cells = job.kept.cells; // the neighbour's own cells (t3cellOf reads the view on screen's)
