@@ -79,12 +79,18 @@
       "at": "2026-09-26T08:34:16+00:00"
     }
   ],
-  "updated_at": "2026-09-26T09:29:26+00:00",
-  "health": "idle",
+  "updated_at": "2026-09-26T11:33:14+00:00",
+  "health": "running",
   "current": {
-    "unit": "idle — edge outlines landed (cc4859e9f5), awaiting his read on the phone",
-    "since": "2026-09-26T10:15:34+00:00",
-    "files": []
+    "unit": "CLAIMED: the outline, one texel wide and joined only diagonally, with no hole at any vertex (his green circles 2026-09-26): every cell inks its same-level neighbours' lines through its corners (CellEdges.nb, ramps too), the cap course trimmed and lined, corner verticals down to the lower ground. tiles3runtime.ts: one type (owedCourse's bits: string) — games-assistant, it does not touch TILES3_DOCS.",
+    "since": "2026-09-26T11:33:14+00:00",
+    "files": [
+      "games2/client/src/tiles3.ts",
+      "games2/client/src/tiles3draw.ts",
+      "games2/client/src/tiles3runtime.ts",
+      "games2/server/test/edges.test.ts",
+      "games2/docs/tiles3-rendering.md"
+    ]
   },
   "consumes": [
     "characters",
@@ -92,7 +98,7 @@
     "maps",
     "objects"
   ],
-  "updated": "2026-09-26T10:15:34+00:00",
+  "updated": "2026-09-26T11:33:14+00:00",
   "handled": [
     {
       "id": "674eaa5b0c",
@@ -101,6 +107,5 @@
       "text": "TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.te"
     }
   ],
-  "status": "running",
   "state": "running"
 }
