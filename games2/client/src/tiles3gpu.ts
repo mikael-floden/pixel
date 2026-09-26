@@ -879,8 +879,6 @@ export class GpuComposer {
   }
   /** Asked of the worker and not answered yet (plate ids, shape keys). */
   private asked = new Set<string>();
-  /** Prep requests the worker has not answered yet. */
-  get askedCount(): number { return this.asked.size; }
   private onPrep(m: GpuPrepOut): void {
     const sheets = this.sheets();
     if (!sheets) return;

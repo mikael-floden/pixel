@@ -1267,10 +1267,6 @@ const GROUND_WARM_FRAME_MS = 1.5;
 /** The drain's pre-walk (gpuPrewalkSlices): slices past the head are walked
  *  while this many ms last — the rest are walked on a later frame. */
 const GPU_PREWALK_MS = 3;
-/** The world warm (worldWarmStep): its slice of a frame that painted no
- *  ground, and the region it walks (cells a side). */
-const GPU_WORLD_WARM_MS = 2;
-const GPU_WORLD_REGION = 24;
 const GROUND_SLICE_MAX = 768;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
 const GROUND_RING_COMPOSE = 3;
@@ -3512,7 +3508,7 @@ export class WorldScene extends Phaser.Scene {
         // THE DIRECT DRAW: sums passes INSIDE a ground batch (midBatch, the
         // interruption) against the ones in their own pass (sumsOutPasses)
         direct: this.t3gpuc.directStore
-          ? { tiles: this.t3gpuc.directStore.size, ...this.t3gpuc.directStore.stats, midBatch: this.groundPipe?.stats.sumsPasses ?? 0, midMs: +(this.groundPipe?.stats.sumsMs ?? 0).toFixed(1), waiting: this.t3gpuc.waitingCount, prewalkMs: +this.gpuPrewalkStats.ms.toFixed(1), warmRegions: this.worldWarmStats.regions, warmMs: +this.worldWarmStats.ms.toFixed(1) }
+          ? { tiles: this.t3gpuc.directStore.size, ...this.t3gpuc.directStore.stats, midBatch: this.groundPipe?.stats.sumsPasses ?? 0, midMs: +(this.groundPipe?.stats.sumsMs ?? 0).toFixed(1), waiting: this.t3gpuc.waitingCount, prewalkMs: +this.gpuPrewalkStats.ms.toFixed(1) }
           : null,
       },
       compose: { ...this.t3compose.stats, workerMs: Math.round(this.t3compose.stats.workerMs), applyMs: +this.t3compose.stats.applyMs.toFixed(1) },
@@ -8539,7 +8535,6 @@ export class WorldScene extends Phaser.Scene {
           ...this.t3gpuc.stats,
           waiting: this.t3gpuc.waitingCount,
           prewalk: { ...this.gpuPrewalkStats, ms: +this.gpuPrewalkStats.ms.toFixed(1) },
-          worldWarm: { ...this.worldWarmStats, ms: +this.worldWarmStats.ms.toFixed(1), side: this.viewRot, sides: Object.fromEntries([...this.worldWarmDone].map(([k, d]) => [k, d.size])) },
           direct: d ? { tiles: d.size, ...d.stats, quads: p?.stats.direct ?? 0, sumsPassesPipe: p?.stats.sumsPasses ?? 0, sumsMs: +(p?.stats.sumsMs ?? 0).toFixed(1) } : null,
         };
       },
@@ -15492,7 +15487,6 @@ export class WorldScene extends Phaser.Scene {
     }
     this.t3retryBoundaries();
     this.warmFrameStep(); // a side one tap away, on what the frame left (warmViewGround)
-    this.worldWarmStep(); // "GPU transitions": the whole world's direct tiles resident, nearest first
     this.pe("prefetch");
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
@@ -25222,81 +25216,6 @@ export class WorldScene extends Phaser.Scene {
     this.gpuPrewalkStats.runs++;
     this.gpuPrewalkStats.cells += n;
     this.gpuPrewalkStats.ms += performance.now() - t0;
-  }
-
-  /** THE WORLD WARM ("GPU transitions" on; games' item 2, the base tile sets
-   *  loaded up front): every region of the world on screen's side is walked
-   *  once through the direct draw's own hooks, nearest the player first — its
-   *  plates, shapes and ramp maps asked of the worker and uploaded the frame
-   *  they land (frameStart), its outline colours computed in the frame's own
-   *  pass — so a walk, and a turn back to this side, meet them resident
-   *  instead of uploading and owing them on the way. A slice of each frame that
-   *  painted no ground (GPU_WORLD_WARM_MS), never while the worker holds more
-   *  than GROUND_WARM_BACKLOG jobs (the view's own come first). Resolved
-   *  without the cell cache (a whole world would fill it). Whole-world
-   *  residency measured (the_game, one side): 11k tiles, 463 plates, 448
-   *  shapes, 373 ramp maps — under half of every atlas; 5.8 s of walking
-   *  headless. Regions done are kept per side for the session. */
-  private worldWarm: { k: ViewRot; order: number[]; i: number; cell: number } | null = null;
-  private worldWarmDone = new Map<ViewRot, Set<number>>();
-  private worldWarmStats = { cells: 0, regions: 0, ms: 0, slices: 0 };
-  private worldWarmStep(): void {
-    const t3 = this.t3, world = this.world, tex = this.t3tex, me = this.myId ? this.avatars.get(this.myId) : undefined;
-    if (!this.t3gpuc.directStore || !t3 || !world || !tex || !me || !this.worldUp || this.turning || this.indoorInside) return;
-    if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
-    if (tex.inflightCount() + this.t3gpuc.askedCount > GROUND_WARM_BACKLOG) return;
-    const k = this.viewRot;
-    const R = GPU_WORLD_REGION;
-    const vw = this.viewWorld ?? world;
-    const RW = Math.ceil(vw.width / R), RH = Math.ceil(vw.height / R);
-    let done = this.worldWarmDone.get(k);
-    if (!done) this.worldWarmDone.set(k, (done = new Set()));
-    if (done.size >= RW * RH) return;
-    let job = this.worldWarm;
-    if (!job || job.k !== k) {
-      // nearest the player first, in this side's grid
-      const [x, y] = k ? rotPoint(me.fx / CELL_WU, me.fy / CELL_WU, k, world.width, world.height) : [me.fx / CELL_WU, me.fy / CELL_WU];
-      const px = Math.floor(x / R), py = Math.floor(y / R);
-      const order: number[] = [];
-      for (let ry = 0; ry < RH; ry++) for (let rx = 0; rx < RW; rx++) if (!done.has(ry * RW + rx)) order.push(ry * RW + rx);
-      order.sort((a, b) => Math.max(Math.abs((a % RW) - px), Math.abs(Math.floor(a / RW) - py)) - Math.max(Math.abs((b % RW) - px), Math.abs(Math.floor(b / RW) - py)));
-      this.worldWarm = job = { k, order, i: 0, cell: 0 };
-    }
-    const t0 = performance.now();
-    const defer = tex.deferPlates;
-    tex.deferPlates = this.groundDeferOn && composeWorkerEnabled();
-    try {
-      while (job.i < job.order.length && performance.now() - t0 < GPU_WORLD_WARM_MS) {
-        const r = job.order[job.i];
-        const c0 = (r % RW) * R, r0 = Math.floor(r / RW) * R;
-        const cw = Math.min(R, vw.width - c0), ch = Math.min(R, vw.height - r0);
-        const n = cw * ch;
-        while (job.cell < n && performance.now() - t0 < GPU_WORLD_WARM_MS) {
-          const col = c0 + (job.cell % cw), row = r0 + Math.floor(job.cell / cw);
-          job.cell++;
-          this.worldWarmStats.cells++;
-          try {
-            const cell = t3.cell(col, row);
-            if (!cell) continue;
-            const b = t3.boundary(col, row, cell);
-            const bop = b ? tex.opsForBoundary(b) : null;
-            if (!(bop && cell.kind === "field" && !this.noTransitions)) cellBlits(tex, this.t3tm, cell, undefined);
-            for (const d of t3.decks(col, row)) tex.opsForDeck(d);
-          } catch {
-            // the paint warns about it
-          }
-        }
-        if (job.cell < n) break;
-        done.add(r);
-        this.worldWarmStats.regions++;
-        job.i++;
-        job.cell = 0;
-      }
-    } finally {
-      tex.deferPlates = defer;
-    }
-    this.worldWarmStats.ms += performance.now() - t0;
-    this.worldWarmStats.slices++;
   }
 
   /** The drain's slices, pre-walked before its bracket opens: the head always,
