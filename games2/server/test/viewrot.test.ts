@@ -7,13 +7,14 @@
 // agrees with every other, cell for cell, or the drawn world and the simulated
 // one part ways. Four quarter-turns are the identity on the whole document; the
 // grid rotation, rotCell, rotPoint/unrotPoint and rotVec/unrotVec agree; a
-// facing turns +2 in the 8-ring per quarter-turn; directed scenery that would
-// face away is HIDDEN IN PLACE (kept, flagged) so every index still joins the
+// facing turns +2 in the 8-ring per quarter-turn; a directed piece turned to
+// face away shows the nearest side its art has (the NPCs' rule), and one HUNG ON
+// A WALL is HIDDEN IN PLACE (kept, flagged) so every index still joins the
 // server's scenery and footprints.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
-import { rotateWorldDoc, rotCell, unrotCell, rotPoint, unrotPoint, rotVec, unrotVec, rotDir8, normRot, rotFootprints, unturnScreenVec, type RotateStats } from "../../client/src/viewrot.js";
+import { rotateWorldDoc, rotCell, unrotCell, rotPoint, unrotPoint, rotVec, unrotVec, rotDir8, normRot, rotFootprints, unturnScreenVec, nearestCameraFacing, type RotateStats } from "../../client/src/viewrot.js";
 import { leanHeading, octantRunDeg, screenToWorldVector, screenLenTurned, gaitSpeed, stepMovement, ISO_GEOMETRY } from "@nangijala/shared";
 
 const WORLD = new URL("../../../maps2/worlds3/the_game/world.json", import.meta.url);
@@ -65,7 +66,7 @@ test("footprints: centres turn as points, an ellipse swaps its axes, a rect turn
   assert.equal(rotFootprints(fp, 0, 50, 40), fp);
 });
 
-test("the_game: 4 quarter-turns are the identity; the helpers agree cell for cell; directed scenery is hidden in place", (t) => {
+test("the_game: 4 quarter-turns are the identity; the helpers agree cell for cell; turned scenery shows a side it has", (t) => {
   if (!existsSync(WORLD)) return t.skip("the_game missing (the deploy's test job checks out no world tree)");
   const doc = JSON.parse(readFileSync(WORLD, "utf8"));
   let r: any = doc;
@@ -89,11 +90,22 @@ test("the_game: 4 quarter-turns are the identity; the helpers agree cell for cel
     const st: RotateStats = { hiddenPieces: 0 };
     const v = rotateWorldDoc(doc, k, st);
     assert.equal(v.scenery.length, doc.scenery.length, "no piece is dropped: every index still joins");
-    for (const i of st.hiddenIdx ?? []) assert.ok(typeof doc.scenery[i].dir === "string", "only a DIRECTED piece is hidden");
+    const hidden = new Set(st.hiddenIdx ?? []);
+    for (const i of hidden) assert.ok(typeof doc.scenery[i].dir === "string" && typeof doc.scenery[i].z === "number", "only a directed piece HUNG ON A WALL is hidden");
+    v.scenery.forEach((p: { dir?: string }, i: number) => {
+      if (hidden.has(i) || typeof p.dir !== "string") return;
+      assert.ok(["south", "south-east", "south-west"].includes(p.dir), `piece ${i} draws a side its art has, not ${p.dir}`);
+    });
   }
   const st2: RotateStats = { hiddenPieces: 0 };
   rotateWorldDoc(doc, 2, st2);
-  assert.equal(st2.hiddenPieces, doc.scenery.filter((p: { dir?: string }) => typeof p.dir === "string").length, "at 180 degrees every directed piece faces away");
+  assert.equal(st2.hiddenPieces, doc.scenery.filter((p: { dir?: string; z?: number }) => typeof p.dir === "string" && typeof p.z === "number").length, "at 180 degrees every directed WALL piece faces away and is hidden; free-standing ones face the camera");
+});
+
+test("a turned piece with no art for its side shows the nearest one; its back shows the front", () => {
+  for (const [from, to] of [["south", "south"], ["south-east", "south-east"], ["south-west", "south-west"], ["east", "south-east"], ["north-east", "south-east"], ["west", "south-west"], ["north-west", "south-west"], ["north", "south"]]) {
+    assert.equal(nearestCameraFacing(from), to, from);
+  }
 });
 
 test("the stick on a turned view: the leaned heading walks where the finger points, through the world", () => {

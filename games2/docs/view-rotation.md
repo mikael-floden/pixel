@@ -85,8 +85,13 @@ SERVER cell, so a turned view draws the same sets, members, fades and details �
 keyed by the drawn cell, a turn re-rolled the world (the chunk grid does not even
 line up once turned). Identity unless a turned view installs it: `tiles3.test.ts`
 output is byte-identical to main's, its two pre-existing failures included.
-Directed scenery that would face AWAY (its art exists only for camera-facing
-sides) is hidden IN PLACE — never dropped — so every scenery index still joins
+A directed piece turned to face AWAY (its art exists only for the camera-facing
+sides) shows the NEAREST side it has — east and north-east take south-east, west
+and north-west south-west, its back the camera's south (`nearestCameraFacing`;
+the NPCs' rule: a drawn facing with no art faces the camera). Hidden instead, 46
+pieces left the houses at 90° and their cards faded out of every turn. A piece
+HUNG ON A WALL (`z`: windows, hearths, hangings) belongs to the wall's far face,
+so it is hidden IN PLACE — never dropped — and every scenery index still joins
 the server's footprints.
 
 ## The night pass
@@ -197,11 +202,12 @@ VIEW quarters: +1 is the picture clockwise; neither moves the spin goal),
 
 ## Known gaps
 
-- One-sided art: the 96 wall pieces (windows, hearths, hangings) exist only for
-  camera-facing walls (all 96 face away at 180°); NPC idle art exists only for
-  south/south-west/south-east (faithful rotation freezes all 31 at 90/180 and
-  shows their backs at 180 — a taste call); undirected anisotropic scenery
-  (beds, rugs, boats) draws its south still from every side.
+- One-sided art: the 69 wall pieces (windows, hearths, hangings) exist only for
+  camera-facing walls and are hidden when turned away (all of them at 180°);
+  the 27 free-standing directed pieces show their nearest side; NPC idle art
+  exists only for south/south-west/south-east (faithful rotation freezes all 31
+  at 90/180 and shows their backs at 180 — a taste call); undirected anisotropic
+  scenery (beds, rugs, boats) draws its south still from every side.
 - Indoors while turned: the cut-away masks are still read by the drawing loops
   in server keys.
 - The spawn-area debug overlay is not re-placed on a turn; the minimap stays

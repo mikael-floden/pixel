@@ -111,9 +111,23 @@ export function rotDir8(name: string, k: ViewRot): string {
 }
 
 /** The facings the scenery domain publishes rotations for (shared/world3.ts
- *  SCENERY_FACINGS). A directed piece turned to anything else would show its
- *  BACK — which has no art — so the rotated view leaves it out. */
+ *  SCENERY_FACINGS). A directed piece turned to anything else has no art for
+ *  that side. */
 const CAMERA_FACINGS = new Set(["south", "south-east", "south-west"]);
+
+/** THE SIDE A TURNED PIECE SHOWS when its own has no art: the nearest camera
+ *  facing on the ring, and its back (north) the camera's south — the rule NPCs
+ *  follow (a drawn facing with no idle faces the camera). Hidden instead, 46
+ *  lamps, pumps and barrels left the houses at 90 degrees and their cards faded
+ *  out of every turn. */
+export function nearestCameraFacing(dir: string): string {
+  if (CAMERA_FACINGS.has(dir)) return dir;
+  switch (dir) {
+    case "west": case "north-west": return "south-west";
+    case "east": case "north-east": return "south-east";
+    default: return "south";
+  }
+}
 
 export interface RotateStats { hiddenPieces: number; /** indices (in doc.scenery) of pieces the view must not draw */ hiddenIdx?: number[] }
 
@@ -150,16 +164,19 @@ export function rotateWorldDoc(doc: any, k: ViewRot, stats?: RotateStats): any {
       return { ...c, x, y };
     });
   const groups = (list: any[] | undefined) => (Array.isArray(list) ? list : []).map((e: any) => ({ ...e, cells: cells(e?.cells) }));
-  // A directed piece turned to face AWAY has no art for that side. It is kept
-  // in place (so every index still joins the server's scenery and footprints)
-  // and reported, so the drawn view can leave it out.
+  // A directed piece turned to face AWAY has no art for that side. Standing
+  // free, it shows the nearest side it has (nearestCameraFacing); HUNG ON A
+  // WALL (`z`) it belongs to the wall's far face, so it is kept in place (every
+  // index still joins the server's scenery and footprints) and reported, so
+  // the drawn view leaves it out.
   const hiddenIdx: number[] = [];
   const scenery = (Array.isArray(doc.scenery) ? doc.scenery : []).map((p: any, i: number) => {
     const [x, y] = rotPoint(Number(p?.x), Number(p?.y), k, w, h);
     if (typeof p?.dir !== "string") return { ...p, x, y };
     const dir = rotDir8(p.dir, k);
-    if (!CAMERA_FACINGS.has(dir)) { hiddenIdx.push(i); return { ...p, x, y }; }
-    return { ...p, x, y, dir };
+    if (CAMERA_FACINGS.has(dir)) return { ...p, x, y, dir };
+    if (typeof p?.z === "number") { hiddenIdx.push(i); return { ...p, x, y }; }
+    return { ...p, x, y, dir: nearestCameraFacing(dir) };
   });
   if (stats) { stats.hiddenPieces = hiddenIdx.length; stats.hiddenIdx = hiddenIdx; }
   const out: any = { ...doc, size: { ...(doc.size ?? {}), w: ow, h: oh } };
