@@ -2070,13 +2070,16 @@ export class Tiles3 {
     const { cands, pool, cell } = this.wallPool(top, side, storey);
     if (!cands.length) return null;
     if (x === undefined || y === undefined || z === undefined) return cands[0];
+    // The wall field is warped NOISE over cell coordinates: sampled at the DRAWN
+    // cell, a turn would re-clad every cliff. Keyed by the server cell (setPickFrame).
+    const [wx, wy] = pk(x, y);
     const i = pickWallIndex(
       pool,
       this.wallKeys(cands),
-      x,
-      y,
+      wx,
+      wy,
       z,
-      this.wallFieldAt(x, y, z),
+      this.wallFieldAt(wx, wy, z),
       this.data.wallSets?.[cell],
     );
     return cands[i >= 0 ? i : 0];
