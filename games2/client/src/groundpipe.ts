@@ -1,9 +1,10 @@
 /* THE GROUND PIPELINE — the direct draw's half inside Phaser (tiles3gpu.ts
  * "THE DIRECT DRAW"). It IS Phaser's Single pipeline, the one a DynamicTexture
- * draws with, plus four per-quad vectors: a plain quad (a plate, a wall, a
- * liquid) carries zeros and is drawn exactly as before; a transition, a
- * composed ramp or an outlined top is ONE quad of the same batch whose vectors
- * say what it is, and the shader paints it from the resident inputs.
+ * draws with, plus two per-quad vectors (the direct tile's four, packed —
+ * tiles3gpu packG): a plain quad (a plate, a wall, a liquid) carries zeros and
+ * is drawn exactly as before; a transition, a composed ramp or an outlined top
+ * is ONE quad of the same batch whose vectors say what it is, and the shader
+ * paints it from the resident inputs.
  *
  * ONE BATCH, PAINTER ORDER. The quads land in the ground's own batch in the
  * order the painter issues them, so a transition is covered by the cell in
@@ -16,7 +17,7 @@ import Phaser from "phaser";
 import { GROUND_FRAG, GROUND_VERT, type DirectInst, type GpuDirect } from "./tiles3gpu";
 
 export const GROUND_PIPELINE = "MlGround";
-const ZERO = new Float32Array(16);
+const ZERO = new Float32Array(8);
 type Wrap = Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper;
 type Matrix = Phaser.GameObjects.Components.TransformMatrix;
 /** The pipeline internals this subclass writes (public at runtime, not typed). */
@@ -59,8 +60,6 @@ export class GroundPipeline extends Phaser.Renderer.WebGL.Pipelines.SinglePipeli
         { name: "inTint", size: 4, type: Phaser.Renderer.WebGL.UNSIGNED_BYTE, normalized: true },
         { name: "inG0", size: 4, type: F },
         { name: "inG1", size: 4, type: F },
-        { name: "inG2", size: 4, type: F },
-        { name: "inG3", size: 4, type: F },
       ],
     } as Phaser.Types.Renderer.WebGL.WebGLPipelineConfig);
   }
@@ -72,7 +71,7 @@ export class GroundPipeline extends Phaser.Renderer.WebGL.Pipelines.SinglePipeli
     const q = this.m1.copyFrom(matrix).setQuad(x, y, x + sw, y + sh);
     const t = Phaser.Renderer.WebGL.Utils.getTintAppendFloatAlpha(tint, 1);
     const me = this as unknown as Internals;
-    this.extra = inst.g;
+    this.extra = inst.p;
     // no texture of its own: it joins whatever batch is open (a fresh one only
     // when none is, on the white texture it never reads)
     this.batchQuad(null as never, q[0], q[1], q[2], q[3], q[4], q[5], q[6], q[7], sx, sy, sx + sw, sy + sh, t, t, t, t, 0, me.currentBatch ? (undefined as never) : (this.renderer.whiteTexture as never), undefined as never);
@@ -80,7 +79,7 @@ export class GroundPipeline extends Phaser.Renderer.WebGL.Pipelines.SinglePipeli
     this.stats.direct++;
   }
 
-  /** WebGLPipeline.batchQuad with the four vectors after Phaser's seven. */
+  /** WebGLPipeline.batchQuad with the two packed vectors after Phaser's seven. */
   batchQuad(gameObject: Phaser.GameObjects.GameObject | null, x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, u0: number, v0: number, u1: number, v1: number, tintTL: number, tintTR: number, tintBL: number, tintBR: number, tintEffect: number | boolean, texture?: Wrap, unit?: number): boolean {
     const me = this as unknown as Internals;
     if (unit === undefined) unit = me.currentUnit;
@@ -110,7 +109,7 @@ export class GroundPipeline extends Phaser.Renderer.WebGL.Pipelines.SinglePipeli
     const f = me.vertexViewF32, g = this.extra;
     f[o] = x; f[o + 1] = y; f[o + 2] = u; f[o + 3] = v; f[o + 4] = unit; f[o + 5] = te;
     me.vertexViewU32[o + 6] = tint;
-    for (let i = 0; i < 16; i++) f[o + 7 + i] = g[i];
+    for (let i = 0; i < 8; i++) f[o + 7 + i] = g[i];
   }
 
   /** Before the batch is drawn: the sums of any tile seen for the first time

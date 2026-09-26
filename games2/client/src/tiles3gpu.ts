@@ -1809,9 +1809,30 @@ const TONE_ROW = LUT_ROWS - 1;
  *    top kind (0 plate, 1 transition) | g3 boundary shape xy, frame xy. */
 export interface DirectInst {
   g: Float32Array;
+  /** `g` PACKED for the vertex (games' item 3): 8 floats a vertex instead of
+   *  16 — an xy pair as x·4096+y (origins < 2048: exact under 2^24), mode +
+   *  4·seam + 8·w as one; unpacked in the vertex shader (UNPACK_G) into the
+   *  same four vectors the fragment reads. A plain quad carries 8 zeros. */
+  p: Float32Array;
   w: number;
   h: number;
 }
+const PACK_XY = (x: number, y: number) => x * 4096 + y;
+export function packG(g: Float32Array): Float32Array {
+  return new Float32Array([PACK_XY(g[0], g[1]), PACK_XY(g[2], g[3]), PACK_XY(g[4], g[5]), PACK_XY(g[6], g[7]), g[8] + 4 * g[10] + 8 * g[11], g[9], PACK_XY(g[12], g[13]), PACK_XY(g[14], g[15])]);
+}
+/** The vertex shaders' unpack of the packed pair into vG0..vG3. */
+const UNPACK_G = `
+vec2 upxy(float v) { float x = floor(v / 4096.0); return vec2(x, v - x * 4096.0); }
+void unpackG(vec4 h0, vec4 h1) {
+  vG0 = vec4(upxy(h0.x), upxy(h0.y));
+  vG1 = vec4(upxy(h0.z), upxy(h0.w));
+  float f = h1.x;
+  float mode = mod(f, 4.0);
+  float seam = mod(floor(f / 4.0), 2.0);
+  vG2 = vec4(mode, h1.y, seam, floor(f / 8.0));
+  vG3 = vec4(upxy(h1.z), upxy(h1.w));
+}`;
 
 const DIRECT_COMMON = `
 uniform sampler2D uPlates; uniform vec2 uPlatesSize;
@@ -1966,8 +1987,6 @@ attribute float inTintEffect;
 attribute vec4 inTint;
 attribute highp vec4 inG0;
 attribute highp vec4 inG1;
-attribute highp vec4 inG2;
-attribute highp vec4 inG3;
 varying vec2 outTexCoord;
 varying float outTintEffect;
 varying vec4 outTint;
@@ -1975,12 +1994,13 @@ varying highp vec4 vG0;
 varying highp vec4 vG1;
 varying highp vec4 vG2;
 varying highp vec4 vG3;
+${UNPACK_G}
 void main() {
   gl_Position = uProjectionMatrix * vec4(inPosition, 1.0, 1.0);
   outTexCoord = inTexCoord;
   outTint = inTint;
   outTintEffect = inTintEffect;
-  vG0 = inG0; vG1 = inG1; vG2 = inG2; vG3 = inG3;
+  unpackG(inG0, inG1);
 }`;
 
 /** pass B for the direct tiles: three sum texels per new tile, from the same
@@ -1988,12 +2008,13 @@ void main() {
 const SUMS_VERT = `
 precision highp float;
 attribute vec2 aPos; attribute vec2 aLocal;
-attribute vec4 aG0; attribute vec4 aG1; attribute vec4 aG2; attribute vec4 aG3;
+attribute highp vec4 aG0; attribute highp vec4 aG1;
 uniform vec2 uTarget;
 varying vec2 vLocal;
 varying highp vec4 vG0; varying highp vec4 vG1; varying highp vec4 vG2; varying highp vec4 vG3;
+${UNPACK_G}
 void main() {
-  vLocal = aLocal; vG0 = aG0; vG1 = aG1; vG2 = aG2; vG3 = aG3;
+  vLocal = aLocal; unpackG(aG0, aG1);
   gl_Position = vec4(aPos / uTarget * 2.0 - 1.0, 0.0, 1.0);
 }`;
 const SUMS_FRAG = (fw: number) => `
@@ -2121,8 +2142,9 @@ export class GpuDirect {
     const sl = j.slope;
     const shifted = sl?.lift ? (sl.side === "a" ? 2 : 1) : 0;
     const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], ps[0], ps[1], pf[0], pf[1], 1, 0, j.seam ? 1 : 0, sl?.lift ?? 0, shifted, 0, 0, 0]);
-    const inst = { g, w: this.sheets.fw, h: this.sheets.fh };
+    const inst: DirectInst = { g, p: g, w: this.sheets.fw, h: this.sheets.fh };
     if (!this.sumsFor(g, inst)) return null;
+    inst.p = packG(g);
     this.insts.set(key, inst);
     this.stats.boundaries++;
     return inst;
@@ -2157,8 +2179,9 @@ export class GpuDirect {
     // a lined flat top paints on its own cheap path (compL, mode 3)
     const mode = j.mask === LINED_PLATE && j.top.kind === "plate" ? 3 : 2;
     const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], pm[0], pm[1], pband[0], pband[1], mode, 0, seam, kind, pbs[0], pbs[1], pf[0], pf[1]]);
-    const inst = { g, w: this.sheets.fw, h: full.h };
+    const inst: DirectInst = { g, p: g, w: this.sheets.fw, h: full.h };
     if (!this.sumsFor(g, inst)) return null;
+    inst.p = packG(g);
     this.insts.set(key, inst);
     this.stats.ramps++;
     return inst;
@@ -2201,15 +2224,15 @@ export class GpuDirect {
     if (!N) return 0;
     const gl = this.gl, { fh } = this.sheets;
     const W = SUMS_COLS * 3;
-    const v = new Float32Array(N * 6 * 20);
+    const v = new Float32Array(N * 6 * 12);
     let o = 0;
     for (const inst of this.pending) {
       const k = inst.g[9];
       const x0 = (k % SUMS_COLS) * 3, y0 = Math.floor(k / SUMS_COLS);
       const corner = (x: number, y: number, lx: number) => {
         v[o] = x; v[o + 1] = y; v[o + 2] = lx; v[o + 3] = 0;
-        v.set(inst.g, o + 4);
-        o += 20;
+        v.set(inst.p, o + 4);
+        o += 12;
       };
       corner(x0, y0, 0); corner(x0 + 3, y0, 3); corner(x0, y0 + 1, 0);
       corner(x0 + 3, y0, 3); corner(x0 + 3, y0 + 1, 3); corner(x0, y0 + 1, 0);
@@ -2224,14 +2247,14 @@ export class GpuDirect {
     gl.useProgram(p);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
     gl.bufferData(gl.ARRAY_BUFFER, v, gl.STREAM_DRAW);
-    const names: [string, number, number][] = [["aPos", 2, 0], ["aLocal", 2, 2], ["aG0", 4, 4], ["aG1", 4, 8], ["aG2", 4, 12], ["aG3", 4, 16]];
+    const names: [string, number, number][] = [["aPos", 2, 0], ["aLocal", 2, 2], ["aG0", 4, 4], ["aG1", 4, 8]];
     const locs: number[] = [];
     for (const [n, size, off] of names) {
       const loc = gl.getAttribLocation(p, n);
       if (loc < 0) continue;
       locs.push(loc);
       gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 80, off * 4);
+      gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 48, off * 4);
     }
     gl.uniform2f(gl.getUniformLocation(p, "uTarget"), W, SUMS_ROWS);
     gl.uniform1f(gl.getUniformLocation(p, "uFH"), fh);
@@ -2244,7 +2267,7 @@ export class GpuDirect {
     gl.activeTexture(gl.TEXTURE7);
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.activeTexture(gl.TEXTURE0);
-    gl.drawArrays(gl.TRIANGLES, 0, o / 20);
+    gl.drawArrays(gl.TRIANGLES, 0, o / 12);
     for (const loc of locs) gl.disableVertexAttribArray(loc);
     this.stats.sumsPasses++;
     this.stats.sumsTiles += N;
