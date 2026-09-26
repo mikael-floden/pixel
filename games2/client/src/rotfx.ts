@@ -224,14 +224,20 @@ void main(){
 // along), drawn as a screen quad at the feet's depth: terrain in front hides it
 // exactly as the painter did.
 const BODY_VS = `attribute vec2 aQ;
-uniform vec2 uSize; uniform vec4 uRect; uniform vec2 uOff; uniform float uZ; uniform vec3 uZoom;
+uniform vec2 uSize; uniform vec4 uRect; uniform vec2 uOff; uniform vec3 uZoom;
+uniform float uNearFeet; uniform float uFeetY; uniform float uHk;
 varying vec2 vUV; varying vec2 vPx;
 void main(){
   vec2 px = uRect.xy + aQ * uRect.zw;                  // in the frame it was taken in
   vUV = px / uSize; vPx = px;
   vec2 at = px + uOff;                                 // ...carried by the feet
   at = uZoom.xy + (at - uZoom.xy) * uZoom.z;           // and the mesh's zoom pulse
-  gl_Position = vec4(at.x/uSize.x*2.0-1.0, 1.0-at.y/uSize.y*2.0, uZ, 1.0);
+  // A BILLBOARD STANDS: a pixel h above the feet is h above the ground, and is
+  // as near as the mesh makes a point that high (nearness's height term). At
+  // the feet' depth alone, a wall behind a body was nearer than the body at
+  // head height and cut every head off mid-turn.
+  float near = uNearFeet + max(0.0, uFeetY - px.y) * uHk;
+  gl_Position = vec4(at.x/uSize.x*2.0-1.0, 1.0-at.y/uSize.y*2.0, clamp(-near/400.0, -1.0, 1.0), 1.0);
 }`;
 const BODY_FS = `precision highp float;
 uniform sampler2D uWith; uniform sampler2D uWithout; uniform float uAlpha;
@@ -563,9 +569,13 @@ export class RotFx {
       gl.uniform4f(gl.getUniformLocation(bp, "uRect"), b.rect[0], b.rect[1], b.rect[2], b.rect[3]);
       gl.uniform2f(gl.getUniformLocation(bp, "uOff"), now[0] - taken[0], now[1] - taken[1]);
       // the feet's depth under the camera NOW, a hair toward the viewer so the
-      // ground they stand on never covers them
-      const near = this.nearness([b.foot[0], b.foot[1], b.foot[2]], cs) + 0.6;
-      gl.uniform1f(gl.getUniformLocation(bp, "uZ"), Math.max(-1, Math.min(1, -near / 400)));
+      // ground they stand on never covers them, rising with each pixel's height
+      // above the feet in the frame it was taken in (canvas px -> levels ->
+      // nearness, as XFORM's nearness weighs p.z)
+      const pr = st.projA;
+      gl.uniform1f(gl.getUniformLocation(bp, "uNearFeet"), this.nearness([b.foot[0], b.foot[1], b.foot[2]], cs) + 0.6);
+      gl.uniform1f(gl.getUniformLocation(bp, "uFeetY"), taken[1]);
+      gl.uniform1f(gl.getUniformLocation(bp, "uHk"), (2 * pr.dy) / pr.lh / (pr.zoom * pr.lh));
       gl.uniform1f(gl.getUniformLocation(bp, "uAlpha"), alpha);
       gl.uniform3f(gl.getUniformLocation(bp, "uZoom"), pvz[0] + shift[0], pvz[1] + shift[1], 1 + this.tune.zoom * speed);
       bind(4, withT, "uWith", bp); bind(5, withoutT, "uWithout", bp);
