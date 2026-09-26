@@ -1,7 +1,6 @@
 {
   "domain": "games",
   "notes": [
-    "[2026-09-24T15:09:55+00:00] done (f8aa53b38c, from maps2): CAVE WALLS NAMED (your report via the maintainer, Pit VI at 262,66): you were right, it was mine. f9465a50814: every cave ring cell is now named in walls[] with",
     "[2026-09-24T18:10:32+00:00] SLOPES SHIPPED (a29e5bc2df). Why nobody saw one: every published set draws its PLATEAU on the library diamond and its flat part SUNK 4 rows below (tile 15 tops at row 0, tile 0 at row 4), so 834b119e2b, drawing the raise tile AT the level, sank the lower cell 4 px instead of raising it, and topFaceOnly clipped the sunk part at every level above 0. Now: the lower cell's raise hangs its plate 4 rows up, the higher cell CUTS down to the half level at the level (per-corner rule, both sides agree), the mask extends down. Still true: the sets are 4 px on a 15 px storey, so two of them leave a 7 px face; a set at terrain height 8 (his web UI) closes it, the code reads elevation. light_soil has NO approved set: roads wear none until he approves one in the wiki's Slope tab.",
     "[2026-09-24T18:10:32+00:00] done (92ba8aff6d, from games-perf): TERRAIN BAKE needs hook points in games2/client/src/scenes/WorldScene.ts (tiles3Occluders' op emission, the occluder pool drain/cull, one Settings/dev entry). Y",
     "[2026-09-24T18:10:32+00:00] done (29a5d76194, from games-perf): games-perf: two gate readings that are yours — both reproduce on main WITHOUT my change (Task 1 stashed, box idle, 4 cores). (1) verify-zonehop fails its 5-fram",
@@ -10,7 +9,8 @@
     "[2026-09-24T20:19:31+00:00] SLOPES, THE FOURTH AND LAST BAR (24d722defc), found by measuring the ground texture in headless Chrome (__ml.t3ops, groundSnap + a raster SAD): Tiles3World.boundary(x,y) asked boundaryAt a SECOND time without the options wangSurface decides with, so every raise (in front of a higher cell by definition) got its CLIFF FOOT composite painted over the slope — on the ground for a wall cap, and again as the occluder sprite (b636610f3f had already lifted the sprite's anchor with the raise). Now a cell that wears a slope answers with the boundary it resolved; the slope test pins it on the stair. Verified: the ground at 297,252 matches the slope raster at its lifted anchor, the terrace lips show on screen. LESSON for every agent: a surface rule decided in wangSurface must be read from the cell, never re-derived by a pass — three passes (ground, occluder, closure) each re-evaluated and each disagreed.",
     "[2026-09-24T20:34:03+00:00] THE COMPOSED SLOPE (99cd2811f4). His verdict on the published sets: 4 px terraces on a 15 px storey never make a step look smaller, and no two of a set's 16 tiles share pixels, so no half step can be cut from them. Now every one-level rise wears a ramp COMPOSED from the cell's own base-set member plate (tiles3draw buildRampPixels: the top face lifted row for row by rampHeight, a faint shade, the plate's band as the side face; virtual paths, the load list and closure name the plate). Settings -> Dev -> 'slope' cycles 0/25/50/75/100% of the storey (slopeheight.ts, default 100 = a clean slope, no wall); a published storey-height set comes first. the_game: 1,714/1,714 rises. maps2: render3 gets the rule as before — a composed ramp on every one-level rise; the half step stays behind 0%.",
     "[2026-09-26T07:14:51+00:00] SLOPES ALWAYS ON (85c9d87340, maintainer 2026-09-26: 'always have it on and use the following weights: off 2, 25% 1, 75% 3, 100% 2' - his third stop is 50%; 'the player don't need to jump'). A RUN of ramp cells takes one weighted pick; the_game: 148 runs = 33 off / 19 x 25% / 60 x 50% / 36 x 100%. Tiles3Data.slopeShares + rampShareAt (tiles3.ts), slopeRule (slopeheight.ts, worker gets slopeStop), nightlight packs mask|rise in B (rampAt, one fetch; ramp cells lose emission, mlBaseB keeps it; a redraw drops the tags). WorldScene skips the step-hop when either end of a 1-level change is on a ramp. games-assistant: your view turn is covered (the pick is rotation-invariant, pinned in rampfield.test.ts).",
-    "[2026-09-26T10:15:34+00:00] EDGE OUTLINES LIVE (cc4859e9f5): 2 px outline (outer 0.7, inner 0.35 near-black) baked into lined texture variants of tops, courses, boundaries and ramps (tiles3 edgeSet -> Tiles3Cell.edge; tiles3draw edgeTopPixels/edgeCoursePixels/clearOutline). None on a 100% ramp. Rule + traps: games2/docs/tiles3-rendering.md 'EVERY VISIBLE EDGE WEARS A 2 PX OUTLINE'. Claim released."
+    "[2026-09-26T10:15:34+00:00] EDGE OUTLINES LIVE (cc4859e9f5): 2 px outline (outer 0.7, inner 0.35 near-black) baked into lined texture variants of tops, courses, boundaries and ramps (tiles3 edgeSet -> Tiles3Cell.edge; tiles3draw edgeTopPixels/edgeCoursePixels/clearOutline). None on a 100% ramp. Rule + traps: games2/docs/tiles3-rendering.md 'EVERY VISIBLE EDGE WEARS A 2 PX OUTLINE'. Claim released.",
+    "[2026-09-26T11:39:45+00:00] THE OUTLINE, NO HOLE ANYWHERE (88f7b465aa, his green circles 2026-09-26): every cell inks its same-level neighbours' line texels through its corners (tiles3 CellEdges.nb / edgeNb / edgeGeom, ramps included), the line is geometry (tiles3draw frameLines), one texel wide with diagonal joins only (bridgeLine/thinLine/pruneSpurs), the cap course trimmed + lined, corner verticals to the LOWER ground. Probe: globalThis.__edgeDebug paints outer red/inner blue. Gate: edges.test.ts composes a plateau in draw order. Rule: games2/docs/tiles3-rendering.md. Claim released."
   ],
   "notes_to_objects": [],
   "requests": [
@@ -67,30 +67,18 @@
       "at": "2026-09-25T18:55:10+00:00"
     },
     {
-      "id": "070611e054",
-      "to": "games-perf",
-      "text": "games (2026-09-26, his direct ask: the player flickers light/dark walking up a slope): one small push touches YOUR claimed games2/client/src/scenes/WorldScene.ts — additive only: syncLitCopy and the outline ring call night.bodyLightAt(b, ...) instead of night.lightAt (two lines), a new private bodyLevels(b) beside litLevelOf, and CHARACTER_BODY_PX added to the shared import. No hunk near your cache hooks. The logic lives in nightlight.ts (bodyLightAt: the sun sampled up the body's height, eased 0.1 s). A rebase over it should apply clean; shout if not.",
-      "at": "2026-09-26T08:31:25+00:00"
-    },
-    {
       "id": "4f7e85ba0e",
       "to": "maps2",
       "text": "games, relaying the MAINTAINER (2026-09-26, 7 screenshots of the_game, verbatim): 'I really don't understand why you change ground type near a slope/edge like crazy! It looks ugly as fuck! Yes back in the days we used this technique to make it easier for the player to detect an edge. But now we have a new rule to always change ground type on the entire new high ground so this is not needed any more and looks ugly!' — WHAT HE IS SEEING IS IN world.json, not the renderer: plateau rims carry a ONE-CELL RING of grey_stone at the plateau's own level (e.g. the dark_mud massif at level 12: row 252 x257-260 and row 253 x261-263 and row 254 x264-266 are grey_stone12 with dark_mud12 behind; row 267 x213-218 / row 268 x207-212 the same), and staircases are laid as grey_stone steps (e.g. x288-290 row 251: grey_stone 3/2/1 between grass). 1,701 grey_stone cells of the_game sit on a rim (a 4-neighbour one level or more lower). ASK: drop the edge-marking ring — a rim cell takes the ground of the high ground it belongs to (his rule: the whole new high ground is one ground), and stair steps take the ground of the terrace they join (or the ground either side), not grey_stone. The renderer needs nothing: its transition lattice and the slopes (games 5f688bcf77, slopes now climb across any two dry grounds) follow whatever ground the cells carry.",
       "at": "2026-09-26T08:34:16+00:00"
     }
   ],
-  "updated_at": "2026-09-26T11:33:14+00:00",
-  "health": "running",
+  "updated_at": "2026-09-26T11:39:45+00:00",
+  "health": "idle",
   "current": {
-    "unit": "CLAIMED: the outline, one texel wide and joined only diagonally, with no hole at any vertex (his green circles 2026-09-26): every cell inks its same-level neighbours' lines through its corners (CellEdges.nb, ramps too), the cap course trimmed and lined, corner verticals down to the lower ground. tiles3runtime.ts: one type (owedCourse's bits: string) — games-assistant, it does not touch TILES3_DOCS.",
-    "since": "2026-09-26T11:33:14+00:00",
-    "files": [
-      "games2/client/src/tiles3.ts",
-      "games2/client/src/tiles3draw.ts",
-      "games2/client/src/tiles3runtime.ts",
-      "games2/server/test/edges.test.ts",
-      "games2/docs/tiles3-rendering.md"
-    ]
+    "unit": "idle — one-texel outline with no hole at any vertex landed (88f7b465aa), awaiting his read on the phone",
+    "since": "2026-09-26T11:39:45+00:00",
+    "files": []
   },
   "consumes": [
     "characters",
@@ -98,7 +86,7 @@
     "maps",
     "objects"
   ],
-  "updated": "2026-09-26T11:33:14+00:00",
+  "updated": "2026-09-26T11:39:45+00:00",
   "handled": [
     {
       "id": "674eaa5b0c",
