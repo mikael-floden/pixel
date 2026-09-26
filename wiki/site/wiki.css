@@ -2112,15 +2112,97 @@ input[type="range"] { accent-color: var(--accent); }
 
 /* ---- SHADERS (maintainer 2026-09-26): the shader agent's effects under Items.
    The stage is the agent's own viewer in an iframe, drawn by the game's shader
-   runtime; the card carries the family colour as a dot, no art (an effect is
+   runtime, showing the STAGE ONLY; the wiki draws every control around it —
+   the timeline of sound moments (his favourite of the agent's page, ported in
+   the wiki's tokens), transport, level, time of day, ground, bodies, volley,
+   tune. The card carries the family colour as a dot, no art (an effect is
    GLSL, not a sprite). ---- */
 .shader-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 .shader-card { display: flex; flex-direction: column; gap: 6px; padding: 12px; }
 .shader-card-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
 .shader-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--fam); flex: 0 0 auto; }
 .shader-levels { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.shader-title { margin: 4px 0 2px; }
-.shader-stage { margin: 10px 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #000; }
-.shader-frame { display: block; width: 100%; height: min(78vh, 720px); border: 0; }
-.shader-ground { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; flex-wrap: wrap; }
+.shader-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.shader-title { margin: 0; }
+.shader-fam { width: 12px; height: 12px; border-radius: 3px; background: var(--fam, var(--muted)); flex: none; }
+.shader-kind {
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--border-strong); border-radius: 999px; padding: 1px 8px; white-space: nowrap;
+}
+.shader-meta { margin: 4px 0 8px; }
+/* The stage: the game's own dark, sized to the canvas the viewer draws
+   (aspect 100:62 until the frame reports its height), and STICKY on a phone
+   so a slider shows its effect while he drags — the agent's page does the
+   same. It pins under the topbar and the crumb row (both measured), and sits
+   under both in z (crumb 15, topbar 20). */
+.shader-stage { margin: 0 0 10px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #141619; line-height: 0; }
+.shader-frame { display: block; width: 100%; border: 0; aspect-ratio: 100 / 62; height: auto; }
+@media (max-width: 899px) {
+  .shader-stage { position: sticky; top: calc(var(--topbar-h, 56px) + var(--crumb-h, 54px)); z-index: 14; box-shadow: var(--shadow); }
+}
+@media (min-width: 900px) { .shader-stage { max-width: 760px; } }
+/* the timeline */
+.shader-tl-panel { padding: 12px 14px; margin: 10px 0; }
+.shader-tl-panel .panel-title { margin-bottom: 8px; font-size: 14px; }
+.shader-tl-panel .panel-title .shader-tog { margin-left: auto; font-weight: 400; font-size: 12.5px; color: var(--muted); }
+.shader-timeline { display: grid; gap: 6px; min-width: 0; }
+.shader-timeline .tl-wait { margin: 0; font-size: 12.5px; }
+.tl-track { position: relative; height: 26px; border-radius: 6px; background: var(--surface-2); overflow: hidden; }
+.tl-frames { position: absolute; inset: 0 0 auto 0; height: 7px; }
+.tl-frames .fr { position: absolute; top: 0; height: 7px; background: var(--border-strong); border-right: 1px solid var(--surface); }
+.tl-frames .fr.key { background: var(--accent); }
+.tl-bed { position: absolute; top: 9px; height: 10px; border-radius: 3px; background: color-mix(in srgb, #7aa7ff 38%, transparent); }
+.tl-mark { position: absolute; top: 7px; width: 3px; height: 17px; margin-left: -1px; border-radius: 2px; background: var(--muted); transition: transform 0.12s; }
+.tl-mark.hit { transform: scaleX(2.4); }
+.tl-head { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--ink); opacity: 0.75; }
+.tl-scale { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tl-slots { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; }
+.tl-slot { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 2px 8px; align-items: center; font-size: 13px; }
+.tl-slot em { color: var(--muted); font-style: normal; }
+.tl-sw { width: 10px; height: 10px; border-radius: 3px; background: var(--muted); }
+.tl-when { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12.5px; }
+.tl-slot code { grid-column: 2 / -1; font-family: var(--mono); font-size: 11px; color: var(--muted); word-break: break-all; }
+.tl-bind { grid-column: 2 / -1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12.5px; }
+.tl-bind .take-name { min-width: 0; }
+.ev-cast { background: #b7a26a !important; }
+.ev-rel { background: #f0a53a !important; }
+.ev-imp { background: #e5534b !important; }
+.ev-sus { background: #7aa7ff !important; }
+.ev-end { background: var(--muted) !important; }
+/* transport, level, the stage rows */
+.shader-transport { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 10px 0; }
+.shader-replay { padding: 7px 14px; }
+.shader-tog { display: inline-flex; align-items: center; gap: 6px; user-select: none; cursor: pointer; }
+.shader-tog input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.shader-level {
+  display: grid; grid-template-columns: auto 1fr 2.2em; align-items: center; gap: 12px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin: 12px 0 8px;
+}
+.shader-level input { width: 100%; height: 28px; touch-action: pan-y; }
+.shader-level output { font-family: var(--serif); font-size: 24px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.shader-label { font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 4.6em; }
+.shader-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; min-width: 0; margin: 8px 0; }
+.shader-row input[type="range"] { flex: 1 1 140px; min-width: 0; height: 28px; touch-action: pan-y; }
+.shader-row output { font-variant-numeric: tabular-nums; min-width: 5.2em; font-weight: 600; }
+.shader-row select { border: 1px solid var(--border-strong); border-radius: 6px; background: var(--surface); color: inherit; font: inherit; padding: 5px 8px; }
+.shader-about { flex-basis: 100%; margin: 0; font-size: 12.5px; }
 .shader-ground-name { flex: 1 1 auto; min-width: 0; text-align: center; }
+/* tune */
+.shader-tune-panel .panel-title { gap: 10px; }
+.shader-tune-hint { font-weight: 400; font-size: 12.5px; }
+.shader-tune-reset { margin-left: auto; }
+.shader-tune { display: grid; gap: 10px; }
+.shader-tune .row { display: grid; grid-template-columns: 8.5em 1fr 3.4em; align-items: center; gap: 10px; }
+.shader-tune .row label { font-size: 13px; }
+.shader-tune .row input[type="range"] { width: 100%; touch-action: pan-y; }
+.shader-tune .row input[type="color"] { width: 44px; height: 28px; border: 1px solid var(--border-strong); border-radius: 6px; padding: 0 2px; background: var(--bg); }
+.shader-tune .row input[type="checkbox"] { accent-color: var(--accent); width: 18px; height: 18px; justify-self: start; }
+.shader-tune .row select { border: 1px solid var(--border-strong); border-radius: 6px; background: var(--bg); color: inherit; font: inherit; padding: 3px 6px; }
+.shader-tune .row .val { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.shader-tune .row.changed label { color: var(--accent-ink); font-weight: 600; }
+/* notes */
+.shader-notes h3 { font-family: var(--serif); font-size: 15px; margin: 0 0 4px; }
+.shader-notes p { margin: 0 0 12px; max-width: 68ch; }
+.shader-facts { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 12.5px; }
+.shader-facts b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.shader-key { font-family: var(--mono); font-size: 12px; color: var(--muted); word-break: break-all; margin-top: 10px; }

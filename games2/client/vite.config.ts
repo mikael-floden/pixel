@@ -11,7 +11,7 @@ import { extname, join, normalize, resolve } from "node:path";
 const REPO_ROOT = process.env.ASSETS_ROOT || resolve(__dirname, "../..");
 const ASSET_DOMAINS = new Set([
   "characters", "tiles", "maps", "scenery", "characters2", "maps2",
-  "sounds", "music", "monsters", "items", "lore", "wiki", "live",
+  "sounds", "music", "monsters", "items", "lore", "wiki", "live", "shaders",
 ]);
 const TYPES: Record<string, string> = {
   ".png": "image/png",

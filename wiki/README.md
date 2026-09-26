@@ -447,14 +447,12 @@ they are correlated, but when the tile is close to 50% it's not for sure a
 higher grass % means it can be placed on grass. That is all about the edges and
 how it fades!"*).
 
-The card printed `pct`, which is his 2026-08-28 PLACEMENT score — 51 points for
-owning the rim plus half the area, so the side that owns the rim is always the
-"majority" whatever the art shows. Read as a description it is wrong by
-construction: the minority always reads at half its true size, and the label's
-majority was the opposite of the picture's on 1,000 of 7,774 published tiles
-(worst: 57% ice on a tile 11.6% ice). It also has a dead band in the middle, so
-the list appeared to flip for no reason — one card reads 78% grass and the next
-38% grass while having *more* grass, because they go in different fields.
+The card printed `pct`, his 2026-08-28 PLACEMENT score — 51 points for owning
+the rim plus half the area — so the rim's side is always the "majority" whatever
+the art shows: the minority reads at half its size, the label's majority was the
+opposite of the picture's on 1,000 of 7,774 published tiles (worst: 57% ice on a
+tile 11.6% ice), and a dead band in the middle made the list flip for no reason
+(78% grass, then 38% with *more* grass: different fields).
 
 So the card carries three published fields and never conflates them:
 
@@ -596,6 +594,7 @@ in a topic doc opened when that feature is touched (root doc law, 2026-09-09).
 | `docs/creatures.md` | monsters, heroes, NPCs: the shadow editor, the animation viewer, the showcase, usage stats, level, lit claims, deletion |
 | `docs/audio.md` | sound effects as events, the entity-page sound engine, the two music tabs and the dynamic bench |
 | `docs/items-lore.md` | the Items inventory, "read next", lore v2, back-returns-you |
+| `docs/shaders.md` | Items > Shaders: the wiki's chrome around the shader agent's stage — timeline, controls, tuning, stamped verdicts, stage-only embed |
 
 ## Tuning files
 

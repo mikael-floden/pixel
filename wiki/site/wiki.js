@@ -14030,22 +14030,40 @@ function viewItems() {
  * Maintainer 2026-09-26: "We need a new wiki page under Items called Shaders
  * that will allow me to review the work from the new effect/shader-agent ...
  * it's important that you render the effects the same way they would render
- * in the game!"
+ * in the game!" — then, with the shader agent's own review page in hand: "I
+ * kinda like the timeline ... improve the Shader page ... align with the
+ * shader agent's work."
  *
- * THE SHADER AGENT OWNS THE LOOK; THE WIKI OWNS THE REVIEW (its contract:
+ * THE SHADER AGENT OWNS THE STAGE; THE WIKI OWNS THE PAGE (its contract:
  * shaders/docs/wiki.md). An effect is GLSL, not a sprite, so the only honest
  * preview is the runtime itself: the page embeds the agent's viewer
  * (shaders/viewer/, served by the image at /assets/shaders/viewer/) and
- * drives it with postMessage. The catalog is read from the SAME root as the
- * viewer — never GitHub — so a list can never name an effect the viewer on
- * this deploy cannot draw.
+ * drives it over postMessage. The embed shows the STAGE ONLY — the wiki draws
+ * every control around it in its own chrome (the contract's "the wiki draws
+ * the chrome"): the timeline of sound moments, replay / loop / speed, the
+ * level, the time of day and the torch, the ground, who is on stage, the
+ * volley, the tunables, the verdict. The viewer keeps its full UI for the
+ * shader agent's standalone use; embedded, its copies of those controls are
+ * hidden from this side (same origin) until viewer.css does it itself.
+ *
+ * The catalog is read from the SAME root as the viewer — never GitHub — so a
+ * list can never name an effect the viewer on this deploy cannot draw.
  *
  * Verdicts: live/feedback/shaders.json, one entry per EFFECT keyed by its
- * catalog `key` (the level is the effect's own range, not a facet). Knobs:
- * the viewer posts shaders:tune {key, values, defaults}; the page keeps
- * `values` (+ `was` = the defaults they replaced) in
- * live/tuning/shaders.json and the save bar commits it. The game applies that
- * table live.
+ * catalog `key`, STAMPED with the catalog `version` (a stamp that differs
+ * means the effect's code changed after his verdict — "judge again"). Knobs:
+ * live/tuning/shaders.json keeps what differs from the default (+ `was` = the
+ * defaults it replaced); the wiki's own sliders write it and hand the whole
+ * table back to the stage (shaders:tuning), which recasts with it; the game
+ * applies the same table live. Sounds: every effect publishes its slots with
+ * the game event name (shaders.<family>-<name>.<slot>); the wiki's picker
+ * queues a take for a slot in live/tuning/sfx_requests.json (event = that
+ * name), and plays what is bound the moment the stage says it fires.
+ *
+ * Every stage setting is kept (localStorage), written into the iframe src
+ * and re-asserted on shaders:ready. The iframe itself survives a re-render
+ * (mountView moves it into the new view's slot — no reload); where the
+ * browser cannot move it, the reload comes back exactly as he left it.
  *
  * Admin only while nothing is bound to a skill: an effect no player can meet
  * is staging art, like a Candidate. */
@@ -14063,6 +14081,9 @@ const shaderEffects = () => shaderCatalog?.effects ?? [];
 const shaderById = (id) => shaderEffects().find((e) => e.id === id) ?? null;
 const shaderHref = (id) => `#/items/shaders/${encodeURIComponent(id)}`;
 const SHADER_FAMILY_KEY = "wiki-shader-family";
+/** Judged, and the effect's code changed since: the catalog `version` the
+ *  verdict was stamped with is not the one on this deploy. */
+function shaderStale(e) { const v = fb("shaders", e.key); return !!v.status && v.version != null && v.version !== e.version; }
 /** The Items | Shaders tab row — the Creatures | Candidates pattern. */
 function itemsTabs(cur) {
   if (!state.admin) return null;
@@ -14075,6 +14096,7 @@ function itemsTabs(cur) {
 }
 /** His verdict on an effect, as the card's corner mark. */
 function shaderMark(e) {
+  if (shaderStale(e)) return h("span", { class: "pill warn", title: "The effect's code changed after your verdict — judge it again" }, "changed — judge again");
   const v = fb("shaders", e.key);
   if (v.status === "approved") return h("span", { class: "pill ok" }, "approved");
   if (v.status === "rejected") return h("span", { class: "pill err" }, "rejected");
@@ -14089,7 +14111,7 @@ function viewShaders() {
   if (shaderCatalog === undefined) return h("div", {}, ...head, h("p", { class: "muted" }, "Loading the shader library…"));
   if (!shaderCatalog) return h("div", {}, ...head, h("div", { class: "panel" },
     h("div", { class: "panel-title" }, "The shader library is not on this deploy yet"),
-    h("p", { class: "muted" }, "shaders/ ships in the image from 1005b1a04b on — it appears here on the next deploy.")));
+    h("p", { class: "muted" }, "shaders/ ships in the image and is served at /assets/shaders — it appears here on the next deploy.")));
   const all = shaderEffects();
   let fam = "";
   try { fam = localStorage.getItem(SHADER_FAMILY_KEY) || ""; } catch { /* private mode */ }
@@ -14097,11 +14119,11 @@ function viewShaders() {
   const shown = all
     .filter((e) => !fam || e.family === fam)
     .filter((e) => matches(state.query, e.id, e.name, e.kindLabel, e.family, ...(e.tags ?? [])));
-  const judged = all.filter((e) => fb("shaders", e.key).status).length;
+  const judged = all.filter((e) => fb("shaders", e.key).status && !shaderStale(e)).length;
   const fams = [...new Set(all.map((e) => e.family))];
   return h("div", {}, ...head,
     h("p", { class: "muted" },
-      `${all.length} effects from the shader agent, drawn by the game's own shader runtime — ${judged} judged so far. Open one to watch it at every power level, tune its colours and sizes, and approve, reject or ask for a redo.`),
+      `${all.length} effects from the shader agent, drawn by the game's own shader runtime — ${judged} judged so far. Open one to watch it cast the way the game casts it, hear where its sounds go, tune it, and approve, reject or ask for a redo.`),
     sortBar(SHADER_FAMILY_KEY, [["", `all ${all.length}`, "Every family"],
       ...fams.map((f) => [f, `${shaderFamily(f)?.label ?? f} ${all.filter((e) => e.family === f).length}`, shaderFamily(f)?.label ?? f])],
       fam, () => route(), { wrap: true }),
@@ -14116,17 +14138,56 @@ function viewShaders() {
         h("div", { class: "card-sub shader-levels" }, e.levels ?? ""));
     })));
 }
-/* ONE LIVE VIEWER. The iframe is keyed by effect, and a verdict's re-render
- * must not reload it (that would restart the effect and drop his slider
- * positions mid-tune), so the element survives route() while the effect id is
- * the same. */
+
+/* ---- the stage's settings: the wiki keeps them, the viewer echoes them ----
+ * `shaders:state` is the truth (the viewer posts it after every change, its
+ * own or ours); the wiki remembers the last one, writes it into the iframe
+ * src, and re-asserts it on shaders:ready. */
+const SHADER_STAGE_KEY = "wiki-shader-stage";
+const SHADER_STAGE_KEYS = ["level", "tod", "torch", "hero", "monster", "count", "formation", "speed", "loop"];
+let shaderStage = (() => { try { return JSON.parse(localStorage.getItem(SHADER_STAGE_KEY) || "{}") || {}; } catch { return {}; } })();
+function shaderKeepStage(s) {
+  for (const k of SHADER_STAGE_KEYS) if (s[k] !== undefined && s[k] !== null) shaderStage[k] = s[k];
+  try { localStorage.setItem(SHADER_STAGE_KEY, JSON.stringify(shaderStage)); } catch { /* private mode */ }
+}
+const shaderLevel = () => Math.max(1, Math.min(10, Math.round(Number(shaderStage.level) || 5)));
+const shaderSpeed = () => ([1, 0.5, 0.25].includes(Number(shaderStage.speed)) ? Number(shaderStage.speed) : 1);
+const shaderOn = (k) => shaderStage[k] !== false && shaderStage[k] !== 0 && shaderStage[k] !== "0";   // torch / loop default on
+/* ONE LIVE VIEWER. The iframe is created once per visit and reused across
+ * pages: ‹ › posts shaders:open into it and mountView keeps it in the
+ * document (no reload). If it does reload anyway (no moveBefore, a hard
+ * refresh), shaders:ready reconciles the id and the settings. */
 let shaderFrame = null;                  // { id, el }
-function shaderViewerUrl(id, level) {
+function shaderViewerUrl(id) {
   const u = new URL("shaders/viewer/index.html", ROOT);
   u.searchParams.set("embed", "1");
   u.searchParams.set("id", id);
-  u.searchParams.set("level", String(level));
+  u.searchParams.set("level", String(shaderLevel()));
+  for (const k of SHADER_STAGE_KEYS) {
+    if (k === "level" || shaderStage[k] === undefined || shaderStage[k] === null) continue;
+    const v = shaderStage[k];
+    u.searchParams.set(k, typeof v === "boolean" ? (v ? "1" : "0") : String(v));
+  }
   return u.href;
+}
+function shaderPost(msg) {
+  const w = shaderFrame?.el?.contentWindow;
+  if (w) { try { w.postMessage(msg, location.origin); } catch { /* not loaded yet */ } }
+}
+/** A stage setting moved on one of the wiki's own controls: kept, sent, and
+ *  the controls repaint when the viewer echoes it back. */
+function shaderSet(patch) { shaderKeepStage(patch); shaderPost({ type: "shaders:set", state: patch }); shaderRepaint(); }
+/** The bodies the stage can cast with and at — the viewer's own list
+ *  (shaders/viewer/bodies.js, beside the viewer the catalog names), so the
+ *  wiki never offers a monster the stage cannot load. Absent until it loads
+ *  or if it cannot: then the monster row shows the stage's pick as text. */
+let shaderBodies = null, shaderBodiesP = null;
+function loadShaderBodies() {
+  if (shaderBodiesP) return shaderBodiesP;
+  shaderBodiesP = import(new URL("shaders/viewer/bodies.js", ROOT).href)
+    .then((m) => { shaderBodies = { heroes: m.HEROES ?? {}, monsters: m.MONSTERS ?? {} }; shaderRepaint(); })
+    .catch(() => { shaderBodies = null; });
+  return shaderBodiesP;
 }
 function shaderTuneEntry(key) { return state.tuning.shaders?.overrides?.[key] ?? null; }
 /** The live overrides table as the viewer wants it: values only, no bookkeeping. */
@@ -14138,9 +14199,11 @@ function shaderTuningTable() {
   }
   return out;
 }
-/** A shaders:tune from the viewer: keep what differs from the default, the
- *  defaults it replaced as `was`, and delete the entry when it is back to
- *  default — absent means default (the contract). */
+/** A tuning change (the wiki's slider, or the viewer's own when it is shown
+ *  standalone): keep what differs from the default, the defaults it replaced
+ *  as `was`, and delete the entry when it is back to default — absent means
+ *  default (the contract). touch() runs AFTER the entry changed, so a
+ *  deletion is recorded as one and the save sends it. */
 function applyShaderTune(msg) {
   const t = state.tuning.shaders ?? (state.tuning.shaders = { format: "pixel-wiki-tuning-shaders@1", updated_at: "", overrides: {} });
   const values = msg.values ?? {}, defaults = msg.defaults ?? {};
@@ -14153,21 +14216,255 @@ function applyShaderTune(msg) {
   touch("tuning/shaders", msg.key);
   markDirty("tuning/shaders");
 }
+const shaderTuneDefaults = (e) => Object.fromEntries(Object.entries(e.tune ?? {}).map(([k, s]) => [k, s.def]));
+function shaderPostTuning() { shaderPost({ type: "shaders:tuning", table: shaderTuningTable() }); }
+let shaderTunePaint = null;
+function shaderTuneSet(e, k, v) {
+  const defaults = shaderTuneDefaults(e);
+  const cur = { ...(shaderTuningTable()[e.key] ?? {}) };
+  if (JSON.stringify(v) === JSON.stringify(defaults[k])) delete cur[k]; else cur[k] = v;
+  applyShaderTune({ key: e.key, values: cur, defaults });
+  shaderPostTuning();
+  shaderTunePaint?.();
+}
+
+/* ---- the embed shows the stage only -------------------------------------
+ * The viewer's page carries its own controls for standalone use; embedded,
+ * the wiki draws them, so they must not show twice. The iframe is same-origin
+ * (the contract: the stage takes messages from its parent on the same origin
+ * only), so the wiki can style the embedded document itself until viewer.css
+ * hides them under body.embed. Another origin, or a viewer that has moved its
+ * classes, degrades to the viewer's full page — never to a broken one. The
+ * iframe is then sized to the stage, so the page scrolls as one. */
+const SHADER_STAGE_ONLY_CSS = [
+  ".bar, .stage-col > :not(.stage-wrap), .side-col { display: none !important; }",
+  ".layout { grid-template-columns: minmax(0, 1fr) !important; gap: 0 !important; }",
+  ".stage-wrap { position: static !important; border-radius: 0 !important; box-shadow: none !important; }",
+  "#app { padding: 0 !important; max-width: none !important; }",
+  "body { background: #141619 !important; }",
+].join("\n");
+function shaderTrimEmbed() {
+  let win, doc;
+  try { win = shaderFrame?.el?.contentWindow; doc = win?.document; } catch { return; }
+  if (!doc?.head || !doc.body) return;
+  if (!doc.getElementById("wiki-stage-only")) {
+    const st = doc.createElement("style");
+    st.id = "wiki-stage-only";
+    st.textContent = SHADER_STAGE_ONLY_CSS;
+    doc.head.append(st);
+    win.dispatchEvent(new Event("resize"));            // the viewer refits its canvas to the widened column
+    const wrap = doc.getElementById("stage-wrap");
+    if (wrap && win.ResizeObserver) new win.ResizeObserver(() => shaderFitFrame()).observe(wrap);
+  }
+  shaderFitFrame();
+  setTimeout(shaderFitFrame, 260);                     // after the viewer's debounced refit
+}
+function shaderFitFrame() {
+  let doc;
+  try { doc = shaderFrame?.el?.contentDocument; } catch { return; }
+  const wrap = doc?.getElementById("stage-wrap") ?? doc?.querySelector("canvas");
+  const hgt = wrap?.getBoundingClientRect().height ?? 0;
+  if (hgt > 40 && shaderFrame?.el) shaderFrame.el.style.height = `${Math.ceil(hgt)}px`;
+}
+
+/* ---- the timeline: when each sound can play ------------------------------
+ * The stage posts the whole schedule on every play (shaders:timeline: events
+ * with their index and time from the cast, plus the effect's sound slots)
+ * and each moment as it fires (shaders:event). The wiki draws it the way the
+ * shader agent's page does — the caster's clip frames with the key frame lit,
+ * a mark per moment, the channel bed of a sustained effect, a playhead — and
+ * makes it its own: the sound picker per slot, and the bound sound played
+ * the instant the moment fires. */
+let shaderTl = null;                     // the last shaders:timeline: { id, key, events, sounds }
+let shaderTlEl = null, shaderHeadEl = null;
+const shaderHead = { t0: 0, offset: 0, raf: 0 };
+const SHADER_EV_CLASS = { cast: "ev-cast", release: "ev-rel", impact: "ev-imp", hit: "ev-imp", peak: "ev-imp", hop: "ev-imp", start: "ev-sus", stop: "ev-sus", end: "ev-end" };
+const shaderTlEnd = (tl) => Math.max(0.5, ...tl.events.map((x) => Number(x.t) || 0));
+function shaderHeadStart(t) {
+  shaderHead.t0 = performance.now(); shaderHead.offset = t;
+  if (!shaderHead.raf) shaderHead.raf = requestAnimationFrame(shaderHeadTick);
+}
+function shaderHeadTick() {
+  shaderHead.raf = 0;
+  if (!shaderTl || !shaderHeadEl?.isConnected) return;
+  const t = shaderHead.offset + ((performance.now() - shaderHead.t0) / 1000) * shaderSpeed();
+  const end = shaderTlEnd(shaderTl);
+  shaderHeadEl.style.left = `${Math.min(100, (t / end) * 100).toFixed(2)}%`;
+  if (t <= end + 0.25) shaderHead.raf = requestAnimationFrame(shaderHeadTick);
+}
+function paintShaderTimeline() {
+  const box = shaderTlEl;
+  if (!box) return;
+  const e = shaderById(shaderFrame?.id);
+  const tl = shaderTl && e && shaderTl.id === e.id ? shaderTl : null;
+  if (!tl) { shaderHeadEl = null; box.replaceChildren(h("p", { class: "muted tl-wait" }, "The moments appear when the effect plays…")); return; }
+  const end = shaderTlEnd(tl);
+  const pct = (t) => `${Math.max(0, Math.min(100, (t / end) * 100)).toFixed(2)}%`;
+  const track = h("div", { class: "tl-track" });
+  const loopSlot = tl.sounds.find((s) => s.loop);
+  const rel = tl.events.find((x) => x.event === "release"), stp = tl.events.find((x) => x.event === "stop");
+  if (loopSlot && rel) track.append(h("span", { class: "tl-bed", title: `${loopSlot.label} — a loop from the release to the stop`,
+    style: `left:${pct(rel.t)};width:${pct((stp ? stp.t : end) - rel.t)}` }));
+  const ca = e.stage?.caster && e.stage?.anim ? shaderCatalog?.cast_anims?.[e.stage.anim] : null;
+  if (ca) {
+    const n = ca.frames || 4, fps = ca.fps || n / (ca.seconds || 0.7);
+    const key = ca.key ?? Math.floor(n * (ca.keyAt ?? 0.5));
+    track.append(h("div", { class: "tl-frames", title: "the caster's clip; the lit frame is the key frame — the spell leaves on it" },
+      ...Array.from({ length: n }, (_, i) => h("i", { class: `fr${i === key ? " key" : ""}`, style: `left:${pct(i / fps)};width:${pct(1 / fps)}` }))));
+  }
+  for (const x of tl.events) {
+    if (x.event === "end") continue;
+    track.append(h("b", { class: `tl-mark ${SHADER_EV_CLASS[x.event] ?? ""}`, "data-event": x.event, "data-index": String(x.index ?? 0),
+      style: `left:${pct(x.t)}`, title: `${x.event}${x.index ? ` ${x.index + 1}` : ""} · ${Number(x.t).toFixed(2)} s` }));
+  }
+  shaderHeadEl = h("span", { class: "tl-head" });
+  track.append(shaderHeadEl);
+  const slots = tl.sounds.map((s) => {
+    const at = tl.events.filter((x) => x.event === s.event);
+    const when = s.loop ? `${(rel?.t ?? 0).toFixed(2)}–${stp ? Number(stp.t).toFixed(2) : "…"} s` : `${at.map((x) => Number(x.t).toFixed(2)).join(", ")} s`;
+    return h("li", { class: "tl-slot", "data-slot": s.slot },
+      h("span", { class: `tl-sw ${s.loop ? "ev-sus" : SHADER_EV_CLASS[s.event] ?? ""}` }),
+      h("span", { class: "tl-label" }, s.label, !s.loop && at.length > 1 ? h("em", {}, ` ×${at.length}`) : null),
+      h("span", { class: "tl-when" }, when),
+      h("code", {}, s.sound_event),
+      shaderBindRow(e, s));
+  });
+  box.replaceChildren(track,
+    h("div", { class: "tl-scale" }, h("span", {}, "0"), h("span", {}, `${end.toFixed(2)} s`)),
+    h("ul", { class: "tl-slots" }, ...slots));
+  shaderHeadTick();
+}
+/* ---- the sounds of the moments -------------------------------------------
+ * What plays when the stage says a moment fired: the event the composer has
+ * wired (state.data.sfx.events, by the slot's sound_event), else the newest
+ * take he queued for it (sfx_requests), else nothing. Played BESIDE whatever
+ * is sounding — a volley's three releases overlap in the game — and a channel
+ * slot loops from its release until the stage's channel-end. */
+const SHADER_SFX_KEY = "wiki-shader-sfx";
+const shaderSfxOn = () => { try { return localStorage.getItem(SHADER_SFX_KEY) !== "0"; } catch { return true; } };
+const shaderLoops = new Map();           // sound_event -> the looping source
+const shaderWired = (ev) => (state.data.sfx?.events ?? []).find((x) => x.id === ev && x.sounds?.length) ?? null;
+const shaderRequests = (ev) => Object.entries(state.tuning.sfx_requests?.requests ?? {}).filter(([, r]) => r?.event === ev)
+  .sort((a, b) => String(b[1].requested_at ?? "").localeCompare(String(a[1].requested_at ?? "")));
+async function shaderPlayRaw(file, { rate = 1, gainDb = 0, loop = false } = {}) {
+  const got = await sfxEngine.buffer(file);
+  if (!got) return null;
+  const ctx = sfxEngine.ac();
+  const src = ctx.createBufferSource();
+  src.buffer = got.buf; src.playbackRate.value = rate; src.loop = loop;
+  const g = ctx.createGain();
+  g.gain.value = Math.pow(10, gainDb / 20);
+  src.connect(g); g.connect(ctx.destination);
+  sfxEngine.track(src);
+  src.start();
+  sfxPlays.push({ file: got.file, rate: +Number(rate).toFixed(4), db: +Number(gainDb).toFixed(2), lowpassHz: null, raw: true, loop });
+  return src;
+}
+function shaderStopLoops() { for (const s of shaderLoops.values()) { try { s.stop(); } catch { /* already ended */ } } shaderLoops.clear(); }
+async function shaderPlaySlot(slot) {
+  if (!shaderSfxOn()) return;
+  const ev = shaderWired(slot.sound_event);
+  const req = shaderRequests(slot.sound_event)[0]?.[1] ?? null;
+  if (slot.loop) {
+    const old = shaderLoops.get(slot.sound_event);
+    if (old) { try { old.stop(); } catch { /* already ended */ } shaderLoops.delete(slot.sound_event); }
+    const file = ev ? ev.sounds[0]?.takes?.[0]?.file : req?.take;
+    if (!file) return;
+    const src = await shaderPlayRaw(file, { rate: req?.pitch ?? 1, gainDb: req?.volume_db ?? 0, loop: true });
+    if (!src) return;
+    shaderLoops.set(slot.sound_event, src);
+    src.addEventListener("ended", () => { if (shaderLoops.get(slot.sound_event) === src) shaderLoops.delete(slot.sound_event); }, { once: true });
+    return;
+  }
+  if (ev) {
+    const list = ev.rotates ? [ev.sounds[Math.floor(Math.random() * ev.sounds.length)]] : ev.sounds;
+    for (const l of list) void sfxEngine.playLayer(l, { solo: false });
+    return;
+  }
+  if (req?.take) void shaderPlayRaw(req.take, { rate: req.pitch ?? 1, gainDb: req.volume_db ?? 0 });
+}
+/** Under a slot: what is bound to it (wired by the composer, or queued by
+ *  him) and the picker that binds one. */
+function shaderBindRow(e, s) {
+  const ev = shaderWired(s.sound_event);
+  const reqs = state.admin ? shaderRequests(s.sound_event) : [];
+  const kids = [];
+  if (ev) kids.push(
+    h("span", { class: "pill ok", title: "Assigned and wired — the game plays this at this moment" }, "in game"),
+    h("button", { class: "play-btn", "aria-label": "play the bound sound", onclick: () => sfxEngine.playEvent(ev) }, "▶"),
+    h("span", { class: "muted" }, ev.sounds.map((l) => l.label ?? l.set ?? l.soundId ?? "").join(" + ")));
+  for (const [id, r] of reqs) kids.push(
+    h("span", { class: "pill warn", title: "Queued for the composer agent — Commit sends it; the wiki previews it here meanwhile" }, "requested"),
+    h("button", { class: "play-btn", "aria-label": "play the requested take", onclick: () => void shaderPlayRaw(r.take, { rate: r.pitch ?? 1, gainDb: r.volume_db ?? 0 }) }, "▶"),
+    h("span", { class: "take-name" }, `${reqSound(r)} · ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB`),
+    h("button", { class: "x-btn", title: "withdraw this request", onclick: () => { setSfxRequest(id, null); paintShaderTimeline(); } }, "✕"));
+  if (state.admin) kids.push(assignSoundBtn(!!ev || reqs.length > 0, () => openSoundPicker({
+    title: `Assign a sound to ${e.name} · ${s.label}`,
+    forWhat: `Plays at this moment of the effect (${s.sound_event}). The wiki previews it in sync on the next play; the composer agent wires it into the game.`,
+    onPick: (req) => {
+      setSfxRequest(`${s.sound_event}/${Date.now().toString(36)}`, {
+        event: s.sound_event, scope: { domain: "shaders", id: e.id }, slot: s.slot, loop: !!s.loop, ...req,
+        requested_at: new Date().toISOString(),
+      });
+      toast("Request queued — Commit sends it to the composer. It previews here on the next play.");
+      paintShaderTimeline();
+    },
+  })));
+  return kids.length ? h("span", { class: "tl-bind" }, ...kids) : null;
+}
+
+/* ---- the stage's messages ------------------------------------------------ */
+const shaderDebug = { events: [], stage: () => shaderStage, tl: () => shaderTl, frame: () => shaderFrame?.el ?? null };
+window.__nfxWiki = shaderDebug;
 window.addEventListener("message", (e) => {
   if (e.origin !== location.origin || !shaderFrame || e.source !== shaderFrame.el.contentWindow) return;
   const d = e.data ?? {};
   if (d.type === "shaders:ready") {
-    shaderFrame.el.contentWindow.postMessage({ type: "shaders:tuning", table: shaderTuningTable() }, location.origin);
+    // A reload (a re-render re-inserted the iframe) comes back with the src's
+    // settings; the page's are the truth, so re-assert what differs, and the
+    // effect this page is about.
+    const have = d.state ?? {};
+    const diff = {};
+    for (const k of SHADER_STAGE_KEYS) if (shaderStage[k] !== undefined && String(have[k]) !== String(shaderStage[k])) diff[k] = shaderStage[k];
+    if (have.id && shaderFrame.id && have.id !== shaderFrame.id) shaderPost({ type: "shaders:open", id: shaderFrame.id, ...diff });
+    else if (Object.keys(diff).length) shaderPost({ type: "shaders:set", state: diff });
+    else shaderKeepStage(have);
+    shaderPost({ type: "shaders:tuning", table: shaderTuningTable() });
     sendShaderGround();
+    shaderTrimEmbed();
+    shaderRepaint();
+  } else if (d.type === "shaders:state" && d.state) {
+    shaderKeepStage(d.state);
+    shaderRepaint();
   } else if (d.type === "shaders:tune" && state.admin && d.key) {
     applyShaderTune(d);
+    shaderTunePaint?.();
   } else if (d.type === "shaders:selected" && d.id && d.id !== shaderFrame.id) {
-    // He picked another effect inside the viewer: follow it, keep the frame.
+    // He picked another effect inside the stage: follow it, keep the frame.
     shaderFrame.id = d.id;
+    shaderTl = null;
     history.replaceState(null, "", shaderHref(d.id));
     keepScrollY = window.scrollY; route();
+  } else if (d.type === "shaders:timeline" && Array.isArray(d.events)) {
+    shaderTl = { id: d.id, key: d.key, events: d.events, sounds: d.sounds ?? [], at: performance.now() };
+    shaderStopLoops();                                  // a new play starts clean
+    shaderHeadStart(0);
+    paintShaderTimeline();
+  } else if (d.type === "shaders:event") {
+    shaderDebug.events.push({ event: d.event, index: d.index, t: d.t, at: performance.now() });
+    if (shaderDebug.events.length > 400) shaderDebug.events.splice(0, 200);
+    shaderHeadStart(Number(d.t) || 0);                  // the stage's clock wins over ours
+    const mk = shaderTlEl?.querySelector(`.tl-mark[data-event="${CSS.escape(String(d.event))}"][data-index="${Number(d.index) || 0}"]`);
+    if (mk) { mk.classList.add("hit"); setTimeout(() => mk.classList.remove("hit"), 260); }
+    if (d.event === "channel-end") {
+      for (const s of d.slots ?? []) { const l = shaderLoops.get(s.sound_event); if (l) { try { l.stop(); } catch { /* ended */ } shaderLoops.delete(s.sound_event); } }
+    } else for (const s of d.slots ?? []) void shaderPlaySlot(s);
   }
 });
+window.addEventListener("hashchange", () => {
+  if (!location.hash.startsWith("#/items/shaders/")) { shaderStopLoops(); shaderTl = null; }
+});
+
 /* THE GROUND UNDER THE SPELL IS THE GAME'S GROUND (maintainer 2026-09-26:
  * "we also need tiles under the player so it looks more like a world. Use the
  * base tile set for this and let me be able to switch ground type by pressing
@@ -14181,8 +14478,8 @@ window.addEventListener("message", (e) => {
  * member per cell drawn by the members' own weights, the clean plate being a
  * member like any other. Seeded by the ground, so a ground looks the same every
  * visit and ‹ › back to it shows the same floor. The viewer only paints the
- * plan (message `shaders:ground`, spec on the shaders board); no second copy
- * of the weighting logic exists to drift. */
+ * plan (message `shaders:ground`, the contract); no second copy of the
+ * weighting logic exists to drift. */
 const SHADER_GROUND_KEY = "wiki-shader-ground";
 const SHADER_GRID = 16;                  // 16x16 picks, wrapped over the viewer's floor
 /** The set a ground draws from: the highest weight that can draw at all. */
@@ -14268,43 +14565,216 @@ function shaderGroundStepper() {
     sendShaderGround();
   };
   paint();
-  return h("div", { class: "shader-ground" },
-    h("span", { class: "muted" }, "Ground"),
+  return h("div", { class: "shader-row shader-ground" },
+    h("span", { class: "shader-label" }, "Ground"),
     h("button", { class: "nav-btn", type: "button", "aria-label": "Previous ground", onclick: () => step(-1) }, "‹"),
     label,
     h("button", { class: "nav-btn", type: "button", "aria-label": "Next ground", onclick: () => step(1) }, "›"));
 }
+
+/* ---- the wiki's controls -------------------------------------------------
+ * Each control reads the kept stage state and registers a paint(), so the
+ * viewer's echo (shaders:state) repaints them all; a slider under his finger
+ * is left alone until he lets go. */
+let shaderPaints = [];
+function shaderRepaint() { for (const f of shaderPaints) { try { f(); } catch { /* a control of a page that is gone */ } } }
+const SHADER_PHASES = ["Night", "Morning", "Day", "Evening"];   // the game's TIME_PHASES, 0-4 on its clock
+const shaderPhase = (u) => SHADER_PHASES[Math.floor((((Number(u) || 0) % 4) + 4) % 4)];
+function shaderSeg(options, get, set, cls = "") {
+  const box = h("div", { class: `seg ${cls}`.trim(), role: "radiogroup" });
+  for (const [v, label, title] of options) box.append(h("button", { type: "button", "data-v": String(v), title, onclick: () => set(v) }, label));
+  const paint = () => { for (const b of box.children) b.classList.toggle("on", b.dataset.v === String(get())); };
+  paint(); shaderPaints.push(paint);
+  return box;
+}
+function shaderRange({ id, min, max, step, get, set, label, fmt = String }) {
+  const inp = h("input", { type: "range", id, min: String(min), max: String(max), step: String(step), value: String(get()), "aria-label": label });
+  const out = h("output", { for: id }, fmt(get()));
+  let held = false;
+  inp.addEventListener("pointerdown", () => { held = true; });
+  for (const ev of ["pointerup", "pointercancel", "blur"]) inp.addEventListener(ev, () => { held = false; });
+  inp.addEventListener("input", () => { out.textContent = fmt(Number(inp.value)); set(Number(inp.value)); });
+  shaderPaints.push(() => { if (!held && document.activeElement !== inp) inp.value = String(get()); out.textContent = fmt(get()); });
+  return { inp, out };
+}
+function shaderToggle(label, get, set, title) {
+  const inp = h("input", { type: "checkbox", title });
+  inp.checked = !!get();
+  inp.addEventListener("change", () => set(inp.checked));
+  shaderPaints.push(() => { inp.checked = !!get(); });
+  return h("label", { class: "shader-tog", title }, inp, ` ${label}`);
+}
+/** The tunables from the catalog schema (type color | range | bool | select),
+ *  applied when he lets go — the stage recasts with the value — and saved
+ *  by the save bar for the game. */
+function shaderTunePanel(e) {
+  const specs = Object.entries(e.tune ?? {});
+  if (!specs.length) return null;
+  const rows = h("div", { class: "shader-tune" });
+  const valueLabel = (spec, v) => spec.type === "range" ? Number(v).toFixed((spec.step ?? 0.01) < 0.1 ? 2 : spec.step < 1 ? 1 : 0) : spec.type === "color" ? String(v) : "";
+  const paint = () => {
+    const cur = shaderTuningTable()[e.key] ?? {};
+    rows.replaceChildren(...specs.map(([k, spec]) => {
+      const v = cur[k] ?? spec.def;
+      const id = `shader-t-${k}`;
+      const row = h("div", { class: `row${k in cur ? " changed" : ""}`, "data-tune": k });
+      const out = h("span", { class: "val" }, valueLabel(spec, v));
+      let inp;
+      if (spec.type === "select") { inp = h("select", { id }, ...(spec.options ?? []).map((o) => h("option", { value: o }, o))); inp.value = v; }
+      else if (spec.type === "bool") { inp = h("input", { id, type: "checkbox" }); inp.checked = !!v; }
+      else if (spec.type === "color") { inp = h("input", { id, type: "color" }); inp.value = v; }
+      else { inp = h("input", { id, type: "range", min: String(spec.min), max: String(spec.max), step: String(spec.step ?? 0.01) }); inp.value = v; }
+      const read = () => (spec.type === "bool" ? inp.checked : spec.type === "range" ? Number(inp.value) : inp.value);
+      inp.addEventListener("input", () => { out.textContent = valueLabel(spec, read()); });
+      inp.addEventListener("change", () => shaderTuneSet(e, k, read()));
+      row.append(h("label", { for: id }, spec.label || k), inp, out);
+      return row;
+    }));
+  };
+  paint();
+  shaderTunePaint = paint;
+  return h("div", { class: "panel shader-tune-panel" },
+    h("div", { class: "panel-title" }, "Tune",
+      h("span", { class: "muted shader-tune-hint" }, "applied when you let go · Commit saves it for the game"),
+      h("button", { class: "ghost-btn shader-tune-reset", type: "button", title: "Back to the shader agent's defaults",
+        onclick: () => { applyShaderTune({ key: e.key, values: {}, defaults: shaderTuneDefaults(e) }); shaderPostTuning(); paint(); } }, "Reset")),
+    rows);
+}
+/** The shader agent's own words on the effect, and the facts the catalog
+ *  carries — shown here because the stage's copy is hidden in the embed. */
+function shaderNotes(e) {
+  const fam = shaderFamily(e.family);
+  const facts = [["Kind", e.kindLabel ?? e.kind], ["Element", fam?.label ?? e.family]];
+  if (e.speed?.cellsPerSecondAtLevel5) facts.push(["Speed at level 5", `${Number(e.speed.cellsPerSecondAtLevel5).toFixed(1)} cells/s`]);
+  if (e.stage?.caster && e.stage?.anim) {
+    const rel = Array.isArray(e.stage.release) ? e.stage.release[shaderLevel() - 1] : e.stage.release;
+    facts.push(["Cast", `${String(e.stage.anim).replace(/_/g, " ")}, leaves at ${Number(rel ?? 0).toFixed(2)} s`]);
+  }
+  facts.push(["Draws on", [...new Set((e.layers ?? []).map((L) => L.plane))].join(", ") || "—"], ["Light", e.light ? "yes" : "no"]);
+  if (e.sustained) facts.push(["Sustained", "channels until it is stopped"]);
+  return h("div", { class: "panel shader-notes" },
+    e.thinking ? h("div", {}, h("h3", {}, "What the shader agent was thinking"), h("p", {}, e.thinking)) : null,
+    e.levels ? h("div", {}, h("h3", {}, "Levels 1 to 10"), h("p", {}, e.levels)) : null,
+    h("div", { class: "shader-facts" }, ...facts.map(([k, v]) => h("span", {}, `${k} `, h("b", {}, v)))),
+    h("div", { class: "shader-key" }, `${e.key} · v ${e.version ?? "—"}`));
+}
 function viewShader(id) {
   if (!state.admin) { location.hash = "#/items"; return h("div", {}); }
   loadShaderCatalog();
+  loadShaderBodies();
   if (shaderCatalog === undefined) return h("div", {}, h("p", { class: "muted" }, "Loading the shader library…"));
   const e = shaderById(id);
   if (!e) return h("div", {}, crumbRow("#/items/shaders", "← Shaders", "items/shaders", [], id),
     h("p", { class: "muted" }, `No effect "${id}" on this deploy.`));
   const list = shaderEffects();
-  if (!shaderFrame || shaderFrame.id !== e.id) {
-    const el = h("iframe", {
-      class: "shader-frame", src: shaderViewerUrl(e.id, 5), title: `${e.name} — the shader agent's viewer`,
-      allow: "autoplay",
-    });
+  shaderPaints = [];
+  shaderTunePaint = null;
+  if (shaderFrame) {
+    if (shaderFrame.id !== e.id) { shaderTl = null; shaderStopLoops(); }
+    if (shaderFrame.el.isConnected) { if (shaderFrame.id !== e.id) shaderPost({ type: "shaders:open", id: e.id }); }
+    else shaderFrame.el.src = shaderViewerUrl(e.id);   // detached: it loads on insertion, as he left it
+    shaderFrame.id = e.id;
+  } else {
+    const el = h("iframe", { class: "shader-frame", id: "shader-frame", src: shaderViewerUrl(e.id), title: `${e.name} — the shader agent's stage`, allow: "autoplay" });
+    el.addEventListener("load", shaderTrimEmbed);
     shaderFrame = { id: e.id, el };
   }
   const fam = shaderFamily(e.family);
-  const tuned = shaderTuneEntry(e.key);
-  return h("div", {},
+  const S = e.stage ?? {};
+  const hasHero = S.caster === "hero" || S.target === "hero";
+  const hasMonster = S.caster === "monster" || S.target === "monster" || S.at === "target";
+  const heroName = (k) => shaderBodies?.heroes?.[k] ?? (state.data.domains.characters ?? []).find((c) => c.id === k)?.name ?? k;
+  const heroIds = Object.keys(shaderBodies?.heroes ?? shaderCatalog.cast_points?.heroes ?? {});
+  // the timeline
+  shaderTlEl = h("div", { class: "shader-timeline" });
+  const tlPanel = h("div", { class: "panel shader-tl-panel" },
+    h("div", { class: "panel-title" }, "When each sound can play",
+      shaderToggle("play bound sounds", shaderSfxOn, (v) => { try { localStorage.setItem(SHADER_SFX_KEY, v ? "1" : "0"); } catch { /* private mode */ } if (!v) { shaderStopLoops(); sfxEngine.stop(); } },
+        "The sound bound to a moment plays here the instant the stage fires it — the way the game will")),
+    shaderTlEl);
+  // transport
+  const transport = h("div", { class: "shader-transport", role: "group", "aria-label": "Playback" },
+    h("button", { class: "primary-btn shader-replay", type: "button", title: "Cast it again from the start", onclick: () => shaderPost({ type: "shaders:open", id: e.id }) }, "▶ Replay"),
+    shaderToggle("Loop", () => shaderOn("loop"), (v) => shaderSet({ loop: v }), "Cast again when it ends"),
+    shaderSeg([[1, "1×", "Real time"], [0.5, "½×", "Half speed"], [0.25, "¼×", "Quarter speed"]], shaderSpeed, (v) => shaderSet({ speed: v }), "shader-speed"));
+  // level
+  const lv = shaderRange({ id: "shader-level", min: 1, max: 10, step: 1, label: "Skill level", get: shaderLevel, set: (v) => shaderSet({ level: v }) });
+  const levelRow = h("div", { class: "shader-level" }, h("label", { class: "shader-label", for: "shader-level" }, "Level"), lv.inp, lv.out);
+  // time of day + torch
+  const tod = shaderRange({ id: "shader-tod", min: 0, max: 4, step: 0.05, label: "Time of day", fmt: shaderPhase,
+    get: () => (shaderStage.tod === undefined ? 0.5 : Number(shaderStage.tod)), set: (v) => shaderSet({ tod: v }) });
+  const timeRow = h("div", { class: "shader-row shader-time" }, h("label", { class: "shader-label", for: "shader-tod" }, "Time"), tod.inp, tod.out,
+    shaderToggle("Torch", () => shaderOn("torch"), (v) => shaderSet({ torch: v }), "The hero's torch — faded out by day, like the game's"));
+  // who is on stage
+  const heroRow = hasHero && heroIds.length ? h("div", { class: "shader-row shader-hero" }, h("span", { class: "shader-label" }, "Hero"),
+    shaderSeg(heroIds.map((k) => [k, heroName(k)]), () => shaderStage.hero ?? heroIds[0], (v) => shaderSet({ hero: v }))) : null;
+  let monsterRow = null;
+  if (hasMonster) {
+    const sel = h("select", { "aria-label": "Monster" });
+    const txt = h("span", { class: "muted" });
+    sel.addEventListener("change", () => shaderSet({ monster: sel.value }));
+    const paint = () => {
+      const cur = shaderStage.monster;
+      if (shaderBodies?.monsters && Object.keys(shaderBodies.monsters).length) {
+        if (!sel.options.length) for (const [k, label] of Object.entries(shaderBodies.monsters)) sel.append(h("option", { value: k }, label));
+        sel.hidden = false; txt.hidden = true;
+        if (cur && [...sel.options].some((o) => o.value === cur)) sel.value = cur;
+      } else { sel.hidden = true; txt.hidden = false; txt.textContent = cur ? String(cur).replace(/_/g, " ") : "the stage's pick"; }
+    };
+    paint(); shaderPaints.push(paint);
+    monsterRow = h("div", { class: "shader-row shader-monster" }, h("label", { class: "shader-label" }, "Monster"), sel, txt);
+  }
+  // the volley
+  let volleyRow = null;
+  const forms = e.volley?.formations ?? [];
+  if (forms.length) {
+    const about = h("p", { class: "muted shader-about" });
+    const formSeg = shaderSeg(forms.map((k) => [k, shaderCatalog.formations?.[k]?.label ?? k, shaderCatalog.formations?.[k]?.about]),
+      () => (forms.includes(shaderStage.formation) ? shaderStage.formation : forms[0]), (v) => shaderSet({ formation: v }), "shader-formation");
+    const countSeg = shaderSeg([1, 2, 3, 4, 5, 6].map((n) => [n, n === 1 ? "1" : `×${n}`, n === 1 ? "One" : `${n} in formation — every copy fires its own release and impact`]),
+      () => Number(shaderStage.count) || 1, (v) => shaderSet({ count: v }), "shader-count");
+    const paint = () => {
+      const n = Number(shaderStage.count) || 1;
+      formSeg.hidden = n < 2;
+      const f = forms.includes(shaderStage.formation) ? shaderStage.formation : forms[0];
+      about.textContent = n > 1 ? (shaderCatalog.formations?.[f]?.about ?? "") : "";
+      about.hidden = n < 2;
+    };
+    paint(); shaderPaints.push(paint);
+    volleyRow = h("div", { class: "shader-row shader-volley" }, h("span", { class: "shader-label" }, "Volley"), countSeg, formSeg, about);
+  }
+  // The stage's slot: the live iframe is moved in by mountView (no reload);
+  // a first visit, or a browser without moveBefore, appends it here.
+  const stageSlot = h("div", { class: "shader-stage", "data-keep": "shader-frame" });
+  if (!shaderFrame.el.isConnected) stageSlot.append(shaderFrame.el);
+  const root = h("div", { class: "shader-page",
+    // the audio context needs a gesture on his phone; any touch on the page is one
+    onpointerdown: () => { if (shaderSfxOn()) { try { void sfxEngine.ac().resume(); } catch { /* no audio */ } } } },
     crumbRow("#/items/shaders", "← Shaders", "items/shaders", list.map((x) => ({ id: encodeURIComponent(x.id), name: x.name })), encodeURIComponent(e.id)),
-    h("h1", { class: "shader-title" }, e.name),
-    h("p", { class: "muted" }, `${fam?.label ?? e.family} · ${e.kindLabel ?? e.kind}${e.category ? ` · ${e.category}` : ""}${(e.tags ?? []).length ? ` · ${e.tags.join(", ")}` : ""}`),
-    h("div", { class: "shader-stage" }, shaderFrame.el),
-    shaderGrounds().length ? shaderGroundStepper() : null,
+    h("div", { class: "shader-head" },
+      h("span", { class: "shader-fam", style: `--fam:${fam?.color ?? "var(--muted)"}` }),
+      h("h1", { class: "shader-title" }, e.name),
+      h("span", { class: "shader-kind" }, e.kindLabel ?? e.kind),
+      shaderStale(e) ? h("span", { class: "pill warn", title: "The effect's code changed after your verdict — judge it again" }, "changed since your verdict") : null),
+    h("p", { class: "muted shader-meta" }, `${fam?.label ?? e.family}${e.category ? ` · ${e.category}` : ""}${(e.tags ?? []).length ? ` · ${e.tags.join(", ")}` : ""}`),
+    stageSlot,
+    tlPanel,
+    transport,
     feedbackRow("shaders", e.key, {
+      stamp: { version: e.version },
+      stale: () => shaderStale(e),
       redo: { label: "↻ redo", title: "Ask the shader agent for another take of this effect — your note says what to change", doneLabel: "redo asked", clearsRating: true },
     }),
-    // The viewer shows the agent's own "what I was thinking" and the level
-    // notes under its stage, so the page does not repeat them; what is
-    // pending is the save bar's to say.
-    tuned ? h("p", { class: "muted" },
-      `Committed tuning: ${Object.keys(tuned).filter((k) => k !== "was" && k !== "updated_at").join(", ")} — the viewer starts from these.`) : null);
+    levelRow,
+    timeRow,
+    shaderGrounds().length ? shaderGroundStepper() : null,
+    heroRow,
+    monsterRow,
+    volleyRow,
+    shaderTunePanel(e),
+    shaderNotes(e));
+  paintShaderTimeline();
+  return root;
 }
 function viewItem(id) {
   const all = itemOrder();
@@ -15231,6 +15701,31 @@ function measureCrumb() {
   const crumb = $(".crumb-row")?.getBoundingClientRect().height;
   if (crumb) document.documentElement.style.setProperty("--crumb-h", `${Math.ceil(crumb)}px`);
 }
+/* A VIEW MAY KEEP A LIVE ELEMENT ACROSS RE-RENDERS. replaceChildren() removes
+ * the old tree, and an iframe removed from the document and inserted again
+ * RELOADS (its browsing context is torn down) — so every Commit and every
+ * ‹ › reloaded the Shaders page's WebGL stage, ~2 s of black each time. A
+ * view that wants an element to survive renders an empty slot carrying
+ * `data-keep="<id>"`; the element with that id, live in the old tree, is
+ * MOVED into the slot with moveBefore() (Chrome 133+ / Firefox 144+: an atomic
+ * move that preserves iframe state, focus and animations) while both are in
+ * the document — the new view goes in first, the old comes out last. Without
+ * moveBefore the element is appended the ordinary way, which reloads it, and
+ * the view's own reconcile must bring its state back (the Shaders page does,
+ * on shaders:ready). */
+function mountView(view) {
+  const content = $("#content");
+  const slots = [...view.querySelectorAll("[data-keep]")];
+  const live = slots.map((slot) => [slot, document.getElementById(slot.dataset.keep)]).filter(([, el]) => el && el.isConnected);
+  if (!live.length) { content.replaceChildren(view); return; }
+  const old = [...content.children];
+  content.append(view);
+  for (const [slot, el] of live) {
+    if (typeof slot.moveBefore === "function") { try { slot.moveBefore(el, null); continue; } catch { /* not movable here: fall through */ } }
+    slot.append(el);
+  }
+  for (const o of old) o.remove();
+}
 function route() {
   destroyPlayers();
   stopAllAudio();   // both players: a long audition used to survive the nav
@@ -15279,7 +15774,7 @@ function route() {
   // #/bench was its own section for a day; keep the link alive as the tab.
   else if (page === "bench") { if (state.admin) musicTab = "dynamic"; view = state.admin ? viewMusic() : viewHome(); }
   else view = viewHome();
-  $("#content").replaceChildren(view);
+  mountView(view);
   measureCrumb();
   renderNav();
   closeMenuForNav();
