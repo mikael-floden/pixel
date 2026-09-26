@@ -63,7 +63,7 @@ try {
     }
   }
   const settle = async (pg) => {
-    for (let t0 = Date.now(), calm = 0; Date.now() - t0 < 90000; ) {
+    for (let t0 = Date.now(), calm = 0; Date.now() - t0 < +(process.env.SETTLE_MS || 900000); ) {
       const o = await pg.evaluate(() => { const g = window.__ml.groundScroll(); return g.drain.bOwed + g.drain.dOwed + g.ring.missing + g.drain.owed; });
       calm = o === 0 ? calm + 1 : 0;
       if (calm >= 4) return true;
