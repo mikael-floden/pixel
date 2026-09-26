@@ -99,8 +99,15 @@ ICONS = {
 # spin rather than a seam. The strip IS the quarter turn. `keep` stays as a
 # parameter because a future export may need aiming — but trimming a closed
 # loop for smoothness is the one thing it cannot do.
+# THE CROP is one box for EVERY frame (a per-frame trim would jitter the art),
+# and it must hold every frame's ink — asserted, so a re-export that grows past
+# it fails here instead of losing pixels. His cube (2026-09-26, "I did the new
+# cube bigger because the old cube wasn't big enough") is a 64x64 export whose
+# ink, over all 9 frames, is 38x43 centred: 44x44 keeps all of it at TRUE PIXEL
+# SIZE (natural/2 = 44 pt in the bar), which is the size he chose.
+#   name -> (source, frames kept, crop box (l, u, r, b) or None)
 STRIPS = {
-    "spin-orb": ("spin-orb-src.gif", 9),
+    "spin-orb": ("spin-orb-src.gif", 9, (10, 10, 54, 54)),
 }
 
 
@@ -187,7 +194,7 @@ def main() -> int:
         else:
             tmp.unlink()
 
-    for name, (srcname, keep) in STRIPS.items():
+    for name, (srcname, keep, crop) in STRIPS.items():
         gif = Image.open(SRC / srcname)
         n = getattr(gif, "n_frames", 1)
         if keep > n:
@@ -212,6 +219,21 @@ def main() -> int:
             print(f"FAIL {name}: the source frames are not all {w}x{h}")
             bad += 1
             continue
+        if crop:
+            l, u, r, b = crop
+            if r - l != b - u:
+                # the spin bar reads its frame count as naturalWidth / naturalHeight
+                print(f"FAIL {name}: the crop {crop} is not square — the frame count is read as width / height")
+                bad += 1
+                continue
+            inks = [f.getbbox() for f in frames]
+            lost = [i for i, bb in enumerate(inks) if bb and (bb[0] < l or bb[1] < u or bb[2] > r or bb[3] > b)]
+            if lost:
+                print(f"FAIL {name}: the crop {crop} cuts ink off frame(s) {lost} (ink {[inks[i] for i in lost]})")
+                bad += 1
+                continue
+            frames = [f.crop(crop) for f in frames]
+            w, h = frames[0].size
         out = Image.new("RGBA", (w * 2 * len(frames), h * 2), (0, 0, 0, 0))
         for i, f in enumerate(frames):
             out.paste(bake(f), (i * w * 2, 0))

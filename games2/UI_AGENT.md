@@ -89,8 +89,9 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   side the analog stick lives on, and in landscape which side the whole menu
   column takes. localStorage `ml-hand` + the "ml-hand" event; consumed by
   hud.ts (applyLayout + the Settings "controls" button) and gamepad.ts.
-- `client/src/spinbar.ts` — THE SPIN BAR: his rotating orb between two arrow
-  buttons, on the line directly under the HP/EP card, with the Report button
+- `client/src/spinbar.ts` — THE SPIN BAR: his rotating cube (the orb until
+  2026-09-26) between two arrow buttons, on the line directly under the HP/EP
+  card, with the Report button
   one step below it (maintainer 2026-09-26). It SPANS THE CARD — `--bars-l-w`
   is the card's measured outer width, so the left button lands on the card's
   left edge and the right button on its right, and the orb centres between
@@ -118,9 +119,17 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   on frame 0. `verify-spinbar` counts his source GIF's own Graphic Control
   Extension blocks and requires the strip to carry every one.
   The count is read from the art (`naturalWidth / naturalHeight`), so a
-  re-aimed bake needs no code change, and `background-size:auto 32px` is
-  natural/2 for any exact-2x bake, so the first paint is already on the grid
-  and nothing waits on a probe.
+  re-aimed bake needs no code change. **HIS CUBE IS AT TRUE PIXEL SIZE**
+  (maintainer 2026-09-26: "I did the new cube bigger because the old cube
+  wasn't big enough" — one art pixel per point, chosen over the orb's 32 pt
+  slot): the bake crops his 64x64 export to the 44x44 that holds EVERY frame's
+  ink (asserted — a re-export that grows past it fails the bake) and doubles it,
+  so `ORB` 44 is natural/2, the box, the frame step and `background-size`; the
+  first paint is on the grid and nothing waits on a probe. The ROW is the
+  taller of the cube and a button (44), the arrows centre on it, and
+  `--ml-spin-step` follows, so Report drops with it. A re-export of another
+  size changes the crop and `ORB` together; `verify-spinbar` checks natural/2
+  against the decoded strip.
   **THE TARGET IS BIGGER THAN THE BUTTON**: 25% on both axes (34 -> 42.5),
   because these get pressed constantly and a misclick costs a turn (maintainer
   2026-09-26). It is a negative-inset `::before`, so the PAINTED box stays the

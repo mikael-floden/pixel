@@ -130,6 +130,30 @@ await page.waitForFunction(() => window.__mlSpin && window.__mlSpin().frames > 0
     : fail(`the orb's background is ${o.bg} — it should be the baked strip`);
 }
 
+// ── 4b. HIS CUBE AT TRUE PIXEL SIZE ───────────────────────────────────────
+// (maintainer 2026-09-26: "I did the new cube bigger because the old cube
+// wasn't big enough" — he chose one art pixel per point over the orb's slot.)
+// Read against the DECODED strip, not a literal: the box must be natural/2 of
+// the bake on both axes, and the row must hold it without the arrows moving off
+// its centre line.
+{
+  const c = await page.evaluate(async () => {
+    const e = document.querySelector(".ml-spinorb");
+    const url = getComputedStyle(e).backgroundImage.replace(/^url\(["']?/, "").replace(/["']?\)$/, "");
+    const im = new Image(); im.src = url; await im.decode();
+    const b = e.getBoundingClientRect(), bar = document.querySelector(".ml-spinbar").getBoundingClientRect();
+    const L = document.querySelector(".ml-spinbtn.left").getBoundingClientRect();
+    return { w: Math.round(b.width), h: Math.round(b.height), natH: im.naturalHeight, size: getComputedStyle(e).backgroundSize,
+             barH: Math.round(bar.height), orbMidY: b.top + b.height / 2, btnMidY: L.top + L.height / 2 };
+  });
+  c.natH > 0 && c.h === c.natH / 2 && c.w === c.natH / 2
+    ? ok(`his art at its own grid: an ${c.natH}px bake shown at ${c.w}x${c.h} (${c.size})`)
+    : fail(`the middle art is ${c.w}x${c.h} for an ${c.natH}px bake — /ui2 art renders at natural/2`);
+  c.barH >= c.h && Math.abs(c.orbMidY - c.btnMidY) <= 0.5
+    ? ok(`the row holds it (${c.barH}px) and the arrows sit on its centre line`)
+    : fail(`row ${c.barH}px for a ${c.h}px cube, centres ${c.orbMidY} vs ${c.btnMidY}`);
+}
+
 // ── 5. THE ROTATION: a press is a quarter, and it lands on the boundary ────
 {
   const frames = await page.evaluate(() => window.__mlSpin().frames);

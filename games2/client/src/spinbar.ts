@@ -52,7 +52,7 @@ import { withV } from "./assetver";
 
 const BAR = "ml-spinbar";
 const BTN = "ml-spinbtn";
-const ORB = "ml-spinorb";
+const ORB_CLS = "ml-spinorb";
 const CSS_ID = "ml-spinbar-css";
 /** The project's one edge margin — and the gap under the card. */
 const GAP = 10;
@@ -60,6 +60,15 @@ const GAP = 10;
 const BTN_H = 32;
 /** Its outer height: the content box plus its own 1px borders. */
 const BTN_OUTER = BTN_H + 2;
+/** THE MIDDLE ART'S BOX — his cube at TRUE PIXEL SIZE (maintainer 2026-09-26: "I
+ *  did the new cube bigger because the old cube wasn't big enough"; he chose one
+ *  art pixel per point over the orb's 32 pt slot). The bake crops his 64x64 export
+ *  to the 44x44 that holds every frame's ink and doubles it exactly, so natural/2
+ *  is 44: the art's grid, and the frame step. Taller than the buttons, so the ROW
+ *  is this tall and the buttons centre on it. */
+const ORB = 44;
+/** The row's height: whichever of the two is taller. */
+const ROW_H = Math.max(BTN_OUTER, ORB);
 /** THE TARGET IS BIGGER THAN THE BUTTON (maintainer 2026-09-26: "The rotation
  *  buttons will also be something the player will click a lot and I dont want
  *  the player to missclick here so you need to make the button hitbox 25%
@@ -110,11 +119,11 @@ let last = 0;
  *  "(over recording if recording is visble)" — this bar takes the line under
  *  the card and the Report button moves down one step. Published rather than
  *  hardcoded there so the two cannot disagree. */
-const STEP = `${BTN_OUTER + GAP}px`;
+const STEP = `${ROW_H + GAP}px`;
 
 function frameAt(i: number): void {
   if (!orb || !frames) return;
-  orb.style.backgroundPositionX = `${-i * BTN_H}px`;
+  orb.style.backgroundPositionX = `${-i * ORB}px`;
 }
 
 /** The strip frame for a position: rounded, then wrapped into the strip. */
@@ -200,16 +209,16 @@ export function mountSpinBar(): void {
   bar = document.createElement("div");
   bar.className = BAR;
   orb = document.createElement("div");
-  orb.className = ORB;
+  orb.className = ORB_CLS;
   const src = withV("/ui2/spin-orb.webp");
   orb.style.backgroundImage = `url("${src}")`;
   // THE ART DECLARES ITS OWN FRAME COUNT: the strip is square frames in a row,
   // so naturalWidth / naturalHeight IS the count and a re-bake with a different
   // trim needs nothing here. Sized natural/2 like every other /ui2 bake.
   // The SIZE needs no probe and must not wait for one: `background-size:auto
-  // <BTN_H>px` is natural/2 for any exact-2x bake, so the first paint is
-  // already on the authored grid (the CSS carries it). Only the COUNT needs
-  // the pixels.
+  // <ORB>px` is natural/2 of the bake (the crop fixes its height), so the first
+  // paint is already on the authored grid (the CSS carries it). Only the COUNT
+  // needs the pixels.
   const probe = new Image();
   probe.onload = () => {
     if (!probe.naturalHeight) return;
@@ -228,7 +237,7 @@ export function mountSpinBar(): void {
   frames,
   quarter: quarterOf(targetF),
   spinning: raf !== 0,
-  frame: orb ? Math.round(-parseFloat(getComputedStyle(orb).backgroundPositionX || "0") / BTN_H) : -1,
+  frame: orb ? Math.round(-parseFloat(getComputedStyle(orb).backgroundPositionX || "0") / ORB) : -1,
   // in QUARTERS, unwrapped: curQ is where it is, targetQ where the taps put it.
   // A gate reads these rather than racing the compositor for a frame.
   curQ: frames ? curF / frames : 0,
@@ -251,7 +260,7 @@ function injectStyles(): void {
      button used to hold: the card's underside plus the one gap. */
   .${BAR}{position:fixed;left:calc(var(--gv-left,0px) + ${GAP}px);
     top:calc(${GAP}px + var(--ml-safe-top, 0px) + var(--bars-l-h, 78px) + ${GAP}px);
-    z-index:8;width:var(--bars-l-w, ${BTN_OUTER * 2 + BTN_H}px);height:${BTN_OUTER}px;
+    z-index:8;width:var(--bars-l-w, ${BTN_OUTER * 2 + ORB}px);height:${ROW_H}px;
     display:flex;align-items:center;justify-content:space-between;
     pointer-events:none;transition:left .3s ease,top .3s ease}
   /* Frozen through a rotation like the rest of the chrome (hud.ts .ml-noanim):
@@ -280,9 +289,9 @@ function injectStyles(): void {
   .${BTN}.press,.${BTN}:active{transform:scale(.96)}
   /* NOT A BUTTON: no pointer events, no border, no plate — his animation alone,
      at the /ui2 natural/2 scale, stepped by background-position. */
-  .${ORB}{width:${BTN_H}px;height:${BTN_H}px;pointer-events:none;
+  .${ORB_CLS}{width:${ORB}px;height:${ORB}px;pointer-events:none;
     background-repeat:no-repeat;background-position:0 0;
-    background-size:auto ${BTN_H}px;image-rendering:pixelated}
+    background-size:auto ${ORB}px;image-rendering:pixelated}
 `;
   document.head.appendChild(s);
 }
