@@ -31,7 +31,7 @@
     "content_px_height": 179,
     "canvas_render_px": 192
   },
-  "pixellab_object_id": "4b89f1c5-7189-4cdf-bbe5-309ad68193d7",
+  "pixellab_object_id": "664ffef8-0f98-4741-9397-21499ade8ff6",
   "pixellab_directions": 1,
   "tags": [
     "SCENERY",
@@ -41,39 +41,8 @@
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
-    "NOT_LIT_1": {
-      "sprite": "trees/tree_065/sprite.webp",
-      "pixellab_object_id": "4b89f1c5-7189-4cdf-bbe5-309ad68193d7",
-      "glow_score": 0.1116,
-      "generated_at": "2026-08-14T03:54:40+00:00",
-      "animations": {
-        "wind": {
-          "group_id": "3bdff507-6ec9-430e-918e-8ee1d8e0b8d7",
-          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "trees/tree_065/animations/wind/00.webp",
-            "trees/tree_065/animations/wind/01.webp",
-            "trees/tree_065/animations/wind/02.webp",
-            "trees/tree_065/animations/wind/03.webp",
-            "trees/tree_065/animations/wind/04.webp"
-          ],
-          "strip": "trees/tree_065/animations/wind__strip.webp",
-          "generated_at": "2026-08-28T14:51:07+00:00",
-          "review": "ANIMATION_PROBABLY_BAD",
-          "review_metrics": {
-            "class": "foliage",
-            "base": 0.679,
-            "still": 0.228
-          }
-        }
-      }
-    },
     "NOT_LIT_10": {
-      "sprite": "trees/tree_065/not_lit_10/sprite.webp",
+      "sprite": "trees/tree_065/sprite.webp",
       "pixellab_object_id": "664ffef8-0f98-4741-9397-21499ade8ff6",
       "glow_concept": null,
       "difference_from_source": 0.6811,
@@ -101,7 +70,8 @@
             "base_outline": 0.0057
           }
         }
-      }
+      },
+      "replaced_anchor": "NOT_LIT_1"
     },
     "NOT_LIT_2": {
       "sprite": "trees/tree_065/not_lit_2/sprite.webp",

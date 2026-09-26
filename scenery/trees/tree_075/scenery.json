@@ -31,7 +31,7 @@
     "content_px_height": 172,
     "canvas_render_px": 192
   },
-  "pixellab_object_id": "d6b60459-9b65-4f8f-907f-c6df46f23180",
+  "pixellab_object_id": "6a75150e-e882-4570-9f75-61b962499877",
   "pixellab_directions": 1,
   "tags": [
     "SCENERY",
@@ -156,37 +156,6 @@
         }
       }
     },
-    "NOT_LIT_1": {
-      "sprite": "trees/tree_075/sprite.webp",
-      "pixellab_object_id": "d6b60459-9b65-4f8f-907f-c6df46f23180",
-      "glow_score": 0.0019,
-      "generated_at": "2026-08-14T03:55:53+00:00",
-      "animations": {
-        "wind": {
-          "group_id": "a789bd5d-22d9-4772-83ae-009d13fad705",
-          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "trees/tree_075/animations/wind/00.webp",
-            "trees/tree_075/animations/wind/01.webp",
-            "trees/tree_075/animations/wind/02.webp",
-            "trees/tree_075/animations/wind/03.webp",
-            "trees/tree_075/animations/wind/04.webp"
-          ],
-          "strip": "trees/tree_075/animations/wind__strip.webp",
-          "generated_at": "2026-08-28T15:08:51+00:00",
-          "review": "ANIMATION_PROBABLY_BAD",
-          "review_metrics": {
-            "class": "foliage",
-            "base": 0.8214,
-            "still": 0.124
-          }
-        }
-      }
-    },
     "NOT_LIT_2": {
       "sprite": "trees/tree_075/not_lit_2/sprite.webp",
       "pixellab_object_id": "d1263390-d993-407f-8923-b4d16f1c3faa",
@@ -278,7 +247,7 @@
       }
     },
     "NOT_LIT_5": {
-      "sprite": "trees/tree_075/not_lit_5/sprite.webp",
+      "sprite": "trees/tree_075/sprite.webp",
       "pixellab_object_id": "6a75150e-e882-4570-9f75-61b962499877",
       "difference_from_source": 0.5261,
       "glow_score": 0.0008,
@@ -305,7 +274,8 @@
             "base_outline": 0.0299
           }
         }
-      }
+      },
+      "replaced_anchor": "NOT_LIT_1"
     }
   },
   "must_be_imbplemented_with_random_hflip": true,

@@ -135,6 +135,40 @@ def survey():
     return promote, confusing
 
 
+def _named_paths(man):
+    """Every repo path this manifest points at — a strip is dead only when no
+    state and no root animation names it (scenery/README.md; a rule that read
+    the root's animations alone once deleted 288 live strips)."""
+    out = set()
+
+    def walk(o):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k in ("sprite", "strip", "frame_paths"):
+                    out.update(v if isinstance(v, list) else [v])
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+
+    walk(man)
+    return {p for p in out if isinstance(p, str)}
+
+
+def _drop_dead_root_clip(rel, man):
+    root = os.path.join(factory.ROOT, rel, "animations")
+    if not os.path.isdir(root):
+        return
+    named = _named_paths(man)
+    for dirpath, _, files in os.walk(root):
+        for name in files:
+            full = os.path.join(dirpath, name)
+            if os.path.relpath(full, factory.ROOT).replace(os.sep, "/") in named:
+                return                  # still live art — leave the tree alone
+    shutil.rmtree(root, ignore_errors=True)
+    print(f"  - {rel}: removed the rejected anchor's clip at the piece root")
+
+
 def apply(client, promote, confusing, dry=False):
     doc = _entries()
     entries = doc["entries"]
@@ -149,11 +183,18 @@ def apply(client, promote, confusing, dry=False):
 
         # 1. The winner's art becomes the piece's own sprite. Scenery is
         #    SOUTH-only (no `rotations` on any piece here), so this is one file.
+        #    ONLY THE STILL MOVES — the winner's directory also holds its CLIP,
+        #    and its own manifest entry keeps naming those frames and that
+        #    strip. Deleting the whole directory left seven promoted states
+        #    pointing at files that were gone: parseAnims drops a clip it cannot
+        #    resolve and the wiki draws the still instead, the same silent stop
+        #    as the hearths on 2026-09-15 (paid for 2026-09-26; caught by
+        #    finish_clips.py --check, which is why it runs before a push).
         src = os.path.join(factory.ROOT, win["sprite"])
         dst = os.path.join(factory.ROOT, man["sprite"])
         shutil.copyfile(src, dst)
-        shutil.rmtree(os.path.join(factory.ROOT, rel, winner.lower()),
-                      ignore_errors=True)
+        if os.path.exists(src):
+            os.remove(src)          # the still now lives at the piece root
         win["sprite"] = man["sprite"]
         win["replaced_anchor"] = rejected
         states[winner] = win
@@ -177,6 +218,12 @@ def apply(client, promote, confusing, dry=False):
         states.pop(rejected, None)
         man["states"] = {k: states[k] for k in sorted(states)}
         factory.write_manifest(rel, man)
+        # 4. The rejected anchor's own CLIP lives at the PIECE ROOT (that is
+        #    where an anchor's frames and strips are written), so it is what is
+        #    left over once the state is gone — rejected art nothing names. A
+        #    file any surviving state still names is never touched: the root is
+        #    also where a promoted state's lifted paths can point.
+        _drop_dead_root_clip(rel, man)
         done += 1
         print(f"  = {rel}: {winner} is now the anchor; {rejected} deleted")
 

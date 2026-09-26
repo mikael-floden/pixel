@@ -31,7 +31,7 @@
     "content_px_height": 172,
     "canvas_render_px": 192
   },
-  "pixellab_object_id": "46ef58aa-6541-4cfe-bb9b-e7cbef6d949b",
+  "pixellab_object_id": "d817f68a-35ac-4099-820c-f5222e0be4e9",
   "pixellab_directions": 1,
   "tags": [
     "SCENERY",
@@ -41,64 +41,8 @@
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
-    "LIT_1": {
-      "sprite": "trees/tree_086/sprite.webp",
-      "pixellab_object_id": "46ef58aa-6541-4cfe-bb9b-e7cbef6d949b",
-      "glow_score": 0.0132,
-      "generated_at": "2026-08-14T03:58:28+00:00",
-      "animations": {
-        "wind": {
-          "group_id": "2e4f8f87-cbb4-4b1e-a135-f834a550ce55",
-          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "trees/tree_086/animations/wind/00.webp",
-            "trees/tree_086/animations/wind/01.webp",
-            "trees/tree_086/animations/wind/02.webp",
-            "trees/tree_086/animations/wind/03.webp",
-            "trees/tree_086/animations/wind/04.webp"
-          ],
-          "strip": "trees/tree_086/animations/wind__strip.webp",
-          "generated_at": "2026-08-28T15:32:17+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.013
-          },
-          "light_frames": [
-            {
-              "intensity": 1.5,
-              "dx": -6.7,
-              "dy": 11.9
-            },
-            {
-              "intensity": 1.262,
-              "dx": -4.5,
-              "dy": -1.1
-            },
-            {
-              "intensity": 1.204,
-              "dx": -4.4,
-              "dy": -5.8
-            },
-            {
-              "intensity": 0.5,
-              "dx": -8.0,
-              "dy": 39.0
-            },
-            {
-              "intensity": 0.523,
-              "dx": -17.4,
-              "dy": 45.2
-            }
-          ]
-        }
-      }
-    },
     "LIT_4": {
-      "sprite": "trees/tree_086/lit_4/sprite.webp",
+      "sprite": "trees/tree_086/sprite.webp",
       "pixellab_object_id": "d817f68a-35ac-4099-820c-f5222e0be4e9",
       "glow_concept": "pale blossoms shining faintly across the branches",
       "difference_from_source": 0.2312,
@@ -153,7 +97,8 @@
             }
           ]
         }
-      }
+      },
+      "replaced_anchor": "LIT_1"
     },
     "NOT_LIT_1": {
       "sprite": "trees/tree_086/not_lit_1/sprite.webp",
