@@ -32,9 +32,11 @@
  *
  * WebGL1, no extensions: every value is an integer stored in RGBA8, every
  * sample is NEAREST at a texel centre. */
+import { DX, DY, rampHeight } from "./tiles3";
 import {
   buildBoundaryPixels,
   buildPlatePixels,
+  buildRampPixels,
   withEdge,
   rint,
   newPixels,
@@ -848,4 +850,137 @@ function gpuShapeReady(sheets: PatternSheets, j: BoundaryJob): boolean {
 
 async function buildPlate(sheets: PatternSheets, s: BoundaryJob["a"], src: Pixels): Promise<Pixels> {
   return buildPlatePixels(sheets, { kind: s.kind, path: s.path, topOnly: s.topOnly, rise: s.rise }, src, s.wall);
+}
+
+/* -- COMPOSED RAMPS (tiles3draw `buildRampPixels`) ----------------------------
+ * A ramp raster copies texels: the TOP's (the plate, or the transition the ramp
+ * lifts), lifted onto the incline and SHADED by a factor of their own height
+ * (`1 - 0.07·mid` red/blue, `1 - 0.03·mid` green), stretched and bridged by
+ * repeating a texel, and the BAND's (the art's own) under the side faces. Its
+ * shape — which texel each output texel copies, from which of the two, and its
+ * alpha — is taken from `buildRampPixels` ITSELF: it runs over plates whose
+ * texels carry their own coordinates as bits (0 or 7 per channel: the shade can
+ * move a channel by at most 0.07·7 < 0.5, so a bit survives it), five runs for
+ * the 13 bits of (x, y, which). The shade of a top texel is the CPU's formula at
+ * its source texel; every distinct shade gets a row of the CPU's own rounding,
+ * `Math.round(d·sh)` for d 0..255 (a table: float32 lands on the other side of
+ * a .5 now and then), checked against a run over a white top. */
+
+export interface RampShape {
+  w: number;
+  h: number;
+  /** Per texel: source x, source y, which (0 nothing, 1 top, 2 band), alpha. */
+  map: Uint8Array;
+  /** Per texel: the shade table row of a top texel (-1 none). */
+  row: Int32Array;
+  /** Per row: [red/blue shade, green shade] and its 256-entry tables. */
+  shades: [number, number][];
+  lut: Uint8Array; // rows x 256 x 4: r/b rounding in R, g rounding in G
+}
+
+const rampMemo = new WeakMap<PatternSheets, Map<string, RampShape>>();
+
+/** The shade `buildRampPixels` puts on the top texel it lifts from (x, y). */
+function rampShade(mask: number, x: number, y: number): [number, number] {
+  const a = (x + 0.5 - DX) / DX;
+  const b = (y + 0.5) / DY;
+  const u = (a + b) / 2, v = (b - a) / 2;
+  const h = rampHeight(mask, u, v);
+  const mid = 4 * h * (1 - h);
+  return [1 - 0.07 * mid, 1 - 0.03 * mid];
+}
+
+export function rampShapeKey(mask: number, lh: number, topId: string, bandId: string, withBand: boolean): string {
+  return `${mask}|${lh}|${withBand ? 1 : 0}|${topId}|${bandId}`;
+}
+
+/** The shape of `buildRampPixels(sheets, top, mask, lh, band, withBand)` for
+ *  tops and bands with these alphas (the shape depends on alpha only). */
+export function rampShapeOf(sheets: PatternSheets, mask: number, lh: number, top: Pixels, band: Pixels, withBand: boolean, key?: string): RampShape {
+  let m = rampMemo.get(sheets);
+  if (!m) rampMemo.set(sheets, (m = new Map()));
+  const hit = key ? m.get(key) : undefined;
+  if (hit) return hit;
+  const { fw, fh } = sheets;
+  const probe = (bits: (x: number, y: number, which: number) => [number, number, number], src: Pixels, which: number): Pixels => {
+    const out = newPixels(src.w, src.h);
+    for (let y = 0; y < src.h; y++)
+      for (let x = 0; x < src.w; x++) {
+        const i = (y * src.w + x) * 4;
+        const [r, g, b] = bits(x, y, which);
+        out.data[i] = r; out.data[i + 1] = g; out.data[i + 2] = b; out.data[i + 3] = src.data[i + 3];
+      }
+    return out;
+  };
+  // 13 bits: x (6), y (6), which (1) — three per run, as 0 / 7
+  const field = (x: number, y: number, which: number) => x | (y << 6) | ((which - 1) << 12);
+  const runs: Pixels[] = [];
+  for (let r = 0; r < 5; r++) {
+    const bit = (x: number, y: number, w: number): [number, number, number] => {
+      const f = field(x, y, w);
+      return [((f >> (3 * r)) & 1) * 7, ((f >> (3 * r + 1)) & 1) * 7, ((f >> (3 * r + 2)) & 1) * 7];
+    };
+    runs.push(buildRampPixels(sheets, probe(bit, top, 1), mask, lh, probe(bit, band, 2), withBand));
+  }
+  const white = buildRampPixels(sheets, probe(() => [255, 255, 255], top, 1), mask, lh, probe(() => [0, 0, 0], band, 2), withBand);
+  const W = runs[0].w, H = runs[0].h;
+  const map = new Uint8Array(W * H * 4);
+  const row = new Int32Array(W * H).fill(-1);
+  const shades: [number, number][] = [];
+  const rowOf = new Map<string, number>();
+  for (let i = 0; i < W * H; i++) {
+    const a = runs[0].data[i * 4 + 3];
+    if (a === 0) continue;
+    let f = 0;
+    for (let r = 0; r < 5; r++) for (let c = 0; c < 3; c++) if (runs[r].data[i * 4 + c] >= 4) f |= 1 << (3 * r + c);
+    const x = f & 63, y = (f >> 6) & 63, which = ((f >> 12) & 1) + 1;
+    map[i * 4] = x; map[i * 4 + 1] = y; map[i * 4 + 2] = which; map[i * 4 + 3] = a;
+    if (which === 1) {
+      const [srb, sg] = rampShade(mask, x, y);
+      // the CPU's own shade, read back off a white top: it must agree
+      if (white.data[i * 4] !== Math.round(255 * srb) || white.data[i * 4 + 1] !== Math.round(255 * sg))
+        throw new Error(`tiles3gpu: ramp shade at ${i % W},${Math.floor(i / W)} is not the formula's (${white.data[i * 4]} vs ${Math.round(255 * srb)})`);
+      const k = `${srb},${sg}`;
+      let rw = rowOf.get(k);
+      if (rw === undefined) { rw = shades.push([srb, sg]) - 1; rowOf.set(k, rw); }
+      row[i] = rw;
+    }
+  }
+  const lut = new Uint8Array(shades.length * 256 * 4);
+  shades.forEach(([srb, sg], r) => {
+    for (let d = 0; d < 256; d++) {
+      const o = (r * 256 + d) * 4;
+      lut[o] = Math.round(d * srb);
+      lut[o + 1] = Math.round(d * sg);
+      lut[o + 3] = 255;
+    }
+  });
+  const shape: RampShape = { w: W, h: H, map, row, shades, lut };
+  if (key) m.set(key, shape);
+  void fw; void fh;
+  return shape;
+}
+
+/** THE RAMP FROM ITS SHAPE, on the CPU — exactly what the GPU pass computes
+ *  (a lookup per texel): the node gate's half of the parity. */
+export function rampFromShape(shape: RampShape, top: Pixels, band: Pixels): Pixels {
+  const out = newPixels(shape.w, shape.h);
+  const o = out.data;
+  for (let i = 0; i < shape.w * shape.h; i++) {
+    const which = shape.map[i * 4 + 2];
+    if (!which) continue;
+    const x = shape.map[i * 4], y = shape.map[i * 4 + 1];
+    const src = which === 1 ? top : band;
+    const s = (y * src.w + x) * 4;
+    if (which === 1) {
+      const r = shape.row[i] * 256 * 4;
+      o[i * 4] = shape.lut[r + src.data[s] * 4];
+      o[i * 4 + 1] = shape.lut[r + src.data[s + 1] * 4 + 1];
+      o[i * 4 + 2] = shape.lut[r + src.data[s + 2] * 4];
+    } else {
+      o[i * 4] = src.data[s]; o[i * 4 + 1] = src.data[s + 1]; o[i * 4 + 2] = src.data[s + 2];
+    }
+    o[i * 4 + 3] = shape.map[i * 4 + 3];
+  }
+  return out;
 }
