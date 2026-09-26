@@ -10,6 +10,9 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const EXE = process.env.CHROME || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
+// SLOPE: the slope switch's stop for the run ("auto" default; 25 / 50 raise
+// ramps with a wall left above them, and only those compose SLOPE BOUNDARIES).
+const SLOPE = process.env.SLOPE || "";
 const SPOTS = (process.env.SPOTS || "259,253;254,158;275,225;333,232;305,239").split(";").map((s) => s.split(",").map(Number));
 const port = 3400 + Math.floor(Math.random() * 40), origin = `http://127.0.0.1:${port}`;
 const child = spawn(join(ROOT, "node_modules", ".bin", "tsx"), ["src/index.ts"], { cwd: join(ROOT, "server"), detached: true, env: { ...process.env, PORT: String(port), SERVE_CLIENT: "1", NODE_ENV: "production" }, stdio: ["ignore", "ignore", "ignore"] });
@@ -23,7 +26,7 @@ try {
   const page = await (await browser.newContext({ viewport: { width: 393, height: 851 }, serviceWorkers: "block" })).newPage();
   page.on("console", (m) => { if (m.text().startsWith("[scan]")) console.log(m.text()); });
   page.on("pageerror", (e) => { console.log("PAGEERROR", e.message); bad = true; });
-  await page.addInitScript(() => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "G" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); });
+  await page.addInitScript((sl) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "G" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); if (sl) localStorage.setItem("ml-slope-height3", sl); }, SLOPE);
   await page.goto(origin + "/", { waitUntil: "commit" });
   await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 240000, polling: 250 });
   await page.evaluate(() => { try { window.__ml.noAggro(true); } catch {} });
@@ -75,7 +78,7 @@ try {
   console.log(JSON.stringify(rep, null, 1));
   if (!rep.compared || !rep.opaque || !rep.inked) { console.log(`FAIL: vacuous (${rep.compared} tiles, ${rep.opaque} opaque texels, ${rep.inked} inked)`); bad = true; }
   else if (rep.tilesDiffering) { console.log(`FAIL: ${rep.tilesDiffering} of ${rep.compared} tiles differ (${rep.texelsDiffering} texels, max ${rep.maxDiff})`); bad = true; }
-  else if (!rep.slopes) { console.log(`FAIL: no slope boundary compared (${rep.compared} tiles)`); bad = true; }
+  else if (!rep.slopes && SLOPE && SLOPE !== "auto") { console.log(`FAIL: no slope boundary compared (${rep.compared} tiles)`); bad = true; }
   else console.log(`ok: ${rep.compared} boundaries identical byte for byte (${rep.slopes} on slopes; ${rep.opaque} opaque texels, ${rep.inked} of them outline ink; ${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
   // ── THE GAME WITH THE SWITCH ON: every transition on the ground composed by
   // the GPU compositor (tiles3gpu GpuComposer) and landed the worker's way —
@@ -83,7 +86,7 @@ try {
   if (process.env.INTEGRATED !== "0") {
     const p2 = await (await browser.newContext({ viewport: { width: 393, height: 851 }, serviceWorkers: "block" })).newPage();
     p2.on("pageerror", (e) => { console.log("PAGEERROR (gpu page)", e.message); bad = true; });
-    await p2.addInitScript(() => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "H" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); localStorage.setItem("ml-gpu-compose", "1"); });
+    await p2.addInitScript((sl) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "H" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); localStorage.setItem("ml-gpu-compose", "1"); if (sl) localStorage.setItem("ml-slope-height3", sl); }, SLOPE);
     await p2.goto(origin + "/", { waitUntil: "commit" });
     await p2.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 240000, polling: 250 });
     await p2.evaluate(() => { try { window.__ml.noAggro(true); } catch {} });
