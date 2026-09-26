@@ -65,9 +65,8 @@ export function setWcSwitch(on: boolean): void {
     /* no storage: the switch lasts this page */
   }
 }
-/** A page's texture key, and a slot's frame on it. */
+/** A page's texture key. */
 export const wcPageKey = (page: number): string => `wc:page:${page}`;
-export const wcSlotFrame = (x: number, y: number): string => `s${x},${y}`;
 
 /** Cells a tile side: the terrain bake's chunk. */
 export const WC_TILE = 8;

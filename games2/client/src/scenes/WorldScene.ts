@@ -161,8 +161,8 @@ import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
 import { FastDepthSort } from "../fastsort";
 import { TerrainBake, bakeParity, type BakeHost, type BakeSink } from "../terrainbake";
-import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, tileBoxOf, tileMask, wcPageKey, wcSlotFrame, wcSwitchOn, type WcFrame, type WcPicture, type WcRect, type WcSlot } from "../worldcache";
-import { WorldCacheGl } from "../worldcachegl";
+import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, tileBoxOf, tileMask, wcPageKey, wcSwitchOn, type WcFrame, type WcPicture, type WcRect, type WcSlot } from "../worldcache";
+import { WorldCacheGl, type WcGlDraw } from "../worldcachegl";
 import { benchClear, benchDb, benchDecode, benchEncode, benchGet, benchPut, benchSummary, type BenchTile } from "../wcbench";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
@@ -5344,6 +5344,12 @@ export class WorldScene extends Phaser.Scene {
   private wcSkipped = 0;
   /** Pages allocated this frame (one at most), and this window's takes. */
   private wcPagesThisFrame = 0;
+  /** THE PICTURES A GROUND BRACKET OWES, drawn by our own shader once the
+   *  bracket's blit has landed (groundEndDraw -> wcFlushPictures): the target
+   *  rect in its texture's texels and the page texel on its top-left. */
+  private wcPending: { rt: Phaser.GameObjects.RenderTexture; page: number; d: WcGlDraw; frame: number }[] = [];
+  /** This GPU cannot draw a picture back exactly (WorldCacheGl.canDraw). */
+  private wcInexact = false;
   private wcTakes = { n: 0, ms: 0, maxMs: 0 };
   /** THE READBACK, MEASURED — what saving a picture to disk would cost this
    *  phone (a synchronous GL read: WebGL1 has no async one) — and THE PAGES
@@ -21218,8 +21224,22 @@ export class WorldScene extends Phaser.Scene {
   private wcEnsure(): WorldCache | null {
     if (!this.wcOn || this.wc) return this.wc;
     if (!this.maps3 || !this.t3 || this.game.renderer.type !== Phaser.WEBGL) return null;
+    if (this.wcInexact) return null;
     const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
-    this.wcGl = new WorldCacheGl(r.gl);
+    const gl = new WorldCacheGl(r.gl);
+    r.pipelines.clear();
+    let exact = false;
+    try {
+      exact = gl.canDraw(); // compiles the draw
+    } finally {
+      r.pipelines.rebind();
+    }
+    // a GPU without highp fragments gets no cache, never a picture a texel off
+    if (!exact) {
+      this.wcInexact = true;
+      return null;
+    }
+    this.wcGl = gl;
     // a restart reuses this instance: the pictures and their pages end with the run
     if (!this.wcShutdownHooked) {
       this.wcShutdownHooked = true;
@@ -21356,11 +21376,11 @@ export class WorldScene extends Phaser.Scene {
     return top;
   }
 
-  /** ONE CACHED PICTURE into an open ground bracket, cropped to `r` (world
-   *  px, whole): the slot's own frame when it is whole, else the page's
-   *  `crop` frame re-cut — a batch reads a frame's UVs when it is called, so
-   *  one frame a page serves every crop. Texel-exact: every edge is a whole
-   *  texel of a 1024 page. */
+  /** ONE CACHED PICTURE for the open ground bracket, cropped to `r` (world
+   *  px, whole): owed to the bracket and drawn when its blit has landed
+   *  (wcFlushPictures) — by worldcachegl.ts's own shader, not Phaser's, whose
+   *  mediump vertex math put a picture a texel off on his Mali and opened its
+   *  edge onto the fill. Still last: nothing a bracket draws follows it. */
   private wcDrawPicture(rt: Phaser.GameObjects.RenderTexture, pic: WcPicture, ax: number, ay: number, r: WcRect): boolean {
     const b = pic.box;
     const x0 = Math.max(b.x0, r.x0);
@@ -21368,18 +21388,53 @@ export class WorldScene extends Phaser.Scene {
     const x1 = Math.min(b.x1, r.x1);
     const y1 = Math.min(b.y1, r.y1);
     if (x1 <= x0 || y1 <= y0) return false;
-    const key = wcPageKey(pic.page);
-    if (x0 === b.x0 && y0 === b.y0 && x1 === b.x1 && y1 === b.y1) {
-      rt.batchDrawFrame(key, wcSlotFrame(pic.x, pic.y), Math.round(b.x0 - ax), Math.round(b.y0 - ay));
-      return true;
-    }
-    const page = this.textures.get(key);
-    const sx = pic.x + (x0 - b.x0);
-    const sy = pic.y + (y0 - b.y0);
-    if (page.has("crop")) page.get("crop").setSize(x1 - x0, y1 - y0, sx, sy);
-    else page.add("crop", 0, sx, sy, x1 - x0, y1 - y0);
-    rt.batchDrawFrame(key, "crop", Math.round(x0 - ax), Math.round(y0 - ay));
+    const tx = Math.round(x0 - ax);
+    const ty = Math.round(y0 - ay);
+    this.wcPending.push({ rt, page: pic.page, d: { x0: tx, y0: ty, x1: tx + (x1 - x0), y1: ty + (y1 - y0), sx: pic.x + (x0 - b.x0), sy: pic.y + (y0 - b.y0) }, frame: this.game.loop.frame });
     return true;
+  }
+
+  /** THE PICTURES A BRACKET OWED, drawn into its texture now that the blit has
+   *  landed — cropped to what the blit copied (`rect`, the texture's texels;
+   *  null = all of it), exactly as a picture batched into the capture was. */
+  private wcFlushPictures(rt: Phaser.GameObjects.RenderTexture, rect: { x0: number; y0: number; x1: number; y1: number } | null): void {
+    if (!this.wcPending.length) return;
+    // a bracket opens and ends inside one frame: an older entry's bracket never ended (a throw), and its
+    // picture may be another tile's by now
+    const now = this.game.loop.frame;
+    const mine = this.wcPending.filter((p) => p.rt === rt && p.frame === now);
+    this.wcPending = this.wcPending.filter((p) => p.rt !== rt && p.frame === now);
+    if (!mine.length) return;
+    const gl = this.wcGl;
+    const dt = rt.texture as Phaser.Textures.DynamicTexture;
+    const fb = dt.renderTarget?.framebuffer?.webGLFramebuffer;
+    if (!gl || !fb) return;
+    const cx0 = rect ? Math.max(0, Math.floor(rect.x0)) : 0;
+    const cy0 = rect ? Math.max(0, Math.floor(rect.y0)) : 0;
+    const cx1 = rect ? Math.min(dt.width, Math.ceil(rect.x1)) : dt.width;
+    const cy1 = rect ? Math.min(dt.height, Math.ceil(rect.y1)) : dt.height;
+    const byPage = new Map<number, WcGlDraw[]>();
+    for (const { page, d } of mine) {
+      const x0 = Math.max(d.x0, cx0);
+      const y0 = Math.max(d.y0, cy0);
+      const x1 = Math.min(d.x1, cx1);
+      const y1 = Math.min(d.y1, cy1);
+      if (x1 <= x0 || y1 <= y0) continue;
+      let list = byPage.get(page);
+      if (!list) byPage.set(page, (list = []));
+      list.push({ x0, y0, x1, y1, sx: d.sx + (x0 - d.x0), sy: d.sy + (y0 - d.y0) });
+    }
+    const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    r.pipelines.clear();
+    try {
+      for (const [page, rects] of byPage) {
+        const key = wcPageKey(page);
+        const tex = this.textures.exists(key) ? (this.textures.get(key) as Phaser.Textures.DynamicTexture).renderTarget?.texture?.webGLTexture : null;
+        if (tex) gl.draw(fb, dt.width, dt.height, tex, WC_PAGE, WC_PAGE, rects);
+      }
+    } finally {
+      r.pipelines.rebind();
+    }
   }
 
   /** A page: one allocation a frame (a texture and a framebuffer). */
@@ -21423,8 +21478,6 @@ export class WorldScene extends Phaser.Scene {
     this.wcTakes.n++;
     this.wcTakes.ms += ms;
     if (ms > this.wcTakes.maxMs) this.wcTakes.maxMs = ms;
-    const name = wcSlotFrame(slot.x, slot.y);
-    if (!page.has(name)) page.add(name, 0, slot.x, slot.y, w, h);
     return ok;
   }
 
@@ -23408,6 +23461,7 @@ export class WorldScene extends Phaser.Scene {
     if (!rect || !target || renderer.type !== Phaser.WEBGL || !groundScissorOn()) {
       rt.endDraw();
       this.groundBlitPx += dt.width * dt.height;
+      this.wcFlushPictures(rt, null); // the whole capture was blitted
       return;
     }
     const x0 = Math.max(0, Math.floor(rect.x0));
@@ -23427,6 +23481,7 @@ export class WorldScene extends Phaser.Scene {
     renderer.resetViewport();
     (dt as unknown as { dirty: boolean; isDrawing: boolean }).dirty = true;
     (dt as unknown as { dirty: boolean; isDrawing: boolean }).isDrawing = false;
+    this.wcFlushPictures(rt, rect);
   }
 
   /** DRAIN THE BAND UNDER ONE BRACKET, bounded by measured milliseconds.
