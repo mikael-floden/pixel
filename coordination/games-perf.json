@@ -1,23 +1,11 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-26T00:58:49+00:00",
+  "updated_at": "2026-09-26T06:43:13+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED: THE OFFLINE TERRAIN, step 1 (his principle 2026-09-25: remove work or move it offline/pre-built/a cache; keep live edits). Parity PROVEN headless: render A/B 0 px at 4 spots round 103,182 (day x3 + night) with built and live chunks on one screen. Now: (1) the loader holds a byte cap (far chunks let go, back from the HTTP cache), survives a lost GL context, and an edit sends its whole resolver region live; (2) FAIL-CLOSED INPUTS — an index names the terrain code it was drawn with (scripts/terrainfp.mjs: WorldScene's terrain methods + the modules they use, carried by every client build as VITE_TERRAIN_FP — vite.config.ts and fastbuild.mjs gain one define) and the content hash of every document and art file it read; a page whose own hashes differ draws live, so no picture of another generation is ever shown; (3) band pieces trimmed at their empty columns (0.6 MB a chunk instead of 1.3). Then the walking-time A/B on a 156-chunk build, then his run. Dev switch, off by default.",
-    "since": "2026-09-26T00:58:49+00:00",
-    "files": [
-      "games2/client/src/prebuilt.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/server/test/prebuilt.test.ts",
-      "games2/client/public/prebuilt/**",
-      "games2/scripts/prebuild-terrain.mjs",
-      "games2/scripts/prebuild-terrain-encode.py",
-      "games2/scripts/terrainfp.mjs",
-      "games2/client/vite.config.ts",
-      "games2/scripts/fastbuild.mjs",
-      "games2/docs/perf.md",
-      "games2/docs/testing.md"
-    ]
+    "unit": "IDLE on the terrain — the offline/pre-built terrain is STOPPED at his word (2026-09-26: a download of per-location pictures costs bandwidth, goes stale with every terrain-code change, fights live edits). Nothing of it shipped; the claim is released. Next unless he redirects: the gloom raster (#51, analysis first; games2/ambient is games-ambient's — a claim will be posted there before any edit).",
+    "since": "2026-09-26T06:43:13+00:00",
+    "files": []
   },
   "progress": {
     "runs_read": 47,
@@ -61,6 +49,10 @@
     {
       "at": "2026-09-25T23:28:19+00:00",
       "text": "SHIPPED fb009da6b0 (live 23:27 UTC, container): THE WORLD'S PIPELINE ON A PHONE, OPT-IN. Phaser 3.90 gives a non-desktop UA (his Android) the MobilePipeline (forceZero: a drawArrays per texture change) — his c0efbebe66 run drew 384-1,754 a frame; headless never saw it (desktop UA = MultiPipeline). Under his UA at 108,169 / 103,183 (SwiftShader): 888/800 draws and 4.7/5.1 ms of main-thread renderer.render vs 199/198 draws and 3.8/3.4 ms with the MultiPipeline; render A/B harness under his UA 0 px at all 16 spots. OFF until his run (the GPU price, the fragment unit chain, is unpriced headless): Settings->Dev 'draw: multi-texture batches' (next load), counts.mainUnits 1/16, perf-read u1/u16. ALL AGENTS measuring draws or batching headless: give the context his Android UA (docs/testing.md trap). HIS 21:36 RUN, dense window 103,182: ~31 ms of main-thread work per 33 ms frame — terrain upkeep 9-11 ms (repaintCells 4.6, render/depthSort terrain share ~4, occluder walk/cull ~1.6, groundSlice 0.8) + compose worker 8-14% of a core (~300 compositions/s), ambient hooks 6.5 (gloom raster 3.3 ms/tick, peaks 18-20). NEXT (his principle: remove work or move it offline, keep live edits): the terrain built OFFLINE per 8x8 chunk (ground crop of the settled full paint + the bake's depth-row bands + meta), the phone skipping resolver/compose/paint/walk for built chunks; step 1 = one area at 103,182 behind a Dev switch."
+    },
+    {
+      "at": "2026-09-26T06:43:13+00:00",
+      "text": "STOPPED, NOTHING SHIPPED: the pre-built terrain (8x8-cell chunks drawn headless by the game's own renderer, loaded as pictures). What it proved, for whoever picks terrain up again: render A/B 0 px at 8 spots round 103,182 (day, night, water, built and live chunks on one screen); walking median 26.3 -> 17.3 ms with every picture resident (ground repaint 9.6 -> 3.7 ms a frame). Why it stopped (his verdict, with numbers): 15.7 KB a chunk to download, ~39 MB the map; 1.15 MB of GPU texture a chunk, ~96 MB round one spot; ~12 s a chunk to build headless (8 h the map) against 47 terrain-code changes in 7 days. THE FINDING THAT DECIDES THE NEXT DESIGN: the same path walked 6 times, switch off — passes 1-3 (new ground) median 31-38 ms with 10-16 ms/frame of ground redraw, passes 4-6 (drawn) 15-22 ms with 0.1-1.7: ground already drawn is cheap (the ground texture is the cache for a screen round you), and his runs cross 124-174 cells every 30 s — the cost he sees is FIRST-VISIT drawing, which a revisit cache cannot remove. Traps found: occForceStep is sticky (set outside its probe it makes every frame a full occluder+scenery step: 180 rebuilds in 180 frames); rt.snapshotArea counts y from the bottom; __ml.lookAt's worldView moves on the next rendered frame; Phaser calls sys.sceneUpdate, so wrapping scene.update times nothing. The shelved code is in no branch."
     }
   ],
   "requests": [
