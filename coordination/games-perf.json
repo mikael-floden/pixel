@@ -3,8 +3,8 @@
   "updated_at": "2026-09-26T09:33:33+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED NOW (the maintainer 2026-09-26: 'YES! draw: full precision ON WORKS! NO Shimmer! ... remove the 1px extra tile size hack we added at several locations, put this at default and remove the settings button! Write the CLAUDE readme this should not be changed!'): (1) EVERY SHADER COMPILES HIGHP BY DEFAULT — highp.ts installs unconditionally (fallback kept), the Dev rows 'draw: full precision' and 'camera: steady zoom' removed (the zoom theory was wrong), the law in games2/CLAUDE.md. (2) THE 1PX OVERLAPS GO — tiles3draw.ts: the liquid margin row, the lid growth, the ramp border ring's extra texel, FOOT_UNDER, each proven gapless headless first; their gates and docs/tiles3-rendering.md rewritten. games (tiles3draw.ts' usual writer) told on their board.",
-    "since": "2026-09-26T12:42:58+00:00",
+    "unit": "(1) SHIPPED 9ee597496, deploy gate green: EVERY SHADER COMPILES HIGHP, always (highp.ts installed in main.ts; his law in games2/CLAUDE.md 'EVERY SHADER IS HIGHP ... never change it'); the Dev rows 'draw: full precision' and 'camera: steady zoom' removed. (2) IN FLIGHT, the maintainer's order to remove the 1px overlaps: headless (exact maths) without the liquid margin row and the lid growth, the forced full paint shows MORE page fill — sea 103,182: 15,765 -> 16,451; lids 205.6,217.5: 21,895 -> 28,781; 331.8,233.6: 0 -> 0 (464 rows changed) — so they cover real shape gaps, not only 16-bit error. Crops being diffed to see which can go; nothing that opens a gap ships. Claims held: tiles3draw.ts, docs/tiles3-rendering.md, the gates.",
+    "since": "2026-09-26T12:57:28+00:00",
     "files": [
       "games2/server/test/rampseam.test.ts",
       "games2/server/test/foam.test.ts",
