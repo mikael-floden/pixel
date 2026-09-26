@@ -752,6 +752,14 @@
       "at": "2026-09-25T18:17:06+00:00",
       "closed_at": "2026-09-26T06:49:28+00:00",
       "why": "handled"
+    },
+    {
+      "id": "c4bb2fe16a",
+      "to": "maps2",
+      "text": "RENDER3 RULE CHANGE (one rule set, tiles3.ts <-> render3.py): SLOPES ON BOTH SIDES OF A ONE-LEVEL RISE, the maintainer's 2026-09-24 ask (\"almost always use slope tiles when the elevation change is only 1 level ... placed both to lower a level 2 to 1.5 and push up a level 1 to 1.5\"). Shipped in games2 as the GAME rule (behind footBoundary, so the parity fixture keeps the any-higher bump until you carry it). The rule (tiles3.ts slopeHalfAt / slopeEligible / tiles3draw slopeLift + slopeTopOnly): (1) a cell is ELIGIBLE when its ground has an approved slope set, its whole 8-ring is that ground, and its exact-one mask equals its any-higher mask (no corner raised only by cells two or more up). (2) An eligible cell RAISES every corner a cell exactly one up touches (the bump's own mask) and its tile is drawn `elevation` rows UP — the published sets draw their plateau on the library diamond and the flat part SUNK `elevation` rows below it (tile 15 tops the frame at row 0, tile 0 at row 4), so drawn at the level the raise sank the cell 4 px, which is what render3 does today. (3) An eligible cell CUTS a corner when every cell touching it is eligible, the corner holds exactly its level and the one below, and every same-level cell there raises nothing: its tile index = the corners that stay, drawn AT the level, so the lowered corners sink over the wall. A cell that raises anything cuts nothing. (4) Top-only mask = the library diamond extended `elevation` rows DOWN (the sunk part and the lip's face lie under the silhouette). Measured on the_game: 403 raises, 209 cuts, every cut corner has a raise under it, no two same-level plates disagree on a corner (server/test/slopes.test.ts). Docs: games2/docs/tiles3-rendering.md \"A ONE-LEVEL RISE WEARS HIS SLOPE ON BOTH SIDES\".",
+      "at": "2026-09-24T18:10:32+00:00",
+      "closed_at": "2026-09-26T10:15:34+00:00",
+      "why": "handled"
     }
   ],
   "notes": [
@@ -850,6 +858,7 @@
       "at": "2026-09-25T19:02:39+00:00",
       "text": "3d248e4c0d LIVE (fast-publish 36176811764 green; bundle index-7fec6b1cea): a phone in 'Desktop site' (layout >= 1.25x the screen across, touch) backs the canvas at the screen's real pixels (dpr / squeeze) — his girlfriend's phone goes from 2390x3912 at zoom 5 to 1080x1770 at zoom 2, 540 world px across like his — and a once-per-launch notice (desktopsitenotice.ts) tells the player to turn the mode off. The UI itself is not compensated (UI_AGENT.md law): turning the mode off is the fix."
     },
-    "[2026-09-24T15:09:55+00:00] done (d9b15a0a0d, from games-ui): CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (t"
+    "[2026-09-24T15:09:55+00:00] done (d9b15a0a0d, from games-ui): CORRECTION to my lane note above, checked against the store: publish-bundle.mjs imports fastBuild and REBUILDS THE CLIENT on every publish, art lane included (t",
+    "[2026-09-24T15:09:55+00:00] done (674eaa5b0c, from maps2-assistant): TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.te"
   ]
 }
