@@ -33,14 +33,17 @@
 // CSS steps `background-position` through it, which is frame-exact in both
 // directions and one request.
 //
-// THE STRIP IS ONE QUARTER TURN, and the art declares its own frame count:
-// FRAMES = naturalWidth / naturalHeight (512/64 = 8), so re-baking with a
-// different trim needs no change here. One press plays the whole strip and
-// lands back on frame 0, which is the next quarter's 0° — that is what "remove
-// some frames from the gif so it ends on a perfect 90° rotation" asks for, and
-// it is why a press is 8 steps rather than 2. The trim itself, and the
-// measurements behind it, are in bake-corner-icons.py's STRIPS block.
-//
+// THE STRIP IS ONE QUARTER TURN AND CARRIES EVERY FRAME OF IT. The art
+// declares its own count — FRAMES = naturalWidth / naturalHeight — and a press
+// plays exactly that many steps, so every authored transition runs once and the
+// last one lands back on frame 0. NEVER TRIM A CLOSED LOOP FOR SMOOTHNESS: his
+// export hands its last frame back to its first, so N frames are N transitions,
+// and dropping one replaces two of them with a join covering twice the
+// rotation. An 8-of-9 cut shipped on 2026-09-26 and he saw the seam the same
+// day ("the rotation animation snaps at the last frame") — at the cut, which is
+// the only place it can be. That report also fixed the clip's span: a press
+// plays the whole strip, and a full 360° would have read as a full spin rather
+// than a seam.
 // WHAT IT DRIVES: nothing yet, deliberately. Each press emits `ml-spin` with
 // the new quarter and the direction, so whatever this ends up turning can
 // subscribe without this module having to know about it.
@@ -56,6 +59,17 @@ const GAP = 10;
 const BTN_H = 32;
 /** Its outer height: the content box plus its own 1px borders. */
 const BTN_OUTER = BTN_H + 2;
+/** THE TARGET IS BIGGER THAN THE BUTTON (maintainer 2026-09-26: "The rotation
+ *  buttons will also be something the player will click a lot and I dont want
+ *  the player to missclick here so you need to make the button hitbox 25%
+ *  bigger in width and height"). The PAINTED box stays the 🔍 square — he
+ *  fixed that look in the same breath as asking for this — so the growth is an
+ *  invisible ::before, not a bigger button: 34 -> 42.5 on both axes, which is
+ *  half of 25% on each side. It grows INTO the 10px margins and nothing else:
+ *  4.25 < 10 leaves the Report button under it and the card above it untouched,
+ *  which verify-spinbar asserts rather than trusting this arithmetic. */
+const HIT_GROW = 0.25;
+const HIT_PAD = (BTN_OUTER * HIT_GROW) / 2;
 /** One press steps the whole strip; at 8 frames a quarter turn takes 360 ms.
  *  NOT the GIF's authored 200 ms — that is a 1.6 s answer to a button press,
  *  and a control has to feel like it moved when the finger lifts. */
@@ -194,13 +208,17 @@ function injectStyles(): void {
   /* The 🔍 square's rules (wikinear.ts), which are the Wiki pill's (wikibtn.ts)
      at the pill's height on both sides. verify-spinbar compares the computed
      values against the live .ml-wikinear rather than trusting this copy. */
-  .${BTN}{pointer-events:auto;width:${BTN_H}px;height:${BTN_H}px;box-sizing:content-box;padding:0;
+  .${BTN}{pointer-events:auto;position:relative;width:${BTN_H}px;height:${BTN_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
     box-shadow:var(--shadow);cursor:pointer;
     display:flex;align-items:center;justify-content:center;
     background:color-mix(in srgb, var(--bg) 76%, transparent);
     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
     color:var(--ink);-webkit-tap-highlight-color:transparent;user-select:none}
+  /* The invisible ${Math.round(HIT_GROW * 100)}% — a pseudo-element inherits the button's own
+     pointer-events, so this takes the press without painting anything and
+     without moving the box the eye lines up against the card. */
+  .${BTN}::before{content:"";position:absolute;inset:-${HIT_PAD}px}
   .${BTN}-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   /* ONE BAKE, TWO READINGS: his export points right, so the left button is the
      same file mirrored. A pure scaleX on a pixelated image moves whole pixels

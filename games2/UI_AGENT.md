@@ -107,13 +107,28 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   clock — and this must run BACKWARDS on one of the two buttons ("you have to
   play it backwards to get the other direction working"), so
   `bake-corner-icons.py`'s `STRIPS` lays the frames in one horizontal 2x strip
-  and the CSS steps `background-position`. **The strip IS one quarter turn**:
-  a press plays all of it and lands back on frame 0, the next quarter's zero,
-  which is what "remove some frames from the gif so it ends on a perfect 90°
-  rotation" asks for. The count is read from the art
-  (`naturalWidth / naturalHeight`), so re-aiming the trim is a bake, not a
-  code change; `background-size:auto 32px` is natural/2 for any exact-2x bake,
-  so the first paint is already on the grid and nothing waits on a probe.
+  and the CSS steps `background-position`. **NEVER TRIM A CLOSED LOOP.** His
+  export hands its last frame back to its first, so N frames are N authored
+  transitions; dropping one replaces two of them with a join covering twice
+  the rotation, and the seam lands exactly at the cut. An 8-of-9 trim shipped
+  on 2026-09-26 and he saw it the same day ("the rotation animation snaps at
+  the last frame") — that report also fixed the clip's span, because a full
+  360° per press would have read as a full spin rather than a seam. The strip
+  IS the quarter turn, all of it: a press plays `frames` steps and lands back
+  on frame 0. `verify-spinbar` counts his source GIF's own Graphic Control
+  Extension blocks and requires the strip to carry every one.
+  The count is read from the art (`naturalWidth / naturalHeight`), so a
+  re-aimed bake needs no code change, and `background-size:auto 32px` is
+  natural/2 for any exact-2x bake, so the first paint is already on the grid
+  and nothing waits on a probe.
+  **THE TARGET IS BIGGER THAN THE BUTTON**: 25% on both axes (34 -> 42.5),
+  because these get pressed constantly and a misclick costs a turn (maintainer
+  2026-09-26). It is a negative-inset `::before`, so the PAINTED box stays the
+  🔍 square he asked for — a pseudo-element inherits the button's
+  pointer-events and paints nothing. 4.25px a side grows into the project's
+  10px margins and reaches neither the card above nor the Report button below,
+  which the gate asserts by `elementFromPoint` rather than by reading the CSS
+  back.
   The orb is `pointer-events:none` with no role — "the gif should be in the
   middle (not a button)". It drives nothing yet, deliberately: a press emits
   `ml-spin` with the new quarter and direction, so whatever it ends up turning

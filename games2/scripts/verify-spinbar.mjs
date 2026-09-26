@@ -24,6 +24,7 @@
 // that spin() takes its lock synchronously inside the click handler, so the
 // gate asserts the lock, then the landing.
 import { chromium } from "playwright-core";
+import { readFileSync } from "node:fs";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
@@ -132,9 +133,20 @@ await page.waitForFunction(() => window.__mlSpin && window.__mlSpin().frames > 0
 // ── 5. THE ROTATION: a press is a quarter, and it lands on the boundary ────
 {
   const frames = await page.evaluate(() => window.__mlSpin().frames);
-  frames > 0 && frames % 4 === 0
-    ? ok(`the strip is ${frames} frames — a whole number of them per full turn`)
-    : fail(`the strip is ${frames} frames; a quarter-turn strip must divide a full turn evenly`);
+  // NOTHING WAS DROPPED, read against his own export. A GIF's frames are its
+  // Graphic Control Extension blocks (21 F9 04), which is countable without a
+  // decoder — and counting them is the whole assertion: his source is a CLOSED
+  // loop, so N frames are N authored transitions and a trim replaces two of
+  // them with a join covering twice the rotation. That shipped once, at 8 of 9,
+  // and he saw the seam the same day ("the rotation animation snaps at the last
+  // frame"). A gate on "divides evenly" would have passed it.
+  const gif = readFileSync(new URL("../client/ui-src/spin-orb-src.gif", import.meta.url));
+  let authored = 0;
+  for (let i = 0; i + 2 < gif.length; i++)
+    if (gif[i] === 0x21 && gif[i + 1] === 0xf9 && gif[i + 2] === 0x04) authored++;
+  frames === authored && authored > 0
+    ? ok(`the strip carries every frame of his export (${frames} of ${authored}) — a closed loop keeps all of them`)
+    : fail(`the strip has ${frames} frames of his ${authored}: trimming a closed loop puts a double-step at the cut`);
 
   const press = async (sel) => {
     // spin() takes its lock synchronously inside the handler, so this reads
@@ -168,7 +180,40 @@ await page.waitForFunction(() => window.__mlSpin && window.__mlSpin().frames > 0
     : fail(`four right presses ended at quarter ${round.quarter}, frame ${round.frame}`);
 }
 
-// ── 6. LANDSCAPE: the card moves, both edges follow ────────────────────────
+// ── 6. THE TARGET IS BIGGER THAN THE BUTTON ────────────────────────────────
+// Measured by HITTING it, not by reading the CSS back: elementFromPoint is what
+// the finger does (maintainer 2026-09-26: "I dont want the player to missclick
+// here so you need to make the button hitbox 25% bigger in width and height").
+{
+  const h = await page.evaluate(() => {
+    const L = document.querySelector(".ml-spinbtn.left");
+    const b = L.getBoundingClientRect();
+    const midY = b.top + b.height / 2, midX = b.left + b.width / 2;
+    const owns = (x, y) => { const e = document.elementFromPoint(x, y); return !!e && (e === L || L.contains(e)); };
+    // 34 -> 42.5 means 4.25px of reach on each side: 3px out must hit, 6px must not
+    return { painted: { w: Math.round(b.width), h: Math.round(b.height) },
+             inLeft: owns(b.left - 3, midY), outLeft: owns(b.left - 6, midY),
+             inTop: owns(midX, b.top - 3), outTop: owns(midX, b.bottom + 6),
+             inBottom: owns(midX, b.bottom + 3),
+             rec: (() => { const r = document.querySelector(".ml-rec"); if (!r) return null;
+               const rb = r.getBoundingClientRect();
+               return owns(rb.left + 4, rb.top + 4); })() };
+  });
+  h.painted.w === 34 && h.painted.h === 34
+    ? ok(`the painted box is still the 🔍 square's 34x34 — the growth is invisible`)
+    : fail(`the painted box is ${h.painted.w}x${h.painted.h}; it must stay the search square's 34x34`);
+  h.inLeft && h.inTop && h.inBottom
+    ? ok(`the target reaches 3px past the paint on every side — a press there lands`)
+    : fail(`3px outside the paint missed: left=${h.inLeft} top=${h.inTop} bottom=${h.inBottom}`);
+  !h.outLeft && !h.outTop
+    ? ok(`…and stops before 6px, so it is the asked-for 25% and not a free-for-all`)
+    : fail(`the target still answers 6px out (left=${h.outLeft} below=${h.outTop}) — that is more than 25%`);
+  h.rec === false || h.rec === null
+    ? ok(`and it does not reach into the Report button under it`)
+    : fail(`the grown target steals the Report button's own corner`);
+}
+
+// ── 7. LANDSCAPE: the card moves, both edges follow ────────────────────────
 {
   await page.setViewportSize({ width: 851, height: 393 });
   await page.waitForTimeout(1200); // the rotation snaps under a veil (hud.ts)

@@ -89,17 +89,18 @@ ICONS = {
 # strip the CSS steps through with background-position — the same "his export ->
 # exact 2x -> /ui2" recipe as the icons, just laid out in a row.
 #   name -> (source, frames kept)
-# THE TRIM (maintainer 2026-09-26: "remove some frames from the gif so it ends
-# on a perfect 90° rotation"). The export is 9 frames; the bar plays the whole
-# strip for one press, so the strip IS the quarter turn and its LAST frame is
-# dropped. Measured first, because the trim had to be aimed: the silhouette is
-# byte-identical in all nine (bbox 20x18 at x6-25,y7-24 every frame), so this is
-# a turntable about the vertical axis and not a tilt, and frames 7 and 8 are the
-# closest non-adjacent pair in the set (the 6->8 join is 15697 against a 24680
-# mean, i.e. the cheapest cut available) — the tail settles. Cutting the END is
-# also what his sentence asks for. Change KEEP and re-run to re-aim it.
+# EVERY FRAME IS KEPT, and that is the rule: his export is a CLOSED LOOP whose
+# last frame hands back to its first, so it carries N authored transitions, not
+# N-1. Dropping one replaces two of them with a single join that covers twice
+# the rotation — a snap, always at the cut. An 8-frame cut shipped on
+# 2026-09-26 and he saw it immediately ("the rotation animation snaps at the
+# last frame"), which is also what settled the clip's span: a press plays the
+# whole strip, and had that been a full 360° he would have reported a full
+# spin rather than a seam. The strip IS the quarter turn. `keep` stays as a
+# parameter because a future export may need aiming — but trimming a closed
+# loop for smoothness is the one thing it cannot do.
 STRIPS = {
-    "spin-orb": ("spin-orb-src.gif", 8),
+    "spin-orb": ("spin-orb-src.gif", 9),
 }
 
 
