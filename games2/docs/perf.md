@@ -635,7 +635,21 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   shows the shimmer and the frame with it; `counts.highp` says which arm a
   window ran. If it clears the shimmer, the overlaps that hide the error (the
   tile art's extra texel, the outline's extra column) become removable —
-  theirs (games, tiles), on his evidence.
+  theirs (games, tiles), on his evidence. HIS VERDICT 2026-09-26: the cache
+  seams are gone, the shimmer is not.
+- **BETWEEN WHOLE ZOOMS EVERY OBJECT MEETS THE SCREEN'S PIXELS ON ITS OWN**
+  (Settings→Dev "camera: steady zoom", `ml-steady-zoom` "1", `counts.steadyZoom`;
+  2026-09-26, his shimmer while moving and indoor furniture that "doesn't stand
+  steady on the floor"). The speed zoom-out (`CAM_ZOOM_OUT` 0.32, his
+  "stronger", twice) breathes through fractional zooms whenever he moves (his
+  12:16 run: 1.36, 1.98). There Phaser 3.90 turns `renderRoundPixels` off (it
+  needs an integer zoom) while it still floors every sprite's world position,
+  so the ground RT (one image) and each sprite quantize to device pixels
+  separately and a half-pixel origin wobbles a pixel against the floor as the
+  camera moves; full precision cannot touch it. The switch holds the zoom at
+  its resting whole value — his A/B; the fix that keeps the zoom-out (the world
+  drawn at the whole zoom, the finished frame scaled) costs fill while he runs
+  and is his call after it.
 - **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
   "I can't have a lag that is due to the perf run itself when I try to
   evaluate the performance... This might result in me pushing you to fix the
