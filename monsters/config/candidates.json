@@ -4330,22 +4330,6 @@
       "batch": "v3"
     },
     {
-      "id": "ember_bat_swarm",
-      "name": "Sparkswarm",
-      "tier": "cute",
-      "scale": "small",
-      "size": 40,
-      "template_id": "bear",
-      "biome": [
-        "black_rock",
-        "lava"
-      ],
-      "prompt": "Loose swarm of tiny bats made of glowing sparks, forming a rough flying shape, trailing embers.",
-      "lore": "Sparks that fly upward and do not go out.",
-      "items": [],
-      "batch": "v3"
-    },
-    {
       "id": "vent_lizard",
       "name": "Ventlizard",
       "tier": "mid",
@@ -8439,6 +8423,25 @@
       "batch": "v3",
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-25T14:41:07+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "ember_bat_swarm",
+      "name": "Sparkswarm",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Loose swarm of tiny bats made of glowing sparks, forming a rough flying shape, trailing embers.",
+      "lore": "Sparks that fly upward and do not go out.",
+      "items": [],
+      "batch": "v3",
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-26T08:57:06+00:00",
       "versions_tried": 1
     }
   ],

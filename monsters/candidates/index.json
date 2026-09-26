@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-26T04:53:01+00:00",
+  "generated_at": "2026-09-26T08:57:08+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 329,
+  "count": 328,
   "candidates": [
     {
       "id": "gargoyle",
@@ -37586,144 +37586,6 @@
         "state": "waiting",
         "takes": {},
         "blocking": "design not approved"
-      }
-    },
-    {
-      "id": "ember_bat_swarm",
-      "name": "Sparkswarm",
-      "tier": "cute",
-      "lore": "Sparks that fly upward and do not go out.",
-      "biome": [
-        "black_rock",
-        "lava"
-      ],
-      "items": [],
-      "size": [
-        40,
-        40
-      ],
-      "template_id": "bear",
-      "scale": "small",
-      "pixellab_id": "8028caaa-1c6b-46b3-a4ad-5d3b974240ab",
-      "version": 1,
-      "sheet": "ember_bat_swarm/sheet.webp",
-      "rotations": {
-        "south": "ember_bat_swarm/rotations/south.webp",
-        "south-east": "ember_bat_swarm/rotations/south-east.webp",
-        "east": "ember_bat_swarm/rotations/east.webp",
-        "north-east": "ember_bat_swarm/rotations/north-east.webp",
-        "north": "ember_bat_swarm/rotations/north.webp",
-        "north-west": "ember_bat_swarm/rotations/north-west.webp",
-        "west": "ember_bat_swarm/rotations/west.webp",
-        "south-west": "ember_bat_swarm/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "fail",
-        "min_run1": 0.763,
-        "reasons": [
-          "south: content touches the canvas edge (clipped)",
-          "south-east: content touches the canvas edge (clipped)",
-          "north-west: content touches the canvas edge (clipped)"
-        ],
-        "directions": {
-          "south": {
-            "run1": 0.83,
-            "bbox": [
-              2,
-              0,
-              37,
-              37
-            ],
-            "fill": 0.809,
-            "touches_edge": true
-          },
-          "south-east": {
-            "run1": 0.803,
-            "bbox": [
-              4,
-              0,
-              36,
-              37
-            ],
-            "fill": 0.74,
-            "touches_edge": true
-          },
-          "east": {
-            "run1": 0.777,
-            "bbox": [
-              6,
-              2,
-              30,
-              37
-            ],
-            "fill": 0.525,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.764,
-            "bbox": [
-              4,
-              4,
-              35,
-              37
-            ],
-            "fill": 0.639,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.771,
-            "bbox": [
-              2,
-              3,
-              38,
-              37
-            ],
-            "fill": 0.765,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.766,
-            "bbox": [
-              7,
-              0,
-              34,
-              37
-            ],
-            "fill": 0.624,
-            "touches_edge": true
-          },
-          "west": {
-            "run1": 0.763,
-            "bbox": [
-              10,
-              2,
-              31,
-              37
-            ],
-            "fill": 0.459,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.768,
-            "bbox": [
-              6,
-              2,
-              33,
-              37
-            ],
-            "fill": 0.591,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-24T20:35:24+00:00",
-      "verdict": "approved",
-      "graduation": {
-        "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
       }
     },
     {
