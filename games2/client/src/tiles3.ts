@@ -1435,12 +1435,28 @@ export interface Tiles3Cell {
 export interface CellEdges {
   top: number;
   lo: [number, number, number];
+  /** THE NEIGHBOURS' LINES THROUGH THIS CELL'S CORNERS (`edgeNb`): per
+   *  same-level neighbour with a line, its `EDGE_NB_STEPS` index and `top`,
+   *  and for a composed ramp its mask and rise (`i.top` or `i.top.mask.lh`,
+   *  joined by `_`). Absent for none. */
+  nb?: string;
 }
 export const EDGE_N = 1;
 export const EDGE_W = 2;
 export const EDGE_S = 4;
 export const EDGE_E = 8;
 export const EDGE_NONE = -99;
+/** The eight neighbours of `CellEdges.nb`, in its order (tiles3draw `EDGE_NB`). */
+export const EDGE_NB_STEPS: readonly (readonly [number, number])[] = [
+  [-1, -1],
+  [0, -1],
+  [1, -1],
+  [-1, 0],
+  [1, 0],
+  [-1, 1],
+  [0, 1],
+  [1, 1],
+];
 
 export interface Tiles3Boundary {
   x: number;
@@ -1473,9 +1489,9 @@ export interface Tiles3Boundary {
    *  other ground lands on the level and the mask curve stays where the
    *  neighbours' is. `rise` extends the top-only mask (slopeTopOnly). */
   slope?: { side: "a" | "b"; rise: number; lift: number };
-  /** The cell's outline on its top face (`CellEdges.top`): part of the
+  /** The cell's outline on its top face (tiles3draw `edgeCode`): part of the
    *  composed picture, so part of its key. */
-  edge?: number;
+  edge?: string;
   /** Only the top face of the composed tile is painted — a wall cap, a liquid. */
   topOnly?: boolean;
   /** TOP FACE ONLY *AND NOTHING IS DRAWN UNDER IT* — a liquid on the flat, which
@@ -2459,13 +2475,66 @@ export class Tiles3 {
       const a = h(ax, ay, ak);
       const b = h(bx, by, bk);
       if (a === null || b === null) return;
-      if (me[k] > a + EPS && me[k] > b + EPS) lo[i] = Math.max(a, b);
+      if (me[k] > a + EPS && me[k] > b + EPS) lo[i] = Math.min(a, b); // to the LOWER ground: the cell in front hides the rest (his green circles 2026-09-26, a riser corner stopping short of the step below)
     };
     vert(0, 2, x, y + 1, 0, x - 1, y, 3); // left: the left face ends (its continuation, (x-1, y), stands lower)
     vert(1, 3, x + 1, y, 2, x, y + 1, 1); // bottom: the left face turns into the right
     vert(2, 1, x + 1, y, 0, x, y - 1, 3); // right: the right face ends
     if (!top && lo[0] === EDGE_NONE && lo[1] === EDGE_NONE && lo[2] === EDGE_NONE) return undefined;
     return { top, lo };
+  }
+
+  /** THE NEIGHBOURS' LINES THIS CELL MUST INK (`CellEdges.nb`): a cell drawn
+   *  after a neighbour of its own level paints its corner over that
+   *  neighbour's line where the two touch (his green circles 2026-09-26: a
+   *  hole at every V of a rim, and every 32 px along the ice terraces, whose
+   *  cells are ramps), so each cell carries the lines of its eight same-level
+   *  neighbours, a ramp's incline with them. "" when none has one — decided
+   *  without asking them when the 5x5 round the cell is all one level. */
+  edgeNb(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number): string {
+    const z = L(x, y);
+    let mixed = false;
+    for (let dy = -2; dy <= 2 && !mixed; dy++) for (let dx = -2; dx <= 2 && !mixed; dx++) if (g(x + dx, y + dy) && L(x + dx, y + dy) !== z) mixed = true;
+    if (!mixed) return "";
+    if (this.edgeGeom(g, L, x, y) === null) return "";
+    const out: string[] = [];
+    for (let i = 0; i < EDGE_NB_STEPS.length; i++) {
+      const [dx, dy] = EDGE_NB_STEPS[i];
+      const nx = x + dx, ny = y + dy;
+      if (!g(nx, ny) || L(nx, ny) !== z) continue;
+      const top = this.edgeSet(g, L, nx, ny)?.top ?? 0;
+      if (!top) continue;
+      const geo = this.edgeGeom(g, L, nx, ny);
+      if (geo === null) continue;
+      out.push(geo ? `${i}.${top}.${geo.mask}.${geo.lh}` : `${i}.${top}`);
+    }
+    return out.join("_");
+  }
+
+  /** How a cell's top lies for its outline: 0 flat, a composed ramp's mask
+   *  (chamfer bit included) and rise in px, or null for a top whose lines this
+   *  rule cannot place (a raise, a published ramp, a liquid). The composed ramp
+   *  is rebuilt exactly as `resolveCell` builds its art. */
+  edgeGeom(g: (x: number, y: number) => string | null, L: (x: number, y: number) => number, x: number, y: number): 0 | { mask: number; lh: number } | null {
+    const gr = g(x, y);
+    if (!gr || LIQUID_TILE_GROUNDS.includes(gr)) return null;
+    const z = L(x, y);
+    let flat = true;
+    for (let k = 0; k < 4 && flat; k++) if (this.cornerHeight(g, L, x, y, k) !== z) flat = false;
+    if (flat) return 0;
+    const ridx = this.rampIndexFor(g, L, gr, x, y, z);
+    if (!ridx) return null;
+    const sl = this.slopeTile(gr, ridx, x, y, true);
+    if (!sl || !sl.ramp || !sl.dir.startsWith(SYNTHETIC_RAMP_DIR + "/")) return null;
+    let mask = sl.index;
+    const nMask = (dx: number, dy: number): number => {
+      const gn = g(x + dx, y + dy);
+      if (!gn || LIQUID_TILE_GROUNDS.includes(gn)) return 0;
+      const m = this.slopeIndexAt(g, L, gn, x + dx, y + dy, L(x + dx, y + dy), true, true);
+      return m === 15 ? 0 : m;
+    };
+    if (rampChamfers(mask, nMask)) mask |= RAMP_CHAMFER;
+    return { mask, lh: Math.max(0, sl.h - PLATE_H) };
   }
 
   /** THE SHARE OF THE STOREY THIS CELL'S COMPOSED RAMP CLIMBS: its run's pick
@@ -3051,7 +3120,9 @@ export class Tiles3 {
   private outline(cell: Tiles3Cell, g: (x: number, y: number) => string | null, L: (x: number, y: number) => number): void {
     if (!this.data.footBoundary) return;
     const e = this.edgeSet(g, L, cell.x, cell.y);
-    if (e) cell.edge = e;
+    const nb = this.edgeNb(g, L, cell.x, cell.y);
+    if (e) cell.edge = nb ? { ...e, nb } : e;
+    else if (nb) cell.edge = { top: 0, lo: [EDGE_NONE, EDGE_NONE, EDGE_NONE], nb };
   }
 
   /** THE WALL FOOT — which of this cell's two up-screen edges has a higher
@@ -3405,7 +3476,10 @@ export class Tiles3 {
     // The cell's outline rides its composed tile (a deck's slab draws none: `plateOf`).
     const edgeSet = this.data.footBoundary && !opts?.plateOf ? this.edgeSet(g, L, x, y) : undefined;
     // The top's edges (bits 0-3) and, above them, the riser's verticals (tiles3draw `withEdge`).
-    const edgeTop = edgeSet ? edgeSet.top | ((edgeSet.lo[0] !== EDGE_NONE ? 1 : 0) | (edgeSet.lo[1] !== EDGE_NONE ? 2 : 0) | (edgeSet.lo[2] !== EDGE_NONE ? 4 : 0)) << 4 : 0;
+    const edgeNb = this.data.footBoundary && !opts?.plateOf ? this.edgeNb(g, L, x, y) : "";
+    // tiles3draw `edgeCode`: the top's edges and the riser's verticals, then the neighbours' lines through its corners.
+    const own = edgeSet ? edgeSet.top | ((edgeSet.lo[0] !== EDGE_NONE ? 1 : 0) | (edgeSet.lo[1] !== EDGE_NONE ? 2 : 0) | (edgeSet.lo[2] !== EDGE_NONE ? 4 : 0)) << 4 : 0;
+    const edgeTop = own || edgeNb ? `${own}${edgeNb ? "n" + edgeNb : ""}` : "";
     return {
       pa,
       pb,

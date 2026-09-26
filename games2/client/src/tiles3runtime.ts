@@ -775,7 +775,7 @@ function owedTop(t3: Tiles3Textures, cell: Tiles3Cell, plain: string): string | 
   return k === plain && Tiles3Textures.wantsTopLine(cell) && t3.lineOwed(plain) ? null : k;
 }
 /** `edgedCourse` for an occluder copy, owed the same way. */
-function owedCourse(t3: Tiles3Textures, plain: string, bits: number): string | null {
+function owedCourse(t3: Tiles3Textures, plain: string, bits: string): string | null {
   const k = t3.edgedCourse(plain, bits);
   return k === plain && bits && t3.lineOwed(plain) ? null : k;
 }

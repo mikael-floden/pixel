@@ -54,9 +54,11 @@ import {
   EDGE_S,
   EDGE_E,
   EDGE_NONE,
+  EDGE_NB_STEPS,
   type PatternsDoc,
   type Tiles3Boundary,
   type Tiles3Cell,
+  type CellEdges,
   type Tiles3DeckCell,
   type Tiles3Window,
   type TileArt,
@@ -710,6 +712,12 @@ function inkLines(px: Pixels, outer: Set<number>, inner: Set<number>): void {
       n++;
     }
   if (!n) return;
+  if ((globalThis as { __edgeDebug?: boolean }).__edgeDebug) {
+    // A probe's view (scripts/probe-edges.mjs): the outer line pure red, the inner pure blue.
+    for (const k of inner) if (!outer.has(k)) inkAt(d, k * 4, 1, [0, 0, 255]);
+    for (const k of outer) inkAt(d, k * 4, 1, [255, 0, 0]);
+    return;
+  }
   const mean = [r / n, g / n, b / n];
   const out = mean.map((v) => v * EDGE_SHADE);
   const inn = mean.map((v) => v * EDGE_SHADE_IN);
@@ -735,63 +743,172 @@ function topSpans(sheets: PatternSheets): Int16Array {
   return out;
 }
 
-/** A TOP FACE WITH ITS OUTLINE: a copy of `px` (a plate, a composed tile or a
- *  composed ramp in its taller frame) with the edges in `mask` (tiles3
- *  `CellEdges.top`) inked, per column, so a line is one texel a column along
- *  the 2:1 edge and meets the next cell's line at the shared vertex column.
- *
- *  THE OUTER LINE IS THE LAST PIXEL OF ART: on a back edge the topmost opaque
- *  texel at the rim (a plate's rounding or a ramp's lift included), on a front
- *  edge the first texel of the band under the rim when there is one (the
- *  ground turning into wall) or the rim itself. Nothing of the top is left
- *  outside the line. A ramp's rim is lifted exactly as its texels are
- *  (`buildRampPixels`: `y + lh - round(lh * rampHeight)`), so the line rides
- *  the incline. */
-export function edgeTopPixels(sheets: PatternSheets, px: Pixels, mask: number, ramp?: { mask: number; lh: number }, verts = 0): Pixels {
-  const out: Pixels = { w: px.w, h: px.h, data: new Uint8ClampedArray(px.data) };
+/** The eight neighbours of `CellEdges.nb`, as grid steps (tiles3 `EDGE_NB_STEPS`). */
+export const EDGE_NB = EDGE_NB_STEPS;
+
+/* Line texels live in a patch round the frame (a cell and its neighbours), keyed
+ * row-major so a sorted walk is a raster walk in WORLD order too. */
+const PO = 96;
+const PW = 320;
+const pk = (x: number, y: number) => (y + PO) * PW + x + PO;
+const pkx = (k: number) => (k % PW) - PO;
+const pky = (k: number) => Math.floor(k / PW) - PO;
+
+/** A TOP FACE'S LINES FROM ITS GEOMETRY ALONE, offset (ox, oy): per column one
+ *  outer texel and one inner texel — the rim row `libTop` gives (lifted with a
+ *  ramp's incline) on a back edge, the row under the rim on a front edge (the
+ *  plate's margin row, where the ground turns into wall). Never the raster's
+ *  alpha, so the cell and the neighbour that draws over its vertex compute the
+ *  SAME texels (`edgeTopPixels`). `front` answers whether the row under the rim
+ *  is art (the own raster; a neighbour's plate always has its margin row). */
+function addTopLines(sheets: PatternSheets, outer: Set<number>, inner: Set<number>, mask: number, ox: number, oy: number, lift: (x: number, y: number) => number, front?: (x: number, y: number) => boolean): void {
   const span = topSpans(sheets);
-  const W = out.w, H = out.h, d = out.data;
-  const opaque = (x: number, y: number) => y >= 0 && y < H && d[(y * W + x) * 4 + 3] > 0;
-  const lift = (x: number, y: number) => {
-    if (!ramp) return y;
-    const a = (x + 0.5 - DX) / DX;
-    const b = (y + 0.5) / DY;
-    return y + ramp.lh - Math.round(ramp.lh * rampHeight(ramp.mask, (a + b) / 2, (b - a) / 2));
-  };
-  const outer = new Set<number>(), inner = new Set<number>();
-  for (let x = 0; x < Math.min(W, sheets.fw); x++) {
+  for (let x = 0; x < sheets.fw; x++) {
     const t = span[x * 2], b = span[x * 2 + 1];
     if (t < 0) continue;
-    // THE VERTEX COLUMNS BELONG TO BOTH EDGES: the next cell along a rim is
-    // drawn after this one and its corner texel lands on this line's last
-    // column, so each edge's line runs one column past its vertex — a hole
-    // every 32 px along every rim otherwise (his screenshot, 2026-09-26).
-    const upper = (x >= DX - 1 ? EDGE_N : 0) | (x <= DX ? EDGE_W : 0);
-    const lower = (x >= DX - 1 ? EDGE_E : 0) | (x <= DX ? EDGE_S : 0);
-    if (mask & upper) {
-      let y = lift(x, t);
-      const y0 = y;
-      while (y > y0 - 2 && opaque(x, y - 1)) y--; // art rounded past the rim is still the top
-      for (let g = 0; g < 3 && !opaque(x, y); g++) y++;
-      if (opaque(x, y)) {
-        outer.add(y * W + x);
-        if (opaque(x, y + 1)) inner.add((y + 1) * W + x);
-      }
+    const right = x >= DX;
+    if (mask & (right ? EDGE_N : EDGE_W)) {
+      const y = lift(x, t);
+      outer.add(pk(x + ox, y + oy));
+      inner.add(pk(x + ox, y + 1 + oy));
     }
-    if (mask & lower) {
+    if (mask & (right ? EDGE_E : EDGE_S)) {
       const y0 = lift(x, b);
-      const y = opaque(x, y0 + 1) ? y0 + 1 : y0;
-      if (opaque(x, y)) {
-        outer.add(y * W + x);
-        if (opaque(x, y - 1)) inner.add((y - 1) * W + x);
-      }
+      const y = !front || front(x, y0 + 1) ? y0 + 1 : y0;
+      outer.add(pk(x + ox, y + oy));
+      inner.add(pk(x + ox, y - 1 + oy));
     }
+  }
+}
+
+/** ONE TEXEL WIDE, CONNECTED ONLY DIAGONALLY (his rule, 2026-09-26: "a single
+ *  pixel line where diagonal means the line is connected ... never connect a
+ *  line manhattan distance"): a texel that closes an L (three of a 2x2) goes
+ *  when its neighbours stay one connected run without it. Walked in raster
+ *  order, which is the same order in every cell's patch, so two cells thinning
+ *  the same texels keep the same ones. */
+function thinLine(s: Set<number>): Set<number> {
+  const ks = [...s].sort((a, b) => a - b);
+  for (const k of ks) {
+    const x = pkx(k), y = pky(k);
+    const pos: [number, number][] = [];
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if ((dx || dy) && s.has(pk(x + dx, y + dy))) pos.push([dx, dy]);
+    if (pos.length < 2) continue;
+    let tri = false;
+    for (const [ax, ay] of [[-1, -1], [0, -1], [-1, 0], [0, 0]])
+      if ((s.has(pk(x + ax, y + ay)) ? 1 : 0) + (s.has(pk(x + ax + 1, y + ay)) ? 1 : 0) + (s.has(pk(x + ax, y + ay + 1)) ? 1 : 0) + (s.has(pk(x + ax + 1, y + ay + 1)) ? 1 : 0) >= 3) tri = true;
+    if (!tri) continue;
+    // Are the neighbours one run without this texel?
+    const seen = new Set<number>([0]);
+    const stack = [0];
+    while (stack.length) {
+      const i = stack.pop()!;
+      for (let j = 0; j < pos.length; j++)
+        if (!seen.has(j) && Math.abs(pos[i][0] - pos[j][0]) <= 1 && Math.abs(pos[i][1] - pos[j][1]) <= 1) {
+          seen.add(j);
+          stack.push(j);
+        }
+    }
+    if (seen.size === pos.length) s.delete(k);
+  }
+  return s;
+}
+
+/** A composed ramp's rim row for a texel of the plate diamond, in PLATE rows
+ *  (the ramp's own taller frame adds `lh` above: `edgeTopPixels`). */
+function rampLift(mask: number, lh: number): (x: number, y: number) => number {
+  return (x, y) => {
+    const a = (x + 0.5 - DX) / DX;
+    const b = (y + 0.5) / DY;
+    return y - Math.round(lh * rampHeight(mask, (a + b) / 2, (b - a) / 2));
+  };
+}
+
+/** `CellEdges.nb` read back: each neighbour's index, edges, and ramp. */
+function nbParts(nb: string): { i: number; top: number; mask: number; lh: number }[] {
+  if (!nb) return [];
+  return nb.split("_").map((p) => {
+    const [i, top, mask, lh] = p.split(".").map(Number);
+    return { i, top, mask: mask || 0, lh: lh || 0 };
+  });
+}
+
+/** A SPUR OFF A JUNCTION GOES: where two rims pinch at a shared corner the
+ *  thinning can leave a one- or two-texel stub pointing into the ground — a
+ *  loose end on a line that has none. A real end (a corner line reaching the
+ *  ground) is longer than that and runs to no junction, so it stays. */
+function pruneSpurs(s: Set<number>): Set<number> {
+  const nbs = (k: number) => {
+    const x = pkx(k), y = pky(k), out: number[] = [];
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if ((dx || dy) && s.has(pk(x + dx, y + dy))) out.push(pk(x + dx, y + dy));
+    return out;
+  };
+  for (const k of [...s].sort((a, b) => a - b)) {
+    if (!s.has(k) || nbs(k).length !== 1) continue;
+    const path = [k];
+    let prev = k, cur = nbs(k)[0];
+    while (path.length <= 2) {
+      const n = nbs(cur);
+      if (n.length >= 3) {
+        for (const q of path) s.delete(q);
+        break;
+      }
+      if (n.length !== 2) break;
+      path.push(cur);
+      const next = n[0] === prev ? n[1] : n[0];
+      prev = cur;
+      cur = next;
+    }
+  }
+  return s;
+}
+
+/** A ONE-TEXEL BREAK CLOSED: two line ends two texels apart (a ramp's
+ *  rounded rim against its flat neighbour's) get the texel between them. */
+function bridgeLine(s: Set<number>): void {
+  const count = (x: number, y: number) => {
+    let n = 0;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if ((dx || dy) && s.has(pk(x + dx, y + dy))) n++;
+    return n;
+  };
+  const ends = [...s].filter((k) => count(pkx(k), pky(k)) <= 1).sort((a, b) => a - b);
+  const end = new Set(ends);
+  for (const k of ends) {
+    const x = pkx(k), y = pky(k);
+    for (let dy = -2; dy <= 2; dy++)
+      for (let dx = -2; dx <= 2; dx++) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) !== 2 || !end.has(pk(x + dx, y + dy))) continue;
+        const mx = x + Math.sign(dx) * Math.ceil(Math.abs(dx) / 2), my = y + Math.sign(dy) * Math.ceil(Math.abs(dy) / 2);
+        s.add(pk(mx, my));
+      }
+  }
+}
+
+/** EVERY LINE TEXEL IN A CELL'S FRAME: its own edges (`mask`, a ramp's lift,
+ *  the riser verticals `verts` off its own raster) and the lines of the
+ *  same-level neighbours in `nb` that run through its vertices — the neighbour
+ *  drawn LATER paints its corner over the earlier one's line end, so every
+ *  cell inks every line texel it covers and no draw order can open a hole (his
+ *  green circles 2026-09-26: at every V where a rim turns, a corner-touching
+ *  cell of the same height had painted its plain corner over the vertex).
+ *  Thinned to one texel; `removed` holds the texels the thinning took off the
+ *  own outer line (art there lies OUTSIDE the line and is cleared). */
+function frameLines(sheets: PatternSheets, W: number, H: number, mask: number, verts: number, nb: string, self: number, lift0: (x: number, y: number) => number, opaque: (x: number, y: number) => boolean, oy0 = 0, extra?: (outer: Set<number>, inner: Set<number>) => void) {
+  const outer = new Set<number>(), inner = new Set<number>();
+  // `oy0`: where the top face sits in the raster (a course's is TOP_Y down).
+  const lift = oy0 ? (x: number, y: number) => lift0(x, y) + oy0 : lift0;
+  addTopLines(sheets, outer, inner, mask, 0, 0, lift, opaque);
+  for (const n of nbParts(nb)) {
+    const [dx, dy] = EDGE_NB[n.i];
+    // A neighbour ramp's rim rides its incline, as its own raster draws it (`edgeTopPixels`).
+    const nlift = n.lh ? rampLift(n.mask, n.lh) : (_x: number, y: number) => y;
+    addTopLines(sheets, outer, inner, n.top, (dx - dy) * DX, (dx + dy) * DY + oy0 + self, nlift);
   }
   /* THE VERTICALS OF A FACE THIS RASTER DRAWS ITSELF — a step's riser (the
    * plate's own band) or a ramp's side faces, which no course carries: the
    * corners down the outermost texel of each row from the (lifted) side
-   * vertex, the crease down the two middle columns from the bottom vertex, as
-   * `edgeCoursePixels` draws them on a course. */
+   * vertex, the crease down ONE column from the bottom vertex. */
+  const span = topSpans(sheets);
   const side = (bit: number, xs: readonly number[], inward: number) => {
     if (!(verts & bit)) return;
     const vx = xs[0];
@@ -802,65 +919,146 @@ export function edgeTopPixels(sheets: PatternSheets, px: Pixels, mask: number, r
         if (y > y0 + 2) break;
         continue;
       }
-      outer.add(y * W + x);
-      if (opaque(x + inward, y)) inner.add(y * W + x + inward);
+      outer.add(pk(x, y));
+      if (opaque(x + inward, y)) inner.add(pk(x + inward, y));
     }
   };
   side(1, [0, 1], 1);
   side(4, [sheets.fw - 1, sheets.fw - 2], -1);
-  if (verts & 2) {
-    const y0 = lift(DX - 1, span[(DX - 1) * 2 + 1]) + 1;
-    for (let y = y0; y < H && (opaque(DX - 1, y) || opaque(DX, y)); y++) {
-      outer.add(y * W + DX - 1);
-      outer.add(y * W + DX);
+  if (verts & 2) for (let y = lift(DX - 1, span[(DX - 1) * 2 + 1]) + 2; y < H && opaque(DX - 1, y); y++) outer.add(pk(DX - 1, y));
+  extra?.(outer, inner);
+  bridgeLine(outer);
+  bridgeLine(inner);
+  const before = new Set(outer);
+  thinLine(pruneSpurs(thinLine(outer)));
+  for (const k of outer) inner.delete(k);
+  thinLine(pruneSpurs(thinLine(inner)));
+  const removed: number[] = [];
+  for (const k of before) if (!outer.has(k)) removed.push(k);
+  const inFrame = (k: number) => {
+    const x = pkx(k), y = pky(k);
+    return x >= 0 && y >= 0 && x < W && y < H;
+  };
+  return { outer: [...outer].filter(inFrame), inner: [...inner].filter(inFrame), removed: removed.filter(inFrame) };
+}
+
+const lineMemo = new Map<string, ReturnType<typeof frameLines>>();
+
+/** A TOP FACE WITH ITS OUTLINE: a copy of `px` (a plate, a composed tile or a
+ *  composed ramp in its taller frame) with the line texels of `frameLines`
+ *  inked — its own edges in `mask` (tiles3 `CellEdges.top`), its riser
+ *  verticals `verts`, and the neighbours' lines through its corners (`nb`).
+ *
+ *  THE OUTER LINE IS THE LAST PIXEL OF ART: on a back edge the rim row, and
+ *  any art rounded past it (the review art's diamond is a texel wider) is
+ *  cleared; on a front edge the row under the rim when it is art (the ground
+ *  turning into wall), else the rim. A ramp's rim is lifted exactly as its
+ *  texels are (`buildRampPixels`), so the line rides the incline. */
+export function edgeTopPixels(sheets: PatternSheets, px: Pixels, mask: number, ramp?: { mask: number; lh: number }, verts = 0, nb = ""): Pixels {
+  const out: Pixels = { w: px.w, h: px.h, data: new Uint8ClampedArray(px.data) };
+  const W = out.w, H = out.h, d = out.data;
+  const opaque = (x: number, y: number) => x >= 0 && x < W && y >= 0 && y < H && d[(y * W + x) * 4 + 3] > 0;
+  // A ramp's frame is `lh` rows taller than the plate's, the extra rows above it.
+  const self = ramp?.lh ?? 0;
+  const rl = ramp ? rampLift(ramp.mask, ramp.lh) : null;
+  const lift = (x: number, y: number) => (rl ? rl(x, y) + self : y);
+  /* THE LINE'S SHAPE IS GEOMETRY, NOT ART: one per (frame, edges, neighbours,
+   * incline, which front columns have a margin row), so it is worked out once
+   * and every raster with that shape only inks it (measured 0.97 ms a variant
+   * worked out, the ink alone a few hundredths). A riser's verticals follow
+   * its own band, so a raster with them is worked out alone. */
+  let L: ReturnType<typeof frameLines> | undefined;
+  let mk: string | null = null;
+  if (!verts) {
+    let front = "";
+    if (mask & (EDGE_S | EDGE_E)) {
+      const span = topSpans(sheets);
+      for (let x = 0; x < sheets.fw; x++) front += span[x * 2 + 1] >= 0 && opaque(x, lift(x, span[x * 2 + 1]) + 1) ? "1" : "0";
+    }
+    mk = `${W},${H},${mask},${nb},${ramp ? ramp.mask + "," + ramp.lh : ""},${front}`;
+    L = lineMemo.get(mk);
+  }
+  if (!L) {
+    L = frameLines(sheets, W, H, mask, verts, nb, self, lift, opaque);
+    if (mk) {
+      if (lineMemo.size > 4096) lineMemo.clear();
+      lineMemo.set(mk, L);
     }
   }
-  inkLines(out, outer, inner);
+  // Nothing of the top outside a back edge's line.
+  const span = topSpans(sheets);
+  for (let x = 0; x < Math.min(W, sheets.fw); x++) {
+    const t = span[x * 2];
+    if (t < 0 || !(mask & (x >= DX ? EDGE_N : EDGE_W))) continue;
+    const y1 = lift(x, t);
+    for (let y = Math.max(0, y1 - 3); y < y1; y++) d[(y * W + x) * 4 + 3] = 0;
+  }
+  // A texel the thinning took off the outer line on the art's own border lies outside the line.
+  for (const k of L.removed) {
+    const x = pkx(k), y = pky(k);
+    if (!opaque(x - 1, y) || !opaque(x + 1, y) || !opaque(x, y - 1)) d[(y * W + x) * 4 + 3] = 0;
+  }
+  inkLines(out, new Set(L.outer.map((k) => pky(k) * W + pkx(k))), new Set(L.inner.map((k) => pky(k) * W + pkx(k))));
   return out;
+}
+
+/** The parts of an outline code (`Tiles3Boundary.edge`, `edgeCode`): the top's
+ *  edges, the riser verticals, the neighbours' lines (`CellEdges.nb`). */
+export function edgeParts(code: string): { mask: number; verts: number; nb: string } {
+  const k = code.indexOf("n");
+  const own = Number(k < 0 ? code : code.slice(0, k)) || 0;
+  return { mask: own & 15, verts: own >> 4, nb: k < 0 ? "" : code.slice(k + 1) };
+}
+/** One string for a cell's outline: the top's edges (bits 0-3) and the riser's
+ *  verticals (4-6) as a number, then `n` and the neighbours' lines; "" for none. */
+export function edgeCode(mask: number, verts: number, nb: string): string {
+  const own = mask + verts * 16;
+  return own || nb ? `${own}${nb ? "n" + nb : ""}` : "";
 }
 
 /** A composed tile with its cell's outline (`Tiles3Boundary.edge`), both threads. */
-export function withEdge(sheets: PatternSheets, px: Pixels, edge: number | undefined): Pixels {
-  return edge ? edgeTopPixels(sheets, px, edge & 15, undefined, edge >> 4) : px;
+export function withEdge(sheets: PatternSheets, px: Pixels, edge: string | undefined): Pixels {
+  if (!edge) return px;
+  const p = edgeParts(edge);
+  return edgeTopPixels(sheets, px, p.mask, undefined, p.verts, p.nb);
 }
 
-/** AN OVERLAY WITH THE OUTLINE'S BAND CUT OUT: a fade or detail overlay is
- *  drawn over the lined top, and where its texels reached the rim they painted
- *  a gap into the line. The band is the rim's texels and their rounding either
- *  side, on the edges in `mask`. */
-export function clearOutline(sheets: PatternSheets, px: Pixels, mask: number): Pixels {
+/** AN OVERLAY WITH THE OUTLINE CUT OUT: a fade or detail overlay is drawn over
+ *  the lined top, and where its texels reached a line they painted a gap into
+ *  it. Every line texel of the cell's frame goes (its own and its neighbours'),
+ *  and on its own edges everything past the outer line. */
+export function clearOutline(sheets: PatternSheets, px: Pixels, code: string): Pixels {
   const out: Pixels = { w: px.w, h: px.h, data: new Uint8ClampedArray(px.data) };
   const span = topSpans(sheets);
   const W = out.w, H = out.h;
-  const clear = (x: number, y0: number, y1: number) => {
-    for (let y = Math.max(0, y0); y <= Math.min(H - 1, y1); y++) out.data[(y * W + x) * 4 + 3] = 0;
-  };
+  const { mask, nb } = edgeParts(code);
+  const L = frameLines(sheets, W, H, mask, 0, nb, 0, (_x, y) => y, () => true);
+  for (const k of [...L.outer, ...L.inner]) out.data[(pky(k) * W + pkx(k)) * 4 + 3] = 0;
   for (let x = 0; x < Math.min(W, sheets.fw); x++) {
     const t = span[x * 2], b = span[x * 2 + 1];
     if (t < 0) continue;
-    if (mask & ((x >= DX - 1 ? EDGE_N : 0) | (x <= DX ? EDGE_W : 0))) clear(x, t - 2, t + 2);
-    if (mask & ((x >= DX - 1 ? EDGE_E : 0) | (x <= DX ? EDGE_S : 0))) clear(x, b - 2, b + 2);
+    if (mask & (x >= DX ? EDGE_N : EDGE_W)) for (let y = 0; y <= Math.min(H - 1, t); y++) out.data[(y * W + x) * 4 + 3] = 0;
+    if (mask & (x >= DX ? EDGE_E : EDGE_S)) for (let y = b; y < H; y++) out.data[(y * W + x) * 4 + 3] = 0;
   }
   return out;
 }
 
-/** What a wall course of `storey` carries (bits: 1 the left corner, 2 the
+/** What a wall course of `storey` carries, as a variant spec (`edgeCoursePixels`;
+ *  "" for nothing): bits 1 the left corner, 2 the
  *  crease at the bottom corner, 4 the right corner — those whose run
- *  (`CellEdges.lo`) starts below that storey; 8 and 16 TRIM the cap course's
- *  top face to the library diamond on the up-left and up-right edges the top's
- *  outline runs along — the review art's diamond is rounded a texel wider, and
- *  that texel showed OUTSIDE the line, his screenshot 2026-09-26). */
-export function courseEdgeBits(cell: Tiles3Cell, storey: number): number {
+ *  (`CellEdges.lo`) starts below that storey; 8 marks the CAP, whose top face
+ *  is trimmed to the library diamond and lined like the top (`t` and its
+ *  `edgeCode` follow) — the review art's diamond is rounded a texel wider, and
+ *  that texel showed outside the line and covered the next cell's line end. */
+export function courseEdgeBits(cell: Tiles3Cell, storey: number): string {
   const e = cell.edge;
-  if (!e) return 0;
+  if (!e) return "";
   let bits = 0;
   for (let i = 0; i < 3; i++) if (e.lo[i] !== EDGE_NONE && storey > e.lo[i] + 0.05) bits |= 1 << i;
   const stack = cell.wall?.stack;
-  if (stack?.length && stack[stack.length - 1].storey === storey) {
-    if (e.top & EDGE_W) bits |= 8;
-    if (e.top & EDGE_N) bits |= 16;
-  }
-  return bits;
+  const cap = !!stack?.length && stack[stack.length - 1].storey === storey && !!(e.top || e.nb);
+  if (cap) bits |= 8;
+  return bits ? `${bits}${cap ? "t" + edgeCode(e.top, 0, e.nb ?? "") : ""}` : "";
 }
 
 /** A WALL COURSE WITH ITS OUTLINE (a 64 x 64 review course, its top face at
@@ -868,46 +1066,53 @@ export function courseEdgeBits(cell: Tiles3Cell, storey: number): number {
  *  the top face's side vertex (outer there, inner one texel in), so it meets
  *  the rims at the vertex and the course above and below it (a course is taller
  *  than a storey). The crease, where the left face turns into the right, is
- *  the two middle columns from the bottom vertex down — both faces end there,
- *  so both are the outer line. */
-export function edgeCoursePixels(sheets: PatternSheets, px: Pixels, bits: number): Pixels {
+ *  ONE column from under the bottom vertex down. A cap's top face carries the
+ *  top's lines and its neighbours' (`frameLines`), thinned with the verticals. */
+export function edgeCoursePixels(sheets: PatternSheets, px: Pixels, spec: string): Pixels {
   const out: Pixels = { w: px.w, h: px.h, data: new Uint8ClampedArray(px.data) };
   const W = out.w, H = out.h, d = out.data;
-  const opaque = (x: number, y: number) => x >= 0 && x < W && d[(y * W + x) * 4 + 3] > 0;
-  if (bits & 24) {
+  const opaque = (x: number, y: number) => x >= 0 && x < W && y >= 0 && y < H && d[(y * W + x) * 4 + 3] > 0;
+  const ti = spec.indexOf("t");
+  const low = Number(ti < 0 ? spec : spec.slice(0, ti)) || 0;
+  const top = edgeParts(ti < 0 ? "" : spec.slice(ti + 1));
+  if (low & 8) {
+    // THE CAP'S TOP FACE IS THE LIBRARY DIAMOND: the review art is rounded a
+    // texel wider, and that texel lay over the next cell's line at every joint.
     const span = topSpans(sheets);
     for (let x = 0; x < Math.min(W, sheets.fw); x++) {
-      if (!(bits & (x >= DX ? 16 : 8))) continue;
       const t = span[x * 2];
-      const top = t < 0 ? TOP_Y + DY + 1 : TOP_Y + t;
-      for (let y = 0; y < Math.min(top, TOP_Y + DY + 1, H); y++) d[(y * W + x) * 4 + 3] = 0;
+      const y1 = t < 0 ? TOP_Y + DY + 1 : TOP_Y + t;
+      for (let y = 0; y < Math.min(y1, TOP_Y + DY + 1, H); y++) d[(y * W + x) * 4 + 3] = 0;
     }
   }
-  const outer = new Set<number>(), inner = new Set<number>();
-  const from = TOP_Y + DY - 1;
-  for (let y = Math.max(0, from); y < H; y++) {
-    if (bits & 1) {
-      let x = 0;
-      while (x < 2 && !opaque(x, y)) x++;
-      if (x < 2) {
-        outer.add(y * W + x);
-        inner.add(y * W + x + 1);
+  const verticals = (outer: Set<number>, inner: Set<number>) => {
+    for (let y = Math.max(0, TOP_Y + DY - 1); y < H; y++) {
+      if (low & 1) {
+        let x = 0;
+        while (x < 2 && !opaque(x, y)) x++;
+        if (x < 2) {
+          outer.add(pk(x, y));
+          inner.add(pk(x + 1, y));
+        }
       }
-    }
-    if (bits & 4) {
-      let x = W - 1;
-      while (x > W - 3 && !opaque(x, y)) x--;
-      if (x > W - 3) {
-        outer.add(y * W + x);
-        inner.add(y * W + x - 1);
+      if (low & 4) {
+        let x = W - 1;
+        while (x > W - 3 && !opaque(x, y)) x--;
+        if (x > W - 3) {
+          outer.add(pk(x, y));
+          inner.add(pk(x - 1, y));
+        }
       }
+      // The crease: ONE column, from under the rim's bottom texel (the cap's margin row).
+      if (low & 2 && y >= TOP_Y + 2 * DY + 2) outer.add(pk(DX - 1, y));
     }
-    if (bits & 2 && y >= TOP_Y + 2 * DY) {
-      outer.add(y * W + DX - 1);
-      outer.add(y * W + DX);
-    }
+  };
+  const L = frameLines(sheets, W, H, low & 8 ? top.mask : 0, 0, low & 8 ? top.nb : "", 0, (_x, y) => y, opaque, TOP_Y, verticals);
+  for (const k of L.removed) {
+    const x = pkx(k), y = pky(k);
+    if (!opaque(x - 1, y) || !opaque(x + 1, y) || !opaque(x, y - 1)) d[(y * W + x) * 4 + 3] = 0;
   }
-  inkLines(out, outer, inner);
+  inkLines(out, new Set(L.outer.map((k) => pky(k) * W + pkx(k))), new Set(L.inner.map((k) => pky(k) * W + pkx(k))));
   return out;
 }
 
@@ -1442,7 +1647,7 @@ export function boundaryKey(
   topOnly = false,
   noWall = false,
   lift = 0,
-  edge = 0,
+  edge = "",
 ): string {
   /* `topOnly` IS PART OF THE KEY, because it is part of the PICTURE: a raised
    * boundary is masked to its 924-texel top face and a level-0 one carries the
@@ -1488,7 +1693,7 @@ export function boundaryKeyFor(b: Tiles3Boundary, seam = true): string | null {
     !!b.topOnly,
     !!b.noWall,
     b.slope?.lift ?? 0,
-    b.edge ?? 0,
+    b.edge ?? "",
   );
 }
 
@@ -1910,7 +2115,7 @@ export interface ComposeSide {
   rise?: number;
 }
 export type ComposeJob =
-  | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide; slope?: { side: "a" | "b"; rise: number; lift: number }; edge?: number }
+  | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide; slope?: { side: "a" | "b"; rise: number; lift: number }; edge?: string }
   | { kind: "fade"; key: string; side: ComposeSide; top: [number, number, number] }
   /** A PLATE — the conformed field art under its own key, the same
    *  `buildPlatePixels` the worker builds a boundary's sides with. Posted only
@@ -2119,15 +2324,16 @@ export class Tiles3Textures {
     const mask = e?.top ?? 0;
     // A wall cell's courses carry its verticals (`edgedCourse`); a field's riser or a ramp's sides are this raster's.
     const verts = e && cell.kind !== "wall" ? (e.lo[0] !== EDGE_NONE ? 1 : 0) | (e.lo[1] !== EDGE_NONE ? 2 : 0) | (e.lo[2] !== EDGE_NONE ? 4 : 0) : 0;
-    if ((!mask && !verts) || !art || (art as { kind: string }).kind === "liquid") return key;
-    const vkey = this.variantKey(key, mask | (verts << 4), "e");
+    const nb = e?.nb ?? "";
+    if ((!mask && !verts && !nb) || !art || (art as { kind: string }).kind === "liquid") return key;
+    const vkey = this.variantKey(key, edgeCode(mask, verts, nb), "e");
     const hit = this.ensureHit(vkey);
     if (hit) return hit;
     return (
       this.ensure(vkey, () => {
         const ramp = art.kind === "ramp" && art.from ? { mask: art.mask ?? 0, lh: Math.max(0, ((art as { h?: number }).h ?? PLATE_H) - PLATE_H) } : undefined;
         const base = ramp ? this.rampRaster(art, cell.ground) : art.kind === "ramp" ? null : this.platePixels(art, cell.ground);
-        return base ? edgeTopPixels(this.o.sheets, base, mask, ramp, verts) : null;
+        return base ? edgeTopPixels(this.o.sheets, base, mask, ramp, verts, nb) : null;
       }) ?? key
     );
   }
@@ -2153,25 +2359,27 @@ export class Tiles3Textures {
   /** Whether `cell`'s surface wears a line (`edgedTop` would make a variant). */
   static wantsTopLine(cell: Tiles3Cell): boolean {
     const e = cell.edge;
-    return !!e && (!!e.top || (cell.kind !== "wall" && e.lo.some((v) => v !== EDGE_NONE)));
+    return !!e && (!!e.top || !!e.nb || (cell.kind !== "wall" && e.lo.some((v) => v !== EDGE_NONE)));
   }
 
   /** `${key}|<tag><n>`, built once per key and n: this runs per edge cell per
    *  paint, and a fresh template string per call is a rehash per call. */
-  private variantKey(key: string, n: number, tag: "e" | "v" | "x"): string {
-    let arr = this.edgeKeys.get(key);
-    if (!arr) this.edgeKeys.set(key, (arr = []));
-    const i = tag === "e" ? n : tag === "v" ? 128 + n : 160 + n;
-    return arr[i] ?? (arr[i] = `${key}|${tag}${n}`);
+  private variantKey(key: string, code: string, tag: "e" | "v" | "x"): string {
+    let m = this.edgeKeys.get(key);
+    if (!m) this.edgeKeys.set(key, (m = new Map()));
+    const i = tag + code;
+    let v = m.get(i);
+    if (!v) m.set(i, (v = `${key}|${i}`));
+    return v;
   }
-  private edgeKeys = new Map<string, string[]>();
+  private edgeKeys = new Map<string, Map<string, string>>();
   /** A lined cell's finished ops (every op resolved): the ground pass walks the
    *  same cells several times a second, and a lined cell would otherwise build
    *  a new array each time. Textures are never evicted in play (`limit: 0`). */
   private edgedOps = new GenMemo<Tiles3Cell, Tiles3Blit[]>(CELL_MEMO_CAP);
 
   /** A WALL COURSE WITH ITS VERTICALS (`courseEdgeBits`), or `key` itself. */
-  edgedCourse(key: string, bits: number): string {
+  edgedCourse(key: string, bits: string): string {
     if (!bits) return key;
     const vkey = this.variantKey(key, bits, "v");
     const hit = this.ensureHit(vkey);
@@ -2186,13 +2394,14 @@ export class Tiles3Textures {
 
   /** A FADE OR DETAIL OVERLAY on a lined top, with the outline's band cut out
    *  (`clearOutline`), or null while its pixels are not here. */
-  private edgedOverlay(key: string, mask: number): string | null {
-    const vkey = this.variantKey(key, mask, "x");
+  private edgedOverlay(key: string, e: CellEdges): string | null {
+    const code = edgeCode(e.top, 0, e.nb ?? "");
+    const vkey = this.variantKey(key, code, "x");
     return (
       this.ensureHit(vkey) ??
       this.ensure(vkey, () => {
         const px = this.overlayPx.get(key);
-        return px ? clearOutline(this.o.sheets, px, mask) : null;
+        return px ? clearOutline(this.o.sheets, px, code) : null;
       })
     );
   }
@@ -2679,8 +2888,8 @@ export class Tiles3Textures {
       if (op.role === "fade") {
         const f = cell.fade;
         let built = f ? this.fade(f.file, cell.ground) : null;
-        if (built && cell.edge?.top) {
-          built = this.edgedOverlay(built, cell.edge.top);
+        if (built && (cell.edge?.top || cell.edge?.nb)) {
+          built = this.edgedOverlay(built, cell.edge);
           if (!built) lined = false; // drawn next paint, never over the line
         }
         if (built) {
@@ -2699,8 +2908,8 @@ export class Tiles3Textures {
       if (op.role === "detail") {
         const d = cell.detail;
         let built = d ? this.detail(d.file, cell.ground) : null;
-        if (built && cell.edge?.top) {
-          built = this.edgedOverlay(built, cell.edge.top);
+        if (built && (cell.edge?.top || cell.edge?.nb)) {
+          built = this.edgedOverlay(built, cell.edge);
           if (!built) lined = false; // drawn next paint, never over the line
         }
         if (built) {
@@ -2897,8 +3106,8 @@ export class Tiles3Textures {
       if (op.role === "fade") {
         const f = cell.fade;
         let built = f ? this.fade(f.file, cell.ground) : null;
-        if (built && cell.edge?.top) {
-          built = this.edgedOverlay(built, cell.edge.top);
+        if (built && (cell.edge?.top || cell.edge?.nb)) {
+          built = this.edgedOverlay(built, cell.edge);
         }
         if (built) out.push(built === op.key ? op : { ...op, key: built });
         else this.droppedOps++;

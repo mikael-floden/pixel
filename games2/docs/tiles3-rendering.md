@@ -555,45 +555,59 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   with the art still unrequested, which is the pop-in the hold was built to
   stop. verify-tiles3 still walks to its scenery window instead of `lookAt`;
   that is belt and braces now, not a requirement.)
-- **EVERY VISIBLE EDGE WEARS A 2 PX OUTLINE; A 100% RAMP WEARS NONE**
-  (maintainer 2026-09-26: "a 1px near-black (somewhat transparent) border at
-  every visible edge ... where the ground becomes wall or where a left wall
-  becomes a right wall", then "2px wide with the inner border lighter; light
-  joins light, dark joins dark; never a gap; follow the slope"). The rule is
-  tiles3 `edgeSet` → `Tiles3Cell.edge` (`top`: the top face's edges where it
-  stands above its neighbour at either end, or a back edge below one; `lo[3]`:
-  the left corner, the crease, the right corner, each with the height its run
-  goes down to), from corner SURFACE heights with the ramp rise in, so a full
-  ramp is flush and draws nothing and a 50% ramp keeps its riser. The ink is
-  BAKED into lined texture variants (key `|e<n>`, `|v<n>`, `|x<n>`: a new picture
-  is a new key), so the ground pass and every occluder copy draw one raster
-  and the outline costs zero fill (his phone is fill-bound; a per-pixel depth
-  outline was rejected for that). THE INK IS THE TILE'S OWN MEAN COLOUR
-  darkened (`EDGE_SHADE` 0.35 at `EDGE_ALPHA` 0.6 outer, `EDGE_SHADE_IN` 0.6 at
-  `EDGE_ALPHA_IN` 0.45 inner: ~0.61 and ~0.82 of the tile's tone), his "less
-  extreme ... similar regardless of the background tile" (a fixed black ink
-  read heavy on sand, vanished on mud, and a dark art texel under it read as a
-  hole). `edgeTopPixels`: per COLUMN, the OUTER line on the last texel of art —
-  a back edge's topmost opaque texel (a plate's rounding and a ramp's lift
-  included), a front edge's first band texel under the rim (ground turning
-  into wall) — and the INNER line one texel inside; one texel a column is what
-  makes two cells' lines meet — and each edge's line runs ONE COLUMN PAST its
-  vertex, because the next cell along a rim is drawn after this one and its
-  corner texel lands on this line's last column (a hole every 32 px, his
-  screenshot). A variant that
-  cannot be built yet (its plate not landed) is OWED for `EDGE_OWED_MS`
-  (`lineOwed`): the ground counts it in `plateRawFallbacks` so the drop ledger
-  repaints the cell, an occluder copy answers null so it is re-walked — a
-  plain draw left there was a permanent gap in the line (his screenshot). A riser in a plate's own
-  band and a ramp's side faces take their verticals there too (`verts`, bits
-  4-6 of a boundary's `edge`). `edgeCoursePixels`: corners down each row's
-  outermost texel (inner beside it), the crease both middle columns, and the
-  CAP course trimmed to `libTop` on the back edges it outlines — the review
-  art's diamond is rounded a texel wider and that texel showed OUTSIDE the line
-  (his screenshot). A fade or detail overlay on a lined top has the outline's
-  band cut out (`clearOutline`) — it painted gaps into the line. Gate:
-  `server/test/edges.test.ts`. (Not a GPU edge pass: it re-fills the screen.
-  Not the libTop rim alone: the cap under it stuck out.)
+- **EVERY VISIBLE EDGE WEARS A 2 PX OUTLINE, EACH LINE ONE TEXEL WIDE AND
+  JOINED ONLY DIAGONALLY, WITH NO HOLE; A 100% RAMP WEARS NONE** (maintainer
+  2026-09-26: "a 1px near-black (somewhat transparent) border at every visible
+  edge ... where the ground becomes wall or where a left wall becomes a right
+  wall", "2px wide with the inner border lighter; light joins light, dark joins
+  dark; never a gap; follow the slope", "a single pixel line where diagonal
+  means the line is connected ... never connect a line manhattan distance").
+  The rule is tiles3 `edgeSet` → `Tiles3Cell.edge` (`top`: the top face's edges
+  where it stands above its neighbour at either end, or a back edge below one;
+  `lo[3]`: the left corner, the crease, the right corner, each running down to
+  the LOWER of the two grounds at that corner — the cell in front hides the
+  rest; to the higher one it stopped mid-riser, his circles), from corner
+  SURFACE heights with the ramp rise in, so a full ramp is flush and draws
+  nothing and a 50% ramp keeps its riser. The ink is BAKED into lined texture
+  variants (key `|e<code>`, `|v<spec>`, `|x<code>`: a new picture is a new key),
+  so the ground pass and every occluder copy draw one raster and the outline
+  costs zero fill (his phone is fill-bound; a per-pixel depth outline was
+  rejected for that). THE INK IS THE TILE'S OWN MEAN COLOUR darkened
+  (`EDGE_SHADE` 0.35 at `EDGE_ALPHA` 0.6 outer, `EDGE_SHADE_IN` 0.6 at
+  `EDGE_ALPHA_IN` 0.45 inner), his "similar regardless of the background tile".
+  - THE LINE IS GEOMETRY, never the raster's alpha (`frameLines`): per column
+    the rim row of `libTop` on a back edge (a ramp's `rampHeight` lift on it),
+    the margin row under the rim on a front edge; inner one texel inside. Art
+    rounded past a back edge's line is cleared (the review art is a texel wider).
+  - EVERY CELL INKS EVERY LINE TEXEL IT COVERS, its neighbours' included
+    (`CellEdges.nb`, `edgeNb`: the `top` of each same-level neighbour, a
+    composed ramp's mask and rise with it, `edgeGeom`). A cell drawn later
+    paints its corner over the earlier one's line end wherever two diamonds
+    touch — a hole at every V of a rim, at every joint along a rim, every 32 px
+    along the ice terraces (his green circles) — so no draw order can open one.
+    The CAP COURSE is trimmed to `libTop` all round and lined the same way
+    (`courseEdgeBits` `8t<code>`): the occluder pass draws it, and its wider
+    corner texel lay over the next cell's line at every joint.
+  - One texel wide, diagonal joins only: in the patch round the frame (the
+    cell and its neighbours, keyed row-major so every cell walks it in the same
+    order) a one-texel break is closed (`bridgeLine`, a ramp's rounded rim
+    against a flat neighbour's), an L corner goes when its neighbours stay one
+    run (`thinLine`), a 1-2 texel stub off a junction goes (`pruneSpurs`); art
+    the thinning took off the outer line's border is cleared.
+  - The shape is memoised per (frame, edges, neighbours, incline, margin
+    columns): 0.97 ms worked out, 0.05 ms a variant after; `edgeNb` 0.05 ms a
+    cell beside a rise, skipped when the 5x5 round the cell is one level.
+  - A variant that cannot be built yet is OWED for `EDGE_OWED_MS` (`lineOwed`):
+    the ground repaints the cell (`plateRawFallbacks`), an occluder copy answers
+    null — a plain draw left there was a permanent gap. A fade or detail
+    overlay on a lined top has every line texel and everything past its own
+    edges cut out (`clearOutline`).
+  - Gate: `server/test/edges.test.ts` paints an irregular plateau in draw
+    order and fails on any line end, 2x2 or L. Probe:
+    `globalThis.__edgeDebug` draws the outer line pure red and the inner pure
+    blue (the composer worker too), so a capture can be checked texel by texel.
+    Not covered: decks, indoor cut stumps, published (non-composed) ramps, and a
+    raise (slopes off): no line or no neighbour ink there.
 - **A ONE-LEVEL RISE IS A RAMP THE BODY WALKS UP; A CLIFF OF TWO KEEPS ITS
   FOOT** (maintainer 2026-09-19: "Think how Zelda - a link to the past created
   slopes Link could run upwards without needing to jump ... 1 level elevation

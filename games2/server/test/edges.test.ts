@@ -68,9 +68,9 @@ test("a two-storey block on flat ground: rims on its outward edges, the foot beh
   assert.equal(e(3, 1), undefined);
   // A course of the corner column carries the verticals from its storey down to the ground.
   const cell = { edge: se } as never;
-  assert.equal(courseEdgeBits(cell, 2), 2);
-  assert.equal(courseEdgeBits(cell, 1), 2);
-  assert.equal(courseEdgeBits(cell, 0), 0, "the storey at ground level is under the ground in front");
+  assert.equal(courseEdgeBits(cell, 2), "2");
+  assert.equal(courseEdgeBits(cell, 1), "2");
+  assert.equal(courseEdgeBits(cell, 0), "", "the storey at ground level is under the ground in front");
 });
 
 test("a full (100%) ramp draws no border, and the terrace it climbs to meets it with none; a stair keeps its edges", { skip }, () => {
@@ -108,38 +108,97 @@ test("the ink: the chosen edges only, the outer line on the last texel of art an
     let last = -1;
     for (let y = 0; y < S.fh; y++) if (S.libTop[y * S.fw + x] > 0) last = y;
     if (last < 0) continue;
-    // x 31 is the bottom vertex's other column: the line runs one column past its vertex (the next cell's corner texel covers the last one).
-    if (x >= 31) {
+    // The down-right edge is the columns right of the bottom vertex; the vertex texel of the other edge is the next cell's.
+    if (x >= 32) {
       assert.equal(at(e, x, last), OUT, `column ${x}: the outer line is the last texel`);
       if (S.libTop[(last - 1) * S.fw + x] > 0) assert.equal(at(e, x, last - 1), IN, `column ${x}: the inner line just inside it`);
     } else assert.equal(at(e, x, last), 255, `column ${x}: another edge, no ink`);
   }
   assert.deepEqual(Array.from(edgeTopPixels(S, white, 0).data), Array.from(white.data), "no mask, no ink");
-  // A back edge whose art is rounded a texel past the diamond: the line moves out to it.
+  // A back edge whose art is rounded a texel past the diamond: that texel is cleared, nothing of the top outside the line.
   const round: Pixels = { w: white.w, h: white.h, data: new Uint8ClampedArray(white.data) };
   let top40 = 0;
   while (S.libTop[top40 * S.fw + 40] === 0) top40++;
   round.data.fill(255, ((top40 - 1) * S.fw + 40) * 4, ((top40 - 1) * S.fw + 40) * 4 + 4);
   const r = edgeTopPixels(S, round, EDGE_N);
-  assert.equal(at(r, 40, top40 - 1), OUT);
-  assert.equal(at(r, 40, top40), IN);
-  // A course: corners down the outermost texel with the inner line beside, the crease both middle columns.
+  assert.equal(r.data[((top40 - 1) * S.fw + 40) * 4 + 3], 0);
+  assert.equal(at(r, 40, top40), OUT);
+  // A course: corners down the outermost texel with the inner line beside, the crease ONE column.
   const course: Pixels = { w: 64, h: 64, data: new Uint8ClampedArray(64 * 64 * 4).fill(255) };
-  const c = edgeCoursePixels(S, course, 5);
+  const c = edgeCoursePixels(S, course, "5");
   assert.equal(at(c, 0, 30), OUT);
   assert.equal(at(c, 1, 30), IN);
   assert.equal(at(c, 63, 30), OUT);
   assert.equal(at(c, 62, 30), IN);
-  const k = edgeCoursePixels(S, course, 2);
+  const k = edgeCoursePixels(S, course, "2");
   assert.equal(at(k, 31, 45), OUT);
-  assert.equal(at(k, 32, 45), OUT);
+  assert.equal(at(k, 32, 45), 255, "one texel wide");
   assert.equal(at(k, 31, 20), 255, "no crease above the bottom vertex");
-  // The cap trimmed on the up-right edge: nothing above the diamond there, the up-left untouched.
   // Relative, not absolute: on a mid-grey course the outer line is that grey darkened by the same share.
   const grey: Pixels = { w: 64, h: 64, data: new Uint8ClampedArray(64 * 64 * 4).fill(128) };
   for (let i = 3; i < grey.data.length; i += 4) grey.data[i] = 255;
-  assert.equal(at(edgeCoursePixels(S, grey, 1), 0, 30), Math.round(128 * (1 - EDGE_ALPHA) + 128 * EDGE_SHADE * EDGE_ALPHA));
-  const t = edgeCoursePixels(S, course, 16);
+  assert.equal(at(edgeCoursePixels(S, grey, "1"), 0, 30), Math.round(128 * (1 - EDGE_ALPHA) + 128 * EDGE_SHADE * EDGE_ALPHA));
+  // The cap's top face trimmed to the library diamond all round.
+  const t = edgeCoursePixels(S, course, "8");
   assert.equal(t.data[(5 * 64 + 40) * 4 + 3], 0);
-  assert.equal(t.data[(5 * 64 + 20) * 4 + 3], 255);
+  assert.equal(t.data[(5 * 64 + 20) * 4 + 3], 0);
+});
+
+test("a plateau's outline painted in draw order is one closed line, one texel wide, joined only diagonally, whichever cell lands last", { skip }, () => {
+  const PAT = load("tiles/patterns/index.json");
+  const p = patternSheetPaths(PAT);
+  const img = (rel: string): Pixels => {
+    const i = imgRGBA(join(REPO, rel)) as { width: number; height: number; data: ArrayLike<number> };
+    return { w: i.width, h: i.height, data: new Uint8ClampedArray(i.data) };
+  };
+  const S = patternSheets(PAT, img(p.silhouette), img(p.masks), img(p.border));
+  // A plate: the library diamond and its margin row, white.
+  const plate: Pixels = { w: S.fw, h: S.fh, data: new Uint8ClampedArray(S.fw * S.fh * 4) };
+  for (let i = 0; i < S.fw * S.fh; i++) if (S.libTop[i] > 0 || (i >= S.fw && S.libTop[i - S.fw] > 0)) plate.data.fill(255, i * 4, i * 4 + 4);
+  const t = resolver(-0.01);
+  // An irregular one-storey plateau: notches make every kind of vertex — V valleys, bottom V's, corner-touching cells.
+  const shape = ["........", ".XXX.XX.", ".XXXXXX.", ".XX.XXX.", ".XXXX.X.", "..XXXXX.", "........"];
+  const lv = shape.map((row) => [...row].map((c) => (c === "X" ? 1 : 0)));
+  const { g, L } = grid(lv);
+  const W = 8 * 64 + 128, H = 8 * 28 + 128;
+  const canvas = new Uint8ClampedArray(W * H * 4);
+  const cells: [number, number][] = [];
+  for (let y = 0; y < lv.length; y++) for (let x = 0; x < lv[0].length; x++) if (lv[y][x]) cells.push([x, y]);
+  // The painter's order: back to front, and along a row left to right.
+  cells.sort((a, b) => a[0] + a[1] - (b[0] + b[1]) || a[0] - b[0]);
+  (globalThis as { __edgeDebug?: boolean }).__edgeDebug = true;
+  try {
+    for (const [x, y] of cells) {
+      const e = t.edgeSet(g, L, x, y);
+      const nb = t.edgeNb(g, L, x, y);
+      const px = edgeTopPixels(S, plate, e?.top ?? 0, undefined, 0, nb);
+      const ox = (x - y) * 32 + 64 + 6 * 32, oy = (x + y) * 14 + 32;
+      for (let j = 0; j < px.h; j++)
+        for (let i = 0; i < px.w; i++) {
+          const s = (j * px.w + i) * 4;
+          if (px.data[s + 3] === 0) continue;
+          const d = ((oy + j) * W + ox + i) * 4;
+          canvas.set(px.data.subarray(s, s + 4), d);
+        }
+    }
+  } finally {
+    delete (globalThis as { __edgeDebug?: boolean }).__edgeDebug;
+  }
+  const red = (x: number, y: number) => x >= 0 && y >= 0 && x < W && y < H && canvas[(y * W + x) * 4] === 255 && canvas[(y * W + x) * 4 + 1] === 0;
+  let n = 0;
+  const bad: string[] = [];
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      if (!red(x, y)) continue;
+      n++;
+      let nb = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if ((dx || dy) && red(x + dx, y + dy)) nb++;
+      if (nb < 2) bad.push(`end ${x},${y}`);
+      if (red(x + 1, y) && red(x, y + 1) && red(x + 1, y + 1)) bad.push(`2x2 ${x},${y}`);
+      // An L (three texels of a 2x2): a join along the grid, not the diagonal.
+      for (const [ax, ay] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) if (red(x + ax, y) && red(x, y + ay) && !red(x + ax, y + ay) && !(red(x - ax, y) || red(x, y - ay))) bad.push(`L ${x},${y}`);
+    }
+  if (process.env.DUMP) for (const b of bad.slice(0, 3)) { const [x0, y0] = b.split(" ")[1].split(",").map(Number); for (let y = y0 - 5; y <= y0 + 5; y++) { let row = ""; for (let x = x0 - 8; x <= x0 + 8; x++) row += red(x, y) ? "R" : canvas[(y * W + x) * 4 + 3] ? (canvas[(y * W + x) * 4 + 2] === 255 && canvas[(y * W + x) * 4] === 0 ? "B" : ".") : " "; console.log(b, row); } }
+  assert.ok(n > 500, `the outline is drawn (${n} texels)`);
+  assert.deepEqual(bad, [], "no end (a hole) and no doubled texel anywhere on the loop");
 });
