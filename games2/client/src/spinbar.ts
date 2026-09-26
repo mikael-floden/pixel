@@ -160,6 +160,10 @@ window.addEventListener("ml-view-angle", (e) => {
   worldLag = (d.goal - d.q) * frames;
   worldBusy = !!d.busy;
   worldAt = performance.now();
+  // drawn NOW, not on the next frame: a frame behind the world is a visible
+  // step at mid-turn speed
+  curF = targetF - worldLag;
+  draw();
   if (!raf) {
     last = performance.now();
     raf = requestAnimationFrame(tick);
