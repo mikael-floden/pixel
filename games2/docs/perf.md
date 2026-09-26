@@ -392,9 +392,14 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   window copies its overlap by rows and looks up its edge, the fill runs
   over the off-map samples alone, and coverage picks the view once per tick
   and reads 0 for an effect with no zone box in reach (`zonefield.ts`,
-  law and numbers in `ambient/README.md`). Next in the ambient line: the
-  per-effect scan peaks (foam 9-13 ms every 450 ms, windy 11.7, water 9.8,
-  dragonflies 8.3) spread over frames.
+  law and numbers in `ambient/README.md`). THE MIST MASK IS BUILT ONLY
+  WHERE IT CAN BE SEEN (2026-09-26, his 21:36 run: `_gloom:raster` 1.9-3.3
+  ms a tick, peaks 9-21, in every window, mostly with no mist zone on): up
+  (mist in view or easing) the whole mask, near (a mist-on zone within 24
+  cells) built ahead in 192-sample slices, else nothing — the pass does not
+  read it at uMist 0; and the lattice keeps its step through the chase
+  cam's run zoom (it re-latticed four times a run-and-stop, each a whole
+  2,560-sample raster).
 - **NO FULL GROUND PAINT IN PLAY** (maintainer 2026-09-24, "fix ground repaint
   on zone hops"). His 14:01 run's `mode: full` frames were 45-226 ms, one or
   two a window — not the hops as such: the coalesced full repaint
@@ -1653,7 +1658,7 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   RASTER (2.5-7.8 ms a tick; field 0.5, the mask upload 0.2), not a GPU
   sync: the camera zoom breathes with speed, the mask step was view/64, and
   the raster memo — keyed on the exact step — was never reused while
-  running. The lattice is zoom-proof now (`ambient/README.md`). The three worst
+  running. The lattice holds through the run's zoom now (`ambient/README.md`). The three worst
   frames were COLLECTIONS: 725 ms (depthSort 566, dh -29 MB, w=gc), 569
   (render 385 with 14 compositions uploaded in the one frame), 478 (hooks
   462, dh -291 MB — a major collection inside storm's update); `allocBy`

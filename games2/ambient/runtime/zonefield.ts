@@ -577,7 +577,36 @@ export class ZoneField {
     return this.zonesOf.get(name) ?? [];
   }
 
-  raster(name: string, rect: { x: number; y: number; width: number; height: number }, cols: number, rows: number, refOut?: Uint8Array): Uint8Array {
+  /** WHETHER `name` IS ON IN A ZONE NEAR THE VIEW: a zone whose window lists
+   *  it has a box within the blur's reach plus `extra` cells of the cells the
+   *  view's coverage samples picked — `coverage` for the same view first. The
+   *  mist mount warms its mask on it before any of it is on screen. */
+  nearView(name: string, extra: number): boolean {
+    if (!this.ruled) return false;
+    const { c0, c1, r0, r1 } = this.covBox;
+    if (c0 > c1) return false;
+    const reach = this.feather + 1 + extra;
+    for (const b of this.boxesOf(name))
+      if (c1 >= Math.floor(b.x0) - reach - 1 && c0 <= Math.ceil(b.x1) + reach && r1 >= Math.floor(b.y0) - reach - 1 && r0 <= Math.ceil(b.y1) + reach) return true;
+    return false;
+  }
+
+  /** The samples the raster memo still owes (a budgeted raster's backlog);
+   *  -1 with no memo. */
+  get rasterStale(): number {
+    return this.rasterMemo ? this.rasterMemo.stale : -1;
+  }
+
+  /* A RASTER CAN BE ASKED AHEAD OF NEED, IN SLICES (games-perf 2026-09-26).
+   * `budget` caps the samples this call looks up: an entering edge, or a cold
+   * window, beyond it is marked RASTER_STALE — owed, not looked up — and the
+   * next calls pay the backlog first-in-row-order within their own budgets.
+   * The mist mount warms its mask this way while a mist zone is near and none
+   * is on screen, so the tick that first shows mist finds the window built: a
+   * cold window was all 2,560 samples and ~680 cell resolves in ONE tick (60
+   * ms headless at the tarn, against 39 for the worst step change the stable
+   * lattice removed). Unbudgeted it is exactly the raster it always was. */
+  raster(name: string, rect: { x: number; y: number; width: number; height: number }, cols: number, rows: number, refOut?: Uint8Array, budget = Infinity): Uint8Array {
     const n = cols * rows;
     if (refOut) refOut.fill(0);
     if (!this.ruled) {
@@ -627,6 +656,14 @@ export class ZoneField {
       rr[k] = p.row;
       ref[k] = packRef(this.floorAt(name, p.col, p.row, p.lvl));
     };
+    // within the budget a sample is looked up; past it, owed
+    let left = budget;
+    const ask = (k: number, i: number, j: number): void => {
+      if (left > 0) {
+        left--;
+        look(k, i, j);
+      } else known[k] = RASTER_STALE;
+    };
     if (reuse) {
       /* THE OVERLAP IS COPIED A ROW AT A TIME (source column i+di, row j+dj);
        * only the edge that entered is looked up — a walking camera ~40-100
@@ -646,19 +683,23 @@ export class ZoneField {
           cc.set(mb.cc.subarray(src, src + len), dst);
           rr.set(mb.rr.subarray(src, src + len), dst);
           ref.set(mb.ref.subarray(src, src + len), dst);
-          for (let i = 0; i < i0; i++) look(j * cols + i, i, j);
-          for (let i = i1; i < cols; i++) look(j * cols + i, i, j);
-        } else for (let i = 0; i < cols; i++) look(j * cols + i, i, j);
+          for (let i = 0; i < i0; i++) ask(j * cols + i, i, j);
+          for (let i = i1; i < cols; i++) ask(j * cols + i, i, j);
+        } else for (let i = 0; i < cols; i++) ask(j * cols + i, i, j);
       }
-      // the samples a re-roll marked (staleRaster): looked up again, in place
+      // the samples a re-roll marked (staleRaster) or a budget left owed:
+      // looked up again, in place, while the budget lasts
       if (m!.stale)
-        for (let k = 0; k < n; k++)
+        for (let k = 0; k < n && left > 0; k++)
           if (known[k] === RASTER_STALE) {
+            left--;
             known[k] = 0;
             const i = k % cols;
             look(k, i, (k - i) / cols);
           }
-    } else for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) look(j * cols + i, i, j);
+    } else for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) ask(j * cols + i, i, j);
+    let owed = 0;
+    for (let k = 0; k < n; k++) if (known[k] === RASTER_STALE) owed++;
     /* THE FILL, over the unknown samples alone (off the map: none in the
      * interior, a strip at a map edge): four passes of the average of the
      * known neighbours, each pass reading the flags the previous one left,
@@ -691,7 +732,7 @@ export class ZoneField {
       pending = next;
     }
     const prev = this.rasterMemo;
-    this.rasterMemo = { name, cols, rows, stepX, stepY, x: rect.x, y: rect.y, gen: this.docGen, stale: 0, b: bufs };
+    this.rasterMemo = { name, cols, rows, stepX, stepY, x: rect.x, y: rect.y, gen: this.docGen, stale: owed, b: bufs };
     if (prev && prev.b.raw.length === n) this.rasterScratch = prev.b;
     if (refOut) refOut.set(filledRef);
     return filled.slice();

@@ -553,3 +553,73 @@ test("coverage: an effect with no zone within reach of the view reads 0 without 
   const far = f.coverage("gnats", { ...view, x: 50 * CELL_WU, y: 50 * CELL_WU });
   assert.equal(far.any, false);
 });
+
+// ── A RASTER ASKED AHEAD, IN SLICES (games-perf 2026-09-26) ──────────────────
+
+test("a budgeted raster owes what it did not look up, pays it over the next calls, and ends byte for byte the cold raster", () => {
+  const s: ZoneSource = { doc: doc(), packed: "wet=rain,gnats;dry=gnats;deep=drips", roomSky: false };
+  const f = new ZoneField(() => s, bounded(64) as unknown as ReturnType<typeof flat>);
+  f.refresh();
+  const cols = 32, rows = 16;
+  const rect = { x: 40 * CELL_WU, y: 8 * CELL_WU, width: 16 * CELL_WU, height: 8 * CELL_WU };
+  const r0 = f.debug().resolves;
+  f.raster("gnats", rect, cols, rows, undefined, 100);
+  assert.equal(f.rasterStale, cols * rows - 100, "a cold window looks up its budget and owes the rest");
+  let calls = 1;
+  while (f.rasterStale > 0) {
+    f.raster("gnats", rect, cols, rows, undefined, 100);
+    calls++;
+    assert.ok(calls < 20, "the backlog shrinks by the budget each call");
+  }
+  assert.equal(calls, Math.ceil((cols * rows) / 100));
+  const ref = new Uint8Array(cols * rows);
+  const warm = f.raster("gnats", rect, cols, rows, ref);
+  const cold = new ZoneField(() => s, bounded(64) as unknown as ReturnType<typeof flat>);
+  cold.refresh();
+  const cref = new Uint8Array(cols * rows);
+  assert.deepEqual([...warm], [...cold.raster("gnats", rect, cols, rows, cref)], "the paid-up window is the cold raster");
+  assert.deepEqual([...ref], [...cref], "floor refs included");
+  assert.ok(f.debug().resolves - r0 <= cold.debug().resolves, "and it resolved no more cells than the cold one");
+});
+
+test("a budgeted window that moves keeps its debt with the samples it owes; unbudgeted it pays everything and equals the cold raster", () => {
+  const s: ZoneSource = { doc: doc(), packed: "wet=rain,gnats;dry=gnats;deep=drips", roomSky: false };
+  const f = new ZoneField(() => s, bounded(64) as unknown as ReturnType<typeof flat>);
+  f.refresh();
+  const cols = 32, rows = 16;
+  const rect0 = { x: 40 * CELL_WU, y: 8 * CELL_WU, width: 16 * CELL_WU, height: 8 * CELL_WU };
+  f.raster("gnats", rect0, cols, rows, undefined, 60);
+  let rect = rect0;
+  for (const [dx, dy] of [[1, 0], [0, 1], [-2, 1], [3, -2]]) {
+    rect = { ...rect, x: rect.x + dx * (CELL_WU / 2), y: rect.y + dy * (CELL_WU / 2) };
+    const before = f.rasterStale;
+    f.raster("gnats", rect, cols, rows, undefined, 60);
+    assert.ok(f.rasterStale > 0 && f.rasterStale <= before + cols * rows, `still owing after a shift of ${dx},${dy}`);
+  }
+  const ref = new Uint8Array(cols * rows);
+  const warm = f.raster("gnats", rect, cols, rows, ref);
+  assert.equal(f.rasterStale, 0, "an unbudgeted call pays the whole debt");
+  const cold = new ZoneField(() => s, bounded(64) as unknown as ReturnType<typeof flat>);
+  cold.refresh();
+  const cref = new Uint8Array(cols * rows);
+  assert.deepEqual([...warm], [...cold.raster("gnats", rect, cols, rows, cref)]);
+  assert.deepEqual([...ref], [...cref]);
+});
+
+test("nearView: an effect on in a zone within the reach plus the margin of the view's cells is near; off in the table, or farther, it is not", () => {
+  const { f, s } = field({});
+  // the view over cols 44-58, rows 8-22: the dry zone (cols 30-40, rows 10-20) is 4 cells west of it
+  const view = { x: 44 * CELL_WU, y: 8 * CELL_WU, width: 14 * CELL_WU, height: 14 * CELL_WU };
+  f.coverage("gnats", view);
+  assert.equal(f.nearView("gnats", 0), false, "4 cells off is past the blur's reach (2) with no margin");
+  assert.equal(f.nearView("gnats", 2), true, "and inside it with a 2-cell margin");
+  const farView = { ...view, x: 56 * CELL_WU };
+  f.coverage("gnats", farView);
+  assert.equal(f.nearView("gnats", 2), false, "16 cells off, with a 2-cell margin: not near");
+  assert.equal(f.nearView("gnats", 16), true, "with a 16-cell margin: near");
+  assert.equal(f.nearView("drips", 16), false, "drips are on only in the pit, far to the south");
+  s.packed = "wet=rain;dry=;deep=drips"; // gnats rolled off everywhere
+  f.refresh();
+  f.coverage("gnats", farView);
+  assert.equal(f.nearView("gnats", 64), false, "an effect off in the table is near nowhere");
+});

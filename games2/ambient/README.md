@@ -427,14 +427,27 @@ them; folder isolation beats DRY here).
   `zonesAt`, byte for byte against a cold raster after a re-roll, and
   across a hop. Offline on the_game's zones: a walking tick p50 0.7 ms,
   a re-roll's refresh 33 -> 0.5 ms, a hop's first ruled tick 1.4-4.6 ms.
-  THE MASK LATTICE IS ZOOM-PROOF (mount.ts `maskRect`): the sample step is
-  a whole number of world units, kept while it covers the padded view and
-  is not 1.4x finer than needed, grown with 15% headroom — because the
-  camera zoom breathes with speed and a step of exactly view/64 changed
-  every frame, so the raster memo was never reused while running (his
-  21:43 run: `_gloom:raster` 2.5-7.8 ms a tick, ten times a second). The
-  mask is a little coarser than the ideal (16 wu at rest, 22 running); the
-  feather is a cell, so it still resolves. Measured on the_game's 96 zones
+  THE MIST MASK IS BUILT ONLY WHERE IT CAN BE SEEN, ON ONE LATTICE
+  (games-perf 2026-09-26; mount.ts `publishGloom`, runtime/masklattice.ts,
+  `masklattice.test.ts`): UP — mist in view, or still easing out — builds
+  the whole mask before the frame that eases the mist renders; NEAR — a
+  mist-on zone within 24 cells of the view's cells, none on it — builds it
+  ahead, 192 samples a tick, unpublished; otherwise nothing is built (MIST_FRAG
+  returns before its first mask fetch at uMist 0, so that mask was read by
+  nothing; going idle publishes one all-zero mask). A lattice step is KEPT
+  while the lattice holds the VIEW with a step of snap and 32 px of travel,
+  and a new one is sized exactly as before (the view and a quarter each side
+  over the columns, 15% headroom, whole 2 px), so the chase cam's run zoom
+  (1.47x) no longer re-lattices: it did four times every run-and-stop on his
+  screen (view 360x495 at rest: 10x22 -> 12 -> 14 and 22 -> 26 -> 32), each
+  a whole 2,560-sample raster. At rest the lattice is the one it always was;
+  running keeps it (today's running one was coarser, and each switch
+  re-shuffled the fade by cliffs). Headless on his screen, 30 s of
+  run-and-stop on his dense leg (no mist near): `_gloom` 2.16 -> 0.25 ms a
+  tick, peak 25.7 -> 9.3 (the field part), 26 re-lattices -> 0; through the
+  tarn with mist on: 18 re-lattices -> 0, looks 103,237 -> 22,048, `_gloom`
+  2.22 -> 1.69 ms a tick, and no cold window when the mist comes on screen
+  (unwarmed, that first tick was 60 ms). Measured on the_game's 96 zones
   (median 77 vertices, one of 708; a desktop core, his phone is 3-5x
   slower): a cold cell 173 -> 34 µs, the memo drop's worst tick 377 -> 76
   ms and now only the first.)

@@ -21,6 +21,12 @@ const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plen
  * multiplies it into the ALPHA the pass paints — a FADE, never a reshape of
  * the fog (see MIST_FRAG's last lines for what reshaping cost). Its lattice
  * — the rect, the step, why both hold still — is runtime/masklattice.ts. */
+/** A mist-on zone this many cells from the view's cells starts the mask
+ *  building ahead (the lattice reaches ~9 cells past the view at rest, and a
+ *  run crosses ~6 cells a second), MASK_WARM_LOOKS samples a tick — a cold
+ *  2,560-sample window warms in ~20 ticks while the zone is still off screen. */
+const MASK_NEAR_CELLS = 24;
+const MASK_WARM_LOOKS = 192;
 
 /** Attach the ambient features to the world scene from the OUTSIDE: poll for
  * the scene, ride its UPDATE event, add our own display objects. Zero edits
@@ -83,12 +89,16 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
      * a second anyway: his 21:36 run billed `_gloom:raster` 1.9-3.3 ms a
      * tick, peaks 9-21 ms, in every window, while six of the world's eleven
      * mist zones roll mist in 0.5% of their windows (the other five, 90%).
-     * Such a tick builds nothing now. The tick that first sees mist in view
-     * builds it BEFORE the frame that eases the mist up renders (this
-     * listener runs ahead of the scene's update), so the pass never reads a
-     * stale mask; going idle publishes one all-zero mask, so the CPU twins
-     * (`__ml.mistMaskAt`) answer what is drawn — nothing. Without the probe
-     * it builds, as before. */
+     * Three states now. UP (mist in view, or still easing): the whole mask,
+     * built BEFORE the frame that eases the mist up renders (this listener
+     * runs ahead of the scene's update), so the pass never reads a stale one.
+     * NEAR (a mist-on zone within MASK_NEAR_CELLS of the view, none on it):
+     * the mask is built ahead, MASK_WARM_LOOKS samples a tick, and not
+     * published — the first UP tick then finds the window warm instead of
+     * paying a cold one whole (60 ms headless at the tarn). Otherwise
+     * nothing is built. Leaving UP publishes one all-zero mask, so the CPU
+     * twins (`__ml.mistMaskAt`) answer what is drawn — nothing. Without the
+     * probe it builds, as before. */
     const mistUp = (): boolean => {
       const w = (ml()?.weatherInfo as undefined | (() => { mist?: number } | null))?.();
       return !(w && typeof w.mist === "number" && w.mist <= 0);
@@ -127,7 +137,12 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         maskIdle = false;
         return;
       }
-      if (!(cov.max > 0) && !mistUp()) {
+      const up = cov.max > 0 || mistUp();
+      if (!up) {
+        if (zone.nearView(MIST_EFFECT, MASK_NEAR_CELLS)) {
+          zone.raster(MIST_EFFECT, maskRect(), MASK_COLS, MASK_ROWS, undefined, MASK_WARM_LOOKS); // the published refs are untouched
+          bill("_gloom:warm", performance.now() - g1, g1);
+        }
         if (maskIdle) return;
         maskIdle = true;
         const rect = maskRect();
