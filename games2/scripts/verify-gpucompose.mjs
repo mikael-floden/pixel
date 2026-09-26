@@ -77,9 +77,9 @@ try {
   const rep = await page.evaluate(() => window.__ml.gpuParity());
   console.log(JSON.stringify(rep, null, 1));
   if (!rep.compared || !rep.opaque || !rep.inked) { console.log(`FAIL: vacuous (${rep.compared} tiles, ${rep.opaque} opaque texels, ${rep.inked} inked)`); bad = true; }
-  else if (!rep.ramps || !rep.rampsLined) { console.log(`FAIL: no ramp compared (${rep.ramps} ramps, ${rep.rampsLined} lined)`); bad = true; }
+  else if (!rep.ramps || !rep.rampsLined || !rep.linedPlates) { console.log(`FAIL: no ramp compared (${rep.ramps} ramps, ${rep.rampsLined} lined)`); bad = true; }
   else if (rep.tilesDiffering) { console.log(`FAIL: ${rep.tilesDiffering} of ${rep.compared} tiles differ (${rep.texelsDiffering} texels, max ${rep.maxDiff})`); bad = true; }
-  else console.log(`ok: ${rep.compared} boundaries and ${rep.ramps} ramps (${rep.rampsLined} lined, ${rep.rampsOnTransition} lifting a transition) identical byte for byte (${rep.slopes} on slopes; ${rep.opaque} opaque texels, ${rep.inked} of them outline ink; ${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
+  else console.log(`ok: ${rep.compared} boundaries and ${rep.ramps} ramps (${rep.rampsLined} lined, ${rep.rampsOnTransition} lifting a transition; ${rep.linedPlates} of them flat tops with their outline) identical byte for byte (${rep.slopes} on slopes; ${rep.opaque} opaque texels, ${rep.inked} of them outline ink; ${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
   // ── THE GAME WITH THE SWITCH ON: every transition on the ground composed by
   // the GPU compositor (tiles3gpu GpuComposer) and landed the worker's way —
   // the painted ground must hash the same as the worker's.

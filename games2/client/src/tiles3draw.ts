@@ -2348,7 +2348,15 @@ export class Tiles3Textures {
     const vkey = this.variantKey(key, edgeCode(mask, verts, nb), "e");
     const hit = this.ensureHit(vkey);
     if (hit) return hit;
-    if (art.kind === "ramp" && art.from && this.o.gpuRamp && this.o.artUrl && this.o.gpuRamp(this.rampJob(vkey, art, cell.ground, { mask, verts, nb }))) return key;
+    if (this.o.gpuRamp && this.o.artUrl) {
+      // ON THE GPU (Settings -> Dev "GPU transitions"): a composed ramp with its
+      // outline, or a flat top with its outline (a RampJob with mask -1)
+      if (art.kind === "ramp" && art.from && this.o.gpuRamp(this.rampJob(vkey, art, cell.ground, { mask, verts, nb }))) return key;
+      if (art.kind !== "ramp") {
+        const side = this.side(art as PlateLike, cell.ground);
+        if (this.o.gpuRamp({ key: vkey, top: { kind: "plate", side }, band: side, mask: -1, lh: 0, edge: { mask, verts, nb } })) return key;
+      }
+    }
     return (
       this.ensure(vkey, () => {
         const ramp = art.kind === "ramp" && art.from ? { mask: art.mask ?? 0, lh: Math.max(0, ((art as { h?: number }).h ?? PLATE_H) - PLATE_H) } : undefined;

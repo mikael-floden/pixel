@@ -694,6 +694,8 @@ export interface ParityReport {
   rampsIdentical: number;
   rampsLined: number;
   rampsOnTransition: number;
+  /** Flat tops with their outline (a RampJob with mask LINED_PLATE). */
+  linedPlates: number;
   examples: { key: string; texels: number; first: { x: number; y: number; cpu: number[]; gpu: number[] } }[];
 }
 
@@ -702,7 +704,7 @@ export interface ParityReport {
  *  byte — all four channels, every texel, transparent ones included. */
 export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<ParityReport> {
   const jobs = [...seenJobs.values()].slice(-max);
-  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, opaque: 0, inked: 0, slopes: 0, ramps: 0, rampsIdentical: 0, rampsLined: 0, rampsOnTransition: 0, examples: [] };
+  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, opaque: 0, inked: 0, slopes: 0, ramps: 0, rampsIdentical: 0, rampsLined: 0, rampsOnTransition: 0, linedPlates: 0, examples: [] };
   const src = new Map<string, Promise<Pixels>>();
   const plate = async (s: BoundaryJob["a"]) => {
     let p = src.get(s.url);
@@ -742,6 +744,7 @@ export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<Pari
       rep.ramps++;
       if (rt[k].job.edge) rep.rampsLined++;
       if (rt[k].job.top.kind === "boundary") rep.rampsOnTransition++;
+      if (rt[k].job.mask === LINED_PLATE) rep.linedPlates++;
       const c = rc[k].data, g = got[k].data;
       let n = 0, first: ParityReport["examples"][number]["first"] | null = null;
       if (c.length !== g.length) n = -1;
@@ -1312,7 +1315,9 @@ export function rampFullShape(sheets: PatternSheets, t: RampTile): { map: Uint8A
   const hit = m.get(key);
   if (hit) return hit;
   const j = t.job;
-  const shape = rampShapeOf(sheets, j.mask, j.lh, rampTopAlpha(sheets, t), t.band, false, rampShapeKey(j.mask, j.lh, rampTopId(j), plateIdOf(j.band), false));
+  // A LINED PLATE (`mask` -1, no rise): the plate itself, texel for texel — the
+  // identity map on its alpha, every texel through the identity shade (1, 1)
+  const shape = j.mask === LINED_PLATE ? identityShape(t.top!) : rampShapeOf(sheets, j.mask, j.lh, rampTopAlpha(sheets, t), t.band, false, rampShapeKey(j.mask, j.lh, rampTopId(j), plateIdOf(j.band), false));
   const W = shape.w, H = shape.h;
   const map = new Uint8Array(sheets.fw * RAMP_H * 4), rows = new Uint8Array(sheets.fw * RAMP_H * 4);
   let post: Pixels | null = null;
@@ -1326,7 +1331,7 @@ export function rampFullShape(sheets: PatternSheets, t: RampTile): { map: Uint8A
       grey.data[i * 4] = grey.data[i * 4 + 1] = grey.data[i * 4 + 2] = PROBE;
       grey.data[i * 4 + 3] = a;
     }
-    post = edgeTopPixels(sheets, grey, j.edge.mask, { mask: j.mask, lh: j.lh }, j.edge.verts, j.edge.nb);
+    post = edgeTopPixels(sheets, grey, j.edge.mask, j.mask === LINED_PLATE ? undefined : { mask: j.mask, lh: j.lh }, j.edge.verts, j.edge.nb);
   }
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
@@ -1603,11 +1608,28 @@ export class GpuRamps {
   }
 }
 
+/** A RampJob's `mask` for a LINED PLATE (tiles3draw `edgedTop` on a flat top):
+ *  no lift, the plate with its outline. */
+export const LINED_PLATE = -1;
+function identityShape(top: Pixels): RampShape {
+  const map = new Uint8Array(top.w * top.h * 4), row = new Int32Array(top.w * top.h).fill(-1);
+  const r = shadeRow(1, 1);
+  for (let y = 0; y < top.h; y++)
+    for (let x = 0; x < top.w; x++) {
+      const i = y * top.w + x, a = top.data[i * 4 + 3];
+      if (!a) continue;
+      map[i * 4] = x; map[i * 4 + 1] = y; map[i * 4 + 2] = 1; map[i * 4 + 3] = a;
+      row[i] = r;
+    }
+  return { w: top.w, h: top.h, map, row };
+}
+
 /** The CPU's own raster for a ramp job (the parity gate's reference): `rampRaster`
  *  then, for a lined variant, `edgeTopPixels` — from the same decoded inputs. */
 export function rampCpu(sheets: PatternSheets, t: RampTile): Pixels {
   const j = t.job;
   const top = j.top.kind === "plate" ? t.top! : buildBoundaryPixels(sheets, { maskFrame: j.top.job.frame, topOnly: j.top.job.topOnly, noWall: j.top.job.noWall, slope: j.top.job.slope }, t.a!, t.b!, j.top.job.seam);
+  if (j.mask === LINED_PLATE) return j.edge ? edgeTopPixels(sheets, top, j.edge.mask, undefined, j.edge.verts, j.edge.nb) : top;
   const base = buildRampPixels(sheets, top, j.mask, j.lh, t.band, false);
   return j.edge ? edgeTopPixels(sheets, base, j.edge.mask, { mask: j.mask, lh: j.lh }, j.edge.verts, j.edge.nb) : base;
 }
