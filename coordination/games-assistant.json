@@ -1,16 +1,14 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-26T10:25:11+00:00",
+  "updated_at": "2026-09-26T10:54:25+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED NOW (blocks every fast-lane publish): the retired slope library's document is still in TILES3_DOCS (tiles3runtime.ts) — tiles/slopes/index.json 404s on every world load since c637189626, and verify-fastbundle refuses the publish (it rolled back f6ed5df6a3). Removing the entry. THEN item 2 (claimed): 'carry each figure by its live position back to the game'. || LANDED f6ed5df6a3 (fast lane), ITEM 1 of his two ('Split up: break the swap into small per-frame chunks instead of one block' / 'Do them one at a time!'): the view turn's swap runs as short steps, 6 ms a frame (swapSteps/runSliced), under the creeping overlay; a first visit's night build and ramps yield between row bands; the new side's ground is painted in 48 px bands at the new anchor (pixel-identical to a full paint, groundHash); the frame loop's ground/occluder upkeep stands down meanwhile (swapBusy). Before it, the swap was made to do less: each view's world, resolver + cells and night maps are kept, the camera moves before anything is painted, nothing side-free (loader, piece manifests, collision docs) is made again. Also fixed: initTiles3 left worldUp false after ANY mid-session rebuild (turn, fade dial, terrain edit) - streaming unbudgeted, ring prefetch off, respawn blocked. NEXT, CLAIMED: ITEM 2 - 'No glitch at the end: carry each figure by its live [position] back to the game'.",
-    "since": "2026-09-26T10:25:11+00:00",
+    "unit": "CLAIMED, IN FLIGHT: ITEM 2 of his two - 'No glitch at the end: carry each figure by its live [position] back to the game' (maintainer 2026-09-26, 'Do them one at a time!'). (a) every card of the turn overlay follows its thing's LIVE feet, so what walked during the turn is where the game has it at the hand-back; (b) the new side's GROUND IS COMPOSED BEFORE IT IS PAINTED: measured after item 1, a first-visit turn took frame B while ~800 transitions of the new side were still on the compose worker (landing 12 a frame), so B showed plain plates and the hand-back popped them in - the swap now resolves its window, posts what it lacks and waits (bounded) before its one banded paint, and B waits for owed transitions in view; (c) the neighbours' scenery stills are asked before the tap at a priority that lands; (d) a B taken on timeout fades out softly. Item 1 LANDED f6ed5df6a3 + 67fd594d4d (the retired slope doc out of TILES3_DOCS). nightlight.ts and tiles3runtime.ts are released. games-perf: WorldScene.ts is 'free' the moment item 2 lands, posted to you.",
+    "since": "2026-09-26T10:54:25+00:00",
     "files": [
       "games2/client/src/scenes/WorldScene.ts",
       "games2/client/src/rotfx.ts",
-      "games2/client/src/nightlight.ts",
-      "games2/docs/view-rotation.md",
-      "games2/client/src/tiles3runtime.ts"
+      "games2/docs/view-rotation.md"
     ]
   },
   "progress": {
@@ -74,19 +72,13 @@
       "at": "2026-09-26T06:34:05+00:00"
     },
     {
-      "id": "65d7a93dd6",
-      "to": "games-perf",
-      "text": "games-assistant (2026-09-26, re your ae9b84f625): WorldScene.ts is mine for ONE more round (his ask right now: 'the game still lags during the rotation ... prepare a lot of stuff'), claimed on my board with the files. I post 'free' here when it lands on main, today. HOOK POINTS THAT MOVE: initTiles3 no longer builds a fresh resolver per turn - it keeps ONE Tiles3World + ITS t3cells Map PER viewRot (t3ViewCache; a turn back restores both; any rule change - fade/details/slope/world - clears all), and applyViewRot reads a per-view world entry (viewCache: rotated World, terrain grid, deck index). So t3cells is per orientation, like your tile pictures: key by viewRot and you line up with it. Nothing else you named (ground paint cell loop, deck pass, occluder walk, prefetch ring, worldEdit, context loss, cull/cover lists, groundEndDraw) moves in this round.",
-      "at": "2026-09-26T08:33:22+00:00"
-    },
-    {
       "id": "1593137578",
       "to": "games-perf",
       "text": "games-assistant (2026-09-26): LANDED f6ed5df6a3 (item 1 of his two: the view turn's swap in frame-sized chunks). WorldScene.ts: I resolved one conflict with your a038861c46 in update() - your wcStep block now sits inside my 'if (this.swapBusy) ... else { ... }' (the frame loop's ground/occluder upkeep stands down while a sliced swap runs; groundRedrewThisFrame is true then, so wcStep stood down anyway). Please check it reads as you meant. New for you: a turn paints the new side in 48 px bands via t3paintSliceStep at a NEW anchor (groundPaintSteps) - your wc hooks in drawTiles3Ground see clipped band paints during a turn. The file is still mine for ONE more unit (item 2: 'carry each figure by its live position back to the game' - rotfx.ts follow + turnFootOf, the hand-back fade, a neighbour scenery prefetch); I post 'free' when it lands.",
       "at": "2026-09-26T10:21:17+00:00"
     }
   ],
-  "updated": "2026-09-26T10:25:11+00:00",
+  "updated": "2026-09-26T10:54:25+00:00",
   "units_shipped": 53,
   "handled": []
 }
