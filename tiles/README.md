@@ -254,6 +254,28 @@ not a file, so the file checks never saw it - three grey_stone-over-ice tops, 20
 and `check_immutable.py` fails on any `borrow_wall`, `resolve.json` member or promoted
 base tile that no longer resolves.
 
+## No slope library (RETIRED 2026-09-26)
+
+`tiles/slopes/` is gone, and nothing regenerates it. The maintainer: "The game agent
+has invented a dynamic way to do slope tiles so you can remove your slope tiles (not
+needed)." games2 composes a ramp from the cell's OWN member plate at draw time
+(`syntheticRampSet` / `buildRampPixels`, `games2/docs/tiles3-rendering.md`), so every
+one-level rise on every ground is a walkable incline with no art to buy — measured
+there at 2,142 of 2,142 rises on the_game, 538 of them lifting a transition.
+
+What was retired: 225 published sets over 15 grounds, 10,864 files, 7.6 MB, all at
+`elevation` 4 px — below games2's `RAMP_MIN_PX` of 12, so not one of them was ever a
+ramp. They only ever fed the published HALF STEP, which `rampsOn()` switches off
+whenever ramps are on, i.e. always (maintainer 2026-09-25: "the 4px slope looks like
+shit"). Nothing was drawn in the live game at any switch position when they went.
+
+HIS 321 SLOPE APPROVALS STAY in `live/feedback/tiles.json`, untouched. A verdict is
+his, not the pipeline's, and deleting art is never a reason to delete the record of
+what he thought of it. Every byte is in git history if a slope set is ever wanted
+again — but a 4 px terrace on a 15 px storey is not what "slope" means here any more.
+`transition_jobs.py` lost its `--slope` mode with the tree (the transition matrix it
+still generates is byte-for-byte what it was).
+
 ## Art immutability (LAW, 2026-08-27)
 
 A published art file is NEVER rewritten. A pass that regenerates a tile writes a NEW
