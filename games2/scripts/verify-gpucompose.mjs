@@ -53,7 +53,7 @@ try {
   });
   console.log(`slope cells in the world: ${slopeSpots.total}; visiting ${slopeSpots.picked.length}: ${slopeSpots.picked.map((p) => p.join(",")).join(" ")}`);
   const walked = [...SPOTS, ...slopeSpots.picked];
-  for (const [c, r] of walked) {
+  for (const [c, r] of process.env.TILES === "0" ? [] : walked) {
     await page.evaluate(([c, r]) => window.__ml.teleport(c + 0.5, r + 0.5), [c, r]);
     for (let t0 = Date.now(), calm = 0; Date.now() - t0 < 60000; ) {
       const o = await page.evaluate(() => { const g = window.__ml.groundScroll(); return g.drain.bOwed + g.drain.dOwed + g.ring.missing; });
@@ -74,7 +74,7 @@ try {
   // THE GROUND AS THE GAME PAINTS IT, at the last spot: the hash of the ground
   // texture, then the same walk on a page with "GPU transitions" on (below).
   const hashAt = async (pg) => { await settle(pg); return pg.evaluate(() => window.__ml.groundHash()); };
-  const cpuHash = await hashAt(page);
+  const cpuHash = process.env.TILES === "0" ? null : await hashAt(page);
   // TILES=0 skips the per-tile half (the ground half below is the direct draw's test)
   const rep = process.env.TILES === "0" ? null : await page.evaluate(() => window.__ml.gpuParity());
   if (rep) console.log(JSON.stringify(rep, null, 1));
@@ -125,6 +125,8 @@ try {
       const pg = await walkPage(gpu, name);
       const sn = await snap(pg);
       const st = gpu ? await pg.evaluate(() => window.__ml.gpuCompose()) : null;
+      const why = await pg.evaluate(() => { const g = window.__ml.groundScroll(); let cw = null; try { cw = window.__ml.composeWorker(); } catch (e) { cw = String(e); } return { drain: g.drain, ring: g.ring, cw }; });
+      console.log(`[${name}] state at the snapshot:`, JSON.stringify(why));
       await pg.close();
       return { ...sn, st };
     };
