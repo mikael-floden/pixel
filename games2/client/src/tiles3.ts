@@ -851,6 +851,12 @@ export interface Tiles3Data {
    *  which the tests pin on its own; BELOW 0 the switch is OFF and no slope
    *  set is listed at all (`slopeSets`). A game rule, with `footBoundary`. */
   slopeHeight?: number;
+  /** THE AUTO MIX (slopeheight.ts SLOPE_AUTO): the share of each cell's run,
+   *  in % (rampfield `slopeRunShares`, row-major over `slopeSharesW`); 0 is a
+   *  run the mix left a stair — no ramp, no half step. Present, it wins over
+   *  `slopeHeight` for the composed ramp. */
+  slopeShares?: Uint8Array;
+  slopeSharesW?: number;
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
   warn?: (message: string) => void;
@@ -2295,10 +2301,10 @@ export class Tiles3 {
    *  across all 15 seeds per ground meant roughly 14 of every 15 slope tiles came
    *  from a set he had never seen ("I kinda got the feeling you used a slope I
    *  never approved"). */
-  slopeSets(ground: string, ramp = false): SlopeSet[] {
-    // HIS SWITCH OFF (slopeheight.ts, the default): no slope of any kind — no
+  slopeSets(ground: string, ramp = false, share?: number): SlopeSet[] {
+    // HIS SWITCH OFF (slopeheight.ts): no slope of any kind — no
     // half step, bump or ramp — so every rise is the plain stair.
-    if (this.data.footBoundary && (this.data.slopeHeight ?? 0) < 0) return [];
+    if (this.data.footBoundary && (this.data.slopeHeight ?? 0) < 0 && !this.data.slopeShares) return [];
     if (!this.slopeCache) {
       const by = new Map<string, SlopeSet[]>();
       /* AN UNJUDGED GROUND FALLS BACK TO ITS FIRST COMPLETE SET (maintainer
@@ -2337,20 +2343,33 @@ export class Tiles3 {
         else by.set(key, [st]);
       }
       for (const list of by.values()) list.sort((a, b) => (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0));
-      /* THE COMPOSED STOREY RAMP for every ground with a plate and no published
-       * storey-height set — a game rule, like the half step (the parity path
-       * keeps render3's pools). */
-      const share = this.data.slopeHeight ?? 0;
-      if (this.data.footBoundary && share > 0) {
-        const rise = Math.max(1, Math.round((this.data.storeyPitch || 15) * Math.min(1, share)));
-        for (const ground of Object.keys(this.data.groundTypes ?? {})) {
-          if (LIQUID_TILE_GROUNDS.includes(ground) || by.has(`r|${ground}`)) continue;
-          by.set(`r|${ground}`, [syntheticRampSet(ground, rise)]);
-        }
-      }
       this.slopeCache = by;
+      this.synthCache.clear();
     }
-    return this.slopeCache.get(`${ramp ? "r" : "b"}|${ground}`) ?? [];
+    const list = this.slopeCache.get(`${ramp ? "r" : "b"}|${ground}`);
+    if (list || !ramp) return list ?? [];
+    /* THE COMPOSED STOREY RAMP for every ground with a plate and no published
+     * storey-height set — a game rule, like the half step (the parity path
+     * keeps render3's pools). Its rise is the cell's share of the storey
+     * (`rampShareAt`; the switch's own share without a cell). */
+    const sh = share ?? this.data.slopeHeight ?? 0;
+    if (!this.data.footBoundary || !(sh > 0) || LIQUID_TILE_GROUNDS.includes(ground) || !this.data.groundTypes?.[ground]) return [];
+    const rise = Math.max(1, Math.round((this.data.storeyPitch || 15) * Math.min(1, sh)));
+    const key = `${ground}|${rise}`;
+    let out = this.synthCache.get(key);
+    if (!out) this.synthCache.set(key, (out = [syntheticRampSet(ground, rise)]));
+    return out;
+  }
+  private synthCache = new Map<string, SlopeSet[]>();
+
+  /** THE SHARE OF THE STOREY THIS CELL'S COMPOSED RAMP CLIMBS: its run's pick
+   *  under the auto mix (`slopeShares`, 0 = a stair), else the switch's. */
+  rampShareAt(x: number, y: number): number {
+    const f = this.data.slopeShares;
+    if (!f) return this.data.slopeHeight ?? 0;
+    const w = this.data.slopeSharesW ?? 0;
+    if (x < 0 || y < 0 || x >= w) return 0;
+    return (f[y * w + x] ?? 0) / 100;
   }
 
   /** HIS VERDICT, PER TILE — verdicts are keyed `<set dir>/tile_NN`. */
@@ -2369,7 +2388,8 @@ export class Tiles3 {
    *  Null for an unjudged ground (light_soil, and every ground with no approved
    *  set) and for the flat/full indices 0 and 15. */
   slopeTile(ground: string, index: number, x: number, y: number, ramp = false, cut = false): SlopePick | null {
-    const ck = `${ramp ? "r" : cut ? "c" : "b"}|${ground}|${index}|${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
+    const share = ramp ? this.rampShareAt(x, y) : undefined;
+    const ck = `${ramp ? `r${share}` : cut ? "c" : "b"}|${ground}|${index}|${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
     const hit = this.slopeTileCache.get(ck);
     if (hit !== undefined) return hit;
     let out: SlopePick | null = null;
@@ -2378,7 +2398,7 @@ export class Tiles3 {
     // CUT keeps the flat tile (0) for the cell whose every corner steps down,
     // and refuses 15 (nothing lowered is no cut).
     if (cut ? index < 15 : index > 0 && index < (ramp ? 15 : 16)) {
-      const sets = this.slopeSets(ground, ramp).filter((st) => this.slopeApproved(st.dir, index));
+      const sets = this.slopeSets(ground, ramp, share).filter((st) => this.slopeApproved(st.dir, index));
       if (sets.length) {
         const [sx, sy] = pk(x, y);
         const st = sets[fnv1a(`slope|${ground}|${Math.floor(sx / REGION_CHUNK)}|${Math.floor(sy / REGION_CHUNK)}`) % sets.length];
@@ -2452,7 +2472,9 @@ export class Tiles3 {
     y: number,
     zl: number,
   ): number {
-    if (!this.slopeSets(ground, true).length) return 0;
+    // A run the auto mix left a stair wears no ramp (and, ramps on, no half step).
+    if (this.data.slopeShares && !(this.rampShareAt(x, y) > 0)) return 0;
+    if (!this.slopeSets(ground, true, this.rampShareAt(x, y)).length) return 0;
     const ridx = this.slopeIndexAt(g, L, ground, x, y, zl, true);
     if (!ridx || ridx === 15) return 0;
     return this.slopeTile(ground, ridx, x, y, true) ? ridx : 0;
@@ -2477,7 +2499,7 @@ export class Tiles3 {
    *  the_game, measured 2026-09-24) and a raise under a ramp is a second
    *  picture of the same rise. */
   rampsOn(): boolean {
-    return !!this.data.footBoundary && (this.data.slopeHeight ?? 0) > 0;
+    return !!this.data.footBoundary && ((this.data.slopeHeight ?? 0) > 0 || !!this.data.slopeShares);
   }
 
   slopeWorn(

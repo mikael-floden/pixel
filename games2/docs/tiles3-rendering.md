@@ -595,8 +595,24 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   `dressKey`/`surfaceY` alike); the feet follow `rampHeight * lh`
   (`WorldScene.rampLiftPx`). Its art path is VIRTUAL (`synthetic/ramp/<ground>/
   <mask>/<member plate>`, the texture key; `art.from` names the plate) — the
-  load list and the image closure name the plate, never the path. HIS SLOPE
-  SWITCH (`slopeheight.ts`, Settings -> Dev -> "slope"): OFF no slope of any
+  load list and the image closure name the plate, never the path. SLOPES
+  ARE ALWAYS ON, AS A MIX (maintainer 2026-09-26: "The idea with the game is
+  not to have this as a button ... always have it on and use the following
+  weights: off 2, 25% 1, 75% 3, 100% 2" — his third stop is the switch's
+  50%). A RUN — ramp cells joined through any of their 8 neighbours —
+  takes ONE pick (`rampfield.ts slopeRunShares`, `SLOPE_MIX`), so an edge,
+  its corners and chamfers climb one height end to end (a per-cell pick
+  puts a wall step inside an edge, and the chamfer rule reads its
+  neighbours' masks as its own height). The pick hashes the run's size,
+  levels and grounds, never its position, so the main thread, the worker
+  and the light agree and every VIEW ROTATION draws the same hills (pinned:
+  `rampfield.test.ts`; the_game measured 148 runs — 33 off, 19 at 25%, 60
+  at 50%, 36 at 100%). The resolver reads it as `Tiles3Data.slopeShares`
+  (`rampShareAt`; a share of 0 wears no ramp and, ramps on, no half step)
+  and composes one synthetic set per ground and rise. THE SWITCH STAYS for
+  side-by-side checks (`slopeheight.ts`, Settings -> Dev -> "slope": auto,
+  off, 25, 50, 100; key `ml-slope-height3`, new with auto so a stored "off"
+  cannot keep slopes off): OFF no slope of any
   kind — `slopeSets` lists none, so no half step, cut, bump or ramp and every
   rise is the plain stair; 25/50% a ramp that climbs that share of the
   storey with the x-over-y wall left above it; 100% a clean slope with no
@@ -605,11 +621,12 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   (his published half step) AND NOT 75% (maintainer 2026-09-25: "the 4px
   slope looks like shit. The 75% also looks like shit. It leaves a single
   stripe that looks buggy" — at 75% only the wall's lit top row survives);
-  the resolver still reads 0 as the half step, the switch never sends it. THE DEFAULT IS OFF, under a storage
-  key new with the off stop so no stored value turns it back on (maintainer
-  2026-09-25: "it has to be disabled now ... Once we have got it workikg we
-  can change the default to enabled"; perf runs measure the terrain without
-  slopes); "ml-slope-height" rebuilds the resolver on both threads.
+  the resolver still reads 0 as the half step, the switch never sends it.
+  "ml-slope-height" rebuilds the resolver on both threads. A STEP A RAMP
+  BRIDGES IS NO HOP: the feet climb the incline (`rampLiftPx`) and
+  `WorldScene` skips the cosmetic step-hop (jump clip + sound) when either
+  end of a one-level change stands on a ramp — his "the player don't need
+  to jump ... slowly increase elevation"; a stair (an off run) still hops.
   A game rule (`footBoundary`; `slopeHeight` 0 or the parity path keeps
   render3's pools, below 0 lists none). THE PICK (`rampIndexFor`): every corner a cell
   exactly one level up touches, never a full plateau top; a published

@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Tiles3, PLATE_H, RAMP_CHAMFER, RAMP_MIN_PX, SYNTHETIC_RAMP_DIR, hexRGB, isRampSet, rampHeight, viewFromDoc } from "../../client/src/tiles3.js";
-import { SLOPE_HEIGHT_DEFAULT, SLOPE_OFF, slopeHeight, slopeLabel } from "../../client/src/slopeheight.js";
+import { SLOPE_AUTO, SLOPE_HEIGHT_DEFAULT, SLOPE_OFF, slopeHeight, slopeLabel } from "../../client/src/slopeheight.js";
 import { buildBoundaryPixels, buildPlatePixels, buildRampPixels, patternSheetPaths, patternSheets, shiftDown, slopeLift, slopeTopOnly, topFaceOnly, type Pixels } from "../../client/src/tiles3draw.js";
 import { cellArtPaths, dressKey, surfaceY, Tiles3World, viewFromParsed } from "../../client/src/tiles3runtime.js";
 import { parseWorld, ISO_GEOMETRY_MAPS3 } from "../../shared/src/index";
@@ -208,16 +208,17 @@ test("on the_game, with the foot on: a one-level rise wears the slope, a cliff f
   console.log(`slopes: ${rises} one-level rises wear the slope with the foot on; ${cliffFeet} cliff feet keep their transition`);
 });
 
-// HIS SWITCH OFF IS THE DEFAULT (maintainer 2026-09-25: "We need a way in the
-// game today to turn off this 'slope' feature becouse it's currently broken ...
-// We are also running performance tests"): no slope of any kind — no half
-// step, no cut, no ramp — and every rise is the plain stair.
-test("his slope switch OFF (the default): no cell of the_game wears a slope, raise, cut or ramp; the half step at 4 px is the contrast", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
-  assert.equal(SLOPE_HEIGHT_DEFAULT, SLOPE_OFF);
-  assert.equal(slopeHeight(), SLOPE_OFF, "a fresh client (no stored value) starts with slopes off");
-  assert.equal(slopeLabel(), "off");
+// AUTO IS THE DEFAULT (maintainer 2026-09-26: "The idea with the game is not to
+// have this as a button ... always have it on"): each run picks from his mix
+// (rampfield.test.ts pins the mix). OFF stays on the switch: no slope of any
+// kind — no half step, no cut, no ramp — and every rise is the plain stair.
+test("his slope switch: auto is the default; OFF: no cell of the_game wears a slope, raise, cut or ramp; the half step at 4 px is the contrast", { skip: skip || (!existsSync(WORLD) && "no world") }, () => {
+  assert.equal(SLOPE_HEIGHT_DEFAULT, SLOPE_AUTO);
+  assert.equal(slopeHeight(), SLOPE_AUTO, "a fresh client (no stored value) starts on the auto mix");
+  assert.equal(slopeLabel(), "auto");
+  assert.equal(slopeLabel(SLOPE_OFF), "off");
   const view = viewFromDoc(JSON.parse(readFileSync(WORLD, "utf8")));
-  const off = resolver([], {}, true, undefined, slopeHeight() / 100);
+  const off = resolver([], {}, true, undefined, SLOPE_OFF / 100);
   assert.equal(off.rampsOn(), false);
   const worn = off.resolveWindow(view).cells.filter((c) => c.slope);
   assert.deepEqual(worn.slice(0, 5).map((c) => `${c.x},${c.y}`), [], `${worn.length} cells wear a slope with the switch off`);

@@ -11,7 +11,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { RAMP_CHAMFER, Tiles3, rampChamfers, rampIsCorner, viewFromDoc } from "../../client/src/tiles3.js";
-import { rampMaskField } from "../../client/src/rampfield.js";
+import { SLOPE_MIX, rampMaskField, rampMaskRaw, slopeRunShares } from "../../client/src/rampfield.js";
+import { rotateWorldDoc } from "../../client/src/viewrot.js";
 import { parseWorld } from "../../shared/src/index";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -32,7 +33,7 @@ const NEEDS = [
 const MISSING = NEEDS.filter((p) => !existsSync(join(REPO, p)));
 const skip = MISSING.length ? `not checked out: ${MISSING.join(", ")}` : !existsSync(WORLD) ? "no world" : false;
 
-function resolver(slopeHeight: number) {
+function resolver(slopeHeight: number, shares?: { shares: Uint8Array; width: number }) {
   return new Tiles3({
     baseTileSets: load("live/tuning/base_tile_sets.json"),
     memberResolve: load("tiles/resolve.json"),
@@ -51,6 +52,8 @@ function resolver(slopeHeight: number) {
     footBoundary: true,
     deckBoundary: true,
     slopeHeight,
+    slopeShares: shares?.shares,
+    slopeSharesW: shares?.width,
     warn: () => {},
   } as ConstructorParameters<typeof Tiles3>[0]);
 }
@@ -131,4 +134,86 @@ test("a corner ramp is a chamfer on a diagonal terrace edge and a fold on a squa
     assert.ok(rampIsCorner(field[y * W + x]), `${x},${y} is a corner ramp`);
     assert.equal(at(x, y), false, `${x},${y} folds`);
   }
+});
+
+// THE AUTO MIX (maintainer 2026-09-26: "always have it on and use the following
+// weights: off 2, 25% 1, 75% 3, 100% 2" — the switch's third stop is 50%).
+test("the auto mix on the_game: one pick per run, the resolver climbs each run's share, the light's field agrees, off runs stay stairs", { skip }, () => {
+  const doc = JSON.parse(readFileSync(WORLD, "utf8"));
+  const parsed = parseWorld(doc)!;
+  const W = parsed.width;
+  const H = parsed.height;
+  const shares = slopeRunShares(parsed);
+  const raw = rampMaskRaw(parsed);
+  // Every run is one share: no two 8-neighbour ramp cells differ.
+  let split = 0;
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      const i = y * W + x;
+      if (!raw[i]) continue;
+      for (const [dx, dy] of [[1, 0], [0, 1], [1, 1], [-1, 1]]) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+        const j = ny * W + nx;
+        if (raw[j] && shares[j] !== shares[i]) split++;
+      }
+    }
+  assert.equal(split, 0, "a run climbs one height end to end");
+  // The mix is his weights, counted over runs.
+  const runs = new Map<number, number>();
+  const seen = new Uint8Array(W * H);
+  for (let i0 = 0; i0 < W * H; i0++) {
+    if (!raw[i0] || seen[i0]) continue;
+    runs.set(shares[i0], (runs.get(shares[i0]) ?? 0) + 1);
+    const st = [i0];
+    seen[i0] = 1;
+    while (st.length) {
+      const i = st.pop()!;
+      const x = i % W, y = (i - x) / W;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+        const j = ny * W + nx;
+        if (raw[j] && !seen[j]) { seen[j] = 1; st.push(j); }
+      }
+    }
+  }
+  const nRuns = [...runs.values()].reduce((a, b) => a + b, 0);
+  const total = SLOPE_MIX.reduce((a, [, w]) => a + w, 0);
+  for (const [sh, wt] of SLOPE_MIX) {
+    const got = (runs.get(sh) ?? 0) / nRuns;
+    assert.ok(Math.abs(got - wt / total) < 0.08, `${sh}%: ${(got * 100).toFixed(1)}% of ${nRuns} runs, his weight ${((wt / total) * 100).toFixed(1)}%`);
+  }
+  // The resolver wears each cell's own share, and the light's field is its ramps.
+  const field = rampMaskField(parsed, shares);
+  const out = resolver(1, { shares, width: W }).resolveWindow(viewFromDoc(doc));
+  const decked = new Set<number>();
+  for (const d of parsed.decks ?? []) for (const c of d.cells) decked.add(c.row * W + c.col);
+  const wrong: string[] = [];
+  let ramps = 0;
+  for (const c of out.cells) {
+    const i = c.y * W + c.x;
+    const idx = c.slope?.ramp ? c.slope.index & 15 : 0;
+    if (c.slope && !c.slope.ramp && wrong.length < 5) wrong.push(`${c.x},${c.y}: a half step under the mix`);
+    if (idx) {
+      ramps++;
+      const rise = Math.max(1, Math.round(15 * shares[i] / 100));
+      if (c.slope!.rise !== rise && wrong.length < 5) wrong.push(`${c.x},${c.y}: rise ${c.slope!.rise}, run share ${shares[i]}%`);
+    }
+    if (!decked.has(i) && field[i] !== idx && wrong.length < 5) wrong.push(`${c.x},${c.y}: resolver ${idx}, field ${field[i]}`);
+  }
+  assert.deepEqual(wrong, []);
+  console.log(`auto mix: ${nRuns} runs (${[...runs].map(([k, v]) => `${k}%: ${v}`).join(", ")}), ${ramps} ramp cells`);
+});
+
+test("the auto mix is the same picture in every view rotation", { skip }, () => {
+  const doc = JSON.parse(readFileSync(WORLD, "utf8"));
+  const base = slopeRunShares(parseWorld(doc)!);
+  const W = doc.size.w, H = doc.size.h;
+  const turned = parseWorld(rotateWorldDoc(doc, 1))!;
+  const t = slopeRunShares(turned);
+  let diff = 0;
+  // One quarter-turn: cell (x, y) -> (H-1-y, x) of an H-wide grid.
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (base[y * W + x] !== t[x * turned.width + (H - 1 - y)]) diff++;
+  assert.equal(diff, 0, `${diff} cells pick another height turned`);
 });

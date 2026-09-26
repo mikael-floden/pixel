@@ -6,9 +6,12 @@ import { World, MAP_GEOMETRY, geometryFor } from "./maps";
 import { renderedWorldView, ViewRect } from "./camview";
 import { lightScale } from "./lightscale";
 import { wallWrapExponent } from "./wallwrap";
-import { slopeHeight } from "./slopeheight";
-import { rampMaskField } from "./rampfield";
+import { slopeRule } from "./slopeheight";
+import { rampMaskField, slopeRunShares } from "./rampfield";
 import { RAMP_CHAMFER, rampChamfers, rampHeight } from "./tiles3";
+/** The storey a composed ramp climbs, in px (ISO_GEOMETRY_MAPS3.lh): a ramp cell
+ *  packs its rise in these px into the surface map's B low nibble (rampAt). */
+const RAMP_PITCH_PX = 15;
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -420,7 +423,7 @@ uniform float uIndoorMix; // the EASED indoor blend — the outside fades to bla
 uniform float uLidDark;   // his "Lowered wall top darkening" dial, 0..1: every wall top of MY room, the face fading into it
 uniform vec3 uAmbientOut; // the OUTDOOR grade — what a cell outside my room fades to
 uniform sampler2D uHeight;
-uniform float uRampShare;   // levels a composed ramp's raised corner stands over its cell (his slope switch; 0 = none) — see rampMaskAt
+uniform float uRampShare;   // the TALLEST composed ramp's rise, in levels (0 = no ramps) — the walk's skip slack; each cell's own is rampAt().y
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 uniform sampler2D uHeightG; // GROUND column tops, LINEAR (see groundAtSoft)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
@@ -931,13 +934,14 @@ float airTopAt(vec2 cr) {
   return g - 128.0 * step(127.5, g);
 }
 
-// Emission palette index + 1 (0 = the cell does not glow): B channel — its LOW
-// nibble while the ramps are on (the high one holds the ramp's corners, rampMaskAt).
+// Emission palette index + 1 (0 = the cell does not glow): B channel. While the
+// ramps are on a RAMP cell's B is its ramp (rampAt) and it does not glow — B > 15
+// only there (applyRamps packs them only for a palette of 15 or fewer).
 float emitAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   float b = texture2D(uHeight, uv).b * 255.0;
-  return uRampShare > 0.0 ? mod(floor(b + 0.5), 16.0) : b;
+  return uRampShare > 0.0 && b > 15.5 ? 0.0 : b;
 }
 
 // THE COMPOSED RAMP ON THIS CELL (his slope switch above 0%): its raised corners,
@@ -949,6 +953,16 @@ float rampMaskAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return floor((texture2D(uHeight, uv).b * 255.0 + 0.5) / 16.0);
+}
+// The mask AND the cell's own rise in levels, from one fetch: the LOW nibble
+// of a ramp cell holds its rise in px of the 15 px storey (ISO_GEOMETRY_MAPS3
+// lh) — the auto mix gives every run its own (rampfield.ts slopeRunShares).
+vec2 rampAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return vec2(0.0);
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  float b = floor(texture2D(uHeight, uv).b * 255.0 + 0.5);
+  float m = floor(b / 16.0);
+  return vec2(m, m > 0.5 ? mod(b, 16.0) / 15.0 : 0.0);
 }
 
 // A FOLD RAMP (tiles3 rampHeight: one raised corner is the MIN of its two edge
@@ -1192,7 +1206,9 @@ void main() {
     // bilinear, a QUADRATIC in s (smallest root in [0, 1]). The ray enters
     // under the lip (a side-face pixel, as a flat column's wall) or meets the
     // incline (a TOP pixel: rampTop), or passes over.
-    float rmW = uRampShare > 0.0 && H < 90.0 ? rampMaskAt(cr) : 0.0;
+    vec2 rwW = uRampShare > 0.0 && H < 90.0 ? rampAt(cr) : vec2(0.0);
+    float rmW = rwW.x;
+    float shW = rwW.y; // this cell's rise, in levels
     float nFold = rmW > 0.5 ? rampCount(rmW) : 0.0;
     if (nFold == 1.0 || nFold == 3.0) {
       vec2 f0 = vec2((u + vHi) * 0.5, (vHi - u) * 0.5) - floor(cr);
@@ -1204,8 +1220,8 @@ void main() {
       if (rampChamferAt(cr, rmW)) {
         float one = nFold == 1.0 ? 1.0 : 0.0;
         float ab0 = mix(1.0 - f0.x, f0.x, up.x) + mix(1.0 - f0.y, f0.y, up.y);
-        vec2 spF = rampUnder(rHi - (H + uRampShare * (1.0 - one)), rd);
-        vec2 spC = rampUnder(rHi - (H + uRampShare * (ab0 - one)), rd - uRampShare * dd * 2.0 * (up.x + up.y - 1.0));
+        vec2 spF = rampUnder(rHi - (H + shW * (1.0 - one)), rd);
+        vec2 spC = rampUnder(rHi - (H + shW * (ab0 - one)), rd - shW * dd * 2.0 * (up.x + up.y - 1.0));
         if (one > 0.5) {
           if (spF.x <= spF.y) sHit = spF.x;
           if (spC.x <= spC.y) sHit = min(sHit, spC.x);
@@ -1215,10 +1231,10 @@ void main() {
         }
       } else {
         // Each plane p0 + p1 s against the ray; the onset of "at or under it" (0 = already).
-        float cA = rHi - (H + uRampShare * mix(1.0 - f0.x, f0.x, up.x));
-        float kA = rd - uRampShare * dd * (up.x * 2.0 - 1.0);
-        float cB = rHi - (H + uRampShare * mix(1.0 - f0.y, f0.y, up.y));
-        float kB = rd - uRampShare * dd * (up.y * 2.0 - 1.0);
+        float cA = rHi - (H + shW * mix(1.0 - f0.x, f0.x, up.x));
+        float kA = rd - shW * dd * (up.x * 2.0 - 1.0);
+        float cB = rHi - (H + shW * mix(1.0 - f0.y, f0.y, up.y));
+        float kB = rd - shW * dd * (up.y * 2.0 - 1.0);
         float sA = cA <= 0.0 ? 0.0 : (kA < 0.0 ? -cA / kA : 2.0);
         float sB = cB <= 0.0 ? 0.0 : (kB < 0.0 ? -cB / kB : 2.0);
         sHit = nFold == 1.0 ? max(sA, sB) : min(sA, sB);
@@ -1242,14 +1258,14 @@ void main() {
       float rC = mod(floor(rmW / 2.0), 2.0) - rNw;
       float rD = -rB - rC + mod(rmW, 2.0) - rNw;
       float h0 = rNw + rB * f0.x + rC * f0.y + rD * f0.x * f0.y;
-      float c0 = (vHi - v0) / kk - (H + uRampShare * h0);
+      float c0 = (vHi - v0) / kk - (H + shW * h0);
       if (c0 <= 0.0) {
         z = max((vHi - v0) / kk, 0.0);
         cell = cr;
         found = true;
       } else {
-        float b0 = (vLo - vHi) / kk - uRampShare * dd * (rB + rC + rD * (f0.x + f0.y));
-        float a0 = -uRampShare * rD * dd * dd;
+        float b0 = (vLo - vHi) / kk - shW * dd * (rB + rC + rD * (f0.x + f0.y));
+        float a0 = -shW * rD * dd * dd;
         float sHit = 2.0;
         if (abs(a0) < 0.000001) {
           if (b0 < 0.0) sHit = -c0 / b0;
@@ -1318,7 +1334,9 @@ void main() {
   // ON A RAMP the column's top under this pixel is the incline's height there:
   // a pixel on it is a TOP (z == Ha), one under its lip a face. Every rule below
   // reads Ha, and a flat top's Ha called the whole incline a wall face.
-  float rmC = uRampShare > 0.0 && Ha < 90.0 ? rampMaskAt(cell) : 0.0;
+  vec2 rwC = uRampShare > 0.0 && Ha < 90.0 ? rampAt(cell) : vec2(0.0);
+  float rmC = rwC.x;
+  float shC = rwC.y;
   bool rampCh = rmC > 0.5 && rampChamferAt(cell, rmC);
   vec2 rampF = vec2(0.0);
   if (rmC > 0.5) {
@@ -1326,7 +1344,7 @@ void main() {
     rampF = vec2((u + vR) * 0.5, (vR - u) * 0.5) - floor(cell);
     // On the incline the ray's height IS the surface's (exactly, not to a float's
     // rounding): a top. At the entry under the lip the lip stands above: a face.
-    Ha = rampTop ? z : Ha + uRampShare * rampH(rmC, rampF, rampCh);
+    Ha = rampTop ? z : Ha + shC * rampH(rmC, rampF, rampCh);
   }
   if (uTest > 3.5 && uTest < 4.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
@@ -1612,7 +1630,7 @@ void main() {
     // so a slope turned to the sun reads lighter and one turned away darker.
     float rampSun = 1.0;
     if (!isFace && rmC > 0.5 && uSun.z > 0.02) {
-      vec3 rn = vec3(-uRampShare * rampG(rmC, rampF, rampCh), 1.0);
+      vec3 rn = vec3(-shC * rampG(rmC, rampF, rampCh), 1.0);
       rampSun = clamp(dot(rn, vec3(-uSun.xy, uSun.z)) / (length(rn) * uSun.z), 0.35, 1.35);
     }
     sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0) * rampSun;
@@ -3946,10 +3964,12 @@ export class NightLights {
    *  smooth hill and the light painted terraces over it (measured headless,
    *  2026-09-25; forced off, the terraces vanished). Two maps learn the ramps:
    *
-   *  - THE SURFACE MAP: the corner masks (rampfield.ts, the resolver's rule) in
-   *    the HIGH nibble of its B — emission index + 1 keeps the low one, so no
-   *    new texture unit — for the walk (`rampMaskAt`), with `uRampShare` the
-   *    height a raised corner adds, in levels.
+   *  - THE SURFACE MAP: a ramp cell's B is its corner mask (rampfield.ts, the
+   *    resolver's rule) in the HIGH nibble and its OWN rise in px of the 15 px
+   *    storey in the low one — the auto mix gives each run its own height —
+   *    so the walk reads both in the one fetch it makes for the mask
+   *    (`rampAt`); a ramp cell gives up its emission index (kept aside in
+   *    `mlBaseB`), and `uRampShare` is the tallest rise, the skip's slack.
    *  - THE OCCLUSION MAP (R of the linear map, and its exact CPU twin `hArr`):
    *    each ramp cell raised by the ramp's own height at its centre, in whole
    *    bytes, so the bilinear read between centres is an incline and the sun
@@ -3957,22 +3977,22 @@ export class NightLights {
    *    the ground behind every hill (his red marks, 2026-09-25). Scenery
    *    stamps on those cells ride along (their saved originals move too).
    *
-   *  What is packed is recorded ON THE TEXTURES (they outlive this instance),
-   *  so a switch back to 0% clears exactly it; at 0% with nothing packed no
-   *  byte moves and the uniform is 0 — the pass is byte-identical there. A
-   *  world with 15 or more emission entries has no low nibble to spare and
-   *  keeps flat light. */
+   *  What is packed is recorded ON THE TEXTURES (they outlive this instance;
+   *  a redraw drops the tags with the content), so a switch to off clears
+   *  exactly it; off with nothing packed no byte moves and the uniform is 0 —
+   *  the pass is byte-identical there. A palette of 16 or more emission
+   *  entries has no room beside the ramp bytes and keeps flat light. */
   private rampShare = 0;
   private rampCells = 0;
   applyRamps(): void {
     const T = this.scene.textures;
     if (!T.exists("world-heightmap")) return;
-    const tex = T.get("world-heightmap") as Phaser.Textures.CanvasTexture & { mlRampBits?: boolean };
+    const tex = T.get("world-heightmap") as Phaser.Textures.CanvasTexture & { mlRampBits?: boolean; mlBaseB?: Uint8Array };
     const texL = T.exists("world-heightmap-linear")
       ? (T.get("world-heightmap-linear") as Phaser.Textures.CanvasTexture & { mlRampOcc?: Uint8Array })
       : null;
-    const share = slopeHeight() / 100;
-    const on = share > 0 && this.emitList.length < 15;
+    const rule = slopeRule(this.world);
+    const on = rule.slopeHeight > 0 && this.emitList.length < 16;
     if (!on && !tex.mlRampBits && !texL?.mlRampOcc) {
       this.rampShare = 0;
       this.rampCells = 0;
@@ -3980,15 +4000,32 @@ export class NightLights {
     }
     const w = this.world.width;
     const h = this.world.height;
-    const masks = on ? rampMaskField(this.world) : null;
+    // Each cell's share in %: the auto mix's per-run pick, or the switch's own.
+    const shares = on ? (rule.shares ?? slopeRunShares(this.world, Math.round(rule.slopeHeight * 100))) : null;
+    const masks = on ? rampMaskField(this.world, shares) : null;
+    // A cell's rise in px of the storey: the resolver's (tiles3 slopeSets) rounding.
+    const riseAt = (i: number): number => (shares ? Math.max(1, Math.round(RAMP_PITCH_PX * Math.min(1, shares[i] / 100))) : 0);
     const ctx = tex.getContext();
     const id = ctx.getImageData(0, 0, w, h);
     const d = id.data;
+    // B as built (the emission index) is kept aside the first time, so a ramp
+    // cell's B can hold its ramp and a switch back gives the glow back.
+    let baseB = tex.mlBaseB;
+    if (!baseB) {
+      baseB = new Uint8Array(w * h);
+      for (let i = 0; i < w * h; i++) baseB[i] = d[i * 4 + 2];
+      tex.mlBaseB = baseB;
+    }
     let n = 0;
+    let top = 0;
     for (let i = 0; i < w * h; i++) {
       const m = masks ? masks[i] : 0;
-      if (m) n++;
-      d[i * 4 + 2] = (d[i * 4 + 2] & 15) | (m << 4);
+      if (m) {
+        n++;
+        const r = riseAt(i);
+        if (r > top) top = r;
+        d[i * 4 + 2] = (m << 4) | r;
+      } else d[i * 4 + 2] = baseB[i];
     }
     ctx.putImageData(id, 0, 0);
     tex.refresh();
@@ -4013,7 +4050,7 @@ export class NightLights {
           const ny = y + dy;
           return nx < 0 || ny < 0 || nx >= w || ny >= h ? 0 : masks[ny * w + nx];
         });
-        const b = m ? Math.round(share * rampHeight(ch ? m | RAMP_CHAMFER : m, 0.5, 0.5) * hs) : 0;
+        const b = m ? Math.round((riseAt(i) / RAMP_PITCH_PX) * rampHeight(ch ? m | RAMP_CHAMFER : m, 0.5, 0.5) * hs) : 0;
         next[i] = b;
         const db = b - prev[i];
         if (!db) continue;
@@ -4034,7 +4071,7 @@ export class NightLights {
       }
       texL.mlRampOcc = masks ? next : undefined;
     }
-    this.rampShare = on ? share : 0;
+    this.rampShare = on && n ? top / RAMP_PITCH_PX : 0;
     this.rampCells = n;
   }
 
@@ -4112,6 +4149,17 @@ export class NightLights {
       return this.scene.textures.createCanvas(key, cw, ch);
     };
     if (redraw) this.emitList = []; // re-pushed below in the same order: the palette indices are unchanged
+    if (redraw)
+      for (const k of ["world-heightmap", "world-heightmap-linear"]) {
+        // The ramps packed into the OLD content are gone with it (applyRamps
+        // re-packs after every build): a kept tag would diff against a picture
+        // that no longer exists, and restore the old layout's emission bytes.
+        if (!this.scene.textures.exists(k)) continue;
+        const t = this.scene.textures.get(k) as unknown as { mlRampBits?: boolean; mlBaseB?: Uint8Array; mlRampOcc?: Uint8Array };
+        delete t.mlRampBits;
+        delete t.mlBaseB;
+        delete t.mlRampOcc;
+      }
     const tex = canvasFor("world-heightmap", w, h);
     const ctx = tex!.getContext();
     const img = ctx.createImageData(w, h); // surface (terrain-only heights)

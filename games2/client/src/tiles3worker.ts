@@ -42,6 +42,7 @@ import {
 } from "./tiles3runtime";
 import type { Tiles3Cell, Tiles3Boundary, Tiles3DeckCell } from "./tiles3";
 import { rotateWorldDoc, normRot, unrotCell } from "./viewrot";
+import { slopeRule } from "./slopeheight";
 import { setPickFrame } from "./tiles3";
 
 /** Boot: every URL is built by the MAIN thread and handed over. The worker must
@@ -63,7 +64,9 @@ export interface WorkerInit {
   fadeTune?: Tiles3Data["fadeTune"];
   footBoundary?: boolean;
   deckBoundary?: boolean;
-  slopeHeight?: number;
+  /** His slope switch's STOP (slopeheight.ts), not a share: the worker runs
+   *  `slopeRule` over its own (turned) world, as the main thread does. */
+  slopeStop?: number;
   /** VIEW ROTATION (viewrot.ts): quarter-turns the DRAWN world is rotated by.
    *  The worker fetches world.json itself, so it must rotate it itself - with
    *  the same function the main thread uses - or it resolves the unrotated
@@ -136,7 +139,14 @@ async function init(msg: WorkerInit): Promise<void> {
   if (msg.fadeTune) data.fadeTune = msg.fadeTune;
   if (msg.footBoundary !== undefined) data.footBoundary = msg.footBoundary;
   if (msg.deckBoundary !== undefined) data.deckBoundary = msg.deckBoundary;
-  if (msg.slopeHeight !== undefined) data.slopeHeight = msg.slopeHeight;
+  if (msg.slopeStop !== undefined) {
+    const sr = slopeRule(parsed as never, msg.slopeStop);
+    data.slopeHeight = sr.slopeHeight;
+    if (sr.shares) {
+      data.slopeShares = sr.shares;
+      data.slopeSharesW = parsed.width;
+    }
+  }
   const view = viewFromParsed(parsed as never);
   /* THE REGION FLOOD FILL — 38 ms over the_game on the dev host, and the single
    * biggest lump of the main thread's own world load. Here it is free. */

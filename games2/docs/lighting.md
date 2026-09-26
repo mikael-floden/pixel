@@ -286,9 +286,13 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   forced off, the terraces vanished). The ramps' corner masks
   (`rampfield.ts`, the resolver's own rule, pinned against it on every cell
   of the_game by `rampfield.test.ts`) ride the HIGH nibble of the surface
-  map's B — emission index + 1 keeps the low one, so no new texture unit (a
-  ninth sampler is a compile failure on an 8-unit GPU) — and `uRampShare` is
-  the height a raised corner adds, in levels (`applyRamps`, repacked on the
+  map's B and the cell's OWN rise, in px of the 15 px storey, the low one —
+  the auto mix gives every run its own height — so the walk reads both in
+  the one fetch it makes for the mask (`rampAt`), and a ramp cell gives up
+  its emission index (kept aside in `mlBaseB`; a palette of 16 or more keeps
+  flat light). No new texture unit: a ninth sampler is a compile failure on
+  an 8-unit GPU. `uRampShare` is the TALLEST rise, the block skip's slack
+  (`applyRamps`, repacked on the
   "ml-slope-height" event). The walk solves the incline EXACTLY (the
   bilinear surface along a segment is a quadratic), a ramp pixel is a top
   (Ha is the incline's height there), and a ramp top takes the sun by its
@@ -297,7 +301,8 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   `hArr`) is raised by the incline's height at the centre, in whole bytes, so
   the bilinear read between centres is an incline — whole levels cast a bump
   per step. What is packed is recorded on the textures (they outlive the
-  instance). At 0% nothing is packed and the uniform is 0: every new branch
+  instance; a redraw — a view turn — drops the tags with the content). Off
+  nothing is packed and the uniform is 0: every new branch
   is off and the pass is the old one. Not yet: the torch march's ground map
   (uHeightG) and the mist pass read whole levels. A CORNER RAMP IS A FOLD
   (tiles3 `rampHeight`, mirrored by `rampH`/`rampG`; the walk solves the two

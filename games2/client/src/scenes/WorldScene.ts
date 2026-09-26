@@ -235,7 +235,7 @@ import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type Reso
 import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
 import { detailEvery, detailRate, setDetailEvery } from "../detailrate";
 import { ensureDetailDial } from "../detaildial";
-import { slopeHeight, setSlopeHeight, nextSlopeHeight, slopeLabel } from "../slopeheight";
+import { slopeHeight, setSlopeHeight, nextSlopeHeight, slopeLabel, slopeRule, SLOPE_OFF } from "../slopeheight";
 // ---- TILES 3.0 (maps3 worlds) -------------------------------------------
 // The resolver (what draws on this cell), the draw layer (the two pixel ops +
 // the texture factory), the streaming per-cell runtime, and scenery. All four
@@ -1402,6 +1402,8 @@ interface Avatar {
   hopDur?: number; // duration (ms) of the CURRENT hop arc (JUMP_MS jump vs STEP_HOP_MS step)
   hopH?: number; // peak height (px) of the current hop arc
   stepLvl?: number; // last frame's rounded surface level — detects a 1-level step to hop over
+  stepX?: number; // last frame's feet (world units): a step a ramp bridges does not hop
+  stepY?: number;
   wasJumping?: boolean; // last synced jumping flag (hop re-arms on rising edge only)
   swimming: boolean;
   wasSwimming?: boolean; // last frame's swimming — detects the swim→land exit
@@ -6206,17 +6208,17 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.night && this.night.testPattern === 5,
           state: () => (this.night?.testPattern === 5 ? "on" : "off"),
         },
-        /* SLOPE — how high the composed slope climbs (slopeheight.ts): off
-         * (the default) no slope at all, 4 px his published sets, 25/50/75% a
-         * ramp with a wall left above it, 100% a clean slope without stairs
-         * (maintainer 2026-09-24/25). */
+        /* SLOPE — how high the composed slope climbs (slopeheight.ts): auto
+         * (the default) each slope run picks from his mix, off no slope at
+         * all, 25/50% a ramp with a wall left above it, 100% a clean slope
+         * without stairs (maintainer 2026-09-24/25/26). */
         {
           label: "slope",
           act: () => {
             setSlopeHeight(nextSlopeHeight());
             this.chat.addLog("—", `slope: ${slopeLabel()}`);
           },
-          get: () => slopeHeight() >= 0,
+          get: () => slopeHeight() !== SLOPE_OFF,
           state: () => slopeLabel(),
         },
         /* OVERLAYS — the same idea as the shadows switch, for the three
@@ -15800,6 +15802,13 @@ export class WorldScene extends Phaser.Scene {
         !swimming &&
         av.stepLvl !== undefined &&
         Math.abs(lvlNow - av.stepLvl) === 1 &&
+        // A STEP A RAMP BRIDGES IS NO HOP (maintainer 2026-09-26: "When running
+        // on anything other than off the player don't need to jump ... The
+        // character will slowly increase elevation as he/she run up the
+        // slope"): the feet climb the incline (rampLiftPx) and the level
+        // changes at its crest. A stair — a run the mix left off — still hops.
+        !this.onRamp(tx, ty) &&
+        !(av.stepX !== undefined && av.stepY !== undefined && this.onRamp(av.stepX, av.stepY)) &&
         !player.jumping &&
         av.hopUntil <= this.time.now
       ) {
@@ -15810,6 +15819,8 @@ export class WorldScene extends Phaser.Scene {
         gameAudio.event("player.jump", { pan: sp.pan, dist: sp.dist, voice: av.character });
       }
       av.stepLvl = lvlNow;
+      av.stepX = tx;
+      av.stepY = ty;
 
       // Submerge amount: 0 = feet at the surface, 1 = shoulders at the surface
       // (fully floating). Tied to how far the fall has sunk the feet below the
@@ -21895,7 +21906,17 @@ export class WorldScene extends Phaser.Scene {
     // the switch that could turn them off is gone).
     data.footBoundary = true;
     data.deckBoundary = true;
-    data.slopeHeight = slopeHeight() / 100; // his slope switch; "ml-slope-height" rebuilds the resolver
+    {
+      // His slope switch — auto (the default) is the per-run mix, over the world
+      // this resolver draws (turned or not); "ml-slope-height" rebuilds it.
+      const sw = this.viewWorld ?? world;
+      const sr = slopeRule(sw as never);
+      data.slopeHeight = sr.slopeHeight;
+      if (sr.shares) {
+        data.slopeShares = sr.shares;
+        data.slopeSharesW = sw.width;
+      }
+    }
     const tiles = new Tiles3(data);
     const view = viewFromParsed(this.viewWorld ?? world);
     // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
@@ -21949,7 +21970,7 @@ export class WorldScene extends Phaser.Scene {
       fadeTune: fadeTune(),
       footBoundary: true,
       deckBoundary: true,
-      slopeHeight: slopeHeight() / 100,
+      slopeStop: slopeHeight(),
       viewRot: this.viewRot,
       pickView: PICK_VIEW,
     };
@@ -28490,6 +28511,14 @@ export class WorldScene extends Phaser.Scene {
     // CUT cell the plate sits `cut` px below its level and `index` names the
     // corners that stay up, so the feet drop toward the lowered ones.
     return rampHeight(sl.index, fx - col, fy - row) * sl.rise - (sl.cut ?? 0); // a ramp's rise IS its climb (a composed one its share of the storey)
+  }
+
+  /** Does the cell under this point (world units) wear a storey ramp? */
+  private onRamp(x: number, y: number): boolean {
+    const t3 = this.t3;
+    if (!t3) return false;
+    const [fx, fy] = this.viewRot && this.world ? rotPoint(x / CELL_WU, y / CELL_WU, this.viewRot, this.world.width, this.world.height) : [x / CELL_WU, y / CELL_WU];
+    return !!this.t3cellOf(t3, Math.floor(fx), Math.floor(fy))?.slope?.ramp;
   }
 
   private stepElevation(av: Avatar, target: number, dt: number): void {

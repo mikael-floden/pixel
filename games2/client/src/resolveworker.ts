@@ -105,7 +105,7 @@ export class ResolveWorker {
     fadeTune?: Tiles3Data["fadeTune"];
     footBoundary?: boolean;
     deckBoundary?: boolean;
-    slopeHeight?: number;
+    slopeStop?: number;
     /** View rotation in quarter-turns (viewrot.ts) - the worker rotates its own fetch. */
     viewRot?: number;
     /** Test switch: picks keyed by the drawn cell (WorldScene PICK_VIEW). */
