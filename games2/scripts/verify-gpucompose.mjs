@@ -37,9 +37,9 @@ try {
   }
   const rep = await page.evaluate(() => window.__ml.gpuParity());
   console.log(JSON.stringify(rep, null, 1));
-  if (!rep.compared) { console.log("FAIL: nothing compared"); bad = true; }
+  if (!rep.compared || !rep.opaque || !rep.inked) { console.log(`FAIL: vacuous (${rep.compared} tiles, ${rep.opaque} opaque texels, ${rep.inked} inked)`); bad = true; }
   else if (rep.tilesDiffering) { console.log(`FAIL: ${rep.tilesDiffering} of ${rep.compared} tiles differ (${rep.texelsDiffering} texels, max ${rep.maxDiff})`); bad = true; }
-  else console.log(`ok: ${rep.compared} boundaries identical byte for byte (${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
+  else console.log(`ok: ${rep.compared} boundaries identical byte for byte (${rep.opaque} opaque texels, ${rep.inked} of them outline ink; ${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
 } finally {
   await browser.close();
   stop();

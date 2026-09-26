@@ -480,6 +480,9 @@ export interface ParityReport {
   texelsDiffering: number;
   maxDiff: number;
   gpuMs: number;
+  /** Non-vacuous: opaque texels compared, and texels the outline inked (shape classes 1/2). */
+  opaque: number;
+  inked: number;
   examples: { key: string; texels: number; first: { x: number; y: number; cpu: number[]; gpu: number[] } }[];
 }
 
@@ -489,7 +492,7 @@ export interface ParityReport {
 export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<ParityReport> {
   const { buildPlatePixels } = await import("./tiles3draw");
   const jobs = [...seenJobs.values()].slice(-max);
-  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, examples: [] };
+  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, opaque: 0, inked: 0, examples: [] };
   const src = new Map<string, Promise<Pixels>>();
   const plate = async (s: BoundaryJob["a"]) => {
     let p = src.get(s.url);
@@ -515,6 +518,8 @@ export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<Pari
   for (let k = 0; k < tiles.length; k++) {
     rep.compared++;
     const c = cpu[k].data, g = out[k].data;
+    const sh = shapeOf(sheets, tiles[k].job);
+    for (let i = 0; i < c.length; i += 4) { if (c[i + 3]) rep.opaque++; if (sh[i + 2] === 1 || sh[i + 2] === 2) rep.inked++; }
     let n = 0, first: ParityReport["examples"][number]["first"] | null = null;
     for (let i = 0; i < c.length; i += 4) {
       const d = Math.max(Math.abs(c[i] - g[i]), Math.abs(c[i + 1] - g[i + 1]), Math.abs(c[i + 2] - g[i + 2]), Math.abs(c[i + 3] - g[i + 3]));
