@@ -153,6 +153,7 @@ import { frameHist, rafHz, quantiles, inputSummary, sectionGroup, sortedNums } f
 import { releaseImagesOnComplete } from "../loaderrelease";
 import { installBatchPatch } from "../batchpatch";
 import { mainBatchUnits, multiPipeState, multiPipeStored, setMultiPipe } from "../multipipe";
+import { highpRunning, highpState, highpStored, setHighp } from "../highp";
 import { installLoaf, loafTake, loafRing, type LoafSplit } from "../perfloaf";
 import { shapeWorst } from "../perfshape";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
@@ -3292,6 +3293,8 @@ export class WorldScene extends Phaser.Scene {
         sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
         // Textures a batch of the world's pipeline holds: 1 = Phaser's mobile default, 16 = multipipe.ts.
         mainUnits: mainBatchUnits(this.game.renderer),
+        // 1 = every shader compiled highp (highp.ts), 0 = Phaser's own precisions.
+        highp: highpRunning() ? 1 : 0,
         // CACHE WORLD RENDERING (worldcache.ts): on, tiles held here, MB, cells
         // the paints skipped and pictures taken this window, a take's worst ms
         ...this.wcCountsTake(),
@@ -6592,6 +6595,15 @@ export class WorldScene extends Phaser.Scene {
           act: () => setMultiPipe(!multiPipeStored()),
           get: () => mainBatchUnits(this.game.renderer) > 1,
           state: () => multiPipeState(mainBatchUnits(this.game.renderer) > 1, !this.game.device.os.desktop),
+        },
+        /* FULL PRECISION DRAWING (highp.ts, 2026-09-26): every shader compiled
+         * highp instead of Phaser's mediump, 16-bit on his Mali. His A/B for the
+         * shimmer; compiled at boot, so a press applies from the next load. */
+        {
+          label: "draw: full precision",
+          act: () => setHighp(!highpStored()),
+          get: () => highpRunning(),
+          state: () => highpState(),
         },
         /* THE EDIT TOOL (see worldEdit): the tile "dropdown" cycles the world's
          * grounds; place/dig/raise act on the player's own cell. */

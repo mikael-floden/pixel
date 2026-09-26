@@ -25,6 +25,11 @@ import { gameAudio } from "../../composer/index";
 import { sessionGet, sessionRemove, sessionSet } from "./sessionflag";
 import { desktopSqueeze } from "./desktopsite";
 import { mountDesktopSiteNotice } from "./desktopsitenotice";
+import { highpInstall } from "./highp";
+
+// FULL PRECISION DRAWING (highp.ts, Settings->Dev): before any game exists,
+// because Phaser compiles its shaders when one is made. Off: nothing happens.
+highpInstall();
 
 // ---- PWA ----
 // Capture the browser's install prompt the moment it fires (often before any

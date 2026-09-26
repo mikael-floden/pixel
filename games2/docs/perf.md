@@ -613,6 +613,29 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   bake's law, below): Settings→Dev "draw: multi-texture batches" (Phaser takes
   it at boot: the next load), `?multipipe=1`; `counts.mainUnits` says which
   arm a window ran (1 mobile, 16 multi; perf-read's `u`).
+- **PHASER'S VERTEX STAGE IS 16-BIT ON HIS PHONE; EVERY SHADER CAN BE COMPILED
+  HIGHP** (`highp.ts`, 2026-09-26; maintainer: "I actually think this is the
+  reason we have shimmering in the game and the reason we have needed to make
+  tiles larger than they should need to be"). All seven of Phaser 3.90's
+  vertex shaders, and 31 of its 34 shader sources, say `precision mediump
+  float`; GLSL ES lets that be 16-bit and his Mali-G715 runs it at 16, so a
+  quad's corners land up to ~0.9 px off on a 1500 px target and its UVs round
+  to 1/2048 of the atlas (the cache seams were exactly this; worldcachegl.ts).
+  HEADLESS NEVER SEES IT: SwiftShader and desktops run mediump at 32 bits. ON
+  (Settings→Dev "draw: full precision", `ml-highp` "1", the next load):
+  `shaderSource` rewrites every mediump/lowp float precision to highp, vertex
+  and fragment alike (a uniform both stages declare must agree or the program
+  does not link), only where HIGH_FLOAT has >= 23 bits; a rewritten shader
+  that fails to compile, or a program that fails to link, gets its own source
+  back (it is read at boot, and a boot that fails never reaches the Dev page
+  that turns it off; `server/test/highp.test.ts`). Headless off vs on at
+  314.8,251.7: 64 shaders in 10 pipelines compiled highp, every program
+  linked, the forced full ground paint (1508x1746) identical row for row
+  (`highp-probe.mjs` in the session scratch). OPT-IN until his phone
+  shows the shimmer and the frame with it; `counts.highp` says which arm a
+  window ran. If it clears the shimmer, the overlaps that hide the error (the
+  tile art's extra texel, the outline's extra column) become removable —
+  theirs (games, tiles), on his evidence.
 - **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
   "I can't have a lag that is due to the perf run itself when I try to
   evaluate the performance... This might result in me pushing you to fix the
@@ -792,9 +815,19 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   up to its tile's highest storey, `t3cellTopLevel`, grown by a tile each way
   — the tight band pass's own bound; separating axes, held texel by texel in
   the test), and the pictures meeting the rect grown by a tile are drawn
-  LAST, cropped to it. The ground texture is opaque (a whole-texture fill
-  first), so a picture's diamond replaces exactly and its clear corners change
-  nothing. (Not a 5x5 square of tiles round the tile: that reached ±1,024 px
+  LAST, cropped to it: queued by the paint and drawn once the bracket's blit
+  has landed (`wcFlushPictures`, cropped to what the blit copied) by
+  worldcachegl.ts's OWN shader — highp positions, the page texel carried as a
+  highp varying, erased texels discarded; a GPU without highp fragments gets
+  no cache. (Not Phaser's `batchDrawFrame`: its sprite vertex shader is
+  `precision mediump`, 16-bit on his Mali-G715, which puts a whole-texel quad
+  up to a texel off, and a picture has no texel of overlap to hide it the way
+  every tile's art does — his phone, a038861c46, 71 tiles: a 1-texel line of
+  the fill along every cached tile's edge. The 16-bit model headless puts
+  vertices 0.5-0.9 px off on his 1510x1656 texture; a whole-texture tiling of
+  one picture left gaps only through Phaser's draw, 0 through ours.) The
+  ground texture is opaque (a whole-texture fill first), so a picture's
+  diamond replaces exactly and its clear corners change nothing. (Not a 5x5 square of tiles round the tile: that reached ±1,024 px
   sideways for a column 192 px wide, and no window ever held it — nothing
   skipped.) DROPPED: an edit drops the tiles its cells' art reaches up to the
   world's top storey (`dirtyEdit`) and repaints with the rest standing
