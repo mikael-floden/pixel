@@ -38,6 +38,10 @@ page.on("pageerror", (e) => fail(`page error: ${e.message}`));
 await page.goto(`${BASE}/`, { waitUntil: "load" });
 await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
 await page.evaluate(() => window.__mlSelect.commit());
+// THE CUBE'S OWN CLOCK: while the world turns the cube follows it (ml-view-angle,
+// spinbar.ts), and this software browser's turns would set every pace below.
+// The coupling is the view turn's gate; this one holds the cube's arithmetic.
+await page.evaluate(() => { window.__mlSpinFollow = false; });
 await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 120000 });
 await page.waitForFunction(() => !document.querySelector("#ml-loading"), null, { timeout: 90000 });
 await page.waitForFunction(() => document.querySelector(".ml-spinbar") && document.querySelector(".ml-bars-l"), null, { timeout: 30000 });

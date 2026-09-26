@@ -151,6 +151,9 @@ let worldAt = 0;
  *  publishes nothing but is still turning. */
 const WORLD_STALE_MS = 1500;
 window.addEventListener("ml-view-angle", (e) => {
+  // verify-spinbar sets this: it gates the cube's OWN arithmetic, and a
+  // software browser turning the world would set its pace
+  if ((window as unknown as { __mlSpinFollow?: boolean }).__mlSpinFollow === false) return;
   const d = (e as CustomEvent<{ q?: number; goal?: number; busy?: boolean }>).detail;
   if (!d || typeof d.q !== "number" || typeof d.goal !== "number" || !frames) return;
   worldLag = (d.goal - d.q) * frames;
