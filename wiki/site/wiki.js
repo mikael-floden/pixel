@@ -176,7 +176,7 @@ async function stagingSha(force = false) {
 /* THE PIN MOVES FORWARD FOR A LIVE INDEX (maintainer 2026-08-28, on Light
  * Soil: "I can see no slope tiles at all" — 240 of them were on main and on
  * disk). A page pins ONE sha at boot so everything it reads is
- * self-consistent, which is right; but the slopes and fades indexes are read
+ * self-consistent, which is right; but the fades index is read
  * LIVE precisely because the tiles agent publishes while he reviews, and a
  * phone tab open since before their push stayed pinned behind it for the
  * life of the page. So those refreshes re-resolve HEAD and, when it has
@@ -184,7 +184,7 @@ async function stagingSha(force = false) {
  * newer one, which is exactly what a reload would have done. */
 function useMainRef() {
   /* A LIVE INDEX AND ITS ART READ MAIN, not the boot pin. The pin exists so
-   * one page reads one immutable sha; the slopes and fades indexes exist
+   * one page reads one immutable sha; the fades index exists
    * because the tiles agent publishes WHILE he reviews, and those two rules
    * cannot both hold. Main wins for these: the files an index names are
    * content-hashed and immutable, so reading the newest index and the newest
@@ -309,7 +309,7 @@ function retryRepoMisses() {
   const first = !repoBaseKnown;
   repoBaseKnown = true;
   // The live indexes bail out until the base is up; once it is, a world page
-  // has to ask again — otherwise the Slope/Fade tab waits for a navigation.
+  // has to ask again — otherwise the Fade tab waits for a navigation.
   if (first && /^#\/?world/.test(location.hash)) queueMicrotask(() => route());
   // ...AND EVERY IMAGE ALREADY ON THE PAGE pointing at the image's origin for a
   // domain the image does not carry. Those cannot merely be waiting: that URL
@@ -10251,11 +10251,6 @@ function viewWorldType(top) {
   const baseDead = !state.admin && !setsToShow.length;
   const trans = allTransitionsOf(t.id);
   const details = detailsOf(t.id);
-  // the Slope tab's inventory — refreshed live so the count appears the day
-  // the tiles agent publishes, with no deploy on this side
-  refreshSlopes().then((changed) => { if (changed && location.hash.startsWith("#/world/")) route(); });
-  const slopes = slopeTilesFor(t.id);
-  const slopesDead = !state.admin && !slopes.some((x) => fb("tiles", x.key).status === "approved");
   const queue = state.admin ? detailQueue(t.id) : [];
   const swatch = (c, title) => h("span", {
     class: "swatch ground-swatch", title,
@@ -10264,7 +10259,10 @@ function viewWorldType(top) {
   // The tab: his rule verbatim — Base tiles first, disabled when empty.
   const wanted = groundTab.get(t.id);
   const detailsDead = !details.length && !state.admin;   // a player with nothing to see
-  const tab = (wanted === "base" && baseDead) || (wanted === "details" && detailsDead) || (wanted === "slope" && slopesDead) ? "ontop"
+  // SLOPE IS GONE (maintainer 2026-09-26: "The game agent has invented a
+  // dynamic way to create slope tiles so you can remove the slope tile
+  // section"). A tab remembered as "slope" opens on the default instead.
+  const tab = (wanted === "base" && baseDead) || (wanted === "details" && detailsDead) || wanted === "slope" ? "ontop"
     : wanted ?? (baseDead ? "ontop" : "base");
   const pickTab = (id) => { groundTab.set(t.id, id); keepScrollY = window.scrollY; route(); };
   /* ON THE DETAILS TAB, "AFTER" IS NOTHING TO JUDGE (maintainer 2026-08-22:
@@ -10551,7 +10549,7 @@ function viewWorldType(top) {
      * with this ground's name, controlling this ground's SIDE of every pair.
      * The other side of each pair keeps its own choice, made on the pair's
      * page, so a global bar here would claim rows it does not control. */
-    state.admin && tab !== "base" && tab !== "trans" && tab !== "slope" ? h("div", { class: "ground-pass" },
+    state.admin && tab !== "base" && tab !== "trans" ? h("div", { class: "ground-pass" },
       h("span", { class: "muted" }, "Tile art"),
       passBar(t.id, () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })) : null,
     h("div", { class: "groundtabs", role: "tablist" },
@@ -10590,74 +10588,10 @@ function viewWorldType(top) {
        * Five tabs with counts wrapped to two rows at every phone width; his
        * words are the labels and the tooltips keep the long form. */
       tabBtn("ontop", "Wall", t.pairs.length, false, "Every wall this ground can stand on — the x-over-y matrix"),
-      tabBtn("trans", "Fade", trans.length || null, false, "Where this ground meets its neighbours — the transitions, and the fade tiles that warm up to them"),
-      /* SLOPE (maintainer 2026-08-28): a fifth tile type — the walkable ramp.
-       * Present for the admin even before the tiles agent publishes, so the
-       * review is ready the moment the art lands. */
-      tabBtn("slope", "Slope", slopes.length || null, slopesDead,
-        slopes.length ? "Ramps of this ground — one level split into two half steps, walkable without a jump"
-          : state.admin ? "The tiles agent is generating slope tiles — this tab fills the moment their index lands"
-            : "No slopes for this ground yet")),
+      tabBtn("trans", "Fade", trans.length || null, false, "Where this ground meets its neighbours — the transitions, and the fade tiles that warm up to them")),
     state.admin && !setsToShow.length && tab === "ontop" ? h("p", { class: "muted" },
       `This ground only draws its clean colour. Open Base to build a set from its ${basePool(t.id).length} textured candidates.`) : null,
-    tab === "base" ? baseTab() : tab === "details" ? detailsTab() : tab === "trans" ? transTab() : tab === "slope" ? slopeTab() : onTopTab());
-
-  /* ---------------- TAB: slopes — the walkable ramp (maintainer 2026-08-28:
-   * "makes a 1 level block look like two 0.5 level blocks so the player can
-   * run straight up without jumping ... We need the same as usual. A
-   * Accept/Reject/Star/Note.") ---- */
-  function slopeTab() {
-    /* WALL-LESS SETS ARE PARKED, not listed (maintainer 2026-08-28, three
-     * grounds in a row: parquet "still thin", slime, snow — the 64x30 batch
-     * has no cliff in the art, so there is no ramp to review and 240 broken
-     * cards per ground were only an invitation to keep reporting them).
-     * One line says how many wait; the cards return when the tiles agent
-     * republishes with a wall — the index is read live. */
-    const all = state.admin ? slopes : slopes.filter((x) => fb("tiles", x.key).status === "approved");
-    // one measurement per set, once; a set whose height arrives late re-renders
-    const unmeasured = [...new Set(all.map((x) => x.set))].filter((d2) => d2 && !SLOPE_H.has(d2));
-    if (unmeasured.length) {
-      let left = unmeasured.length;
-      for (const d2 of unmeasured) {
-        const first = all.find((x) => x.set === d2);
-        slopeHeight(d2, first.file, () => { if (--left <= 0) { keepScrollY = window.scrollY; route(); } });
-      }
-    }
-    const parked = all.filter(slopeNoCliff).length;
-    const list = all.filter((x) => !slopeNoCliff(x));
-    if (!list.length && parked) return h("p", { class: "muted" },
-      `All ${parked} slope tiles of ${t.name.toLowerCase()} came from wall-less sets — flat top faces with no cliff, nothing to walk up. The tiles agent was asked to regenerate them (2026-08-28); they appear here the moment the republished index lands.`);
-    if (!list.length) return h("p", { class: "muted" }, state.admin
-      ? "The tiles agent is generating slope tiles now (their jobs are queued in tiles/slopes/). The moment tiles/slopes/index.json lands on main, this tab fills with them — it reads live, no deploy in between."
-      : `No slopes for ${t.name.toLowerCase()} yet.`);
-    const shown = slopeShown.get(t.id) ?? 12;
-    const parkedNote = parked ? h("p", { class: "muted" },
-      `${parked} more tiles are parked: their sets shipped with no cliff, awaiting the tiles agent's regeneration.`) : null;
-    const label2 = (x) => x.seed != null || x.amplitude != null
-      ? ["slope", x.seed != null ? `seed ${x.seed}` : null, x.amplitude != null ? `amp ${x.amplitude}` : null].filter(Boolean).join(" · ")
-      : x.key.split("/").slice(-2).join(" · ");
-    return h("div", {},
-      h("p", { class: "muted" }, `One level split into two half steps — the player runs straight up, no jump.${state.admin ? " Approve the ones the game may ship; reject the ones the tiles agent should regenerate." : ""}`),
-      h("div", { class: "grid detail-grid" }, ...list.slice(0, shown).map((x) => h("div", { class: "card slope-card" },
-        h("div", { class: "iso-stage checker slope-stage" }, artNodeFor(x.file, "slope-tile", x.key)),
-        h("div", { class: "card-sub" },
-          h("span", { class: "muted", title: x.key }, label2(x)),
-          x.pair && x.pair.split("__over__")[1] !== t.id
-            ? h("span", { class: "pill" }, `over ${typeLabelWorld(x.pair.split("__over__")[1]).toLowerCase()}`) : null,
-          slopeNoCliff(x) ? h("span", { class: "pill err", title: "This set was generated with no wall — a flat top face only, so there is no ramp to judge. Regeneration asked of the tiles agent 2026-08-28; nothing to review here until it lands." }, "no cliff — awaiting regeneration") : null,
-          x.cliff ? h("span", { class: "pill warn", title: "The tiles agent's post pass detected this cliff face as ANOTHER ground and palettized it that way — judge whether that reads right" },
-            `cliff reads ${typeLabelWorld(x.cliff).toLowerCase()}`) : null),
-        state.admin ? feedbackRow("tiles", x.key, {
-
-          rejectTitle: "Not slope material — the tiles agent regenerates it on its next run",
-          rejectedLabel: "slated for removal",
-        }) : null))),
-      list.length > shown ? h("button", {
-        class: "ghost-btn", style: "margin-top:10px",
-        onclick: () => { slopeShown.set(t.id, shown + 12); keepScrollY = window.scrollY; route(); },
-      }, `Show 12 more (${list.length - shown} left)`) : null,
-      parkedNote);
-  }
+    tab === "base" ? baseTab() : tab === "details" ? detailsTab() : tab === "trans" ? transTab() : onTopTab());
 
   /* ---------------- TAB: ground details — "where the fun begins" ----------
    * The collection first (the tops he approved, each composed the way the
@@ -10929,91 +10863,6 @@ function applyFadePin() {
  * The % lives with the tile because the maintainer ruled it does: "I think
  * that data belongs to the tile."
  */
-/* ---- SLOPES (maintainer 2026-08-28): "makes a 1 level block look like two
- * 0.5 level blocks so the player can run straight up without jumping." Read
- * LIVE like the fades: the tiles agent is generating now
- * (tiles/slopes/jobs.json), and the moment tiles/slopes/index.json lands on
- * main the Slope tab fills — no wiki deploy between their push and his
- * review. Contract posted to their board (tiles3/slopes@1); the reader takes
- * pairs keyed "<a>__over__<b>" or a grounds map, key+file required per tile,
- * everything else optional. */
-let slopesIndex;                      // undefined = not fetched, null = absent
-let slopesAt = 0;
-async function refreshSlopes() {
-  if (!state.admin) return false;
-  /* WAIT FOR THE REPO BASE (maintainer 2026-08-28: "Slime shows nothing!
-   * BUG!" — 236 tiles were on main). tiles/** is never in the deploy image,
-   * so before the base resolves this URL is a guaranteed 404 against the
-   * game's origin, and caching THAT as "no index" blanked the tab for the
-   * life of the page. Nothing is remembered here: the next render retries. */
-  if (!repoBase) return false;
-  // a pinned page re-pins to HEAD first: the index is published while he
-  // reviews, and the boot pin would otherwise hide it for the page's life
-  if (slopesIndex !== undefined && Date.now() - slopesAt < 3 * 60 * 1000) return false;
-  useMainRef();
-  const idx = await fetchJson(assetUrl("tiles/slopes/index.json"));
-  slopesAt = Date.now();
-  const had = !!slopesIndex;
-  // A failed fetch must not empty a tab that had data — the manifest law.
-  if (!idx || (!idx.pairs && !idx.grounds && !idx.sets)) { if (slopesIndex === undefined) slopesIndex = null; return false; }
-  slopesIndex = idx;
-  return !had;
-}
-/** Every slope whose ground is this one — THEIR published shape first
- *  (tiles3/slopes@1, landed 2026-08-28: a LIST of Wang-on-elevation sets,
- *  16 tiles each, the corner bitmask meaning RAISED; the display file is
- *  dir/post/<post_files[i]> — "read the name, never build it" — and
- *  cliff_ground names the ground their post pass DETECTED on each cliff
- *  face). My proposed pairs/grounds-map shapes stay accepted. */
-function slopeTilesFor(typeId) {
-  if (!slopesIndex) return [];
-  const out = [];
-  for (const set of (Array.isArray(slopesIndex.sets) ? slopesIndex.sets : [])) {
-    if (set?.ground !== typeId || !set.dir) continue;
-    const n = set.n_tiles ?? Object.keys(set.tiles ?? {}).length;
-    for (let i = 0; i < n; i++) {
-      const pf = set.post_files?.[i];
-      const raw = set.tiles?.[String(i)];
-      const file = pf ? `${set.dir}/post/${pf}` : raw ? `${set.dir}/${raw}` : null;
-      if (!file) continue;
-      out.push({
-        key: `${set.dir}/tile_${String(i).padStart(2, "0")}`, file, pair: null,
-        // 64x46 = top + one level of wall; 64x30 = top face only, which
-        // cannot be a slope at all (maintainer 2026-08-28: "super thin and
-        // doesn't look like the other tiles generated"). Reported to tiles.
-        // measured, never declared — see slopeHeight below
-        set: set.dir,
-        cliff: set.cliff_ground?.[i] && set.cliff_ground[i] !== set.ground ? set.cliff_ground[i] : null,
-      });
-    }
-  }
-  const grounds = slopesIndex.grounds;
-  for (const [k, list] of Object.entries(slopesIndex.pairs ?? {})) {
-    if (k.split("__over__")[0] !== typeId) continue;
-    for (const t of list ?? []) if (t?.key && t?.file) out.push({ ...t, pair: k });
-  }
-  if (grounds && !Array.isArray(grounds)) {
-    for (const t of (grounds[typeId] ?? [])) if (t?.key && t?.file) out.push({ ...t, pair: null });
-  }
-  return out;
-}
-const slopeShown = new Map();         // typeId -> how many slope cards are unrolled
-/* IS THIS SET WALL-LESS? MEASURED, NOT DECLARED (maintainer 2026-08-29:
- * "Parquet Floor has no slope in the wiki" — the tiles agent had already
- * republished those five grounds at 64x46 with real walls, but left `size`
- * at [64,30] in the index, and the parking trusted it. A file's own height
- * is the fact; the field is a claim). One image per SET, cached; unknown
- * counts as fine, so a slow measurement never hides art. */
-const SLOPE_H = new Map();            // set dir -> measured frame height
-function slopeHeight(dir, file, cb) {
-  if (SLOPE_H.has(dir)) { cb(SLOPE_H.get(dir)); return; }
-  const im = new Image();
-  im.onload = () => { SLOPE_H.set(dir, im.naturalHeight); cb(im.naturalHeight); };
-  im.onerror = () => { SLOPE_H.set(dir, null); cb(null); };
-  im.src = assetUrl(file);
-}
-const slopeNoCliff = (t) => (SLOPE_H.get(t.set) ?? 99) < 40;
-
 let fadesIndex;                       // undefined = not fetched, null = absent
 let fadesAt = 0;
 async function refreshFades() {
