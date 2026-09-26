@@ -170,8 +170,11 @@ and smeared into streaks mid-turn. At A and at B the renderer draws one more fra
 WITHOUT them (under the overlay, invisible): the mesh wears that bodiless frame, and
 each thing is a CARD — its pixels are the difference between the two frames (a
 waterline crop, the light and its name come along), carried by its feet' projection,
-depth-tested at its feet against the mesh (a bridge in front hides it as the painter
-did; its name draws on top, as labels do), drawn back to front BEFORE the blur pass
+depth-tested against the mesh STANDING: each pixel as near as its height above the
+feet makes it (the mesh's own height term) — at the feet' depth alone, a wall behind
+a body beat it at head height and cut every head off mid-turn, read through the
+blur as NPCs going to ghosts (a bridge in front still hides it as the painter did;
+its name draws on top, as labels do), drawn back to front BEFORE the blur pass
 (so it blurs with the scene). Overlaps are settled by an OWNER MAP: the things drawn
 once more as flat colours in the painter's order into an off-screen target, read back
 once, so each card keeps only the pixels it owns (grouping overlaps instead carried
