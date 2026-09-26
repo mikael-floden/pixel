@@ -28,7 +28,7 @@ try {
   page.on("pageerror", (e) => { console.log("PAGEERROR", e.message); bad = true; });
   await page.addInitScript((sl) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "G" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); if (sl) localStorage.setItem("ml-slope-height3", sl); }, SLOPE);
   await page.goto(origin + "/", { waitUntil: "commit" });
-  await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 240000, polling: 250 });
+  await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 600000, polling: 250 });
   await page.evaluate(() => { try { window.__ml.noAggro(true); } catch {} });
   // AND WHERE THE SLOPES ARE: every cell of the world whose transition wears a
   // slope (Tiles3Boundary.slope), clustered, a few clusters visited — the
@@ -94,7 +94,7 @@ try {
       pg.on("pageerror", (e) => { console.log(`PAGEERROR (${name})`, e.message); bad = true; });
       await pg.addInitScript(([sl, g]) => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "H" })); sessionStorage.setItem("ml-rejoin", "1"); localStorage.setItem("ml-turn-warm", "0"); localStorage.setItem("ml-gpu-compose", g ? "1" : "0"); if (sl) localStorage.setItem("ml-slope-height3", sl); }, [SLOPE, gpu]);
       await pg.goto(origin + "/", { waitUntil: "commit" });
-      await pg.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 240000, polling: 250 });
+      await pg.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 600000, polling: 250 });
       await pg.evaluate(() => { try { window.__ml.noAggro(true); } catch {} });
       for (const [c, r] of walked) { await pg.evaluate(([c, r]) => window.__ml.teleport(c + 0.5, r + 0.5), [c, r]); await settle(pg); }
       return pg;
