@@ -1,11 +1,17 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-26T06:48:16+00:00",
+  "updated_at": "2026-09-26T07:38:20+00:00",
   "health": "running",
   "current": {
-    "unit": "LANDED (b9fcdec8a8): THE VIEW TURN IS LIVE ON THE SPIN BAR (maintainer 2026-09-26: 'Put it on the buttons always. We will fix any bugs and move forward.'). A tap on .ml-spinbtn moves a goal a quarter as the finger lifts, ml-spin settles it on the orb's quarter at rest, the view chases a quarter at a time; a right tap turns the world's near side RIGHT (his orb's front does) = viewRot -1. Q/E click the bar's buttons. Server/shared: InputMessage.vr (absent = the old law) — rides the container. Watching for his reports; next: the chain's pause between quarters, reversal mid-turn, indoor check while turned. games2/CLAUDE.md has NO pointer to docs/view-rotation.md yet: it is at 20,477 of 20,480 bytes, so a line needs another cut first. ALSO LIVE in the same push: his new CUBE in the spin bar at full pixel size (44 pt, verify-spinbar 35/35), the fade at the blur's peak (RotTune.fade 0.06), a frame's upright set snapped in the frame it is cut from. OPEN: in a right-tap turn at 305,239 the NPC cards go ghostly mid-turn while the player stays solid — probing the overlay's A0 texture next.",
-    "since": "2026-09-26T06:48:16+00:00",
-    "files": []
+    "unit": "LIVE a2b6306132 (container): the view turn, round 2 on his live report ('lags like crazy in the middle', 'not in sync with the cube rotation'). PREPARE THEN RUN: a driven turn creeps (<=0.12) until frame B is complete, so every swap/upload/readback lands while it barely moves; the game's camera is off under the fast part. THE CUBE FOLLOWS THE WORLD: ml-view-angle {q, goal, busy} every frame while a turn is owed; spinbar.ts draws target minus the world's remaining turn (verify-spinbar keeps the cube's own clock via __mlSpinFollow=false). A DRIVEN TURN MOVES LIKE A BODY: velocity carries through chains (overlay held, no fade between quarters), a tap back reverses mid-quarter and swaps back. No in-between facing (its card painted ground over NPCs behind the player). Turned free-standing directed scenery shows its nearest side. Browser-checked: chain 0 uncovered frames, reversal ends where it began, cube within one frame of the world. OPEN: re-check NPC cards mid-turn after the facing removal; frame B carries no scenery cards (probing); verify-recbtn landscape arm re-run.",
+    "since": "2026-09-26T07:38:20+00:00",
+    "files": [
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/client/src/rotfx.ts",
+      "games2/client/src/spinbar.ts",
+      "games2/client/src/viewrot.ts",
+      "games2/docs/view-rotation.md"
+    ]
   },
   "progress": {
     "units_shipped": 42
@@ -74,7 +80,7 @@
       "at": "2026-09-26T06:34:05+00:00"
     }
   ],
-  "updated": "2026-09-26T06:48:16+00:00",
+  "updated": "2026-09-26T07:38:20+00:00",
   "units_shipped": 53,
   "handled": [
     {
