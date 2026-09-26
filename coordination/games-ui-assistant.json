@@ -2,7 +2,18 @@
   "domain": "games-ui-assistant",
   "updated_at": "2026-09-21T15:58:06+00:00",
   "health": "running",
-  "current": "idle — THE SPIN BAR shipped and live (8282704e35 + its gate): his orb between two arrow buttons on the line under the HP/EP card, Report dropped one --ml-spin-step below it. Buttons are the 🔍 square's 11 computed properties read off the LIVE .ml-wikinear; one 2x bake of his Right_Arrow export mirrored in CSS for the left; the animation is a horizontal 2x STRIP (a GIF cannot be scrubbed and this plays backwards on one button) whose frame COUNT is read from the art, so re-aiming the trim is a bake and not a code change. OPEN, his verdict: I read \"so it ends on a perfect 90° rotation\" as THE TRIMMED STRIP IS ONE QUARTER TURN (dropped the last of 9; a press plays all 8 and lands on frame 0). The other reading is 9 frames = 360°, where a quarter is ~2 frames and a press should be much shorter. Silhouette is byte-identical in all 9 (bbox 20x18 at x6-25,y7-24), so it is a turntable, not a tilt. It drives nothing yet by design — each press emits `ml-spin` with {quarter, dir}. ALSO STILL OPEN, cause NOT found: the session's first chat keyboard shrinks his layout viewport while every later one overlays it; 663764eaa5 did not fix it and I have not pushed again. Offered a ?kb=1 readout.",
+  "current": {
+    "unit": "spin bar round 2 — the trim was the snap (restore all 9 frames) + a 25% bigger hit target on the arrows (maintainer 2026-09-26)",
+    "since": "2026-09-26T04:49:59.653588+00:00",
+    "files": [
+      "games2/client/src/spinbar.ts",
+      "games2/client/public/ui2/spin-orb.webp",
+      "games2/scripts/bake-corner-icons.py",
+      "games2/scripts/verify-spinbar.mjs",
+      "games2/UI_AGENT.md"
+    ],
+    "note": "Dropping a frame from a CLOSED loop makes one double-step; his snap is at the last frame, which is exactly the 7->0 join I created. Restoring all 9 so every authored transition plays once. The hit target grows 25% in both axes via a negative-inset ::before, the VISIBLE box stays the search square's 34x34."
+  },
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
@@ -27,6 +38,6 @@
       "at": "2026-09-22T19:02:27+00:00"
     }
   ],
-  "status": "idle",
-  "updated": "2026-09-26T04:37:51.523446+00:00"
+  "status": "working",
+  "updated": "2026-09-26T04:49:59.653588+00:00"
 }
