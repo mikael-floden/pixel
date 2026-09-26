@@ -1629,7 +1629,7 @@
     "die": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.159,
           "step_max": 0.3355,
           "drift": 12.37,
@@ -1649,8 +1649,7 @@
             104
           ],
           "reasons": [
-            "still standing: the last frame matches the base at 0.61 (his dies end under 0.60)",
-            "canvas grown by 4 px a side to hold the motion"
+            "left for HIS eye after 3 rolls: still standing: the last frame matches the base at 0.61 (his dies end under 0.60); canvas grown by 4 px a side to hold the motion"
           ],
           "sub": "3e9fe509-b43a-46c9-90c9-fac365c6d691",
           "group": "e2c8a4d2-39ab-420c-9fee-7876f34859e1",
