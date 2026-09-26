@@ -437,8 +437,8 @@ try {
         gridL: cells[0]?.getBoundingClientRect().left, gridR: cells[1]?.getBoundingClientRect().right, paneL: pane.getBoundingClientRect().left, paneR: pane.getBoundingClientRect().right,
         audioInDev: btns.some((b) => /^(sound|music)\b/.test(b.textContent.trim())) };
     });
-    dev.sub === "dev" && dev.btns >= 10 && dev.painted === dev.btns && dev.hook && dev.dials >= 8 && dev.amb && dev.audioInDev
-      ? ok(`Dev is the old page: ${dev.btns} switches (time-of-day hook painted, the composer's mute switches among them), ${dev.dials} dials, the ambient section`)
+    dev.sub === "dev" && dev.btns >= 10 && dev.painted === dev.btns && dev.hook && dev.dials >= 8 && dev.amb && !dev.audioInDev
+      ? ok(`Dev is the old page: ${dev.btns} switches (time-of-day hook painted; sound and music live on Sound, not here — maintainer 2026-09-26), ${dev.dials} dials, the ambient section`)
       : fail(`Dev: ${JSON.stringify(dev)}`);
     near(dev.gridL, dev.paneL, 1.5) && near(dev.gridR, dev.paneR, 1.5)
       ? ok("the dev grid spans its column edge to edge")
