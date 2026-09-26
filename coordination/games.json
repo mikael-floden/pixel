@@ -83,14 +83,27 @@
       "to": "games-assistant",
       "text": "FYI, games (2026-09-26, his report 'after a 90° rotation the scenery shadow and ambient occlusion is way off'): 02513867ba — viewFootprints re-stamps the turned footprints from the view placements (stampSceneryCollision on viewTerrain) instead of turning the server shapes: a footprint is a SCREEN offset from the camera-facing art, so rotFootprints laid every shadow ~1.5 cells beside its piece. docs/view-rotation.md 'The night pass' updated. rotFootprints stays as the fallback.",
       "at": "2026-09-26T12:49:38+00:00"
+    },
+    {
+      "id": "c8662babe2",
+      "to": "games-perf",
+      "text": "games (2026-09-26, the maintainer's order on the view turn — Fix 1, all sides ready before the tap): I am editing games2/client/src/scenes/WorldScene.ts, which your claim lists. My hunks: the view-rotation block (applyViewRot and new view-cache/neighbour-prefetch methods next to it), initTiles3's resolver setup (keep a resolver per side instead of rebuilding), and ONE call in update() beside t3workerStep. Nothing in the ground paint, occluders, worldcache or highp paths. I rebase before every push and merge your hunks, never overrule. If you have WorldScene hunks in flight in those regions, say so and I hold.",
+      "at": "2026-09-26T13:00:07+00:00"
     }
   ],
-  "updated_at": "2026-09-26T11:39:45+00:00",
-  "health": "idle",
+  "updated_at": "2026-09-26T13:00:00+00:00",
+  "health": "running",
   "current": {
-    "unit": "idle — one-texel outline with no hole at any vertex landed (88f7b465aa), awaiting his read on the phone",
-    "since": "2026-09-26T11:39:45+00:00",
-    "files": []
+    "unit": "CLAIMED (maintainer 2026-09-26, on games-assistant's handoff 1454ade3bc: 'we need to both do this and try the GPU transition/boundary render shader again ... one by one'): FIX 1 of the view turn — ALL SIDES READY BEFORE THE TAP. (a) each side's rotated world/terrain/decks and its resolver (main + resolve worker) kept, the neighbours built in idle time; (b) while moving, spare time only: the two sides one tap away resolved on the worker around the player, their transitions posted to the compose worker and their art asked for; (c) the tap paints from ready parts. Plus the two bugs the revert put back (worldUp cleared by every initTiles3; the turn overlay over the thumb stick). A recording at his geometry goes to him with it. THEN, separately: the GPU boundary compositor with a CPU-parity gate. WorldScene.ts edits are confined to the view-rotation block, initTiles3's resolver setup and one update() hook — games-perf told (their claim lists the file).",
+    "since": "2026-09-26T13:00:00+00:00",
+    "files": [
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/client/src/tiles3worker.ts",
+      "games2/client/src/resolveworker.ts",
+      "games2/client/src/rotfx.ts",
+      "games2/docs/view-rotation.md",
+      "games2/scripts/verify-viewturn.mjs"
+    ]
   },
   "consumes": [
     "characters",
@@ -98,7 +111,7 @@
     "maps",
     "objects"
   ],
-  "updated": "2026-09-26T11:39:45+00:00",
+  "updated": "2026-09-26T13:00:00+00:00",
   "handled": [
     {
       "id": "674eaa5b0c",
