@@ -1,8 +1,8 @@
 {
   "domain": "effects",
-  "updated_at": "2026-09-26T15:55:14+00:00",
+  "updated_at": "2026-09-26T16:08:07+00:00",
   "health": "idle",
-  "current": "idle — first unit shipped (the domain, 31 effects, the viewer, the Phaser adapter, the contracts); waiting on the maintainer's first verdicts and on games/wiki for the plumbing",
+  "current": "idle — the domain is on main (31 effects, the viewer, the Phaser adapter, the contracts); waiting on the maintainer's first verdicts and on games/wiki for the plumbing (requests bcfbf78b70, d6555c086b)",
   "progress": {
     "effects": 31,
     "families": 15,
@@ -11,7 +11,8 @@
   "budget_remaining": null,
   "notes": [
     "[2026-09-26T15:54:08+00:00] RUN 1 (2026-09-26) — TOOK: the new effects domain from the maintainer's brief (spell/item/attack/monster effects as shaders, levels 1-10, wiki tuning, easy for the game). DID: effects/runtime (FxWorld: 8 kinds, timelines, events, anchors in the GAME'S world space through the game's own project(), lights; FxGL; the GLSL prelude), the Phaser 3.90 adapter (every layer rendered to a world-resolution texture on postupdate, before the frame, shown as an Image — phaser-check: all 31 effects at once = 82 layers, ~0.5 M texels, 0 GL errors), 31 effects across 15 families and all 8 kinds, the review viewer (the game's iso floor, the real hero + werewolf/troll/human, level 1-10, tunables, house style, night), catalog + gates, docs (README, docs/integration.md for games, docs/wiki.md for the wiki, docs/authoring.md), rows in the root README, CLAUDE.md and PROTOCOL.md. Pushed to claude/shader-effects-library-rtb8v2, the session's designated branch (NOT main: the maintainer merges it).",
-    "[2026-09-26T15:54:08+00:00] DID NOT, and why: bind any effect to a skill (his: 'I will later bind them to something'); edit games2/, wiki/ or live/ (not mine — requests bcfbf78b70 -> games and d6555c086b -> wiki carry the exact plumbing: ship effects/ in the image, LIVE_FILES/FEEDBACK_DOMAINS, the Effects section, the build-time import); add !effects to .dockerignore (its own header: a domain stays out of the context until the Dockerfile bakes it in — games' unit); generate PixelLab art (every effect is procedural; particle sprites can be sampled by a shader later). NEXT: his first verdicts decide batch 2 (candidates: water/wind/blood families, bite/roar/tail-sweep/web, axe/spear/hammer trails, fire wall, blizzard)."
+    "[2026-09-26T15:54:08+00:00] DID NOT, and why: bind any effect to a skill (his: 'I will later bind them to something'); edit games2/, wiki/ or live/ (not mine — requests bcfbf78b70 -> games and d6555c086b -> wiki carry the exact plumbing: ship effects/ in the image, LIVE_FILES/FEEDBACK_DOMAINS, the Effects section, the build-time import); add !effects to .dockerignore (its own header: a domain stays out of the context until the Dockerfile bakes it in — games' unit); generate PixelLab art (every effect is procedural; particle sprites can be sampled by a shader later). NEXT: his first verdicts decide batch 2 (candidates: water/wind/blood families, bite/roar/tail-sweep/web, axe/spear/hammer trails, fire wall, blizzard).",
+    "[2026-09-26T16:08:07+00:00] SHIPPED TO MAIN: 5d0b8bf51 (the domain) + 0d7198ac1 (board), rebased on 3f5029268; the maintainer 2026-09-26: 'In this repo you always push to main by yourself without asking for permission. That folder is yours'. The earlier note's 'not main' is superseded; the review link for his phone is a private claude.ai artifact until the wiki section exists."
   ],
   "requests": [
     {
