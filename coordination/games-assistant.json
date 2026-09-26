@@ -1,11 +1,17 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-26T08:04:19+00:00",
+  "updated_at": "2026-09-26T08:32:52+00:00",
   "health": "running",
   "current": {
-    "unit": "LIVE c50f7dbc57 (container): the view turn, round 3. BILLBOARDS STAND: a card's pixel is as near as its height above the feet (the mesh's own height term) — at the feet' depth alone a wall behind cut every head off mid-turn, which read through the blur as NPCs and the player going to ghosts (found by reading tex.M back at u 0.3: depth off, every figure whole). Round 2 (a2b6306132): prepare-then-run, camera off under the fast part, the cube follows the world, chains carry, taps back reverse. GATES: verify-viewturn 6/6 (chain 0 uncovered frames, camera never off uncovered, cube 0.000 quarter from the world, reversal), verify-spinbar 35/35, verify-recbtn green idle (its landscape red was load). OPEN: indoors while turned is built but unchecked on screen; the chain still holds 3 frames at each junction for its frame A.",
-    "since": "2026-09-26T07:38:20+00:00",
-    "files": []
+    "unit": "CLAIMED: THE TURN WITH NOTHING TO PREPARE (maintainer 2026-09-26: 'The game still lags during the rotation. It's as if the game has to prepare a lot of stuff.'). Each view orientation's world, terrain grid, tiles3 resolver and resolved cells are built once and kept (a turn back swaps pointers), the neighbours of the view on screen are built in idle time, and the swap's big steps (night heightmap, ground repaint) are measured cold vs warm and cut. Branch claude/rotate-view-real-renderer, then main.",
+    "since": "2026-09-26T08:32:52+00:00",
+    "files": [
+      "games2/client/src/scenes/WorldScene.ts",
+      "games2/client/src/tiles3worker.ts",
+      "games2/client/src/rotfx.ts",
+      "games2/client/src/nightlight.ts",
+      "games2/docs/view-rotation.md"
+    ]
   },
   "progress": {
     "units_shipped": 42
@@ -74,7 +80,7 @@
       "at": "2026-09-26T06:34:05+00:00"
     }
   ],
-  "updated": "2026-09-26T08:04:19+00:00",
+  "updated": "2026-09-26T08:32:52+00:00",
   "units_shipped": 53,
   "handled": [
     {
