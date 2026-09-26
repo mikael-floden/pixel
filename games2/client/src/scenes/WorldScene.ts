@@ -1264,6 +1264,9 @@ const GROUND_SLICE_MS = 2;
 const GROUND_WARM_BACKLOG = 48;
 const GROUND_WARM_MOVE = 6;
 const GROUND_WARM_FRAME_MS = 1.5;
+/** The drain's pre-walk (gpuPrewalkSlices): slices past the head are walked
+ *  while this many ms last — the rest are walked on a later frame. */
+const GPU_PREWALK_MS = 3;
 const GROUND_SLICE_MAX = 768;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
 const GROUND_RING_COMPOSE = 3;
@@ -3496,7 +3499,18 @@ export class WorldScene extends Phaser.Scene {
       // THE AMBIENT EFFECTS' OWN COST, per feature (`perfAmbientTake`).
       ambient: ambientBlock,
       // THE COMPOSE WORKER, whole: its state, its counters and why it missed.
-      gpuCompose: { on: this.t3gpuc.on, ...this.t3gpuc.stats, ms: +this.t3gpuc.stats.ms.toFixed(1), shapeMs: +this.t3gpuc.stats.shapeMs.toFixed(1) },
+      gpuCompose: {
+        on: this.t3gpuc.on,
+        ...this.t3gpuc.stats,
+        ms: +this.t3gpuc.stats.ms.toFixed(1),
+        shapeMs: +this.t3gpuc.stats.shapeMs.toFixed(1),
+        sumsOutMs: +this.t3gpuc.stats.sumsOutMs.toFixed(1),
+        // THE DIRECT DRAW: sums passes INSIDE a ground batch (midBatch, the
+        // interruption) against the ones in their own pass (sumsOutPasses)
+        direct: this.t3gpuc.directStore
+          ? { tiles: this.t3gpuc.directStore.size, ...this.t3gpuc.directStore.stats, midBatch: this.groundPipe?.stats.sumsPasses ?? 0, midMs: +(this.groundPipe?.stats.sumsMs ?? 0).toFixed(1), waiting: this.t3gpuc.waitingCount, prewalkMs: +this.gpuPrewalkStats.ms.toFixed(1) }
+          : null,
+      },
       compose: { ...this.t3compose.stats, workerMs: Math.round(this.t3compose.stats.workerMs), applyMs: +this.t3compose.stats.applyMs.toFixed(1) },
       /* EVERY ZONE CROSSING OF THIS WINDOW, from HIS device — the only place
        * the hand-off can be judged, because a headless run binds the new room
@@ -8519,6 +8533,8 @@ export class WorldScene extends Phaser.Scene {
           on: this.t3gpuc.on,
           pending: this.t3gpuc.pending,
           ...this.t3gpuc.stats,
+          waiting: this.t3gpuc.waitingCount,
+          prewalk: { ...this.gpuPrewalkStats, ms: +this.gpuPrewalkStats.ms.toFixed(1) },
           direct: d ? { tiles: d.size, ...d.stats, quads: p?.stats.direct ?? 0, sumsPassesPipe: p?.stats.sumsPasses ?? 0, sumsMs: +(p?.stats.sumsMs ?? 0).toFixed(1) } : null,
         };
       },
@@ -15251,6 +15267,9 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
+    // "GPU transitions": the direct tiles whose inputs landed, and every new
+    // outline colour, before anything paints (tiles3gpu frameStart)
+    this.t3gpuc.frameStart();
     // One tick per frame, BEFORE any body registers. Both consumers test
     // `coverAt === coverTick`, and so do the dev probes AFTER the frame has
     // run — bumping it in the flush instead would make every probe read
@@ -23839,6 +23858,7 @@ export class WorldScene extends Phaser.Scene {
   private t3drainSlices(): void {
     const rt = this.groundRT;
     if (!this.groundSliceQ.length || !rt || !this.maps3) return;
+    if (this.groundBatchRT === null) this.gpuPrewalkSlices();
     rt.beginDraw();
     this.groundBracketRect = null;
     const prev = this.groundBatchRT;
@@ -23846,7 +23866,10 @@ export class WorldScene extends Phaser.Scene {
     try {
       let spent = this.t3paintSliceStep();
       let guard = 4096;
-      while (this.groundSliceQ.length && spent < this.groundBandMs && guard-- > 0) {
+      // with "GPU transitions" on, only slices already pre-walked: a slice that
+      // was not would compute its new outline colours inside this bracket
+      const walked = (b: object | undefined) => !b || !this.t3gpuc.directStore || this.gpuWalkedSlices.has(b);
+      while (this.groundSliceQ.length && spent < this.groundBandMs && guard-- > 0 && walked(this.groundSliceQ[0])) {
         const n = this.groundSliceQ.length;
         spent += this.t3paintSliceStep();
         if (this.groundSliceQ.length === n) break; // no shift = no progress
@@ -24506,6 +24529,15 @@ export class WorldScene extends Phaser.Scene {
     /* ONE BRACKET ON THE SCRATCH for the background stamp and the cells' paint
      * (the stamp used to open a whole-target bracket of its own; `skipBatch`
      * batches it into this one), blitted back over `cull` only. */
+    if (this.groundBatchRT === null && this.t3gpuc.directStore) {
+      this.setGroundClip(cull);
+      try {
+        this.gpuPrewalk(a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, a.top);
+      } finally {
+        this.setGroundClip(null);
+      }
+      this.t3gpuc.sumsNow();
+    }
     scratch.beginDraw();
     this.groundBracketRect = { ...cull };
     const prevBatch = this.groundBatchRT;
@@ -25103,6 +25135,113 @@ export class WorldScene extends Phaser.Scene {
     for (const e of b) g.binds += e.texture.length;
   }
 
+  /** THE DIRECT DRAW'S PRE-WALK (tiles3gpu `sumsNow`, "GPU transitions" on):
+   *  what a paint of this window will ask of the factory, asked BEFORE its
+   *  bracket opens — so every transition, composed ramp and lined top it draws
+   *  already exists, and the outline colours of the new ones are computed in
+   *  the one sums pass that follows, never inside the ground's batch (a pass
+   *  there takes the GPU off the ground target and back in mid-paint: 217 of
+   *  them in one headless boot and four runs; 0 with this). The same cells as the paint (the
+   *  band's tight test, the world cache's skips, the cut) and the same calls;
+   *  it draws nothing and owes nothing — the paint that follows does the
+   *  bookkeeping and finds every answer memoised. Runs under the caller's clip
+   *  (the factory defers plates inside a band pass, as the paint will). */
+  private gpuPrewalkStats = { runs: 0, cells: 0, ms: 0 };
+  private gpuPrewalk(
+    ax: number,
+    ay: number,
+    u0: number,
+    u1: number,
+    v0: number,
+    v1: number,
+    mask: Map<number, number> | null,
+    cuts: Map<number, number> | null,
+    top: number,
+  ): void {
+    const t3 = this.t3, world = this.world, tex = this.t3tex;
+    if (!t3 || !world || !tex || !this.t3gpuc.directStore) return;
+    const t0 = performance.now();
+    const cells = this.t3windowCells(u0, u1, v0, v1);
+    const clipRect = this.groundClip;
+    const tight = !!clipRect && this.groundTightOn;
+    const fr = t3.frame;
+    const lhPx = this.geom.lh;
+    const rx0 = tight && clipRect ? ax + clipRect.x0 - T3_TILE : 0;
+    const rx1 = tight && clipRect ? ax + clipRect.x1 + T3_TILE : 0;
+    const ry0 = tight && clipRect ? ay + clipRect.y0 - T3_TILE : 0;
+    const ry1 = tight && clipRect ? ay + clipRect.y1 + T3_TILE : 0;
+    const reaches = (col: number, row: number, level: number): boolean => {
+      const cx = t3columnX(fr, col, row);
+      if (cx + T3_TILE < rx0 || cx > rx1) return false;
+      if (t3columnY(fr, col, row, level) - T3_TOP_Y - lhPx > ry1) return false;
+      return t3columnY(fr, col, row, 0) + T3_TILE + lhPx >= ry0;
+    };
+    const wcp = this.wc && !mask ? this.wc : null;
+    let n = 0;
+    for (const [col, row] of cells) {
+      if (tight && !reaches(col, row, ((this.viewWorld ?? world).rows[row]?.[col]?.l ?? 0) + 1)) continue;
+      if (wcp && wcp.groundSkips(col, row)) continue;
+      const cell = this.t3cellOf(t3, col, row);
+      if (!cell) continue;
+      if (tight && !reaches(col, row, cell.level)) continue;
+      n++;
+      const idx = row * world.width + col;
+      const cut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
+      const cutSuppressed = !!mask && (!cuts || (cut !== undefined && cell.level > cut));
+      const b = this.t3boundaryOf(t3, col, row);
+      try {
+        const bop = b && !cutSuppressed ? tex.opsForBoundary(b) : null;
+        if (!(bop && cell.kind === "field" && !this.noTransitions)) cellBlits(tex, this.t3tm, cell, cut);
+      } catch {
+        // the paint warns about it
+      }
+    }
+    for (const [col, row] of cells) {
+      const idx = row * world.width + col;
+      if (mask && (cuts ? cuts.get(idx) : top) !== undefined) continue;
+      if (wcp && wcp.groundSkips(col, row)) continue;
+      if (tight) {
+        const cx = t3columnX(fr, col, row);
+        if (cx + T3_TILE < rx0 || cx > rx1) continue;
+      }
+      for (const d of this.t3decksOf(t3, col, row)) {
+        if (tight && !reaches(col, row, d.level)) continue;
+        try {
+          tex.opsForDeck(d);
+        } catch {
+          // the paint warns about it
+        }
+      }
+    }
+    this.gpuPrewalkStats.runs++;
+    this.gpuPrewalkStats.cells += n;
+    this.gpuPrewalkStats.ms += performance.now() - t0;
+  }
+
+  /** The drain's slices, pre-walked before its bracket opens: the head always,
+   *  then the next ones not walked yet while GPU_PREWALK_MS lasts. */
+  private gpuWalkedSlices = new WeakSet<object>();
+  private gpuPrewalkSlices(): void {
+    const ctx = this.groundSliceCtx;
+    if (!ctx || !this.t3gpuc.directStore) return;
+    const t0 = performance.now();
+    const q = this.groundSliceQ;
+    for (let i = 0; i < q.length; i++) {
+      const b = q[i];
+      if (this.gpuWalkedSlices.has(b)) continue;
+      if (i > 0 && performance.now() - t0 > GPU_PREWALK_MS) break;
+      const win = this.t3groundWindow(ctx.ax, ctx.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
+      this.setGroundClip(b);
+      try {
+        this.gpuPrewalk(ctx.ax, ctx.ay, win.u0, win.u1, win.v0, win.v1, ctx.mask, ctx.cuts, ctx.top);
+      } finally {
+        this.setGroundClip(null);
+      }
+      this.gpuWalkedSlices.add(b);
+    }
+    this.t3gpuc.sumsNow();
+  }
+
   private drawTiles3Ground(
     rt: Phaser.GameObjects.RenderTexture,
     ax: number,
@@ -25203,6 +25342,12 @@ export class WorldScene extends Phaser.Scene {
      * 2026-09-13 the blit is the painted rect's, not the texture's
      * (groundEndDraw): a clipped paint blits its clip, a full paint the whole. */
     const ownBracket = this.groundBatchRT !== rt;
+    // no bracket open anywhere: the direct draw's tiles first (gpuPrewalk); a
+    // caller that opened one (the drain, a cell repaint) did this before it
+    if (this.groundBatchRT === null && this.t3gpuc.directStore) {
+      this.gpuPrewalk(ax, ay, u0, u1, v0, v1, mask, cuts, top);
+      this.t3gpuc.sumsNow();
+    }
     if (ownBracket) {
       rt.beginDraw();
       this.groundBracketRect = this.groundClip ? { ...this.groundClip } : null;
