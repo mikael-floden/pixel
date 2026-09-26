@@ -216,7 +216,7 @@ alone (its lines dying away), and every card but the player's hands over inside
 it. (A fade across half the turn, 0.25-0.75, laid the two views over each other
 for most of the orbit and muddied both sets of lines.)
 FRAME B WAITS FOR A NON-VACUOUS SETTLE: every art key on the cells in view is a
-texture, no cell in view is owed a repaint, the ground pass has blitted, at least
+texture, no cell in view is owed a repaint or a transition, the ground pass has blitted, at least
 60 cells were checked, held for five checks 100 ms apart — and no occluder cell in
 view is incomplete and no scenery still is streaming (a B taken on the ground
 alone ended the turn on holes, then the live view popped them in). (A test that checked
@@ -226,6 +226,46 @@ Hooks: `__ml.viewRot(k)` (instant), `__ml.turnView(dir, ms, waitB, blur)` (in
 VIEW quarters: +1 is the picture clockwise; neither moves the spin goal),
 `__ml.turnSeek(u)` (pin progress for screenshots), `__ml.turnInfo()`,
 `__ml.pickAtView/surfaceAtView` (view-space twins for the foam layer).
+
+## Every side ready before the tap (Fix 1)
+
+A turn to a side never seen owed ~700-800 transitions at once, and the landing
+repair lets `T3_BOUNDARY_LAND` = 12 land a frame, on frames that did not paint:
+at 30 Hz, seconds of either waiting (the lag) or a B off plain plates (the
+checkerboard). So the sides are made BEFORE the tap (maintainer 2026-09-26: "we
+need to both do this and try the GPU transition"), one idle slot at a time
+(`warmViews`, `requestIdleCallback`, a second apart), the two one tap away
+first, the far side after:
+- the world document once, then each side's rotated world, terrain grid and
+  deck index (`viewCache`, kept for the session: a turn swaps a pointer);
+- each side's scenery stills round the player (`prefetchViewScenery`, art
+  priority `sceneryTurn` 2.5, behind the view's own; not counted by
+  `viewSettled` until that view asks for them);
+- each side's RESOLVER (`t3ViewCache`: `tiles3DataFor` over its world, the same
+  data and rules `initTiles3` builds — a turn restores it with every cell it
+  resolved; any non-turn rebuild drops them all);
+- its GROUND round the player (`warmViewGround`): the texture window that
+  side's camera will paint, the cells on its screen first, each resolved into
+  that side's own cells and composed as the pass would draw it (`composeCell`:
+  art asked for, transitions and plates posted to the compose worker), in
+  slices of at most 4 ms, standing down while the compose worker holds more
+  than `GROUND_WARM_BACKLOG` jobs or the view on screen is painting; again
+  once the player has walked `GROUND_WARM_MOVE` cells. Compositions are keyed by
+  content and never evicted, so the turn's paint finds them as cache hits.
+The pick frame is switched to the side being prepared for each slice and put
+back in `finally` (picks key by the SERVER cell of that orientation).
+Dev A/B: `localStorage ml-turn-warm = "0"`; probe `__ml.turnWarm()`.
+
+A turn keeps what does not depend on the side (`viewSwapping`): the tile loader
+(a new one per turn fetched what was asked again), the scenery piece manifests
+and the collision documents (per turn they landed mid-turn with a re-stamp and a
+FULL repaint). ONLY THE SCENE'S FIRST `initTiles3` TAKES `worldUp` DOWN
+(`t3Booted`): every rebuild cleared it and only the boot hold set it back, so
+after one turn the landing repair never ran again — the transitions a turn owed
+stayed plain for good (measured: 105-370 owed, unchanged 60 s later).
+`viewSettled` also refuses a cell in view owed a transition or a slab's (B was
+taken off plain plates: the checkerboard). The overlay sits at z 3, under the
+thumb stick (4).
 
 ## Measured (headless Chrome, maintainer's screen 393x851 @2.75, software GL)
 
