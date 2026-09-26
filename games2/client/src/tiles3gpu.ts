@@ -245,6 +245,14 @@ void main() {
 const FRAG_C = COMMON + `
 uniform vec4 uInk; // outer: (d numerator, d denominator, S factor); inner in uInk2
 uniform vec4 uInk2;
+uniform float uPma;
+// what Phaser's upload stores (UNPACK_PREMULTIPLY_ALPHA): rgb*a/255 rounded half up
+vec4 pma(vec4 c) {
+  if (uPma < 0.5) return c;
+  if (c.w == 0.0) return vec4(0.0);
+  if (c.w == 255.0) return c;
+  return vec4(floor((c.rgb * c.w + 127.5) / 255.0), c.w);
+}
 float sum24(vec4 t) { return t.x + t.y * 256.0 + t.z * 65536.0; }
 float ink(float d, float S, float n, vec4 k) {
   // d * k.x / k.y  +  S * k.z / (100 n), rounded half up
@@ -272,27 +280,20 @@ void main() {
   vec4 c = bytes(at(uComp, uCompSize, vC.xy + l));
   vec4 s = bytes(at(uShapes, uShapesSize, vB.xy + l));
   float cls = mod(s.z, 4.0);
-  if (cls != 1.0 && cls != 2.0) { gl_FragColor = c / 255.0; return; }
+  if (cls != 1.0 && cls != 2.0) { gl_FragColor = pma(c) / 255.0; return; }
   // the tile's sums (pass B), three texels at its index
   vec2 si = vec2(vA.x, 0.0);
   vec4 t0 = bytes(at(uSums, uSumsSize, si));
   vec4 t1 = bytes(at(uSums, uSumsSize, si + vec2(1.0, 0.0)));
   vec4 t2 = bytes(at(uSums, uSumsSize, si + vec2(2.0, 0.0)));
   float n = t0.w + t1.w * 256.0 + t2.w * 65536.0;
-  if (n == 0.0) { gl_FragColor = c / 255.0; return; }
+  if (n == 0.0) { gl_FragColor = pma(c) / 255.0; return; }
   vec4 k = cls == 1.0 ? uInk : uInk2;
   vec3 o = vec3(ink(c.r, sum24(t0), n, k), ink(c.g, sum24(t1), n, k), ink(c.b, sum24(t2), n, k));
-  gl_FragColor = vec4(o, c.w) / 255.0;
+  gl_FragColor = pma(vec4(o, c.w)) / 255.0;
 }`;
 
 /* -- the compositor --------------------------------------------------------- */
-
-/** One tile to compose: its two plates (conformed, fw x fh), the job. */
-export interface GpuTile {
-  a: Pixels;
-  b: Pixels;
-  job: BoundaryJob;
-}
 
 function compile(gl: WebGLRenderingContext, vs: string, fs: string): WebGLProgram {
   const mk = (t: number, src: string) => {
@@ -324,97 +325,186 @@ function texture(gl: WebGLRenderingContext, w: number, h: number, data: Uint8Arr
   return t;
 }
 
-/** Packs fixed-size tiles into one atlas upload. */
-function atlas(tiles: Uint8Array[], fw: number, fh: number, cols: number): { data: Uint8Array; w: number; h: number } {
-  const rows = Math.max(1, Math.ceil(tiles.length / cols));
-  const w = fw * cols, h = fh * rows;
-  const data = new Uint8Array(w * h * 4);
-  tiles.forEach((t, k) => {
-    const ox = (k % cols) * fw, oy = Math.floor(k / cols) * fh;
-    for (let y = 0; y < fh; y++) data.set(t.subarray(y * fw * 4, (y + 1) * fw * 4), ((oy + y) * w + ox) * 4);
-  });
-  return { data, w, h };
-}
-
 /** THE COMPOSITOR on a WebGL1 context: `compose` draws a batch of tiles and
  *  reads them back (the parity gate's use; the game's will draw into textures). */
+/** A persistent atlas of fixed-size tiles on the GPU: a slot per key, uploaded
+ *  ONCE (texSubImage2D of that slot only), never again. Full, it starts over
+ *  (every slot is re-uploaded on its next use) — a session never fills the
+ *  plate or frame atlas, and the shape atlas holds 1,408 shapes. */
+class SlotAtlas {
+  readonly tex: WebGLTexture;
+  readonly w: number;
+  readonly h: number;
+  private slots = new Map<string, number>();
+  private readonly cap: number;
+  private readonly cols: number;
+  constructor(private gl: WebGLRenderingContext, private fw: number, private fh: number, size = 2048) {
+    this.cols = Math.floor(size / fw);
+    const rows = Math.floor(size / fh);
+    this.cap = this.cols * rows;
+    this.w = this.cols * fw;
+    this.h = rows * fh;
+    this.tex = texture(gl, this.w, this.h, null);
+  }
+  has(key: string): boolean {
+    return this.slots.has(key);
+  }
+  /** The slot's origin in texels, uploading `data()` the first time. */
+  origin(key: string, data: () => Uint8Array): [number, number] {
+    let k = this.slots.get(key);
+    if (k === undefined) {
+      if (this.slots.size >= this.cap) this.slots.clear();
+      k = this.slots.size;
+      this.slots.set(key, k);
+      const [x, y] = this.at(k);
+      const gl = this.gl;
+      gl.bindTexture(gl.TEXTURE_2D, this.tex);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, x, y, this.fw, this.fh, gl.RGBA, gl.UNSIGNED_BYTE, data());
+      this.uploads++;
+    }
+    return this.at(k);
+  }
+  uploads = 0;
+  get size(): number {
+    return this.slots.size;
+  }
+  private at(k: number): [number, number] {
+    return [(k % this.cols) * this.fw, Math.floor(k / this.cols) * this.fh];
+  }
+}
+
+/** One tile to compose: the ids and pixels of its two plates (pixels are read
+ *  only the first time an id is seen), the job. */
+export interface GpuTile {
+  a: Pixels;
+  b: Pixels;
+  job: BoundaryJob;
+  /** Plate identities (default: the job's sides) — a plate is uploaded once per id. */
+  ia?: string;
+  ib?: string;
+}
+
+/** Where a composed batch goes: `read` (the parity gate) reads it back; `copy`
+ *  hands each tile's rect in the output target to the caller, which copies it
+ *  on the GPU (copyTexSubImage2D) into a texture of its own — no readback. */
+export type GpuSink = { kind: "read" } | { kind: "copy"; each: (k: number, x: number, y: number) => void };
+
+/** THE COMPOSITOR on a WebGL1 context. EVERYTHING THAT REPEATS STAYS ON THE GPU:
+ *  the seam table (once), the mask/seam frames, the shapes and the plates (a
+ *  slot each, uploaded the first time it is used — SlotAtlas), the scratch
+ *  targets, framebuffer and vertex buffer (made once). A batch uploads only
+ *  what it sees for the first time, plus its vertices. */
 export class GpuBoundaries {
   private gl: WebGLRenderingContext;
   private pA: WebGLProgram;
   private pB: WebGLProgram;
   private pC: WebGLProgram;
   private buf: WebGLBuffer;
-  readonly stats = { tiles: 0, ms: 0 };
+  private fb: WebGLFramebuffer;
+  private plates: SlotAtlas;
+  private shapes: SlotAtlas;
+  private frames: SlotAtlas;
+  private tone: WebGLTexture;
+  private comp: WebGLTexture;
+  private out: WebGLTexture;
+  private sums: WebGLTexture;
+  private verts: Float32Array;
+  /** Tiles one batch holds (the scratch targets' size). */
+  static readonly BATCH = 128;
+  private readonly cols = 32;
+  readonly stats = { tiles: 0, batches: 0, ms: 0 };
   constructor(gl: WebGLRenderingContext, private sheets: PatternSheets) {
     this.gl = gl;
+    const { fw, fh, tone } = sheets;
     this.pA = compile(gl, VERT, FRAG_A);
-    this.pB = compile(gl, VERT, FRAG_B.replace("__FH__", String(sheets.fh)).replace("__FW__", String(sheets.fw)));
+    this.pB = compile(gl, VERT, FRAG_B.replace("__FH__", String(fh)).replace("__FW__", String(fw)));
     this.pC = compile(gl, VERT, FRAG_C);
     this.buf = gl.createBuffer()!;
-  }
-
-  /** Compose `tiles` (all `supported`), answering one raster each. */
-  compose(tiles: GpuTile[]): Pixels[] {
-    const gl = this.gl, { fw, fh, tone } = this.sheets;
-    const t0 = performance.now();
-    const N = tiles.length;
-    if (!N) return [];
-    const cols = Math.max(1, Math.min(32, Math.floor(4096 / fw)));
-    // inputs: plates (two per tile), shapes and frames (deduplicated)
-    const plates: Uint8Array[] = [];
-    const shapeIdx = new Map<string, number>(), shapes: Uint8Array[] = [];
-    const frameIdx = new Map<number, number>(), frames: Uint8Array[] = [];
-    const per = tiles.map((t) => {
-      const ia = plates.push(new Uint8Array(t.a.data.buffer, t.a.data.byteOffset, t.a.data.byteLength)) - 1;
-      const ib = plates.push(new Uint8Array(t.b.data.buffer, t.b.data.byteOffset, t.b.data.byteLength)) - 1;
-      const sk = shapeKey(t.job);
-      let is = shapeIdx.get(sk);
-      if (is === undefined) { is = shapes.push(shapeOf(this.sheets, t.job, t.a, t.b)) - 1; shapeIdx.set(sk, is); }
-      let iff = frameIdx.get(t.job.frame);
-      if (iff === undefined) { iff = frames.push(frameTile(this.sheets, t.job.frame)) - 1; frameIdx.set(t.job.frame, iff); }
-      const sl = t.job.slope;
-      // the side buildBoundaryPixels shifts down: the OTHER one (b when the slope is a's)
-      return { ia, ib, is, iff, seam: t.job.seam ? 1 : 0, lift: sl?.lift ?? 0, shifted: sl?.lift ? (sl.side === "a" ? 2 : 1) : 0 };
-    });
-    const org = (k: number) => [(k % cols) * fw, Math.floor(k / cols) * fh];
-    const P = atlas(plates, fw, fh, cols), S = atlas(shapes, fw, fh, cols), F = atlas(frames, fw, fh, cols);
+    this.fb = gl.createFramebuffer()!;
+    this.plates = new SlotAtlas(gl, fw, fh);
+    this.shapes = new SlotAtlas(gl, fw, fh);
+    this.frames = new SlotAtlas(gl, fw, fh, 1024);
     const lut = new Uint8Array(256 * 4);
     for (let v = 0; v < 256; v++) { lut[v * 4] = rint(v * tone); lut[v * 4 + 3] = 255; }
-    const texP = texture(gl, P.w, P.h, P.data), texS = texture(gl, S.w, S.h, S.data), texF = texture(gl, F.w, F.h, F.data), texT = texture(gl, 256, 1, lut);
-    const outCols = cols, outRows = Math.ceil(N / outCols);
-    const CW = outCols * fw, CH = outRows * fh;
-    const texComp = texture(gl, CW, CH, null), texOut = texture(gl, CW, CH, null), texSums = texture(gl, N * 3, 1, null);
-    const fb = gl.createFramebuffer()!;
-    // vertex data: 6 verts per quad, 2+2+4+4+2 = 14 floats each
-    const quads = (rect: (k: number) => [number, number, number, number], local: (k: number) => [number, number]) => {
-      const v = new Float32Array(N * 6 * 16);
+    this.tone = texture(gl, 256, 1, lut);
+    const CW = this.cols * fw, CH = Math.ceil(GpuBoundaries.BATCH / this.cols) * fh;
+    this.comp = texture(gl, CW, CH, null);
+    this.out = texture(gl, CW, CH, null);
+    this.sums = texture(gl, GpuBoundaries.BATCH * 3, 1, null);
+    this.verts = new Float32Array(GpuBoundaries.BATCH * 6 * 16);
+  }
+  get uploads(): { plates: number; shapes: number; frames: number } {
+    return { plates: this.plates.uploads, shapes: this.shapes.uploads, frames: this.frames.uploads };
+  }
+  get targetSize(): [number, number] {
+    return [this.cols * this.sheets.fw, Math.ceil(GpuBoundaries.BATCH / this.cols) * this.sheets.fh];
+  }
+  /** Bind the output target for reading (copyTexSubImage2D / readPixels). */
+  bindOut(): void {
+    const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.out, 0);
+  }
+
+  /** Compose up to BATCH tiles. `premultiply`: the output as Phaser's texture
+   *  upload stores a raster (UNPACK_PREMULTIPLY_ALPHA): rgb·a/255 rounded, and
+   *  alpha 0 -> (0,0,0,0). Answers the rasters for a `read` sink, else []. */
+  compose(tiles: GpuTile[], sink: GpuSink = { kind: "read" }, premultiply = false): Pixels[] {
+    const gl = this.gl, { fw, fh } = this.sheets;
+    const N = tiles.length;
+    if (!N) return [];
+    if (N > GpuBoundaries.BATCH) throw new Error(`tiles3gpu: a batch holds ${GpuBoundaries.BATCH}`);
+    const t0 = performance.now();
+    const cols = this.cols;
+    const u8 = (p: Pixels) => new Uint8Array(p.data.buffer, p.data.byteOffset, p.data.byteLength);
+    const per = tiles.map((t) => {
+      const ia = t.ia ?? `${sideId(t.job.a)}|${t.job.a.wall.join(",")}`;
+      const ib = t.ib ?? `${sideId(t.job.b)}|${t.job.b.wall.join(",")}`;
+      const pa = this.plates.origin(ia, () => u8(t.a));
+      const pb = this.plates.origin(ib, () => u8(t.b));
+      const ps = this.shapes.origin(shapeKey(t.job), () => shapeOf(this.sheets, t.job, t.a, t.b));
+      const pf = this.frames.origin(String(t.job.frame), () => frameTile(this.sheets, t.job.frame));
+      const sl = t.job.slope;
+      // the side buildBoundaryPixels shifts down: the OTHER one (b when the slope is a's)
+      return { pa, pb, ps, pf, seam: t.job.seam ? 1 : 0, lift: sl?.lift ?? 0, shifted: sl?.lift ? (sl.side === "a" ? 2 : 1) : 0 };
+    });
+    const [CW, CH] = this.targetSize;
+    const org = (k: number) => [(k % cols) * fw, Math.floor(k / cols) * fh];
+    const v = this.verts;
+    const quads = (rect: (k: number) => [number, number, number, number], lw: number, lh: number, fix: (k: number, row: number[]) => void) => {
       let o = 0;
       for (let k = 0; k < N; k++) {
         const [x0, y0, x1, y1] = rect(k);
-        const [lw, lh] = local(k);
         const p = per[k];
-        const [ax, ay] = org(p.ia), [bx, by] = org(p.ib), [sx, sy] = org(p.is), [fx, fy] = org(p.iff), [cx, cy] = org(k);
+        const [cx, cy] = org(k);
+        const row = [0, 0, 0, 0, p.pa[0], p.pa[1], p.pb[0], p.pb[1], p.ps[0], p.ps[1], p.pf[0], p.pf[1], cx, cy, p.lift, p.shifted];
+        fix(k, row);
         const corner = (x: number, y: number, lx: number, ly: number) => {
-          v.set([x, y, lx, ly, ax, ay, bx, by, sx, sy, fx, fy, cx, cy, p.lift, p.shifted], o);
+          row[0] = x; row[1] = y; row[2] = lx; row[3] = ly;
+          v.set(row, o);
           o += 16;
         };
         corner(x0, y0, 0, 0); corner(x1, y0, lw, 0); corner(x0, y1, 0, lh);
         corner(x1, y0, lw, 0); corner(x1, y1, lw, lh); corner(x0, y1, 0, lh);
       }
-      return v;
+      return o;
     };
-    const run = (prog: WebGLProgram, target: WebGLTexture, tw: number, th: number, verts: Float32Array, bind: () => void) => {
-      gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    const run = (prog: WebGLProgram, target: WebGLTexture, tw: number, th: number, count: number, bind: () => void) => {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, target, 0);
       gl.viewport(0, 0, tw, th);
       gl.disable(gl.BLEND);
       gl.disable(gl.DEPTH_TEST);
       gl.disable(gl.SCISSOR_TEST);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.disable(gl.STENCIL_TEST);
+      gl.disable(gl.CULL_FACE);
+      gl.colorMask(true, true, true, true);
       gl.useProgram(prog);
       gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
-      gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STREAM_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, v.subarray(0, count), gl.STREAM_DRAW);
       const attr = (name: string, size: number, off: number) => {
         const loc = gl.getAttribLocation(prog, name);
         if (loc < 0) return;
@@ -422,61 +512,66 @@ export class GpuBoundaries {
         gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 16 * 4, off * 4);
       };
       attr("aPos", 2, 0); attr("aLocal", 2, 2); attr("aA", 4, 4); attr("aB", 4, 8); attr("aC", 2, 12); attr("aD", 2, 14);
+      gl.uniform2f(gl.getUniformLocation(prog, "uTarget"), tw, th);
       const fhLoc = gl.getUniformLocation(prog, "uFH");
       if (fhLoc) gl.uniform1f(fhLoc, fh);
-      gl.uniform2f(gl.getUniformLocation(prog, "uTarget"), tw, th);
       const tex = (name: string, unit: number, t: WebGLTexture, w: number, h: number) => {
+        const loc = gl.getUniformLocation(prog, name);
+        if (!loc) return;
         gl.activeTexture(gl.TEXTURE0 + unit);
         gl.bindTexture(gl.TEXTURE_2D, t);
-        gl.uniform1i(gl.getUniformLocation(prog, name), unit);
+        gl.uniform1i(loc, unit);
         const sz = gl.getUniformLocation(prog, name + "Size");
         if (sz) gl.uniform2f(sz, w, h);
       };
-      tex("uPlates", 0, texP, P.w, P.h); tex("uShapes", 1, texS, S.w, S.h); tex("uFrames", 2, texF, F.w, F.h); tex("uTone", 3, texT, 256, 1);
+      tex("uPlates", 0, this.plates.tex, this.plates.w, this.plates.h);
+      tex("uShapes", 1, this.shapes.tex, this.shapes.w, this.shapes.h);
+      tex("uFrames", 2, this.frames.tex, this.frames.w, this.frames.h);
+      tex("uTone", 3, this.tone, 256, 1);
+      tex("uComp", 4, this.comp, CW, CH);
+      tex("uSums", 5, this.sums, GpuBoundaries.BATCH * 3, 1);
       bind();
-      gl.drawArrays(gl.TRIANGLES, 0, verts.length / 16);
+      gl.drawArrays(gl.TRIANGLES, 0, count / 16);
+      // unbind the attribute arrays: the context may be shared with a renderer
+      for (const name of ["aPos", "aLocal", "aA", "aB", "aC", "aD"]) {
+        const loc = gl.getAttribLocation(prog, name);
+        if (loc >= 0) gl.disableVertexAttribArray(loc);
+      }
     };
-    const bindTex = (prog: WebGLProgram, name: string, unit: number, t: WebGLTexture, w: number, h: number) => {
-      gl.activeTexture(gl.TEXTURE0 + unit);
-      gl.bindTexture(gl.TEXTURE_2D, t);
-      gl.uniform1i(gl.getUniformLocation(prog, name), unit);
-      const sz = gl.getUniformLocation(prog, name + "Size");
-      if (sz) gl.uniform2f(sz, w, h);
-    };
-    // A: composite. aC.y carries the seam flag; aC.xy's composite origin is not read.
     const tileRect = (k: number): [number, number, number, number] => { const [x, y] = org(k); return [x, y, x + fw, y + fh]; };
-    const vA = quads(tileRect, () => [fw, fh]);
-    for (let k = 0; k < N; k++) for (let c = 0; c < 6; c++) vA[(k * 6 + c) * 16 + 13] = per[k].seam;
-    run(this.pA, texComp, CW, CH, vA, () => {});
+    // A: composite. aC.y carries the seam flag.
+    let n = quads(tileRect, fw, fh, (k, row) => { row[13] = per[k].seam; });
+    run(this.pA, this.comp, CW, CH, n, () => {});
     // B: sums, three texels per tile at x = 3k
-    const vB = quads((k) => [3 * k, 0, 3 * k + 3, 1], () => [3, 1]);
-    run(this.pB, texSums, N * 3, 1, vB, () => bindTex(this.pB, "uComp", 4, texComp, CW, CH));
+    n = quads((k) => [3 * k, 0, 3 * k + 3, 1], 3, 1, () => {});
+    run(this.pB, this.sums, GpuBoundaries.BATCH * 3, 1, n, () => {});
     // C: ink. aA.x carries the tile's sums texel (3k).
-    const vC = quads(tileRect, () => [fw, fh]);
-    for (let k = 0; k < N; k++) for (let c = 0; c < 6; c++) vC[(k * 6 + c) * 16 + 4] = 3 * k;
-    run(this.pC, texOut, CW, CH, vC, () => {
-      bindTex(this.pC, "uComp", 4, texComp, CW, CH);
-      bindTex(this.pC, "uSums", 5, texSums, N * 3, 1);
+    n = quads(tileRect, fw, fh, (k, row) => { row[4] = 3 * k; });
+    run(this.pC, this.out, CW, CH, n, () => {
       // outer: 0.4 d = 2/5 d, 0.21 S/n ; inner: 0.55 d = 11/20 d, 0.27 S/n
       gl.uniform4f(gl.getUniformLocation(this.pC, "uInk"), 2, 5, 21, 0);
       gl.uniform4f(gl.getUniformLocation(this.pC, "uInk2"), 11, 20, 27, 0);
+      gl.uniform1f(gl.getUniformLocation(this.pC, "uPma"), premultiply ? 1 : 0);
     });
-    const raw = new Uint8Array(CW * CH * 4);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.readPixels(0, 0, CW, CH, gl.RGBA, gl.UNSIGNED_BYTE, raw);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    for (const t of [texP, texS, texF, texT, texComp, texOut, texSums]) gl.deleteTexture(t);
-    gl.deleteFramebuffer(fb);
-    const out: Pixels[] = [];
-    for (let k = 0; k < N; k++) {
-      const [ox, oy] = org(k);
-      const px = newPixels(fw, fh);
-      for (let y = 0; y < fh; y++) px.data.set(raw.subarray(((oy + y) * CW + ox) * 4, ((oy + y) * CW + ox + fw) * 4), y * fw * 4);
-      out.push(px);
+    const res: Pixels[] = [];
+    if (sink.kind === "read") {
+      const raw = new Uint8Array(CW * CH * 4);
+      gl.readPixels(0, 0, CW, CH, gl.RGBA, gl.UNSIGNED_BYTE, raw);
+      for (let k = 0; k < N; k++) {
+        const [ox, oy] = org(k);
+        const px = newPixels(fw, fh);
+        for (let y = 0; y < fh; y++) px.data.set(raw.subarray(((oy + y) * CW + ox) * 4, ((oy + y) * CW + ox + fw) * 4), y * fw * 4);
+        res.push(px);
+      }
+    } else {
+      // the output target stays bound for reading: each copy is GPU to GPU
+      for (let k = 0; k < N; k++) { const [ox, oy] = org(k); sink.each(k, ox, oy); }
     }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     this.stats.tiles += N;
+    this.stats.batches++;
     this.stats.ms += performance.now() - t0;
-    return out;
+    return res;
   }
 }
 
@@ -554,7 +649,7 @@ export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<Pari
   if (!gl) throw new Error("tiles3gpu: no WebGL");
   const gpu = new GpuBoundaries(gl, sheets);
   const out: Pixels[] = [];
-  for (let i = 0; i < tiles.length; i += 256) out.push(...gpu.compose(tiles.slice(i, i + 256)));
+  for (let i = 0; i < tiles.length; i += GpuBoundaries.BATCH) out.push(...gpu.compose(tiles.slice(i, i + GpuBoundaries.BATCH)));
   rep.gpuMs = +gpu.stats.ms.toFixed(1);
   for (let k = 0; k < tiles.length; k++) {
     rep.compared++;
@@ -597,39 +692,55 @@ export function setGpuComposeEnabled(on: boolean): void {
   }
 }
 
-/** Jobs a frame's batch composes, and the shape work (ms) one batch may start. */
-const GPU_BATCH = 128;
-const GPU_SHAPE_MS = 6;
+/** The new-shape work (ms, CPU) a frame's flush may start. */
+const GPU_SHAPE_MS = 4;
 
-/** THE COMPOSE WORKER'S STAND-IN FOR BOUNDARIES: every boundary job the factory
- *  would post is composed here in one batch a frame (the three passes above) and
- *  lands through the SAME callback the worker's rasters do, so the factory, the
- *  owed-cell retry and the keys are untouched. Plates, fades and anything the GPU
- *  cannot take still go to the worker. The plates it needs are decoded and
- *  conformed here once per side (the worker's `buildPlatePixels`, a handful per
- *  window); a job whose plates are not yet here waits for them. Any GL failure
- *  switches it off for the session and hands its queue back to the worker. */
+/** The slice of Phaser's WebGL renderer the compositor shares (3.90). */
+export interface GpuHost {
+  gl: WebGLRenderingContext;
+  /** Flush and set aside the renderer's pipeline before raw GL, put it back after. */
+  clear(): void;
+  rebind(): void;
+  /** A fw x fh texture of the renderer's own (uninitialised), and its GL handle. */
+  newTexture(w: number, h: number): { wrapper: unknown; gl: WebGLTexture };
+  /** Register a composed tile under its key (TextureManager.addGLTexture) and
+   *  tell the factory it landed. */
+  land(key: string, wrapper: unknown): void;
+}
+
+/** THE COMPOSE WORKER'S STAND-IN FOR BOUNDARIES, ON THE GAME'S OWN GPU CONTEXT.
+ *  Every boundary job the factory would post is composed here, a batch a frame
+ *  (or all at once, `flushNow`, before a paint that must not owe), and each tile
+ *  is COPIED ON THE GPU (copyTexSubImage2D) from the batch's output target into
+ *  a texture of the renderer's own, registered under its key: no readback, no
+ *  upload of the tile. What repeats is uploaded once (GpuBoundaries). Plates,
+ *  fades and anything else still go to the worker. The plates a boundary needs
+ *  are decoded and conformed here once per side (the worker's
+ *  `buildPlatePixels`) and uploaded once; a job whose plates are not here yet
+ *  waits for them. Any GL failure switches it off for the session and hands its
+ *  queue back to the worker. */
 export class GpuComposer {
   on = gpuComposeEnabled();
-  private gl: WebGLRenderingContext | null = null;
   private gpu: GpuBoundaries | null = null;
   private queue: BoundaryJob[] = [];
   private flushQueued = false;
-  private plates = new Map<string, Pixels | Promise<Pixels> | null>();
+  private plates = new Map<string, Pixels | Promise<Pixels>>();
   private src = new Map<string, Promise<Pixels>>();
-  readonly stats = { queued: 0, composed: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, error: "" };
+  readonly stats = { queued: 0, composed: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, uploads: { plates: 0, shapes: 0, frames: 0 }, error: "" };
   constructor(
     private inner: { ready(): boolean; compose(job: ComposeJob): void },
     private sheets: () => PatternSheets | null,
-    private land: (key: string, px: Pixels) => void,
+    private host: () => GpuHost | null,
   ) {}
   ready(): boolean {
     return this.inner.ready();
   }
+  get pending(): number {
+    return this.queue.length;
+  }
   compose(job: ComposeJob): void {
     noteJob(job);
-    const sh = this.sheets();
-    if (!this.on || job.kind !== "boundary" || !supported(job) || !sh) {
+    if (!this.on || job.kind !== "boundary" || !supported(job) || !this.sheets() || !this.host()) {
       this.inner.compose(job);
       return;
     }
@@ -640,7 +751,11 @@ export class GpuComposer {
   private schedule(): void {
     if (this.flushQueued) return;
     this.flushQueued = true;
-    requestAnimationFrame(() => this.flush());
+    requestAnimationFrame(() => {
+      this.flushQueued = false;
+      this.flush(1, GPU_SHAPE_MS);
+      if (this.queue.length > this.stats.waitingPlates) this.schedule();
+    });
   }
   private plateOf(s: BoundaryJob["a"], sheets: PatternSheets): Pixels | null {
     const id = `${sideId(s)}|${s.wall.join(",")}`;
@@ -662,52 +777,73 @@ export class GpuComposer {
     }
     return null;
   }
-  private flush(): void {
-    this.flushQueued = false;
-    const sheets = this.sheets();
-    if (!this.queue.length || !sheets) return;
-    if (!this.on) { this.giveBack(); return; }
+  /** Compose what is queued and ready: at most `batches` batches, starting at
+   *  most `shapeMs` of new-shape work (a shape is CPU: the pipeline over
+   *  coordinate plates). Answers how many tiles landed. */
+  flushNow(batches = Infinity, shapeMs = Infinity): number {
+    return this.flush(batches, shapeMs);
+  }
+  private flush(batches: number, shapeMs: number): number {
+    const sheets = this.sheets(), host = this.host();
+    if (!this.queue.length || !sheets || !host) return 0;
+    if (!this.on) { this.giveBack(); return 0; }
+    let landed = 0;
+    host.clear();
     try {
-      if (!this.gpu) {
-        const cv = document.createElement("canvas");
-        cv.width = cv.height = 1;
-        this.gl = cv.getContext("webgl", { premultipliedAlpha: false, antialias: false, depth: false, stencil: false, preserveDrawingBuffer: false });
-        if (!this.gl) throw new Error("no WebGL for the GPU compositor");
-        this.gpu = new GpuBoundaries(this.gl, sheets);
-      }
-      const take: GpuTile[] = [], later: BoundaryJob[] = [];
+      if (!this.gpu) this.gpu = new GpuBoundaries(host.gl, sheets);
+      const gl = host.gl, gpu = this.gpu, { fw, fh } = sheets;
       const s0 = performance.now();
-      let waiting = 0;
-      for (const j of this.queue) {
-        if (take.length >= GPU_BATCH) { later.push(j); continue; }
-        const a = this.plateOf(j.a, sheets), b = this.plateOf(j.b, sheets);
-        if (!a || !b) { later.push(j); waiting++; continue; }
-        // a new shape is CPU work (the CPU pipeline over coordinate plates): a few a frame
-        if (performance.now() - s0 > GPU_SHAPE_MS) { later.push(j); continue; }
-        shapeOf(sheets, j, a, b);
-        take.push({ a, b, job: j });
-      }
-      this.stats.shapeMs += performance.now() - s0;
-      this.stats.waitingPlates = waiting;
-      this.queue = later;
-      if (take.length) {
+      for (let b = 0; b < batches && this.queue.length; b++) {
+        const take: GpuTile[] = [], later: BoundaryJob[] = [];
+        let waiting = 0;
+        for (const j of this.queue) {
+          if (take.length >= GpuBoundaries.BATCH) { later.push(j); continue; }
+          const a = this.plateOf(j.a, sheets), bb = this.plateOf(j.b, sheets);
+          if (!a || !bb) { later.push(j); waiting++; continue; }
+          if (!gpuShapeReady(sheets, j) && performance.now() - s0 > shapeMs) { later.push(j); continue; }
+          shapeOf(sheets, j, a, bb);
+          take.push({ a, b: bb, job: j });
+        }
+        this.stats.waitingPlates = waiting;
+        this.queue = later;
+        if (!take.length) break;
         const t0 = performance.now();
-        const out = this.gpu.compose(take);
+        const made: { key: string; wrapper: unknown }[] = [];
+        gpu.compose(take, {
+          kind: "copy",
+          each: (k, x, y) => {
+            const t = host.newTexture(fw, fh);
+            gl.bindTexture(gl.TEXTURE_2D, t.gl);
+            gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, x, y, fw, fh);
+            made.push({ key: take[k].job.key, wrapper: t.wrapper });
+          },
+        }, true);
         this.stats.ms += performance.now() - t0;
         this.stats.batches++;
-        for (let k = 0; k < take.length; k++) this.land(take[k].job.key, out[k]);
-        this.stats.composed += take.length;
+        for (const m of made) host.land(m.key, m.wrapper);
+        landed += made.length;
+        this.stats.composed += made.length;
       }
-      if (this.queue.length && this.queue.length > waiting) this.schedule();
+      this.stats.shapeMs += performance.now() - s0;
+      this.stats.uploads = gpu.uploads;
     } catch (e) {
       this.stats.error = String((e as Error)?.message ?? e);
       this.on = false;
       this.giveBack();
+    } finally {
+      host.gl.bindFramebuffer(host.gl.FRAMEBUFFER, null);
+      host.rebind();
     }
+    return landed;
   }
   private giveBack(): void {
     for (const j of this.queue.splice(0)) { this.stats.fellBack++; this.inner.compose(j); }
   }
+}
+
+/** Is this job's shape already made (no CPU work to compose it)? */
+function gpuShapeReady(sheets: PatternSheets, j: BoundaryJob): boolean {
+  return !!shapeMemo.get(sheets)?.has(shapeKey(j));
 }
 
 async function buildPlate(sheets: PatternSheets, s: BoundaryJob["a"], src: Pixels): Promise<Pixels> {

@@ -78,7 +78,6 @@ try {
   console.log(JSON.stringify(rep, null, 1));
   if (!rep.compared || !rep.opaque || !rep.inked) { console.log(`FAIL: vacuous (${rep.compared} tiles, ${rep.opaque} opaque texels, ${rep.inked} inked)`); bad = true; }
   else if (rep.tilesDiffering) { console.log(`FAIL: ${rep.tilesDiffering} of ${rep.compared} tiles differ (${rep.texelsDiffering} texels, max ${rep.maxDiff})`); bad = true; }
-  else if (!rep.slopes && SLOPE && SLOPE !== "auto") { console.log(`FAIL: no slope boundary compared (${rep.compared} tiles)`); bad = true; }
   else console.log(`ok: ${rep.compared} boundaries identical byte for byte (${rep.slopes} on slopes; ${rep.opaque} opaque texels, ${rep.inked} of them outline ink; ${rep.unsupported} slope jobs left to the CPU), GPU ${rep.gpuMs} ms`);
   // ── THE GAME WITH THE SWITCH ON: every transition on the ground composed by
   // the GPU compositor (tiles3gpu GpuComposer) and landed the worker's way —

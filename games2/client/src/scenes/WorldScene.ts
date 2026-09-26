@@ -1,4 +1,4 @@
-import { gpuParity, GpuComposer, setGpuComposeEnabled } from "../tiles3gpu";
+import { gpuParity, GpuComposer, setGpuComposeEnabled, type GpuHost } from "../tiles3gpu";
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { trackGap, arrivalHz, remoteChaseRate } from "../remoterate";
@@ -2342,7 +2342,33 @@ export class WorldScene extends Phaser.Scene {
   private t3compose = new ComposeWorker();
   /** THE GPU COMPOSITOR (tiles3gpu.ts), his switch "GPU transitions": the
    *  worker's boundary jobs composed on the GPU, landing the worker's way. */
-  private t3gpuc = new GpuComposer(this.t3compose, () => this.t3sheets, (key, px) => this.t3tex?.landRemote(key, px));
+  private t3gpuc = new GpuComposer(this.t3compose, () => this.t3sheets, () => this.gpuHost());
+  private gpuHostMemo: GpuHost | null = null;
+  /** The compositor's share of Phaser's renderer: its GL context (the pipeline
+   *  flushed and set aside around the raw GL, put back after), a texture of the
+   *  renderer's own per tile, registered like any other and landed with the
+   *  factory (landRemote clears the in-flight mark; the key already exists). */
+  private gpuHost(): GpuHost | null {
+    if (this.gpuHostMemo) return this.gpuHostMemo;
+    const r = this.game?.renderer as Phaser.Renderer.WebGL.WebGLRenderer | undefined;
+    if (!r || r.type !== Phaser.WEBGL || !r.gl) return null;
+    const gl = r.gl;
+    const none = { w: 0, h: 0, data: new Uint8ClampedArray(0) };
+    this.gpuHostMemo = {
+      gl,
+      clear: () => r.pipelines.clear(),
+      rebind: () => r.pipelines.rebind(),
+      newTexture: (w, h) => {
+        const wr = r.createTexture2D(0, gl.NEAREST, gl.NEAREST, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.RGBA, null as never, w, h, true);
+        return { wrapper: wr, gl: wr.webGLTexture as WebGLTexture };
+      },
+      land: (key, wr) => {
+        if (!this.textures.exists(key)) this.textures.addGLTexture(key, wr as never);
+        this.t3tex?.landRemote(key, none);
+      },
+    };
+    return this.gpuHostMemo;
+  }
   /** Boot options for `t3worker`, applied on first use — see initTiles3. */
   private t3workerOpts: Parameters<ResolveWorker["init"]>[0] | null = null;
   private t3workerBooted = false;
@@ -8462,7 +8488,7 @@ export class WorldScene extends Phaser.Scene {
         ctx.putImageData(im, 0, 0);
         return { png: cv.toDataURL("image/png"), items: o.items, owned, w: o.w, h: o.h, cam: [this.cameras.main.width, this.cameras.main.height], canvas: [this.game.canvas.width, this.game.canvas.height] };
       },
-      gpuCompose: () => ({ on: this.t3gpuc.on, ...this.t3gpuc.stats }),
+      gpuCompose: () => ({ on: this.t3gpuc.on, pending: this.t3gpuc.pending, ...this.t3gpuc.stats }),
       gpuParity: async (max?: number) => {
         const sheets = this.t3sheets;
         if (!sheets) throw new Error("no pattern sheets yet");
@@ -20935,6 +20961,7 @@ export class WorldScene extends Phaser.Scene {
       this.viewSwapping = false;
     }
     this.repaintWorld();
+    this.gpuSettleOwed();
     this.bake?.refreshAll();
     this.indoorDirty = true;
     // ambient effects that cache per DRAWN cell (the foam's liquid cells and
@@ -20946,6 +20973,27 @@ export class WorldScene extends Phaser.Scene {
     if (!this.turning) this.inputRot = k; // an instant swap: input follows at once
     this.turnLog.parseMs = +(tParse - t0).toFixed(1);
     this.turnLog.rebuildMs = +(performance.now() - tParse).toFixed(1);
+  }
+
+  /** A PAINT THAT MUST NOT OWE (a view turn): with "GPU transitions" on, every
+   *  transition the paint just asked for is composed NOW, in a few GPU batches,
+   *  and the cells it left plain are repainted at once — rather than landing 12
+   *  cells a frame through the retry (T3_BOUNDARY_LAND), which is what made a
+   *  fresh side fill in over seconds. Plates not decoded yet stay owed and land
+   *  the ordinary way. */
+  private gpuSettleOwed(): void {
+    if (!this.t3gpuc.on || !this.t3boundaryOwed.size) return;
+    const t0 = performance.now();
+    const landed = this.t3gpuc.flushNow();
+    if (!landed) return;
+    const owed = [...this.t3boundaryOwed];
+    this.groundRepaintWhy = "gpu";
+    this.repaintTiles3Cells(owed);
+    this.groundRepaintWhy = "other";
+    this.occRelanded = true;
+    this.turnLog.gpuLanded = landed;
+    this.turnLog.gpuOwedLeft = this.t3boundaryOwed.size;
+    this.turnLog.gpuMs = +(performance.now() - t0).toFixed(1);
   }
 
   /** The scenery footprints as the DRAWN view sees them. Collision keeps the
