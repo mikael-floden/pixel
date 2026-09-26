@@ -535,7 +535,7 @@ document.addEventListener("error", (ev) => {
 // "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs and a
 // rejected entry means UNBIND that sound from that event — the recording is
 // untouched (maintainer 2026-08-06). See live/feedback/bindings.json.
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "composer-music", "bindings"];
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "composer-music", "bindings", "shaders"];
 const state = {
   data: null,
   admin: false,          // signed in as the game designer? (server-verified)
@@ -13967,6 +13967,7 @@ function viewItems() {
 
   return h("div", {},
     sectionHead("items"),
+    itemsTabs("items"),
     h("p", { class: "muted" }, state.admin
       ? `${all.length} items from the items agent. Click one to see what drops it, what it sells for, and to rate or remove it.`
       : "Everything you can pick up, sell or merge — and the creatures that carry it."),
@@ -14024,6 +14025,178 @@ function viewItems() {
             String(it.value))
           : null);
     })));
+}
+/* ======================= SHADERS — the shader agent's effects ============
+ * Maintainer 2026-09-26: "We need a new wiki page under Items called Shaders
+ * that will allow me to review the work from the new effect/shader-agent ...
+ * it's important that you render the effects the same way they would render
+ * in the game!"
+ *
+ * THE SHADER AGENT OWNS THE LOOK; THE WIKI OWNS THE REVIEW (its contract:
+ * shaders/docs/wiki.md). An effect is GLSL, not a sprite, so the only honest
+ * preview is the runtime itself: the page embeds the agent's viewer
+ * (shaders/viewer/, served by the image at /assets/shaders/viewer/) and
+ * drives it with postMessage. The catalog is read from the SAME root as the
+ * viewer — never GitHub — so a list can never name an effect the viewer on
+ * this deploy cannot draw.
+ *
+ * Verdicts: live/feedback/shaders.json, one entry per EFFECT keyed by its
+ * catalog `key` (the level is the effect's own range, not a facet). Knobs:
+ * the viewer posts shaders:tune {key, values, defaults}; the page keeps
+ * `values` (+ `was` = the defaults they replaced) in
+ * live/tuning/shaders.json and the save bar commits it. The game applies that
+ * table live.
+ *
+ * Admin only while nothing is bound to a skill: an effect no player can meet
+ * is staging art, like a Candidate. */
+let shaderCatalog;                        // undefined = not asked, null = absent
+let shaderCatalogP = null;
+function loadShaderCatalog() {
+  if (shaderCatalog !== undefined || shaderCatalogP) return shaderCatalogP;
+  shaderCatalogP = fetchJson(new URL("shaders/shaders.json", ROOT)).then((c) => {
+    shaderCatalog = c && Array.isArray(c.effects) ? c : null;
+    if (location.hash.startsWith("#/items")) { keepScrollY = window.scrollY; route(); }
+  });
+  return shaderCatalogP;
+}
+const shaderEffects = () => shaderCatalog?.effects ?? [];
+const shaderById = (id) => shaderEffects().find((e) => e.id === id) ?? null;
+const shaderHref = (id) => `#/items/shaders/${encodeURIComponent(id)}`;
+const SHADER_FAMILY_KEY = "wiki-shader-family";
+/** The Items | Shaders tab row — the Creatures | Candidates pattern. */
+function itemsTabs(cur) {
+  if (!state.admin) return null;
+  loadShaderCatalog();
+  const n = shaderEffects().length;
+  return sortBar("wiki-items-tab", [
+    ["items", `Items ${itemOrder().length}`, "Every item the items agent has forged"],
+    ["shaders", n ? `Shaders ${n}` : "Shaders", "The shader agent's effects — spells, attacks, buffs — rendered by the game's own shader runtime"],
+  ], cur, (id) => { location.hash = id === "items" ? "#/items" : "#/items/shaders"; }, { persist: false });
+}
+/** His verdict on an effect, as the card's corner mark. */
+function shaderMark(e) {
+  const v = fb("shaders", e.key);
+  if (v.status === "approved") return h("span", { class: "pill ok" }, "approved");
+  if (v.status === "rejected") return h("span", { class: "pill err" }, "rejected");
+  if (v.status === "redo") return h("span", { class: "pill warn" }, "redo asked");
+  return null;
+}
+function shaderFamily(id) { return shaderCatalog?.families?.[id] ?? null; }
+function viewShaders() {
+  if (!state.admin) { location.hash = "#/items"; return h("div", {}); }
+  loadShaderCatalog();
+  const head = [sectionHead("items"), itemsTabs("shaders")];
+  if (shaderCatalog === undefined) return h("div", {}, ...head, h("p", { class: "muted" }, "Loading the shader library…"));
+  if (!shaderCatalog) return h("div", {}, ...head, h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, "The shader library is not on this deploy yet"),
+    h("p", { class: "muted" }, "shaders/ ships in the image from 1005b1a04b on — it appears here on the next deploy.")));
+  const all = shaderEffects();
+  let fam = "";
+  try { fam = localStorage.getItem(SHADER_FAMILY_KEY) || ""; } catch { /* private mode */ }
+  if (fam && !all.some((e) => e.family === fam)) fam = "";
+  const shown = all
+    .filter((e) => !fam || e.family === fam)
+    .filter((e) => matches(state.query, e.id, e.name, e.kindLabel, e.family, ...(e.tags ?? [])));
+  const judged = all.filter((e) => fb("shaders", e.key).status).length;
+  const fams = [...new Set(all.map((e) => e.family))];
+  return h("div", {}, ...head,
+    h("p", { class: "muted" },
+      `${all.length} effects from the shader agent, drawn by the game's own shader runtime — ${judged} judged so far. Open one to watch it at every power level, tune its colours and sizes, and approve, reject or ask for a redo.`),
+    sortBar(SHADER_FAMILY_KEY, [["", `all ${all.length}`, "Every family"],
+      ...fams.map((f) => [f, `${shaderFamily(f)?.label ?? f} ${all.filter((e) => e.family === f).length}`, shaderFamily(f)?.label ?? f])],
+      fam, () => route(), { wrap: true }),
+    h("div", { class: "grid shader-grid" }, ...shown.map((e) => {
+      const colour = shaderFamily(e.family)?.color ?? "var(--border)";
+      return h("a", { class: "card shader-card", href: shaderHref(e.id), style: `--fam:${colour}` },
+        h("div", { class: "shader-card-top" },
+          h("span", { class: "shader-dot" }),
+          h("span", { class: "muted" }, `${shaderFamily(e.family)?.label ?? e.family} · ${e.kindLabel ?? e.kind}`),
+          shaderMark(e)),
+        h("div", { class: "card-name" }, e.name),
+        h("div", { class: "card-sub shader-levels" }, e.levels ?? ""));
+    })));
+}
+/* ONE LIVE VIEWER. The iframe is keyed by effect, and a verdict's re-render
+ * must not reload it (that would restart the effect and drop his slider
+ * positions mid-tune), so the element survives route() while the effect id is
+ * the same. */
+let shaderFrame = null;                  // { id, el }
+function shaderViewerUrl(id, level) {
+  const u = new URL("shaders/viewer/index.html", ROOT);
+  u.searchParams.set("embed", "1");
+  u.searchParams.set("id", id);
+  u.searchParams.set("level", String(level));
+  return u.href;
+}
+function shaderTuneEntry(key) { return state.tuning.shaders?.overrides?.[key] ?? null; }
+/** The live overrides table as the viewer wants it: values only, no bookkeeping. */
+function shaderTuningTable() {
+  const out = {};
+  for (const [k, v] of Object.entries(state.tuning.shaders?.overrides ?? {})) {
+    const { was, updated_at, ...values } = v ?? {};
+    out[k] = values;
+  }
+  return out;
+}
+/** A shaders:tune from the viewer: keep what differs from the default, the
+ *  defaults it replaced as `was`, and delete the entry when it is back to
+ *  default — absent means default (the contract). */
+function applyShaderTune(msg) {
+  const t = state.tuning.shaders ?? (state.tuning.shaders = { format: "pixel-wiki-tuning-shaders@1", updated_at: "", overrides: {} });
+  const values = msg.values ?? {}, defaults = msg.defaults ?? {};
+  const keep = Object.fromEntries(Object.entries(values).filter(([k, v]) => JSON.stringify(v) !== JSON.stringify(defaults[k])));
+  const had = JSON.stringify(shaderTuningTable()[msg.key] ?? {});
+  if (!Object.keys(keep).length) delete t.overrides[msg.key];
+  else t.overrides[msg.key] = { ...keep, was: Object.fromEntries(Object.keys(keep).map((k) => [k, defaults[k]])), updated_at: new Date().toISOString() };
+  if (JSON.stringify(shaderTuningTable()[msg.key] ?? {}) === had) return;
+  t.updated_at = new Date().toISOString();
+  touch("tuning/shaders", msg.key);
+  markDirty("tuning/shaders");
+}
+window.addEventListener("message", (e) => {
+  if (e.origin !== location.origin || !shaderFrame || e.source !== shaderFrame.el.contentWindow) return;
+  const d = e.data ?? {};
+  if (d.type === "shaders:ready") {
+    shaderFrame.el.contentWindow.postMessage({ type: "shaders:tuning", table: shaderTuningTable() }, location.origin);
+  } else if (d.type === "shaders:tune" && state.admin && d.key) {
+    applyShaderTune(d);
+  } else if (d.type === "shaders:selected" && d.id && d.id !== shaderFrame.id) {
+    // He picked another effect inside the viewer: follow it, keep the frame.
+    shaderFrame.id = d.id;
+    history.replaceState(null, "", shaderHref(d.id));
+    keepScrollY = window.scrollY; route();
+  }
+});
+function viewShader(id) {
+  if (!state.admin) { location.hash = "#/items"; return h("div", {}); }
+  loadShaderCatalog();
+  if (shaderCatalog === undefined) return h("div", {}, h("p", { class: "muted" }, "Loading the shader library…"));
+  const e = shaderById(id);
+  if (!e) return h("div", {}, crumbRow("#/items/shaders", "← Shaders", "items/shaders", [], id),
+    h("p", { class: "muted" }, `No effect "${id}" on this deploy.`));
+  const list = shaderEffects();
+  if (!shaderFrame || shaderFrame.id !== e.id) {
+    const el = h("iframe", {
+      class: "shader-frame", src: shaderViewerUrl(e.id, 5), title: `${e.name} — the shader agent's viewer`,
+      allow: "autoplay",
+    });
+    shaderFrame = { id: e.id, el };
+  }
+  const fam = shaderFamily(e.family);
+  const tuned = shaderTuneEntry(e.key);
+  return h("div", {},
+    crumbRow("#/items/shaders", "← Shaders", "items/shaders", list.map((x) => ({ id: encodeURIComponent(x.id), name: x.name })), encodeURIComponent(e.id)),
+    h("h1", { class: "shader-title" }, e.name),
+    h("p", { class: "muted" }, `${fam?.label ?? e.family} · ${e.kindLabel ?? e.kind}${e.category ? ` · ${e.category}` : ""}${(e.tags ?? []).length ? ` · ${e.tags.join(", ")}` : ""}`),
+    h("div", { class: "shader-stage" }, shaderFrame.el),
+    feedbackRow("shaders", e.key, {
+      redo: { label: "↻ redo", title: "Ask the shader agent for another take of this effect — your note says what to change", doneLabel: "redo asked", clearsRating: true },
+    }),
+    // The viewer shows the agent's own "what I was thinking" and the level
+    // notes under its stage, so the page does not repeat them; what is
+    // pending is the save bar's to say.
+    tuned ? h("p", { class: "muted" },
+      `Committed tuning: ${Object.keys(tuned).filter((k) => k !== "was" && k !== "updated_at").join(", ")} — the viewer starts from these.`) : null);
 }
 function viewItem(id) {
   const all = itemOrder();
@@ -14412,7 +14585,7 @@ const AGENT_NAMES = {
   characters2: "Character", tiles: "Tiles", tiles2: "Tiles 2.0", lore: "Lore",
   games: "Game", games2: "Game", "games-ui": "UI", "games-perf": "Optimization",
   "games-ambient": "Ambient", "games-audio": "Composer", sounds: "Sound", music: "Music",
-  wiki: "Wiki", account: "Account",
+  wiki: "Wiki", account: "Account", shaders: "Shader",
 };
 function agentLabel(id) {
   const kind = agentKind(id);
@@ -14982,7 +15155,7 @@ function route() {
     view = viewMusic();
     if (id && id !== "dynamic") spotlight(`[data-track="${CSS.escape(id)}"]`);
   }
-  else if (page === "items") view = id ? viewItem(id) : viewItems();
+  else if (page === "items") view = id === "shaders" ? (sub ? viewShader(sub) : viewShaders()) : id ? viewItem(id) : viewItems();
   else if (page === "lore") {
     // Resolve the ENTRY first so a future entry can never be shadowed by the
     // reserved slug — structurally impossible, not merely unlikely.
@@ -15106,6 +15279,10 @@ async function loadLiveFiles() {
   state.tuning.tile_tops = tileTopsDoc ?? { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
   state.tuning.scenery_hitbox = hitboxDoc ?? { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} };
   state.tuning.scenery_walls = sceneryWallsDoc ?? { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} };
+  // His shader knobs (shaders/docs/wiki.md): read like the others, so a save
+  // writes on top of what is committed rather than over it.
+  state.tuning.shaders = (apiState ? fromApi((s) => s.tuning.shaders) : await fetchJson(new URL("live/tuning/shaders.json", ROOT)))
+    ?? { format: "pixel-wiki-tuning-shaders@1", updated_at: "", overrides: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });

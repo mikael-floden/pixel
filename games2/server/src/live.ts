@@ -188,6 +188,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/top_walls") return { format: "pixel-wiki-top-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_walls") return { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
+  if (key === "tuning/shaders") return { format: "pixel-wiki-tuning-shaders@1", updated_at: "", overrides: {} };
   if (key === "tuning/base_tiles") return { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
   if (key === "tuning/base_tile_sets") return { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };

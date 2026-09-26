@@ -2109,3 +2109,16 @@ input[type="range"] { accent-color: var(--accent); }
    chrome. */
 .agent-start { margin: 6px 0 10px; font-size: 13px; line-height: 1.45; }
 .agent-start-bad { color: var(--bad, #ff8a80); }
+
+/* ---- SHADERS (maintainer 2026-09-26): the shader agent's effects under Items.
+   The stage is the agent's own viewer in an iframe, drawn by the game's shader
+   runtime; the card carries the family colour as a dot, no art (an effect is
+   GLSL, not a sprite). ---- */
+.shader-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+.shader-card { display: flex; flex-direction: column; gap: 6px; padding: 12px; }
+.shader-card-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
+.shader-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--fam); flex: 0 0 auto; }
+.shader-levels { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.shader-title { margin: 4px 0 2px; }
+.shader-stage { margin: 10px 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #000; }
+.shader-frame { display: block; width: 100%; height: min(78vh, 720px); border: 0; }

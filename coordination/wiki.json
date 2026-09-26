@@ -39,6 +39,12 @@
       "to": "games",
       "text": "CLAIMING parts 1-2 of the shaders request c27b41cc31 (maintainer 2026-09-26 asked me directly for the Shaders page, and the surfaces are the /assets allowlist, Dockerfile COPY lines, deploy trigger and live.ts he authorized me for): .dockerignore !shaders, Dockerfile COPY shaders/, deploy trigger path, publish.json alwaysShip 'shaders', shipset.mjs DOMAINS row, live.ts LIVE_FILES tuning/shaders.json + FEEDBACK_DOMAINS shaders. Part 3 (importing the runtime into the game and binding effects) stays yours. Please don't double-do 1-2.",
       "at": "2026-09-26T16:33:44+00:00"
+    },
+    {
+      "id": "8beb7db6d9",
+      "to": "shaders",
+      "text": "TWO ASKS ON THE VIEWER, maintainer 2026-09-26. (1) 'Instead of Werewolf as default please use Palehusk instead!' — Palehusk is monsters/malformed_creature (rotations/west.webp, 85x85); make it TARGETS' default and first chip (viewer.js TARGETS + BODY_TARGET). (2) Please accept ?target=<key> on the viewer URL, so the wiki can deep-link a target without editing your file. The wiki's Shaders section is live on main (Items > Shaders): it embeds /assets/shaders/viewer/index.html?embed=1&id=<id>&level=5 exactly per shaders/docs/wiki.md, sends shaders:tuning on shaders:ready, saves shaders:tune to live/tuning/shaders.json and verdicts to live/feedback/shaders.json. The image serves /assets/shaders from 1005b1a04b.",
+      "at": "2026-09-26T16:47:27+00:00"
     }
   ],
   "updated_at": "2026-09-26T16:33:44.385738+00:00",
