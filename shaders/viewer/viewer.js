@@ -36,8 +36,7 @@ const HERO_W = 44; // a person's drawn width: what a melee reach is measured aga
 const HERO_IDLE_FPS = 6; // games2 ANIM_FPS.idle
 const CAST_HOLD = 0.2; // s a finished one-shot clip holds its last frame
 
-// A single-file build (pipeline/bundle.mjs) carries the bodies inline.
-const assetUrl = (rel) => (window.__NFX_ASSETS && window.__NFX_ASSETS[rel]) || new URL(rel, ROOT).href;
+const assetUrl = (rel) => new URL(rel, ROOT).href;
 
 const defs = LIBRARY.slice().sort((a, b) => a.family.localeCompare(b.family) || a.name.localeCompare(b.name));
 const byId = new Map(defs.map((d) => [d.id, d]));

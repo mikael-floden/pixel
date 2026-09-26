@@ -83,7 +83,7 @@ shaders/
   shaders.json      GENERATED: the catalog (metadata, stage, sounds, tunables, thinking; no code)
   viewer/           THE STAGE the wiki embeds: index.html, viewer.js, stage.js (the game's
                     light), bodies.js (the heroes and shipped monsters it casts with)
-  pipeline/         catalog.mjs, castpoints.py, shoot.mjs, phaser-check.mjs (+ .html), bundle.mjs
+  pipeline/         catalog.mjs, castpoints.py, shoot.mjs, phaser-check.mjs (+ .html)
   docs/             integration.md (the game) · wiki.md (the wiki) · authoring.md (writing one)
 ```
 
@@ -126,14 +126,18 @@ PHASER=<node_modules> node shaders/pipeline/phaser-check.mjs --ids ...        # 
 
 `shoot` and `phaser-check` need playwright-core and a Chromium
 (`/opt/pw-browsers` in the agent image), `phaser-check` needs phaser 3.90 —
-both are games2 devDependencies. `bundle.mjs` builds the one-file review
-page (never committed). **Before every push**: `catalog.mjs --check`,
+both are games2 devDependencies. **Before every push**: `catalog.mjs --check`,
 `shoot --all` (a shader that fails to compile fails it) and `phaser-check`
 with the ids you touched (0 GL errors). Look at the sheets — a gate cannot
 tell a beautiful effect from an ugly one.
 
 ## The review loop
 
+- He reviews in the WIKI (Items > Shaders, the stage embedded) and nowhere
+  else: pushing to `main` is how he sees the work (maintainer 2026-09-26:
+  "why you use artifacts when we have our own wiki. Just push to main so I
+  can see your work!"). When the page cannot show something yet, say so on
+  the board and in the run's answer — never route around it with a side link.
 - Verdicts: `live/feedback/shaders.json` (keyed `shaders/library/<id>`),
   read at the start of every run and acted on per `live/docs/review-contract.md`
   (a redo replaces the art and clears the entry in the same unit; an approval
@@ -147,6 +151,8 @@ tell a beautiful effect from an ugly one.
 
 ## Rejected (do not retry)
 
+- A side review link (a one-file bundle of the viewer published as an
+  artifact): he reviews in the wiki (maintainer 2026-09-26, above).
 - Sprite-sheet VFX as the base: fixed resolution, no level scaling, a
   generation per variant. PixelLab art may still be ADDED as a texture a
   shader samples (particles, runes) — never as the effect itself.

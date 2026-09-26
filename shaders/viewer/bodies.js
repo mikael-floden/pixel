@@ -1,7 +1,6 @@
-// The bodies the stage casts with and at — shared by the viewer and the
-// single-file bundle (pipeline/bundle.mjs), so the two cannot disagree.
-// Every monster here SHIPS in the game image (a world spawns it): a monster
-// no world spawns 404s at /assets/monsters/... in production.
+// The bodies the stage casts with and at. Every monster here SHIPS in the
+// game image (a world spawns it): a monster no world spawns 404s at
+// /assets/monsters/... in production.
 
 export const HEROES = { default_boy: "Boy", default_girl: "Girl" };
 // The first is the default target (maintainer 2026-09-26: "Instead of
