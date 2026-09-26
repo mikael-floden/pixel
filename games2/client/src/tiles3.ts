@@ -1883,8 +1883,15 @@ export class Tiles3 {
         for (const room of pub) {
           let ax = Infinity;
           let ay = Infinity;
+          // THE MINIMUM IN THE PICK FRAME (the server cell): a turned view keeps
+          // the room's anchor, hence its one floor. Identity unturned.
+          let bx = Infinity;
+          let by = Infinity;
           for (const c of room.cells) {
-            if (c.x < ax || (c.x === ax && c.y < ay)) {
+            const [kx, ky] = pk(c.x, c.y);
+            if (kx < bx || (kx === bx && ky < by)) {
+              bx = kx;
+              by = ky;
               ax = c.x;
               ay = c.y;
             }
@@ -1933,10 +1940,15 @@ export class Tiles3 {
           }
           let ax = Infinity;
           let ay = Infinity;
+          let bx = Infinity;
+          let by = Infinity;
           for (const i of comp) {
             const cx = i % W;
             const cy = (i - cx) / W;
-            if (cx < ax || (cx === ax && cy < ay)) {
+            const [kx, ky] = pk(cx, cy); // the pick frame's minimum, as above
+            if (kx < bx || (kx === bx && ky < by)) {
+              bx = kx;
+              by = ky;
               ax = cx;
               ay = cy;
             }

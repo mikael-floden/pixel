@@ -145,6 +145,11 @@ export class Footsteps {
     }
   }
 
+  /** Every mark gone at once (a view turn: the trail is on the old picture). */
+  clear() {
+    for (const m of this.pool) m.img.setVisible(false);
+  }
+
   count() {
     let n = 0;
     for (const m of this.pool) if (m.img.visible) n++;

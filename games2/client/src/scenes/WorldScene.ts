@@ -26,6 +26,7 @@ import {
   rectGroundRot,
   footprintsInCells,
   MIN_FOOTPRINT_SEMI,
+  ISO_GEOMETRY,
   ISO_GEOMETRY_MAPS3,
   type SceneryBboxDoc,
   makeBlocked,
@@ -226,7 +227,7 @@ import {
 } from "../maps";
 import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
-import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, unrotCell, rotVec, unrotVec, rotFootprints, rotDir8, type ViewRot, type RotateStats } from "../viewrot";
+import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, unrotCell, rotVec, unrotVec, rotFootprints, rotDir8, unturnScreenVec, type ViewRot, type RotateStats } from "../viewrot";
 import { setPickFrame } from "../tiles3";
 import { RotFx, buildRotMesh, easeTurn, type RotProjector } from "../rotfx";
 import { parseWorld as parseWorldDoc } from "@nangijala/shared";
@@ -351,6 +352,10 @@ const ANIM_FPS: Record<string, number> = {
 /** How long the flinch overlay holds at the combat rate: the 5-frame clip at
  *  ANIM_FPS.hurt, rounded up. */
 const HURT_MS = 300;
+/** TEST SWITCH (`?pickframe=view`): a turned view hashes its picks by the DRAWN
+ *  cell, i.e. exactly what the unmodified renderer draws for the world turned as
+ *  data. The fidelity gate compares the two pixel for pixel (view-rotation.md). */
+const PICK_VIEW = typeof location !== "undefined" && new URLSearchParams(location.search).get("pickframe") === "view";
 /** How long a locally-shown fall impact keeps swallowing the server's own hit
  *  for it: the fall clock's own slack (a 20 Hz tick, a patch, a round trip) with
  *  room to spare, and far under the gap to any NEXT hit. */
@@ -1798,6 +1803,8 @@ interface NpcAvatar {
   dir: string;
   /** maps2' own facing — what this NPC returns to (see stepNpcFacing). */
   home: string;
+  /** The placement's facing as maps2 wrote it; a turned view re-derives `home` from it. */
+  placed?: string;
   def: NpcDef; // for the art of a direction it turns to later
   turnAt: number; // next sweep notch is due
   glanceDir: string | null;
@@ -2180,6 +2187,11 @@ export class WorldScene extends Phaser.Scene {
    *  overlay has gone — mid-turn the player still sees the old view. */
   private inputRot: ViewRot = 0;
   private viewWorld: World | null = null;
+  /** The turned world's terrain and deck index — what the indoor cut sweeps
+   *  (down-screen is a different server direction at every orientation). Null
+   *  unturned: the server's own serve. */
+  private viewTerrain: ReturnType<typeof buildTerrainGrid> | null = null;
+  private viewDeckIndex = new Map<number, { deck: Deck; cell: Deck["cells"][number] }>();
   /** The fetched world.json, kept once a turn has been asked for (a cache hit). */
   private viewDoc: unknown = null;
   private rotFx: RotFx | null = null;
@@ -5432,8 +5444,9 @@ export class WorldScene extends Phaser.Scene {
   private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
   // Grave crosses (scenery/grave_cross): appear where a monster died, hold on
   // the last frame, then REVERSE back into the ground and vanish.
-  private graveCrosses: { sprite: Phaser.GameObjects.Sprite; bornAt: number; reversing: boolean }[] = [];
-  private pendingCrosses: { lx: number; lyFlat: number; elevPx: number }[] = []; // kills before the strip landed
+  /** `fx`/`fy`: the SERVER point it stands on, so a view turn can re-place it. */
+  private graveCrosses: { sprite: Phaser.GameObjects.Sprite; bornAt: number; reversing: boolean; fx?: number; fy?: number; elevPx: number }[] = [];
+  private pendingCrosses: { lx: number; lyFlat: number; elevPx: number; fx?: number; fy?: number }[] = []; // kills before the strip landed
   private crossLoadQueued = false;
   private bloodSeen = 0; // QA counter: blood spatters spawned this session
   private dodgeState?: MonsterDodgeState; // soft monster-collision side commitment
@@ -6021,7 +6034,8 @@ export class WorldScene extends Phaser.Scene {
         const px = ((cx - rect.left) / Math.max(1, rect.width)) * this.scale.width;
         const py = ((cy - rect.top) / Math.max(1, rect.height)) * this.scale.height;
         const wp = this.cameras.main.getWorldPoint(px, py);
-        const g = this.pickGround(wp.x, wp.y);
+        // mid-turn the screen shows the overlay, not the view pickGround inverts
+        const g = this.turning ? null : this.pickGround(wp.x, wp.y);
         if (g) this.sendRoom("drop", { slot, item, n, wx: g.x, wy: g.y });
         else this.sendRoom("drop", { slot, item, n }); // void/solid target: at my feet
       },
@@ -6640,7 +6654,7 @@ export class WorldScene extends Phaser.Scene {
             id: s.id,
             piece: s.piece,
             at: [+s.col.toFixed(1), +s.row.toFixed(1), +s.z.toFixed(2)],
-            inRoom: !this.indoorOutside(s.col * CELL_WU, s.row * CELL_WU, s.z),
+            inRoom: !this.indoorOutside((this.viewRot && this.world ? unrotPoint(s.col, s.row, this.viewRot, this.world.width, this.world.height)[0] : s.col) * CELL_WU, (this.viewRot && this.world ? unrotPoint(s.col, s.row, this.viewRot, this.world.width, this.world.height)[1] : s.row) * CELL_WU, s.z),
           })),
         };
       },
@@ -7563,7 +7577,7 @@ export class WorldScene extends Phaser.Scene {
           // The latch step, as redrawGround makes it: from the anchor it holds, under the cut it holds.
           const mask = this.indoorInside ? this.indoorMask : null;
           const top = this.indoorTop;
-          const cuts = mask ? this.indoorCut : null;
+          const cuts = this.drawKeyed(mask ? this.indoorCut : null);
           const step = { x: Math.trunc(sx), y: Math.trunc(sy) };
           if (a.mask !== mask || a.top !== top) out.sliceCmp = { error: "the indoor cut changed since the last paint: no scroll" };
           else if ((!step.x && !step.y) || Math.abs(step.x) >= W || Math.abs(step.y) >= H) out.sliceCmp = { error: `no band for a step of ${step.x},${step.y}` };
@@ -10351,7 +10365,7 @@ export class WorldScene extends Phaser.Scene {
         return {
           placements: ps.length,
           roofed: roofed.length,
-          cutAway: roofed.filter((p) => this.roofCutAwayAt(p.cx, p.cy, p.level)).length,
+          cutAway: roofed.filter((p) => this.roofCutAwayAt(...this.srvCell(p.cx, p.cy), p.level)).length,
           drawn: this.t3stats.scenery,
           drawnRoofed: this.sceneryRoofedDrawn,
           indoor: this.indoorInside,
@@ -12604,7 +12618,9 @@ export class WorldScene extends Phaser.Scene {
     // RING_LIGHT_FLOOR is the one dial — 1.0 restores the old flat white.
     let ringTint = 0xffffff;
     if (this.night) {
-      const l = this.night.lightAt(b.fx / CELL_WU, b.fy / CELL_WU, this.litLevelOf(b), false);
+      // the night pass is on the DRAWN grid: the body's server point, turned once
+      const [ovc, ovr] = this.viewRot && this.world ? rotPoint(b.fx / CELL_WU, b.fy / CELL_WU, this.viewRot, this.world.width, this.world.height) : [b.fx / CELL_WU, b.fy / CELL_WU];
+      const l = this.night.lightAt(ovc, ovr, this.litLevelOf(b), false);
       const ch = (v: number) =>
         Math.min(255, Math.round(255 * (RING_LIGHT_FLOOR + (1 - RING_LIGHT_FLOOR) * Math.min(1, Math.max(0, v)))));
       ringTint = (ch(l[0]) << 16) | (ch(l[1]) << 8) | ch(l[2]);
@@ -13307,7 +13323,7 @@ export class WorldScene extends Phaser.Scene {
       });
       // …and the GRAVE CROSS rises where it fell (maintainer 2026-08-05),
       // right as the loot appears beside it.
-      this.spawnGraveCross(mv.lx, mv.lyFlat, mv.elev);
+      this.spawnGraveCross(mv.lx, mv.lyFlat, mv.elev, mv.fx, mv.fy);
       const spM = this.worldSpatial(mv.lx, mv.lyFlat - mv.elev);
       gameAudio.event("combat.monster_die", { pan: spM.pan, dist: spM.dist });
     } else {
@@ -13324,13 +13340,13 @@ export class WorldScene extends Phaser.Scene {
    * every client witnesses the same death via the synced die state. Spawns
    * QUEUE while the strip loads (appending to a busy loader is fine — a
    * kill during the deferred-anim batch must not silently drop its cross). */
-  private spawnGraveCross(lx: number, lyFlat: number, elevPx: number) {
+  private spawnGraveCross(lx: number, lyFlat: number, elevPx: number, fx?: number, fy?: number) {
     const KEY = GRAVE_CROSS_KEY;
     if (this.textures.exists(KEY)) {
-      this.materializeCross(lx, lyFlat, elevPx);
+      this.materializeCross(lx, lyFlat, elevPx, fx, fy);
       return;
     }
-    this.pendingCrosses.push({ lx, lyFlat, elevPx });
+    this.pendingCrosses.push({ lx, lyFlat, elevPx, fx, fy });
     if (!this.crossLoadQueued) {
       this.crossLoadQueued = true;
       this.load.spritesheet(KEY, withV(GRAVE_CROSS_URL), {
@@ -13338,13 +13354,13 @@ export class WorldScene extends Phaser.Scene {
         frameHeight: GRAVE_CROSS_FRAME,
       });
       this.load.once(`filecomplete-spritesheet-${KEY}`, () => {
-        for (const c of this.pendingCrosses.splice(0)) this.materializeCross(c.lx, c.lyFlat, c.elevPx);
+        for (const c of this.pendingCrosses.splice(0)) this.materializeCross(c.lx, c.lyFlat, c.elevPx, c.fx, c.fy);
       });
       this.load.start();
     }
   }
 
-  private materializeCross(lx: number, lyFlat: number, elevPx: number) {
+  private materializeCross(lx: number, lyFlat: number, elevPx: number, fx?: number, fy?: number) {
     const KEY = GRAVE_CROSS_KEY;
     if (!this.anims.exists(KEY)) {
       this.anims.create({
@@ -13364,7 +13380,7 @@ export class WorldScene extends Phaser.Scene {
     sprite.once("animationcomplete", () => {
       sprite.anims.pause(); // hold the standing cross (last frame)
     });
-    this.graveCrosses.push({ sprite, bornAt: this.time.now, reversing: false });
+    this.graveCrosses.push({ sprite, bornAt: this.time.now, reversing: false, fx, fy, elevPx });
     const spC = this.worldSpatial(lx, y);
     gameAudio.event("combat.cross_on", { pan: spC.pan, dist: spC.dist });
   }
@@ -13896,7 +13912,15 @@ export class WorldScene extends Phaser.Scene {
    * north-east this starts honouring it with no edit here. */
   private npcFacing(p: NpcPlacement, def: NpcDef): string {
     const want = p.facing && DIRECTIONS.includes(p.facing as never) ? p.facing : null;
-    return want && (def.idle?.[want] ?? 0) > 0 && def.base[want] ? want : DEFAULT_DIRECTION;
+    if (!this.viewRot) return want && (def.idle?.[want] ?? 0) > 0 && def.base[want] ? want : DEFAULT_DIRECTION;
+    // A TURNED VIEW ASKS THE SAME QUESTION OF WHAT IS DRAWN: the facing is kept
+    // when the art breathes in it as seen from this side, else the body faces
+    // the camera's south — the rule's own fallback. (Faithfully turned, every
+    // NPC stood frozen at 90 and showed its back at 180: the art has idles for
+    // south, south-west and south-east only.) Returned LOGICAL, like npc.dir.
+    const shown = want ? rotDir8(want, this.viewRot) : null;
+    const drawn = shown && (def.idle?.[shown] ?? 0) > 0 && def.base[shown] ? shown : DEFAULT_DIRECTION;
+    return rotDir8(drawn, normRot(4 - this.viewRot));
   }
 
   private addNpc(p: NpcPlacement, def: NpcDef) {
@@ -13947,6 +13971,7 @@ export class WorldScene extends Phaser.Scene {
       type: p.type,
       dir,
       home: dir,
+      placed: p.facing,
       def,
       turnAt: 0,
       glanceDir: null,
@@ -13976,9 +14001,10 @@ export class WorldScene extends Phaser.Scene {
    * SOUTH-ONLY today, so most NPCs correctly stand still on their rotation —
    * when characters2 generates the rest they animate with no client change. */
   private loadNpcArt(npc: NpcAvatar, def: NpcDef) {
-    const baseKey = `npc:${def.id}:${npc.dir}`;
-    const frames = def.idle?.[npc.dir] ?? 0;
-    const animKey = `npcanim:${def.id}:${npc.dir}`;
+    const show = rotDir8(npc.dir, this.viewRot); // what is DRAWN (setNpcDir); npc.dir unturned
+    const baseKey = `npc:${def.id}:${show}`;
+    const frames = def.idle?.[show] ?? 0;
+    const animKey = `npcanim:${def.id}:${show}`;
     // EVERY ROTATION THIS BODY CAN TURN TO, on the DEFERRED batch. Head-turning
     // can reach all eight (a look at the player) and idles on the three that
     // have them, and art that has not arrived means a turn silently completes
@@ -13988,12 +14014,12 @@ export class WorldScene extends Phaser.Scene {
     for (const d of DIRECTIONS) {
       // A no-turn NPC will never adopt another rotation, so fetching the other
       // seven (and their idle frames) is pure waste on someone's phone data.
-      if (def.noTurn && d !== npc.dir) continue;
+      if (def.noTurn && d !== show) continue;
       const url = def.base[d];
       const k = `npc:${def.id}:${d}`;
       if (url && !this.textures.exists(k)) this.npcIdleQueue.push({ key: k, url });
       const fn = def.idle?.[d] ?? 0;
-      if (!fn || !def.idleAnim || d === npc.dir) continue;
+      if (!fn || !def.idleAnim || d === show) continue;
       for (let i = 0; i < fn; i++) {
         const fk = `npcf:${def.id}:${d}:${i}`;
         if (this.textures.exists(fk)) continue;
@@ -14008,9 +14034,9 @@ export class WorldScene extends Phaser.Scene {
     if (frames > 0 && def.idleAnim) {
       const keys: string[] = [];
       for (let i = 0; i < frames; i++) {
-        const k = `npcf:${def.id}:${npc.dir}:${i}`;
+        const k = `npcf:${def.id}:${show}:${i}`;
         keys.push(k);
-        if (!this.textures.exists(k)) this.npcIdleQueue.push({ key: k, url: this.npcFrameUrl(def, npc.dir, i) });
+        if (!this.textures.exists(k)) this.npcIdleQueue.push({ key: k, url: this.npcFrameUrl(def, show, i) });
       }
       // Registered LAZILY by stepNpcs once every frame texture exists — NOT on
       // a one-shot loader COMPLETE. A world queues ~20 NPCs back to back, so
@@ -14060,7 +14086,7 @@ export class WorldScene extends Phaser.Scene {
     const looking = npc.lookDir && now < npc.lookUntil;
     // A glance never interrupts a look, and never starts during one.
     if (!looking && now >= npc.nextGlanceAt && now >= npc.glanceUntil) {
-      const canIdle = DIRECTIONS.filter((d) => (npc.def.idle?.[d] ?? 0) > 0 && d !== npc.home);
+      const canIdle = DIRECTIONS.filter((d) => (npc.def.idle?.[rotDir8(d, this.viewRot)] ?? 0) > 0 && d !== npc.home);
       if (canIdle.length) {
         npc.glanceDir = canIdle[Math.floor(Math.random() * canIdle.length)];
         npc.glanceUntil = now + NPC_GLANCE_MIN_MS + Math.random() * (NPC_GLANCE_MAX_MS - NPC_GLANCE_MIN_MS);
@@ -14125,6 +14151,7 @@ export class WorldScene extends Phaser.Scene {
     // long as the art takes to arrive. Both move together or neither does; the
     // turn then completes late at worst, which is invisible.
     if (this.textures.exists(baseKey)) {
+      if (npc.sprite.anims?.isPlaying && npc.animKey !== `npcanim:${def.id}:${show}`) npc.sprite.anims.stop(); // the old facing's clip
       npc.sprite.setTexture(baseKey);
       const a = def.anchors?.[show];
       if (a) npc.sprite.setOrigin(a.x, a.y);
@@ -16295,7 +16322,12 @@ export class WorldScene extends Phaser.Scene {
       this.lastSlotInfo.reserved = 0;
       for (const l of [rl.ambient, rl.selfFx, rl.monsterFx])
         if (l) {
-          sl.push(l);
+          // a writer places its light in SERVER cells (a body's fx / CELL_WU, pickAt);
+          // the list is on the DRAWN grid
+          if (this.viewRot && this.world) {
+            const [vc, vr] = rotPoint(l.col, l.row, this.viewRot, this.world.width, this.world.height);
+            sl.push({ ...l, col: vc, row: vr });
+          } else sl.push(l);
           this.lastSlotInfo.reserved++;
         }
       // [8 WORLD SLOTS] — the campfire scenery + every emissive tile/prop in
@@ -17145,11 +17177,13 @@ export class WorldScene extends Phaser.Scene {
       // Not forgotten; if the fire ever grows a cover outline, give it a slot.
       if (on && this.campfire) {
         let coverY = Infinity;
+        // the occluders are on the DRAWN grid; the fire's cell is a server cell
+        const [fvc, fvr] = this.viewRot && this.world ? rotPoint(this.campfire.col, this.campfire.row, this.viewRot, this.world.width, this.world.height) : [this.campfire.col, this.campfire.row];
         for (const o of this.occluderMeta) {
           if (
             o.solid &&
             // campfire.col/row already carry the +0.5 cell-centre offset.
-            o.col + o.row + 1.2 > this.campfire.col + this.campfire.row &&
+            o.col + o.row + 1.2 > fvc + fvr &&
             this.campfire.x >= o.x0 - 6 &&
             this.campfire.x <= o.x1 + 6 &&
             o.y0 < this.campfire.y
@@ -17198,6 +17232,7 @@ export class WorldScene extends Phaser.Scene {
     const k = this.keys;
     let ax = (down(k.D) || down(k.RIGHT) ? 1 : 0) - (down(k.A) || down(k.LEFT) ? 1 : 0);
     let ay = (down(k.S) || down(k.DOWN) ? 1 : 0) - (down(k.W) || down(k.UP) ? 1 : 0);
+    const viewAx = ax, viewAy = ay; // as pressed, on the TURNED view (the stick's lean runs here)
     // VIEW ROTATION (viewrot.ts): the keys (and the stick, which synthesizes them)
     // name SCREEN directions of the TURNED view, while everything below — steer
     // assist, the autopilot, prediction, and the input the server integrates —
@@ -17225,9 +17260,11 @@ export class WorldScene extends Phaser.Scene {
     if (this.keysActive) {
       const lean = stickLean();
       const b0 = lean > 0 ? stickHeading() : null;
-      // the finger's bearing turns with the keys: -90 degrees a quarter-turn (screen frame, +y down)
-      const bearing = b0 === null ? null : b0 - 90 * this.inputRot;
-      stickVec = bearing !== null ? leanHeading(ax, ay, bearing, lean) : { ax, ay };
+      // THE LEAN RUNS ON THE SCREEN THE FINGER SEES, then goes through the world
+      // once. A quarter-turn of the grid is not a quarter-turn of screen bearings
+      // on a 32x14 iso screen, so turning the bearing by -90 ran up to 14.6 deg off
+      // the finger between the octants (exact only on them, where the keys are).
+      stickVec = b0 === null ? { ax, ay } : this.inputRot ? this.unturnScreenVec(leanHeading(viewAx, viewAy, b0, lean)) : leanHeading(ax, ay, b0, lean);
     }
     let deflected = false;
     if (this.keysActive) {
@@ -19656,7 +19693,7 @@ export class WorldScene extends Phaser.Scene {
    *  The legacy scalar cut (no per-cell map) still paints in full. */
   private repaintIndoorFlip(prevCuts: Map<number, number> | null): void {
     const mask = this.indoorMask; // the drawn mask (null once an exit has landed)
-    const cuts = mask ? this.indoorCut : null;
+    const cuts = this.drawKeyed(mask ? this.indoorCut : null);
     const a = this.groundAnchor;
     const perCell = !mask || !!cuts;
     if (!a || !perCell || Number.isNaN(this.lastGround.x)) {
@@ -19664,7 +19701,8 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     const cells = new Set<number>();
-    if (prevCuts) for (const k of prevCuts.keys()) cells.add(k);
+    const prevDrawn = this.drawKeyed(prevCuts);
+    if (prevDrawn) for (const k of prevDrawn.keys()) cells.add(k);
     if (cuts) for (const k of cuts.keys()) cells.add(k);
     // The anchor's indoor state moves to the new one: the cell path paints
     // under it, and the scroll keeps going from it. Queued slices and pending
@@ -19751,7 +19789,11 @@ export class WorldScene extends Phaser.Scene {
     const now = this.time.now;
     if (now - this.roomLitAt < ROOM_LIT_MS) return this.roomLitVal;
     this.roomLitAt = now;
-    const inRoom = (col: number, row: number, z: number) => !this.indoorOutside(col * CELL_WU, row * CELL_WU, z);
+    // the lamps stand on the DRAWN grid; the room mask is server-keyed
+    const inRoom = (col: number, row: number, z: number) => {
+      const [sc, sr] = this.viewRot && this.world ? unrotPoint(col, row, this.viewRot, this.world.width, this.world.height) : [col, row];
+      return !this.indoorOutside(sc * CELL_WU, sr * CELL_WU, z);
+    };
     let lit = false;
     for (const s of this.sceneryLightSources) {
       if (inRoom(s.col, s.row, s.z)) { lit = true; break; }
@@ -19881,10 +19923,15 @@ export class WorldScene extends Phaser.Scene {
      * vertical centre — half its drawn height, in storeys — is what the wall
      * must still reach for the piece to stay. */
     const z = p.level + p.z + (img.displayHeight / this.geom.lh) * 0.5;
-    const fx = (p.wall.cx + 0.5) * CELL_WU;
-    const fy = (p.wall.cy + 0.5) * CELL_WU;
+    // SERVER cells: the cut, the room mask, the published rooms and the lamps and
+    // bodies a window glows for are all server-keyed. The wall and the step inside
+    // it are found on the DRAWN grid (the piece's own cells), then un-turned.
+    const [wsc, wsr] = this.srvCell(p.wall.cx, p.wall.cy);
+    const fx = (wsc + 0.5) * CELL_WU;
+    const fy = (wsr + 0.5) * CELL_WU;
     // The room cell just inside the wall: one more step in the wall's direction.
-    const inner = { col: p.wall.cx + (p.wall.cx - p.cx), row: p.wall.cy + (p.wall.cy - p.cy) };
+    const [isc, isr] = this.srvCell(p.wall.cx + (p.wall.cx - p.cx), p.wall.cy + (p.wall.cy - p.cy));
+    const inner = { col: isc, row: isr };
     let on: Phaser.GameObjects.Image | null = null;
     const onState = piece.states["LIGHTS_ON"];
     if (onState && st.key !== "LIGHTS_ON") {
@@ -20235,8 +20282,8 @@ export class WorldScene extends Phaser.Scene {
 
   private buildIndoorDebris() {
     this.destroyIndoorDebris();
-    const cuts = this.indoorCut;
-    const world = this.world;
+    const cuts = this.drawKeyed(this.indoorCut);
+    const world = this.viewWorld ?? this.world;
     if (!cuts || !world) return; // legacy cut / no world: instant
     if (this.maps3) {
       this.buildIndoorDebris3(cuts, world);
@@ -20281,8 +20328,15 @@ export class WorldScene extends Phaser.Scene {
     this.viewWorld = vw;
     // every resolver pick keyed by the SERVER cell: the same world, seen from another side
     const W0 = world.width, H0 = world.height;
-    setPickFrame(k ? (x, y) => unrotCell(x, y, k, W0, H0) : null);
+    setPickFrame(k && !PICK_VIEW ? (x, y) => unrotCell(x, y, k, W0, H0) : null);
     this.night?.setWorld(vw ?? world);
+    this.viewTerrain = k && vw ? buildTerrainGrid(vw.width, vw.height, vw.rows, vw.props, vw.decks) : null;
+    this.viewDeckIndex.clear();
+    if (k && vw) for (const d of vw.decks ?? []) for (const c of d.cells) this.viewDeckIndex.set(c.row * vw.width + c.col, { deck: d, cell: c });
+    // INDOORS, THE CUT IS A FUNCTION OF THE VIEW: re-cut for this side before the
+    // repaint below, and drop a crossfade layer placed for the old one
+    this.destroyIndoorDebris();
+    if (this.indoorInside && this.indoorSpace) { this.indoorMaskSig = ""; this.refreshIndoorMask(); }
     // the heightmap rebuild cleared the scenery shadows it had stamped: stamp the turned ones
     if (this.night && this.terrain) this.night.setSceneryOccluders(this.sceneryOn ? this.viewFootprints() : undefined);
     this.initTiles3();
@@ -20363,8 +20417,40 @@ export class WorldScene extends Phaser.Scene {
       const n = npc as unknown as Parameters<typeof move>[0] & { sprite?: Phaser.GameObjects.Sprite };
       move(n);
       n.sprite?.setPosition(n.lx, n.ly);
-      if (npc.dir) this.setNpcDir(npc, npc.dir); // same logical facing, the turned view's art
+      // home is re-asked of THIS side's art (npcFacing); a glance or a look ends
+      npc.home = this.npcFacing({ facing: npc.placed } as NpcPlacement, npc.def);
+      npc.glanceDir = null; npc.glanceUntil = 0; npc.lookDir = null; npc.lookUntil = 0;
+      this.setNpcDir(npc, npc.def.noTurn ? npc.dir : npc.home);
+      this.loadNpcArt(npc, npc.def); // queues whatever this side draws that has not landed
     }
+    // the deferred batch drained that queue at boot: hand the rest to the art queue now
+    if (this.npcIdleQueue.length) {
+      const art = this.artQueue();
+      for (const f of this.npcIdleQueue.splice(0)) if (!this.textures.exists(f.key)) art.request({ key: f.key, url: withV(f.url), prio: ART_PRIO.npc });
+    }
+    // a grave cross stands where its monster fell (materializeCross's own placement)
+    const cross = (c: { fx?: number; fy?: number; lx: number; lyFlat: number }) => {
+      if (c.fx === undefined || c.fy === undefined) return;
+      const g = this.projectFlat(c.fx, c.fy);
+      c.lx = g.x; c.lyFlat = g.y;
+    };
+    for (const c of this.pendingCrosses) cross(c);
+    for (const gc of this.graveCrosses) {
+      if (gc.fx === undefined || gc.fy === undefined) continue;
+      const g = this.projectFlat(gc.fx, gc.fy), y = g.y - gc.elevPx;
+      gc.sprite.setPosition(g.x, y + 2).setDepth(y - 0.5);
+    }
+    // chess boards are placed once from their server cell: place them again, and
+    // their wait bubbles once this frame has moved the bodies they float over
+    const boards = this.room?.state.chessBoards;
+    if (boards) {
+      for (const img of this.chessDecor.values()) img.destroy();
+      this.chessDecor.clear();
+      boards.forEach((b: any, id: string) => this.placeChessBoard(id, b));
+      this.events.once("postupdate", () => boards.forEach((b: any, id: string) => this.syncChessWait(id, b)));
+    }
+    // footprints are a few seconds of trail drawn on the old picture
+    this.footsteps?.clear();
   }
 
   /** THE ROOM, CAVE AND CUT MAPS ARE SERVER-KEYED (built from `terrain` around
@@ -20378,6 +20464,43 @@ export class WorldScene extends Phaser.Scene {
     const c = i % w.width, r = (i - c) / w.width;
     const [vc, vr] = rotCell(c, r, this.viewRot, w.width, w.height);
     return vr * (this.viewWorld ?? w).width + vc;
+  }
+  /** The inverse of viewIdx: a DRAWN cell index -> the same cell's server index. */
+  private srvIdx(i: number): number {
+    const w = this.world!, vw = this.viewWorld ?? w;
+    const c = i % vw.width, r = (i - c) / vw.width;
+    const [sc, sr] = unrotCell(c, r, this.viewRot, w.width, w.height);
+    return sr * w.width + sc;
+  }
+  /** A SCREEN direction of the turned view (+y down) -> the screen direction of the
+   *  UNTURNED frame that walks the same way in the world (what the movement code
+   *  reads): S R^-1 S^-1 through the iso projection, S = [[dx, -dx], [dy, dy]].
+   *  Unit length, as leanHeading's own. */
+  private unturnScreenVec(v: { ax: number; ay: number }): { ax: number; ay: number } {
+    const [ax, ay] = unturnScreenVec(v.ax, v.ay, this.inputRot, ISO_GEOMETRY.dx, ISO_GEOMETRY.dy);
+    return { ax, ay };
+  }
+  /** A DRAWN cell (fractions floored) -> its server cell: how scenery, windows and
+   *  anything else built from the turned world asks the server-keyed room and cut
+   *  tests. */
+  private srvCell(col: number, row: number): [number, number] {
+    const c = Math.floor(col), r = Math.floor(row);
+    if (!this.viewRot || !this.world) return [c, r];
+    return unrotCell(c, r, this.viewRot, this.world.width, this.world.height);
+  }
+  /** THE DRAWN GRID'S COPY of a server-keyed cell map (the indoor cut). Every pass
+   *  that DRAWS walks the view grid and reads this; bodies, taps and the night
+   *  pass keep the server map. Memoised per map and turn, so `a !== b` between
+   *  frames still means "the cut changed", never "a copy was made". */
+  private viewTwins = new WeakMap<Map<number, number>, { k: ViewRot; m: Map<number, number> }>();
+  private drawKeyed(m: Map<number, number> | null): Map<number, number> | null {
+    if (!m || !this.viewRot || !this.world) return m;
+    const hit = this.viewTwins.get(m);
+    if (hit && hit.k === this.viewRot) return hit.m;
+    const out = new Map<number, number>();
+    for (const [i, v] of m) out.set(this.viewIdx(i), v);
+    this.viewTwins.set(m, { k: this.viewRot, m: out });
+    return out;
   }
   private viewKeyed<T>(m: Map<number, T> | null | undefined): Map<number, T> | undefined {
     if (!m) return undefined;
@@ -20431,6 +20554,8 @@ export class WorldScene extends Phaser.Scene {
   private async turnView(dir: 1 | -1, ms = 1100, waitB = 3000, blur = 1): Promise<Record<string, number | string>> {
     const world = this.world;
     if (this.turning || !world) return { skipped: "busy, or no world" };
+    // the death cam and the respawn veil are screen-space sequences: no turn under them
+    if ((this.room?.state.players.get(this.myId) as { dead?: boolean } | undefined)?.dead) return { skipped: "dead" };
     const kA = this.viewRot, kB = normRot(kA + dir);
     if (this.game.renderer.type !== Phaser.WEBGL) { await this.applyViewRot(kB); return { skipped: "canvas renderer: turned instantly" }; }
     this.turning = true;
@@ -20463,7 +20588,18 @@ export class WorldScene extends Phaser.Scene {
       res();
     }));
     this.turnLog.aMs = +(performance.now() - t0).toFixed(1);
-    await this.applyViewRot(kB);
+    // A SWAP THAT THROWS (the turned document's fetch or parse) must not leave the
+    // overlay up and `turning` set: every tap and drag would be swallowed forever.
+    try {
+      await this.applyViewRot(kB);
+    } catch (e) {
+      fx.destroy();
+      if (this.rotFx === fx) this.rotFx = null;
+      this.turning = false;
+      this.inputRot = this.viewRot;
+      console.warn("[nangijala] view turn failed:", e);
+      return { skipped: `swap failed: ${e}` };
+    }
     if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (bx - by) * dx, this.iso.oy + 10 + (bx + by) * dy - ph * lh);
     this.turnLog.swapMs = +(performance.now() - t0).toFixed(1);
     return await new Promise((done) => {
@@ -20659,7 +20795,7 @@ export class WorldScene extends Phaser.Scene {
     // picture is a pure function of the space and the dial. `top` stays out of
     // the signature while they are on, and goes back in when the kill switch
     // turns them off and the scalar is the geometry again.
-    const sig = `${this.indoorKey}:${floor}:${indoorWall()}:${
+    const sig = `${this.viewRot}:${this.indoorKey}:${floor}:${indoorWall()}:${
       this.indoorRaiseOn ? "r" : `f${ceil}:${top}`
     }`;
     if (sig === this.indoorMaskSig && this.indoorMask) return false;
@@ -20742,9 +20878,20 @@ export class WorldScene extends Phaser.Scene {
      *  chamber of its own to measure from. Elevation-free on purpose. */
     cone: number,
   ): Map<number, number> | null {
-    const g = this.terrain;
-    const w = this.world;
+    // A TURNED VIEW CUTS ON THE TURNED GRID. The cone sweeps DOWN-SCREEN, and
+    // down-screen is a different server direction at every orientation: cut in
+    // server space, a turned house kept the walls the camera looks over and lost
+    // the ones behind. Inputs are re-keyed to the view; the answer goes back to
+    // server keys, which is what every reader of `indoorCut` holds.
+    const turned = !!this.viewRot && !!this.viewTerrain && !!this.viewWorld;
+    const g = turned ? this.viewTerrain : this.terrain;
+    const w = turned ? this.viewWorld : this.world;
     if (!g || !w) return null;
+    const toV = (i: number) => (turned ? this.viewIdx(i) : i);
+    const roof: Iterable<number> = turned ? Array.from(s.roof, toV) : s.roof;
+    const entrances: Iterable<number> = turned ? Array.from(s.entrances, toV) : s.entrances;
+    const maskV = turned ? new Map(Array.from(mask, ([i, v]) => [toV(i), v] as [number, number])) : mask;
+    const deckAt = turned ? this.viewDeckIndex : this.deckIndex;
     const { dy, lh } = this.geom;
     const cover = dy / lh; // levels of height per up-screen step (0.9375)
     const MARGIN = 1; // levels a column's top stays below the burial line
@@ -20765,7 +20912,7 @@ export class WorldScene extends Phaser.Scene {
     // a level-3 chamber holds the level-3 floor up, and cutting it to 0 + wall
     // would leave that floor hanging over nothing. From the low side it then
     // reads as a real interior wall, which is what it is.
-    const floors = new Set(s.roof);
+    const floors = new Set(roof);
     const lidOf = (ci: number) => (g.deckBot[ci] >= 0 ? g.deckBot[ci] : s.roofLevel);
     const localFloor = (ci: number) => {
       if (floors.has(ci)) return g.level[ci];
@@ -20811,12 +20958,12 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     };
-    for (const fi of s.roof) sweep(fi);
-    for (const e of s.entrances) sweep(e);
+    for (const fi of roof) sweep(fi);
+    for (const e of entrances) sweep(e);
     const cuts = new Map<number, number>();
     // My building: always an entry (the raise, clamped by the deck over THAT
     // column and floored at that column's own chamber + the wall dial).
-    for (const ci of mask.keys()) {
+    for (const ci of maskV.keys()) {
       const lid = lidOf(ci);
       const minCut = Math.max(0, Math.min(lid, localFloor(ci) + wall));
       const cap = floorCap.get(ci);
@@ -20829,13 +20976,13 @@ export class WorldScene extends Phaser.Scene {
     // space-wide minimum — cutting a hillside to nothing would open a hole
     // onto the void behind it.
     for (const [idx, cap] of floorCap) {
-      if (mask.has(idx)) continue;
-      const dk = this.deckIndex.get(idx);
+      if (maskV.has(idx)) continue;
+      const dk = deckAt.get(idx);
       const colTop = Math.max(g.level[idx], dk ? dk.deck.level : -1);
       if (cap >= colTop) continue; // even drawn whole it cannot reach the floor
       cuts.set(idx, clampCut(cap, cone));
     }
-    return cuts;
+    return turned ? new Map(Array.from(cuts, ([i, v]) => [this.srvIdx(i), v] as [number, number])) : cuts;
   }
 
   /** Ease the LIGHT blend toward the current geometric state. Exponential roll
@@ -21476,6 +21623,9 @@ export class WorldScene extends Phaser.Scene {
     this.worldUp = false;
     this.t3missing.clear();
     this.t3dropOwed.clear();
+    // cell indices into the OLD resolver's grid (a view turn re-keys every cell)
+    this.t3boundaryOwed.clear();
+    this.t3deckOwed.clear();
     this.t3drainQueue = [];
     this.groundDirtyCells = [];
     this.repaintGroundPartial = false;
@@ -21514,6 +21664,7 @@ export class WorldScene extends Phaser.Scene {
       deckBoundary: true,
       slopeHeight: slopeHeight() / 100,
       viewRot: this.viewRot,
+      pickView: PICK_VIEW,
     };
     this.t3worker.stop();
     this.t3workerBooted = true;
@@ -22335,7 +22486,7 @@ export class WorldScene extends Phaser.Scene {
     if (a.mask !== mask || a.top !== top) return false;
     const ctx = this.groundSliceCtx;
     if (ctx && (ctx.ax !== a.ax || ctx.ay !== a.ay || ctx.mask !== mask || ctx.top !== top)) return false;
-    const cuts = mask ? this.indoorCut : null;
+    const cuts = this.drawKeyed(mask ? this.indoorCut : null);
     if (!ctx) this.groundSliceCtx = { ax: a.ax, ay: a.ay, mask, cuts, top };
     const IW = rt.width;
     const IH = rt.height;
@@ -22867,7 +23018,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     const mask = a.mask;
-    const cuts = mask ? this.indoorCut : null;
+    const cuts = this.drawKeyed(mask ? this.indoorCut : null);
     const bgKey = mask ? "ground-bg-black" : "ground-bg-navy";
     if (!this.textures.exists(bgKey)) {
       const cv = document.createElement("canvas");
@@ -24639,8 +24790,11 @@ export class WorldScene extends Phaser.Scene {
         frame.sun = u.sun;
         frame.time = u.time;
         const me = this.avatars.get(this.myId);
-        frame.orgX = me ? Math.floor(me.fx / CELL_WU) : 0;
-        frame.orgY = me ? Math.floor(me.fy / CELL_WU) : 0;
+        // the origin re-bases VIEW positions (mediump keeps sub-cell precision only
+        // near it): the body's point on the drawn grid
+        const [ovc, ovr] = me && this.viewRot && this.world ? rotPoint(me.fx / CELL_WU, me.fy / CELL_WU, this.viewRot, this.world.width, this.world.height) : me ? [me.fx / CELL_WU, me.fy / CELL_WU] : [0, 0];
+        frame.orgX = Math.floor(ovc);
+        frame.orgY = Math.floor(ovr);
         return frame;
       };
       this.sceneryLitPipe = pipe;
@@ -25445,7 +25599,7 @@ export class WorldScene extends Phaser.Scene {
       const resident = this.needScenery(sprite);
       // INDOOR FURNITURE: a piece under a roof/cave deck draws only while that
       // roof is actually cut away — see roofCutAwayAt.
-      if (p.roofed && !this.roofCutAwayAt(p.cx, p.cy, p.level)) continue;
+      if (p.roofed && !this.roofCutAwayAt(...this.srvCell(p.cx, p.cy), p.level)) continue;
       if (!resident) continue;
       /* PREFETCH ONLY beyond the draw pad: the manifest is in hand and the art
        * is queued by `needScenery` above, which is the whole point of coming
@@ -25677,7 +25831,7 @@ export class WorldScene extends Phaser.Scene {
       // darkens ground at THIS height only, so the roof over a bed's blob
       // takes nothing.
       (img as unknown as { __cz?: number }).__cz = feetLevel;
-      const onLid = this.sceneryAboveCutAt(p.cx, p.cy, feetLevel);
+      const onLid = this.sceneryAboveCutAt(...this.srvCell(p.cx, p.cy), feetLevel);
       // INDOOR FURNITURE FADES WITH THE ROOF IT STANDS UNDER (see roofedFade):
       // held apart here, and given the crossfade's alpha from the frame it is
       // built so a rebuild mid-transition continues the dissolve.
@@ -25847,6 +26001,7 @@ export class WorldScene extends Phaser.Scene {
         this.sceneryMeta.push(meta);
       }
       if (onWall) this.registerSceneryWall(p, piece, st, img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null, baseH, rect);
+      const srvFeet = this.viewRot && this.world ? unrotPoint(p.x, p.y, this.viewRot, this.world.width, this.world.height) : [p.x, p.y];
       if (!flat && !onWall)
         resolve.push({
           img,
@@ -25870,8 +26025,10 @@ export class WorldScene extends Phaser.Scene {
            * stood at z 0.5 with cover 8518 against its own 8452..8536, cropped
            * 66 px down an 84 px sprite. */
           lvl: feetLevel,
-          fx: (this.viewRot && this.world ? unrotPoint(p.x, p.y, this.viewRot, this.world.width, this.world.height)[0] : p.x) * CELL_WU,
-          fy: p.y * CELL_WU,
+          // SERVER feet (resolveDrawDepth turns its input once). Both coordinates:
+          // un-turning x alone resolved every piece against an unrelated cell.
+          fx: srvFeet[0] * CELL_WU,
+          fy: srvFeet[1] * CELL_WU,
         });
       drawn++;
       if (p.roofed) roofedDrawn++;
@@ -26115,7 +26272,7 @@ export class WorldScene extends Phaser.Scene {
     const ay = Math.round(ccy - rt.height / 2);
     const mask = this.indoorInside ? this.indoorMask : null;
     const top = this.indoorTop; // the cut: highest level any column still draws
-    const cuts = mask ? this.indoorCut : null; // per-wall raises past it
+    const cuts = this.drawKeyed(mask ? this.indoorCut : null); // per-wall raises past it
     // The colour behind everything. Outdoors the usual night-navy; INDOORS
     // BLACK, because indoors this fill is what shows through the sky band
     // above the cut-away and in genuine void cells — and navy times the indoor
@@ -27238,7 +27395,7 @@ export class WorldScene extends Phaser.Scene {
     // (mask and cuts stay until the light grade lands and clearIndoorDrawState
     // drops them), and the occluders keep it with the ground.
     const maskNow = this.indoorMask;
-    const cutsNow = maskNow ? this.indoorCut : null;
+    const cutsNow = this.drawKeyed(maskNow ? this.indoorCut : null);
     const cutChanged = !!this.occWin && (this.occWinMask !== maskNow || this.occWinCuts !== cutsNow);
     if (!moved && !this.occRelanded && !cutChanged && !this.bakeRewalk.size && !this.bakeSetChanged) return;
     if (moved) this.lastOccl = { x: ccx, y: ccy };
@@ -27256,7 +27413,7 @@ export class WorldScene extends Phaser.Scene {
     // reason — they fire on different thresholds.)
     const mask = this.indoorMask; // the drawn mask — see maskNow above
     const top = this.indoorTop; // the cut: highest level any column still draws
-    const cuts = mask ? this.indoorCut : null; // per-wall raises past it
+    const cuts = this.drawKeyed(mask ? this.indoorCut : null); // per-wall raises past it
 
     const { dx, dy, lh, tile: tileSize } = this.geom;
     const pad = 200;
@@ -27344,7 +27501,7 @@ export class WorldScene extends Phaser.Scene {
      * wherever the camera stands. The full walk remains for the first set,
      * the poisoned latch (a teleport, a manifest settle) and an indoor
      * change — the cut mask rewrites every column. */
-    const W = this.world.width;
+    const W = (this.viewWorld ?? this.world).width;
     const cur = { u0, u1, v0, v1 };
     /* A CUT CHANGE IS INCREMENTAL TOO when both sides are per-cell maps (or
      * no mask at all): the cells of either map and their west/north

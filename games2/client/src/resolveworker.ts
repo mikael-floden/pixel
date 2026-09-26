@@ -108,6 +108,8 @@ export class ResolveWorker {
     slopeHeight?: number;
     /** View rotation in quarter-turns (viewrot.ts) - the worker rotates its own fetch. */
     viewRot?: number;
+    /** Test switch: picks keyed by the drawn cell (WorldScene PICK_VIEW). */
+    pickView?: boolean;
   }): void {
     this.gen++;
     this.pending.clear();

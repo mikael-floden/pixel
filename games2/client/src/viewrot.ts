@@ -86,6 +86,18 @@ export function unrotVec(dx: number, dy: number, k: ViewRot): [number, number] {
   return [dx, dy];
 }
 
+/** A SCREEN direction of the turned view (+y down) -> the UNTURNED frame's screen
+ *  direction that walks the same way in the world, which is what the movement code
+ *  reads: S R^-k S^-1 through the iso projection S = [[dx, -dx], [dy, dy]]. On a
+ *  32x14 screen a quarter-turn of the grid is NOT a quarter-turn of screen bearings
+ *  (exact only on the eight octant run headings). Unit length; (0, 0) stays. */
+export function unturnScreenVec(ax: number, ay: number, k: ViewRot, dx: number, dy: number): [number, number] {
+  let c = (ax / dx + ay / dy) / 2, r = (ay / dy - ax / dx) / 2;
+  [c, r] = unrotVec(c, r, k);
+  const x = (c - r) * dx, y = (c + r) * dy, n = Math.hypot(x, y);
+  return n > 1e-12 ? [x / n, y / n] : [0, 0];
+}
+
 /** The 8 facings in ring order. A quarter-turn clockwise is +2 in this ring:
  *  a displacement (dx,dy) -> (-dy,dx), and with +col = screen south-east and
  *  +row = screen south-west, south-east -> south-west -> north-west -> ... */
@@ -175,7 +187,7 @@ export function rotateWorldDoc(doc: any, k: ViewRot, stats?: RotateStats): any {
  *  heightmap. Collision keeps the server-space original. Footprints live in the
  *  map's diagonal frame (p along (1,-1)/sqrt2, q along (1,1)/sqrt2), where one
  *  quarter-turn maps (X, Y) -> (-Y, X): an ellipse swaps its semi-axes and its
- *  supports; a rectangle keeps its own axes, turns its angle by +90 degrees and
+ *  supports (its screen radii rescale with them); a rectangle keeps its own axes, turns its angle by +90 degrees and
  *  swaps its supports. Centres turn as points. The spatial index (start/items)
  *  is server-keyed and is not carried: nothing that reads the view copy uses it. */
 export function rotFootprints<T extends {
@@ -193,7 +205,14 @@ export function rotFootprints<T extends {
     out.cx[j] = x; out.cy[j] = y;
     if (odd) {
       [out.supX[j], out.supY[j]] = [fp.supY[j], fp.supX[j]];
-      if (!fp.rect[j]) { [out.p[j], out.q[j]] = [fp.q[j], fp.p[j]]; [out.rx[j], out.ry[j]] = [fp.ry[j], fp.rx[j]]; }
+      if (!fp.rect[j]) {
+        [out.p[j], out.q[j]] = [fp.q[j], fp.p[j]];
+        // rx/ry are SCREEN px (p*dx*sqrt2, q*dy*sqrt2): the semi-axes swap, the
+        // screen scales stay with their screen axes. A plain swap drew a 74.8x17.2
+        // tree ellipse 17.2x74.8 instead of about 39.3x32.7.
+        if (fp.p[j] > 0 && fp.q[j] > 0) { out.rx[j] = (fp.q[j] * fp.rx[j]) / fp.p[j]; out.ry[j] = (fp.p[j] * fp.ry[j]) / fp.q[j]; }
+        else [out.rx[j], out.ry[j]] = [fp.ry[j], fp.rx[j]];
+      }
     }
     if (fp.rect[j]) {
       let c = fp.rcos[j], s = fp.rsin[j];

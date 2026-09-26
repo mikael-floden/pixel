@@ -69,6 +69,8 @@ export interface WorkerInit {
    *  the same function the main thread uses - or it resolves the unrotated
    *  world and answers for the wrong cells. */
   viewRot?: number;
+  /** Test switch: picks keyed by the DRAWN cell (WorldScene PICK_VIEW). */
+  pickView?: boolean;
 }
 export interface WorkerResolve {
   type: "resolve";
@@ -124,7 +126,7 @@ async function init(msg: WorkerInit): Promise<void> {
   const parsed = parseWorld(rotateWorldDoc(worldDoc, vk));
   // picks keyed by the SERVER cell, exactly as the main thread keys them (tiles3 setPickFrame)
   const sw = worldDoc?.size?.w ?? 0, sh = worldDoc?.size?.h ?? 0;
-  setPickFrame(vk ? (x, y) => unrotCell(x, y, vk, sw, sh) : null);
+  setPickFrame(vk && !msg.pickView ? (x, y) => unrotCell(x, y, vk, sw, sh) : null);
   if (!parsed) throw new Error("world did not parse");
   const docs: Partial<Record<Tiles3DocKey, unknown>> = {};
   for (const [k, v] of docEntries) docs[k as Tiles3DocKey] = v;

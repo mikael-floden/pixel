@@ -64,6 +64,12 @@ export class ZoneLines {
     try { localStorage.removeItem(STORE); } catch {}
   }
 
+  /** A view turn: the outline is re-projected on the next draw. */
+  viewTurned(): void {
+    this.dirty = true;
+    this.drawnAt = null;
+  }
+
   set(on?: boolean): boolean {
     if (on !== undefined && on !== this.on) {
       this.on = on;

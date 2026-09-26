@@ -4055,6 +4055,16 @@ export class NightLights {
     this.world = world;
     this.buildHeightmap(true);
     this.applyRamps();
+    // THE ROOM TEXTURE'S CAVE CHANNELS ARE WRITE-ONCE PER WORLD (G = depth from
+    // daylight, B = ceiling underside), and a turned world is another layout of
+    // the same cells: re-arm both latches and clear them, or the next publish is
+    // ignored and the shader darkens each cell by the cave depth of whatever cell
+    // sat there unturned (a black block over the river at 90 degrees, measured).
+    this.depthWritten = false;
+    this.underWritten = false;
+    if (this.roomImg) for (let i = 0; i < this.roomImg.data.length; i += 4) { this.roomImg.data[i + 1] = 0; this.roomImg.data[i + 2] = 0; }
+    this.roomCells = new Set();
+    this.roomCuts = null;
     // Belt to the in-place redraw: re-bind by key, so no shader can keep a
     // texture object that a redraw replaced.
     for (const sh of [this.mistShader, this.depthFogShader, this.shader]) {

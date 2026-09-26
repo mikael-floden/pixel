@@ -415,6 +415,15 @@ export class ZoneField {
     }
   }
 
+  /** A VIEW TURN (the game's `ml-view-turn`): every drawn point lies over another
+   *  cell now. The picker memo and the raster are keyed by DRAWN position and are
+   *  dropped; the cell-keyed memos (cells, blur, floors) describe the world and stand. */
+  viewTurned(): void {
+    this.picks = new Map();
+    this.picksOld = new Map();
+    this.rasterMemo = null;
+  }
+
   /** The cell under a drawn point, through the picker memo. */
   cellAt(isoX: number, isoY: number): ZonePick | null {
     const key = (Math.floor(isoY / BUCKET_H) + KOFF) * KMUL + (Math.floor(isoX / BUCKET_W) + KOFF);

@@ -33,9 +33,16 @@ boundary is the whole game.)
   directions, the diagonal grid-axis lock included; the stick bearing turns -90°.
   Input follows `inputRot`, which switches only when a turn's overlay has gone
   (mid-turn the player still sees the old view); taps are swallowed mid-turn.
+- The stick's lean runs on the screen the finger sees (the VIEW keys and the raw
+  bearing), then maps through the world once (`unturnScreenVec`, S R^-k S^-1). A
+  quarter-turn of the grid is not a quarter-turn of screen bearings on a 32x14
+  screen: turning the bearing by -90 ran up to 14.6 deg off between the octants.
 - Facings: `stableDir` turns every displayed facing once; a turn re-bases
   `dispDir`/`pendDir` by the turn delta. NPCs keep their LOGICAL facing in
-  `npc.dir` (every comparison reads it) and draw `rotDir8(dir, viewRot)`.
+  `npc.dir` (every comparison reads it) and draw `rotDir8(dir, viewRot)`; their
+  HOME is re-asked of the turned side's art (`npcFacing`): kept when the DRAWN
+  facing has an idle, else the camera's south — the no-frozen-NPC rule, applied to
+  what is drawn (faithfully turned, all 31 froze at 90 and showed backs at 180).
 
 ## Why no new art
 
@@ -62,13 +69,34 @@ the server's footprints.
 
 ## The night pass
 
-`NightLights.setWorld` redraws the heightmap canvases IN PLACE and re-binds every
+`NightLights.setWorld` re-arms the room texture's WRITE-ONCE cave channels (G =
+depth from daylight, B = ceiling underside) and clears them: latched, the turned
+publish was ignored and each view cell took the cave depth of whatever cell sat
+there unturned — a black block over the river at 90 (37% of the frame, measured;
+0.4% after). It redraws the heightmap canvases IN PLACE and re-binds every
 sampler by key: the shaders bind their textures once when built, and deleting the
 block-max grid left all three marching against a dead texture (the turned view
 went near-black). The room, cave and cut maps, scenery footprints, torch, fog
 centre, lit copies and campfire light are server-keyed and are re-keyed to the
 view before they reach it (`publishRoom`, `viewFootprints`, `rotFootprints`) —
 handed over as-is, "outside the room gets zero ambient" blacked out open river.
+
+## Indoors
+
+The cut-away is a function of the VIEW: the covering cone sweeps DOWN-SCREEN, a
+different server direction per orientation. `computeIndoorCuts` runs on the turned
+grid (`viewTerrain`, `viewDeckIndex`, the space re-keyed) and stores the answer
+server-keyed; every drawing pass reads the memoised view twin (`drawKeyed`), bodies
+and taps the server map. The mask signature carries `viewRot`, and a turn indoors
+re-cuts before its repaint. Scenery, window and lamp room tests convert their drawn
+cells first (`srvCell`, `unrotPoint`).
+
+## Ambient
+
+A turn dispatches `ml-view-turn`: the zone field drops its drawn-point picker memo
+and mist raster (stale, they read the wrong zones — a pale mist sheet over a whole
+turned view), the zone outline re-projects, and features drop per-drawn-cell caches
+(`viewTurned`).
 
 ## The turn (`rotfx.ts`)
 
@@ -113,5 +141,5 @@ Hooks: `__ml.viewRot(k)` (instant), `__ml.turnView(dir, ms, waitB, blur)`,
   (beds, rugs, boats) draws its south still from every side.
 - Indoors while turned: the cut-away masks are still read by the drawing loops
   in server keys.
-- Not re-placed on a turn yet: grave crosses, chess boards, footprints, the
-  zone/spawn overlays. The minimap stays north-up.
+- The spawn-area debug overlay is not re-placed on a turn; the minimap stays
+  north-up.

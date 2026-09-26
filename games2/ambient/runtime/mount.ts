@@ -266,7 +266,9 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       }
     };
     scene.events.on(Phaser.Scenes.Events.UPDATE, onUpdate);
-    const onViewTurn = () => { for (const f of features) safe(() => f.viewTurned?.()); };
+    // a view turn: the zone field's drawn-point memos, the zone outline and every
+    // feature's per-drawn-cell cache describe the old orientation
+    const onViewTurn = () => { zone.viewTurned(); zoneLines.viewTurned(); for (const f of features) safe(() => f.viewTurned?.()); };
     window.addEventListener("ml-view-turn", onViewTurn);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       window.removeEventListener("ml-view-turn", onViewTurn);
