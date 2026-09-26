@@ -1711,6 +1711,259 @@
         "west": "shore_urchin/animations/attack__west.webp",
         "north-west": "shore_urchin/animations/attack__north-west.webp"
       }
+    },
+    "die": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.2502,
+          "step_max": 0.2836,
+          "drift": 3.77,
+          "loop": 0.2,
+          "loop_ratio": 0.8,
+          "travel": 0.21,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.015,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.985,
+          "end_iou": 0.817,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.20 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.82 (his dies end under 0.60)"
+          ],
+          "sub": "2897b6e0-966b-490b-9510-68a7a7519910",
+          "group": "af03449f-c34c-461e-a83b-9389623e137c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T01:07:53+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.17,
+          "step_max": 0.2298,
+          "drift": 0.75,
+          "loop": 0.2397,
+          "loop_ratio": 1.41,
+          "travel": 0.38,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.008,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.985,
+          "end_iou": 0.785,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.24 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.78 (his dies end under 0.60)"
+          ],
+          "sub": "bb5d2b59-1a6d-4628-9484-3ddc3b4e8a63",
+          "group": "a438ed11-d9af-4b1e-b8d6-54c7950f9122",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T01:07:54+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1175,
+          "step_max": 0.1459,
+          "drift": 0.37,
+          "loop": 0.2328,
+          "loop_ratio": 1.98,
+          "travel": 0.42,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.005,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.993,
+          "end_iou": 0.791,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.23 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.79 (his dies end under 0.60)"
+          ],
+          "sub": "8c266170-7c83-406e-9cba-99292fd7ddd9",
+          "group": "14f7b4cf-4950-40f8-b45b-e37b84529f8b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T01:07:54+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1877,
+          "step_max": 0.2956,
+          "drift": 1.15,
+          "loop": 0.2439,
+          "loop_ratio": 1.3,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.011,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.982,
+          "end_iou": 0.78,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.24 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.78 (his dies end under 0.60)"
+          ],
+          "sub": "5c63c2f0-7893-47ab-9ff5-de0f39b4d3b4",
+          "group": "f69fc617-4e71-4bbc-abf3-8eccda6faaf2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T01:07:55+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1693,
+          "step_max": 0.246,
+          "drift": 4.74,
+          "loop": 0.5143,
+          "loop_ratio": 3.04,
+          "travel": 0.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.063,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.924,
+          "end_iou": 0.578,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "ends near the base (0.58) — eyeball it"
+          ],
+          "sub": "2e4d46db-4d51-4e2a-869e-55d912de419a",
+          "group": "51cdff75-972d-4557-96a7-9f946e81e13e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-26T01:07:56+00:00"
+        }
+      },
+      "action": "Death - Faints, collapses to the ground and fades away",
+      "frame_paths": {
+        "south": [
+          "shore_urchin/animations/die/south/00.webp",
+          "shore_urchin/animations/die/south/01.webp",
+          "shore_urchin/animations/die/south/02.webp",
+          "shore_urchin/animations/die/south/03.webp",
+          "shore_urchin/animations/die/south/04.webp",
+          "shore_urchin/animations/die/south/05.webp",
+          "shore_urchin/animations/die/south/06.webp"
+        ],
+        "south-east": [
+          "shore_urchin/animations/die/south-east/00.webp",
+          "shore_urchin/animations/die/south-east/01.webp",
+          "shore_urchin/animations/die/south-east/02.webp",
+          "shore_urchin/animations/die/south-east/03.webp",
+          "shore_urchin/animations/die/south-east/04.webp",
+          "shore_urchin/animations/die/south-east/05.webp",
+          "shore_urchin/animations/die/south-east/06.webp"
+        ],
+        "east": [
+          "shore_urchin/animations/die/east/00.webp",
+          "shore_urchin/animations/die/east/01.webp",
+          "shore_urchin/animations/die/east/02.webp",
+          "shore_urchin/animations/die/east/03.webp",
+          "shore_urchin/animations/die/east/04.webp",
+          "shore_urchin/animations/die/east/05.webp",
+          "shore_urchin/animations/die/east/06.webp"
+        ],
+        "north-east": [
+          "shore_urchin/animations/die/north-east/00.webp",
+          "shore_urchin/animations/die/north-east/01.webp",
+          "shore_urchin/animations/die/north-east/02.webp",
+          "shore_urchin/animations/die/north-east/03.webp",
+          "shore_urchin/animations/die/north-east/04.webp",
+          "shore_urchin/animations/die/north-east/05.webp",
+          "shore_urchin/animations/die/north-east/06.webp"
+        ],
+        "north": [
+          "shore_urchin/animations/die/north/00.webp",
+          "shore_urchin/animations/die/north/01.webp",
+          "shore_urchin/animations/die/north/02.webp",
+          "shore_urchin/animations/die/north/03.webp",
+          "shore_urchin/animations/die/north/04.webp",
+          "shore_urchin/animations/die/north/05.webp",
+          "shore_urchin/animations/die/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "shore_urchin/animations/die__south.webp",
+        "south-east": "shore_urchin/animations/die__south-east.webp",
+        "east": "shore_urchin/animations/die__east.webp",
+        "north-east": "shore_urchin/animations/die__north-east.webp",
+        "north": "shore_urchin/animations/die__north.webp"
+      }
     }
   },
   "pixellab_rotation_map": {
