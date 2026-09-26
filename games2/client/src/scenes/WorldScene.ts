@@ -1,4 +1,4 @@
-import { gpuParity } from "../tiles3gpu";
+import { gpuParity, GpuComposer, setGpuComposeEnabled } from "../tiles3gpu";
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { trackGap, arrivalHz, remoteChaseRate } from "../remoterate";
@@ -2340,6 +2340,9 @@ export class WorldScene extends Phaser.Scene {
   /** THE COMPOSE WORKER (composeworker.ts) — booted with the composed-texture
    *  factory, stopped with the scene. */
   private t3compose = new ComposeWorker();
+  /** THE GPU COMPOSITOR (tiles3gpu.ts), his switch "GPU transitions": the
+   *  worker's boundary jobs composed on the GPU, landing the worker's way. */
+  private t3gpuc = new GpuComposer(this.t3compose, () => this.t3sheets, (key, px) => this.t3tex?.landRemote(key, px));
   /** Boot options for `t3worker`, applied on first use — see initTiles3. */
   private t3workerOpts: Parameters<ResolveWorker["init"]>[0] | null = null;
   private t3workerBooted = false;
@@ -3217,7 +3220,7 @@ export class WorldScene extends Phaser.Scene {
         why: final ? "flush" : moved ? "moved" : bad ? "bad" : "still", // why this window was sent at all
         // The two dials under measurement: the upload budget (Settings "upload
         // budget", KB a frame) and the render resolution (1/r of the backing).
-        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}${this.t3compose.stats.state === "ready" ? "/cw" : ""}`,
+        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}${this.t3compose.stats.state === "ready" ? "/cw" : ""}${this.t3gpuc.on ? "/gpu" : ""}`,
 
         /* THE RUN'S OWN SETTINGS, so two runs compare (2026-09-19): the fade
          * dials (the resolver's scan is (2·reach+1)² neighbours a cell and the
@@ -3444,6 +3447,7 @@ export class WorldScene extends Phaser.Scene {
       // THE AMBIENT EFFECTS' OWN COST, per feature (`perfAmbientTake`).
       ambient: ambientBlock,
       // THE COMPOSE WORKER, whole: its state, its counters and why it missed.
+      gpuCompose: { on: this.t3gpuc.on, ...this.t3gpuc.stats, ms: +this.t3gpuc.stats.ms.toFixed(1), shapeMs: +this.t3gpuc.stats.shapeMs.toFixed(1) },
       compose: { ...this.t3compose.stats, workerMs: Math.round(this.t3compose.stats.workerMs), applyMs: +this.t3compose.stats.applyMs.toFixed(1) },
       /* EVERY ZONE CROSSING OF THIS WINDOW, from HIS device — the only place
        * the hand-off can be judged, because a headless run binds the new room
@@ -6319,6 +6323,23 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.night && this.night.testPattern === 5,
           state: () => (this.night?.testPattern === 5 ? "on" : "off"),
         },
+        /* GPU TRANSITIONS (maintainer 2026-09-26: "try the GPU transition/boundary
+         * render shader again ... needs a test to make sure it produced the same
+         * tile"): the transition tiles composed by the GPU compositor
+         * (tiles3gpu.ts) instead of the compose worker — byte for byte the same
+         * tiles, `scripts/verify-gpucompose.mjs`. Remembered; the beacon's `sim`
+         * carries `/gpu` while it is on. */
+        {
+          label: "GPU transitions",
+          act: () => {
+            const on = !this.t3gpuc.on;
+            this.t3gpuc.on = on;
+            setGpuComposeEnabled(on);
+            this.chat.addLog("—", `GPU transitions: ${on ? "on" : "off"}`);
+          },
+          get: () => this.t3gpuc.on,
+          state: () => (this.t3gpuc.on ? "on" : "off"),
+        },
         /* SLOPE — how high the composed slope climbs (slopeheight.ts): auto
          * (the default) each slope run picks from his mix, off no slope at
          * all, 25/50% a ramp with a wall left above it, 100% a clean slope
@@ -8441,6 +8462,7 @@ export class WorldScene extends Phaser.Scene {
         ctx.putImageData(im, 0, 0);
         return { png: cv.toDataURL("image/png"), items: o.items, owned, w: o.w, h: o.h, cam: [this.cameras.main.width, this.cameras.main.height], canvas: [this.game.canvas.width, this.game.canvas.height] };
       },
+      gpuCompose: () => ({ on: this.t3gpuc.on, ...this.t3gpuc.stats }),
       gpuParity: async (max?: number) => {
         const sheets = this.t3sheets;
         if (!sheets) throw new Error("no pattern sheets yet");
@@ -23379,7 +23401,7 @@ export class WorldScene extends Phaser.Scene {
     this.t3tex = new Tiles3Textures({
       textures: this.t3tm,
       sheets: this.t3sheets,
-      remote: this.t3compose,
+      remote: this.t3gpuc,
       artUrl: (path) => docUrl(path, this.t3route),
       pitch: this.geom.lh, // the occluder pass's storey pitch: where a face ends, for the wall-foot band
 

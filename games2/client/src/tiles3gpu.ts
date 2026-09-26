@@ -23,13 +23,18 @@
  *   B. the outline's tone: the sum of the composite over the tile's opaque
  *      texels (the CPU inks in the raster's MEAN colour), exact in integers;
  *   C. the ink, in exact integer arithmetic (see `FRAG_C`).
- * Slope boundaries (a shifted side, holes) are not taken: `supported` says no
- * and the CPU composes them as before.
+ * A SLOPE boundary shifts one side down `lift` rows and leaves a hole wherever
+ * the side the mask picks has none (tiles3draw `composeBoundary` holes), so its
+ * alpha — and everything the outline decides from alpha — depends on the two
+ * plates' own alpha too: its shape is taken per (frame, slope, the two plates'
+ * identities), over coordinate plates that carry the REAL plates' alpha, and it
+ * records which side each texel came from (the GPU then needs no mask).
  *
  * WebGL1, no extensions: every value is an integer stored in RGBA8, every
  * sample is NEAREST at a texel centre. */
 import {
   buildBoundaryPixels,
+  buildPlatePixels,
   withEdge,
   rint,
   newPixels,
@@ -44,9 +49,9 @@ import {
 
 export type BoundaryJob = Extract<ComposeJob, { kind: "boundary" }>;
 
-/** Can the GPU compose this job? (Slopes and a missing mask frame cannot.) */
+/** Can the GPU compose this job? (A missing mask frame cannot.) */
 export function supported(j: BoundaryJob): boolean {
-  return !j.slope && typeof j.frame === "number" && j.frame >= 0;
+  return typeof j.frame === "number" && j.frame >= 0;
 }
 
 /* -- the shape, from the CPU's own code ------------------------------------ */
@@ -59,15 +64,19 @@ export type Shape = Uint8Array;
 
 const shapeMemo = new WeakMap<PatternSheets, Map<string, Shape>>();
 
-export function shapeKey(j: Pick<BoundaryJob, "topOnly" | "noWall" | "edge">): string {
-  return `${j.topOnly ? 1 : 0}|${j.noWall ? 1 : 0}|${j.edge ?? ""}`;
+type ShapeJob = Pick<BoundaryJob, "topOnly" | "noWall" | "edge" | "slope" | "frame" | "a" | "b">;
+const sideId = (s: BoundaryJob["a"]) => `${s.kind}:${s.path}:${s.topOnly ? 1 : 0}:${s.rise ?? 0}`;
+export function shapeKey(j: ShapeJob): string {
+  const base = `${j.topOnly ? 1 : 0}|${j.noWall ? 1 : 0}|${j.edge ?? ""}`;
+  if (!j.slope) return base;
+  return `${base}|s${j.slope.side}${j.slope.rise},${j.slope.lift}|f${j.frame}|${sideId(j.a)}|${sideId(j.b)}`;
 }
 
 /** The probe tone: a uniform grey the outline's two inks move to two known
  *  values (outer 122, inner 164) — anything else is "not inked". */
 const PROBE = 200;
 
-export function shapeOf(sheets: PatternSheets, j: Pick<BoundaryJob, "topOnly" | "noWall" | "edge">): Shape {
+export function shapeOf(sheets: PatternSheets, j: ShapeJob, pa?: Pixels, pb?: Pixels): Shape {
   let m = shapeMemo.get(sheets);
   if (!m) shapeMemo.set(sheets, (m = new Map()));
   const key = shapeKey(j);
@@ -77,16 +86,24 @@ export function shapeOf(sheets: PatternSheets, j: Pick<BoundaryJob, "topOnly" | 
   // Two plates whose every texel IS its coordinate: whichever side the mask
   // picks, the composite at (x, y) reads (x, y). The seam is off: it would
   // scale the coordinates (the GPU applies it at the source texel itself).
-  const coord = newPixels(fw, fh);
-  for (let y = 0; y < fh; y++)
-    for (let x = 0; x < fw; x++) {
-      const i = (y * fw + x) * 4;
-      coord.data[i] = x;
-      coord.data[i + 1] = y;
-      coord.data[i + 2] = 0;
-      coord.data[i + 3] = 255;
-    }
-  const pre = buildBoundaryPixels(sheets, { maskFrame: 0, topOnly: j.topOnly, noWall: j.noWall }, coord, coord, false);
+  // A slope: blue marks the side (1 = a, 2 = b) and alpha is the real plate's,
+  // so the holes and the shift land exactly where the CPU puts them.
+  if (j.slope && (!pa || !pb)) throw new Error("tiles3gpu: a slope's shape needs its two plates");
+  const coordOf = (side: number, alpha?: Pixels) => {
+    const c = newPixels(fw, fh);
+    for (let y = 0; y < fh; y++)
+      for (let x = 0; x < fw; x++) {
+        const i = (y * fw + x) * 4;
+        c.data[i] = x;
+        c.data[i + 1] = y;
+        c.data[i + 2] = side;
+        c.data[i + 3] = alpha ? alpha.data[i + 3] : 255;
+      }
+    return c;
+  };
+  const pre = j.slope
+    ? buildBoundaryPixels(sheets, { maskFrame: j.frame, topOnly: j.topOnly, noWall: j.noWall, slope: j.slope }, coordOf(1, pa), coordOf(2, pb), false)
+    : buildBoundaryPixels(sheets, { maskFrame: 0, topOnly: j.topOnly, noWall: j.noWall }, coordOf(0), coordOf(0), false);
   // The outline over a uniform raster of the same alpha: its cuts are alpha,
   // its lines move the grey to one of two values.
   const grey: Pixels = { w: pre.w, h: pre.h, data: new Uint8ClampedArray(pre.data) };
@@ -102,9 +119,10 @@ export function shapeOf(sheets: PatternSheets, j: Pick<BoundaryJob, "topOnly" | 
     s[i * 4] = pre.data[i * 4];
     s[i * 4 + 1] = pre.data[i * 4 + 1];
     const v = post.data[i * 4];
-    s[i * 4 + 2] = a1 === 0 ? 3 : v === outer ? 1 : v === inner ? 2 : v === PROBE ? 0 : 255;
+    const cls = a1 === 0 ? 3 : v === outer ? 1 : v === inner ? 2 : v === PROBE ? 0 : 255;
+    s[i * 4 + 2] = cls === 255 ? 255 : cls + 4 * pre.data[i * 4 + 2]; // + the side (slopes)
     s[i * 4 + 3] = a1;
-    if (s[i * 4 + 2] === 255) throw new Error(`tiles3gpu: shape ${key} texel ${i} inked to ${v}, neither line`);
+    if (cls === 255) throw new Error(`tiles3gpu: shape ${key} texel ${i} inked to ${v}, neither line`);
   }
   m.set(key, s);
   return s;
@@ -133,13 +151,15 @@ attribute vec2 aLocal;  // the tile's own texel coordinate (0..fw, 0..fh)
 attribute vec4 aA;      // plate A origin (xy), plate B origin (zw), in plate-atlas texels
 attribute vec4 aB;      // shape origin (xy), frame origin (zw), in shape/frame-atlas texels
 attribute vec2 aC;      // composite origin in the composite target (pass B, C); seam flag
+attribute vec2 aD;      // a slope's lift and shifted side
 uniform vec2 uTarget;
 varying vec2 vLocal;
 varying vec4 vA;
 varying vec4 vB;
 varying vec2 vC;
+varying vec2 vD;
 void main() {
-  vLocal = aLocal; vA = aA; vB = aB; vC = aC;
+  vLocal = aLocal; vA = aA; vB = aB; vC = aC; vD = aD;
   gl_Position = vec4(aPos / uTarget * 2.0 - 1.0, 0.0, 1.0);
 }`;
 
@@ -155,6 +175,7 @@ varying vec2 vLocal;
 varying vec4 vA;
 varying vec4 vB;
 varying vec2 vC;
+varying vec2 vD;
 vec4 at(sampler2D t, vec2 size, vec2 px) { return texture2D(t, (px + 0.5) / size); }
 float b8(float v) { return floor(v * 255.0 + 0.5); }
 vec4 bytes(vec4 v) { return floor(v * 255.0 + 0.5); }
@@ -163,13 +184,27 @@ vec4 bytes(vec4 v) { return floor(v * 255.0 + 0.5); }
 /** A: the composite at the shape's source texel, final alpha from the shape;
  *  written as bytes. The ink class rides along in nothing: C reads the shape. */
 const FRAG_A = COMMON + `
+uniform float uFH;
+// vD: a slope: lift rows, and which side is shifted (1 a, 2 b, 0 none)
 void main() {
   vec2 l = floor(vLocal);
   vec4 s = bytes(at(uShapes, uShapesSize, vB.xy + l));
-  if (s.w == 0.0 && s.z != 3.0) { gl_FragColor = vec4(0.0); return; }
-  vec2 src = s.xy;
-  vec4 f = bytes(at(uFrames, uFramesSize, vB.zw + src));
-  vec4 p = f.x > 127.0 ? at(uPlates, uPlatesSize, vA.zw + src) : at(uPlates, uPlatesSize, vA.xy + src);
+  float cls = mod(s.z, 4.0), side = floor(s.z / 4.0);
+  if (s.w == 0.0 && cls != 3.0) { gl_FragColor = vec4(0.0); return; }
+  vec2 src = s.xy; // the PLATE texel (a shifted side's own coordinate)
+  bool useB;
+  vec4 f;
+  if (side == 0.0) {
+    f = bytes(at(uFrames, uFramesSize, vB.zw + src));
+    useB = f.x > 127.0;
+  } else {
+    // the seam is sampled where composeBoundary sampled it: the compose row,
+    // lift rows up (clamped); a shifted side's compose row is its plate row + lift
+    useB = side == 2.0;
+    float row = side == vD.y ? src.y : clamp(src.y - vD.x, 0.0, uFH - 1.0);
+    f = bytes(at(uFrames, uFramesSize, vB.zw + vec2(src.x, row)));
+  }
+  vec4 p = useB ? at(uPlates, uPlatesSize, vA.zw + src) : at(uPlates, uPlatesSize, vA.xy + src);
   vec3 rgb = bytes(p).rgb;
   if (vC.y > 0.5 && f.y > 127.0) {
     rgb = vec3(b8(at(uTone, vec2(256.0, 1.0), vec2(rgb.r, 0.0)).r),
@@ -236,7 +271,8 @@ void main() {
   vec2 l = floor(vLocal);
   vec4 c = bytes(at(uComp, uCompSize, vC.xy + l));
   vec4 s = bytes(at(uShapes, uShapesSize, vB.xy + l));
-  if (s.z != 1.0 && s.z != 2.0) { gl_FragColor = c / 255.0; return; }
+  float cls = mod(s.z, 4.0);
+  if (cls != 1.0 && cls != 2.0) { gl_FragColor = c / 255.0; return; }
   // the tile's sums (pass B), three texels at its index
   vec2 si = vec2(vA.x, 0.0);
   vec4 t0 = bytes(at(uSums, uSumsSize, si));
@@ -244,7 +280,7 @@ void main() {
   vec4 t2 = bytes(at(uSums, uSumsSize, si + vec2(2.0, 0.0)));
   float n = t0.w + t1.w * 256.0 + t2.w * 65536.0;
   if (n == 0.0) { gl_FragColor = c / 255.0; return; }
-  vec4 k = s.z == 1.0 ? uInk : uInk2;
+  vec4 k = cls == 1.0 ? uInk : uInk2;
   vec3 o = vec3(ink(c.r, sum24(t0), n, k), ink(c.g, sum24(t1), n, k), ink(c.b, sum24(t2), n, k));
   gl_FragColor = vec4(o, c.w) / 255.0;
 }`;
@@ -333,10 +369,12 @@ export class GpuBoundaries {
       const ib = plates.push(new Uint8Array(t.b.data.buffer, t.b.data.byteOffset, t.b.data.byteLength)) - 1;
       const sk = shapeKey(t.job);
       let is = shapeIdx.get(sk);
-      if (is === undefined) { is = shapes.push(shapeOf(this.sheets, t.job)) - 1; shapeIdx.set(sk, is); }
+      if (is === undefined) { is = shapes.push(shapeOf(this.sheets, t.job, t.a, t.b)) - 1; shapeIdx.set(sk, is); }
       let iff = frameIdx.get(t.job.frame);
       if (iff === undefined) { iff = frames.push(frameTile(this.sheets, t.job.frame)) - 1; frameIdx.set(t.job.frame, iff); }
-      return { ia, ib, is, iff, seam: t.job.seam ? 1 : 0 };
+      const sl = t.job.slope;
+      // the side buildBoundaryPixels shifts down: the OTHER one (b when the slope is a's)
+      return { ia, ib, is, iff, seam: t.job.seam ? 1 : 0, lift: sl?.lift ?? 0, shifted: sl?.lift ? (sl.side === "a" ? 2 : 1) : 0 };
     });
     const org = (k: number) => [(k % cols) * fw, Math.floor(k / cols) * fh];
     const P = atlas(plates, fw, fh, cols), S = atlas(shapes, fw, fh, cols), F = atlas(frames, fw, fh, cols);
@@ -349,7 +387,7 @@ export class GpuBoundaries {
     const fb = gl.createFramebuffer()!;
     // vertex data: 6 verts per quad, 2+2+4+4+2 = 14 floats each
     const quads = (rect: (k: number) => [number, number, number, number], local: (k: number) => [number, number]) => {
-      const v = new Float32Array(N * 6 * 14);
+      const v = new Float32Array(N * 6 * 16);
       let o = 0;
       for (let k = 0; k < N; k++) {
         const [x0, y0, x1, y1] = rect(k);
@@ -357,8 +395,8 @@ export class GpuBoundaries {
         const p = per[k];
         const [ax, ay] = org(p.ia), [bx, by] = org(p.ib), [sx, sy] = org(p.is), [fx, fy] = org(p.iff), [cx, cy] = org(k);
         const corner = (x: number, y: number, lx: number, ly: number) => {
-          v.set([x, y, lx, ly, ax, ay, bx, by, sx, sy, fx, fy, cx, cy], o);
-          o += 14;
+          v.set([x, y, lx, ly, ax, ay, bx, by, sx, sy, fx, fy, cx, cy, p.lift, p.shifted], o);
+          o += 16;
         };
         corner(x0, y0, 0, 0); corner(x1, y0, lw, 0); corner(x0, y1, 0, lh);
         corner(x1, y0, lw, 0); corner(x1, y1, lw, lh); corner(x0, y1, 0, lh);
@@ -381,9 +419,11 @@ export class GpuBoundaries {
         const loc = gl.getAttribLocation(prog, name);
         if (loc < 0) return;
         gl.enableVertexAttribArray(loc);
-        gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 14 * 4, off * 4);
+        gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 16 * 4, off * 4);
       };
-      attr("aPos", 2, 0); attr("aLocal", 2, 2); attr("aA", 4, 4); attr("aB", 4, 8); attr("aC", 2, 12);
+      attr("aPos", 2, 0); attr("aLocal", 2, 2); attr("aA", 4, 4); attr("aB", 4, 8); attr("aC", 2, 12); attr("aD", 2, 14);
+      const fhLoc = gl.getUniformLocation(prog, "uFH");
+      if (fhLoc) gl.uniform1f(fhLoc, fh);
       gl.uniform2f(gl.getUniformLocation(prog, "uTarget"), tw, th);
       const tex = (name: string, unit: number, t: WebGLTexture, w: number, h: number) => {
         gl.activeTexture(gl.TEXTURE0 + unit);
@@ -394,7 +434,7 @@ export class GpuBoundaries {
       };
       tex("uPlates", 0, texP, P.w, P.h); tex("uShapes", 1, texS, S.w, S.h); tex("uFrames", 2, texF, F.w, F.h); tex("uTone", 3, texT, 256, 1);
       bind();
-      gl.drawArrays(gl.TRIANGLES, 0, verts.length / 14);
+      gl.drawArrays(gl.TRIANGLES, 0, verts.length / 16);
     };
     const bindTex = (prog: WebGLProgram, name: string, unit: number, t: WebGLTexture, w: number, h: number) => {
       gl.activeTexture(gl.TEXTURE0 + unit);
@@ -406,14 +446,14 @@ export class GpuBoundaries {
     // A: composite. aC.y carries the seam flag; aC.xy's composite origin is not read.
     const tileRect = (k: number): [number, number, number, number] => { const [x, y] = org(k); return [x, y, x + fw, y + fh]; };
     const vA = quads(tileRect, () => [fw, fh]);
-    for (let k = 0; k < N; k++) for (let c = 0; c < 6; c++) vA[(k * 6 + c) * 14 + 13] = per[k].seam;
+    for (let k = 0; k < N; k++) for (let c = 0; c < 6; c++) vA[(k * 6 + c) * 16 + 13] = per[k].seam;
     run(this.pA, texComp, CW, CH, vA, () => {});
     // B: sums, three texels per tile at x = 3k
     const vB = quads((k) => [3 * k, 0, 3 * k + 3, 1], () => [3, 1]);
     run(this.pB, texSums, N * 3, 1, vB, () => bindTex(this.pB, "uComp", 4, texComp, CW, CH));
     // C: ink. aA.x carries the tile's sums texel (3k).
     const vC = quads(tileRect, () => [fw, fh]);
-    for (let k = 0; k < N; k++) for (let c = 0; c < 6; c++) vC[(k * 6 + c) * 14 + 4] = 3 * k;
+    for (let k = 0; k < N; k++) for (let c = 0; c < 6; c++) vC[(k * 6 + c) * 16 + 4] = 3 * k;
     run(this.pC, texOut, CW, CH, vC, () => {
       bindTex(this.pC, "uComp", 4, texComp, CW, CH);
       bindTex(this.pC, "uSums", 5, texSums, N * 3, 1);
@@ -483,6 +523,8 @@ export interface ParityReport {
   /** Non-vacuous: opaque texels compared, and texels the outline inked (shape classes 1/2). */
   opaque: number;
   inked: number;
+  /** Slope boundaries compared. */
+  slopes: number;
   examples: { key: string; texels: number; first: { x: number; y: number; cpu: number[]; gpu: number[] } }[];
 }
 
@@ -490,9 +532,8 @@ export interface ParityReport {
  *  functions over the same decoded files) and by the GPU, compared byte for
  *  byte — all four channels, every texel, transparent ones included. */
 export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<ParityReport> {
-  const { buildPlatePixels } = await import("./tiles3draw");
   const jobs = [...seenJobs.values()].slice(-max);
-  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, opaque: 0, inked: 0, examples: [] };
+  const rep: ParityReport = { jobs: jobs.length, unsupported: 0, failedInputs: 0, compared: 0, identical: 0, tilesDiffering: 0, texelsDiffering: 0, maxDiff: 0, gpuMs: 0, opaque: 0, inked: 0, slopes: 0, examples: [] };
   const src = new Map<string, Promise<Pixels>>();
   const plate = async (s: BoundaryJob["a"]) => {
     let p = src.get(s.url);
@@ -518,8 +559,9 @@ export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<Pari
   for (let k = 0; k < tiles.length; k++) {
     rep.compared++;
     const c = cpu[k].data, g = out[k].data;
-    const sh = shapeOf(sheets, tiles[k].job);
-    for (let i = 0; i < c.length; i += 4) { if (c[i + 3]) rep.opaque++; if (sh[i + 2] === 1 || sh[i + 2] === 2) rep.inked++; }
+    const sh = shapeOf(sheets, tiles[k].job, tiles[k].a, tiles[k].b);
+    if (tiles[k].job.slope) rep.slopes++;
+    for (let i = 0; i < c.length; i += 4) { if (c[i + 3]) rep.opaque++; if (sh[i + 2] % 4 === 1 || sh[i + 2] % 4 === 2) rep.inked++; }
     let n = 0, first: ParityReport["examples"][number]["first"] | null = null;
     for (let i = 0; i < c.length; i += 4) {
       const d = Math.max(Math.abs(c[i] - g[i]), Math.abs(c[i + 1] - g[i + 1]), Math.abs(c[i + 2] - g[i + 2]), Math.abs(c[i + 3] - g[i + 3]));
@@ -534,4 +576,140 @@ export async function gpuParity(sheets: PatternSheets, max = 4000): Promise<Pari
     if (rep.examples.length < 8 && first) rep.examples.push({ key: tiles[k].job.key, texels: n, first });
   }
   return rep;
+}
+
+/* -- in the game: the compose worker's boundaries, on the GPU ---------------- */
+
+const GPU_KEY = "ml-gpu-compose";
+/** His switch (Settings -> Dev "GPU transitions"), remembered; OFF by default. */
+export function gpuComposeEnabled(): boolean {
+  try {
+    return localStorage.getItem(GPU_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+export function setGpuComposeEnabled(on: boolean): void {
+  try {
+    localStorage.setItem(GPU_KEY, on ? "1" : "0");
+  } catch {
+    /* storage blocked: this session only */
+  }
+}
+
+/** Jobs a frame's batch composes, and the shape work (ms) one batch may start. */
+const GPU_BATCH = 128;
+const GPU_SHAPE_MS = 6;
+
+/** THE COMPOSE WORKER'S STAND-IN FOR BOUNDARIES: every boundary job the factory
+ *  would post is composed here in one batch a frame (the three passes above) and
+ *  lands through the SAME callback the worker's rasters do, so the factory, the
+ *  owed-cell retry and the keys are untouched. Plates, fades and anything the GPU
+ *  cannot take still go to the worker. The plates it needs are decoded and
+ *  conformed here once per side (the worker's `buildPlatePixels`, a handful per
+ *  window); a job whose plates are not yet here waits for them. Any GL failure
+ *  switches it off for the session and hands its queue back to the worker. */
+export class GpuComposer {
+  on = gpuComposeEnabled();
+  private gl: WebGLRenderingContext | null = null;
+  private gpu: GpuBoundaries | null = null;
+  private queue: BoundaryJob[] = [];
+  private flushQueued = false;
+  private plates = new Map<string, Pixels | Promise<Pixels> | null>();
+  private src = new Map<string, Promise<Pixels>>();
+  readonly stats = { queued: 0, composed: 0, batches: 0, ms: 0, shapeMs: 0, fellBack: 0, waitingPlates: 0, error: "" };
+  constructor(
+    private inner: { ready(): boolean; compose(job: ComposeJob): void },
+    private sheets: () => PatternSheets | null,
+    private land: (key: string, px: Pixels) => void,
+  ) {}
+  ready(): boolean {
+    return this.inner.ready();
+  }
+  compose(job: ComposeJob): void {
+    noteJob(job);
+    const sh = this.sheets();
+    if (!this.on || job.kind !== "boundary" || !supported(job) || !sh) {
+      this.inner.compose(job);
+      return;
+    }
+    this.queue.push(job);
+    this.stats.queued++;
+    this.schedule();
+  }
+  private schedule(): void {
+    if (this.flushQueued) return;
+    this.flushQueued = true;
+    requestAnimationFrame(() => this.flush());
+  }
+  private plateOf(s: BoundaryJob["a"], sheets: PatternSheets): Pixels | null {
+    const id = `${sideId(s)}|${s.wall.join(",")}`;
+    const hit = this.plates.get(id);
+    if (hit && !(hit instanceof Promise)) return hit;
+    if (hit === undefined) {
+      let p = this.src.get(s.url);
+      if (!p) {
+        p = decodeUrl(s.url);
+        this.src.set(s.url, p);
+        p.catch(() => this.src.delete(s.url));
+      }
+      const built = p.then((px) => buildPlate(sheets, s, px));
+      this.plates.set(id, built);
+      built.then(
+        (px) => { this.plates.set(id, px); this.schedule(); },
+        () => this.plates.delete(id),
+      );
+    }
+    return null;
+  }
+  private flush(): void {
+    this.flushQueued = false;
+    const sheets = this.sheets();
+    if (!this.queue.length || !sheets) return;
+    if (!this.on) { this.giveBack(); return; }
+    try {
+      if (!this.gpu) {
+        const cv = document.createElement("canvas");
+        cv.width = cv.height = 1;
+        this.gl = cv.getContext("webgl", { premultipliedAlpha: false, antialias: false, depth: false, stencil: false, preserveDrawingBuffer: false });
+        if (!this.gl) throw new Error("no WebGL for the GPU compositor");
+        this.gpu = new GpuBoundaries(this.gl, sheets);
+      }
+      const take: GpuTile[] = [], later: BoundaryJob[] = [];
+      const s0 = performance.now();
+      let waiting = 0;
+      for (const j of this.queue) {
+        if (take.length >= GPU_BATCH) { later.push(j); continue; }
+        const a = this.plateOf(j.a, sheets), b = this.plateOf(j.b, sheets);
+        if (!a || !b) { later.push(j); waiting++; continue; }
+        // a new shape is CPU work (the CPU pipeline over coordinate plates): a few a frame
+        if (performance.now() - s0 > GPU_SHAPE_MS) { later.push(j); continue; }
+        shapeOf(sheets, j, a, b);
+        take.push({ a, b, job: j });
+      }
+      this.stats.shapeMs += performance.now() - s0;
+      this.stats.waitingPlates = waiting;
+      this.queue = later;
+      if (take.length) {
+        const t0 = performance.now();
+        const out = this.gpu.compose(take);
+        this.stats.ms += performance.now() - t0;
+        this.stats.batches++;
+        for (let k = 0; k < take.length; k++) this.land(take[k].job.key, out[k]);
+        this.stats.composed += take.length;
+      }
+      if (this.queue.length && this.queue.length > waiting) this.schedule();
+    } catch (e) {
+      this.stats.error = String((e as Error)?.message ?? e);
+      this.on = false;
+      this.giveBack();
+    }
+  }
+  private giveBack(): void {
+    for (const j of this.queue.splice(0)) { this.stats.fellBack++; this.inner.compose(j); }
+  }
+}
+
+async function buildPlate(sheets: PatternSheets, s: BoundaryJob["a"], src: Pixels): Promise<Pixels> {
+  return buildPlatePixels(sheets, { kind: s.kind, path: s.path, topOnly: s.topOnly, rise: s.rise }, src, s.wall);
 }
