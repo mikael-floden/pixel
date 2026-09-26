@@ -60,6 +60,22 @@ the ones in their own pass); probe `__ml.gpuCompose()`.
 batch before (0.9 s, counted to the fourth run); 0 after, 328 passes of their
 own for 6,321 tiles, 70 ms in all.)
 
+## The world warm: the whole side resident, nearest first
+
+With the switch on, every 24-cell region of the world on screen's side is
+walked once through the direct draw's own hooks (`worldWarmStep`), nearest the
+player first: its plates, shapes and ramp maps are asked of the worker and
+uploaded the frame they land, its outline colours computed in the frame's own
+pass — so a walk, and a turn back to that side, meet them resident. A 2 ms
+slice of each frame that painted no ground, never while the worker holds more
+than `GROUND_WARM_BACKLOG` jobs (the view's own come first); cells resolved
+without the cell cache. Regions done are kept per side for the session; the
+other sides' windows round the player are Fix 1's (`warmViewGround`).
+(Measured, the_game, one side, whole world: 11k tiles, 463 plates, 448 shapes,
+373 ramp maps, ~10k colour slots — under half of every atlas; 5.8 s of walking
+headless. Not at load: the worker needs minutes for every shape.)
+Probe `__ml.gpuCompose().worldWarm`; beacon `gpuCompose.direct.warmRegions`.
+
 ## The gate: `scripts/verify-gpucompose.mjs` (built client)
 
 Walks the_game (five spots, plus up to 8 clusters of slope boundaries when
@@ -74,7 +90,8 @@ Measured 2026-09-26: 2,510 of 2,510 boundaries identical (auto slopes).
 
 ## Next (games' list, 2026-09-26)
 
-- Base tile sets loaded up front (475 uploads in one test walk).
+- Everything resident BEFORE play (the world warm takes minutes on the worker):
+  the shapes and ramp maps made offline, or on more than one worker.
 - The per-quad vectors packed smaller: every plain ground quad carries them as
   zeros (23 floats a vertex instead of 7).
 - Outlined flat tops on a cheap path of their own (they take the slope path:
