@@ -818,31 +818,31 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   (a cell waiting on art). TRAP (headless): the terrain loader lands about a
   file a FRAME and a batch counts only at its COMPLETE, so at SwiftShader's
   4-5 fps a fresh spot owes art for minutes and nearly every tile is refused —
-  starved, not wrong; the phone's own counters are the verdict.
-- **DISK VS DRAW IS MEASURED ON HIS PHONE, NOT ARGUED** (maintainer
-  2026-09-26: "I WANT TO KNOW IF ITS FASTER TO DRAW OR LOAD FROM DISK?!";
-  `client/src/wcbench.ts`, `WorldScene.runDiskDrawTest`, Settings→Dev "Disk
-  vs draw test", `__ml.diskDrawTest()`). One tap, for the 8 tiles wholly
-  inside the ground texture nearest its centre, one a frame: DRAW — the
-  tile's rect painted into the SPARE texture as a band pass paints it
-  (plates built on the frame, the cache bypassed), three times (the first
-  builds what was not cached; the median of the others is a revisit's), the
-  owed ledgers and paint counters put back, so the live ground and its
-  repairs are untouched; SAVE — the tile's texels read off the GPU (the
-  frame pays that: WebGL1 has no async read), the diamond kept, a lossless
-  WebP encoded and written to IndexedDB by the browser; LOAD — read and
-  decoded by the browser, uploaded on the frame, read back and compared
-  inside the diamond. The medians land in the chat and the beacon (`wbN
-  wbDraw wbDraw1 wbLoad wbLoadBg wbSave wbSaveBg wbKb wbBad`); the scratch
-  database is emptied. The draw is the CHEAPEST a draw ever is (art resident,
-  cells resolved): after a restart the art is fetched and decoded again too.
-  Headless (his screen, SwiftShader, two runs) at 103,182: draw 5.9-10.2 ms
-  a tile on the frame (7.4-15.1 the first time), load 0.5-0.7 on the frame
-  + 4.6-12.2 in the browser, save 797-1,674 on the frame (SwiftShader's
-  synchronous read — the phone's number is the one that decides) + 54-91,
-  6.3-6.4 KB a tile, every texel back the same; with the world scene paused
-  around it, the live ground texture and every owed ledger hash the same
-  before and after the test.
+  starved, not wrong; the phone's own counters are the verdict. HIS PHONE
+  (a038861c46, 2026-09-26, standing): 5 tiles held, 303-1,238 asks refused a
+  window, all `wcRefO` — the ground texture is ~14x the screen and a far
+  cell's repair PARKS until the camera comes within GROUND_NEAR_PX, so only
+  the tiles by the view are ever final; take max 7.3 ms, `wcStep` peak 42.9 ms
+  the window it started, the readback 1.8-3 ms. ITS CEILING is what it
+  replaces — a slice or full paint over pictured ground: `groundSlice` +
+  `redrawGround` = 0.69-0.84 ms a frame in his walks with it off (slice peaks
+  19.6-31.4 ms), and only on ground walked twice.
+- **NO DISK CACHE FOR THE GROUND: HIS PHONE SAID NO** (maintainer
+  2026-09-26: "I WANT TO KNOW IF ITS FASTER TO DRAW OR LOAD FROM DISK?!"; on
+  the result: "Your implementation is 1800% slower"). His phone, a038861c46,
+  two runs of Settings→Dev "Disk vs draw test" (8 tiles each, medians): DRAW
+  a 512x224 tile 3.4-3.8 ms on the frame (4.8-5 the first time); LOAD 0.1-0.2
+  ms on the frame + 6.1-6.6 ms in the browser — 6.3-6.7 ms of work, twice the
+  draw it replaces, only moved off the frame; SAVE 19.8-25 ms ON the frame
+  (the GPU read: WebGL1 has no async one) + 35.6-38.4 ms in the browser; 5.5
+  KB a tile, every texel back exact. A save is a stutter per tile and a load
+  costs the phone more than drawing, so the disk never pays. (Not "the load is
+  19-34x cheaper on the frame" — his rule counts all the phone's work, and the
+  save's frame cost comes first.) The test that measured it is
+  `client/src/wcbench.ts` + `WorldScene.runDiskDrawTest` (`__ml.diskDrawTest()`,
+  beacon `wbN wbDraw wbDraw1 wbLoad wbLoadBg wbSave wbSaveBg wbKb wbBad`): it
+  draws into the SPARE texture and puts the owed ledgers back, so the live
+  ground is untouched.
 - **FRAME PACING: A STEADY 30 WHEN 60 CANNOT BE HELD** (maintainer
   2026-09-24, "The FPS is not stable! Think outside the box";
   `client/src/pacing.ts`, `pacing.test.ts`). His 16:50 run on 0b274482:
