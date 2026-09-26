@@ -160,8 +160,9 @@ import { fpsBadgeOn, mountFpsBadge, unmountFpsBadge } from "../fpsbadge";
 import { paceCycle, paceLabel, paceMode, paceTake, pacedNow } from "../pacing";
 import { FastDepthSort } from "../fastsort";
 import { TerrainBake, bakeParity, type BakeHost, type BakeSink } from "../terrainbake";
-import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, wcPageKey, wcSlotFrame, wcSwitchOn, type WcFrame, type WcPicture, type WcRect, type WcSlot } from "../worldcache";
+import { WorldCache, WC_PAGE, WC_TILE, setWcSwitch, tileBoxOf, tileMask, wcPageKey, wcSlotFrame, wcSwitchOn, type WcFrame, type WcPicture, type WcRect, type WcSlot } from "../worldcache";
 import { WorldCacheGl } from "../worldcachegl";
+import { benchClear, benchDb, benchDecode, benchEncode, benchGet, benchPut, benchSummary, type BenchTile } from "../wcbench";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -3293,6 +3294,7 @@ export class WorldScene extends Phaser.Scene {
         // CACHE WORLD RENDERING (worldcache.ts): on, tiles held here, MB, cells
         // the paints skipped and pictures taken this window, a take's worst ms
         ...this.wcCountsTake(),
+        ...this.wbCounts,
         // Capture-target size switches this window = re-allocations stock Phaser
         // would do (does, with the pool off), and the distinct sizes seen.
         capSwitch: cap.switches,
@@ -5355,6 +5357,11 @@ export class WorldScene extends Phaser.Scene {
   private wcCamY = NaN;
   private wcReadBuf: Uint8Array | null = null;
   private wcShutdownHooked = false;
+  /** THE DISK VS DRAW TEST (wcbench.ts): its state line, and the last result
+   *  for the beacon (`wb*` counts, kept until the next test). */
+  private wbState = "tap to run";
+  private wbRunning = false;
+  private wbCounts: Record<string, number> = {};
   /** Row stride for the pool's cell key — the world's width, so `row*stride+col`
    *  is unique per cell. Set at the top of every rebuild. */
   private occStride = 1;
@@ -6496,6 +6503,17 @@ export class WorldScene extends Phaser.Scene {
           get: () => this.wcOn,
           state: () => this.wcLabel(),
         },
+        /* DISK VS DRAW (wcbench.ts; maintainer 2026-09-26: "I WANT TO KNOW IF
+         * ITS FASTER TO DRAW OR LOAD FROM DISK?!"): one tap draws the ground
+         * tiles nearest the view, saves them to this phone's disk and loads them
+         * back, timing each on HIS phone; the answer lands in the chat and the
+         * beacon. The live ground is never touched. */
+        {
+          label: "Disk vs draw test",
+          act: () => void this.runDiskDrawTest(),
+          get: () => this.wbRunning,
+          state: () => this.wbState,
+        },
         /* THE GROUND BRACKET HITCHES (2026-09-24): both on by default — they only
          * remove work from a band pass; off is the bisect. */
         {
@@ -6702,6 +6720,8 @@ export class WorldScene extends Phaser.Scene {
         if (on !== undefined && on !== this.wcOn) this.setWorldCache(on);
         return { on: this.wcOn, take: this.wc?.take() ?? null, skipped: this.wcSkipped, takes: { ...this.wcTakes }, read: { ...this.wcRead }, refused: { ...this.wcRefused } };
       },
+      /** DISK VS DRAW (wcbench.ts): the test the Dev button runs, awaited. */
+      diskDrawTest: () => this.runDiskDrawTest(),
       /** Live occluder sprites against band images — what the bake removes. */
       bakeCount: () => ({ live: this.occluders.length, bands: this.bake?.images.length ?? 0, displayList: this.children.length }),
       /** The edit tool (worldEdit): mutate a cell, everything follows. */
@@ -21392,6 +21412,205 @@ export class WorldScene extends Phaser.Scene {
     const name = wcSlotFrame(slot.x, slot.y);
     if (!page.has(name)) page.add(name, 0, slot.x, slot.y, w, h);
     return ok;
+  }
+
+  /** DISK VS DRAW, ON THIS PHONE (wcbench.ts). For the tiles wholly inside the
+   *  ground texture nearest its centre, one a frame: DRAW — the tile's rect
+   *  painted into the spare texture exactly as a band pass paints it (plates
+   *  built here, the cache bypassed), three times: the first builds what was
+   *  not cached, the median of the other two is a revisit's; the live
+   *  ledgers are put back as they were, so the live ground owes nothing and
+   *  is never touched. SAVE — the tile's texels read off the GPU (the frame
+   *  pays it), the diamond kept, encoded and written by the browser. LOAD —
+   *  read and decoded by the browser, uploaded on the frame, read back and
+   *  compared inside the diamond. */
+  private async runDiskDrawTest(): Promise<string> {
+    if (this.wbRunning) return this.wbState;
+    const rt = this.groundRT;
+    const scratch = this.groundScratch;
+    const a0 = this.groundAnchor;
+    if (!rt || !scratch || !a0 || !this.t3 || !this.world || this.game.renderer.type !== Phaser.WEBGL) return (this.wbState = "no ground yet");
+    if (a0.mask) return (this.wbState = "go outside first (indoors the cut draws)");
+    this.wbRunning = true;
+    this.wbState = "running…";
+    const f = this.wcFrame();
+    const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const gl = r.gl;
+    const frameGap = () => new Promise<void>((ok) => requestAnimationFrame(() => ok()));
+    // the tiles wholly inside the ground texture, nearest its centre
+    const pick = (): { tx: number; ty: number; box: WcRect }[] => {
+      const a = this.groundAnchor!;
+      const g = { x0: a.ax, y0: a.ay, x1: a.ax + rt.width, y1: a.ay + rt.height };
+      const mx = (g.x0 + g.x1) / 2;
+      const my = (g.y0 + g.y1) / 2;
+      const [c, rr] = [Math.floor(((mx - f.ox) / f.dx + (my - f.oy) / f.dy) / 2), Math.floor(((my - f.oy) / f.dy - (mx - f.ox) / f.dx) / 2)];
+      const out: { tx: number; ty: number; box: WcRect; d: number }[] = [];
+      for (let ty = Math.floor(rr / WC_TILE) - 6; ty <= Math.floor(rr / WC_TILE) + 6; ty++)
+        for (let tx = Math.floor(c / WC_TILE) - 6; tx <= Math.floor(c / WC_TILE) + 6; tx++) {
+          const box = tileBoxOf(tx, ty, f);
+          if (box.x0 < g.x0 || box.y0 < g.y0 || box.x1 > g.x1 || box.y1 > g.y1) continue;
+          out.push({ tx, ty, box, d: Math.hypot((box.x0 + box.x1) / 2 - mx, (box.y0 + box.y1) / 2 - my) });
+        }
+      return out.sort((p, q) => p.d - q.d).slice(0, 8);
+    };
+    const tiles = pick();
+    const mask = tiles.length ? tileMask(tiles[0].tx, tiles[0].ty, f).mask : new Uint8Array(0);
+    const results: BenchTile[] = [];
+    let db: IDBDatabase | null = null;
+    try {
+      db = await benchDb();
+      for (let i = 0; i < tiles.length; i++) {
+        this.wbState = `running ${i + 1}/${tiles.length}…`;
+        await frameGap();
+        const a = this.groundAnchor;
+        if (!a || a.mask || this.groundRT !== rt) break;
+        const { box } = tiles[i];
+        const w = box.x1 - box.x0;
+        const h = box.y1 - box.y0;
+        const rect = { x0: box.x0 - a.ax, y0: box.y0 - a.ay, x1: box.x1 - a.ax, y1: box.y1 - a.ay };
+        if (rect.x0 < 0 || rect.y0 < 0 || rect.x1 > rt.width || rect.y1 > rt.height) continue;
+        // DRAW, three times, into the spare texture; the live state put back after
+        const keep = {
+          missing: new Map([...this.t3missing].map(([k, v]) => [k, new Set(v)])),
+          boundary: new Set(this.t3boundaryOwed),
+          drop: new Set(this.t3dropOwed),
+          deck: new Map(this.t3deckOwed),
+          stats: this.t3stats,
+          culled: this.groundCulled,
+          painted: this.groundPainted,
+          flushes: this.t3paintFlushes,
+          bracket: this.groundBracketRect,
+          paints: this.groundPaints,
+          blitPx: this.groundBlitPx,
+          wc: this.wc,
+        };
+        const draws: number[] = [];
+        this.wc = null;
+        try {
+          scratch.setPosition(a.ax, a.ay);
+          for (let k = 0; k < 3; k++) {
+            const win = this.t3groundWindow(a.ax, a.ay, rect.x0, rect.y0, w, h);
+            this.setGroundClip(rect);
+            if (this.t3tex) this.t3tex.deferPlates = false; // drawn here, whole: what a redraw really costs
+            const t0 = performance.now();
+            try {
+              this.drawTiles3Ground(scratch, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, null, null, a.top);
+            } finally {
+              this.setGroundClip(null);
+            }
+            draws.push(performance.now() - t0);
+          }
+        } finally {
+          this.t3missing = keep.missing;
+          this.t3boundaryOwed = keep.boundary;
+          this.t3dropOwed = keep.drop;
+          this.t3deckOwed = keep.deck;
+          this.t3stats = keep.stats;
+          this.groundCulled = keep.culled;
+          this.groundPainted = keep.painted;
+          this.t3paintFlushes = keep.flushes;
+          this.groundBracketRect = keep.bracket;
+          this.groundPaints = keep.paints;
+          this.groundBlitPx = keep.blitPx;
+          this.wc = keep.wc;
+        }
+        // SAVE: the live texels read off the GPU — what a disk save pays on the frame
+        const px = new Uint8Array(w * h * 4);
+        const fb = (rt.texture as Phaser.Textures.DynamicTexture).renderTarget?.framebuffer?.webGLFramebuffer;
+        if (!fb) break;
+        const r0 = performance.now();
+        r.pipelines.clear();
+        try {
+          gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+          gl.readPixels(rect.x0, rect.y0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        } finally {
+          r.pipelines.rebind();
+        }
+        const readMs = performance.now() - r0;
+        for (let t = 0; t < w * h; t++) if (!mask[t]) px.fill(0, t * 4, t * 4 + 4); // the diamond only, as the cache keeps it
+        const e0 = performance.now();
+        const blob = await benchEncode(px, w, h);
+        const encodeMs = performance.now() - e0;
+        const key = `t${i}`;
+        const p0 = performance.now();
+        await benchPut(db, key, blob);
+        const writeMs = performance.now() - p0;
+        // LOAD
+        const g0 = performance.now();
+        const back = await benchGet(db, key);
+        const getMs = performance.now() - g0;
+        if (!back) break;
+        const d0 = performance.now();
+        const bm = await benchDecode(back);
+        const decodeMs = performance.now() - d0;
+        await frameGap();
+        let uploadMs = 0;
+        let bad = 0;
+        r.pipelines.clear();
+        const flip = gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL);
+        const pma = gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL);
+        const glTex = gl.createTexture();
+        const glFb = gl.createFramebuffer();
+        try {
+          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, glTex);
+          const u0 = performance.now();
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bm);
+          uploadMs = performance.now() - u0;
+          // the picture that came back, inside the diamond, against the one that went in
+          gl.bindFramebuffer(gl.FRAMEBUFFER, glFb);
+          gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTex, 0);
+          const got = new Uint8Array(w * h * 4);
+          gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, got);
+          for (let t = 0; t < w * h; t++) {
+            if (!mask[t]) continue;
+            const o = t * 4;
+            if (got[o] !== px[o] || got[o + 1] !== px[o + 1] || got[o + 2] !== px[o + 2] || got[o + 3] !== px[o + 3]) bad++;
+          }
+        } finally {
+          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+          gl.bindTexture(gl.TEXTURE_2D, null);
+          gl.deleteFramebuffer(glFb);
+          gl.deleteTexture(glTex);
+          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flip);
+          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, pma);
+          r.pipelines.rebind();
+          bm.close();
+        }
+        results.push({
+          drawFirstMs: draws[0],
+          drawMs: (draws[1] + draws[2]) / 2,
+          readMs,
+          encodeMs,
+          writeMs,
+          getMs,
+          decodeMs,
+          uploadMs,
+          kb: blob.size / 1024,
+          bad,
+        });
+      }
+    } catch (e) {
+      this.wbState = `failed: ${(e as Error)?.message ?? e}`;
+      this.chat.addLog("—", `Disk vs draw test ${this.wbState}`);
+      return this.wbState;
+    } finally {
+      if (db) await benchClear(db).catch(() => undefined);
+      db?.close();
+      this.wbRunning = false;
+    }
+    if (!results.length) {
+      this.wbState = "no tile could be tested — stand still outside and tap again";
+      return this.wbState;
+    }
+    const sum = benchSummary(results);
+    this.wbCounts = sum.counts;
+    this.wbState = `draw ${sum.counts.wbDraw} ms · disk ${sum.counts.wbLoad} ms (+${sum.counts.wbLoadBg} bg)`;
+    this.chat.addLog("—", `Disk vs draw test: ${sum.line}`);
+    return sum.line;
   }
 
   /* CACHE WORLD RENDERING: what repaints the world changed what the ground
