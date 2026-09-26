@@ -1803,7 +1803,8 @@ const TONE_ROW = LUT_ROWS - 1;
 /** One tile the direct draw can paint: `g` is its 16 per-quad floats.
  *  Boundary (mode 1): g0 plate A xy, plate B xy | g1 shape xy, frame xy |
  *    g2 mode, sums slot, seam, lift | g3 shifted side, 0, 0, 0.
- *  Ramp or lined top (mode 2): g0 top (or plate A) xy, plate B xy |
+ *  Ramp (mode 2) or lined flat top (mode 3, the cheap path):
+ *    g0 top (or plate A) xy, plate B xy |
  *    g1 map xy (the rows share its slot), band xy | g2 mode, sums slot, seam,
  *    top kind (0 plate, 1 transition) | g3 boundary shape xy, frame xy. */
 export interface DirectInst {
@@ -1875,8 +1876,19 @@ vec4 compR(vec2 l, out float cls) {
   float row = rw.x + rw.y * 256.0;
   return vec4(b8(at(uLut, uLutSize, vec2(t.r, row)).r), b8(at(uLut, uLutSize, vec2(t.g, row)).g), b8(at(uLut, uLutSize, vec2(t.b, row)).r), m.w);
 }
+// A LINED FLAT TOP (mode 3): the plate texel for texel under its outline —
+// the map read for the outline class and alpha, the plate, nothing else (its
+// shade row is the identity, rint(v * 1) = v: compR's rows and three table
+// reads for the same bytes)
+vec4 compL(vec2 l, out float cls) {
+  vec4 m = bytes(at(uMaps, uMapsSize, vG1.xy + l));
+  cls = mod(m.z, 4.0);
+  if (m.w == 0.0 && cls != 3.0) return vec4(0.0);
+  return vec4(bytes(at(uPlates, uPlatesSize, vG0.xy + m.xy)).rgb, m.w);
+}
 vec4 comp(vec2 l, out float cls) {
   if (vG2.x < 1.5) return compB(l, cls);
+  if (vG2.x > 2.5) return compL(l, cls);
   return compR(l, cls);
 }
 `;
@@ -2142,7 +2154,9 @@ export class GpuDirect {
     }
     if (!pband || !pa || !pb || !pbs || !pf) return null;
     this.syncLut();
-    const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], pm[0], pm[1], pband[0], pband[1], 2, 0, seam, kind, pbs[0], pbs[1], pf[0], pf[1]]);
+    // a lined flat top paints on its own cheap path (compL, mode 3)
+    const mode = j.mask === LINED_PLATE && j.top.kind === "plate" ? 3 : 2;
+    const g = new Float32Array([pa[0], pa[1], pb[0], pb[1], pm[0], pm[1], pband[0], pband[1], mode, 0, seam, kind, pbs[0], pbs[1], pf[0], pf[1]]);
     const inst = { g, w: this.sheets.fw, h: full.h };
     if (!this.sumsFor(g, inst)) return null;
     this.insts.set(key, inst);
