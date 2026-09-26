@@ -20971,7 +20971,19 @@ export class WorldScene extends Phaser.Scene {
       // it crawled at mid-turn waiting for B, up to 3 s, and took B there).
       let bDone = false;
       const PREP_U = 0.12, PREP_V = PREP_U / 450;
+      // THE GAME DRAWS NOTHING UNDER THE FAST PART: the overlay covers its canvas,
+      // and a whole scene drawn every frame for nobody halved a phone's frame
+      // rate mid-turn. Off once B is complete, on again — one drawn frame ahead —
+      // before anything reveals or captures the canvas.
+      let camOff = false;
+      const camOn = (then: () => void) => {
+        if (!camOff) { then(); return; }
+        camOff = false;
+        cam.setVisible(true);
+        this.game.events.once(Phaser.Core.Events.POST_RENDER, () => then());
+      };
       const finish = (chained = false) => {
+        if (!cam.visible) cam.setVisible(true); // never leave the game undrawn
         this.turnLog.totalMs = +(performance.now() - t0).toFixed(1);
         const out = { ...this.turnLog, ...fx.timings, ...(swappedBack ? { reversed: 1 } : {}), vOut: chained ? v : 0 };
         if (chained) {
@@ -20989,7 +21001,20 @@ export class WorldScene extends Phaser.Scene {
         fx.canvas.style.opacity = "0";
         window.setTimeout(() => { fx.destroy(); if (this.rotFx === fx) this.rotFx = null; this.turning = false; this.inputRot = this.viewRot; done(out); }, 140);
       };
+      // A THROW INSIDE THE LOOP MUST NOT STRAND THE TURN: the overlay up, the
+      // camera off and `turning` set would swallow every tap and draw nothing
       const step = () => {
+        try { stepInner(); } catch (e) {
+          console.warn("[nangijala] view turn loop failed:", e);
+          cam.setVisible(true);
+          fx.destroy();
+          if (this.rotFx === fx) this.rotFx = null;
+          this.turning = false;
+          this.inputRot = this.viewRot;
+          done({ ...this.turnLog, error: String(e) });
+        }
+      };
+      const stepInner = () => {
         const now = performance.now(), dt = Math.min(100, now - last); last = now;
         if (drive && this.turnPinned === null) {
           // BACK TO A: the goal went behind this quarter. Once there the renderer
@@ -21016,14 +21041,18 @@ export class WorldScene extends Phaser.Scene {
           u += v * dt;
           if (!bDone && u > PREP_U) { u = PREP_U; v = Math.min(v, 0); }
           drive.angle?.(u);
+          if (bDone && !camOff && u > PREP_U && u < 0.9) { camOff = true; cam.setVisible(false); }
           if (u >= 1 && bDone) {
             u = 1;
             fx.draw(1, blur, 0);
-            if (drive.owed() > 1) { finish(true); return; }
-            v = 0; finish(); return;
+            const chained = drive.owed() > 1;
+            if (!chained) v = 0;
+            camOn(() => finish(chained));
+            return;
           }
           if (target === 0 && (u <= 0 || (u < 0.002 && Math.abs(v) < 0.05 * vPeak))) {
             u = 0; v = 0; backDone = true; tBack = now;
+            if (camOff) { camOff = false; cam.setVisible(true); }
             this.turnLog.reversed = 1;
             void this.applyViewRot(kA).then(() => { swappedBack = true; lastCheck = 0; }, (e) => { console.warn("[nangijala] view turn back failed:", e); swappedBack = true; });
             if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (px - py) * dx, this.iso.oy + 10 + (px + py) * dy - ph * lh);
