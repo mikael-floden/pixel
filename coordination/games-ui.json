@@ -1,8 +1,17 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-26T11:23:53+00:00",
+  "updated_at": "2026-09-26T11:24:38+00:00",
   "health": "running",
-  "current": "WAITING ON HIM: the ?backprobe=1 test is live (1c79a7c4a0) — which edge a back swipe starts from, on his phone. The turn-control rework (compass row under the pill, his needle as a heading, arrow buttons out) is parked on the feature branch until he picks the control.",
+  "current": {
+    "unit": "BACK TURNS THE WORLD (maintainer 2026-09-26: 'NO URL FLAG! Try to implement it instead! And we will see if it works or not!'): the browser back is caught in the world and turns the view — left-edge swipe one way, right-edge the other when the edge is seen, a fixed direction when not — with a brief note saying which. Replaces the ?backprobe=1 test.",
+    "since": "2026-09-26T11:24:38+00:00",
+    "files": [
+      "games2/client/src/backprobe.ts -> backturn.ts",
+      "games2/client/src/hud.ts (the import)",
+      "games2/UI_AGENT.md",
+      "coordination/games-ui.json"
+    ]
+  },
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -65,5 +74,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-26T11:23:53+00:00"
+  "updated": "2026-09-26T11:24:38+00:00"
 }
