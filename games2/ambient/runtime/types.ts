@@ -82,6 +82,10 @@ export interface AmbientFeature {
   debug(): Record<string, unknown>;
   /** Tear down all display objects (scene shutdown). */
   dispose(): void;
+  /** THE VIEW TURNED (client viewrot.ts): the drawn grid is re-laid, so any
+   *  cache keyed by a DRAWN cell describes the old orientation. Drop it; the
+   *  scene is unchanged. Optional: a feature with no per-cell cache has none. */
+  viewTurned?(): void;
   /** EPISODE features: relative likeliness under the given conditions —
    * base weight × condition multipliers (a bat is ~1% as likely by day).
    * Must be pure and cheap; 0 removes the feature from the draw. */

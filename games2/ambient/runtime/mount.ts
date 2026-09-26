@@ -266,7 +266,10 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       }
     };
     scene.events.on(Phaser.Scenes.Events.UPDATE, onUpdate);
+    const onViewTurn = () => { for (const f of features) safe(() => f.viewTurned?.()); };
+    window.addEventListener("ml-view-turn", onViewTurn);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      window.removeEventListener("ml-view-turn", onViewTurn);
       scene.events.off(Phaser.Scenes.Events.UPDATE, onUpdate);
       for (const f of features) safe(() => f.dispose());
       zoneLines.dispose();

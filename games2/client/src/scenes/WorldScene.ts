@@ -15541,7 +15541,7 @@ export class WorldScene extends Phaser.Scene {
       // DISPLAYED facing, so the waterline matches the drawn frame.
       const swimming = !!player.swimming;
       av.swimming = swimming;
-      const swimDir = av.dispDir ?? dir;
+      const swimDir = av.dispDir ?? rotDir8(dir, this.viewRot); // dispDir is already the drawn facing
       let swimDrop = 0;
       if (swimming) {
         const { def, s } = this.waterlineFor(av.character, swimDir);
@@ -16361,7 +16361,7 @@ export class WorldScene extends Phaser.Scene {
         for (let i = sl.length - 1; i >= 0; i--) {
           const L = sl[i];
           if (L === this.probeLight) continue;
-          if (this.inMyRoom(L.col, L.row)) continue;
+          if (this.inMyRoomView(L.col, L.row)) continue;
           const k = 1 - this.indoorGrade();
           if (k <= 0.01) sl.splice(i, 1);
           else L.color = [L.color[0] * k, L.color[1] * k, L.color[2] * k];
@@ -17427,7 +17427,7 @@ export class WorldScene extends Phaser.Scene {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
       const col = (u + v) / 2;
       const row = (v - u) / 2;
-      const cell = this.world.rows[Math.floor(row)]?.[Math.floor(col)];
+      const cell = (this.viewWorld ?? this.world).rows[Math.floor(row)]?.[Math.floor(col)]; // a DRAWN cell
       if (!cell || cell.l < l) continue; // this cell draws no top/face at level l
       const s = surfaceFor(cell.t);
       return !s.standable && s.swimmable; // front-most drawn surface (top or face)
@@ -19799,7 +19799,7 @@ export class WorldScene extends Phaser.Scene {
       const g = this.indoorGrade();
       for (const src of this.sceneryLightSources) {
         if (!src.sealed) continue;
-        (sealedGain ??= new Map()).set(src.id, this.roomMask && this.inMyRoom(src.col, src.row) ? g : 0);
+        (sealedGain ??= new Map()).set(src.id, this.roomMask && this.inMyRoomView(src.col, src.row) ? g : 0);
       }
     }
     if (!this.slotTenure.size && !sealedGain) return all;
@@ -20289,6 +20289,9 @@ export class WorldScene extends Phaser.Scene {
     this.repaintWorld();
     this.bake?.refreshAll();
     this.indoorDirty = true;
+    // ambient effects that cache per DRAWN cell (the foam's liquid cells and
+    // baked rasters) describe the old orientation now: they drop it on this
+    window.dispatchEvent(new CustomEvent("ml-view-turn", { detail: { k } }));
     this.publishRoom(this.roomMask ? this.roomMask.keys() : null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, this.lastRoomTop);
     this.rebaseAfterTurn(normRot(k - kOld));
     this.camChase.init = false; // the body's screen point jumped: snap onto it, don't crawl
@@ -20335,7 +20338,27 @@ export class WorldScene extends Phaser.Scene {
       if (b.pendDir) b.pendDir = rotDir8(b.pendDir, turn);
     };
     for (const av of this.avatars.values()) { move(av as unknown as Parameters<typeof move>[0]); face(av as unknown as Parameters<typeof face>[0]); }
-    for (const mv of this.monsters.values()) { move(mv as unknown as Parameters<typeof move>[0]); face(mv as unknown as Parameters<typeof face>[0]); }
+    for (const mv of this.monsters.values()) {
+      move(mv as unknown as Parameters<typeof move>[0]);
+      face(mv as unknown as Parameters<typeof face>[0]);
+      const h = mv as unknown as { hdx?: number; hdy?: number };
+      h.hdx = undefined; h.hdy = undefined; // a SCREEN hop direction: re-measured on the next drawn step
+    }
+    if (this.campfire && this.campfireSprite && this.terrain) {
+      const c = this.campfire, fx = c.col * CELL_WU, fy = c.row * CELL_WU;
+      const lvl = levelAtWorld(this.terrain, fx, fy);
+      const p = this.project(fx, fy);
+      const depth = p.y + lvl * this.geom.lh + 0.4; // the formula it was placed with
+      this.campfireSprite.setPosition(p.x, p.y).setDepth(depth);
+      c.x = p.x; c.y = p.y - 4; c.depth = depth;
+    }
+    for (const rec of this.drops.values()) {
+      const p = this.projectFlat(rec.wx, rec.wy), y = p.y - rec.lvl * this.geom.lh;
+      rec.lx = p.x; rec.lyFlat = p.y; rec.ly = y;
+      rec.shadow.setPosition(p.x, y).setDepth(y - 0.6);
+      rec.img.setPosition(p.x, y - 7);
+      this.syncDropDepth(rec);
+    }
     for (const npc of this.npcs.values()) {
       const n = npc as unknown as Parameters<typeof move>[0] & { sprite?: Phaser.GameObjects.Sprite };
       move(n);
@@ -20560,6 +20583,13 @@ export class WorldScene extends Phaser.Scene {
    * a brazier upstairs — is outside, and both its light and any full-bright
    * copy of its art are dropped. (The maintainer 2026-08-07: "yes — point
    * light from outside has to be turned off".) */
+  /** inMyRoom for a VIEW-space point (a light read off the drawn world). */
+  private inMyRoomView(col: number, row: number): boolean {
+    if (!this.viewRot || !this.world) return this.inMyRoom(col, row);
+    const [c, r] = unrotPoint(col, row, this.viewRot, this.world.width, this.world.height);
+    return this.inMyRoom(c, r);
+  }
+
   private inMyRoom(col: number, row: number): boolean {
     if (!this.roomMask || !this.world) return true;
     const c = Math.floor(col);
@@ -23631,7 +23661,7 @@ export class WorldScene extends Phaser.Scene {
        * slope's rise or a lid): a cell the rect cannot see is not resolved
        * either — with the resolve worker off (his verdict) a resolve is frame
        * thread work, and a slice at a new spot resolved ~825 of them. */
-      if (tight && !reaches(col, row, (world.rows[row]?.[col]?.l ?? 0) + 1)) continue;
+      if (tight && !reaches(col, row, ((this.viewWorld ?? world).rows[row]?.[col]?.l ?? 0) + 1)) continue; // a DRAWN cell
       const tr = performance.now();
       const cell = cellOf(col, row);
       if (!cell) continue;
@@ -26661,6 +26691,12 @@ export class WorldScene extends Phaser.Scene {
     if (!w) return from;
     // How far up from `from` does this neighbour cover CONTIGUOUSLY?
     const coverTop = (c: number, r: number): number => {
+      // (c, r) is a DRAWN cell (the neighbour in front on screen); rows and
+      // deckIndex are SERVER-keyed, so read the same cell there (viewrot.ts)
+      if (this.viewRot) {
+        if (c < 0 || r < 0 || c >= w.width || r >= w.height) return -1;
+        [c, r] = unrotCell(c, r, this.viewRot, w.width, w.height);
+      }
       const cell = w.rows[r]?.[c];
       if (!cell) return -1; // off-map / void: covers nothing
       let top = cell.l; // base column covers [0 .. l]
@@ -27565,7 +27601,7 @@ export class WorldScene extends Phaser.Scene {
           key: "campfire",
           dist: Math.hypot(c.x - cx, c.y - cy),
           edge,
-          l: { col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 },
+          l: { ...(this.viewRot && this.world ? (([col, row]) => ({ col, row }))(rotPoint(c.col, c.row, this.viewRot, this.world.width, this.world.height)) : { col: c.col, row: c.row }), z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 },
         });
     }
     for (const s of this.sceneryLightSources.length ? this.emissiveSources.concat(this.sceneryLightSources) : this.emissiveSources) {
@@ -27583,7 +27619,7 @@ export class WorldScene extends Phaser.Scene {
       // walking out fades the fire with the room instead of popping it.
       let gain = 1;
       if (s.sealed) {
-        if (!(this.roomMask && this.inMyRoom(s.col, s.row))) continue;
+        if (!(this.roomMask && this.inMyRoomView(s.col, s.row))) continue;
         gain = this.indoorGrade();
         if (gain <= 0.01) continue;
       }

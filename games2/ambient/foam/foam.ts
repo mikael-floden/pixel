@@ -861,6 +861,18 @@ export function foamFeature(): AmbientFeature {
         all,
       };
     },
+    viewTurned() {
+      // every record is keyed by a DRAWN cell of the old orientation (dispose, minus the scene)
+      for (const l of live.values()) dropLive(l);
+      live.clear();
+      for (const a of atlases) scene?.textures.remove(a.key);
+      atlases.length = 0;
+      queue = [];
+      queueAt = 0;
+      cells.clear();
+      cellOrder.length = 0;
+      liquidness.clear();
+    },
     dispose() {
       for (const l of live.values()) dropLive(l);
       live.clear();
