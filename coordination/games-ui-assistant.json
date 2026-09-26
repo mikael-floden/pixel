@@ -2,18 +2,7 @@
   "domain": "games-ui-assistant",
   "updated_at": "2026-09-21T15:58:06+00:00",
   "health": "running",
-  "current": {
-    "unit": "spin bar round 2 — the trim was the snap (restore all 9 frames) + a 25% bigger hit target on the arrows (maintainer 2026-09-26)",
-    "since": "2026-09-26T04:49:59.653588+00:00",
-    "files": [
-      "games2/client/src/spinbar.ts",
-      "games2/client/public/ui2/spin-orb.webp",
-      "games2/scripts/bake-corner-icons.py",
-      "games2/scripts/verify-spinbar.mjs",
-      "games2/UI_AGENT.md"
-    ],
-    "note": "Dropping a frame from a CLOSED loop makes one double-step; his snap is at the last frame, which is exactly the 7->0 join I created. Restoring all 9 so every authored transition plays once. The hit target grows 25% in both axes via a negative-inset ::before, the VISIBLE box stays the search square's 34x34."
-  },
+  "current": "idle — spin bar round 2 live (3e3362a269): all 9 frames restored and the arrows' hit target 25% bigger. PAID-FOR TRAP, and it is the lesson of the round: NEVER TRIM A CLOSED LOOP. His export hands its last frame back to its first, so N frames are N authored transitions; my 8-of-9 cut replaced two with a join covering twice the rotation and he saw the seam the same day. The gate that allowed it asserted 'the frame count divides evenly' — true of the broken build; it now counts the Graphic Control Extension blocks in his own source GIF and requires the strip to carry every one. His report also settled the clip's span (a press plays the whole strip; 360° would have read as a full spin, not a seam) after pixel diffs proved useless — circular distances k=1..4 all ~25000. Hit target is a negative-inset ::before so the painted box stays the 🔍 square; gated with elementFromPoint (3px lands, 6px does not, Report keeps its own corner). STILL OPEN, cause NOT found and nothing pushed for it: the session's FIRST chat keyboard shrinks his layout viewport while every later one overlays it. 663764eaa5 did not fix it. Proven from his screenshots: .ml-kb-up writes bottom on the chat log, the chat input and the ghost stick and NOTHING on the tab row, so a visible row means the layout viewport itself ended at the keys' top. Suspects: interactive-widget=overlays-content added at focusin and removed after each close, and virtualKeyboard.overlaysContent set once at load. Offered him a ?kb=1 readout (the ?fps=1 pattern) to land __mlKb() in a screenshot; awaiting his word.",
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
@@ -38,6 +27,6 @@
       "at": "2026-09-22T19:02:27+00:00"
     }
   ],
-  "status": "working",
-  "updated": "2026-09-26T04:49:59.653588+00:00"
+  "status": "idle",
+  "updated": "2026-09-26T05:03:06.000829+00:00"
 }
