@@ -194,9 +194,8 @@ try {
       gl: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gv-left")) || 0,
       gr: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gv-right")) || 0,
       hudTop: document.querySelector(".ml-hud").getBoundingClientRect().top,
-      // the Wiki row ABOVE the pill, and the step between them
-      wiki: document.querySelector(".ml-wikibtn")?.getBoundingClientRect() ?? null,
-      step: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-stack-step")),
+      // the XP card ABOVE the pill (since 2026-09-26)
+      xp: document.querySelector(".ml-bars-r")?.getBoundingClientRect() ?? null,
       vw: innerWidth,
       cw: cv.width,
       ch: cv.height,
@@ -207,15 +206,13 @@ try {
     };
   });
   if (s.pos !== "fixed" || s.pe !== "none") fail(`pill not a fixed pass-through (${s.pos}/${s.pe})`);
-  // UNDER THE WIKI BUTTON, on its right edge, one published step under the
-  // row (maintainer 2026-09-20). The width against the button is
-  // verify-wikibtn's subject.
-  if (!s.wiki) fail("no .ml-wikibtn above the pill — the row the pill steps from is missing");
-  else if (Math.abs(s.right - s.wiki.right) > 1)
-    fail(`pill right ${s.right}, the Wiki button's ${s.wiki.right}`);
-  if (!(s.step > 0)) fail(`--ml-stack-step "${s.step}" is not a published px height`);
-  if (Math.abs(s.top - s.wiki.top - s.step) > 1)
-    fail(`pill top ${s.top} != the Wiki row's ${s.wiki.top} + the published ${s.step}px step`);
+  // DIRECTLY UNDER THE XP CARD, on its right edge (maintainer 2026-09-26: the
+  // Wiki row moved to the HP card's column). The width is verify-wikibtn's.
+  if (!s.xp) fail("no .ml-bars-r above the pill");
+  else {
+    if (Math.abs(s.right - s.xp.right) > 1) fail(`pill right ${s.right}, the XP card's ${s.xp.right}`);
+    if (Math.abs(s.top - (s.xp.bottom + 10)) > 1.5) fail(`pill top ${s.top} != the XP card's bottom ${s.xp.bottom} + 10`);
+  }
   // THE CANVAS IS AH TALL AND AT LEAST AW WIDE, AND DRAWN AT AN EXACT x2.
   // The height is the mock's and always will be; the WIDTH tracks the XP card
   // (clock.ts AW + EXT of the card's extra) and asserting a literal 40 here
@@ -230,7 +227,7 @@ try {
   if (s.smooth !== "pixelated") fail(`image-rendering ${s.smooth}, want pixelated`);
   if (s.imgs !== 0) fail(`${s.imgs} <img> inside the pill — the art is painted, not loaded`);
   if (s.relics !== 0) fail(`${s.relics} half-dial relics (hand/face/hub) still in the DOM`);
-  console.log(`structure OK (${s.cw}x${s.ch} art px at x2, pixelated, on the Wiki button's right edge one ${s.step}px step under the Wiki row)`);
+  console.log(`structure OK (${s.cw}x${s.ch} art px at x2, pixelated, 10px under the XP card on its right edge)`);
 
   // ---- 2. NOON: the sun alone, at the apex, dead centre ----
   const noon = await both(DAY, 0.5);

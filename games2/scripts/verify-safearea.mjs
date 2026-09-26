@@ -130,31 +130,29 @@ try {
     ? ok("…and back to the plain geometry when the cutout goes (inert where there is none)")
     : fail(`after clearing the insets: chip top ${l2?.t} (want 10), page padding ${pad2} (want ${pad0})`);
 
-  // ---- 3. right-handed landscape: the pill stack hangs under the XP chip ----
+  // ---- 3. right-handed landscape: the Wiki row hangs under the HP chip, the
+  //         pill under the XP chip (2026-09-26) ----
   await page.setViewportSize({ width: 851, height: 393 });
   await page.waitForFunction(() => document.documentElement.classList.contains("ml-land"), null, { timeout: 15000 });
   await settle();
   const stack = async () => {
-    const r = await rect(".ml-bars-r"), c = await rect(".ml-clock"), w = await rect(".ml-wikibtn"), n = await rect(".ml-wikinear");
-    const step = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-stack-step")));
-    return { r, c, w, n, step };
+    const r = await rect(".ml-bars-r"), l = await rect(".ml-bars-l"), c = await rect(".ml-clock"), w = await rect(".ml-wikibtn"), n = await rect(".ml-wikinear");
+    return { r, l, c, w, n };
   };
   const s0 = await stack();
-  // THE ROW is what hangs 10px under the chip now (it is the chip's width); the
-  // pill is one step under the row (2026-09-19).
-  near(s0.w?.t - s0.r?.b, 10) ? ok(`landscape: the Wiki row hangs 10px under the XP chip (chip bottom ${s0.r.b}, row top ${s0.w.t})`) : fail(`landscape: row top ${s0.w?.t} vs chip bottom ${s0.r?.b}, want a 10px gap`);
+  near(s0.w?.t - s0.l?.b, 10) && near(s0.c?.t - s0.r?.b, 10)
+    ? ok(`landscape: the Wiki row hangs 10px under the HP chip, the pill 10px under the XP chip`)
+    : fail(`landscape: row top ${s0.w?.t} vs HP chip bottom ${s0.l?.b}, pill top ${s0.c?.t} vs XP chip bottom ${s0.r?.b}, want 10px gaps`);
   await insets(TOP, 0);
   await settle();
   const s1 = await stack();
   near(s1.r?.t, 10 + TOP) ? ok(`landscape: the XP chip steps down to ${s1.r.t}px`) : fail(`landscape: XP chip at ${s1.r?.t}, want ${10 + TOP}`);
-  near(s1.w?.t - s1.r?.b, 10)
-    ? ok(`landscape: the Wiki row keeps its 10px under the moved chip (${s1.r.b} -> ${s1.w.t})`)
-    : fail(`landscape: row top ${s1.w?.t} vs chip bottom ${s1.r?.b} under the cutout — the stack did not take the inset`);
-  // Since 2026-09-19 the ROW is the chip's width and sits directly under it,
-  // with the pill one step under the ROW — both screens, one order.
-  near(s1.c?.t - s1.w?.t, s1.step) && near(s1.w?.t, s1.n?.t)
-    ? ok(`landscape: the pill stays one ${s1.step}px step under the Wiki row, and 🔍 shares the row's line`)
-    : fail(`landscape: Wiki ${s1.w?.t} / 🔍 ${s1.n?.t} vs pill ${s1.c?.t}, want the pill at +${s1.step} and 🔍 level with Wiki`);
+  near(s1.w?.t - s1.l?.b, 10) && near(s1.c?.t - s1.r?.b, 10)
+    ? ok(`landscape: the Wiki row and the pill keep their 10px under the moved chips (${s1.l.b} -> ${s1.w.t}, ${s1.r.b} -> ${s1.c.t})`)
+    : fail(`landscape: row top ${s1.w?.t} vs HP chip bottom ${s1.l?.b}, pill ${s1.c?.t} vs XP chip bottom ${s1.r?.b} under the cutout — the stack did not take the inset`);
+  near(s1.w?.t, s1.n?.t)
+    ? ok(`landscape: 🔍 shares the Wiki row's line`)
+    : fail(`landscape: Wiki ${s1.w?.t} / 🔍 ${s1.n?.t}, want 🔍 level with Wiki`);
   await insets(0, 0);
   await page.setViewportSize({ width: 393, height: 851 });
   await settle();

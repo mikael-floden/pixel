@@ -152,7 +152,7 @@ try {
     return { game: r("#game"), hud: r(".ml-hud"), tabs: r(".ml-tabrow"), h: window.innerHeight, sy: window.scrollY,
              barH: h(".ml-chat-inputbar"), logH: h(".ml-chat-log"),
              chatlogBottom: cssBottom(".ml-chatlog"), // the on-screen "game-view" chat overlay
-             clockTop: top(".ml-clock"), wikibtnTop: top(".ml-wikibtn"), // top-right under the XP chip since 2026-09-17
+             clockTop: top(".ml-clock"), wikibtnTop: top(".ml-wikibtn"), // top-left under the HP card since 2026-09-26
              stickBottom: (() => { const e = document.querySelector(".ml-pad-stick"); return e ? Math.round(window.innerHeight - e.getBoundingClientRect().bottom) : null; })(),
              lines: document.querySelectorAll(".ml-chat-log > *").length,
              firstLine: first ? Math.round(first.getBoundingClientRect().top) : null };
@@ -275,11 +275,13 @@ try {
   //     line directly above the input is the maintainer's 2026-09-03 rule and
   //     still holds — check (4) above is that line.)
   frameBefore.wikibtnTop != null && lifted.wikibtnTop === frameBefore.wikibtnTop && lifted.clockTop === frameBefore.clockTop
-    ? ok(`Wiki row and pill stay put top-right (row t=${lifted.wikibtnTop}, pill t=${lifted.clockTop})`)
+    ? ok(`Wiki row and pill stay put at the top (row t=${lifted.wikibtnTop}, pill t=${lifted.clockTop})`)
     : fail(`the top-right stack moved with the keyboard: row ${frameBefore.wikibtnTop} -> ${lifted.wikibtnTop}, pill ${frameBefore.clockTop} -> ${lifted.clockTop}`);
-  lifted.wikibtnTop != null && lifted.wikibtnTop < lifted.vh / 2 && lifted.clockTop > lifted.wikibtnTop
-    ? ok("…in the top half, the pill under the row")
-    : fail(`row t=${lifted.wikibtnTop}, pill t=${lifted.clockTop} — expected top-right, pill under the row`);
+  // since 2026-09-26: the Wiki row under the HP card and the pill under the
+  // XP card — one line, both in the top half
+  lifted.wikibtnTop != null && lifted.wikibtnTop < lifted.vh / 2 && lifted.clockTop === lifted.wikibtnTop
+    ? ok(`the Wiki row and the pill share the line under the cards (t=${lifted.wikibtnTop})`)
+    : fail(`row t=${lifted.wikibtnTop}, pill t=${lifted.clockTop} — expected both on the line under the cards, top half`);
   // The log's lane stays inside the shared 10px margin.
   lifted.logRight != null && lifted.logRight <= lifted.vw - 10
     ? ok(`…and a full-width line stops inside the right margin (${lifted.logRight} of ${lifted.vw})`)

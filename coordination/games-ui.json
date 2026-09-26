@@ -2,29 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-26T11:32:44+00:00",
   "health": "running",
-  "current": {
-    "unit": "CSS COMPASS + CUBE (maintainer 2026-09-26, his picks from the design board: 'I want the cube from B3 Pill medallion and the compass from A1 Faceted rose ... in sync with the rotation'), riding on the new top chrome layout (Wiki row under HP, pill under XP). Compass: search-button-sized tile left of the pill; cube: CSS 3D at top centre with the direction arc, only while turning; both follow ml-view-angle. The swipe turn arms itself once WorldScene asks tapgesture.isSecondTap() (games' line), so nothing waits on it.",
-    "since": "2026-09-26T16:06:50+00:00",
-    "files": [
-      "games2/client/src/tapgesture.ts",
-      "games2/client/src/spinbar.ts",
-      "games2/client/src/backturn.ts",
-      "games2/client/src/wikibtn.ts",
-      "games2/client/src/wikinear.ts",
-      "games2/client/src/clock.ts",
-      "games2/client/src/recbtn.ts",
-      "games2/scripts/verify-wikibtn.mjs",
-      "games2/scripts/verify-recbtn.mjs",
-      "games2/scripts/verify-spinbar.mjs",
-      "games2/scripts/verify-chat.mjs",
-      "games2/scripts/verify-chatpage.mjs",
-      "games2/scripts/verify-clockflip.mjs",
-      "games2/scripts/verify-gamepad.mjs",
-      "games2/scripts/verify-landscape.mjs",
-      "games2/scripts/verify-safearea.mjs",
-      "games2/UI_AGENT.md"
-    ]
-  },
+  "current": null,
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -60,7 +38,8 @@
     "[2026-09-19T17:38:27+00:00] MEASURE AT HIS WIDTH, NOT THE HARNESS'S. The pill's first centring cut put it a third of the way down HIS screen (\"WHY DID YOU PLACE THE time-of-day pill in the center and not TOP center!!!\"), because I reasoned about 393x851 — where the two 148px cards leave 77px and a 116px pill would overlap both — and concluded the cards' row could not hold it. HIS PHONE IS 495x1111 AT DPR 2.18, measured off his own screenshot (the 116px pill spans 253 device px in a 1080-wide frame), and there the gap is 174px. 393x851 is a real viewport (iPhone 14/15, Pixel) but it is not his, and every UI reading being taken there meant the placement he asked for was never once executed by a gate. clock.ts fitPill now MEASURES the gap (view - both 10px margins - both card widths) and takes the cards' line when the pill plus 10px each side fits, else the row under the Wiki row. verify-wikibtn section 8b runs at 495x1111 so both rows are exercised; verify-chat's copy of the row rule is gone (it runs at 480, got the other answer, and two gates owning one rule is how the stale copy survived).",
     "[2026-09-19T18:31:31+00:00] EXT 0.5 -> 1/3 (maintainer: \"I know I said you should just have extended the time-of-day pill 50%, but that turned out also be to much. Now I think you should have extended the pill only 33%. The new placement is however perfect!\"). Third round in one day on the same constant — full card, half the extra, a third — and each one was ONE number in clock.ts plus one in verify-wikibtn's wantPillW, because neither file holds the width as a literal anywhere else. That is the whole value of AW+EXT over a px figure: a taste verdict costs a constant, not a layout. 104 css px in portrait (51x16 art at an exact 2x), 118 in landscape; both still take the cards' line on his 495px phone, with 179px of gap for a 104px pill. PLACEMENT IS SETTLED (\"the new placement is however perfect\") — do not re-litigate the centring or the two-row rule.",
     "[2026-09-23T17:57:40+00:00] A SELECTOR IS NOT A CONTRACT. The body's 'almost 8 directions' lean read the finger's bearing off '.ml-pad-stick' by class name from another agent's module; the day the gamepad page got its own stick back (.ml-pad-pagestick, 2026-09-20) that lean silently stopped working for the stick he actually steers with, and nothing failed — no gate owned the pair. Now gamepad.ts PUSHES the bearing (setStickBearing) for both sticks and __mlStick() publishes bearing/lean/sector/capDeg so a gate can hold them against each other. When another agent's code finds your element by selector, hand it a function.",
-    "[2026-09-26T12:56:24+00:00] FOR games-perf (request d6b4e2cc09): tapgesture.ts is on main (a19eec18af) — the WorldScene hunk is now just: import { isSecondTap } from '../tapgesture'; and, after the tapTarget block's return and before this.dropEngage(): if (!isSecondTap()) return; — tested locally with my swipe: single tap 0 wu, double tap walks, swipe turns with 0 wu, backpack tab open turns too. The moment WorldScene.ts is free (or you land that line) I ship the compass row + swipe."
+    "[2026-09-26T12:56:24+00:00] FOR games-perf (request d6b4e2cc09): tapgesture.ts is on main (a19eec18af) — the WorldScene hunk is now just: import { isSecondTap } from '../tapgesture'; and, after the tapTarget block's return and before this.dropEngage(): if (!isSecondTap()) return; — tested locally with my swipe: single tap 0 wu, double tap walks, swipe turns with 0 wu, backpack tab open turns too. The moment WorldScene.ts is free (or you land that line) I ship the compass row + swipe.",
+    "[2026-09-26T17:03:11+00:00] CSS COMPASS + CUBE LIVE (his picks A1 Faceted rose + B3 cube): spinbar.ts draws both from one number (curQ), which IS the world's ml-view-angle while it turns. Compass = search-button box 10px left of the pill (the pill row mirrors the Wiki row); cube = frosted CSS 3D at top centre, only while turning, with a direction arc. New top chrome: Wiki row under HP (search on its right), pill under XP, Report under the Wiki row. THE SWIPE ARMS ITSELF: it turns nothing until WorldScene asks tapgesture.isSecondTap() (games' one line, request open) — then swipe = turn, single tap no longer walks. games: verify-viewturn should turn with window.__mlSpinTurn(±1), the .ml-spinbtn twins are display:none now. Claim released."
   ],
   "requests": [
     {
@@ -95,6 +74,6 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-26T16:06:50+00:00",
-  "status": "running"
+  "updated": "2026-09-26T17:03:11+00:00",
+  "status": "idle"
 }

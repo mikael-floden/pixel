@@ -74,12 +74,12 @@ const rects = async () => {
             sx: +(cb.width / cv.width).toFixed(3), sy: +(cb.height / cv.height).toFixed(3) }
         : null;
       const near_ = r(".ml-wikinear"), btn_ = r(".ml-wikibtn");
-      const row = near_ && btn_ ? Math.round(btn_.r - near_.l) : null;
+      const row = near_ && btn_ ? Math.round(near_.r - btn_.l) : null;
       const cs = getComputedStyle(document.documentElement);
       const v = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
       return JSON.stringify({ pill: r(".ml-clock"), btn: btn_, near: near_, art, row,
         // what the pill is sized and centred against
-        xp: r(".ml-bars-r"), card: Math.round(v("--bars-r-w")), cardL: Math.round(v("--bars-l-w")),
+        xp: r(".ml-bars-r"), hp: r(".ml-bars-l"), card: Math.round(v("--bars-l-w")), cardR: Math.round(v("--bars-r-w")),
         step: v("--ml-stack-step"),
         gl: v("--gv-left"), gr: v("--gv-right"), vw: window.innerWidth,
         // everything a centred box has to clear
@@ -95,60 +95,53 @@ const rects = async () => {
 
 const near = (a, b, tol = 1.5) => Math.abs(a - b) <= tol;
 
-/** THE WIKI ROW: pill-high, and the 🔍 square one gap to its left, in every
- *  placement. The row alone — the pill under it is assertPill's subject. */
+/** THE WIKI ROW: pill-high, UNDER THE HP/EP CARD and as wide as it, the Wiki
+ *  button on the card's left edge and the 🔍 square one gap to its RIGHT, on
+ *  the card's right edge (maintainer 2026-09-26: "The wiki + wiki search
+ *  should be placed on the left side under the hp card with the search on the
+ *  right side instead of left side"), in every placement. */
 const assertStack = (g, label) => {
   if (!g.pill || !g.btn) return fail(`${label}: missing ${!g.pill ? "pill" : "button"}`);
-  // SINCE 2026-09-19 THE ROW IS THE XP CARD'S WIDTH and the Wiki button takes
-  // what the 🔍 and the gap leave of it. Both it and the pill are still PILL_H
-  // tall — one shared height across the chrome — and that is what is asserted.
   near(g.btn.h, g.pill.h)
     ? ok(`${label}: button is pill-high (${g.btn.h}px)`)
     : fail(`${label}: height mismatch — button ${g.btn.h}, pill ${g.pill.h}`);
   near(g.row, g.card, 2)
-    ? ok(`${label}: the row spans the XP card exactly (${g.row} vs ${g.card})`)
+    ? ok(`${label}: the row spans the HP card exactly (${g.row} vs ${g.card})`)
     : fail(`${label}: the row is ${g.row} against a ${g.card}px card`);
-
-  // The 🔍: a square the pill's height, on the Wiki button's own line, one
-  // 10px gap to its LEFT — so the two read as one row in every placement.
+  g.hp && near(g.btn.l, g.hp.l, 1) && near(g.btn.t, g.hp.b + 10, 1.5)
+    ? ok(`${label}: the row hangs under the HP card (top ${g.btn.t.toFixed(0)} = card bottom ${g.hp.b.toFixed(0)} + 10, left edges ${g.btn.l.toFixed(0)})`)
+    : fail(`${label}: row ${JSON.stringify(g.btn)} vs HP card ${JSON.stringify(g.hp)} — want it under the card, left-aligned`);
   if (!g.near) return fail(`${label}: the 🔍 button is missing`);
   near(g.near.w, g.near.h) && near(g.near.h, g.btn.h)
     ? ok(`${label}: 🔍 is a pill-high square (${g.near.w}x${g.near.h})`)
     : fail(`${label}: 🔍 is ${g.near.w}x${g.near.h}, wanted a ${g.btn.h}px square`);
-  near(g.near.t, g.btn.t) && near(g.btn.l - g.near.r, 10, 2)
-    ? ok(`${label}: 🔍 sits left of Wiki with the 10px gap (${(g.btn.l - g.near.r).toFixed(1)})`)
-    : fail(`${label}: 🔍 off the Wiki line — top ${g.near.t.toFixed(0)} vs ${g.btn.t.toFixed(0)}, gap ${(g.btn.l - g.near.r).toFixed(1)}`);
+  near(g.near.t, g.btn.t) && near(g.near.l - g.btn.r, 10, 2) && g.hp && near(g.near.r, g.hp.r, 1)
+    ? ok(`${label}: 🔍 sits right of Wiki with the 10px gap (${(g.near.l - g.btn.r).toFixed(1)}), on the card's right edge`)
+    : fail(`${label}: 🔍 off the Wiki line — top ${g.near.t.toFixed(0)} vs ${g.btn.t.toFixed(0)}, gap ${(g.near.l - g.btn.r).toFixed(1)}, right ${g.near.r.toFixed(0)} vs card ${g.hp?.r.toFixed(0)}`);
 };
 
-/** THE TIME-OF-DAY PILL: UNDER THE WIKI BUTTON, AS WIDE AS IT (maintainer
- *  2026-09-20: "once again place the time-of-day pill under the wiki button
- *  and make it the same size as the wiki button (same width as only the wiki
- *  button, not wiki + search). It doesn't look good when it's at the top").
- *  Five readings, all RELATIONSHIPS against the REAL button: its width (the
- *  pill may be 1px narrower — clock.ts floors to a whole art pixel), its
- *  height, its right edge, one published --ml-stack-step under its top, and
- *  an exact 2x canvas — the one that cannot be faked by a screenshot. */
+/** THE TIME-OF-DAY PILL: DIRECTLY UNDER THE XP CARD, on its right edge, as
+ *  wide as the Wiki button was when the two shared that line (the card less
+ *  the 🔍 square and its gap, 44px — maintainer 2026-09-20: "same width as only
+ *  the wiki button, not wiki + search"; the row moved to the HP card
+ *  2026-09-26). The pill may be 1px narrower (clock.ts floors to a whole art
+ *  pixel); the canvas is an exact 2x — the one reading a screenshot cannot
+ *  fake. */
 const assertPill = (g, label) => {
-  if (!g.pill || !g.btn) return fail(`${label}: missing ${!g.pill ? "the pill" : "the Wiki button"}`);
-  g.btn.w - g.pill.w >= -0.5 && g.btn.w - g.pill.w <= 1.5
-    ? ok(`${label}: the pill is the Wiki button's width (${g.pill.w} against the button's ${g.btn.w})`)
-    : fail(`${label}: pill ${g.pill.w} wide, the Wiki button ${g.btn.w} — want the same, at most 1px narrower`);
-  near(g.pill.h, g.btn.h, 1)
-    ? ok(`${label}: …and its height (${g.pill.h})`)
-    : fail(`${label}: pill ${g.pill.h} tall, the Wiki button ${g.btn.h}`);
-  // THE ONE THAT CANNOT BE FAKED BY A SCREENSHOT: the canvas's BACKING STORE
-  // against its box. A pill widened by stretching fails this by construction.
+  if (!g.pill || !g.xp) return fail(`${label}: missing ${!g.pill ? "the pill" : "the XP card"}`);
+  const want = g.xp.w - 44;
+  want - g.pill.w >= -0.5 && want - g.pill.w <= 1.5
+    ? ok(`${label}: the pill is the XP card less the 🔍 and its gap (${g.pill.w} against ${want})`)
+    : fail(`${label}: pill ${g.pill.w} wide, want ${want} (the XP card ${g.xp.w} less 44), at most 1px narrower`);
+  near(g.pill.h, g.btn?.h ?? 34, 1)
+    ? ok(`${label}: …and the Wiki button's height (${g.pill.h})`)
+    : fail(`${label}: pill ${g.pill.h} tall, the Wiki button ${g.btn?.h}`);
   g.art && g.art.sx === 2 && g.art.sy === 2
     ? ok(`${label}: drawn 1 art px = 2 css px — more sky, not a stretch (${g.art.cw}x${g.art.ch} art in ${g.art.bw}x${g.art.bh})`)
     : fail(`${label}: the pill's canvas is stretched — ${JSON.stringify(g.art)} (want an exact 2x on both axes)`);
-  near(g.pill.r, g.btn.r, 1)
-    ? ok(`${label}: on the Wiki button's right edge (${g.pill.r.toFixed(0)})`)
-    : fail(`${label}: pill right ${g.pill.r.toFixed(0)}, the Wiki button's ${g.btn.r.toFixed(0)}`);
-  near(g.pill.t - g.btn.t, g.step, 1) && near(g.pill.t - g.btn.b, 10, 1.5)
-    ? ok(`${label}: one ${g.step}px step under the row (top ${g.pill.t.toFixed(0)} = button bottom ${g.btn.b.toFixed(0)} + 10)`)
-    : fail(`${label}: pill top ${g.pill.t.toFixed(0)} vs the button's top ${g.btn.t.toFixed(0)} + the ${g.step}px step`);
-  // IT TOUCHES NOTHING: the gap above it is the row's, and nothing else is
-  // anywhere near its box.
+  near(g.pill.r, g.xp.r, 1) && near(g.pill.t, g.xp.b + 10, 1.5)
+    ? ok(`${label}: under the XP card on its right edge (top ${g.pill.t.toFixed(0)} = card bottom ${g.xp.b.toFixed(0)} + 10)`)
+    : fail(`${label}: pill at right ${g.pill.r.toFixed(0)} top ${g.pill.t.toFixed(0)}, the XP card's right ${g.xp.r.toFixed(0)} bottom ${g.xp.b.toFixed(0)} + 10`);
   const hits = Object.entries(g.others).filter(([, r]) =>
     r && g.pill.l < r.r && r.l < g.pill.r && g.pill.t < r.b && r.t < g.pill.b);
   hits.length === 0
@@ -553,7 +546,7 @@ try {
   await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
   await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });
 
-  // ── 7. right-handed landscape: the row under the XP chip, the pill under it
+  // ── 7. right-handed landscape: the row under the HP card, the pill under the XP card
   await page.setViewportSize({ width: 851, height: 393 });
   await page.waitForFunction(
     () => document.documentElement.classList.contains("ml-land") && !document.querySelector(".ml-flip-veil"),
@@ -564,17 +557,13 @@ try {
   assertStack(g7, "right-handed landscape");
   assertPill(g7, "right-handed landscape");
 
-  // ── 8. left-handed landscape: the row under the XP chip here too (maintainer
-  //    2026-09-19: "Left-handed landscape mode has still not placed the
-  //    wiki+search under the XP-card"), the pill under the button here too ──
+  // ── 8. left-handed landscape: the same two anchors (assertStack checks the
+  //    row against the HP card, assertPill the pill against the XP card) ──
   await page.evaluate(() => window.__ml.hand("left"));
   await page.waitForTimeout(800);
   const g8 = await rects();
   assertStack(g8, "left-handed landscape");
-  assertPill(g8, "left-handed landscape"); // …the pill hangs under the button in every placement
-  g8.btn && g8.xp && near(g8.btn.t, g8.xp.b + 10, 2) && near(g8.btn.r, g8.xp.r, 2)
-    ? ok(`left-handed landscape: the row hangs under the XP chip (top ${g8.btn.t.toFixed(0)} = chip bottom ${g8.xp.b.toFixed(0)} + 10, right edges ${g8.btn.r.toFixed(0)}/${g8.xp.r.toFixed(0)})`)
-    : fail(`left-handed landscape: row ${JSON.stringify(g8.btn)} vs XP chip ${JSON.stringify(g8.xp)} — want it under the chip`);
+  assertPill(g8, "left-handed landscape");
   await page.evaluate(() => window.__ml.hand("right"));
 
   // ── 8b. HIS OWN PHONE — 495x1111, MEASURED, NOT ASSUMED ──────────────

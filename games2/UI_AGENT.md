@@ -89,73 +89,58 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   side the analog stick lives on, and in landscape which side the whole menu
   column takes. localStorage `ml-hand` + the "ml-hand" event; consumed by
   hud.ts (applyLayout + the Settings "controls" button) and gamepad.ts.
-- `client/src/spinbar.ts` — THE SPIN BAR: his rotating cube (the orb until
-  2026-09-26) between two arrow buttons, on the line directly under the HP/EP
-  card, with the Report button
-  one step below it (maintainer 2026-09-26). It SPANS THE CARD — `--bars-l-w`
-  is the card's measured outer width, so the left button lands on the card's
-  left edge and the right button on its right, and the orb centres between
-  them; the Report button clears it by `--ml-spin-step`, which this module
-  PUBLISHES so the two placements cannot disagree (and which falls back to 0,
-  putting Report back on the card's own line, if the bar is ever not mounted).
-  The buttons are the 🔍 square's clothes written out, not a shared class, so
-  `verify-spinbar` compares them against the LIVE `.ml-wikinear` — 11
-  properties — the same way `verify-recbtn` does for the Wiki pill. ONE bake
-  serves both: his 24x24 `Right_Arrow` export at `/ui2/icon-arrow.webp`, the
-  left button wearing it under `scaleX(-1)` ("one has to be flipped"); a second
-  file would be a second thing to keep in sync with his art.
-  **A STRIP, NEVER A GIF.** A GIF cannot be scrubbed — the browser owns its
-  clock — and this must run BACKWARDS on one of the two buttons ("you have to
-  play it backwards to get the other direction working"), so
-  `bake-corner-icons.py`'s `STRIPS` lays the frames in one horizontal 2x strip
-  and the CSS steps `background-position`. **NEVER TRIM A CLOSED LOOP.** His
-  export hands its last frame back to its first, so N frames are N authored
-  transitions; dropping one replaces two of them with a join covering twice
-  the rotation, and the seam lands exactly at the cut. An 8-of-9 trim shipped
-  on 2026-09-26 and he saw it the same day ("the rotation animation snaps at
-  the last frame") — that report also fixed the clip's span, because a full
-  360° per press would have read as a full spin rather than a seam. The strip
-  IS the quarter turn, all of it: a press plays `frames` steps and lands back
-  on frame 0. `verify-spinbar` counts his source GIF's own Graphic Control
-  Extension blocks and requires the strip to carry every one.
-  The count is read from the art (`naturalWidth / naturalHeight`), so a
-  re-aimed bake needs no code change. **HIS CUBE IS AT TRUE PIXEL SIZE**
-  (maintainer 2026-09-26: "I did the new cube bigger because the old cube
-  wasn't big enough" — one art pixel per point, chosen over the orb's 32 pt
-  slot): the bake crops his 64x64 export to the 44x44 that holds EVERY frame's
-  ink (asserted — a re-export that grows past it fails the bake) and doubles it,
-  so `ORB` 44 is natural/2, the box, the frame step and `background-size`; the
-  first paint is on the grid and nothing waits on a probe. The ROW is the
-  taller of the cube and a button (44), the arrows centre on it, and
-  `--ml-spin-step` follows, so Report drops with it. A re-export of another
-  size changes the crop and `ORB` together; `verify-spinbar` checks natural/2
-  against the decoded strip.
-  **THE TARGET IS BIGGER THAN THE BUTTON**: 25% on both axes (34 -> 42.5),
-  because these get pressed constantly and a misclick costs a turn (maintainer
-  2026-09-26). It is a negative-inset `::before`, so the PAINTED box stays the
-  🔍 square he asked for — a pseudo-element inherits the button's
-  pointer-events and paints nothing. 4.25px a side grows into the project's
-  10px margins and reaches neither the card above nor the Report button below,
-  which the gate asserts by `elementFromPoint` rather than by reading the CSS
-  back.
-  **TAPS ACCUMULATE ONTO AN UNWRAPPED TARGET; one loop travels the signed
-  distance to it** (maintainer 2026-09-26). A tap is not a queued animation —
-  it moves `targetF` by one quarter — and all four of his rules fall out of
-  that with no case of its own: a reverse tap mid-flight cancels on the target,
-  so the remaining distance flips sign and the next frame walks back ("change
-  animation direction immidiatly and go back to the original position"); taps
-  ACCUMULATE, so 2/3/4 of them are 180/270/360° of travel rather than a target
-  normalised to where it started; and the long way round is INEXPRESSIBLE,
-  because `targetF - curF` is the route ("always the shortest rotation towards
-  the goal"). Motion is rate-based off the rAF clock with `dt` clamped to
-  200 ms, so a backgrounded tab resumes instead of teleporting. Both positions
-  are reduced by a whole turn once it settles — same frame, same quarter, small
-  numbers — so a settled `-1` reads back as `3`; `ml-spin` fires ONCE per rest,
-  not once per tap, because four quick taps are one journey.
-  The orb is `pointer-events:none` with no role — "the gif should be in the
-  middle (not a button)". It drives nothing yet, deliberately: a press emits
-  `ml-spin` with the new quarter and direction, so whatever it ends up turning
-  subscribes without this module knowing about it. Probe `__mlSpin`.
+- `client/src/spinbar.ts` — THE COMPASS AND THE CUBE, CSS ONLY, and the SWIPE
+  that turns the view (maintainer 2026-09-26, his picks from ten rendered
+  designs: "I want the cube from B3 Pill medallion and the compass from A1
+  Faceted rose … It should also be in sync with the rotation"; "They should
+  look more like UI and less like game art"). No image anywhere: both are the
+  theme tokens, so they follow light/dark. THE COMPASS is the search button's
+  box (34 x 34, its border, radius and frosted glass) 10px LEFT of the pill on
+  its line, which lands it on the XP card's left edge and mirrors the Wiki row;
+  SUNKEN (inset shadow, no lift) because it is a gauge — nothing presses it,
+  so nothing can fail to respond. Inside: a dial with cardinal and diagonal
+  tick rings (masked conic gradients) and a two-tone needle, each half split
+  light/dark down its spine. The needle is a HEADING on a rose (up N, right
+  E): 90° a quarter. THE CUBE is a frosted 36px CSS 3D cube centred on
+  `#game` and level with the HP/XP cards, opacity 0 at rest, `.on` (FADE_MS
+  200) from a turn's start until FADE_HOLD_MS after it lands; its side faces
+  are shaded from their angle to a fixed light (`--lit`), a floor shadow
+  widens as a corner turns toward you, and a coral arc under it sweeps the
+  way it turns, led by a dot. Neither takes a touch.
+  **ONE NUMBER DRAWS BOTH, AND WHILE THE WORLD TURNS IT IS THE WORLD'S.**
+  `curQ` (quarters, unwrapped) sets the needle's `rotate()` and the cube's
+  `rotateY(45° + 90°·q)` in the same call; WorldScene publishes its angle every
+  frame on `ml-view-angle` ({q, goal, busy}) and `curQ = targetQ - (goal - q)`
+  is drawn in the listener, not a frame later (the world and a cube on its own
+  clock drifted apart: "it's not in sync with the cube rotation"). Only with
+  no world, or one silent for WORLD_STALE_MS, do they travel on their own
+  clock (QUARTER_MS 360).
+  **TURNS ACCUMULATE ONTO AN UNWRAPPED TARGET; one loop travels the signed
+  distance to it** (maintainer 2026-09-26). A turn moves `targetQ` by one,
+  and all four of his rules fall out of that: a reverse turn mid-flight
+  cancels on the target and the next frame walks back ("change animation
+  direction immidiatly and go back to the original position"); 2/3/4 turns
+  are 180/270/360° of travel; the long way round is INEXPRESSIBLE because
+  `targetQ - curQ` is the route. `dt` is clamped to 200 ms so a backgrounded
+  tab resumes instead of teleporting; both are reduced by a whole turn at
+  rest (a settled `-1` reads `3`); `ml-spin` fires ONCE per rest.
+  **THE TURN IS A SWIPE, AND IT ARMS ITSELF.** A quick sideways one-finger
+  swipe on the world (SWIPE_*) turns a quarter, left = clockwise on screen.
+  It is free because the ground move is a DOUBLE tap ("To navigate to a
+  position/marker the player will need to double tap! This frees up the
+  swipe input in the game view!"): `tapgesture.ts` is the ONE judge (350 ms /
+  48 css px, on the document's capture pointerdown), so a double tap's drag
+  is never a swipe. Until WorldScene gates its walk on it, a swipe would ALSO
+  start a walk, so the swipe turns nothing until the world asks
+  `isSecondTap()` — asking arms it (`walkIsDoubleTap()`); the swipe itself
+  reads `secondTapNow()`, which arms nothing. Back also turns (backturn.ts,
+  through `turnView()`). Two hidden `.ml-spinbtn.left|right` twins stay
+  because WorldScene turns on a click inside them; a turn also emits
+  `ml-spin-tap` ({dir}). Probes `__mlSpin` (curQ/targetQ, needleDeg, cubeDeg,
+  cubeShown, swipeArmed, lastSwipe) and `__mlSpinTurn(±1)` (a turn exactly as
+  a swipe makes one). RETIRED 2026-09-26: his pixel-art cube strip
+  (`/ui2/spin-orb.webp`, still baked by `bake-corner-icons.py` and no longer
+  loaded) and the needle art, for the CSS pair.
 - `client/src/gamefreeze.ts` — puts the Phaser loop to sleep while a
   full-screen reader is over the world (today: the wiki drawer). The seam
   between `wikipanel.ts`, which asks, and `main.ts`, which registers the
@@ -196,9 +181,10 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/bake-tab-icons.py`, `scripts/bake-corner-icons.py` (all emit
   `.webp` — convert at the SOURCE, never as a build step: a Dockerfile
   conversion would add minutes to every deploy and bust the layer cache).
-- UI verify scripts: `scripts/verify-spinbar.mjs` (the spin bar: his two
-  edges, the orb centred and not a button, one mirrored bake, the quarter
-  arithmetic, landscape), `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
+- UI verify scripts: `scripts/verify-spinbar.mjs` (the compass left of the
+  pill at the search button's size and chrome, the cube centred and hidden at
+  rest, CSS only, the quarter arithmetic, both drawn from the world's angle,
+  the swipe armed by the world / double tap never a swipe, landscape), `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
   `scripts/verify-mobile.mjs`, `scripts/verify-landscape.mjs`,
   `scripts/verify-dropqty.mjs` (backpack ×N badges + the drop dialog, both
   orientations; the SERVER's count clamp is unit-tested in
@@ -1051,61 +1037,19 @@ from the games agent), #18 (title/landing screen).
   Spacing should be the same."). `hud.ts` publishes `--bars-l-w` / `--bars-r-w`
   by MEASURING the two cards in `applyLayout` — bars.ts is the games agent's
   and publishes only its heights, and measuring is what lets all of this follow
-  any width they choose with no change here. Then: the Report pill is
-  `--bars-l-w` wide (both edges flush with the HP/EP card); the 🔍 keeps its
-  32px square and takes the card's LEFT edge; the Wiki pill takes the
-  remainder, `--bars-r-w - 44 - 2`, so the row spans the XP card exactly with
-  the one 10px gap between them. Every `-2px` is a button's own borders, which
-  sit outside a content-box width. **THE ROW GOES DIRECTLY UNDER THE CHIP** —
-  "we once again must place the wiki and search over the time-of-day pill",
-  because a row that is the card's width has to TOUCH the card or its
-  alignment is invisible. (This swapped to pill-first earlier the same day and
-  back again within the hour; the second verdict carries the reason, so it is
-  the one that stands.) EVERY PLACEMENT, BOTH HANDS: left-handed landscape
-  kept the game view's bottom corner for the row until 2026-09-19
-  (maintainer: "Left-handed landscape mode has still not placed the
-  wiki+search under the XP-card"); that corner holds no chrome since the pill
-  went top-centre, so `wikibtn.ts` / `wikinear.ts` carry ONE `top` anchor in
-  the base rule — no orientation or hand rule at all — and no corner is the
-  row's anywhere.
-  THE PILL IS NO LONGER PART OF THIS. It was the row's twin for six weeks —
-  same box, same right edge, one `--ml-stack-step` apart, in an order that
-  flipped with the anchor — and on 2026-09-19 it went to the view's centre and
-  took none of that with it. `assertStack` lost its `rowFirst` argument the
-  same day: a parameter that exists to describe a relationship outlives its
-  purpose the moment the relationship does.
-  **AND THE TWO CARDS ARE THE SAME HEIGHT** (maintainer 2026-09-19, both card
-  bottoms drawn on a screenshot: "the gold however is not as tall as EP so the
-  two cards have different size. This makes all UI elements under the card
-  un-aligned"). The gold row was 16px against a bar row's 26.3, so the XP card
-  was short and everything anchored under it inherited the difference. ONE
-  declaration in `bars.ts` — the games agent's file, claimed and announced on
-  both boards — gives `.ml-gold-row` a `min-height` written from the bar row's
-  own three terms (10px border-box gauge + 2px number margin + 11px/1.3 line),
-  never a rounded literal. `verify-recbtn` asserts THE TWO CARDS ARE EQUAL in
-  height and top, so that number is held to a real bar row.
-  STILL OPEN, and NOT OURS: the cards are 148px wide in portrait and 192 in
-  landscape (`.ml-bar-row` 126/170 with a `min-width:700px` override in
-  `bars.ts`). He wants ONE width in both, between the two; posted to games
-  2026-09-19 with the exact line. Nothing here needs touching when they ship
-  it — the vars are measured. `wikibtn.ts`,
-  `wikinear.ts`: `top: safe-top + --bars-r-h + 20px` in the base rule and no
-  `bottom` anywhere — one anchor for every placement since 2026-09-19: the
-  row directly under the chip in portrait and in landscape with either hand
-  (the left hand joined last, on his report), the pill one step under the
-  row again since 2026-09-20 (clock.ts). The keyboard lift (`hud.ts :root.ml-kb-up`) writes
-  `bottom` on the chat log, the chat input and (through `--ml-pad-floor`,
-  gamepad.ts) the ghost stick, and nothing else; the row's own lift rules
-  went with its last bottom anchor, so the keys move nothing of it —
-  `verify-chatpage`
-  AND `verify-wikibtn` assert the row and the pill stay put (the latter still
-  demanded they RISE and had been red on main since the stack moved top-right
-  on 2026-09-17: two of our own gates contradicting each other, fixed
-  2026-09-19 in favour of the law); `verify-chat` asserts the row's right
-  gap is the chat's left gap and the pill hangs one step under the row;
-  `verify-landscape` asserts the portrait return. `chat.ts`'s `--ml-chatw` lane
-  (games agent's) still reserves the old row's width on the log's line; harmless,
-  posted to games.
+  any width they choose with no change here. THE WIKI ROW HANGS UNDER THE
+  HP/EP CARD (maintainer 2026-09-26: "The wiki + wiki search should be placed
+  on the left side under the hp card with the search on the right side instead
+  of left side"): the Wiki pill on the card's left edge taking the remainder,
+  `--bars-l-w - 44 - 2`, the 🔍 32px square on its RIGHT edge, one 10px gap
+  between them, 10px under the card; the Report pill (`--bars-l-w` wide) one
+  `--ml-stack-step` below the row. THE PILL hangs directly under the XP card
+  on its right edge, the card's width less 44, and the COMPASS (spinbar.ts)
+  takes those 44 — the search button's 34 and one gap — on the pill's left,
+  so the right row mirrors the Wiki row. Every `-2px` is a button's own borders,
+  which sit outside a content-box width. ONE `top`/`left` anchor per element
+  in the base rule — every orientation, both hands (`--gv-left`/`--gv-right`
+  move them with the game view).
 - HUD geometry: `applyLayout()` publishes `--hud-h`/`--hud-h-inv` in REAL px
   (consumers parseFloat them — keyboard lift, chat anchors). The split must
   keep matching `#game`'s 61.8/38.2.
@@ -1117,9 +1061,9 @@ from the games agent), #18 (title/landing screen).
 - Movement-timing e2e stays on small viewports (headless-GL starvation);
   UI screenshots use the real phone geometry — the two never mix.
 - **THE WIKI BUTTON** (`wikibtn.ts`, maintainer 2026-08-13, placements from
-  his three red-circled shots): pill-sized (80x32+border); since 2026-09-19
-  the row hangs under the XP chip in every placement and the pill is
-  top-centred (the row law above). ONE order everywhere, including over the
+  his three red-circled shots): pill-sized (80x32+border); since 2026-09-26
+  the row hangs under the HP/EP card in every placement and the pill under the
+  XP card (the row law above). ONE order everywhere, including over the
   phone keyboard — chrome that reorders when the keys come up reads as a bug.
   THE STEP IS PUBLISHED, NOT COPIED: `--ml-stack-step` is declared once by
   wikibtn.ts (that button's own outer height + the 10px gap) and read by

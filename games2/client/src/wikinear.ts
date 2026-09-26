@@ -174,20 +174,20 @@ function injectStyles(): void {
   const s = document.createElement("style");
   s.textContent = `
   /* The Wiki button's rules (wikibtn.ts), and a square — the pill's height on
-     both sides. ITS LEFT EDGE IS THE CARD'S LEFT EDGE (maintainer 2026-09-19:
-     "we want the search button to left align with the cards left edge and not
-     the wiki button"), so it is inset by the card's own width less its own
-     outer width: --bars-r-w - (34 + 10) + 10 = --bars-r-w - 24. The Wiki
-     button takes the remainder, which is what makes IT the one that grows. */
-  .ml-wikinear{position:fixed;right:calc(var(--gv-right,0px) + var(--bars-r-w, ${PILL_H + 2 + 10 + 80 + 2}px) - 24px);
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);z-index:8;
+     both sides. ITS RIGHT EDGE IS THE HP CARD'S RIGHT EDGE (maintainer
+     2026-09-26: "with the search on the right side instead of left side"):
+     the card's left + its width less this square's outer 34px. The Wiki
+     button takes the rest of the card, which is what makes IT the one that
+     grows. */
+  .ml-wikinear{position:fixed;left:calc(var(--gv-left,0px) + 10px + var(--bars-l-w, ${PILL_H + 2 + 10 + 80 + 2}px) - ${PILL_H + 2}px);
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-l-h, 78px) + 20px);z-index:8;
     width:${PILL_H}px;height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
     box-shadow:var(--shadow);cursor:pointer;
     display:flex;align-items:center;justify-content:center;
     background:color-mix(in srgb, var(--bg) 76%, transparent);
     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
-    color:var(--ink);transition:right .3s ease,top .3s ease;
+    color:var(--ink);transition:left .3s ease,top .3s ease;
     -webkit-tap-highlight-color:transparent;user-select:none}
   .ml-wikinear-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikinear.press,.ml-wikinear:active{transform:scale(.96)}

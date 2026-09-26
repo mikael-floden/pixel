@@ -125,58 +125,34 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
     : fail(`--bars-l-h ${cards.varL} vs --bars-r-h ${cards.varR}`);
 }
 
-// ── 2. THE SAME MARGIN, MIRRORED, AND THE CARD'S OWN EDGE ─────────────────
+// ── 2. THE CARD'S OWN EDGE, AND ONE MARGIN UNDER THE WIKI ROW ────────────
+// Since 2026-09-26 the Wiki row hangs under the HP/EP card (maintainer: "The
+// wiki + wiki search should be placed on the left side under the hp card") and
+// this button hangs one margin under the row.
 {
   const m = await page.evaluate(() => {
     const r = document.querySelector(".ml-rec").getBoundingClientRect();
     const w = document.querySelector(".ml-wikibtn").getBoundingClientRect();
     const card = document.querySelector(".ml-bars-l").getBoundingClientRect();
-    const barEl = document.querySelector(".ml-spinbar");
-    const bar = barEl ? barEl.getBoundingClientRect() : null;
     const cs = getComputedStyle(document.documentElement);
     const px = (v) => parseFloat(cs.getPropertyValue(v)) || 0;
     return {
       left: Math.round(r.left - px("--gv-left")),
-      wikiRight: Math.round(innerWidth - px("--gv-right") - w.right),
       cardLeft: Math.round(card.left), recLeft: Math.round(r.left),
-      belowCard: Math.round(r.top - card.bottom),
-      // SINCE 2026-09-26 the spin bar holds the line directly under the card
-      // (spinbar.ts) and this button hangs under IT. The law is unchanged —
-      // one margin, everywhere — so it is measured against whatever is
-      // actually above: the bar when it is mounted, the card when it is not.
-      barTop: bar ? Math.round(bar.top) : null,
-      barBottom: bar ? Math.round(bar.bottom) : null,
-      barLeft: bar ? Math.round(bar.left) : null,
-      barRight: bar ? Math.round(bar.right) : null,
-      cardRight: Math.round(card.right),
-      belowBar: bar ? Math.round(r.top - bar.bottom) : null,
-      barBelowCard: bar ? Math.round(bar.top - card.bottom) : null,
+      wikiLeft: Math.round(w.left),
+      rowBelowCard: Math.round(w.top - card.bottom),
+      belowRow: Math.round(r.top - w.bottom),
     };
   });
-  m.left === m.wikiRight
-    ? ok(`the same margin, mirrored: ${m.left}px inside the game view's left edge, the Wiki pill ${m.wikiRight}px inside its right`)
-    : fail(`margins differ: Report ${m.left}px from the left, Wiki ${m.wikiRight}px from the right`);
-  Math.abs(m.recLeft - m.cardLeft) <= 1
-    ? ok(`its left edge lines up with the HP/EP card's (${m.recLeft} vs ${m.cardLeft})`)
-    : fail(`Report at x=${m.recLeft}, the card at x=${m.cardLeft} — they must share an edge`);
-  // ONE MARGIN, EVERYWHERE — now across a two-row stack. The spin bar hangs
-  // its margin under the card and this button hangs its margin under the bar;
-  // with no bar mounted the old single gap is the same assertion.
-  const above = m.barBottom === null ? "the card" : "the spin bar";
-  const gap = m.barBottom === null ? m.belowCard : m.belowBar;
-  gap === m.left
-    ? ok(`and it hangs the same ${gap}px under ${above} as it keeps to the edge`)
-    : fail(`gap under ${above} ${gap}px, edge margin ${m.left}px — one margin, everywhere`);
-  if (m.barBottom !== null) {
-    m.barBelowCard === m.left
-      ? ok(`the spin bar keeps that one margin too: ${m.barBelowCard}px under the card`)
-      : fail(`the spin bar sits ${m.barBelowCard}px under the card, edge margin ${m.left}px`);
-    // HIS TWO EDGES (2026-09-26: "The left button should align with the card
-    // left. The right button should align with the card right.")
-    Math.abs(m.barLeft - m.cardLeft) <= 1 && Math.abs(m.barRight - m.cardRight) <= 1
-      ? ok(`and it spans the card exactly: ${m.barLeft}-${m.barRight} against the card's ${m.cardLeft}-${m.cardRight}`)
-      : fail(`spin bar ${m.barLeft}-${m.barRight}, card ${m.cardLeft}-${m.cardRight} — both edges must match`);
-  }
+  m.left === 10
+    ? ok(`10px inside the game view's left edge`)
+    : fail(`Report ${m.left}px from the game view's left edge, want 10`);
+  Math.abs(m.recLeft - m.cardLeft) <= 1 && Math.abs(m.recLeft - m.wikiLeft) <= 1
+    ? ok(`its left edge lines up with the HP/EP card's and the Wiki button's (${m.recLeft} vs ${m.cardLeft}, ${m.wikiLeft})`)
+    : fail(`Report at x=${m.recLeft}, the card at x=${m.cardLeft}, Wiki at x=${m.wikiLeft} — they must share an edge`);
+  m.rowBelowCard === m.left && m.belowRow === m.left
+    ? ok(`one margin, everywhere: the Wiki row ${m.rowBelowCard}px under the card, this ${m.belowRow}px under the row`)
+    : fail(`gaps: Wiki row ${m.rowBelowCard}px under the card, Report ${m.belowRow}px under the row, edge margin ${m.left}px — one margin, everywhere`);
 }
 
 // ── 3. HIS ICON, DECODED, AT ITS AUTHORED GRID; THE LABEL FITS ────────────

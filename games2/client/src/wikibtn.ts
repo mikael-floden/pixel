@@ -3,26 +3,15 @@
  * reachable only from the select screen; in the world it gets a button in the
  * chrome, sized and anchored off the XP card it hangs from.
  *
- * WHERE THE ROW LIVES — two placements:
- * - PORTRAIT and RIGHT-HANDED LANDSCAPE: TOP-right, directly under the XP
- *   chip, as wide as it (maintainer 2026-09-19: "the wiki button should also
- *   align with the card over it"). A row as wide as the card has to TOUCH the
- *   card, or the alignment it was given is invisible. Top-anchored, so the
- *   keyboard lift below is over-constrained and ignored — the row is nowhere
- *   near the keys. The bottom corner is the ghost stick's (gamepad.ts) in
- *   portrait and the thumb stick's in landscape.
- * - LEFT-HANDED LANDSCAPE: the bottom corner is free (the stick is bottom-
- *   left), so this row takes the corner anchor, and the keyboard lift moves
- *   it.
- * THE TIME-OF-DAY PILL HANGS ONE --ml-stack-step UNDER THIS BUTTON, AS WIDE
- * AS IT (maintainer 2026-09-20: "once again place the time-of-day pill under
- * the wiki button and make it the same size as the wiki button … It doesn't
- * look good when it's at the top"). The dependency runs ONE way: clock.ts
- * measures this button's box and steps by the --ml-stack-step published
- * below; nothing here reads the pill's geometry, so the row moves the pill
- * and the pill can never move the row. (The two were a stack that moved
- * together from 2026-08-13, parted on 2026-09-19 when the pill went to the
- * top centre of the view, and are a stack again — this time the row leads.)
+ * WHERE THE ROW LIVES: TOP-LEFT, directly under the HP/EP card, as wide as
+ * it, the Wiki button on the card's left edge and the 🔍 (wikinear.ts) on its
+ * RIGHT edge (maintainer 2026-09-26: "The wiki + wiki search should be placed
+ * on the left side under the hp card with the search on the right side
+ * instead of left side"). Every orientation and both hands — the card's own
+ * anchor (--gv-left) moves it. The Report button (recbtn.ts) hangs one
+ * --ml-stack-step under this row. Top-anchored, so the keyboard lift has
+ * nothing of it to lift. (It sat under the XP card 2026-09-19..26, with the
+ * pill hanging from it; the pill now hangs from the XP card itself, clock.ts.)
  *
  * Unlike the pill it is a real BUTTON (the pill is pass-through): it opens
  * the wiki drawer (wikipanel.ts), which now remembers where in the wiki you
@@ -95,17 +84,16 @@ function injectStyles(): void {
      everything keeps. Published from here because this row is the thing that
      defines it; read by anything that needs to sit a row away. */
   :root{--ml-stack-step:${PILL_STEP}px}
-  /* THE ROW IS THE CARD'S WIDTH, AND THIS BUTTON TAKES WHAT IS LEFT OF IT
-     (maintainer 2026-09-19: "the wiki button should also align with the card
-     over it… we want the search button to left align with the cards left edge
-     and not the wiki button. But the wiki button should be wider and not the
-     search button"). --bars-r-w is the XP card's measured width (hud.ts), NEAR_W
-     the 🔍 square and NEAR_GAP the one gap between them, so the two together
-     span exactly the card and the 🔍 lands on its left edge. The -2px is this
-     button's own borders, outside a content-box width. */
-  .ml-wikibtn{position:fixed;right:calc(var(--gv-right,0px) + 10px);
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);z-index:8;
-    width:calc(var(--bars-r-w, ${PILL_W + 2 + NEAR_W + NEAR_GAP}px) - ${NEAR_W + NEAR_GAP}px - 2px);
+  /* THE ROW IS THE HP CARD'S WIDTH, AND THIS BUTTON TAKES WHAT IS LEFT OF IT
+     (maintainer 2026-09-19: "the wiki button should be wider and not the
+     search button"). --bars-l-w is the HP/EP card's measured width (hud.ts),
+     NEAR_W the 🔍 square and NEAR_GAP the one gap between them, so the two
+     together span exactly the card: this button on its left edge, the 🔍 on
+     its right. The -2px is this button's own borders, outside a content-box
+     width. */
+  .ml-wikibtn{position:fixed;left:calc(var(--gv-left,0px) + 10px);
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-l-h, 78px) + 20px);z-index:8;
+    width:calc(var(--bars-l-w, ${PILL_W + 2 + NEAR_W + NEAR_GAP}px) - ${NEAR_W + NEAR_GAP}px - 2px);
     height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
     box-shadow:var(--shadow);cursor:pointer;
@@ -113,18 +101,12 @@ function injectStyles(): void {
     background:color-mix(in srgb, var(--bg) 76%, transparent);
     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
     font:600 12px var(--sans);letter-spacing:.03em;color:var(--ink);
-    transition:right .3s ease,top .3s ease;
+    transition:left .3s ease,top .3s ease;
     -webkit-tap-highlight-color:transparent;user-select:none}
   .ml-wikibtn-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikibtn.press,.ml-wikibtn:active{transform:scale(.96)}
-  /* ONE ANCHOR IN EVERY PLACEMENT: directly under the XP chip — chip bottom
-     (--ml-safe-top the cutout inset it sits under, --bars-r-h its measured
-     height) + the 10px margin — because the row has to TOUCH the card it is
-     as wide as. Both orientations, both hands: left-handed landscape was the
-     last placement to keep the game view's bottom corner instead (maintainer
-     2026-09-19: "Left-handed landscape mode has still not placed the
-     wiki+search under the XP-card"), and that corner holds no chrome since
-     the pill hangs under this row instead (clock.ts). Both are top-anchored,
-     so the keyboard lift (.ml-kb-up) has nothing of either to lift. */`;
+  /* ONE ANCHOR IN EVERY PLACEMENT: directly under the HP/EP card — card
+     bottom (--ml-safe-top the cutout inset it sits under, --bars-l-h its
+     measured height, 10px its own top margin) + the 10px margin. */`;
   document.head.appendChild(s);
 }

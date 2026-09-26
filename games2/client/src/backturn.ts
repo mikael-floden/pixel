@@ -36,6 +36,8 @@
 //    own animation (the card shrink, the white status bar) is drawn outside
 //    the page and cannot be stopped from here.
 
+import { turnView } from "./spinbar";
+
 const EDGE_PX = 48;
 const EDGE_MS = 1500;
 const NOTE_MS = 6000;
@@ -135,7 +137,7 @@ export function mountBackTurn(): void {
       el = document.createElement("div");
       el.id = "ml-backturn";
       el.style.cssText =
-        "position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--ml-safe-top,0px) + 10px);z-index:9999;" +
+        "position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--ml-safe-top,0px) + 64px);z-index:9999;" +
         "padding:6px 10px;border-radius:7px;border:1px solid var(--border-strong);" +
         "background:var(--surface);color:var(--ink);font:600 13px/1.3 system-ui,sans-serif;" +
         "box-shadow:var(--shadow);pointer-events:none;white-space:pre-line;text-align:center;transition:opacity .25s";
@@ -157,7 +159,9 @@ export function mountBackTurn(): void {
     const w = window.innerWidth;
     const edge = d ? (d.x <= EDGE_PX ? "left" : w - d.x <= EDGE_PX ? "right" : null) : null;
     const dir: "left" | "right" = edge === "left" ? "right" : edge === "right" ? "left" : DEFAULT_DIR;
-    document.querySelector<HTMLElement>(`.ml-spinbtn.${dir}`)?.click();
+    // the cube and the needle turn with the world (spinbar.ts); the arrow's
+    // own click if no bar is up
+    if (!turnView(dir === "left" ? -1 : 1)) document.querySelector<HTMLElement>(`.ml-spinbtn.${dir}`)?.click();
     noteBase = edge ? `Back from the ${edge.toUpperCase()} edge → turned ${dir}` : `Back (edge not seen) → turned ${dir}`;
     note(noteBase);
   });

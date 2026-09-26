@@ -8,6 +8,12 @@
 // It judges on the document's CAPTURE pointerdown, which runs before the game
 // hears the touch (a pointerdown precedes Phaser's touch/mouse listeners and
 // any canvas listener), and only touch-downs on the game canvas count.
+//
+// THE SWIPE ARMS ITSELF. Until the world gates its ground walk on a double tap,
+// a swipe would also start a walk, so the turn must not fire. The world asks
+// `isSecondTap()` (WorldScene's pointerdown, and only there); the first time it
+// asks, `walkIsDoubleTap()` turns true and spinbar's swipe goes live. The swipe
+// reads `secondTapNow()`, which answers the same without arming anything.
 
 /** Longest gap between the two touch-downs. */
 export const DOUBLE_TAP_MS = 350;
@@ -29,7 +35,21 @@ function onDown(e: PointerEvent): void {
 if (typeof document !== "undefined")
   document.addEventListener("pointerdown", onDown, { capture: true, passive: true });
 
-/** Was the latest touch-down on the world the SECOND of a double tap? */
+let worldAsked = false;
+
+/** WORLDSCENE'S QUESTION: was the latest touch-down on the world the SECOND of
+ *  a double tap? Asking it is what arms the swipe (above). */
 export function isSecondTap(): boolean {
+  worldAsked = true;
   return second;
+}
+
+/** The same answer for everyone else (spinbar's swipe): arms nothing. */
+export function secondTapNow(): boolean {
+  return second;
+}
+
+/** Does the world walk on a double tap yet? */
+export function walkIsDoubleTap(): boolean {
+  return worldAsked;
 }

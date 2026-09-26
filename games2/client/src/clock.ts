@@ -295,24 +295,19 @@ function mount() {
   if (root) return;
   const style = document.createElement("style");
   style.textContent = `
-  /* UNDER THE WIKI BUTTON, AS WIDE AS IT (maintainer 2026-09-20: "once again
-     place the time-of-day pill under the wiki button and make it the same
-     size as the wiki button (same width as only the wiki button, not wiki +
-     search). It doesn't look good when it's at the top"). It shares the
-     button's right edge — the button's own anchor, --gv-right + 10px — and
-     hangs one --ml-stack-step (the button's outer height + the 10px gap,
-     published by wikibtn.ts) under the row's top, in every orientation and
-     both hands: the row's anchor is the one anchor there is (wikibtn.ts), so
-     the row moves the pill and never the other way round. Top-anchored, so
-     the keyboard lift has nothing of it to lift. right/top transition like
-     the button's, so a hand flip moves the two together; :root.ml-noanim
-     (hud.ts) freezes both through a rotation.
+  /* DIRECTLY UNDER THE XP CARD, RIGHT-ALIGNED WITH IT (maintainer 2026-09-26:
+     the Wiki row moved to the left column, so the pill takes the line under
+     the XP card it used to share with it). Same width as before — the XP
+     card's less the 🔍 square and its gap (maintainer 2026-09-20: "same width
+     as only the wiki button, not wiki + search"), set by fitPill from the
+     card's measured box. right/top transition, so a hand flip slides it;
+     :root.ml-noanim (hud.ts) freezes it through a rotation.
      The width is set from JS (fitPill) rather than calc()ed here, because it
      has to land on WHOLE art pixels — CSS cannot round, and a half-pixel box
      under a pixelated canvas is the smear this whole design exists to avoid.
      What is here is the first-frame fallback. */
   .ml-clock{position:fixed;right:calc(var(--gv-right,0px) + 10px);
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);
     z-index:8;width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
     pointer-events:none;box-sizing:content-box;
     border:1px solid var(--border-strong);box-shadow:var(--shadow);
@@ -343,27 +338,28 @@ function mount() {
  * THE PILL'S WIDTH IS THE WIKI BUTTON'S, IN WHOLE ART PIXELS — the one
  * function that stops this being a stretch.
  *
- * It MEASURES the button's box (another element, so no feedback loop — the
- * rule against reading a rect is about the pill's OWN, which this is about
- * to resize) rather than restating the button's calc() of the XP card's
- * width: one source, and the day the button's box changes the pill follows
- * it. The button's content width (its rect minus its two 1px borders) is
- * floored to a WHOLE art pixel and the box is then exactly `aw * SCALE` css
- * px, so one art pixel is always exactly SCALE css px and the canvas's
- * backing store can never disagree with its box — a disagreement is
- * precisely the smearing he was afraid of. Floored, not rounded: an odd
- * content width leaves the pill 1 css px narrower than the button, on the
- * shared right edge, never half an art pixel wider. The height is AH * SCALE
- * = 32 = the button's content height (wikibtn.ts PILL_H): the two are the
- * same height by construction, and the gate asserts it against both rects.
+ * It MEASURES the XP card's box (another element, so no feedback loop — the
+ * rule against reading a rect is about the pill's OWN, which this is about to
+ * resize): the card less the 🔍 square + gap (PILL_NEAR) and the pill's own
+ * two 1px borders is the content width the Wiki button had when the two
+ * shared this line. It is floored to a WHOLE art pixel and the box is then
+ * exactly `aw * SCALE` css px, so one art pixel is always exactly SCALE css
+ * px and the canvas's backing store can never disagree with its box — a
+ * disagreement is precisely the smearing he was afraid of. The height is
+ * AH * SCALE = 32 = the Wiki button's content height (wikibtn.ts PILL_H).
  *
- * Before the button is in the document this draws at AW; the HUD's layout
+ * Before the card is in the document this draws at AW; the HUD's layout
  * pass after it mounts fires `ml-layout` and this refits.
  */
+/** The 🔍 square's outer width + the gap beside it (wikinear.ts). */
+const PILL_NEAR = 34 + 10;
 function fitPill() {
   if (!root || !cv) return;
-  const btn = document.querySelector<HTMLElement>(".ml-wikibtn");
-  const inner = btn ? btn.getBoundingClientRect().width - 2 : AW * SCALE;
+  // the XP card less the 🔍 square + its gap (34 + 10) and the pill's own 2px
+  // of border: the width the Wiki button had when it shared this line
+  const card = document.querySelector<HTMLElement>(".ml-bars-r");
+  const cw = card?.getBoundingClientRect().width ?? 0;
+  const inner = cw ? cw - PILL_NEAR - 2 : AW * SCALE;
   const w = Math.max(AW, Math.floor(inner / SCALE));
   root.style.width = `${w * SCALE}px`;
   if (w === aw) return;
