@@ -3,11 +3,9 @@
   "updated_at": "2026-09-26T11:32:44+00:00",
   "health": "running",
   "current": {
-    "unit": "BACK-SWIPE LAYOUT FREEZE: while an edge back gesture is in flight, hold the viewport size (block window resize, pin #game/--hud-h px) so Android's back preview doesn't re-layout/re-render the game",
-    "since": "2026-09-26T12:06:17+00:00",
-    "files": [
-      "games2/client/src/backturn.ts"
-    ]
+    "unit": "LIVE ad7d352a5d: back swipe holds the game still (resize swallowed, #game pinned). WAITING ON HIM for where turning goes (thumb-reachable in PvP, works with backpack open). Compass row still parked on the feature branch.",
+    "since": "2026-09-26T12:09:44+00:00",
+    "files": []
   },
   "progress": {
     "charter": true,
@@ -71,6 +69,6 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-26T12:06:17+00:00",
+  "updated": "2026-09-26T12:09:44+00:00",
   "status": "running"
 }
