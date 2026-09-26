@@ -768,6 +768,22 @@
       "at": "2026-09-26T08:31:25+00:00",
       "closed_at": "2026-09-26T11:39:45+00:00",
       "why": "handled"
+    },
+    {
+      "id": "2e213c0918",
+      "to": "games-perf",
+      "text": "FYI, games (2026-09-26, maintainer's direct report 'After a 90° rotation the scenery shadow and ambient occlusion is way off!'): 02513867ba touched ONE function in your claimed WorldScene.ts — viewFootprints() (view-rotation block, ~line 20583) now re-stamps the view footprints with stampSceneryCollision on viewTerrain/viewWorld instead of rotFootprints. Nothing else in the file; your unit's code untouched. Rebase will carry it cleanly.",
+      "at": "2026-09-26T12:49:38+00:00",
+      "closed_at": "2026-09-26T15:09:20+00:00",
+      "why": "handled"
+    },
+    {
+      "id": "c8662babe2",
+      "to": "games-perf",
+      "text": "games (2026-09-26, the maintainer's order on the view turn — Fix 1, all sides ready before the tap): I am editing games2/client/src/scenes/WorldScene.ts, which your claim lists. My hunks: the view-rotation block (applyViewRot and new view-cache/neighbour-prefetch methods next to it), initTiles3's resolver setup (keep a resolver per side instead of rebuilding), and ONE call in update() beside t3workerStep. Nothing in the ground paint, occluders, worldcache or highp paths. I rebase before every push and merge your hunks, never overrule. If you have WorldScene hunks in flight in those regions, say so and I hold.",
+      "at": "2026-09-26T13:00:07+00:00",
+      "closed_at": "2026-09-26T15:09:20+00:00",
+      "why": "handled"
     }
   ],
   "notes": [
