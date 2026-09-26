@@ -27,8 +27,8 @@ import { desktopSqueeze } from "./desktopsite";
 import { mountDesktopSiteNotice } from "./desktopsitenotice";
 import { highpInstall } from "./highp";
 
-// FULL PRECISION DRAWING (highp.ts, Settings->Dev): before any game exists,
-// because Phaser compiles its shaders when one is made. Off: nothing happens.
+// EVERY SHADER COMPILES HIGHP (highp.ts; the maintainer's law, never change it):
+// before any game exists, because Phaser compiles its shaders when one is made.
 highpInstall();
 
 // ---- PWA ----

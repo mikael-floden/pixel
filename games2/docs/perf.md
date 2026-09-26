@@ -613,43 +613,27 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   bake's law, below): Settings→Dev "draw: multi-texture batches" (Phaser takes
   it at boot: the next load), `?multipipe=1`; `counts.mainUnits` says which
   arm a window ran (1 mobile, 16 multi; perf-read's `u`).
-- **PHASER'S VERTEX STAGE IS 16-BIT ON HIS PHONE; EVERY SHADER CAN BE COMPILED
-  HIGHP** (`highp.ts`, 2026-09-26; maintainer: "I actually think this is the
-  reason we have shimmering in the game and the reason we have needed to make
-  tiles larger than they should need to be"). All seven of Phaser 3.90's
-  vertex shaders, and 31 of its 34 shader sources, say `precision mediump
-  float`; GLSL ES lets that be 16-bit and his Mali-G715 runs it at 16, so a
-  quad's corners land up to ~0.9 px off on a 1500 px target and its UVs round
-  to 1/2048 of the atlas (the cache seams were exactly this; worldcachegl.ts).
-  HEADLESS NEVER SEES IT: SwiftShader and desktops run mediump at 32 bits. ON
-  (Settings→Dev "draw: full precision", `ml-highp` "1", the next load):
-  `shaderSource` rewrites every mediump/lowp float precision to highp, vertex
-  and fragment alike (a uniform both stages declare must agree or the program
-  does not link), only where HIGH_FLOAT has >= 23 bits; a rewritten shader
-  that fails to compile, or a program that fails to link, gets its own source
-  back (it is read at boot, and a boot that fails never reaches the Dev page
-  that turns it off; `server/test/highp.test.ts`). Headless off vs on at
-  314.8,251.7: 64 shaders in 10 pipelines compiled highp, every program
-  linked, the forced full ground paint (1508x1746) identical row for row
-  (`highp-probe.mjs` in the session scratch). OPT-IN until his phone
-  shows the shimmer and the frame with it; `counts.highp` says which arm a
-  window ran. If it clears the shimmer, the overlaps that hide the error (the
-  tile art's extra texel, the outline's extra column) become removable —
-  theirs (games, tiles), on his evidence. HIS VERDICT 2026-09-26: the cache
-  seams are gone, the shimmer is not.
-- **BETWEEN WHOLE ZOOMS EVERY OBJECT MEETS THE SCREEN'S PIXELS ON ITS OWN**
-  (Settings→Dev "camera: steady zoom", `ml-steady-zoom` "1", `counts.steadyZoom`;
-  2026-09-26, his shimmer while moving and indoor furniture that "doesn't stand
-  steady on the floor"). The speed zoom-out (`CAM_ZOOM_OUT` 0.32, his
-  "stronger", twice) breathes through fractional zooms whenever he moves (his
-  12:16 run: 1.36, 1.98). There Phaser 3.90 turns `renderRoundPixels` off (it
-  needs an integer zoom) while it still floors every sprite's world position,
-  so the ground RT (one image) and each sprite quantize to device pixels
-  separately and a half-pixel origin wobbles a pixel against the floor as the
-  camera moves; full precision cannot touch it. The switch holds the zoom at
-  its resting whole value — his A/B; the fix that keeps the zoom-out (the world
-  drawn at the whole zoom, the finished frame scaled) costs fill while he runs
-  and is his call after it.
+- **EVERY SHADER COMPILES HIGHP — HIS LAW, NEVER CHANGE IT** (`highp.ts`,
+  installed in main.ts before any game exists; maintainer 2026-09-26 on his
+  phone: "draw: full precision ON WORKS! NO Shimmer!" ... "this should not be
+  changed"). All seven of Phaser 3.90's vertex shaders, and 31 of its 34
+  shader sources, say `precision mediump float`; GLSL ES lets that be 16-bit
+  and his Mali-G715 runs it at 16, so a quad's corners land up to ~0.9 px off
+  on a 1500 px target and its UVs round to 1/2048 of the atlas: the cache
+  seams (worldcachegl.ts), the shimmer while moving, and the 1 px overlaps the
+  tiles grew to hide them. HEADLESS NEVER SEES IT: SwiftShader and desktops run
+  mediump at 32 bits. `shaderSource` rewrites every mediump/lowp float
+  precision to highp, vertex and fragment alike (a uniform both stages declare
+  must agree or the program does not link), wherever HIGH_FLOAT has >= 23
+  bits; a rewritten shader that fails to compile, or a program that fails to
+  link, gets its own source back (`server/test/highp.test.ts`), so highp can
+  never cost the game a shader. Headless at 314.8,251.7: 64 shaders in 10
+  pipelines compiled highp, every program linked, the forced full ground
+  paint identical row for row to mediump's. `counts.highp` is 0 only on a GPU
+  without 32-bit fragment floats; `counts.highpBack` counts given-back
+  shaders. NOT THE SPEED ZOOM-OUT: a steady-zoom switch was his A/B beside it
+  the same day (between whole zooms Phaser stops rounding quad corners);
+  precision alone cleared the shimmer, and both switches are gone.
 - **THE RECORDER NEVER STALLS THE GAME IT MEASURES** (maintainer 2026-09-25:
   "I can't have a lag that is due to the perf run itself when I try to
   evaluate the performance... This might result in me pushing you to fix the

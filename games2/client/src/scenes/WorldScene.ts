@@ -153,7 +153,7 @@ import { frameHist, rafHz, quantiles, inputSummary, sectionGroup, sortedNums } f
 import { releaseImagesOnComplete } from "../loaderrelease";
 import { installBatchPatch } from "../batchpatch";
 import { mainBatchUnits, multiPipeState, multiPipeStored, setMultiPipe } from "../multipipe";
-import { highpRunning, highpState, highpStored, setHighp } from "../highp";
+import { highpCounts, highpRunning } from "../highp";
 import { installLoaf, loafTake, loafRing, type LoafSplit } from "../perfloaf";
 import { shapeWorst } from "../perfshape";
 import { gapArm, gapBill, gapOn, gapFrameTake, gapWindowTake } from "../gapledger";
@@ -3293,10 +3293,11 @@ export class WorldScene extends Phaser.Scene {
         sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
         // Textures a batch of the world's pipeline holds: 1 = Phaser's mobile default, 16 = multipipe.ts.
         mainUnits: mainBatchUnits(this.game.renderer),
-        // 1 = every shader compiled highp (highp.ts), 0 = Phaser's own precisions.
+        // 1 = every shader compiled highp (highp.ts; 0 only on a GPU without 32-bit
+        // fragment floats), and the rewritten shaders given back after a failed
+        // compile or link since boot (0 everywhere so far).
         highp: highpRunning() ? 1 : 0,
-        // 1 = the speed zoom-out held at the resting whole zoom (camera: steady zoom).
-        steadyZoom: this.steadyZoom ? 1 : 0,
+        highpBack: highpCounts().back,
         // CACHE WORLD RENDERING (worldcache.ts): on, tiles held here, MB, cells
         // the paints skipped and pictures taken this window, a take's worst ms
         ...this.wcCountsTake(),
@@ -4530,20 +4531,6 @@ export class WorldScene extends Phaser.Scene {
    *  sort was rejected here 2026-09-12: 1.05 ms/frame against Phaser's 0.85 —
    *  it re-read every depth through a comparator.) */
   private fastSortOn = groundFlagOn("fastsort", "ml-fastsort");
-  /** STEADY ZOOM (Settings->Dev "camera: steady zoom", `ml-steady-zoom` "1";
-   *  off by default): the speed zoom-out is held at the resting whole zoom.
-   *  Between whole zooms Phaser stops rounding quad corners
-   *  (`renderRoundPixels` needs an integer zoom) while it still floors every
-   *  sprite's world position, so each object lands on the screen's pixels on
-   *  its own terms (camzoom.ts): his A/B for the shimmer while moving and the
-   *  furniture that does not stand still on the floor. */
-  private steadyZoom = ((): boolean => {
-    try {
-      return localStorage.getItem("ml-steady-zoom") === "1";
-    } catch {
-      return false;
-    }
-  })();
   private fastSorter = new FastDepthSort<{ _depth: number }>();
   /** Gate mode: after every fast sort, Phaser's sort of a copy, compared. */
   private sortParityOn = false;
@@ -6611,30 +6598,6 @@ export class WorldScene extends Phaser.Scene {
           act: () => setMultiPipe(!multiPipeStored()),
           get: () => mainBatchUnits(this.game.renderer) > 1,
           state: () => multiPipeState(mainBatchUnits(this.game.renderer) > 1, !this.game.device.os.desktop),
-        },
-        /* FULL PRECISION DRAWING (highp.ts, 2026-09-26): every shader compiled
-         * highp instead of Phaser's mediump, 16-bit on his Mali. His A/B for the
-         * shimmer; compiled at boot, so a press applies from the next load. */
-        {
-          label: "draw: full precision",
-          act: () => setHighp(!highpStored()),
-          get: () => highpRunning(),
-          state: () => highpState(),
-        },
-        /* STEADY ZOOM (2026-09-26): no speed zoom-out, so the camera never
-         * rests between whole zooms. Applies at once (the zoom eases back). */
-        {
-          label: "camera: steady zoom",
-          act: () => {
-            this.steadyZoom = !this.steadyZoom;
-            try {
-              localStorage.setItem("ml-steady-zoom", this.steadyZoom ? "1" : "0");
-            } catch {
-              /* no storage: this page only */
-            }
-          },
-          get: () => this.steadyZoom,
-          state: () => (this.steadyZoom ? "on: no zoom-out when moving" : "off"),
         },
         /* THE EDIT TOOL (see worldEdit): the tile "dropdown" cycles the world's
          * grounds; place/dig/raise act on the player's own cell. */
@@ -27917,7 +27880,7 @@ export class WorldScene extends Phaser.Scene {
       // Zoom breathes with WORLD speed (spdWu is the gait EMA — water
       // slowdowns and walk/run all scale it naturally).
       const k = Math.min(1, Math.max(0, (av.spdWu ?? 0) / CAM_ZOOM_REF_WU));
-      const zTarget = this.steadyZoom ? base : base * (1 - CAM_ZOOM_OUT * k);
+      const zTarget = base * (1 - CAM_ZOOM_OUT * k);
       const tau = zTarget < this.camChase.zoom ? CAM_ZOOM_TAU_OUT : CAM_ZOOM_TAU_IN;
       const za = 1 - Math.exp(-dt / tau);
       this.camChase.zoom += (zTarget - this.camChase.zoom) * za;

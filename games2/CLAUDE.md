@@ -78,6 +78,8 @@ push, no PRs unless asked.
   (`tiles3-fixture.py`); a rule changes in BOTH, then both regenerate.
 - Painter order: a cell draws once and everything it wears draws in its slot;
   boundaries are NOT a second pass; decks draw last.
+- EVERY SHADER IS HIGHP (`highp.ts`), HIS LAW, never change it: Phaser's
+  mediump is 16-bit on his Mali (seams, shimmer; `docs/perf.md`).
 - SLACK, NOT EXACTNESS: a full plate overlaps 17 rows; a top-face-only plate
   is the only zero-slack seam, so only liquids take it, with `TOP_FACE_MARGIN`
   rows of their own surface.
@@ -152,19 +154,15 @@ push, no PRs unless asked.
   `projectFlat` is where feet are DRAWN (4 px body seat, never "fixed").
 
 **Perf** (`docs/perf.md`)
-- The capture pool is ALWAYS ON: no draw bracket may resize Phaser's capture
+- The capture pool is ALWAYS ON: no draw bracket resizes Phaser's capture
   target (that re-allocation WAS the new-area lag).
-- The ground scrolls, paints in slices, repaints landed cells (budgeted,
-  cell-sized, near the view; far ones park); a full paint in play is
-  sliced; compositions budgeted; a band walks only cells reaching it,
-  builds no plate; pixel-identical to a full paint (`__ml.groundHash`
-  flushes the parked); a landing walks `occIncomplete`. A tab-in poisons
-  the latch; `?ground=legacy` bisects.
-- Pacing (`pacing.ts`): a steady 30 when 60 is not held. The terrain
-  bake is OPT-IN.
-- The beacon: `sections` are window means, `counts` snapshots (never
-  correlate); allowlisted server-side (`verify-beacon.mjs`; `perf-read.mjs`
-  reads runs).
+- The ground scrolls and paints in budgeted slices (far cells park; a band
+  walks only cells reaching it, builds no plate), pixel-identical to a full
+  paint (`__ml.groundHash` flushes the parked); a landing walks
+  `occIncomplete`; a tab-in poisons the latch; `?ground=legacy` bisects.
+- Pacing (`pacing.ts`): a steady 30 when 60 is not held; terrain bake OPT-IN.
+- Beacon: `sections` window means, `counts` snapshots (never correlate);
+  server allowlist `verify-beacon.mjs`; `perf-read.mjs` reads runs.
 
 **Movement** (`docs/movement.md`)
 - Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the

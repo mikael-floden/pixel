@@ -1,6 +1,6 @@
-/* FULL PRECISION DRAWING (games-perf 2026-09-26; the maintainer: "I actually think
- * this is the reason we have shimmering in the game and the reason we have needed
- * to make tiles larger than they should need to be").
+/* EVERY SHADER COMPILES HIGHP — THE MAINTAINER'S LAW (2026-09-26, on his phone:
+ * "draw: full precision ON WORKS! NO Shimmer!" ... "this should not be
+ * changed"). Never remove it, never gate it, never let a shader run mediump.
  *
  * All seven of Phaser 3.90's vertex shaders say `precision mediump float`
  * (Multi, Single, Mobile, Quad, Mesh, PointLight, BitmapMask), and 31 of its 34
@@ -8,22 +8,19 @@
  * fragment shaders (Multi, Single, Mobile) take highp where the GPU has it. The
  * vertex stage is the one that places a sprite's corners and carries its atlas
  * UVs. GLSL ES lets mediump be 16-bit and his Mali-G715 runs it at 16, so a
- * corner lands up to ~0.9 px off on a 1500 px texture and a UV rounds to 1/2048
- * of its atlas. The cache seams were exactly this (worldcachegl.ts, "WHY THE DRAW
- * IS OURS"). A desktop or a headless run executes mediump at 32 bits, so none of
- * it shows there.
+ * corner lands up to ~0.9 px off on a 1500 px target and a UV rounds to 1/2048
+ * of its atlas: the cache seams, the shimmer while moving, and every 1 px
+ * overlap the tiles grew to hide them. A desktop or a headless run executes
+ * mediump at 32 bits, so none of it shows there.
  *
- * ON (Settings->Dev "draw: full precision", localStorage `ml-highp` "1"): every
- * shader this page compiles says `precision highp float` where it said mediump
- * or lowp: Phaser's and ours, vertex and fragment together (a uniform both stages
- * declare must agree on precision or the program does not link). Only where the
- * fragment stage has real 32-bit floats (HIGH_FLOAT >= 23 bits); elsewhere
- * nothing is rewritten. A rewritten shader that fails to compile, or a program
- * that fails to link, gets back the source it was given: the switch can cost a
- * shader its highp, never the game its shader (it is read at boot, and a boot
- * that fails never reaches the Dev page that turns it off). Phaser compiles its
- * pipelines when the game is made, so a press applies from the next load. OFF
- * (the default): nothing is wrapped.
+ * `highpInstall` (main.ts, before any game exists) wraps the WebGL prototypes:
+ * every shader this page compiles says `precision highp float` where it said
+ * mediump or lowp — Phaser's and ours, vertex and fragment together (a uniform
+ * both stages declare must agree on precision or the program does not link) —
+ * wherever the fragment stage has real 32-bit floats (HIGH_FLOAT >= 23 bits);
+ * elsewhere nothing is rewritten. A rewritten shader that fails to compile, or
+ * a program that fails to link, gets back the source it was given: highp can
+ * cost a shader its precision, never the game its shader.
  *
  * Structural types, not the DOM's: the server's tests import this. */
 
@@ -40,48 +37,33 @@ type Gl = {
   getProgramParameter(program: object, name: number): unknown;
   getAttachedShaders(program: object): object[] | null;
 };
-type Store = { getItem(k: string): string | null; setItem(k: string, v: string): void };
-const env = () =>
-  globalThis as unknown as { WebGLRenderingContext?: { prototype: Gl }; WebGL2RenderingContext?: { prototype: Gl }; localStorage?: Store };
-
-const KEY = "ml-highp";
+const env = () => globalThis as unknown as { WebGLRenderingContext?: { prototype: Gl }; WebGL2RenderingContext?: { prototype: Gl } };
 
 /** A precision statement that is not highp. */
 const LOW = /precision\s+(?:lowp|mediump)\s+float\s*;/g;
 
-let running = false;
+let installed = false;
 let rewritten = 0;
 let keptLow = 0;
 let noHighp = false;
 
-/** The stored choice: what the NEXT load takes. A page without storage reads off. */
-export function highpStored(): boolean {
-  try {
-    return env().localStorage?.getItem(KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-/** Store the choice for the next load (the Settings->Dev press). */
-export function setHighp(on: boolean): void {
-  try {
-    env().localStorage?.setItem(KEY, on ? "1" : "0");
-  } catch {
-    /* no storage: the press cannot outlive the page, and says so by not changing state */
-  }
-}
-
-/** Whether THIS page compiles its shaders highp (the beacon's `counts.highp`). */
+/** Whether THIS page compiles its shaders highp (the beacon's `counts.highp`):
+ *  false only on a GPU without 32-bit fragment floats. */
 export function highpRunning(): boolean {
-  return running && !noHighp;
+  return installed && !noHighp;
+}
+
+/** Sources rewritten, and rewritten sources given back after a failed compile
+ *  or link (the beacon's `counts.highpBack`), since boot. */
+export function highpCounts(): { rewritten: number; back: number } {
+  return { rewritten, back: keptLow };
 }
 
 /** Before any game exists. Wraps the WebGL prototypes, so every context and
  *  every recompile (a context restore) goes through it. */
 export function highpInstall(): void {
-  if (running || !highpStored()) return;
-  running = true;
+  if (installed) return;
+  installed = true;
   const g = env();
   for (const C of [g.WebGLRenderingContext, g.WebGL2RenderingContext]) {
     const proto = C?.prototype;
@@ -128,13 +110,4 @@ export function highpInstall(): void {
       linkProgram.call(this, program);
     };
   }
-}
-
-/** The Settings->Dev state: what this page runs, and what a reload brings when
- *  the stored choice differs. */
-export function highpState(): string {
-  const next = highpStored();
-  if (noHighp) return "no 32-bit floats here: off";
-  const now = running ? `on (${rewritten} shaders${keptLow ? `, ${keptLow} kept their own` : ""})` : "off";
-  return next === running ? now : `${now}, ${next ? "on" : "off"} after reload`;
 }
