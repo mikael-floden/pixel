@@ -175,10 +175,13 @@ the player off-centre with the front-most NPC's feet). THE SET IS TAKEN IN THE F
 IT IS CUT FROM (`turnCapture`: rects and owner map after that frame's update, the
 frame on its render; the bodiless twin hides the same OBJECTS a frame later): cut
 from the next frame, anything that moved in between kept a rect its frame held
-nothing in, and walking NPCs vanished for the whole turn. The player turns through
-THREE facings — A's, the one between (one more frame, shot on A's camera), B's — the
-sides a 90-degree orbit shows; everything else crosses A to B mid-turn, solidly
-(the next card over the last, the last fading only once the next is whole). A
+nothing in, and walking NPCs vanished for the whole turn. Every card, the player's
+too, crosses A to B mid-turn, solidly (the next card over the last, the last
+fading only once the next is whole). (A third facing for the player — the side a
+45° camera shows, cut from one more frame — was dropped: that frame differed from
+the bodiless one wherever grass or a light flickered, the card kept every such
+pixel at the player's depth over the player's whole rect, and painted ground over
+every NPC behind for the middle of the turn.) A
 thing only ONE frame saw (leaving or entering the view) is matched by name
 (`RotBody.id`; scenery by its server feet, which the swap's rebuild keeps) and
 keeps its one card all turn, fading only at the far end — handed over at

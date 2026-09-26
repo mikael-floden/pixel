@@ -227,7 +227,7 @@ import {
 } from "../maps";
 import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
-import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, unrotCell, rotVec, unrotVec, rotFootprints, rotDir8, unturnScreenVec, DIRS8, type ViewRot, type RotateStats } from "../viewrot";
+import { rotateWorldDoc, normRot, rotPoint, rotCell, unrotPoint, unrotCell, rotVec, unrotVec, rotFootprints, rotDir8, unturnScreenVec, type ViewRot, type RotateStats } from "../viewrot";
 import { setPickFrame } from "../tiles3";
 import { RotFx, buildRotMesh, easeTurn, ROT_TUNE_DEFAULT, type RotProjector, type RotTune, type RotBody } from "../rotfx";
 import { parseWorld as parseWorldDoc } from "@nangijala/shared";
@@ -359,7 +359,7 @@ const HURT_MS = 300;
 type TurnDrive = { owed: () => number; v0: number; angle?: (u: number) => void };
 /** The turn's upright set of one frame (WorldScene.turnSnap): the objects to hide
  *  for its bodiless twin, the cards, the player's index and the owner map. */
-type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; mine: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
+type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
 /** THE TURN'S OWNER-MAP COLOUR for upright thing `i` (rotfx BODY_FS matches it within
  *  ~8/255): two 4-bit channels spaced 16 apart, blue a fixed marker — 255 things. */
 function ownerColour(i: number): [number, number, number] {
@@ -20710,7 +20710,7 @@ export class WorldScene extends Phaser.Scene {
     // the pixels the painter gave it, so overlapping things neither merge nor double
     const owners = this.turnOwnerMap(ups.map((u) => u.own));
     const cards: RotBody[] = ups.map((u, i) => ({ id: u.id, rect: u.rect, sprite: u.sprite, foot: u.foot, own: ownerColour(i).map((c) => c / 255) as [number, number, number] }));
-    return { objs: ups.flatMap((u) => u.objs), mine: ups.find((u) => u.me)?.objs ?? [], cards, me: ups.findIndex((u) => u.me), owners };
+    return { objs: ups.flatMap((u) => u.objs), cards, me: ups.findIndex((u) => u.me), owners };
   }
 
   /** The next frame, its uprights snapped after its update and `take` called on
@@ -20786,37 +20786,6 @@ export class WorldScene extends Phaser.Scene {
       console.warn("[nangijala] turn owner map:", e);
       return null;
     }
-  }
-
-  /** ONE FRAME WITH MY BODY SHOWING ANOTHER FACING (its idle's first frame and that
-   *  facing's own foot anchor), for the turn's in-between side. The lit copy and
-   *  its fog still wear this frame's facing and sit it out; everything comes back
-   *  on POST_RENDER, and the animation re-applies its own frame on the next update. */
-  private turnFrameWithFacing(facing: string, take: () => void, others: Phaser.GameObjects.GameObject[] = []): Promise<boolean> {
-    const me = this.avatars.get(this.myId);
-    const key = me ? this.resolveAnim(me.character, "idle", facing) : null;
-    const f = key ? this.anims.get(key)?.frames[0]?.frame : null;
-    if (!me || !f) return Promise.resolve(false);
-    return new Promise((res) => {
-      let restore = () => {};
-      this.events.once(Phaser.Scenes.Events.POST_UPDATE, () => {
-        const sp = me.sprite, ox = sp.originX, oy = sp.originY, tk = sp.texture.key, fn = sp.frame.name;
-        // THE PLAYER ALONE: every other upright goes too, so this frame minus the
-        // bodiless one is my turned body and nothing else — cut by the owner map
-        // instead, the new silhouette lost every pixel A had given a neighbour
-        // and the player went to a ghost for the middle of the turn
-        const hide = [me.lit, me.fog, me.hidden, ...(others as (typeof me.lit)[])].filter((o): o is NonNullable<typeof o> => !!o && o.visible && o !== sp);
-        sp.setTexture(f.texture.key, f.name);
-        this.applyAnchor(sp, me.character, facing, true);
-        for (const o of hide) o.setVisible(false);
-        restore = () => { sp.setTexture(tk, fn); sp.setOrigin(ox, oy); for (const o of hide) o.setVisible(true); };
-      });
-      this.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
-        take();
-        restore();
-        res(true);
-      });
-    });
   }
 
   /** A spin-bar tap (or Q / E): the goal moves `n` quarters, the view follows. */
@@ -20924,15 +20893,11 @@ export class WorldScene extends Phaser.Scene {
     // is each thing as drawn (the waterline crop, the light, the name), carried by
     // its feet; the bodiless frame is what the ground wears.
     const upA = await this.turnFrameBodiless(snapA, (g, me, own) => { fx.setA0(cv, g, me); if (own) fx.setOwners("A", own.data, own.w, own.h); });
-    // ...and once with me turned to the facing BETWEEN (DIRS8 is the ring a
-    // quarter-turn steps by two): the camera's 45 degrees shows that side of me
-    const meA = this.avatars.get(this.myId);
-    const iA = meA?.dispDir ? DIRS8.indexOf(meA.dispDir as (typeof DIRS8)[number]) : -1;
-    if (upA && upA.me >= 0 && iA >= 0) {
-      const grp = upA.groups[upA.me];
-      const mine = new Set(snapA?.mine ?? []);
-      await this.turnFrameWithFacing(DIRS8[(iA + dir + 8) % 8], () => fx.setAM(cv, grp), (snapA?.objs ?? []).filter((o) => !mine.has(o)));
-    }
+    // NO IN-BETWEEN FACING: the player hands over A to B like everything else.
+    // A third card cut from one more frame kept every pixel that frame differed
+    // in (grass, flicker), drew it at the player's depth over the player's whole
+    // rect, and so painted ground over every NPC behind — they vanished for the
+    // middle of the turn; and it cost a full render and a full-screen upload.
     this.turnLog.uprights = upA ? upA.groups.length : 0;
     this.turnLog.aMs = +(performance.now() - t0).toFixed(1);
     // A SWAP THAT THROWS (the turned document's fetch or parse) must not leave the
