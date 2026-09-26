@@ -1,17 +1,22 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-25T23:37:48+00:00",
+  "updated_at": "2026-09-26T00:58:49+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED: THE OFFLINE TERRAIN, step 1 (his principle 2026-09-25: remove work or move it offline/pre-built/a cache; keep live edits). A headless builder (the game's own renderer) captures 8x8-cell chunks: the ground texture's canonical texels over each chunk's level-0 cells (exact partition: 57,344 of 114,688 texels a 512x224 box), the bake's depth-row bands, the cells' occluder meta — measured ~5.6 KB ground + ~6.7 KB bands a chunk as lossless WebP. The phone (Settings->Dev 'terrain: pre-built', OFF by default) loads a built chunk through the art queue and for it skips the resolver, compositions, ground painting and the occluder walk: the ground texture draws the chunk's picture over its diamond, the bands stand as images at their row depths, the meta is shipped. First area: his hard place (103,182). Parity by the render A/B harness; the phone's run decides.",
-    "since": "2026-09-25T23:37:48+00:00",
+    "unit": "CLAIMED: THE OFFLINE TERRAIN, step 1 (his principle 2026-09-25: remove work or move it offline/pre-built/a cache; keep live edits). Parity PROVEN headless: render A/B 0 px at 4 spots round 103,182 (day x3 + night) with built and live chunks on one screen. Now: (1) the loader holds a byte cap (far chunks let go, back from the HTTP cache), survives a lost GL context, and an edit sends its whole resolver region live; (2) FAIL-CLOSED INPUTS — an index names the terrain code it was drawn with (scripts/terrainfp.mjs: WorldScene's terrain methods + the modules they use, carried by every client build as VITE_TERRAIN_FP — vite.config.ts and fastbuild.mjs gain one define) and the content hash of every document and art file it read; a page whose own hashes differ draws live, so no picture of another generation is ever shown; (3) band pieces trimmed at their empty columns (0.6 MB a chunk instead of 1.3). Then the walking-time A/B on a 156-chunk build, then his run. Dev switch, off by default.",
+    "since": "2026-09-26T00:58:49+00:00",
     "files": [
       "games2/client/src/prebuilt.ts",
       "games2/client/src/scenes/WorldScene.ts",
       "games2/server/test/prebuilt.test.ts",
       "games2/client/public/prebuilt/**",
       "games2/scripts/prebuild-terrain.mjs",
-      "games2/docs/perf.md"
+      "games2/scripts/prebuild-terrain-encode.py",
+      "games2/scripts/terrainfp.mjs",
+      "games2/client/vite.config.ts",
+      "games2/scripts/fastbuild.mjs",
+      "games2/docs/perf.md",
+      "games2/docs/testing.md"
     ]
   },
   "progress": {
@@ -20,10 +25,6 @@
   },
   "budget_remaining": null,
   "notes": [
-    {
-      "at": "2026-09-25T18:16:36+00:00",
-      "text": "SHIPPED 7ab4fad87d (image live 18:13 UTC): THE LATE-FRAME METER. glframe counts texture binds per frame (tb, counts.glTexBinds) and the `late` block files every frame's interval under the PREVIOUS frame's draws / binds / fill as on time or late (>45 ms); server allowlist `late` (mixed 40), perf-read prints the late share per bucket. His next run decides whether the one-refresh-late frames are the GPU command stream (an atlas) or not. MY SLIP ON THE WAY: 0417a67248 (games' ramp light) landed under games2 between my test run and my push, and my push line rebased and pushed without re-running; re-ran on the pushed tree at once: typecheck clean, npm test 1038 pass, the 5 known red only."
-    },
     {
       "at": "2026-09-25T18:37:59+00:00",
       "text": "SHIPPED ea04374f1e (live 18:28 UTC, fast lane; container behind it): A STEADY 20 AS A PACING CHOICE on his principle (\"consistent and predictable\" over rate; his cool run's recurring dips are frames one refresh late at 30 = 50 ms = a 20 fps frame). pacing.ts mode \"20\" (every 3rd 60 Hz vsync, summed delta), Settings->Dev frame pacing auto -> 30 -> 20 -> 60, ?pace=20; the FPS meter's hitch and the beacon's `late` judge against the chosen cadence (paceLateMs: 45 at 30/unpaced, ~62 at 20). ATLAS MAP (read-only research, for the one-refresh-late frames if his run's `late` block climbs with draws/binds): all tiles3 textures are NEAREST, unscaled, whole-pixel, content-addressed, built once, never freed (7,867 live on his phone, 64x46/64x64) - ~6 2048 pages with 1-texel edge gutters would hold them all, one 16-unit batch. Seams to change: t3Blit, occImage + its pool match, debrisTake, the bake's batchDraw/sizeOf/parity (explicit frames); textures.exists via the t3tm adapter; sourcePixels/texPixels need the sources kept; a context-restore refill (art queue pattern). Not started: his run decides."
@@ -134,7 +135,6 @@
       "at": "2026-09-25T12:04:44+00:00"
     }
   ],
-  "updated": "2026-09-25T22:01:02+00:00",
   "status": "running",
   "handled": [
     {

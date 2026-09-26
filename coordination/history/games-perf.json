@@ -135,6 +135,10 @@
     {
       "at": "2026-09-25T17:58:51+00:00",
       "text": "SHIPPED 7c58077757 (live 17:50 UTC, fast lane): batch 1 of his cool run's leftovers (6f3f9f8a) - the recorder's per-window sorts native (Float64Array; its report was 20-29 ms on his phone, ~9 ms of it sorts in node), the edit tool's ground list kept (it walked 155,236 cells on every Settings refresh), the heap block the window's, the report's parts in counts (beaconSnapMs/BodyMs/TakeMs)."
+    },
+    {
+      "at": "2026-09-25T18:16:36+00:00",
+      "text": "SHIPPED 7ab4fad87d (image live 18:13 UTC): THE LATE-FRAME METER. glframe counts texture binds per frame (tb, counts.glTexBinds) and the `late` block files every frame's interval under the PREVIOUS frame's draws / binds / fill as on time or late (>45 ms); server allowlist `late` (mixed 40), perf-read prints the late share per bucket. His next run decides whether the one-refresh-late frames are the GPU command stream (an atlas) or not. MY SLIP ON THE WAY: 0417a67248 (games' ramp light) landed under games2 between my test run and my push, and my push line rebased and pushed without re-running; re-ran on the pushed tree at once: typecheck clean, npm test 1038 pass, the 5 known red only."
     }
   ]
 }
