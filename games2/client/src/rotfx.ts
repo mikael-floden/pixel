@@ -174,13 +174,15 @@ void main(){
   bool useA = uMix < 0.5 || uHasB < 0.5;
   vec2 uv = useA ? vA : vB;
   vec2 cl = clamp(uv, vec2(0.0), vec2(1.0));
+  // 3x3 at twice the spacing: the 5x5's reach for 9 reads instead of 25 — this
+  // runs over the whole unseen area, which is largest mid-turn, on a phone GPU
   vec3 acc = vec3(0.0);
-  for (int i = -2; i <= 2; i++) for (int j = -2; j <= 2; j++) {
-    vec2 q = clamp(cl + vec2(float(i), float(j)) * uSoft, vec2(0.0), vec2(1.0));
+  for (int i = -1; i <= 1; i++) for (int j = -1; j <= 1; j++) {
+    vec2 q = clamp(cl + vec2(float(i), float(j)) * (2.0 * uSoft), vec2(0.0), vec2(1.0));
     acc += useA ? texture2D(uA, q).rgb : texture2D(uB, q).rgb;
   }
   float away = length(uv - cl);
-  vec3 fill = acc / 25.0 * (1.0 - uDim * smoothstep(0.0, 0.35, away));
+  vec3 fill = acc / 9.0 * (1.0 - uDim * smoothstep(0.0, 0.35, away));
   gl_FragColor = vec4(mix(fill, seen, cover), 1.0);
 }`;
 

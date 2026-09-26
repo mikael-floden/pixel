@@ -44,10 +44,10 @@
 // the only place it can be. That report also fixed the clip's span: a press
 // plays the whole strip, and a full 360° would have read as a full spin rather
 // than a seam.
-// WHAT IT DRIVES: nothing yet, deliberately. `ml-spin` carries the quarter it
-// settled on, so whatever this ends up turning can subscribe without this
-// module having to know about it — and it fires ONCE per rest, not once per
-// tap, because four quick taps are one 360° journey and not four events.
+// WHAT IT DRIVES: the world's view turn (WorldScene listens to these buttons'
+// taps and to `ml-spin`, which carries the quarter it settled on and fires ONCE
+// per rest, because four quick taps are one 360° journey and not four events).
+// While the world turns, the cube FOLLOWS it (`ml-view-angle`, below).
 import { withV } from "./assetver";
 
 const BAR = "ml-spinbar";
@@ -135,12 +135,53 @@ function draw(): void {
 /** The quarter an unwrapped position belongs to, 0..3 — what `ml-spin` says. */
 const quarterOf = (f: number) => (frames ? ((Math.round(f / frames) % 4) + 4) % 4 : 0);
 
+/** THE WORLD'S ANGLE, while the world turns (WorldScene publishes it every frame
+ *  on `ml-view-angle`, in this bar's quarters, with the goal its taps set): the
+ *  cube draws where the WORLD is instead of running a clock of its own — the two
+ *  drifted apart, the cube done in 0.4 s while the world was still preparing its
+ *  turn (maintainer 2026-09-26: "it's not in sync with the cube rotation"). The
+ *  world counts the same taps, so `worldLag` — how far it still has to turn, in
+ *  frames — is all the cube needs: it stands at `targetF - worldLag`. A world
+ *  that stops publishing is let go after WORLD_STALE_MS, and the cube finishes
+ *  on its own clock. */
+let worldLag: number | null = null;
+let worldBusy = false;
+let worldAt = 0;
+/** Longer than a quarter's frame-A captures and its swap, during which the world
+ *  publishes nothing but is still turning. */
+const WORLD_STALE_MS = 1500;
+window.addEventListener("ml-view-angle", (e) => {
+  const d = (e as CustomEvent<{ q?: number; goal?: number; busy?: boolean }>).detail;
+  if (!d || typeof d.q !== "number" || typeof d.goal !== "number" || !frames) return;
+  worldLag = (d.goal - d.q) * frames;
+  worldBusy = !!d.busy;
+  worldAt = performance.now();
+  if (!raf) {
+    last = performance.now();
+    raf = requestAnimationFrame(tick);
+  }
+});
+
 const tick = (now: number) => {
   // A BACKGROUNDED TAB MUST NOT TELEPORT IT. rAF stops while hidden, so the
   // first frame back carries the whole gap; clamped, the orb simply resumes
   // from where it was, which is what a paused animation should look like.
   const dt = Math.min(200, Math.max(0, now - last));
   last = now;
+  if (worldLag !== null) {
+    if (now - worldAt > WORLD_STALE_MS) worldLag = null;
+    else {
+      // FOLLOWING THE WORLD: never past the target, never behind where it was
+      // asked to come back from — the lag is the world's own
+      curF = targetF - worldLag;
+      if (worldBusy || Math.abs(worldLag) > 1e-6) {
+        draw();
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      worldLag = null; // the world rests on the goal: land below, as ever
+    }
+  }
   const remain = targetF - curF;
   const step = dt / STEP_MS;
   if (Math.abs(remain) <= step) {
@@ -167,6 +208,9 @@ const tick = (now: number) => {
 function nudge(dir: 1 | -1): void {
   if (!frames) return;
   targetF += dir * frames;
+  // the world hears this tap too, a frame later: until it says so, the lag
+  // grows with the target so the cube does not jump a quarter ahead
+  if (worldLag !== null) worldLag += dir * frames;
   if (!raf) {
     last = performance.now();
     raf = requestAnimationFrame(tick);

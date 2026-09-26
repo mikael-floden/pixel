@@ -356,7 +356,7 @@ const HURT_MS = 300;
  *  how many quarters are still wanted in the turn's direction counting this one
  *  (read every frame — more than one runs on through at speed, none goes back),
  *  and the velocity the previous quarter ended at (quarters/ms). */
-type TurnDrive = { owed: () => number; v0: number };
+type TurnDrive = { owed: () => number; v0: number; angle?: (u: number) => void };
 /** The turn's upright set of one frame (WorldScene.turnSnap): the objects to hide
  *  for its bodiless twin, the cards, the player's index and the owner map. */
 type TurnSnap = { objs: Phaser.GameObjects.GameObject[]; mine: Phaser.GameObjects.GameObject[]; cards: RotBody[]; me: number; owners: { data: Uint8Array; w: number; h: number } | null };
@@ -20829,10 +20829,18 @@ export class WorldScene extends Phaser.Scene {
    *  so taps during a turn chain (a quarter at a time, quicker when more are
    *  owed) and a tap back undoes the rest. A turn that did not happen (dead, no
    *  world yet, a swap that threw) is retried from update() a second later. */
+  /** THE WORLD'S ANGLE FOR THE SPIN BAR, in the bar's quarters (a right tap is
+   *  +1), with the goal the taps set: the cube draws where the WORLD is, so the
+   *  two cannot drift (maintainer 2026-09-26: "it's not in sync with the cube
+   *  rotation"). `busy` false is the rest, where the cube lands. */
+  private publishSpinAngle(q: number, busy: boolean): void {
+    window.dispatchEvent(new CustomEvent("ml-view-angle", { detail: { q, goal: this.spinGoal, busy } }));
+  }
+
   private chaseSpin(): void {
     const d = Math.sign(this.spinGoal - this.spinAt);
     if (!d || this.spinBusy || this.turning || !this.world) {
-      if (!d && !this.spinBusy) this.releaseTurnHold();
+      if (!d && !this.spinBusy) { this.releaseTurnHold(); this.publishSpinAngle(this.spinAt, false); }
       return;
     }
     this.spinBusy = true;
@@ -20849,7 +20857,8 @@ export class WorldScene extends Phaser.Scene {
       this.spinAt += d;
       this.chaseSpin();
     };
-    this.turnView(d > 0 ? -1 : 1, 1100, 3000, 1, { owed, v0: this.spinVelDir === d ? this.spinVel : 0 }).then(after, (e) => {
+    const angle = (u: number) => this.publishSpinAngle(at0 + d * u, true);
+    this.turnView(d > 0 ? -1 : 1, 1100, 1500, 1, { owed, v0: this.spinVelDir === d ? this.spinVel : 0, angle }).then(after, (e) => {
       console.warn("[nangijala] view turn failed:", e);
       after({});
     });
@@ -20878,6 +20887,7 @@ export class WorldScene extends Phaser.Scene {
     const kA = this.viewRot, kB = normRot(kA + dir);
     if (this.game.renderer.type !== Phaser.WEBGL) { await this.applyViewRot(kB); return { skipped: "canvas renderer: turned instantly" }; }
     this.turning = true;
+    drive?.angle?.(0); // the spin bar's cube holds with the world while it prepares
     this.turnLog = { from: kA, to: kB, ms };
     const t0 = performance.now();
     const cv = this.game.canvas, cam = this.cameras.main, { dx, dy, lh } = this.geom;
@@ -20940,6 +20950,7 @@ export class WorldScene extends Phaser.Scene {
     let swappedBack = false;
     if (this.camDetached) cam.centerOn(this.iso.ox + 32 + (bx - by) * dx, this.iso.oy + 10 + (bx + by) * dy - ph * lh);
     this.turnLog.swapMs = +(performance.now() - t0).toFixed(1);
+    drive?.angle?.(0);
     return await new Promise((done) => {
       let clock = 0, last = performance.now(), lastCheck = 0, capturing = false, held = 0;
       const tWait = performance.now();
@@ -20952,6 +20963,14 @@ export class WorldScene extends Phaser.Scene {
       const acc = 4 / (ms * ms), vPeak = 2 / ms, vCap = 2.4 / ms;
       let u = 0, v = drive ? Math.max(0, drive.v0) : 0;
       let backDone = false, backHeld = 0, tBack = 0;
+      // B COMPLETE: the frame, its bodiless twin and its owner map. Until then a
+      // driven turn only CREEPS (to PREP_U, at PREP_V): every upload, readback and
+      // extra render lands while it barely moves, and the middle — where it is
+      // fastest — draws and nothing else (maintainer 2026-09-26, on the live
+      // build: "it lags like crazy in the middle of the rotation animation";
+      // it crawled at mid-turn waiting for B, up to 3 s, and took B there).
+      let bDone = false;
+      const PREP_U = 0.12, PREP_V = PREP_U / 450;
       const finish = (chained = false) => {
         this.turnLog.totalMs = +(performance.now() - t0).toFixed(1);
         const out = { ...this.turnLog, ...fx.timings, ...(swappedBack ? { reversed: 1 } : {}), vOut: chained ? v : 0 };
@@ -20983,20 +21002,21 @@ export class WorldScene extends Phaser.Scene {
               if (backHeld >= 3 || now - tBack > waitB) { finish(); return; }
             }
             fx.draw(0, blur, 0);
+            drive.angle?.(0);
             requestAnimationFrame(step);
             return;
           }
           const owedNow = drive.owed();
-          const target = owedNow >= 1 ? owedNow : 0;
+          let target = owedNow >= 1 ? owedNow : 0;
+          if (!bDone) target = Math.min(target, PREP_U);
           const dist = target - u;
           let vDes = Math.sign(dist) * Math.min(vCap, Math.sqrt(2 * acc * Math.abs(dist)));
-          // while B is still being drawn, crawl through mid-turn, where the blur
-          // is strongest, instead of stopping dead
-          if (!fx.ready && u > 0.42) vDes = Math.min(vDes, 0.15 * vPeak);
+          if (!bDone) vDes = Math.min(vDes, PREP_V);
           v += Math.max(-acc * dt, Math.min(acc * dt, vDes - v));
           u += v * dt;
-          if (!fx.ready && u > 0.5) { u = 0.5; v = Math.min(v, 0); }
-          if (u >= 1 && fx.ready) {
+          if (!bDone && u > PREP_U) { u = PREP_U; v = Math.min(v, 0); }
+          drive.angle?.(u);
+          if (u >= 1 && bDone) {
             u = 1;
             fx.draw(1, blur, 0);
             if (drive.owed() > 1) { finish(true); return; }
@@ -21015,15 +21035,19 @@ export class WorldScene extends Phaser.Scene {
         clock = Math.min(ms, clock + dt * rate);
         let raw = clock / ms;
         if (!fx.ready) raw = Math.min(raw, 0.5);
-        if (!fx.ready && !capturing && !backDone && now - lastCheck > 100) {
+        // a driven turn checks its B more often and holds it for less: it is
+        // standing nearly still meanwhile, and every check it waits is latency
+        const every = drive ? 60 : 100, hold = drive ? 3 : 5;
+        if (!fx.ready && !capturing && !backDone && now - lastCheck > every) {
           lastCheck = now;
           held = this.viewSettled() ? held + 1 : 0;
-          if (held >= 5 || now - tWait > waitB) {
+          if (held >= hold || now - tWait > waitB) {
             capturing = true;
             this.turnLog.bWaitMs = +(now - tWait).toFixed(1);
             this.turnLog.bSettled = now - tWait > waitB ? "timeout" : "settled";
             void this.turnCapture(kA, () => fx.setB(cv, proj(), { x: bx, y: by, h: ph }))
-              .then((snapB) => this.turnFrameBodiless(snapB, (g, me, own) => { fx.setB0(cv, g, me); if (own) fx.setOwners("B", own.data, own.w, own.h); }));
+              .then((snapB) => this.turnFrameBodiless(snapB, (g, me, own) => { fx.setB0(cv, g, me); if (own) fx.setOwners("B", own.data, own.w, own.h); }))
+              .then(() => { bDone = true; this.turnLog.bDoneMs = +(performance.now() - t0).toFixed(1); }, () => { bDone = true; });
           }
         }
         if (drive && this.turnPinned === null) {

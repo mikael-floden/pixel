@@ -19,7 +19,17 @@ frame A covers it, so a chain neither stops nor flashes between quarters (each
 quarter faded out and eased to rest before). Owed none, it decelerates, turns
 round, and at A swaps the renderer back — his orb's rule, "change direction
 immediately and go back". The blur and the zoom pulse follow that velocity, not
-the clock. A turn that did not happen (dead, no world yet, a swap that threw) is
+the clock. PREPARE, THEN RUN (maintainer 2026-09-26, on the live build: "it lags
+like crazy in the middle of the rotation animation"): until B is COMPLETE — the
+frame, its bodiless twin, its owner map — a driven turn only creeps (to 0.12 at
+0.12/450 ms), so every swap, upload, readback and extra render lands while it
+barely moves and the fast middle draws and nothing else (it crawled at mid-turn
+waiting for B, up to 3 s, and took B there). Its B settle is 3 checks 60 ms
+apart, capped at 1.5 s. THE CUBE FOLLOWS THE WORLD ("it's not in sync with the
+cube rotation"): the chase publishes `ml-view-angle {q, goal, busy}` every frame
+in the bar's quarters, and `spinbar.ts` draws the cube at the target minus the
+world's remaining turn — on its own 0.4 s clock it was done before the world
+had begun. A turn that did not happen (dead, no world yet, a swap that threw) is
 retried from `update` a second later. Q / E `.click()` the bar's own buttons, so
 the orb and the view never disagree. The debug hooks keep the eased clock.
 THE DIRECTION IS THE ORB'S: his orb's front face moves RIGHT on a right tap, so
@@ -221,4 +231,4 @@ VIEW quarters: +1 is the picture clockwise; neither moves the spin goal),
 - The spawn-area debug overlay is not re-placed on a turn; the minimap stays
   north-up.
 - A chained quarter still holds for its frame A (three frames) at the junction,
-  and crawls at mid-turn while its B is drawn.
+  and creeps near its start while its B is drawn.
