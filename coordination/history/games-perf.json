@@ -139,6 +139,14 @@
     {
       "at": "2026-09-25T18:16:36+00:00",
       "text": "SHIPPED 7ab4fad87d (image live 18:13 UTC): THE LATE-FRAME METER. glframe counts texture binds per frame (tb, counts.glTexBinds) and the `late` block files every frame's interval under the PREVIOUS frame's draws / binds / fill as on time or late (>45 ms); server allowlist `late` (mixed 40), perf-read prints the late share per bucket. His next run decides whether the one-refresh-late frames are the GPU command stream (an atlas) or not. MY SLIP ON THE WAY: 0417a67248 (games' ramp light) landed under games2 between my test run and my push, and my push line rebased and pushed without re-running; re-ran on the pushed tree at once: typecheck clean, npm test 1038 pass, the 5 known red only."
+    },
+    {
+      "at": "2026-09-25T18:37:59+00:00",
+      "text": "SHIPPED ea04374f1e (live 18:28 UTC, fast lane; container behind it): A STEADY 20 AS A PACING CHOICE on his principle (\"consistent and predictable\" over rate; his cool run's recurring dips are frames one refresh late at 30 = 50 ms = a 20 fps frame). pacing.ts mode \"20\" (every 3rd 60 Hz vsync, summed delta), Settings->Dev frame pacing auto -> 30 -> 20 -> 60, ?pace=20; the FPS meter's hitch and the beacon's `late` judge against the chosen cadence (paceLateMs: 45 at 30/unpaced, ~62 at 20). ATLAS MAP (read-only research, for the one-refresh-late frames if his run's `late` block climbs with draws/binds): all tiles3 textures are NEAREST, unscaled, whole-pixel, content-addressed, built once, never freed (7,867 live on his phone, 64x46/64x64) - ~6 2048 pages with 1-texel edge gutters would hold them all, one 16-unit batch. Seams to change: t3Blit, occImage + its pool match, debrisTake, the bake's batchDraw/sizeOf/parity (explicit frames); textures.exists via the t3tm adapter; sourcePixels/texPixels need the sources kept; a context-restore refill (art queue pattern). Not started: his run decides."
+    },
+    {
+      "at": "2026-09-25T19:30:29+00:00",
+      "text": "SHIPPED ff0db3eb35 (live 19:28:49 UTC, fast lane; image behind it): THE MAJOR GC'S EPHEMERONS. tiles3draw's four per-cell WeakMap memos (19,925 of the heap's ~20k ephemerons) are bounded two-generation STRONG memos (genmemo.ts, cap 24,000). V8's own trace (--trace-gc-nvp, headless, 1 MB young gen, the same 120 s tour): major pauses 21-194 ms -> 14-50 ms, 417 -> 226 ms in all, ephemeron marking 125 -> 3.5 ms; promotion unchanged 0.9 MB/s; the price 8.95 MB held. ALSO MEASURED: usedJSHeapSize counts ArrayBuffers in Chrome 141 (+99.6 MB for a 100 MB buffer), so the beacon's heap block is mostly texture pixels. verify-groundbracket is RED ON MAIN without my change (same 404 + the 'vs full' line) - mine to trace next after this unit."
     }
   ]
 }
